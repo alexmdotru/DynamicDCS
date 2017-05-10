@@ -84,7 +84,7 @@ function getDCSData(dataCallback) {
     var connOpen = true;
 
     const net = require('net');
-    let buffer;
+    var buffer;
 
     function connect() {
 
@@ -92,7 +92,7 @@ function getDCSData(dataCallback) {
         var request = _.get(serverObject, 'requestArray[0]',"NONE");
 
         const client = net.createConnection({host: ADDRESS, port: PORT}, () => {
-            let time = new Date();
+            var time = new Date();
             console.log(time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + ' :: Connected to DCS server!');
             connOpen = false;
             buffer = "";
@@ -108,7 +108,7 @@ function getDCSData(dataCallback) {
         client.on('data', (data) => {
             buffer += data;
             while ((i = buffer.indexOf("\n")) >= 0) {
-                let data = JSON.parse(buffer.substring(0, i));
+                var data = JSON.parse(buffer.substring(0, i));
                 dataCallback(data);
                 buffer = buffer.substring(i + 1);
                 client.write('{"action":"'+request+'"'+"}\n");

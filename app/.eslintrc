@@ -1,0 +1,23 @@
+{
+  "env": {
+    "browser": true,
+    "jasmine": true
+  },
+  "extends": [
+    "eslint:recommended"
+  ],
+  "globals": {
+    "_": false,
+    "angular": false,
+    "inject": false,
+    "module": false
+  },
+  "rules": {
+    "comma-dangle": [2, "never"],
+    "indent": [2, "tab"],
+    "max-len": [2, 100, 4, {"ignoreUrls": true}],
+    "no-unused-vars": [2, {"vars": "all"}],
+    "strict": [2, "function"],
+    "func-names": 0
+  }
+}

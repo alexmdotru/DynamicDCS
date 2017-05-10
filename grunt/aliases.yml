@@ -1,0 +1,8 @@
+compile:
+- compile-tpl
+- compile-js
+- compile-vendor-js
+- compile-css
+- copy:locales
+- copy:html
+- copy:index

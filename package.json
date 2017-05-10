@@ -12,12 +12,20 @@
   "private": true,
   "license": "AGPLv3",
   "dependencies": {
+    "angular": "^1.6.4",
     "express": "^4.15.2",
     "geojson": "^0.4.1",
-    "grunt": "^1.0.1",
     "lodash": "^4.17.4",
     "milsymbol": "^1.1.0",
     "socket.io": "^2.0.1"
+  },
+  "devDependencies": {
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb": "^14.1.0",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jsx-a11y": "^4.0.0",
+    "eslint-plugin-react": "^6.10.3",
+    "grunt": "^1.0.1"
   },
   "scripts": {
     "start": "node server.js"

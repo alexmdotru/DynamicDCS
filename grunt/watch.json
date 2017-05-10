@@ -1,0 +1,10 @@
+{
+  "js": {
+    "files": "<%= eslint.app.src %>",
+    "tasks": [
+      "force:eslint:app",
+      "karma:once",
+      "compile-js"
+    ]
+  }
+}
