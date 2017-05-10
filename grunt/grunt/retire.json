@@ -1,0 +1,7 @@
+{
+    "options": {
+        "verbose": false
+    },
+    "app": ["app/**/*.js"],
+    "vendor": "<%= concat.vendor.src %>"
+}

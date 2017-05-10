@@ -1,0 +1,9 @@
+{
+    "options": {
+        "keepSpecialComments": "*"
+    },
+    "app": {
+        "src": "<%= less.app.dest %>",
+        "dest": "<%= grunt.template.rename(less.app.dest, { suffix: '.min' }) %>"
+    }
+}

@@ -1,0 +1,7 @@
+/*!
+ * <%= package.name %>
+ * Version: <%= package.version %>
+ * Revision: <%= GIT_COMMIT %>
+ * Build: <%= BUILD_NUMBER %>
+ * Compiled: <%= grunt.template.today("isoUtcDateTime")%>
+ */

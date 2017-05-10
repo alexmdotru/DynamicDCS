@@ -1,0 +1,12 @@
+{
+    "server": {
+        "options": {
+            "apiDelay": 0,
+            "autoOpen": false,
+            "morgan": {
+                "quiet": true
+            },
+            "port": 3000
+        }
+    }
+}

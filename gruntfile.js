@@ -4,5 +4,4 @@ module.exports = function(grunt) {
 			appFileName: require('./package.json').name
 		}
 	};
-	require('ns-grunt-bundle')(grunt, options);
 };

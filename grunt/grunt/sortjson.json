@@ -1,0 +1,8 @@
+{
+    "locales": {
+        "cwd": "<%= src %>/assets/locales/",
+        "expand": true,
+        "src": "*.json",
+        "dest": "<%= src %>/assets/locales/"
+    }
+}

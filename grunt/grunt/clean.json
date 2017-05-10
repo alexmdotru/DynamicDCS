@@ -1,0 +1,5 @@
+{
+    "coverage": ["coverage"],
+    "dest": ["<%= dest %>"],
+    "temp": ["<%= temp %>"]
+}

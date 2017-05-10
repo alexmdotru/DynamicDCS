@@ -1,0 +1,9 @@
+{
+    "options": {
+        "config": ".csscomb.json"
+    },
+    "app": {
+        "src": "<%= less.app.dest %>",
+        "dest": "<%= less.app.dest %>"
+    }
+}

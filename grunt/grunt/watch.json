@@ -1,0 +1,43 @@
+{
+	"options": {
+		"livereload": true
+	},
+	"css": {
+		"files": ["<%= less.app.dest %>"]
+	},
+	"global-env": {
+		"files": "<%= testEnvYAML %>",
+		"tasks": ["karma:once"],
+		"options": {"reload": true, "livereload": false}
+	},
+	"index": {
+		"files": "<%= copy.index.src %>",
+		"tasks": ["compile-index"]
+	},
+	"js": {
+		"files": "<%= eslint.app.src %>",
+		"tasks": ["force:eslint:app", "karma:once", "compile-js"]
+	},
+	"less": {
+		"files": ["<%= grunt.template.progeny(less.app.src) %>"],
+		"tasks": ["compile-css"],
+		"options": {"reload": true, "livereload": false}
+	},
+	"locales": {
+		"files": ["<%= copy.locales.cwd %><%= copy.locales.src %>"],
+		"tasks": ["copy:locales"]
+	},
+	"templates": {
+		"files": "<%= ngtemplates.app.src %>",
+		"tasks": ["compile-tpl", "compile-js"]
+	},
+	"tests": {
+		"files": "<%= eslint.spec.src %>",
+		"tasks": ["force:ddescribe-iit", "force:eslint:spec", "karma:once"],
+		"options": {"livereload": false}
+	},
+	"vendorjs": {
+		"files": ["<%= vendorYAML %>", "<%= concat.vendor.src %>"],
+		"tasks": ["karma:once", "compile-vendor-js"]
+	}
+}

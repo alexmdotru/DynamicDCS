@@ -1,0 +1,18 @@
+{
+    "options": {
+        "mangle": false
+    },
+    "app": {
+        "options": {
+            "banner": "<%= banner %>"
+        },
+        "src": [
+            "<%= concat.app.dest %>"
+        ],
+        "dest": "<%= grunt.template.rename(concat.app.dest, { suffix: '.min' }) %>"
+    },
+    "vendor": {
+        "src": "<%= concat.vendor.dest %>",
+        "dest": "<%= grunt.template.rename(concat.vendor.dest, { suffix: '.min' }) %>"
+    }
+}
