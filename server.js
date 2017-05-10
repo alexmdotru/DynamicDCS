@@ -8,8 +8,8 @@ var app = express();
 app.use('/', express.static(__dirname + '/app'));
 app.use('/scripts', express.static(__dirname + '/node_modules'));
 
-var server    = app.listen(8080);
-var io        = require('socket.io').listen(server);
+var server  = app.listen(8080);
+var io  = require('socket.io').listen(server);
 
 //setup globals
 var serverObject = {};
@@ -23,7 +23,6 @@ io.on('connection', function( socket ){
     console.log(socket.id);
     //send full payload on connect, then just updates
     updSrvObj = _.cloneDeep(serverObject);
-    //console.log(updSrvObj);
     _.set(updSrvObj, 'action', "INIT");
     io.to(socket.id).emit('srvUpd', updSrvObj);
     socket.on('disconnect', function(){
@@ -37,20 +36,24 @@ _.set(serverObject, 'unitParse', function (unit) {
     var curUnit = {};
 
     if (_.get(unit, 'action') == 'C') {
-        curUnit = {
-            unitID: _.get(unit, 'unitID'),
-            type: _.get(unit, 'type'),
-            coalition: _.get(unit, 'coalition'),
-            lat: _.get(unit, 'lat'),
-            lon: _.get(unit, 'lon'),
-            playername: _.get(unit, 'playername', '')
-        };
-        _.set(curUnit, 'action', 'C');
-        serverObject.units.push(_.cloneDeep(curUnit));
-        io.emit('srvUnitUpd', curUnit);
+        if (typeof _.find(serverObject.units, { 'unitID': _.get(unit, 'unitID') }) !== "undefined") {
+            _.find(serverObject.units, { 'unitID': _.get(unit, 'unitID') }).action = 'U';
+        }else{
+            curUnit = {
+                unitID: _.get(unit, 'unitID'),
+                type: _.get(unit, 'type'),
+                coalition: _.get(unit, 'coalition'),
+                lat: _.get(unit, 'lat'),
+                lon: _.get(unit, 'lon'),
+                playername: _.get(unit, 'playername', '')
+            };
+            _.set(curUnit, 'action', 'C');
+            serverObject.units.push(_.cloneDeep(curUnit));
+            io.emit('srvUnitUpd', curUnit);
+        }
     }
     if (_.get(unit, 'action') == 'U') {
-        if (_.find(serverObject.units, { 'unitID': _.get(unit, 'unitID') }) !== "undefined") {
+        if (typeof _.find(serverObject.units, { 'unitID': _.get(unit, 'unitID') }) !== "undefined") {
             _.find(serverObject.units, { 'unitID': _.get(unit, 'unitID') }).lat = _.get(unit, 'lat');
             _.find(serverObject.units, { 'unitID': _.get(unit, 'unitID') }).lon =  _.get(unit, 'lon');
             curUnit = {
@@ -96,6 +99,9 @@ function getDCSData(dataCallback) {
         });
 
         client.on('connect', function() {
+            updSrvObj = _.cloneDeep(serverObject);
+            _.set(updSrvObj, 'action', "INIT");
+            io.emit('srvUpd', updSrvObj);
             client.write('{"action":"INIT"}'+"\n");
         });
 
@@ -117,7 +123,6 @@ function getDCSData(dataCallback) {
         });
 
         client.on('error', () => {
-            console.log('error!');
             connOpen = true;
         });
     }
@@ -125,8 +130,9 @@ function getDCSData(dataCallback) {
     setInterval(function(){
         if (connOpen === true) {
             connect();
+        }else{
         }
-    }, 1 * 200);
+    }, 1 * 500);
 
 };
 

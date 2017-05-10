@@ -58,7 +58,7 @@ do
                          local lat, lon, alt = coord.LOtoLL(unitPosition.p);
                          local unitID = tonumber(unit:getID())
                          if cacheDB[unitID] ~= nil then
-                             --env.info('cachelat: '..cacheDB[unitID].lat..' reg lat: '..lat..' cachelon: '..cacheDB[unitID].lon..' reg lon: '..lon)
+                             --log('cachelat: '..cacheDB[unitID].lat..' reg lat: '..lat..' cachelon: '..cacheDB[unitID].lon..' reg lon: '..lon)
                              if cacheDB[unitID].lat ~= lat or cacheDB[unitID].lon ~= lon then
                                  addUnit(unit, unitID, coalition, lat, lon, "U")
                              end
@@ -89,9 +89,16 @@ do
     end
 
     local function runRequest(request)
-        if request.action == "INIT" then
-            env.info('RUNNING REQUEST INIT')
-            cacheDB = {}
+        env.info(request.action)
+        if request.action ~= nil then
+            if request.action == "INIT" then
+                log('RUNNING REQUEST INIT')
+                cacheDB = {}
+            end
+            if request.action == "CMD" then
+                log('RUNNING CMD')
+                pcallCommand(cmdOut)
+            end
         end
     end
 
@@ -112,6 +119,19 @@ do
     end
     log("Server started")
 
+    local function checkJSON(jsonstring, code)
+        if code == 'encode' then
+            if type(JSON:encode(jsonstring)) ~= "string" then
+                error("encode expects a string after function")
+            end
+        end
+        if code == 'decode' then
+            if type(jsonstring) ~= "string" then
+                error("decode expects string")
+            end
+        end
+    end
+
     local client
     local function step()
 
@@ -126,21 +146,30 @@ do
         end
 
         if client then
-            local line, err = client:receive()
+           local line, err = client:receive()
            if line ~= nil then
-               --env.info(line)
-               local incMsg = JSON:decode(line)
-               --env.info(incMsg.action)
-                runRequest(incMsg);
+               --log(line)
+               local success, error =  pcall(checkJSON, line, 'decode')
+               if success then
+                   local incMsg = JSON:decode(line)
+                   runRequest(incMsg);
+               else
+                   log("Error: " .. error)
+               end
            end
             -- if there was no error, send it back to the client
             if not err then
                 local dataPayload = getDataMessage()
-                local outMsg = JSON:encode(dataPayload).."\n"
-                local bytes, status, lastbyte = client:send(outMsg)
-                if not bytes then
-                    log("Connection lost")
-                    client = nil
+                local success, error = pcall(checkJSON, dataPayload, 'encode')
+                if success then
+                    local outMsg = JSON:encode(dataPayload)
+                    local bytes, status, lastbyte = client:send(outMsg.."\n")
+                    if not bytes then
+                        log("Connection lost")
+                        client = nil
+                    end;
+                else
+                    log("Error: " .. error)
                 end
             else
                 log("Connection lost")
@@ -156,4 +185,9 @@ do
         end
         return timer.getTime() + DATA_TIMEOUT_SEC
     end, nil, timer.getTime() + DATA_TIMEOUT_SEC)
+
+    --Protected call to command execute
+    function pcallCommand(s)
+        pcall(commandExecute, s)
+    end
 end
