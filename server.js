@@ -5,8 +5,8 @@ var express = require('express');
 var app = express();
 
 // app.use/routes/etc...
-app.use('/', express.static(__dirname + '/app'));
-app.use('/scripts', express.static(__dirname + '/node_modules'));
+app.use('/', express.static(__dirname + '/dist'));
+app.use('/libs', express.static(__dirname + '/node_modules'));
 
 var server  = app.listen(8080);
 var io  = require('socket.io').listen(server);
@@ -118,7 +118,7 @@ function getDCSData(dataCallback) {
 
         client.on('close', () => {
             time = new Date();
-            console.log(time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + ' :: Reconnecting....');
+            //console.log(time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + ' :: Reconnecting....');
             connOpen = true;
         });
 

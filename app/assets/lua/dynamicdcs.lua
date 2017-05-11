@@ -136,11 +136,11 @@ do
     local function step()
 
         if not client then
-            tcp:settimeout(0.0001)
+            tcp:settimeout(0.001)
             client = tcp:accept()
 
             if client then
-                tcp:settimeout(0.0001)
+                tcp:settimeout(0.001)
                 log("Connection established")
             end
         end

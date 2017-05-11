@@ -11,7 +11,7 @@ function isTrue(object, path) {
 }
 
 module.exports = function configureApiProxy(grunt) {
-	var proxyrc;
+
 	var auth;
 	var contract;
 	var hosts;
@@ -22,12 +22,11 @@ module.exports = function configureApiProxy(grunt) {
 	var authType;
 	var authValues;
 
-	proxyrc = getJson(grunt, '.proxy.json', {});
 	authValues = grunt.config.get('pulsarAuthValues');
 
-	auth = grunt.option('auth') || proxyrc.auth;
-	contract = grunt.option('contract') || proxyrc.contract;
-	accountId = grunt.option('accountId') || proxyrc.accountId;
+	auth = 'AUTH';
+	contract = 'ABCDE';
+	accountId = '1234';
 
 	authType = _.get(pkg, 'config.authType');
 	hosts = _.get(pkg, 'config.hosts', {});
@@ -41,7 +40,7 @@ module.exports = function configureApiProxy(grunt) {
 					cookie: 'AKASESSION=' + authValues.session
 				},
 				secure: false,
-				target: 'https://iamakamai.sqaextranet.akamai.com'
+				target: 'http://localhost'
 			}
 		};
 	} else {
@@ -51,7 +50,7 @@ module.exports = function configureApiProxy(grunt) {
 				changeOrigin: true,
 				headers: { 'X-ECWS-ManagedCustomer': true },
 				secure: false,
-				target: 'https://iamakamai.sqaextranet.akamai.com'
+				target: 'http://localhost'
 			}
 		};
 	}
