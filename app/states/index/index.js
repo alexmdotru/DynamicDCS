@@ -7,10 +7,10 @@
 		//$scope.map = { center: { latitude: 45, longitude: -73 }, zoom: 8 };
 		$scope.map = {
 			center: {
-				latitude: 42.3349940452867,
-				longitude: -71.0353168884369
+				latitude: 43.4275113,
+				longitude: 41.2920366
 			},
-			zoom: 11,
+			zoom: 8,
 			markers: [],
 			events: {
 				click: function (map, eventName, originalEventArgs) {
