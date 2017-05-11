@@ -13,7 +13,6 @@ compile:
 - compile-js
 - compile-vendor-js
 - compile-css
-- copy:locales
 
 compile-css:
 - less:app
@@ -40,8 +39,6 @@ default:
 - dev
 
 dev:
-- portalFixtureServer:server
-- authPulsarApi
 - connect:coverage
 - connect:server
 - watch
