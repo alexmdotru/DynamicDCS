@@ -2,19 +2,20 @@
 <html>
 	<head>
 		<title>Welcome to Dynamic DCS Engine</title>
+		<% if (useMin) {%>
+		<link href="<%= grunt.template.path.basename(process(cssmin.app.dest)) %>" rel="stylesheet" />
+		<% } else { %>
+		<link href="<%= grunt.template.path.basename(less.app.dest) %>" rel="stylesheet" />
+		<% } %>
 	</head>
 	<body common-css data-ng-app="dynamic-dcs" data-ng-controller="dynamicDCSController as app" data-mg-strict-di>
-		<div class="container-fluid">
-			<div class="page-header">
-				<h1>Dynamic DCS</h1>
-			</div>
+			<h1>Dynamic DCS</h1>
 			<div class="app-body">
 				<div ui-view></div>
 			</div>
-		</div>
 		<script src="<%= grunt.template.path.basename(concat.vendor.dest) %>"></script>
 		<script src="<%= grunt.template.path.basename(concat.app.dest) %>"></script>
-		<script src="/socket.io/socket.io.js"></script>
+		<!--<script src="/socket.io/socket.io.js"></script>
 		<script>
 			var socket = io();
 			socket.on('srvUpd', function(msg){
@@ -23,6 +24,6 @@
 			socket.on('srvUnitUpd', function(msg){
 				console.log('srvUnitUpd: ',msg);
 			});
-		</script>
+		</script> -->
 	</body>
 </html>

@@ -1,10 +1,10 @@
 (function (angular) {
 	'use strict';
 
-	function dynamicDCSUIController () {
-
+	function dynamicDCSUIController ($scope) {
+		$scope.map = { center: { latitude: 45, longitude: -73 }, zoom: 8 };
 	}
-	dynamicDCSUIController.$inject = [];
+	dynamicDCSUIController.$inject = ['$scope'];
 
 	function configFunction($stateProvider) {
 		$stateProvider
@@ -19,9 +19,16 @@
 
 	angular
 		.module('state.index', [
-			'ui.router'
+			'ui.router',
+			'uiGmapgoogle-maps'
 		])
 		.config(['$stateProvider', '$urlRouterProvider', configFunction])
+		.config(function(uiGmapGoogleMapApiProvider) {
+			uiGmapGoogleMapApiProvider.configure({
+				key: 'AIzaSyBtYlyyT5iCffhuFc07z8I-fTq6zuWkFjI',
+				libraries: 'weather,geometry,visualization'
+			});
+		})
 		.controller('dynamicDCSUIController', dynamicDCSUIController)
 	;
 }(angular));
