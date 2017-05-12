@@ -6,6 +6,7 @@ var app = express();
 
 // app.use/routes/etc...
 app.use('/', express.static(__dirname + '/dist'));
+app.use('/json', express.static(__dirname + '/app/assets/json'));
 app.use('/libs', express.static(__dirname + '/node_modules'));
 
 var server  = app.listen(8080);
