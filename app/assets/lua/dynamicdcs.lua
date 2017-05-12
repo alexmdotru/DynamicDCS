@@ -6,7 +6,8 @@ do
     package.path = package.path..";.\\LuaSocket\\?.lua"
     package.cpath = package.cpath..";.\\LuaSocket\\?.dll"
 
-    require = mint.require
+	--in missionScripting.lua file: dynamicDCS = { require = require }
+    require = dynamicDCS.require
     local socket = require("socket")
     local JSON = loadfile("Scripts\\JSON.lua")()
     require = nil
