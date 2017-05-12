@@ -3,8 +3,8 @@
 
 	function SocketFactory (socketFactory) {
 		var mySocket = socketFactory();
-		mySocket.forward('srvUpd');
-		mySocket.forward('srvUnitUpd');
+		mySocket.forward('srvUpd'); //init unit update
+		mySocket.forward('srvUnitUpd'); //stream of unit updates
 		mySocket.forward('error');
 		return mySocket;
 	}

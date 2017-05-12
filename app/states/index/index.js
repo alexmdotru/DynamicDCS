@@ -5,14 +5,12 @@
 
 		//handle socket events
 		$scope.$on('socket:srvUpd', function (ev, data) {
-			console.log(data);
+			gmapControls.processUnitInit(data);
 		});
 
 		$scope.$on('socket:srvUnitUpd', function (ev, data) {
-			console.log(data);
+			gmapControls.processUnitStream(data);
 		});
-
-		console.log(gmapControls);
 		_.set($scope, 'map', _.get(gmapControls, 'gmapObj'));
 	}
 	dynamicDCSUIController.$inject = ['$scope', 'gmapService'];
@@ -31,6 +29,7 @@
 	angular
 		.module('state.index', [
 			'ui.router',
+			'dynamic-dcs.socketFactory',
 			'uiGmapgoogle-maps',
 			'dynamic-dcs.gmapService'
 		])
