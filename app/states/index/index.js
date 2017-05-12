@@ -3,10 +3,18 @@
 
 	function dynamicDCSUIController ($scope, gmapControls) {
 
+		//handle socket events
+		$scope.$on('socket:srvUpd', function (ev, data) {
+			console.log(data);
+		});
+
+		$scope.$on('socket:srvUnitUpd', function (ev, data) {
+			console.log(data);
+		});
+
 		console.log(gmapControls);
 		_.set($scope, 'map', _.get(gmapControls, 'gmapObj'));
 	}
-
 	dynamicDCSUIController.$inject = ['$scope', 'gmapService'];
 
 	function configFunction($stateProvider) {
@@ -25,7 +33,6 @@
 			'ui.router',
 			'uiGmapgoogle-maps',
 			'dynamic-dcs.gmapService'
-
 		])
 		.config(['$stateProvider', '$urlRouterProvider', configFunction])
 		.config(function(uiGmapGoogleMapApiProvider) {
