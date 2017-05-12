@@ -1,38 +1,13 @@
 (function (angular) {
 	'use strict';
 
-	function dynamicDCSUIController ($scope, uiGmapGoogleMapApi) {
+	function dynamicDCSUIController ($scope, gmapControls) {
 
-
-		//$scope.map = { center: { latitude: 45, longitude: -73 }, zoom: 8 };
-		$scope.map = {
-			center: {
-				latitude: 43.4275113,
-				longitude: 41.2920366
-			},
-			zoom: 8,
-			markers: [],
-			events: {
-				click: function (map, eventName, originalEventArgs) {
-					var e = originalEventArgs[0];
-					var lat = e.latLng.lat(),
-						lon = e.latLng.lng();
-					var marker = {
-						id: Date.now(),
-						coords: {
-							latitude: lat,
-							longitude: lon
-						}
-					};
-					$scope.map.markers.push(marker);
-					console.log($scope.map.markers);
-					$scope.$apply();
-				}
-			}
-		};
+		console.log(gmapControls);
+		_.set($scope, 'map', _.get(gmapControls, 'gmapObj'));
 	}
 
-	dynamicDCSUIController.$inject = ['$scope'];
+	dynamicDCSUIController.$inject = ['$scope', 'gmapService'];
 
 	function configFunction($stateProvider) {
 		$stateProvider
@@ -48,7 +23,9 @@
 	angular
 		.module('state.index', [
 			'ui.router',
-			'uiGmapgoogle-maps'
+			'uiGmapgoogle-maps',
+			'dynamic-dcs.gmapService'
+
 		])
 		.config(['$stateProvider', '$urlRouterProvider', configFunction])
 		.config(function(uiGmapGoogleMapApiProvider) {

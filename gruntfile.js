@@ -55,4 +55,5 @@ module.exports = function (grunt) {
 	if (grunt.option('time') === true) { require('time-grunt')(grunt); }
 
 	loadGruntConfig(grunt, _.merge({}, defaults, options));
+
 };

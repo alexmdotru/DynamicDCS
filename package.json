@@ -23,6 +23,7 @@
     "angular-messages": "^1.6.4",
     "angular-sanitize": "^1.6.4",
     "angular-simple-logger": "^0.1.7",
+    "angular-socket-io": "^0.7.0",
     "angular-translate": "^2.15.1",
     "angular-translate-handler-log": "^2.15.1",
     "angular-translate-loader-partial": "^2.15.1",

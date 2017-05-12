@@ -15,15 +15,15 @@
 			</div>
 		<script src="<%= grunt.template.path.basename(concat.vendor.dest) %>"></script>
 		<script src="<%= grunt.template.path.basename(concat.app.dest) %>"></script>
-		<!--<script src="/socket.io/socket.io.js"></script>
-		<script>
-			var socket = io();
-			socket.on('srvUpd', function(msg){
-				console.log('srvUpd: ',msg);
-			});
-			socket.on('srvUnitUpd', function(msg){
-				console.log('srvUnitUpd: ',msg);
-			});
-		</script> -->
+		<script src="/socket.io/socket.io.js"></script>
+			<!--<script>
+                var socket = io();
+                socket.on('srvUpd', function(msg){
+                    console.log('srvUpd: ',msg);
+                });
+                socket.on('srvUnitUpd', function(msg){
+                    console.log('srvUnitUpd: ',msg);
+                });
+            </script>1-->
 	</body>
 </html>
