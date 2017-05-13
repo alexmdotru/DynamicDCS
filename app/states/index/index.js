@@ -2,14 +2,13 @@
 	'use strict';
 
 	function dynamicDCSUIController ($scope, gmapControls) {
-
-		//handle socket events
-		$scope.$on('socket:srvUpd', function (ev, data) {
-			gmapControls.processUnitInit(data);
-		});
-
 		$scope.$on('socket:srvUnitUpd', function (ev, data) {
+			console.log('UNITUPD');
+			console.log('srvUnitUpd',ev,data);
 			gmapControls.processUnitStream(data);
+		});
+		$scope.$on('socket:error', function (ev, data) {
+			console.log(ev, data);
 		});
 		_.set($scope, 'map', _.get(gmapControls, 'gmapObj'));
 	}

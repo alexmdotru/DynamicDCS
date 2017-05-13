@@ -1,7 +1,7 @@
 do
     --
     local PORT = 3001
-    local DATA_TIMEOUT_SEC = 0.1
+    local DATA_TIMEOUT_SEC = 1
 
     package.path = package.path..";.\\LuaSocket\\?.lua"
     package.cpath = package.cpath..";.\\LuaSocket\\?.dll"

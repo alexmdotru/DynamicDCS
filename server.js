@@ -17,35 +17,59 @@ var serverObject = {};
 var updSrvObj = {};
 _.set(serverObject, 'units', []);
 _.set(serverObject, 'requestArray', []);
-
+_.set(serverObject, 'socketUsers', []);
 
 //setup socket io
-io.on('connection', function( socket ){
-    console.log(socket.id);
-    //send full payload on connect, then just updates
-    updSrvObj = _.cloneDeep(serverObject);
-    _.set(updSrvObj, 'action', "INIT");
-    io.to(socket.id).emit('srvUpd', updSrvObj);
+io.on('connection', function( socket ) {
+
+
+	var updSrvObj = {units: _.get(serverObject, 'units', [])};
+
+	_.set(updSrvObj, 'action', "INIT");
+	console.log(serverObject.units.length);
+
+if (updSrvObj.units.length > 0) {
+		_.forEach(updSrvObj.units, function(unit) {
+			curUnit = {
+				unitID: parseFloat(_.get(unit, 'unitID')),
+				type: _.get(unit, 'type'),
+				coalition: parseFloat(_.get(unit, 'coalition')),
+				lat: parseFloat(_.get(unit, 'lat')),
+				lon: parseFloat(_.get(unit, 'lon')),
+				playername: _.get(unit, 'playername', '')
+			};
+			_.set(curUnit, 'action', 'INIT');
+			io.emit('srvUnitUpd', curUnit);
+		});
+	};
     socket.on('disconnect', function(){
         console.log(socket.id+' user disconnected');
     });
+	socket.on('error', function(err) {
+		if(err === 'handshake error') {
+			console.log('handshake error', err);
+		} else {
+			console.log('io error', err);
+		}
+	});
 });
 
 console.log(':: SERVER IS RUNNING!');
 
 _.set(serverObject, 'unitParse', function (unit) {
-    var curUnit = {};
 
+	//console.log(unit);
+    var curUnit = {};
     if (_.get(unit, 'action') == 'C') {
         if (typeof _.find(serverObject.units, { 'unitID': _.get(unit, 'unitID') }) !== "undefined") {
             _.find(serverObject.units, { 'unitID': _.get(unit, 'unitID') }).action = 'U';
         }else{
             curUnit = {
-                unitID: _.get(unit, 'unitID'),
+                unitID: parseFloat(_.get(unit, 'unitID')),
                 type: _.get(unit, 'type'),
-                coalition: _.get(unit, 'coalition'),
-                lat: _.get(unit, 'lat'),
-                lon: _.get(unit, 'lon'),
+                coalition: parseFloat(_.get(unit, 'coalition')),
+                lat: parseFloat(_.get(unit, 'lat')),
+                lon: parseFloat(_.get(unit, 'lon')),
                 playername: _.get(unit, 'playername', '')
             };
             _.set(curUnit, 'action', 'C');
@@ -67,8 +91,7 @@ _.set(serverObject, 'unitParse', function (unit) {
         }
     }
     if (_.get(unit, 'action') == 'D') {
-        var delIdx = _.findIndex(serverObject.units, { 'unitID': _.get(unit, 'unitID') });
-        serverObject.units.remove(delIdx);
+        _.remove(serverObject.units, { 'unitID': _.get(unit, 'unitID') });
         curUnit = {
             unitID: _.get(unit, 'unitID'),
             action: 'D'
@@ -119,22 +142,25 @@ function getDCSData(dataCallback) {
 
         client.on('close', () => {
             time = new Date();
-            //console.log(time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + ' :: Reconnecting....');
+            console.log(time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + ' :: Reconnecting....');
+			connect();
             connOpen = true;
         });
 
         client.on('error', () => {
+			connect();
             connOpen = true;
         });
     }
-
+/*
     setInterval(function(){
         if (connOpen === true) {
             connect();
         }else{
         }
-    }, 1 * 500);
-
+    }, 1 * 1000);
+*/
+	connect();
 };
 
 getDCSData(syncDCSData);

@@ -8,6 +8,80 @@
 			$http.get('json/sidc.json').then(function(sidJSON) {
 				_.set(gSrv, 'SIDC', sidJSON.data);
 			});
+
+			//setup map style
+			_.set(gSrv, 'mapStyles', function () {
+				return [
+					{
+						"featureType": "administrative.neighborhood",
+						"stylers": [
+							{
+								"visibility": "off"
+							}
+						]
+					},
+					{
+						"featureType": "poi",
+						"stylers": [
+							{
+								"visibility": "off"
+							}
+						]
+					},
+					{
+						"featureType": "poi",
+						"elementType": "labels.text",
+						"stylers": [
+							{
+								"visibility": "off"
+							}
+						]
+					},
+					{
+						"featureType": "road",
+						"elementType": "labels",
+						"stylers": [
+							{
+								"visibility": "off"
+							}
+						]
+					},
+					{
+						"featureType": "transit.line",
+						"stylers": [
+							{
+								"visibility": "off"
+							}
+						]
+					},
+					{
+						"featureType": "transit.station.bus",
+						"stylers": [
+							{
+								"visibility": "off"
+							}
+						]
+					},
+					{
+						"featureType": "transit.station.rail",
+						"stylers": [
+							{
+								"visibility": "off"
+							}
+						]
+					},
+					{
+						"featureType": "water",
+						"elementType": "labels.text",
+						"stylers": [
+							{
+								"visibility": "off"
+							}
+						]
+					}
+				];
+			});
+
 			_.set(gSrv, 'gmapObj', {
 				center: {
 					latitude: 43.4275113,
@@ -15,10 +89,12 @@
 				},
 				zoom: 8,
 				options: {
-					mapTypeId: 'terrain'
+					mapTypeId: 'terrain',
+					styles: gSrv.mapStyles()
 				},
 				markers: [],
 				events: {
+					/*
 					click: function (map, eventName, originalEventArgs) {
 						var e = originalEventArgs[0];
 						var lat = e.latLng.lat(),
@@ -33,14 +109,14 @@
 						gSrv.gmapObj.markers.push(marker);
 						$rootScope.$apply();
 					}
+					*/
 				}
 			});
 		});
 
-		//process inbound Unit Init
-		_.set(gSrv, 'processUnitInit', function (data) {
-			_.set(gSrv, 'gmapObj.markers', []);
-			_.forEach(_.get(data, 'units'), function(unit) {
+		//process inbound Unit Stream
+		_.set(gSrv, 'processUnitStream', function (unit) {
+			if( _.get(unit, 'action') == 'C' || _.get(unit, 'action') == 'INIT') {
 				var curMarker = {
 					id: unit.unitID,
 					icon: {
@@ -52,32 +128,17 @@
 					}
 				};
 				_.get(gSrv, 'gmapObj.markers').push(curMarker);
-			});
-			$rootScope.$apply();
-		});
-
-		//process inbound Unit Stream
-		_.set(gSrv, 'processUnitStream', function (data) {
-			if( _.get(data, 'action') == 'C') {
-				var curMarker = {
-					id: data.unitID,
-					coords: {
-						latitude: data.lat,
-						longitude: data.lon
-					}
-				};
-				_.get(gSrv, 'gmapObj.markers').push(curMarker);
 			}
-			if( _.get(data, 'action') == 'U') {
+			if( _.get(unit, 'action') == 'U') {
 				_.set(_.find(_.get(gSrv, 'gmapObj.markers'),
-					{id: data.unitID}), 'coords.latitude', data.lat);
+					{id: unit.unitID}), 'coords.latitude', unit.lat);
 				_.set(_.find(_.get(gSrv, 'gmapObj.markers'),
-					{id: data.unitID}), 'coords.longitude', data.lon);
+					{id: unit.unitID}), 'coords.longitude', unit.lon);
 			}
-			if( _.get(data, 'action') == 'D') {
-				_.remove(_.get(gSrv, 'gmapObj.markers'), {id: data.unitID});
+			if( _.get(unit, 'action') == 'D') {
+				_.remove(_.get(gSrv, 'gmapObj.markers'), {id: unit.unitID});
 			}
-			$rootScope.$apply();
+			//$rootScope.$apply();
 		});
 
 		//process inbound Unit Stream
