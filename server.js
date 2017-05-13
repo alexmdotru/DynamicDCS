@@ -94,7 +94,7 @@ _.set(serverObject, 'unitParse', function (unit) {
         }
     }
     if (_.get(unit, 'action') == 'D') {
-		_.set(curObj,'curUnit', curUnit = {
+		_.set(curObj,'curUnit', {
             unitID: _.get(unit, 'unitID'),
             action: 'D'
         });
