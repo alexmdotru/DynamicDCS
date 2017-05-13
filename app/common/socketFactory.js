@@ -3,9 +3,8 @@
 
 	function SocketFactory (socketFactory) {
 		var mySocket = socketFactory();
-		mySocket.forward('srvUpd'); //init unit update
 		mySocket.forward('srvUnitUpd'); //stream of unit updates
-		mySocket.forward('error');
+		mySocket.forward('error'); //forward socket errors
 		return mySocket;
 	}
 	SocketFactory.$inject = [

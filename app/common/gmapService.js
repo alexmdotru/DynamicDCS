@@ -116,6 +116,7 @@
 
 		//process inbound Unit Stream
 		_.set(gSrv, 'processUnitStream', function (unit) {
+			console.log(_.get(unit, 'action'));
 			if( _.get(unit, 'action') == 'C' || _.get(unit, 'action') == 'INIT') {
 				var curMarker = {
 					id: unit.unitID,
@@ -125,7 +126,8 @@
 					coords: {
 						latitude: unit.lat,
 						longitude: unit.lon
-					}
+					},
+					optimized: false
 				};
 				_.get(gSrv, 'gmapObj.markers').push(curMarker);
 			}
@@ -189,7 +191,7 @@
 					altitudeDepth: unit.playername,
 					//direction: f.getProperties().hdg,
 					//speed: Math.round(f.getProperties().speed) + ' kt',
-					type: unit.type,
+					//type: unit.type,
 					//uniqueDesignation: 'TR' + f.getProperties().name,
 					fill: markerColor,
 					stroke: 'rgb(0, 0, 0)',

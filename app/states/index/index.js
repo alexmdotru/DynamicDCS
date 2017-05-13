@@ -3,8 +3,11 @@
 
 	function dynamicDCSUIController ($scope, gmapControls) {
 		$scope.$on('socket:srvUnitUpd', function (ev, data) {
-			console.log('StreamingData')
-			gmapControls.processUnitStream(data.curUnit);
+			console.log('StreamingData');
+			_.forEach(data, function(que) {
+				//console.log(_.get(que, 'curUnit'));
+				gmapControls.processUnitStream(_.get(que, 'curUnit'));
+			});
 		});
 		$scope.$on('socket:error', function (ev, data) {
 			console.log(ev, data);

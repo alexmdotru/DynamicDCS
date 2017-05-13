@@ -18,29 +18,31 @@ var updSrvObj = {};
 _.set(serverObject, 'units', []);
 _.set(serverObject, 'requestArray', []);
 _.set(serverObject, 'socketUsers', []);
-var curObj = {};
+var updateQue = {
+	updates: []
+};
 
 //setup socket io
 io.on('connection', function( socket ) {
 
 
 	var updSrvObj = {units: _.get(serverObject, 'units', [])};
-
-	_.set(updSrvObj, 'action', "INIT");
 	console.log(serverObject.units.length);
-
 	if (updSrvObj.units.length > 0) {
 		_.forEach(updSrvObj.units, function(unit) {
-			curUnit = {
+			var curObj = {
+				curUnit: {}
+			};
+			curObj.curUnit = {
 				unitID: parseFloat(_.get(unit, 'unitID')),
 				type: _.get(unit, 'type'),
 				coalition: parseFloat(_.get(unit, 'coalition')),
 				lat: parseFloat(_.get(unit, 'lat')),
 				lon: parseFloat(_.get(unit, 'lon')),
-				playername: _.get(unit, 'playername', '')
+				playername: _.get(unit, 'playername', ''),
+				action: 'INIT'
 			};
-			_.set(curUnit, 'action', 'INIT');
-			io.emit('srvUnitUpd', curUnit);
+			updateQue.updates.push(_.cloneDeep(curObj));
 		});
 	};
     socket.on('disconnect', function(){
@@ -58,6 +60,9 @@ io.on('connection', function( socket ) {
 console.log(':: SERVER IS RUNNING!');
 
 _.set(serverObject, 'unitParse', function (unit) {
+	var curObj = {
+		curUnit: []
+	};
     if (_.get(unit, 'action') == 'C') {
         if (typeof _.find(serverObject.units, { 'unitID': _.get(unit, 'unitID') }) !== "undefined") {
             _.find(serverObject.units, { 'unitID': _.get(unit, 'unitID') }).action = 'U';
@@ -72,7 +77,7 @@ _.set(serverObject, 'unitParse', function (unit) {
 				action: 'C'
             };
             serverObject.units.push(_.cloneDeep(curObj.curUnit));
-            io.emit('srvUnitUpd', curObj);
+			updateQue.updates.push(_.cloneDeep(curObj));
         }
     }
     if (_.get(unit, 'action') == 'U') {
@@ -85,19 +90,37 @@ _.set(serverObject, 'unitParse', function (unit) {
                 lon: _.get(unit, 'lon'),
                 action: 'U'
             });
-            io.emit('srvUnitUpd', curObj);
+			updateQue.updates.push(_.cloneDeep(curObj));
         }
     }
     if (_.get(unit, 'action') == 'D') {
-        _.remove(serverObject.units, { 'unitID': _.get(unit, 'unitID') });
 		_.set(curObj,'curUnit', curUnit = {
             unitID: _.get(unit, 'unitID'),
             action: 'D'
         });
-        io.emit('srvUnitUpd', curObj);
+		_.remove(serverObject.units, { 'unitID': _.get(unit, 'unitID') });
+		updateQue.updates.push(_.cloneDeep(curObj));
     }
     return true;
 });
+
+//emit payload, every sec to start
+setInterval(function(){
+	var perSendMax = 500;
+	var sendAmt = 0;
+	if (updateQue.updates.length < perSendMax) {
+		sendAmt = updateQue.updates.length;
+	}else{
+		sendAmt = perSendMax
+	}
+
+	var chkPayload = [];
+	for (x=0; x < sendAmt; x++ ) {
+		chkPayload.push(updateQue.updates[0]);
+		updateQue.updates.shift();
+	}
+	io.emit('srvUnitUpd', chkPayload);
+}, 1 * 500);
 
 function getDCSData(dataCallback) {
 
