@@ -18,6 +18,7 @@ var updSrvObj = {};
 _.set(serverObject, 'units', []);
 _.set(serverObject, 'requestArray', []);
 _.set(serverObject, 'socketUsers', []);
+var curObj = {};
 
 //setup socket io
 io.on('connection', function( socket ) {
@@ -28,7 +29,7 @@ io.on('connection', function( socket ) {
 	_.set(updSrvObj, 'action', "INIT");
 	console.log(serverObject.units.length);
 
-if (updSrvObj.units.length > 0) {
+	if (updSrvObj.units.length > 0) {
 		_.forEach(updSrvObj.units, function(unit) {
 			curUnit = {
 				unitID: parseFloat(_.get(unit, 'unitID')),
@@ -57,46 +58,43 @@ if (updSrvObj.units.length > 0) {
 console.log(':: SERVER IS RUNNING!');
 
 _.set(serverObject, 'unitParse', function (unit) {
-
-	//console.log(unit);
-    var curUnit = {};
     if (_.get(unit, 'action') == 'C') {
         if (typeof _.find(serverObject.units, { 'unitID': _.get(unit, 'unitID') }) !== "undefined") {
             _.find(serverObject.units, { 'unitID': _.get(unit, 'unitID') }).action = 'U';
         }else{
-            curUnit = {
+            curObj.curUnit = {
                 unitID: parseFloat(_.get(unit, 'unitID')),
                 type: _.get(unit, 'type'),
                 coalition: parseFloat(_.get(unit, 'coalition')),
                 lat: parseFloat(_.get(unit, 'lat')),
                 lon: parseFloat(_.get(unit, 'lon')),
-                playername: _.get(unit, 'playername', '')
+                playername: _.get(unit, 'playername', ''),
+				action: 'C'
             };
-            _.set(curUnit, 'action', 'C');
-            serverObject.units.push(_.cloneDeep(curUnit));
-            io.emit('srvUnitUpd', curUnit);
+            serverObject.units.push(_.cloneDeep(curObj.curUnit));
+            io.emit('srvUnitUpd', curObj);
         }
     }
     if (_.get(unit, 'action') == 'U') {
         if (typeof _.find(serverObject.units, { 'unitID': _.get(unit, 'unitID') }) !== "undefined") {
             _.find(serverObject.units, { 'unitID': _.get(unit, 'unitID') }).lat = _.get(unit, 'lat');
             _.find(serverObject.units, { 'unitID': _.get(unit, 'unitID') }).lon =  _.get(unit, 'lon');
-            curUnit = {
+			_.set(curObj,'curUnit', curUnit = {
                 unitID: _.get(unit, 'unitID'),
                 lat: _.get(unit, 'lat'),
                 lon: _.get(unit, 'lon'),
                 action: 'U'
-            };
-            io.emit('srvUnitUpd', curUnit);
+            });
+            io.emit('srvUnitUpd', curObj);
         }
     }
     if (_.get(unit, 'action') == 'D') {
         _.remove(serverObject.units, { 'unitID': _.get(unit, 'unitID') });
-        curUnit = {
+		_.set(curObj,'curUnit', curUnit = {
             unitID: _.get(unit, 'unitID'),
             action: 'D'
-        };
-        io.emit('srvUnitUpd', curUnit);
+        });
+        io.emit('srvUnitUpd', curObj);
     }
     return true;
 });
