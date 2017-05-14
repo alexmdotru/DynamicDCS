@@ -122,7 +122,7 @@ setInterval(function(){
 	io.emit('srvUnitUpd', chkPayload);
 }, 1 * 500);
 
-function getDCSData(dataCallback) {
+function getDCSDataClient(dataCallback) {
 
     const PORT = 3001;
     const ADDRESS = "127.0.0.1";
@@ -146,7 +146,6 @@ function getDCSData(dataCallback) {
         client.on('connect', function() {
             updSrvObj = _.cloneDeep(serverObject);
             _.set(updSrvObj, 'action', "INIT");
-            io.emit('srvUpd', updSrvObj);
             client.write('{"action":"INIT"}'+"\n");
         });
 
@@ -180,7 +179,70 @@ function getDCSData(dataCallback) {
     }, 1 * 1000);
 };
 
-getDCSData(syncDCSData);
+function getDCSDataGameGui(dataCallback) {
+
+	var port = 3002;
+	var address = "127.0.0.1";
+	var connOpen = true;
+
+	const net = require('net');
+	var buffer;
+
+	function connect() {
+
+		//gather request from request array
+		var request = _.get(serverObject, 'requestArray[0]',"NONE");
+
+		const client = net.createConnection({host: address, port: port}, () => {
+			var time = new Date();
+			console.log(time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + ' :: Connected to DCS GameGUI!');
+			connOpen = false;
+			buffer = "";
+		});
+
+		client.on('connect', function() {
+			updSrvObj = _.cloneDeep(serverObject);
+			_.set(updSrvObj, 'action', "INIT");
+			client.write('{"action":"INIT"}'+"\n");
+		});
+
+		client.on('data', (data) => {
+			buffer += data;
+			while ((i = buffer.indexOf("\n")) >= 0) {
+				var data = JSON.parse(buffer.substring(0, i));
+				dataCallback(data);
+				buffer = buffer.substring(i + 1);
+				//client.write('{"action":"'+request+'"'+"}\n");
+				client.write('{"action":"CMD"}'+"\n");
+				_.get(serverObject, 'requestArray').shift();
+			}
+		});
+
+		client.on('close', () => {
+			time = new Date();
+			console.log(time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + ' :: Reconnecting DCS GameGUI....');
+			connOpen = true;
+		});
+
+		client.on('error', () => {
+			connOpen = true;
+		});
+	}
+
+	setInterval(function(){
+		if (connOpen === true) {
+			connect();
+		}else{
+		}
+	}, 1 * 1000);
+};
+
+//getDCSDataClient(syncDCSData);
+getDCSDataGameGui(syncDCSDataGameGUI);
+
+function syncDCSDataGameGUI (DCSData) {
+	console.log(DCSData);
+}
 
 function syncDCSData (DCSData) {
     if (!_.isEmpty(DCSData.units)) {
