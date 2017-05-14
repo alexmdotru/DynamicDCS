@@ -16,7 +16,8 @@ var io  = require('socket.io').listen(server);
 var serverObject = {};
 var updSrvObj = {};
 _.set(serverObject, 'units', []);
-_.set(serverObject, 'requestArray', []);
+_.set(serverObject, 'ClientRequestArray', []);
+_.set(serverObject, 'GameGUIRequestArray', []);
 _.set(serverObject, 'socketUsers', []);
 var updateQue = {
 	updates: []
@@ -134,7 +135,7 @@ function getDCSDataClient(dataCallback) {
     function connect() {
 
         //gather request from request array
-        var request = _.get(serverObject, 'requestArray[0]',"NONE");
+        var request = _.get(serverObject, 'ClientRequestArray[0]',{action:'NONE'});
 
         const client = net.createConnection({host: ADDRESS, port: PORT}, () => {
             var time = new Date();
@@ -155,8 +156,8 @@ function getDCSDataClient(dataCallback) {
                 var data = JSON.parse(buffer.substring(0, i));
                 dataCallback(data);
                 buffer = buffer.substring(i + 1);
-                client.write('{"action":"'+request+'"'+"}\n");
-                _.get(serverObject, 'requestArray').shift();
+                client.write(JSON.stringify(request)+"\n");
+                _.set(_.drop(_.get(serverObject, 'ClientRequestArray'), 1));
             }
         });
 
@@ -191,7 +192,7 @@ function getDCSDataGameGui(dataCallback) {
 	function connect() {
 
 		//gather request from request array
-		var request = _.get(serverObject, 'requestArray[0]',"NONE");
+		var request = _.get(serverObject, 'GameGUIrequestArray[0]',{action:'NONE'});
 
 		const client = net.createConnection({host: address, port: port}, () => {
 			var time = new Date();
@@ -212,9 +213,8 @@ function getDCSDataGameGui(dataCallback) {
 				var data = JSON.parse(buffer.substring(0, i));
 				dataCallback(data);
 				buffer = buffer.substring(i + 1);
-				//client.write('{"action":"'+request+'"'+"}\n");
-				client.write('{"action":"CMD"}'+"\n");
-				_.get(serverObject, 'requestArray').shift();
+				client.write(JSON.stringify(request)+"\n");
+				_.set(_.drop(_.get(serverObject, 'GameGUIrequestArray'), 1));
 			}
 		});
 
@@ -237,7 +237,7 @@ function getDCSDataGameGui(dataCallback) {
 	}, 1 * 1000);
 };
 
-//getDCSDataClient(syncDCSData);
+getDCSDataClient(syncDCSData);
 getDCSDataGameGui(syncDCSDataGameGUI);
 
 function syncDCSDataGameGUI (DCSData) {

