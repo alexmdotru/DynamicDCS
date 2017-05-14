@@ -138,7 +138,7 @@ function getDCSData(dataCallback) {
 
         const client = net.createConnection({host: ADDRESS, port: PORT}, () => {
             var time = new Date();
-            console.log(time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + ' :: Connected to DCS server!');
+            console.log(time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + ' :: Connected to DCS Client!');
             connOpen = false;
             buffer = "";
         });
@@ -163,25 +163,21 @@ function getDCSData(dataCallback) {
 
         client.on('close', () => {
             time = new Date();
-            console.log(time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + ' :: Reconnecting....');
-			connect();
+            console.log(time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + ' :: Reconnecting DCS Client....');
             connOpen = true;
         });
 
         client.on('error', () => {
-			connect();
             connOpen = true;
         });
     }
-/*
+
     setInterval(function(){
         if (connOpen === true) {
             connect();
         }else{
         }
     }, 1 * 1000);
-*/
-	connect();
 };
 
 getDCSData(syncDCSData);
