@@ -2,10 +2,23 @@
 	'use strict';
 
 	function dynamicDCSUIController ($scope, gmapControls) {
+		var dd = this;
+		_.set(dd, 'appVer', '0.0.1');
+
+		//tabs
+		$scope.tabs = [
+			{ title:'Dynamic Caucasus', templateUrl: '/tabs/dynamicCaucasus/dynamicCaucasus.tpl.html' },
+			{ title:'Dynamic Red Dawn', templateUrl: '/tabs/dynamicRedDawn/dynamicRedDawn.tpl.html' }
+		];
+
+		$scope.model = {
+			name: 'Tabs'
+		};
+
+		//socket.io connectors
 		$scope.$on('socket:srvUnitUpd', function (ev, data) {
 			console.log('StreamingData');
 			_.forEach(data, function(que) {
-				//console.log(_.get(que, 'curUnit'));
 				gmapControls.processUnitStream(_.get(que, 'curUnit'));
 			});
 		});

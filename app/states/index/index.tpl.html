@@ -1,3 +1,25 @@
-<ui-gmap-google-map center="map.center" zoom="map.zoom" options="map.options" draggable="true" events="map.events">
-	<ui-gmap-marker ng-repeat="m in map.markers" coords="m.coords" icon="m.icon" idkey="m.id"></ui-gmap-marker>
-</ui-gmap-google-map>
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<strong class="panel-title">DynamicDCS&nbsp;<sup>(alpha)</sup></strong>
+	</div>
+	<div class="panel-body">
+		<uib-tabset active="active">
+			<uib-tab index="0" heading="Leaderboards">
+				Score leaderboards coming soon!
+			</uib-tab>
+			<uib-tab index="$index + 1" ng-repeat="tab in tabs" heading="{{tab.title}}" ng-click="alert('click')">
+				{{tab.content}}
+			</uib-tab>
+		</uib-tabset>
+	</div>
+	<div class="panel-footer clearfix">
+		<div class="pull-right">
+			<small>DynamicDCS&trade;, v{{ctrl.appVer}}</small>
+		</div>
+	</div>
+</div>
+
+
+
+
+

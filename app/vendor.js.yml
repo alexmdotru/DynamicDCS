@@ -2,6 +2,7 @@
 - 'node_modules/lodash/lodash.js'
 - 'node_modules/angular/angular.js'
 - 'node_modules/angular-socket-io/socket.min.js'
+- 'node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js'
 - 'node_modules/angular-ui-router/release/angular-ui-router.js'
 - 'node_modules/angular-simple-logger/dist/angular-simple-logger.min.js'
 - 'node_modules/milsymbol/dist/milsymbol.js'

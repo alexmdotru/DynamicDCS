@@ -9,7 +9,8 @@
 	angular
 		.module('dynamic-dcs', [
 			'dynamic-dcs.templates',
-			'states'
+			'states',
+			'ui.bootstrap'
 		])
 		.controller('dynamicDCSController', dynamicDCSController)
 	;
