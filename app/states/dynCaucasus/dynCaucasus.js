@@ -15,7 +15,6 @@
 			// console.log(ev, data);
 		});
 		_.set($scope, 'map', _.get(gmapControls, 'gmapObj'));
-
 	}
 	dynCaucasusController.$inject = ['$scope', 'gmapService'];
 

@@ -25,12 +25,6 @@
 			'dynamic-dcs.gmapService'
 		])
 		.config(['$stateProvider', '$urlRouterProvider', configFunction])
-		.config(function(uiGmapGoogleMapApiProvider) {
-			uiGmapGoogleMapApiProvider.configure({
-				key: 'AIzaSyBtYlyyT5iCffhuFc07z8I-fTq6zuWkFjI',
-				libraries: 'weather,geometry,visualization'
-			});
-		})
 		.controller('indexController', indexController)
 	;
 }(angular));

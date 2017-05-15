@@ -1,7 +1,7 @@
 (function (angular) {
 	'use strict';
 
-	function dynamicDCSController($scope) {
+	function dynamicDCSController($scope,$state) {
 		_.set(this, 'startPage', '/dynamic-dcs.tpl.html');
 
 		$scope.initialise = function() {
@@ -28,7 +28,7 @@
 
 		$scope.initialise();
 	}
-	dynamicDCSController.$inject = ['$scope'];
+	dynamicDCSController.$inject = ['$scope','$state'];
 
 	angular
 		.module('dynamic-dcs', [

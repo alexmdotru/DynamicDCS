@@ -3,35 +3,30 @@
 <head>
 	<title>Welcome to Dynamic DCS Engine</title>
 	<% if (useMin) {%>
-	<link href="<%= grunt.template.path.basename(process(cssmin.app.dest)) %>" rel="stylesheet"/>
 	<link rel="stylesheet"
 		  href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
 		  integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
 		  crossorigin="anonymous">
+	<link href="<%= grunt.template.path.basename(process(cssmin.app.dest)) %>" rel="stylesheet"/>
 	<% } else { %>
+	<link rel="stylesheet"
+		  href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+		  integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+		  crossorigin="anonymous">
 	<link href="<%= grunt.template.path.basename(process(cssmin.app.dest)) %>" rel="stylesheet"/>
 	<link href="<%= grunt.template.path.basename(less.app.dest) %>" rel="stylesheet"/>
-	<link rel="stylesheet"
-		  href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-		  integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
-		  crossorigin="anonymous">
 	<% } %>
 </head>
 <body common-css data-ng-app="dynamic-dcs" data-ng-controller="dynamicDCSController as app" data-mg-strict-di>
 <div class="container-fluid">
-<div class="panel panel-default">
-	<div class="panel-heading">
-		<strong class="panel-title">DynamicDCS&nbsp;<sup>(alpha)</sup></strong>
-	</div>
-	<div class="panel-body">
-		<div ui-view></div>
-	</div>
-	<div class="panel-footer clearfix">
-		<div class="pull-right">
-			<small>DynamicDCS&trade;, v0.0.1</small>
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<strong class="panel-title">DynamicDCS&nbsp;<sup>(alpha)</sup></strong>
+		</div>
+		<div class="panel-body">
+			<div ui-view></div>
 		</div>
 	</div>
-</div>
 </div>
 <script src="<%= grunt.template.path.basename(concat.vendor.dest) %>"></script>
 <script src="<%= grunt.template.path.basename(concat.app.dest) %>"></script>

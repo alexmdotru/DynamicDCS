@@ -1,18 +1,21 @@
 <tabs data="tabData" type="tabs" ></tabs>
 <div class="nav-border">
-	<ui-gmap-google-map
-			center="map.center"
-			zoom="map.zoom"
-			options="map.options"
-			draggable="true"
-			events="map.events">
-		<ui-gmap-marker
-				ng-repeat="m in map.markers"
-				coords="m.coords"
-				icon="m.icon"
-				idkey="m.id">
-		</ui-gmap-marker>
-	</ui-gmap-google-map>
+	<div class="map-wrapper">
+		<ui-gmap-google-map
+				id="gmapcaucasus"
+				center="map.center"
+				zoom="map.zoom"
+				options="map.options"
+				draggable="true"
+				events="map.events">
+			<ui-gmap-marker
+					ng-repeat="m in map.markers"
+					coords="m.coords"
+					icon="m.icon"
+					idkey="m.id">
+			</ui-gmap-marker>
+		</ui-gmap-google-map>
+	</div>
 </div>
 
 
