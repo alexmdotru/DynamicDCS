@@ -29,6 +29,7 @@
     "angular-translate-loader-partial": "^2.15.1",
     "angular-ui-bootstrap": "^2.5.0",
     "angular-ui-router": "^1.0.3",
+    "angular-ui-router-tabs": "^2.0.2",
     "angular-vs-repeat": "^1.1.7",
     "autoprefixer": "^6.4.0",
     "babelify": "^7.3.0",

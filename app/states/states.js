@@ -12,7 +12,9 @@
 
 	angular.module('states', [
 		'ui.router',
-		'state.index'
+		'state.index',
+		'state.dynCaucasus',
+		'state.dynRedDawn'
 	])
 	.config(configureStates)
 	.run(['$rootScope', '$state', '$stateParams',

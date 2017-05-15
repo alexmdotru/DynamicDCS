@@ -116,7 +116,7 @@
 
 		//process inbound Unit Stream
 		_.set(gSrv, 'processUnitStream', function (unit) {
-			console.log(_.get(unit, 'action'));
+			// console.log(_.get(unit, 'action'));
 			if( _.get(unit, 'action') == 'C' || _.get(unit, 'action') == 'INIT') {
 				var curMarker = {
 					id: unit.unitID,
