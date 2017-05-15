@@ -34,8 +34,7 @@
 		.module('dynamic-dcs', [
 			'dynamic-dcs.templates',
 			'states',
-			'ui.bootstrap',
-			'ui.router.tabs'
+			'ui.bootstrap'
 		])
 		.controller('dynamicDCSController', dynamicDCSController)
 	;

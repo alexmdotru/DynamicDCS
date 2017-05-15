@@ -194,6 +194,8 @@ function getDCSDataGameGui(dataCallback) {
 
 		//gather request from request array
 		var request = _.get(serverObject, 'GameGUIrequestArray[0]',{action:'NONE'});
+		//test
+		//request = {action:'CMD', cmd:''}
 
 		const client = net.createConnection({host: address, port: port}, () => {
 			var time = new Date();

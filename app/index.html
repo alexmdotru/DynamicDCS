@@ -18,20 +18,49 @@
 	<% } %>
 </head>
 <body common-css data-ng-app="dynamic-dcs" data-ng-controller="dynamicDCSController as app" data-mg-strict-di>
-<div class="container-fluid">
-	<div class="panel panel-default">
-		<div class="panel-heading">
-			<div class="row">
-				<div class="col-xs-4"><strong class="panel-title">DynamicDCS&nbsp;<sup>(alpha)</sup></strong></div>
-				<div class="col-xs-4 text-center"><a  href="http://16agr.com" target="_blank"><small>Looking for an Action Packed Squad? Join 16AGR by clicking here!</small></a></div>
-				<div class="col-xs-4"></div>
-			</div>
-		</div>
-		<div class="panel-body">
-			<div ui-view></div>
-		</div>
+<nav class="navbar navbar-default" role="navigation">
+	<!-- Brand and toggle get grouped for better mobile display -->
+	<div class="navbar-header">
+
+		<button type="button" class="navbar-toggle" ng-init="navCollapsed = true" ng-click="navCollapsed = !navCollapsed">
+			<span class="sr-only">Toggle navigation</span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+		</button>
+		<a class="navbar-brand" href="#"><strong class="panel-title">DynamicDCS&nbsp;<sup>(alpha)</sup></strong></a>
 	</div>
-</div>
+
+	<!-- Collect the nav links, forms, and other content for toggling -->
+	<div class="collapse navbar-collapse" ng-class="!navCollapsed && 'in'">
+
+		<ul class="nav navbar-nav">
+			<li><a href="#">Leaderboard</a></li>
+
+			<li uib-dropdown>
+				<a href="#" uib-dropdown-toggle>Live Maps <b class="caret"></b></a>
+				<ul uib-dropdown-menu>
+					<li><a ui-sref="dynCaucasus">Dynamic Caucasus</a></li>
+					<li><a ui-sref="dynRedDawn">Dynamic Red Dawn</a></li>
+				</ul>
+			</li>
+
+		</ul>
+		<ul class="nav navbar-nav navbar-right">
+			<li><a href="http://www.16agr.com" target="_blank">Join The 16AGR!</a></li>
+			<li uib-dropdown>
+				<a href="#" uib-dropdown-toggle>Profile <b class="caret"></b></a>
+				<ul uib-dropdown-menu>
+					<li><a href="#">Settings</a></li>
+					<li><a href="#">Logout</a></li>
+				</ul>
+			</li>
+		</ul>
+	</div><!-- /.navbar-collapse -->
+</nav>
+
+<div ui-view></div>
+
 <script src="<%= grunt.template.path.basename(concat.vendor.dest) %>"></script>
 <script src="<%= grunt.template.path.basename(concat.app.dest) %>"></script>
 <script src="/socket.io/socket.io.js"></script>

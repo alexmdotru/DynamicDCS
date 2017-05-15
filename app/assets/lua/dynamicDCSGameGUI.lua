@@ -17,8 +17,12 @@ local function log(msg)
 end
 
 local cacheDB = {}
+local updateQue = {}
+updateQue.que = {}
 
 local function getDataMessage()
+	--get player data, stream new player data and changed player data
+
 	return 'Data Message'
 end
 
@@ -127,6 +131,173 @@ dynDCS.onSimulationFrame = function()
 	end
 
 end
+
+dynDCS.onChatMessage = function (message, from)
+	if( message ~= nil ) then
+
+	end
+end
+
+dynDCS.onGameEvent = function (eventName,arg1,arg2,arg3,arg4,arg5,arg6,arg7)
+	local curUpdate = {}
+	if( eventName == "friendly_fire" ) then
+		--"friendly_fire", playerID, weaponName, victimPlayerID
+		curUpdate = {
+			type = 'event',
+			data = {
+				name = eventName,
+				playerID = arg1,
+				weaponName = arg2,
+				victimPlayerID = arg3
+			}
+		}
+		table.insert(updateQue.que, curUpdate)
+	end
+	if( eventName == "mission_end" ) then
+		--"mission_end", winner, msg
+		curUpdate = {
+			type = 'event',
+			data = {
+				name = eventName,
+				winner = arg1,
+				msg = arg2
+			}
+		}
+		table.insert(updateQue.que, curUpdate)
+	end
+	if( eventName == "kill" ) then
+		--"kill", killerPlayerID, killerUnitType, killerSide, victimPlayerID, victimUnitType, victimSide, weaponName
+		curUpdate = {
+			type = 'event',
+			data = {
+				name = eventName,
+				killerPlayerID = arg1,
+				killerUnitType = arg2,
+				killerSide = arg3,
+				victimPlayerID = arg4,
+				victimUnitType = arg5,
+				victimSide = arg6,
+				weaponName = arg7
+			}
+		}
+		table.insert(updateQue.que, curUpdate)
+	end
+	if( eventName == "self_kill" ) then
+		--"self_kill", playerID
+		curUpdate = {
+			type = 'event',
+			data = {
+				name = eventName,
+				playerID = arg1
+			}
+		}
+		table.insert(updateQue.que, curUpdate)
+	end
+	if( eventName == "change_slot" ) then
+		--"change_slot", playerID, slotID, prevSide
+		curUpdate = {
+			type = 'event',
+			data = {
+				name = eventName,
+				playerID = arg1,
+				slotID = arg2,
+				prevSide = arg3
+			}
+		}
+		table.insert(updateQue.que, curUpdate)
+	end
+	if( eventName == "connect" ) then
+		--"connect", id, name
+		curUpdate = {
+			type = 'event',
+			data = {
+				name = eventName,
+				id = arg1,
+				name = arg2
+			}
+		}
+		table.insert(updateQue.que, curUpdate)
+	end
+	if( eventName == "disconnect" ) then
+		--"disconnect", ID_, name, playerSide, reason_code
+		curUpdate = {
+			type = 'event',
+			data = {
+				name = eventName,
+				ID_ = arg1,
+				name = arg2,
+				playerSide = arg3,
+				reason_code = arg4
+			}
+		}
+		table.insert(updateQue.que, curUpdate)
+	end
+	if( eventName == "crash" ) then
+		--"crash", playerID, unit_missionID
+		curUpdate = {
+			type = 'event',
+			data = {
+				name = eventName,
+				playerID = arg1,
+				unit_missionID = arg2
+			}
+		}
+		table.insert(updateQue.que, curUpdate)
+	end
+	if( eventName == "eject" ) then
+		--"eject", playerID, unit_missionID
+		curUpdate = {
+			type = 'event',
+			data = {
+				name = eventName,
+				playerID = arg1,
+				unit_missionID = arg2
+			}
+		}
+		table.insert(updateQue.que, curUpdate)
+	end
+	if( eventName == "takeoff" ) then
+		--"takeoff", playerID, unit_missionID, airdromeName
+		curUpdate = {
+			type = 'event',
+			data = {
+				name = eventName,
+				playerID = arg1,
+				unit_missionID = arg2,
+				airdromeName = arg3
+			}
+		}
+		table.insert(updateQue.que, curUpdate)
+	end
+	if( eventName == "landing" ) then
+		--"landing", playerID, unit_missionID, airdromeName
+		curUpdate = {
+			type = 'event',
+			data = {
+				name = eventName,
+				playerID = arg1,
+				unit_missionID = arg2,
+				airdromeName = arg3
+			}
+		}
+		table.insert(updateQue.que, curUpdate)
+	end
+	if( eventName == "pilot_death" ) then
+		--"pilot_death", playerID, unit_missionID
+		curUpdate = {
+			type = 'event',
+			data = {
+				name = eventName,
+				playerID = arg1,
+				unit_missionID = arg2
+			}
+		}
+		table.insert(updateQue.que, curUpdate)
+	end
+end
+
+
+
 
 --Protected call to command execute
 function pcallCommand(s)
