@@ -6,7 +6,7 @@
 
 		//socket.io connectors
 		$scope.$on('socket:srvUnitUpd', function (ev, data) {
-			// console.log('StreamingData');
+			//console.log('StreamingDataForCaucasus',data);
 			_.forEach(data, function(que) {
 				gmapControls.processUnitStream(_.get(que, 'curUnit'));
 			});
@@ -15,6 +15,7 @@
 			// console.log(ev, data);
 		});
 		_.set($scope, 'map', _.get(gmapControls, 'gmapObj'));
+
 	}
 	dynCaucasusController.$inject = ['$scope', 'gmapService'];
 

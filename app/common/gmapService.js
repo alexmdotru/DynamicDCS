@@ -3,6 +3,7 @@
 
 	function controlService ($rootScope, $window, mySocket, $http) {
 		var gSrv = this;
+
 		_.set(gSrv, 'mySocket', mySocket);
 		_.set(gSrv, 'init', function () {
 			$http.get('json/sidc.json').then(function(sidJSON) {
