@@ -250,9 +250,13 @@ function syncDCSData (DCSData) {
 }
 
 function syncDCSDataGameGUI (DCSData) {
-	console.log(DCSData);
+		console.log(DCSData);
+		if (DCSData[0]) {
+			console.log(DCSData[0].data.response);
+		}
+
 
 	//create requests from nodeserver if any exist
 	var timetest = new Date();
-	_.set(serverObject, 'GameGUIrequestArray[0]', {action:'CMD',  reqID: _.random(1,9999)+'|'+timetest.getHours() + ':' + timetest.getMinutes() + ':' + timetest.getSeconds(), cmd:'net.lua2json(net.get_player_list())'});
+	_.set(serverObject, 'GameGUIrequestArray[0]', {action:'CMD',  reqID: _.random(1,9999)+'|'+timetest.getHours() + ':' + timetest.getMinutes() + ':' + timetest.getSeconds(), cmd:'net.get_player_list()'});
 }

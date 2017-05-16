@@ -137,7 +137,7 @@ end
 
 dynDCS.onChatMessage = function(message,playerID)
 	if( message ~= nil ) then
-		log(message)
+		--log(message)
 		local curUpdate = {
 			type = 'MESG',
 			data = {
@@ -151,7 +151,7 @@ end
 
 dynDCS.onGameEvent = function(eventName,arg1,arg2,arg3,arg4,arg5,arg6,arg7)
 	local curUpdate = {}
-	log(eventName)
+	--log(eventName)
 	if( eventName == "friendly_fire" ) then
 		--"friendly_fire", playerID, weaponName, victimPlayerID
 		curUpdate = {
@@ -313,7 +313,6 @@ function pcallCommand(s, respID)
 	local success, resp =  pcall(commandExecute, s)
 	if success then
 		if resp ~= nil then
-			log(resp);
 			local curUpdate;
 			curUpdate = {
 				type = 'CMDRESPONSE',
