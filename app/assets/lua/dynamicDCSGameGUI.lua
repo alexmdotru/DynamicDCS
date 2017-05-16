@@ -24,8 +24,9 @@ local function getDataMessage()
 	--chunk send back updateQue.que
 	local chkSize = 500
 	local payload = {}
+	payload.cmdMsg = {}
 	for i = 1,chkSize do
-		table.insert(payload, updateQue.que[i])
+		table.insert(payload.cmdMsg, updateQue.que[i])
 		table.remove(updateQue.que, i)
 	end
 	return payload
