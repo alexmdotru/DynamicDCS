@@ -38,11 +38,9 @@ local function runRequest(request)
 			log('RUNNING REQUEST INIT')
 			cacheDB = {}
 		end
-		if request.action == "CMD" then
-			if request.action == "CMD" and request.cmd ~= nil and request.reqID ~= nil then
-				log('RUNNING CMD')
-				pcallCommand(request.cmd, request.reqID)
-			end
+		if request.action == "CMD" and request.cmd ~= nil and request.reqID ~= nil then
+			log('RUNNING CMD')
+			pcallCommand(request.cmd, request.reqID)
 		end
 	end
 end
@@ -93,7 +91,7 @@ local function step()
 			--log(line)
 			local success, error =  pcall(checkJSON, line, 'decode')
 			if success then
-				log('Incoming: '..line);
+				--log('Incoming: '..line);
 				local incMsg = JSON:decode(line)
 				runRequest(incMsg);
 			else

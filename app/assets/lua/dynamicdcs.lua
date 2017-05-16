@@ -17,11 +17,26 @@ do
     end
 
     local cacheDB = {}
+	local updateQue = {}
+	updateQue.que = {}
 
     local function getDataMessage()
         local payload = {}
         payload.units = {}
+		payload.cmdMsg = {}
         local checkDead = {}
+    	--command response system
+		--chunk send back updateQue.que
+		local chkSize = 500
+		local payload = {}
+		payload.units = {}
+		payload.cmdMsg = {}
+		for i = 1,chkSize do
+			table.insert(payload.cmdMsg, updateQue.que[i])
+			table.remove(updateQue.que, i)
+		end
+
+		--unit updating system
         local function addUnit(unit, unitID, coalition, lat, lon, action)
             local curUnit = {
                 action = action,
@@ -90,19 +105,19 @@ do
         return payload
     end
 
-    local function runRequest(request)
-        env.info(request.action)
-        if request.action ~= nil then
-            if request.action == "INIT" then
-                log('RUNNING REQUEST INIT')
-                cacheDB = {}
-            end
-			if request.action == "CMD" and request.cmd ~= nil then
-				log('RUNNING CMD')
-				log(pcallCommand(request.cmd))
+	local function runRequest(request)
+		env.info(request);
+		if request.action ~= nil then
+			if request.action == "INIT" then
+				log('RUNNING REQUEST INIT')
+				cacheDB = {}
 			end
-        end
-    end
+			if request.action == "CMD" and request.cmd ~= nil and request.reqID ~= nil then
+				log('RUNNING CMD')
+				pcallCommand(request.cmd, request.reqID)
+			end
+		end
+	end
 
     log("Starting DCS unit data server")
 
@@ -189,11 +204,28 @@ do
     end, nil, timer.getTime() + DATA_TIMEOUT_SEC)
 
     --Protected call to command execute
-    function pcallCommand(s)
-        pcall(commandExecute, s)
+	function pcallCommand(s, respID)
+		local success, resp =  pcall(commandExecute, s)
+		if success then
+			if resp ~= nil then
+				local curUpdate;
+				curUpdate = {
+					type = 'CMDRESPONSE',
+					data = {
+						respID = respID,
+						cmd = s,
+						response = resp
+					}
+				}
+				table.insert(updateQue.que, curUpdate)
+			end
+		else
+			log("Error: " .. resp)
+		end
 	end
+
 	function commandExecute(s)
-		loadstring(s)()
+		return loadstring("return " ..s)()
 	end
 
 end

@@ -136,9 +136,6 @@ function getDCSDataClient(dataCallback) {
 
     function connect() {
 
-        //gather request from request array
-        var request = _.get(serverObject, 'ClientRequestArray[0]',{action:'NONE'});
-
         const client = net.createConnection({host: ADDRESS, port: PORT}, () => {
             var time = new Date();
             console.log(time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + ' :: Connected to DCS Client!');
@@ -158,6 +155,7 @@ function getDCSDataClient(dataCallback) {
                 var data = JSON.parse(buffer.substring(0, i));
                 dataCallback(data);
                 buffer = buffer.substring(i + 1);
+				request = _.get(serverObject, 'ClientRequestArray[0]',{action:'NONE'});
                 client.write(JSON.stringify(request)+"\n");
                 _.set(_.drop(_.get(serverObject, 'ClientRequestArray'), 1));
             }
@@ -244,15 +242,16 @@ getDCSDataClient(syncDCSData);
 getDCSDataGameGui(syncDCSDataGameGUI);
 
 function syncDCSData (DCSData) {
+	//console.log(DCSData);
+	//var timetest = new Date();
+	//_.set(serverObject, 'ClientRequestArray[0]', {action:'CMD',  reqID: _.random(1,9999)+'|'+timetest.getHours() + ':' + timetest.getMinutes() + ':' + timetest.getSeconds(), cmd:'trigger.action.outText("IT WORKS MOFO!", 2)'});
     if (!_.isEmpty(DCSData.units)) {
         _.forEach(DCSData.units, serverObject.unitParse);
     }
 }
 
 function syncDCSDataGameGUI (DCSData) {
-		console.log(DCSData);
-
-
+	//console.log(DCSData);
 	//create requests from nodeserver if any exist
 	//send command response to chatlog of users website
 	//create listener from endusers to send commands to the server with/ sandbox/procedural call things
