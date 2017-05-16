@@ -190,13 +190,11 @@ function getDCSDataGameGui(dataCallback) {
 
 	const net = require('net');
 	var buffer;
+	var request;
 
 	function connect() {
 
-		//gather request from request array
-		var request = _.get(serverObject, 'GameGUIrequestArray[0]',{action:'NONE'});
-		//test
-		//request = {action:'CMD', cmd:''}
+
 
 		const client = net.createConnection({host: address, port: port}, () => {
 			var time = new Date();
@@ -217,6 +215,7 @@ function getDCSDataGameGui(dataCallback) {
 				var data = JSON.parse(buffer.substring(0, i));
 				dataCallback(data);
 				buffer = buffer.substring(i + 1);
+				request = _.get(serverObject, 'GameGUIrequestArray[0]',{action:'NONE'});
 				client.write(JSON.stringify(request)+"\n");
 				_.set(_.drop(_.get(serverObject, 'GameGUIrequestArray'), 1));
 			}
@@ -244,12 +243,16 @@ function getDCSDataGameGui(dataCallback) {
 getDCSDataClient(syncDCSData);
 getDCSDataGameGui(syncDCSDataGameGUI);
 
-function syncDCSDataGameGUI (DCSData) {
-	console.log(DCSData);
-}
-
 function syncDCSData (DCSData) {
     if (!_.isEmpty(DCSData.units)) {
         _.forEach(DCSData.units, serverObject.unitParse);
     }
+}
+
+function syncDCSDataGameGUI (DCSData) {
+	console.log(DCSData);
+
+	//create requests from nodeserver if any exist
+	var timetest = new Date();
+	_.set(serverObject, 'GameGUIrequestArray[0]', {action:'CMD',  reqID: _.random(1,9999)+'|'+timetest.getHours() + ':' + timetest.getMinutes() + ':' + timetest.getSeconds(), cmd:'net.lua2json(net.get_player_list())'});
 }

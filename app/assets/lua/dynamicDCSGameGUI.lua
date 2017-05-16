@@ -21,9 +21,14 @@ local updateQue = {}
 updateQue.que = {}
 
 local function getDataMessage()
-	--get player data, stream new player data and changed player data
-
-	return 'Data Message'
+	--chunk send back updateQue.que
+	local chkSize = 500
+	local payload = {}
+	for i = 1,chkSize do
+		table.insert(payload, updateQue.que[i])
+		table.remove(updateQue.que, i)
+	end
+	return payload
 end
 
 local function runRequest(request)
@@ -33,9 +38,9 @@ local function runRequest(request)
 			cacheDB = {}
 		end
 		if request.action == "CMD" then
-			if request.action == "CMD" and request.cmd ~= nil then
+			if request.action == "CMD" and request.cmd ~= nil and request.reqID ~= nil then
 				log('RUNNING CMD')
-				log(pcallCommand(request.cmd))
+				pcallCommand(request.cmd, request.reqID)
 			end
 		end
 	end
@@ -117,29 +122,36 @@ end
 
 local _lastSent = 0;
 
+
 dynDCS.onSimulationFrame = function()
-
 	local _now = DCS.getRealTime()
-
-	-- send every 5 seconds
-	if _now > _lastSent + 5.0 then
+	-- send every 1 second
+	if _now > _lastSent + 1.0 then
 		_lastSent = _now
 		local success, error = pcall(step)
 		if not success then
 			log("Error: " .. error)
 		end
 	end
-
 end
 
-dynDCS.onChatMessage = function (message, from)
+dynDCS.onChatMessage = function(message,playerID)
 	if( message ~= nil ) then
-
+		log(message)
+		local curUpdate = {
+			type = 'MESG',
+			data = {
+				message = message,
+				playerID = playerID
+			}
+		}
+		table.insert(updateQue.que, curUpdate)
 	end
 end
 
-dynDCS.onGameEvent = function (eventName,arg1,arg2,arg3,arg4,arg5,arg6,arg7)
+dynDCS.onGameEvent = function(eventName,arg1,arg2,arg3,arg4,arg5,arg6,arg7)
 	local curUpdate = {}
+	log(eventName)
 	if( eventName == "friendly_fire" ) then
 		--"friendly_fire", playerID, weaponName, victimPlayerID
 		curUpdate = {
@@ -296,16 +308,30 @@ dynDCS.onGameEvent = function (eventName,arg1,arg2,arg3,arg4,arg5,arg6,arg7)
 	end
 end
 
-
-
-
 --Protected call to command execute
-function pcallCommand(s)
-	pcall(commandExecute, s)
+function pcallCommand(s, respID)
+	local success, resp =  pcall(commandExecute, s)
+	if success then
+		if resp ~= nil then
+			log(resp);
+			local curUpdate;
+			curUpdate = {
+				type = 'CMDRESPONSE',
+				data = {
+					respID = respID,
+					cmd = s,
+					response = resp
+				}
+			}
+			table.insert(updateQue.que, curUpdate)
+		end
+	else
+		log("Error: " .. resp)
+	end
 end
 
 function commandExecute(s)
-	loadstring(s)()
+	return loadstring("return " ..s)()
 end
 
 
