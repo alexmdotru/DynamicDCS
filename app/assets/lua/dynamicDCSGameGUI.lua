@@ -155,7 +155,7 @@ dynDCS.onGameEvent = function(eventName,arg1,arg2,arg3,arg4,arg5,arg6,arg7)
 	if( eventName == "friendly_fire" ) then
 		--"friendly_fire", playerID, weaponName, victimPlayerID
 		curUpdate = {
-			type = 'event',
+			type = eventName,
 			data = {
 				name = eventName,
 				playerID = arg1,
@@ -168,7 +168,7 @@ dynDCS.onGameEvent = function(eventName,arg1,arg2,arg3,arg4,arg5,arg6,arg7)
 	if( eventName == "mission_end" ) then
 		--"mission_end", winner, msg
 		curUpdate = {
-			type = 'event',
+			type = eventName,
 			data = {
 				name = eventName,
 				winner = arg1,
@@ -180,7 +180,7 @@ dynDCS.onGameEvent = function(eventName,arg1,arg2,arg3,arg4,arg5,arg6,arg7)
 	if( eventName == "kill" ) then
 		--"kill", killerPlayerID, killerUnitType, killerSide, victimPlayerID, victimUnitType, victimSide, weaponName
 		curUpdate = {
-			type = 'event',
+			type = eventName,
 			data = {
 				name = eventName,
 				killerPlayerID = arg1,
@@ -197,7 +197,7 @@ dynDCS.onGameEvent = function(eventName,arg1,arg2,arg3,arg4,arg5,arg6,arg7)
 	if( eventName == "self_kill" ) then
 		--"self_kill", playerID
 		curUpdate = {
-			type = 'event',
+			type = eventName,
 			data = {
 				name = eventName,
 				playerID = arg1
@@ -208,7 +208,7 @@ dynDCS.onGameEvent = function(eventName,arg1,arg2,arg3,arg4,arg5,arg6,arg7)
 	if( eventName == "change_slot" ) then
 		--"change_slot", playerID, slotID, prevSide
 		curUpdate = {
-			type = 'event',
+			type = eventName,
 			data = {
 				name = eventName,
 				playerID = arg1,
@@ -221,7 +221,7 @@ dynDCS.onGameEvent = function(eventName,arg1,arg2,arg3,arg4,arg5,arg6,arg7)
 	if( eventName == "connect" ) then
 		--"connect", id, name
 		curUpdate = {
-			type = 'event',
+			type = eventName,
 			data = {
 				name = eventName,
 				id = arg1,
@@ -233,7 +233,7 @@ dynDCS.onGameEvent = function(eventName,arg1,arg2,arg3,arg4,arg5,arg6,arg7)
 	if( eventName == "disconnect" ) then
 		--"disconnect", ID_, name, playerSide, reason_code
 		curUpdate = {
-			type = 'event',
+			type = eventName,
 			data = {
 				name = eventName,
 				ID_ = arg1,
@@ -247,7 +247,7 @@ dynDCS.onGameEvent = function(eventName,arg1,arg2,arg3,arg4,arg5,arg6,arg7)
 	if( eventName == "crash" ) then
 		--"crash", playerID, unit_missionID
 		curUpdate = {
-			type = 'event',
+			type = eventName,
 			data = {
 				name = eventName,
 				playerID = arg1,
@@ -259,7 +259,7 @@ dynDCS.onGameEvent = function(eventName,arg1,arg2,arg3,arg4,arg5,arg6,arg7)
 	if( eventName == "eject" ) then
 		--"eject", playerID, unit_missionID
 		curUpdate = {
-			type = 'event',
+			type = eventName,
 			data = {
 				name = eventName,
 				playerID = arg1,
@@ -271,7 +271,7 @@ dynDCS.onGameEvent = function(eventName,arg1,arg2,arg3,arg4,arg5,arg6,arg7)
 	if( eventName == "takeoff" ) then
 		--"takeoff", playerID, unit_missionID, airdromeName
 		curUpdate = {
-			type = 'event',
+			type = eventName,
 			data = {
 				name = eventName,
 				playerID = arg1,
@@ -284,7 +284,7 @@ dynDCS.onGameEvent = function(eventName,arg1,arg2,arg3,arg4,arg5,arg6,arg7)
 	if( eventName == "landing" ) then
 		--"landing", playerID, unit_missionID, airdromeName
 		curUpdate = {
-			type = 'event',
+			type = eventName,
 			data = {
 				name = eventName,
 				playerID = arg1,
@@ -297,7 +297,7 @@ dynDCS.onGameEvent = function(eventName,arg1,arg2,arg3,arg4,arg5,arg6,arg7)
 	if( eventName == "pilot_death" ) then
 		--"pilot_death", playerID, unit_missionID
 		curUpdate = {
-			type = 'event',
+			type = eventName,
 			data = {
 				name = eventName,
 				playerID = arg1,
