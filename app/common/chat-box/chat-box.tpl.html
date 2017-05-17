@@ -3,7 +3,7 @@
 </div>
 <div class="row row-no-padding">
 	<div class="col-xs-10 text-right">
-		<input class="chatInput" placeholder="Type here..."/>
+		<input ng-if="cbCtrl.chatTo" class="chatInput" placeholder="Type here..."/>
 	</div>
 	<div class="col-xs-2">{{cbCtrl.chatToOp}}
 		<div class="btn-group-xs" ng-if="cbCtrl.socketSub == 'chatMsg'">
