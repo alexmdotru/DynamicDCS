@@ -6,11 +6,13 @@
 
 		$scope.initialise = function() {
 
-			$scope.go = function(state) {
-				$state.go(state);
-			};
+			_.set($scope, 'isCollapsed', true);
 
-			$scope.tabData   = [
+			_.set($scope, 'go', function(state) {
+				$state.go(state);
+			});
+
+			_.set($scope, 'tabData', [
 				{
 					heading: 'Leaderboard',
 					route:   'index'
@@ -23,7 +25,7 @@
 					heading: 'DynamicRedDawn',
 					route:   'dynRedDawn'
 				}
-			];
+			]);
 		};
 
 		$scope.initialise();

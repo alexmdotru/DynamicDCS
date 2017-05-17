@@ -42,6 +42,7 @@
 		</ul>
 		<ul class="nav navbar-nav navbar-right">
 			<li><a href="http://www.16agr.com" target="_blank">Join The 16AGR!</a></li>
+			<li><a href="" ng-click="isCollapsed = !isCollapsed" data-ng-show="$state.includes('dynCaucasus') || $state.includes('dynRedDawn')">Tools</a></li> <!--temp until better show function -->
 			<li uib-dropdown>
 				<a href="#" uib-dropdown-toggle>Profile <b class="caret"></b></a>
 				<ul uib-dropdown-menu>
@@ -52,8 +53,29 @@
 		</ul>
 	</div><!-- /.navbar-collapse -->
 </nav>
+<div class="row">
+	<div class="col-xs-12">
+		<div ui-view></div>
+	</div>
+</div>
 
-<div ui-view></div>
+<div uib-collapse="isCollapsed" class="floating-sidepanel">
+	<uib-accordion close-others="false">
+		<div uib-accordion-group class="panel-default"  heading="Map Tools" >
+			Future Map Tools Here
+		</div>
+		<div uib-accordion-group class="panel-default" heading="Chat" >
+			Two Way Chat System To The Server
+		</div>
+		<div uib-accordion-group class="panel-default" heading="Srv Front Cmds" >
+			Mission Side Cmds And Responses
+		</div>
+		<div uib-accordion-group class="panel-default" heading="Srv Back Cmds" >
+			Server Side Cmds And Responses
+		</div>
+	</uib-accordion>
+</div>
+
 
 <script src="<%= grunt.template.path.basename(concat.vendor.dest) %>"></script>
 <script src="<%= grunt.template.path.basename(concat.app.dest) %>"></script>
