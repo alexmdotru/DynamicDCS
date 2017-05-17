@@ -6,7 +6,7 @@
 
 		$scope.initialise = function() {
 
-			_.set($scope, 'isCollapsed', true);
+			_.set($scope, 'isCollapsed', false);
 
 			_.set($scope, 'go', function(state) {
 				$state.go(state);
@@ -36,7 +36,8 @@
 		.module('dynamic-dcs', [
 			'dynamic-dcs.templates',
 			'states',
-			'ui.bootstrap'
+			'ui.bootstrap',
+			'dynamic-dcs.chat-box'
 		])
 		.controller('dynamicDCSController', dynamicDCSController)
 	;

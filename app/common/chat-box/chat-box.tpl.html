@@ -1,0 +1,18 @@
+<div class="chatBoxArea">
+	<ul class="messages"></ul>
+</div>
+<div class="row row-no-padding">
+	<div class="col-xs-10 text-right">
+		<input class="chatInput" placeholder="Type here..."/>
+	</div>
+	<div class="col-xs-2">{{cbCtrl.chatToOp}}
+		<div class="btn-group-xs" ng-if="cbCtrl.socketSub == 'chatMsg'">
+			<label class="btn btn-primary" ng-model="cbCtrl.chatTo" uib-btn-radio="'Allies'">Allies</label>
+			<label class="btn btn-primary" ng-model="cbCtrl.chatTo" uib-btn-radio="'All'">All</label>
+		</div>
+		<div class="btn-group-xs" ng-if="cbCtrl.socketSub == 'srvCmd'">
+			<label class="btn btn-primary" ng-model="cbCtrl.chatTo" uib-btn-radio="'Msn'">Msn</label>
+			<label class="btn btn-primary" ng-model="cbCtrl.chatTo" uib-btn-radio="'Srv'">Srv</label>
+		</div>
+	</div>
+</div>

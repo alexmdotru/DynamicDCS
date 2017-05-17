@@ -64,14 +64,11 @@
 		<div uib-accordion-group class="panel-default"  heading="Map Tools" >
 			Future Map Tools Here
 		</div>
-		<div uib-accordion-group class="panel-default" heading="Chat" >
-			Two Way Chat System To The Server
+		<div uib-accordion-group class="panel-default" is-open="true" heading="Chat" >
+			<chat-box socket-sub="chatMsg" chat-to="Allies"></chat-box>
 		</div>
-		<div uib-accordion-group class="panel-default" heading="Srv Front Cmds" >
-			Mission Side Cmds And Responses
-		</div>
-		<div uib-accordion-group class="panel-default" heading="Srv Back Cmds" >
-			Server Side Cmds And Responses
+		<div uib-accordion-group class="panel-default" heading="Srv Cmds" >
+			<chat-box socket-sub="srvCmd" chat-to="Msn"></chat-box>
 		</div>
 	</uib-accordion>
 </div>
