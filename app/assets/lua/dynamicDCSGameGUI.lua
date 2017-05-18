@@ -29,6 +29,7 @@ local function getDataMessage()
 		table.insert(payload.cmdMsg, updateQue.que[i])
 		table.remove(updateQue.que, i)
 	end
+	payload.players = playerSync()
 	return payload
 end
 
@@ -119,9 +120,26 @@ local function step()
 	end
 end
 
+
+local playerTable = {}
+local refreshPlayer = {}
+function playerSync()
+	--buildPlayerTable
+	local curPlayers = net.get_player_list()
+	for key,value in pairs(curPlayers) do
+		playerTable[value] = net.get_player_info(value)
+		refreshPlayer[value] = 1
+	end
+	for k, v in pairs( playerTable ) do
+		if refreshPlayer[k] == nil then
+			playerTable[k] = nil
+		end
+	end
+	return playerTable;
+end
+
+
 local _lastSent = 0;
-
-
 dynDCS.onSimulationFrame = function()
 	local _now = DCS.getRealTime()
 	-- send every 1 second
@@ -130,6 +148,9 @@ dynDCS.onSimulationFrame = function()
 		local success, error = pcall(step)
 		if not success then
 			log("Error: " .. error)
+		end
+		if updateQue.que ~= nil then
+			log('LogBuffer: '..table.getn(updateQue.que))
 		end
 	end
 end

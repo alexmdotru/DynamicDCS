@@ -22,7 +22,7 @@ _.set(serverObject, 'ClientRequestArray', []);
 _.set(serverObject, 'GameGUIRequestArray', []);
 _.set(serverObject, 'socketUsers', []);
 var updateQue = {
-	updates: []
+	unitUpdates: []
 };
 
 //setup socket io
@@ -45,7 +45,7 @@ io.on('connection', function( socket ) {
 				playername: _.get(unit, 'playername', ''),
 				action: 'INIT'
 			};
-			updateQue.updates.push(_.cloneDeep(curObj));
+			updateQue.unitUpdates.push(_.cloneDeep(curObj));
 		});
 	};
     socket.on('disconnect', function(){
@@ -80,7 +80,7 @@ _.set(serverObject, 'unitParse', function (unit) {
 				action: 'C'
             };
             serverObject.units.push(_.cloneDeep(curObj.curUnit));
-			updateQue.updates.push(_.cloneDeep(curObj));
+			updateQue.unitUpdates.push(_.cloneDeep(curObj));
         }
     }
     if (_.get(unit, 'action') == 'U') {
@@ -93,7 +93,7 @@ _.set(serverObject, 'unitParse', function (unit) {
                 lon: _.get(unit, 'lon'),
                 action: 'U'
             });
-			updateQue.updates.push(_.cloneDeep(curObj));
+			updateQue.unitUpdates.push(_.cloneDeep(curObj));
         }
     }
     if (_.get(unit, 'action') == 'D') {
@@ -102,25 +102,71 @@ _.set(serverObject, 'unitParse', function (unit) {
             action: 'D'
         });
 		_.remove(serverObject.units, { 'unitID': _.get(unit, 'unitID') });
-		updateQue.updates.push(_.cloneDeep(curObj));
+		updateQue.unitUpdates.push(_.cloneDeep(curObj));
     }
     return true;
 });
+
+_.set(serverObject, 'playerParse', function (player) {
+	var curObj = {
+		curPlayer: []
+	};
+	if (_.get(unit, 'action') == 'C') {
+		if (typeof _.find(serverObject.units, { 'unitID': _.get(unit, 'unitID') }) !== "undefined") {
+			_.find(serverObject.units, { 'unitID': _.get(unit, 'unitID') }).action = 'U';
+		}else{
+			curObj.curUnit = {
+				unitID: parseFloat(_.get(unit, 'unitID')),
+				type: _.get(unit, 'type'),
+				coalition: parseFloat(_.get(unit, 'coalition')),
+				lat: parseFloat(_.get(unit, 'lat')),
+				lon: parseFloat(_.get(unit, 'lon')),
+				playername: _.get(unit, 'playername', ''),
+				action: 'C'
+			};
+			serverObject.units.push(_.cloneDeep(curObj.curUnit));
+			updateQue.unitUpdates.push(_.cloneDeep(curObj));
+		}
+	}
+	if (_.get(unit, 'action') == 'U') {
+		if (typeof _.find(serverObject.units, { 'unitID': _.get(unit, 'unitID') }) !== "undefined") {
+			_.find(serverObject.units, { 'unitID': _.get(unit, 'unitID') }).lat = _.get(unit, 'lat');
+			_.find(serverObject.units, { 'unitID': _.get(unit, 'unitID') }).lon =  _.get(unit, 'lon');
+			_.set(curObj,'curUnit', curUnit = {
+				unitID: _.get(unit, 'unitID'),
+				lat: _.get(unit, 'lat'),
+				lon: _.get(unit, 'lon'),
+				action: 'U'
+			});
+			updateQue.unitUpdates.push(_.cloneDeep(curObj));
+		}
+	}
+	if (_.get(unit, 'action') == 'D') {
+		_.set(curObj,'curUnit', {
+			unitID: _.get(unit, 'unitID'),
+			action: 'D'
+		});
+		_.remove(serverObject.units, { 'unitID': _.get(unit, 'unitID') });
+		updateQue.unitUpdates.push(_.cloneDeep(curObj));
+	}
+	return true;
+});
+
 
 //emit payload, every sec to start
 setInterval(function(){
 	var perSendMax = 500;
 	var sendAmt = 0;
-	if (updateQue.updates.length < perSendMax) {
-		sendAmt = updateQue.updates.length;
+	if (updateQue.unitUpdates.length < perSendMax) {
+		sendAmt = updateQue.unitUpdates.length;
 	}else{
 		sendAmt = perSendMax
 	}
 
 	var chkPayload = [];
 	for (x=0; x < sendAmt; x++ ) {
-		chkPayload.push(updateQue.updates[0]);
-		updateQue.updates.shift();
+		chkPayload.push(updateQue.unitUpdates[0]);
+		updateQue.unitUpdates.shift();
 	}
 	io.emit('srvUnitUpd', chkPayload);
 }, 1 * 500);
@@ -245,16 +291,25 @@ function syncDCSData (DCSData) {
 	//console.log(DCSData);
 	//var timetest = new Date();
 	//_.set(serverObject, 'ClientRequestArray[0]', {action:'CMD',  reqID: _.random(1,9999)+'|'+timetest.getHours() + ':' + timetest.getMinutes() + ':' + timetest.getSeconds(), cmd:'trigger.action.outText("IT WORKS MOFO!", 2)'});
-    if (!_.isEmpty(DCSData.units)) {
+
+	//accept client updates
+	if (!_.isEmpty(DCSData.units)) {
         _.forEach(DCSData.units, serverObject.unitParse);
     }
+    //send commands back client
 }
 
 function syncDCSDataGameGUI (DCSData) {
-	//console.log(DCSData);
+	//console.log(DCSData.players);
 	//create requests from nodeserver if any exist
 	//send command response to chatlog of users website
 	//create listener from endusers to send commands to the server with/ sandbox/procedural call things
 	//var timetest = new Date();
 	//_.set(serverObject, 'GameGUIrequestArray[0]', {action:'CMD',  reqID: _.random(1,9999)+'|'+timetest.getHours() + ':' + timetest.getMinutes() + ':' + timetest.getSeconds(), cmd:'net.get_player_list()'});
+
+	//accept player packets
+	if (!_.isEmpty(DCSData.players)) {
+		_.forEach(DCSData.units, serverObject.unitParse);
+	}
+	//send commands back
 }
