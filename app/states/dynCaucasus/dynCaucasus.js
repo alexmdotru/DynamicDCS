@@ -5,7 +5,7 @@
 		console.log('dynCaucasus controller loaded');
 
 		//socket.io connectors
-		$scope.$on('socket:srvUnitUpd', function (ev, data) {
+		$scope.$on('socket:srvUpd', function (ev, data) {
 			//console.log('StreamingDataForCaucasus',data);
 			_.forEach(data, function(que) {
 				gmapControls.processUnitStream(_.get(que, 'curUnit'));

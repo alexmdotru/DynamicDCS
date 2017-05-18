@@ -210,7 +210,7 @@ do
 			if resp ~= nil then
 				local curUpdate;
 				curUpdate = {
-					type = 'CMDRESPONSE',
+					action = 'CMDRESPONSE',
 					data = {
 						respID = respID,
 						cmd = s,

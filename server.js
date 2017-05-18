@@ -15,24 +15,39 @@ var server  = app.listen(8080);
 var io  = require('socket.io').listen(server);
 
 //setup globals
-var serverObject = {};
-var updSrvObj = {};
-_.set(serverObject, 'units', []);
-_.set(serverObject, 'ClientRequestArray', []);
-_.set(serverObject, 'GameGUIRequestArray', []);
-_.set(serverObject, 'socketUsers', []);
+var serverObject = {
+	'1': {
+		units: [],
+		msgs: [],
+		events: []
+	},
+	'2': {
+		units: [],
+		msgs: [],
+		events: []
+	},
+	globalMsgs: [],
+	globalCmds: [],
+	players: [],
+	ClientRequestArray: [],
+	GameGUIRequestArray: [],
+	socketUsers: []
+};
 var updateQue = {
-	unitUpdates: []
+	que: []
 };
 
 //setup socket io
 io.on('connection', function( socket ) {
+	var remoteAddress = socket.handshake.address.replace(/^.*:/, '');
+	console.log('New connection from ' + remoteAddress );
 
 
-	var updSrvObj = {units: _.get(serverObject, 'units', [])};
+	/*
+	var initSrvObj = {units: _.get(serverObject, 'units', [])};
 	console.log(serverObject.units.length);
-	if (updSrvObj.units.length > 0) {
-		_.forEach(updSrvObj.units, function(unit) {
+	if (initSrvObj.units.length > 0) {
+		_.forEach(initSrvObj.units, function(unit) {
 			var curObj = {
 				curUnit: {}
 			};
@@ -45,9 +60,10 @@ io.on('connection', function( socket ) {
 				playername: _.get(unit, 'playername', ''),
 				action: 'INIT'
 			};
-			updateQue.unitUpdates.push(_.cloneDeep(curObj));
+			updateQue.unitUpdates.push(_.cloneDeep(curObj)); //send only to new user
 		});
-	};
+	}
+	*/
     socket.on('disconnect', function(){
         console.log(socket.id+' user disconnected');
     });
@@ -62,113 +78,75 @@ io.on('connection', function( socket ) {
 
 console.log(':: SERVER IS RUNNING!');
 
-_.set(serverObject, 'unitParse', function (unit) {
-	var curObj = {
-		curUnit: []
-	};
-    if (_.get(unit, 'action') == 'C') {
-        if (typeof _.find(serverObject.units, { 'unitID': _.get(unit, 'unitID') }) !== "undefined") {
-            _.find(serverObject.units, { 'unitID': _.get(unit, 'unitID') }).action = 'U';
+_.set(serverObject, 'parse', function (update) {
+	var curObj = {};
+    if (_.get(update, 'action') == 'C') {
+        if (typeof _.find(serverObject.units, { 'unitID': _.get(update, 'unitID') }) !== "undefined") {
+            _.find(serverObject.units, { 'unitID': _.get(update, 'unitID') }).action = 'U';
         }else{
             curObj.curUnit = {
-                unitID: parseFloat(_.get(unit, 'unitID')),
-                type: _.get(unit, 'type'),
-                coalition: parseFloat(_.get(unit, 'coalition')),
-                lat: parseFloat(_.get(unit, 'lat')),
-                lon: parseFloat(_.get(unit, 'lon')),
-                playername: _.get(unit, 'playername', ''),
+                unitID: parseFloat(_.get(update, 'unitID')),
+                type: _.get(update, 'type'),
+                coalition: parseFloat(_.get(update, 'coalition')),
+                lat: parseFloat(_.get(update, 'lat')),
+                lon: parseFloat(_.get(update, 'lon')),
+                playername: _.get(update, 'playername', ''),
 				action: 'C'
             };
             serverObject.units.push(_.cloneDeep(curObj.curUnit));
-			updateQue.unitUpdates.push(_.cloneDeep(curObj));
+			updateQue.que.push(_.cloneDeep(curObj));
         }
     }
-    if (_.get(unit, 'action') == 'U') {
-        if (typeof _.find(serverObject.units, { 'unitID': _.get(unit, 'unitID') }) !== "undefined") {
-            _.find(serverObject.units, { 'unitID': _.get(unit, 'unitID') }).lat = _.get(unit, 'lat');
-            _.find(serverObject.units, { 'unitID': _.get(unit, 'unitID') }).lon =  _.get(unit, 'lon');
+    if (_.get(update, 'action') == 'U') {
+        if (typeof _.find(serverObject.units, { 'unitID': _.get(update, 'unitID') }) !== "undefined") {
+            _.find(serverObject.units, { 'unitID': _.get(update, 'unitID') }).lat = _.get(update, 'lat');
+            _.find(serverObject.units, { 'unitID': _.get(update, 'unitID') }).lon =  _.get(update, 'lon');
 			_.set(curObj,'curUnit', curUnit = {
-                unitID: _.get(unit, 'unitID'),
-                lat: _.get(unit, 'lat'),
-                lon: _.get(unit, 'lon'),
+                unitID: _.get(update, 'unitID'),
+                lat: _.get(update, 'lat'),
+                lon: _.get(update, 'lon'),
                 action: 'U'
             });
-			updateQue.unitUpdates.push(_.cloneDeep(curObj));
+			updateQue.que.push(_.cloneDeep(curObj));
         }
     }
-    if (_.get(unit, 'action') == 'D') {
+    if (_.get(update, 'action') == 'D') {
 		_.set(curObj,'curUnit', {
-            unitID: _.get(unit, 'unitID'),
+            unitID: _.get(update, 'unitID'),
             action: 'D'
         });
-		_.remove(serverObject.units, { 'unitID': _.get(unit, 'unitID') });
-		updateQue.unitUpdates.push(_.cloneDeep(curObj));
+		_.remove(serverObject.units, { 'unitID': _.get(update, 'unitID') });
+		updateQue.que.push(_.cloneDeep(curObj));
     }
+
+    //playerUpdate
+	_.set(curObj,'curPlayer', {
+		unitID: _.get(update, 'unitID'),
+		action: 'D'
+	});
+	updateQue.que.push(_.cloneDeep(curObj));
     return true;
 });
 
-_.set(serverObject, 'playerParse', function (player) {
-	var curObj = {
-		curPlayer: []
-	};
-	if (_.get(unit, 'action') == 'C') {
-		if (typeof _.find(serverObject.units, { 'unitID': _.get(unit, 'unitID') }) !== "undefined") {
-			_.find(serverObject.units, { 'unitID': _.get(unit, 'unitID') }).action = 'U';
-		}else{
-			curObj.curUnit = {
-				unitID: parseFloat(_.get(unit, 'unitID')),
-				type: _.get(unit, 'type'),
-				coalition: parseFloat(_.get(unit, 'coalition')),
-				lat: parseFloat(_.get(unit, 'lat')),
-				lon: parseFloat(_.get(unit, 'lon')),
-				playername: _.get(unit, 'playername', ''),
-				action: 'C'
-			};
-			serverObject.units.push(_.cloneDeep(curObj.curUnit));
-			updateQue.unitUpdates.push(_.cloneDeep(curObj));
-		}
-	}
-	if (_.get(unit, 'action') == 'U') {
-		if (typeof _.find(serverObject.units, { 'unitID': _.get(unit, 'unitID') }) !== "undefined") {
-			_.find(serverObject.units, { 'unitID': _.get(unit, 'unitID') }).lat = _.get(unit, 'lat');
-			_.find(serverObject.units, { 'unitID': _.get(unit, 'unitID') }).lon =  _.get(unit, 'lon');
-			_.set(curObj,'curUnit', curUnit = {
-				unitID: _.get(unit, 'unitID'),
-				lat: _.get(unit, 'lat'),
-				lon: _.get(unit, 'lon'),
-				action: 'U'
-			});
-			updateQue.unitUpdates.push(_.cloneDeep(curObj));
-		}
-	}
-	if (_.get(unit, 'action') == 'D') {
-		_.set(curObj,'curUnit', {
-			unitID: _.get(unit, 'unitID'),
-			action: 'D'
-		});
-		_.remove(serverObject.units, { 'unitID': _.get(unit, 'unitID') });
-		updateQue.unitUpdates.push(_.cloneDeep(curObj));
-	}
-	return true;
-});
-
-
 //emit payload, every sec to start
 setInterval(function(){
+	//units
 	var perSendMax = 500;
 	var sendAmt = 0;
-	if (updateQue.unitUpdates.length < perSendMax) {
-		sendAmt = updateQue.unitUpdates.length;
+
+	if (updateQue.que.length < perSendMax) {
+		sendAmt = updateQue.que.length;
 	}else{
 		sendAmt = perSendMax
 	}
 
 	var chkPayload = [];
 	for (x=0; x < sendAmt; x++ ) {
-		chkPayload.push(updateQue.unitUpdates[0]);
-		updateQue.unitUpdates.shift();
+		chkPayload.push(updateQue.que[0]);
+		updateQue.que.shift();
 	}
-	io.emit('srvUnitUpd', chkPayload);
+	io.emit('srvUpd', chkPayload);
+
 }, 1 * 500);
 
 function getDCSDataClient(dataCallback) {
@@ -190,8 +168,6 @@ function getDCSDataClient(dataCallback) {
         });
 
         client.on('connect', function() {
-            updSrvObj = _.cloneDeep(serverObject);
-            _.set(updSrvObj, 'action', "INIT");
             client.write('{"action":"INIT"}'+"\n");
         });
 
@@ -247,9 +223,7 @@ function getDCSDataGameGui(dataCallback) {
 			buffer = "";
 		});
 
-		client.on('connect', function() {
-			updSrvObj = _.cloneDeep(serverObject);
-			_.set(updSrvObj, 'action', "INIT");
+		client.on('connect', function() {;
 			client.write('{"action":"INIT"}'+"\n");
 		});
 
@@ -288,28 +262,27 @@ getDCSDataClient(syncDCSData);
 getDCSDataGameGui(syncDCSDataGameGUI);
 
 function syncDCSData (DCSData) {
-	//console.log(DCSData);
+	//console.log('mission: ',DCSData);
 	//var timetest = new Date();
 	//_.set(serverObject, 'ClientRequestArray[0]', {action:'CMD',  reqID: _.random(1,9999)+'|'+timetest.getHours() + ':' + timetest.getMinutes() + ':' + timetest.getSeconds(), cmd:'trigger.action.outText("IT WORKS MOFO!", 2)'});
 
-	//accept client updates
-	if (!_.isEmpty(DCSData.units)) {
-        _.forEach(DCSData.units, serverObject.unitParse);
+	//accept updates
+	if (!_.isEmpty(DCSData)) {
+        _.forEach(DCSData, serverObject.parse);
     }
     //send commands back client
 }
 
 function syncDCSDataGameGUI (DCSData) {
-	//console.log(DCSData.players);
+	//console.log('server: ',DCSData);
 	//create requests from nodeserver if any exist
 	//send command response to chatlog of users website
 	//create listener from endusers to send commands to the server with/ sandbox/procedural call things
 	//var timetest = new Date();
 	//_.set(serverObject, 'GameGUIrequestArray[0]', {action:'CMD',  reqID: _.random(1,9999)+'|'+timetest.getHours() + ':' + timetest.getMinutes() + ':' + timetest.getSeconds(), cmd:'net.get_player_list()'});
 
-	//accept player packets
-	if (!_.isEmpty(DCSData.players)) {
-		_.forEach(DCSData.units, serverObject.unitParse);
+	//accept updates
+	if (!_.isEmpty(DCSData)) {
+		_.forEach(DCSData, serverObject.parse);
 	}
-	//send commands back
 }
