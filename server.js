@@ -120,12 +120,11 @@ _.set(serverObject, 'parse', function (update) {
     }
 
     //playerUpdate
-	_.set(curObj,'curPlayer', {
-		unitID: _.get(update, 'unitID'),
-		action: 'D'
-	});
-	updateQue.que.push(_.cloneDeep(curObj));
-    return true;
+	if (_.get(update, 'action') == 'players') {
+
+		updateQue.que.push(_.cloneDeep(update.data));
+		return true;
+	}
 });
 
 //emit payload, every sec to start
@@ -145,6 +144,7 @@ setInterval(function(){
 		chkPayload.push(updateQue.que[0]);
 		updateQue.que.shift();
 	}
+	//console.log(chkPayload);
 	io.emit('srvUpd', chkPayload);
 
 }, 1 * 500);
@@ -262,7 +262,7 @@ getDCSDataClient(syncDCSData);
 getDCSDataGameGui(syncDCSDataGameGUI);
 
 function syncDCSData (DCSData) {
-	//console.log('mission: ',DCSData);
+	console.log('mission: ',DCSData);
 	//var timetest = new Date();
 	//_.set(serverObject, 'ClientRequestArray[0]', {action:'CMD',  reqID: _.random(1,9999)+'|'+timetest.getHours() + ':' + timetest.getMinutes() + ':' + timetest.getSeconds(), cmd:'trigger.action.outText("IT WORKS MOFO!", 2)'});
 
@@ -274,7 +274,7 @@ function syncDCSData (DCSData) {
 }
 
 function syncDCSDataGameGUI (DCSData) {
-	//console.log('server: ',DCSData);
+	console.log('server: ',DCSData);
 	//create requests from nodeserver if any exist
 	//send command response to chatlog of users website
 	//create listener from endusers to send commands to the server with/ sandbox/procedural call things

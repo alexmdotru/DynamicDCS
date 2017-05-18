@@ -138,6 +138,7 @@ function playerSync()
 				playerTable.data[k] = nil
 			end
 		end
+		log('playertable: '..JSON:encode(playerTable))
 	return playerTable;
 end
 
