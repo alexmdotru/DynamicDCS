@@ -21,18 +21,12 @@ do
 	updateQue.que = {}
 
     local function getDataMessage()
-        local payload = {}
-        payload.units = {}
-		payload.cmdMsg = {}
         local checkDead = {}
-    	--command response system
-		--chunk send back updateQue.que
 		local chkSize = 500
 		local payload = {}
-		payload.units = {}
-		payload.cmdMsg = {}
+		payload.que = {}
 		for i = 1,chkSize do
-			table.insert(payload.cmdMsg, updateQue.que[i])
+			table.insert(payload.que, updateQue.que[i])
 			table.remove(updateQue.que, i)
 		end
 
@@ -40,26 +34,28 @@ do
         local function addUnit(unit, unitID, coalition, lat, lon, action)
             local curUnit = {
                 action = action,
-                unitID = unitID
+                data = {
+					unitID = unitID
+				}
             }
             if action == "C" or action == "U" then
                 cacheDB[unitID] = {}
                 cacheDB[unitID].lat = lat
                 cacheDB[unitID].lon = lon
-                curUnit.lat = lat
-                curUnit.lon = lon
+                curUnit.data.lat = lat
+                curUnit.data.lon = lon
                 if action == "C" then
-                    curUnit.type = unit:getTypeName()
-                    curUnit.coalition = coalition
+                    curUnit.data.type = unit:getTypeName()
+                    curUnit.data.coalition = coalition
                     local PlayerName = unit:getPlayerName()
                     if PlayerName ~= nil then
-                        curUnit.playername = PlayerName
+                        curUnit.data.playername = PlayerName
                     else
-                        curUnit.playername = ""
+                        curUnit.data.playername = ""
                     end
                 end
             end
-            table.insert(payload.units, curUnit)
+            table.insert(updateQue.que, curUnit)
         end
 
         local function addGroups(groups, coalition)

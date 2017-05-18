@@ -116,37 +116,35 @@
 		});
 
 		//process inbound Unit Stream
-		_.set(gSrv, 'processUnitStream', function (unit) {
-			// console.log(_.get(unit, 'action'));
-			if( _.get(unit, 'action') == 'C' || _.get(unit, 'action') == 'INIT') {
+		_.set(gSrv, 'processUnitStream', function (update) {
+			if( _.get(update, 'action') == 'C' || _.get(update, 'action') == 'INIT') {
 				var curMarker = {
-					id: unit.unitID,
+					id: update.data.unitID,
 					icon: {
-						url: 'data:image/svg+xml;utf-8,'+gSrv.buildSIDC(unit)
+						url: 'data:image/svg+xml;utf-8,'+gSrv.buildSIDC(update.data)
 					},
 					coords: {
-						latitude: unit.lat,
-						longitude: unit.lon
+						latitude: update.data.lat,
+						longitude: update.data.lon
 					},
 					optimized: false
 				};
 				_.get(gSrv, 'gmapObj.markers').push(curMarker);
 			}
-			if( _.get(unit, 'action') == 'U') {
+			if( _.get(update, 'action') == 'U') {
 				_.set(_.find(_.get(gSrv, 'gmapObj.markers'),
-					{id: unit.unitID}), 'coords.latitude', unit.lat);
+					{id: update.data.unitID}), 'coords.latitude', update.data.lat);
 				_.set(_.find(_.get(gSrv, 'gmapObj.markers'),
-					{id: unit.unitID}), 'coords.longitude', unit.lon);
+					{id: update.data.unitID}), 'coords.longitude', update.data.lon);
 			}
-			if( _.get(unit, 'action') == 'D') {
-				_.remove(_.get(gSrv, 'gmapObj.markers'), {id: unit.unitID});
+			if( _.get(update, 'action') == 'D') {
+				_.remove(_.get(gSrv, 'gmapObj.markers'), {id: update.data.unitID});
 			}
 			//$rootScope.$apply();
 		});
 
 		//process inbound Unit Stream
 		_.set(gSrv, 'buildSIDC', function (unit) {
-
 			var _sidcObject = {};
 			_sidcObject["codingScheme"] = 'S';
 			_sidcObject["affiliation"] = 'U';

@@ -16,16 +16,9 @@ var io  = require('socket.io').listen(server);
 
 //setup globals
 var serverObject = {
-	'1': {
-		units: [],
-		msgs: [],
-		events: []
-	},
-	'2': {
-		units: [],
-		msgs: [],
-		events: []
-	},
+	units: [],
+	msgs: [],
+	events: [],
 	globalMsgs: [],
 	globalCmds: [],
 	players: [],
@@ -42,28 +35,26 @@ io.on('connection', function( socket ) {
 	var remoteAddress = socket.handshake.address.replace(/^.*:/, '');
 	console.log('New connection from ' + remoteAddress );
 
-
-	/*
-	var initSrvObj = {units: _.get(serverObject, 'units', [])};
+	var initSrvObj =  _.get(serverObject, 'units', []);
 	console.log(serverObject.units.length);
-	if (initSrvObj.units.length > 0) {
-		_.forEach(initSrvObj.units, function(unit) {
+	if (initSrvObj.length > 0) {
+		_.forEach(initSrvObj, function(unit) {
+			//console.log(unit);
 			var curObj = {
-				curUnit: {}
+				action: 'INIT',
+				data: {
+					unitID: parseFloat(_.get(unit, 'unitID')),
+					type: _.get(unit, 'type'),
+					coalition: parseFloat(_.get(unit, 'coalition')),
+					lat: parseFloat(_.get(unit, 'lat')),
+					lon: parseFloat(_.get(unit, 'lon')),
+					playername: _.get(unit, 'playername', '')
+				}
 			};
-			curObj.curUnit = {
-				unitID: parseFloat(_.get(unit, 'unitID')),
-				type: _.get(unit, 'type'),
-				coalition: parseFloat(_.get(unit, 'coalition')),
-				lat: parseFloat(_.get(unit, 'lat')),
-				lon: parseFloat(_.get(unit, 'lon')),
-				playername: _.get(unit, 'playername', ''),
-				action: 'INIT'
-			};
-			updateQue.unitUpdates.push(_.cloneDeep(curObj)); //send only to new user
+			updateQue.que.push(_.cloneDeep(curObj));
 		});
 	}
-	*/
+
     socket.on('disconnect', function(){
         console.log(socket.id+' user disconnected');
     });
@@ -81,48 +72,55 @@ console.log(':: SERVER IS RUNNING!');
 _.set(serverObject, 'parse', function (update) {
 	var curObj = {};
     if (_.get(update, 'action') == 'C') {
-        if (typeof _.find(serverObject.units, { 'unitID': _.get(update, 'unitID') }) !== "undefined") {
-            _.find(serverObject.units, { 'unitID': _.get(update, 'unitID') }).action = 'U';
+        if (typeof _.find(serverObject.units, { 'unitID': _.get(update, 'data.unitID') }) !== "undefined") {
+            _.find(serverObject.units, { 'unitID': _.get(update, 'data.unitID') }).action = 'U';
         }else{
-            curObj.curUnit = {
-                unitID: parseFloat(_.get(update, 'unitID')),
-                type: _.get(update, 'type'),
-                coalition: parseFloat(_.get(update, 'coalition')),
-                lat: parseFloat(_.get(update, 'lat')),
-                lon: parseFloat(_.get(update, 'lon')),
-                playername: _.get(update, 'playername', ''),
-				action: 'C'
-            };
-            serverObject.units.push(_.cloneDeep(curObj.curUnit));
+            curObj = {
+            	action: 'C',
+            	data: {
+					unitID: parseFloat(_.get(update, 'data.unitID')),
+					type: _.get(update, 'data.type'),
+					coalition: parseFloat(_.get(update, 'data.coalition')),
+					lat: parseFloat(_.get(update, 'data.lat')),
+					lon: parseFloat(_.get(update, 'data.lon')),
+					playername: _.get(update, 'data.playername', '')
+				}
+			};
+            serverObject.units.push(_.cloneDeep(curObj.data));
 			updateQue.que.push(_.cloneDeep(curObj));
         }
     }
     if (_.get(update, 'action') == 'U') {
-        if (typeof _.find(serverObject.units, { 'unitID': _.get(update, 'unitID') }) !== "undefined") {
-            _.find(serverObject.units, { 'unitID': _.get(update, 'unitID') }).lat = _.get(update, 'lat');
-            _.find(serverObject.units, { 'unitID': _.get(update, 'unitID') }).lon =  _.get(update, 'lon');
-			_.set(curObj,'curUnit', curUnit = {
-                unitID: _.get(update, 'unitID'),
-                lat: _.get(update, 'lat'),
-                lon: _.get(update, 'lon'),
-                action: 'U'
-            });
+		if (typeof _.find(serverObject.units, { 'unitID': _.get(update, 'data.unitID') }) !== "undefined") {
+            _.find(serverObject.units, { 'unitID': _.get(update, 'data.unitID') }).lat = _.get(update, 'data.lat');
+            _.find(serverObject.units, { 'unitID': _.get(update, 'data.unitID') }).lon =  _.get(update, 'data.lon');
+			curObj = {
+				action: 'U',
+				data: {
+					unitID: _.get(update, 'data.unitID'),
+					lat: _.get(update, 'data.lat'),
+					lon: _.get(update, 'data.lon'),
+				}
+            };
 			updateQue.que.push(_.cloneDeep(curObj));
         }
     }
     if (_.get(update, 'action') == 'D') {
-		_.set(curObj,'curUnit', {
-            unitID: _.get(update, 'unitID'),
-            action: 'D'
-        });
+		curObj = {
+			action: 'D',
+			data: {
+				unitID: _.get(update, 'data.unitID'),
+				lat: _.get(update, 'data.lat'),
+				lon: _.get(update, 'data.lon'),
+			}
+		};
 		_.remove(serverObject.units, { 'unitID': _.get(update, 'unitID') });
 		updateQue.que.push(_.cloneDeep(curObj));
     }
 
     //playerUpdate
 	if (_.get(update, 'action') == 'players') {
-
-		updateQue.que.push(_.cloneDeep(update.data));
+		updateQue.que.push(_.cloneDeep(update));
 		return true;
 	}
 });
@@ -144,7 +142,7 @@ setInterval(function(){
 		chkPayload.push(updateQue.que[0]);
 		updateQue.que.shift();
 	}
-	//console.log(chkPayload);
+	//console.log('payload: '+chkPayload);
 	io.emit('srvUpd', chkPayload);
 
 }, 1 * 500);
@@ -262,19 +260,19 @@ getDCSDataClient(syncDCSData);
 getDCSDataGameGui(syncDCSDataGameGUI);
 
 function syncDCSData (DCSData) {
-	console.log('mission: ',DCSData);
+	//console.log('mission: ',DCSData);
 	//var timetest = new Date();
 	//_.set(serverObject, 'ClientRequestArray[0]', {action:'CMD',  reqID: _.random(1,9999)+'|'+timetest.getHours() + ':' + timetest.getMinutes() + ':' + timetest.getSeconds(), cmd:'trigger.action.outText("IT WORKS MOFO!", 2)'});
 
 	//accept updates
-	if (!_.isEmpty(DCSData)) {
-        _.forEach(DCSData, serverObject.parse);
+	if (!_.isEmpty(DCSData.que)) {
+        _.forEach(DCSData.que, serverObject.parse);
     }
     //send commands back client
 }
 
 function syncDCSDataGameGUI (DCSData) {
-	console.log('server: ',DCSData);
+	//console.log('server: ',DCSData);
 	//create requests from nodeserver if any exist
 	//send command response to chatlog of users website
 	//create listener from endusers to send commands to the server with/ sandbox/procedural call things

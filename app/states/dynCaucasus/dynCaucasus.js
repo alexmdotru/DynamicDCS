@@ -8,11 +8,11 @@
 		$scope.$on('socket:srvUpd', function (ev, data) {
 			//console.log('StreamingDataForCaucasus',data);
 			_.forEach(data, function(que) {
-				gmapControls.processUnitStream(_.get(que, 'curUnit'));
+				gmapControls.processUnitStream(que);
 			});
 		});
 		$scope.$on('socket:error', function () {
-			// console.log(ev, data);
+			//console.log(ev, data);
 		});
 		_.set($scope, 'map', _.get(gmapControls, 'gmapObj'));
 	}

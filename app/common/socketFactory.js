@@ -3,7 +3,7 @@
 
 	function SocketFactory (socketFactory) {
 		var mySocket = socketFactory();
-		mySocket.forward('srvUnitUpd'); //stream of unit updates
+		mySocket.forward('srvUpd'); //stream of unit updates
 		mySocket.forward('error'); //forward socket errors
 		return mySocket;
 	}
