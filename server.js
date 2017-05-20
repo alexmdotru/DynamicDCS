@@ -27,13 +27,17 @@ var serverObject = {
 	socketUsers: []
 };
 var updateQue = {
-	que: []
+	que1: [],
+	que2: [],
+	queall: []
 };
 
 //setup socket io
 io.on('connection', function( socket ) {
-	var remoteAddress = socket.handshake.address.replace(/^.*:/, '');
-	console.log('New connection from ' + remoteAddress );
+
+	var clientIpAddress = socket.request.headers['x-forwarded-for'] || socket.request.connection.remoteAddress;
+	clientIpAddress = clientIpAddress.replace(/^.*:/, '');
+	console.log(' new request from : '+clientIpAddress);
 
 	var initSrvObj =  _.get(serverObject, 'units', []);
 	console.log(serverObject.units.length);
@@ -51,7 +55,7 @@ io.on('connection', function( socket ) {
 					playername: _.get(unit, 'playername', '')
 				}
 			};
-			updateQue.que.push(_.cloneDeep(curObj));
+			updateQue['que'+parseFloat(_.get(unit, 'coalition'))].push(_.cloneDeep(curObj));
 		});
 	}
 
@@ -70,7 +74,7 @@ io.on('connection', function( socket ) {
 console.log(':: SERVER IS RUNNING!');
 
 _.set(serverObject, 'parse', function (update) {
-	console.log(_.get(update, 'action'));
+	//console.log(_.get(update, 'action'));
 	var curObj = {};
     if (_.get(update, 'action') == 'C') {
         if (typeof _.find(serverObject.units, { 'unitID': _.get(update, 'data.unitID') }) !== "undefined") {
@@ -88,7 +92,7 @@ _.set(serverObject, 'parse', function (update) {
 				}
 			};
             serverObject.units.push(_.cloneDeep(curObj.data));
-			updateQue.que.push(_.cloneDeep(curObj));
+			updateQue['que'+parseFloat(_.get(update, 'data.coalition'))].push(_.cloneDeep(curObj));
         }
     }
     if (_.get(update, 'action') == 'U') {
@@ -103,7 +107,7 @@ _.set(serverObject, 'parse', function (update) {
 					lon: _.get(update, 'data.lon'),
 				}
             };
-			updateQue.que.push(_.cloneDeep(curObj));
+			updateQue['que'+_.find(serverObject.units, { 'unitID': _.get(update, 'data.unitID') }).coalition].push(_.cloneDeep(curObj));
         }
     }
     if (_.get(update, 'action') == 'D') {
@@ -116,84 +120,131 @@ _.set(serverObject, 'parse', function (update) {
 			}
 		};
 		_.remove(serverObject.units, { 'unitID': _.get(update, 'unitID') });
-		updateQue.que.push(_.cloneDeep(curObj));
+		updateQue['que'+_.find(serverObject.units, { 'unitID': _.get(update, 'data.unitID') }).coalition].push(_.cloneDeep(curObj));
     }
 
     //playerUpdate
 	if (_.get(update, 'action') == 'players') {
-		updateQue.que.push(_.cloneDeep(update));
+		serverObject.players = update.data;
+		_.forEach(serverObject.players, function(player) {
+			var pArry = player.ipaddr.split(":");
+			if(pArry[0] === '' ){
+				_.set(player, 'socketID', _.get(_.find(_.get(io, 'sockets.sockets'), function (socket) {
+					if(socket.conn.remoteAddress === '::ffff:127.0.0.1' || socket.conn.remoteAddress === '::1'){
+						return true;
+					}
+					return false;
+				}), 'id', {}));
+			}else{
+				_.set(player, 'socketID', _.get(_.find(_.get(io, 'sockets.sockets'), function (socket) {
+					if(socket.conn.remoteAddress === '::ffff:'+player.ipaddr){
+						return true;
+					}
+					return false;
+				}), 'id', {}));
+			}
+			//console.log(player.socketID, player.side);
+			if(!_.isEmpty(player.socketID)) {
+				io.sockets.sockets[player.socketID].join(player.side);
+			}
+		});
+		//apply local information object
+		updateQue.queall.push(_.cloneDeep(update));
 	}
 
 	//Cmd Response
 	if (_.get(update, 'action') == 'CMDRESPONSE') {
-		updateQue.que.push(_.cloneDeep(update));
+    	//send response straight to client id
+		updateQue.queall.push(_.cloneDeep(update));
 	}
 
 	//mesg
 	if (_.get(update, 'action') == 'MESG') {
-		updateQue.que.push(_.cloneDeep(update));
+    	//console.log(_.get(update, 'data.message'),
+		//	_.find(serverObject.players, { 'id': _.get(update, 'data.playerID') }).side,
+		//	_.find(serverObject.players, { 'id': _.get(update, 'data.playerID') }).name);
+    	//see if player is on side, map him to que
+		//console.log(_.find(serverObject.players, { 'id': _.get(update, 'data.playerID') }).coalition);
+		if (_.isNumber(_.find(serverObject.players, { 'id': _.get(update, 'data.playerID') }).side)) {
+			updateQue['que'+_.find(serverObject.players, { 'id': _.get(update, 'data.playerID') }).side]
+				.push(_.cloneDeep(update));
+		}
 	}
 
 	//events
 	if (_.get(update, 'action') == 'friendly_fire') {
-		updateQue.que.push(_.cloneDeep(update));
+		updateQue.queall.push(_.cloneDeep(update));
 	}
 	if (_.get(update, 'action') == 'mission_end') {
-		updateQue.que.push(_.cloneDeep(update));
+		updateQue.queall.push(_.cloneDeep(update));
 	}
 	if (_.get(update, 'action') == 'kill') {
-		updateQue.que.push(_.cloneDeep(update));
+		updateQue.queall.push(_.cloneDeep(update));
 	}
 	if (_.get(update, 'action') == 'self_kill') {
-		updateQue.que.push(_.cloneDeep(update));
+		updateQue.queall.push(_.cloneDeep(update));
 	}
 	if (_.get(update, 'action') == 'change_slot') {
-		updateQue.que.push(_.cloneDeep(update));
+		updateQue.queall.push(_.cloneDeep(update));
 	}
 	if (_.get(update, 'action') == 'connect') {
-		updateQue.que.push(_.cloneDeep(update));
+		updateQue.queall.push(_.cloneDeep(update));
 	}
 	if (_.get(update, 'action') == 'disconnect') {
-		updateQue.que.push(_.cloneDeep(update));
+		updateQue.queall.push(_.cloneDeep(update));
 	}
 	if (_.get(update, 'action') == 'crash') {
-		updateQue.que.push(_.cloneDeep(update));
+		updateQue.queall.push(_.cloneDeep(update));
 	}
 	if (_.get(update, 'action') == 'eject') {
-		updateQue.que.push(_.cloneDeep(update));
+		updateQue.queall.push(_.cloneDeep(update));
 	}
 	if (_.get(update, 'action') == 'takeoff') {
-		updateQue.que.push(_.cloneDeep(update));
+		updateQue.queall.push(_.cloneDeep(update));
 	}
 	if (_.get(update, 'action') == 'landing') {
-		updateQue.que.push(_.cloneDeep(update));
+		updateQue.queall.push(_.cloneDeep(update));
 	}
 	if (_.get(update, 'action') == 'pilot_death') {
-		updateQue.que.push(_.cloneDeep(update));
+		updateQue.queall.push(_.cloneDeep(update));
 	}
 	return true;
 });
 
+
 //emit payload, every sec to start
 setInterval(function(){
 	//units
-	var perSendMax = 500;
-	var sendAmt = 0;
+	_.forEach(['que1','que2','queall'], function (que) {
+		var perSendMax = 500;
+		var sendAmt = 0;
 
-	if (updateQue.que.length < perSendMax) {
-		sendAmt = updateQue.que.length;
-	}else{
-		sendAmt = perSendMax
-	}
+		//console.log(updateQue[que].length);
+		if (updateQue[que].length < perSendMax) {
+			sendAmt = updateQue[que].length;
+		}else{
+			sendAmt = perSendMax
+		}
+		var chkPayload = [];
+		for (x=0; x < sendAmt; x++ ) {
+			chkPayload.push(updateQue[que][0]);
+			updateQue[que].shift();
+		}
+		//console.log('payload: '+chkPayload);
+		if (que === 'que1' && chkPayload.length != 0){
+			//console.log('B1');
+			io.to(1).emit('srvUpd', chkPayload);
+		}
+		if (que === 'que2' && chkPayload.length != 0){
+			//console.log('B2');
+			io.to(2).emit('srvUpd', chkPayload);
+		}
+		if (que === 'queall' && chkPayload.length != 0){
+			//console.log('BALL');
+			io.emit('srvUpd', chkPayload);
+		}
 
-	var chkPayload = [];
-	for (x=0; x < sendAmt; x++ ) {
-		chkPayload.push(updateQue.que[0]);
-		updateQue.que.shift();
-	}
-	//console.log('payload: '+chkPayload);
-	io.emit('srvUpd', chkPayload);
-
+	});
 }, 1 * 500);
 
 function getDCSDataClient(dataCallback) {

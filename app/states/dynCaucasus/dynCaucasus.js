@@ -4,11 +4,29 @@
 	function dynCaucasusController ($scope, gmapControls) {
 		console.log('dynCaucasus controller loaded');
 
+		var cObj = {};
+		_.set(cObj, 'players', {self: {}, });
+		_.set(cObj, 'msgs', {
+			que: []
+		});
+
 		//socket.io connectors
 		$scope.$on('socket:srvUpd', function (ev, data) {
-			console.log('StreamingDataForCaucasus',data);
-			_.forEach(data, function(que) {
-				gmapControls.processUnitStream(que);
+			console.log(data);
+			//console.log('StreamingDataForCaucasus',data);
+			_.forEach(data.que, function(que) {
+				if (que.action === 'INIT' || que.action === 'C' || que.action === 'U' || que.action === 'D') { //send map updates
+					gmapControls.processUnitStream(que);
+				}else if (que.action === 'players') { //player
+					console.log('PLAYER: ', que.action, que.data);
+					_.set(cObj, 'players', que.data);
+				}else if (que.action === 'MESG') { //send mesg
+					console.log('MESG: ', que.action, que.data)
+				}else if (que.action === 'CMD') { //send command responses
+					console.log('CMD: ', que.action, que.data)
+				} else {
+					console.log('EVENT', que.action, que.data)
+				}
 			});
 		});
 		$scope.$on('socket:error', function () {
