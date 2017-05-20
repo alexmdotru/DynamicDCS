@@ -134,6 +134,7 @@ _.set(serverObject, 'parse', function (update) {
 	if (_.get(update, 'action') == 'players') {
 		serverObject.players = update.data;
 		_.forEach(serverObject.players, function(player) {
+			var opSide = serverObject.oppositeSide(player.side);
 			var pArry = player.ipaddr.split(":");
 			if(pArry[0] === '' ){
 				_.set(player, 'socketID', _.get(_.find(_.get(io, 'sockets.sockets'), function (socket) {
@@ -150,15 +151,11 @@ _.set(serverObject, 'parse', function (update) {
 					return false;
 				}), 'id', {}));
 			}
-			//console.log(player.socketID, player.side);
 			if(!_.isEmpty(player.socketID)) {
-				console.log(io.sockets.sockets[player.socketID].rooms);
-				//if (io.sockets.sockets[player.socketID].rooms.indexOf(player.side) >= 0) {
+				if (!io.sockets.adapter.sids[player.socketID][player.side]) {
 					io.sockets.sockets[player.socketID].join(player.side);
-				//}
-				//if (io.sockets.sockets[player.socketID].rooms.indexOf(serverObject.oppositeSide(player.side)) >= 0) {
-				//	io.sockets.sockets[player.socketID].leave(serverObject.oppositeSide(player.side));
-				//}
+					io.sockets.sockets[player.socketID].leave(opSide);
+				}
 			}
 		});
 		//apply local information object
