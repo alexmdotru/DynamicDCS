@@ -6,7 +6,7 @@
 
 		//socket.io connectors
 		$scope.$on('socket:srvUpd', function (ev, data) {
-			//console.log('StreamingDataForCaucasus',data);
+			console.log('StreamingDataForCaucasus',data);
 			_.forEach(data, function(que) {
 				gmapControls.processUnitStream(que);
 			});

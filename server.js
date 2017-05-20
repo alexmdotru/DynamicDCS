@@ -70,6 +70,7 @@ io.on('connection', function( socket ) {
 console.log(':: SERVER IS RUNNING!');
 
 _.set(serverObject, 'parse', function (update) {
+	console.log(_.get(update, 'action'));
 	var curObj = {};
     if (_.get(update, 'action') == 'C') {
         if (typeof _.find(serverObject.units, { 'unitID': _.get(update, 'data.unitID') }) !== "undefined") {
@@ -121,8 +122,56 @@ _.set(serverObject, 'parse', function (update) {
     //playerUpdate
 	if (_.get(update, 'action') == 'players') {
 		updateQue.que.push(_.cloneDeep(update));
-		return true;
 	}
+
+	//Cmd Response
+	if (_.get(update, 'action') == 'CMDRESPONSE') {
+		updateQue.que.push(_.cloneDeep(update));
+	}
+
+	//mesg
+	if (_.get(update, 'action') == 'MESG') {
+		updateQue.que.push(_.cloneDeep(update));
+	}
+
+	//events
+	if (_.get(update, 'action') == 'friendly_fire') {
+		updateQue.que.push(_.cloneDeep(update));
+	}
+	if (_.get(update, 'action') == 'mission_end') {
+		updateQue.que.push(_.cloneDeep(update));
+	}
+	if (_.get(update, 'action') == 'kill') {
+		updateQue.que.push(_.cloneDeep(update));
+	}
+	if (_.get(update, 'action') == 'self_kill') {
+		updateQue.que.push(_.cloneDeep(update));
+	}
+	if (_.get(update, 'action') == 'change_slot') {
+		updateQue.que.push(_.cloneDeep(update));
+	}
+	if (_.get(update, 'action') == 'connect') {
+		updateQue.que.push(_.cloneDeep(update));
+	}
+	if (_.get(update, 'action') == 'disconnect') {
+		updateQue.que.push(_.cloneDeep(update));
+	}
+	if (_.get(update, 'action') == 'crash') {
+		updateQue.que.push(_.cloneDeep(update));
+	}
+	if (_.get(update, 'action') == 'eject') {
+		updateQue.que.push(_.cloneDeep(update));
+	}
+	if (_.get(update, 'action') == 'takeoff') {
+		updateQue.que.push(_.cloneDeep(update));
+	}
+	if (_.get(update, 'action') == 'landing') {
+		updateQue.que.push(_.cloneDeep(update));
+	}
+	if (_.get(update, 'action') == 'pilot_death') {
+		updateQue.que.push(_.cloneDeep(update));
+	}
+	return true;
 });
 
 //emit payload, every sec to start
@@ -263,7 +312,6 @@ function syncDCSData (DCSData) {
 	//console.log('mission: ',DCSData);
 	//var timetest = new Date();
 	//_.set(serverObject, 'ClientRequestArray[0]', {action:'CMD',  reqID: _.random(1,9999)+'|'+timetest.getHours() + ':' + timetest.getMinutes() + ':' + timetest.getSeconds(), cmd:'trigger.action.outText("IT WORKS MOFO!", 2)'});
-
 	//accept updates
 	if (!_.isEmpty(DCSData.que)) {
         _.forEach(DCSData.que, serverObject.parse);
@@ -272,15 +320,11 @@ function syncDCSData (DCSData) {
 }
 
 function syncDCSDataGameGUI (DCSData) {
-	//console.log('server: ',DCSData);
-	//create requests from nodeserver if any exist
-	//send command response to chatlog of users website
-	//create listener from endusers to send commands to the server with/ sandbox/procedural call things
 	//var timetest = new Date();
 	//_.set(serverObject, 'GameGUIrequestArray[0]', {action:'CMD',  reqID: _.random(1,9999)+'|'+timetest.getHours() + ':' + timetest.getMinutes() + ':' + timetest.getSeconds(), cmd:'net.get_player_list()'});
-
 	//accept updates
-	if (!_.isEmpty(DCSData)) {
-		_.forEach(DCSData, serverObject.parse);
+	if (!_.isEmpty(DCSData.que)) {
+		_.forEach(DCSData.que, serverObject.parse);
 	}
+	//send commands back client
 }

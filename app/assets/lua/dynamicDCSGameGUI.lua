@@ -24,12 +24,14 @@ local function getDataMessage()
 	--chunk send back updateQue.que
 	local chkSize = 500
 	local payload = {}
-	payload.cmdMsg = {}
+	payload.que = {}
 	for i = 1,chkSize do
-		table.insert(payload.cmdMsg, updateQue.que[i])
+		table.insert(payload.que, updateQue.que[i])
 		table.remove(updateQue.que, i)
 	end
-	payload.players = playerSync()
+	log(JSON:encode(playerSync()))
+	local curPlayers = playerSync()
+	table.insert(payload.que, curPlayers)
 	return payload
 end
 
