@@ -40,7 +40,7 @@ io.on('connection', function( socket ) {
 	console.log(' new request from : '+clientIpAddress);
 
 	var initSrvObj =  _.get(serverObject, 'units', []);
-	console.log(serverObject.units.length);
+	console.log("Units: "+serverObject.units.length);
 	if (initSrvObj.length > 0) {
 		_.forEach(initSrvObj, function(unit) {
 			//console.log(unit);
@@ -72,6 +72,13 @@ io.on('connection', function( socket ) {
 });
 
 console.log(':: SERVER IS RUNNING!');
+
+_.set(serverObject, 'oppositeSide', function(side){
+	if(side === 1){
+		return 2;
+	}
+	return 1;
+});
 
 _.set(serverObject, 'parse', function (update) {
 	//console.log(_.get(update, 'action'));
@@ -145,17 +152,25 @@ _.set(serverObject, 'parse', function (update) {
 			}
 			//console.log(player.socketID, player.side);
 			if(!_.isEmpty(player.socketID)) {
-				io.sockets.sockets[player.socketID].join(player.side);
+				console.log(io.sockets.sockets[player.socketID].rooms);
+				//if (io.sockets.sockets[player.socketID].rooms.indexOf(player.side) >= 0) {
+					io.sockets.sockets[player.socketID].join(player.side);
+				//}
+				//if (io.sockets.sockets[player.socketID].rooms.indexOf(serverObject.oppositeSide(player.side)) >= 0) {
+				//	io.sockets.sockets[player.socketID].leave(serverObject.oppositeSide(player.side));
+				//}
 			}
 		});
 		//apply local information object
-		updateQue.queall.push(_.cloneDeep(update));
+		updateQue.que1.push(_.cloneDeep(update));
+		updateQue.que2.push(_.cloneDeep(update));
 	}
 
 	//Cmd Response
 	if (_.get(update, 'action') == 'CMDRESPONSE') {
     	//send response straight to client id
-		updateQue.queall.push(_.cloneDeep(update));
+		updateQue.que1.push(_.cloneDeep(update));
+		updateQue.que2.push(_.cloneDeep(update));
 	}
 
 	//mesg
@@ -173,40 +188,52 @@ _.set(serverObject, 'parse', function (update) {
 
 	//events
 	if (_.get(update, 'action') == 'friendly_fire') {
-		updateQue.queall.push(_.cloneDeep(update));
+		updateQue.que1.push(_.cloneDeep(update));
+		updateQue.que2.push(_.cloneDeep(update));
 	}
 	if (_.get(update, 'action') == 'mission_end') {
-		updateQue.queall.push(_.cloneDeep(update));
+		updateQue.que1.push(_.cloneDeep(update));
+		updateQue.que2.push(_.cloneDeep(update));
 	}
 	if (_.get(update, 'action') == 'kill') {
-		updateQue.queall.push(_.cloneDeep(update));
+		updateQue.que1.push(_.cloneDeep(update));
+		updateQue.que2.push(_.cloneDeep(update));
 	}
 	if (_.get(update, 'action') == 'self_kill') {
-		updateQue.queall.push(_.cloneDeep(update));
+		updateQue.que1.push(_.cloneDeep(update));
+		updateQue.que2.push(_.cloneDeep(update));
 	}
 	if (_.get(update, 'action') == 'change_slot') {
-		updateQue.queall.push(_.cloneDeep(update));
+		updateQue.que1.push(_.cloneDeep(update));
+		updateQue.que2.push(_.cloneDeep(update));
 	}
 	if (_.get(update, 'action') == 'connect') {
-		updateQue.queall.push(_.cloneDeep(update));
+		updateQue.que1.push(_.cloneDeep(update));
+		updateQue.que2.push(_.cloneDeep(update));
 	}
 	if (_.get(update, 'action') == 'disconnect') {
-		updateQue.queall.push(_.cloneDeep(update));
+		updateQue.que1.push(_.cloneDeep(update));
+		updateQue.que2.push(_.cloneDeep(update));
 	}
 	if (_.get(update, 'action') == 'crash') {
-		updateQue.queall.push(_.cloneDeep(update));
+		updateQue.que1.push(_.cloneDeep(update));
+		updateQue.que2.push(_.cloneDeep(update));
 	}
 	if (_.get(update, 'action') == 'eject') {
-		updateQue.queall.push(_.cloneDeep(update));
+		updateQue.que1.push(_.cloneDeep(update));
+		updateQue.que2.push(_.cloneDeep(update));
 	}
 	if (_.get(update, 'action') == 'takeoff') {
-		updateQue.queall.push(_.cloneDeep(update));
+		updateQue.que1.push(_.cloneDeep(update));
+		updateQue.que2.push(_.cloneDeep(update));
 	}
 	if (_.get(update, 'action') == 'landing') {
-		updateQue.queall.push(_.cloneDeep(update));
+		updateQue.que1.push(_.cloneDeep(update));
+		updateQue.que2.push(_.cloneDeep(update));
 	}
 	if (_.get(update, 'action') == 'pilot_death') {
-		updateQue.queall.push(_.cloneDeep(update));
+		updateQue.que1.push(_.cloneDeep(update));
+		updateQue.que2.push(_.cloneDeep(update));
 	}
 	return true;
 });
@@ -215,7 +242,7 @@ _.set(serverObject, 'parse', function (update) {
 //emit payload, every sec to start
 setInterval(function(){
 	//units
-	_.forEach(['que1','que2','queall'], function (que) {
+	_.forEach(['que1','que2'], function (que) {
 		var perSendMax = 500;
 		var sendAmt = 0;
 
@@ -225,23 +252,20 @@ setInterval(function(){
 		}else{
 			sendAmt = perSendMax
 		}
-		var chkPayload = [];
+		var chkPayload = {que:[]};
 		for (x=0; x < sendAmt; x++ ) {
-			chkPayload.push(updateQue[que][0]);
+			chkPayload.que.push(updateQue[que][0]);
 			updateQue[que].shift();
+			//console.log(x);
 		}
 		//console.log('payload: '+chkPayload);
-		if (que === 'que1' && chkPayload.length != 0){
+		if (que === 'que1' && chkPayload.que.length){
 			//console.log('B1');
 			io.to(1).emit('srvUpd', chkPayload);
 		}
-		if (que === 'que2' && chkPayload.length != 0){
+		if (que === 'que2' && chkPayload.que.length){
 			//console.log('B2');
 			io.to(2).emit('srvUpd', chkPayload);
-		}
-		if (que === 'queall' && chkPayload.length != 0){
-			//console.log('BALL');
-			io.emit('srvUpd', chkPayload);
 		}
 
 	});

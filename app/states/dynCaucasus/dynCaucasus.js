@@ -12,7 +12,7 @@
 
 		//socket.io connectors
 		$scope.$on('socket:srvUpd', function (ev, data) {
-			console.log(data);
+			console.log(data.que);
 			//console.log('StreamingDataForCaucasus',data);
 			_.forEach(data.que, function(que) {
 				if (que.action === 'INIT' || que.action === 'C' || que.action === 'U' || que.action === 'D') { //send map updates
