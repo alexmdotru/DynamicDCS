@@ -13,11 +13,13 @@
 
 		//socket.io connectors
 		$scope.$on('socket:srvUpd', function (ev, data) {
-			console.log(ev,data);
+			console.log(data);
 			_.forEach(data.que, function(que) {
 				if (que.action === 'INIT' || que.action === 'C' || que.action === 'U' || que.action === 'D') {
 					if(que.action === 'U') {
 						if(!_.find(cObj.units, {'unitID': _.get(que, 'data.unitID')})){
+							_.set(cObj, 'units', []);
+							gmapControls.resetMarkers();
 							socket.emit('clientUpd', { action: 'unitINIT' });
 						}else{
 							_.find(cObj.units, {'unitID': _.get(que, 'data.unitID')}).lat = _.get(que, 'data.lat');

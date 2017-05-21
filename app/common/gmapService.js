@@ -115,6 +115,11 @@
 			});
 		});
 
+		_.set(gSrv, 'resetMarkers', function() {
+			_.set(gSrv, 'gmapObj.markers', []);
+			console.log('reset markers');
+		});
+
 		//process inbound Unit Stream
 		_.set(gSrv, 'processUnitStream', function (update) {
 			if( _.get(update, 'action') == 'C' || _.get(update, 'action') == 'INIT') {

@@ -1,6 +1,8 @@
 ﻿var _ = require('lodash');
 var express = require('express');
 
+var perSendMax = 500;
+
 //startup node server
 var app = express();
 
@@ -22,6 +24,7 @@ var serverObject = {
 	globalMsgs: [],
 	globalCmds: [],
 	players: [],
+	sockInfo: {},
 	ClientRequestArray: [],
 	GameGUIRequestArray: [],
 	socketUsers: []
@@ -32,35 +35,92 @@ var updateQue = {
 	queall: []
 };
 
+//utility functions, move someday
+function isNumeric(x) {
+	return !(isNaN(x)) && (typeof x !== "object") &&
+		(x != Number.POSITIVE_INFINITY) && (x != Number.NEGATIVE_INFINITY);
+}
+
 //setup socket io
 io.on('connection', function( socket ) {
-
 	var clientIpAddress = socket.request.headers['x-forwarded-for'] || socket.request.connection.remoteAddress;
 	clientIpAddress = clientIpAddress.replace(/^.*:/, '');
+	_.set(serverObject, 'sockInfo', {
+		action: 'socketInfo',
+		data: {
+			id: socket.id,
+			ip: clientIpAddress
+		}
+	});
 	console.log(' new request from : '+clientIpAddress);
+	//send socketid payload to client
+
 
 	//client updates
 	var initSrvObj =  _.get(serverObject, 'units', []);
 	console.log("Units: "+serverObject.units.length);
 	socket.on('clientUpd', function (data) {
-		//cmd and mesg's from clients, authenticate
+		var initQue = {que:[]};
+		var pSlot = _.find(serverObject.players, { 'socketID': _.get(socket, 'id') }).slot;
+		var pSide = _.find(serverObject.players, { 'socketID': _.get(socket, 'id') }).side;
 		console.log(data);
-		if (initSrvObj.length > 0) {
-			_.forEach(initSrvObj, function(unit) {
-				//console.log(unit);
-				var curObj = {
-					action: 'INIT',
-					data: {
-						unitID: parseFloat(_.get(unit, 'unitID')),
-						type: _.get(unit, 'type'),
-						coalition: parseFloat(_.get(unit, 'coalition')),
-						lat: parseFloat(_.get(unit, 'lat')),
-						lon: parseFloat(_.get(unit, 'lon')),
-						playername: _.get(unit, 'playername', '')
+		//first resend clientInfo
+		function initUnits (units, side) {
+			if (units.length > 0) {
+				_.forEach(units, function(unit) {
+					if(_.get(unit, 'coalition') === side){
+						var curObj = {
+							action: 'INIT',
+							data: {
+								unitID: parseFloat(_.get(unit, 'unitID')),
+								type: _.get(unit, 'type'),
+								coalition: parseFloat(_.get(unit, 'coalition')),
+								lat: parseFloat(_.get(unit, 'lat')),
+								lon: parseFloat(_.get(unit, 'lon')),
+								playername: _.get(unit, 'playername', '')
+							}
+						};
+						initQue.que.push(_.cloneDeep(curObj));
+						console.log(initQue.que);
 					}
-				};
-				updateQue['que'+parseFloat(_.get(unit, 'coalition'))].push(_.cloneDeep(curObj));
-			});
+				});
+			}
+		}
+
+		if (data.action === 'unitINIT') {
+			initQue.que.push(_.get(serverObject, 'sockInfo'));
+			if(isNumeric(parseInt(pSlot))){
+				//real vehicle, send correct side info
+				console.log('user in vehicle: ',pSlot);
+				initUnits (initSrvObj, pSide);
+
+			}else if(pSlot){
+				//user on side but not in vehicle
+				console.log('user on side but not in vehicle: ',pSlot);
+				initUnits (initSrvObj, pSide);
+
+
+			}else{
+				//user not chosen side
+				console.log('user not on side: ');
+			}
+
+
+
+
+			var sendAmt = 0;
+			//console.log(updateQue[que].length);
+			if (initQue.que.length < perSendMax) {
+				sendAmt = initQue.que.length;
+			}else{
+				sendAmt = perSendMax
+			}
+			var chkPayload = {que:[]};
+			for (x=0; x < sendAmt; x++ ) {
+				chkPayload.que.push(initQue.que[0]);
+				initQue.que.shift();
+			}
+			io.to(socket.id).emit('srvUpd', chkPayload);
 		}
 	});
 
@@ -245,7 +305,6 @@ _.set(serverObject, 'parse', function (update) {
 setInterval(function(){
 	//units
 	_.forEach(['que1','que2'], function (que) {
-		var perSendMax = 500;
 		var sendAmt = 0;
 
 		//console.log(updateQue[que].length);
