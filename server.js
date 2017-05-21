@@ -39,25 +39,30 @@ io.on('connection', function( socket ) {
 	clientIpAddress = clientIpAddress.replace(/^.*:/, '');
 	console.log(' new request from : '+clientIpAddress);
 
+	//client updates
 	var initSrvObj =  _.get(serverObject, 'units', []);
 	console.log("Units: "+serverObject.units.length);
-	if (initSrvObj.length > 0) {
-		_.forEach(initSrvObj, function(unit) {
-			//console.log(unit);
-			var curObj = {
-				action: 'INIT',
-				data: {
-					unitID: parseFloat(_.get(unit, 'unitID')),
-					type: _.get(unit, 'type'),
-					coalition: parseFloat(_.get(unit, 'coalition')),
-					lat: parseFloat(_.get(unit, 'lat')),
-					lon: parseFloat(_.get(unit, 'lon')),
-					playername: _.get(unit, 'playername', '')
-				}
-			};
-			updateQue['que'+parseFloat(_.get(unit, 'coalition'))].push(_.cloneDeep(curObj));
-		});
-	}
+	socket.on('clientUpd', function (data) {
+		//cmd and mesg's from clients, authenticate
+		console.log(data);
+		if (initSrvObj.length > 0) {
+			_.forEach(initSrvObj, function(unit) {
+				//console.log(unit);
+				var curObj = {
+					action: 'INIT',
+					data: {
+						unitID: parseFloat(_.get(unit, 'unitID')),
+						type: _.get(unit, 'type'),
+						coalition: parseFloat(_.get(unit, 'coalition')),
+						lat: parseFloat(_.get(unit, 'lat')),
+						lon: parseFloat(_.get(unit, 'lon')),
+						playername: _.get(unit, 'playername', '')
+					}
+				};
+				updateQue['que'+parseFloat(_.get(unit, 'coalition'))].push(_.cloneDeep(curObj));
+			});
+		}
+	});
 
     socket.on('disconnect', function(){
         console.log(socket.id+' user disconnected');

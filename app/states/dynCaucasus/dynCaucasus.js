@@ -1,24 +1,37 @@
 (function (angular) {
 	'use strict';
 
-	function dynCaucasusController ($scope, gmapControls) {
+	function dynCaucasusController ($scope, gmapControls, socket) {
 		console.log('dynCaucasus controller loaded');
 
 		var cObj = {};
-		_.set(cObj, 'players', {self: {}, });
+		_.set(cObj, 'units', []);
+		_.set(cObj, 'players', {self: {} });
 		_.set(cObj, 'msgs', {
 			que: []
 		});
 
 		//socket.io connectors
 		$scope.$on('socket:srvUpd', function (ev, data) {
-			//console.log(data.que);
-			//console.log('StreamingDataForCaucasus',data);
+			console.log(ev,data);
 			_.forEach(data.que, function(que) {
-				if (que.action === 'INIT' || que.action === 'C' || que.action === 'U' || que.action === 'D') { //send map updates
-					gmapControls.processUnitStream(que);
+				if (que.action === 'INIT' || que.action === 'C' || que.action === 'U' || que.action === 'D') {
+					if(que.action === 'U') {
+						if(!_.find(cObj.units, {'unitID': _.get(que, 'data.unitID')})){
+							socket.emit('clientUpd', { action: 'unitINIT' });
+						}else{
+							_.find(cObj.units, {'unitID': _.get(que, 'data.unitID')}).lat = _.get(que, 'data.lat');
+							_.find(cObj.units, {'unitID': _.get(que, 'data.unitID')}).lon = _.get(que, 'data.lon');
+							gmapControls.processUnitStream(que);
+						}
+					}else{
+						//send map updates
+						cObj.units.push(_.get(que, 'data'));
+						gmapControls.processUnitStream(que);
+					}
 				}else if (que.action === 'players') { //player
 					//console.log('PLAYER: ', que.action, que.data);
+
 					_.set(cObj, 'players', que.data);
 				}else if (que.action === 'MESG') { //send mesg
 					console.log('MESG: ', que.action, que.data)
@@ -34,7 +47,7 @@
 		});
 		_.set($scope, 'map', _.get(gmapControls, 'gmapObj'));
 	}
-	dynCaucasusController.$inject = ['$scope', 'gmapService'];
+	dynCaucasusController.$inject = ['$scope', 'gmapService', 'mySocket'];
 
 	function configFunction($stateProvider) {
 		$stateProvider
