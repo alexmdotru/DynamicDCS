@@ -1,4 +1,6 @@
-﻿var _ = require('lodash');
+﻿var admin = false;
+
+var _ = require('lodash');
 var express = require('express');
 
 var perSendMax = 500;
@@ -35,6 +37,7 @@ var updateQue = {
 	quespectator: [],
 	queadmin: []
 };
+var resetClient = {action: 'reset'};
 
 //utility functions, move someday
 function isNumeric(x) {
@@ -56,6 +59,15 @@ io.on('connection', function( socket ) {
 	console.log(' new request from : '+clientIpAddress);
 	//send socketid payload to client
 
+	//add admin to admin channel updates
+	if (admin) {
+		//admin
+		if (!io.sockets.adapter.sids[socket.id]['admin']) {
+			console.log('socket is admin');
+			io.sockets.sockets[socket.id].join('admin');
+			updateQue.queadmin.push(resetClient);
+		}
+	}
 
 	//client updates
 	var initSrvObj =  _.get(serverObject, 'units', []);
@@ -72,7 +84,7 @@ io.on('connection', function( socket ) {
 		function initUnits (units, side) {
 			if (units.length > 0) {
 				_.forEach(units, function(unit) {
-					if(_.get(unit, 'coalition') === side || side === 'A'){
+					if(_.get(unit, 'coalition') === side){
 						var curObj = {
 							action: 'INIT',
 							data: {
@@ -92,7 +104,7 @@ io.on('connection', function( socket ) {
 
 		if (data.action === 'unitINIT') {
 			initQue.que.push(_.get(serverObject, 'sockInfo'));
-			if(false){
+			if(admin){
 			//isadmin
 				console.log('user is admin');
 				initUnits (initSrvObj, 'A');
@@ -203,7 +215,6 @@ _.set(serverObject, 'parse', function (update) {
 
     //playerUpdate
 	if (_.get(update, 'action') === 'players') {
-		var resetClient = {action: 'reset'};
 		serverObject.players = update.data;
 		_.forEach(serverObject.players, function(player) {
 			var pArry = player.ipaddr.split(":");
@@ -227,7 +238,6 @@ _.set(serverObject, 'parse', function (update) {
 			if(!_.isEmpty(player.socketID)) {
 				if (false) {
 					//figure admins later
-					console.log('socket is admin');
 					if (io.sockets.adapter.sids[player.socketID]['1']) {
 						io.sockets.sockets[player.socketID].leave(1);
 					}
@@ -238,11 +248,11 @@ _.set(serverObject, 'parse', function (update) {
 						io.sockets.sockets[player.socketID].leave('spectator');
 					}
 					if (!io.sockets.adapter.sids[player.socketID]['admin']) {
+						console.log('socket is admin');
 						io.sockets.sockets[player.socketID].join('admin');
 						updateQue.queadmin.push(resetClient);
 					}
 				}else if (player.side === 0) {
-					console.log('socket is spectator');
 					if (io.sockets.adapter.sids[player.socketID]['1']) {
 						io.sockets.sockets[player.socketID].leave(1);
 					}
@@ -253,11 +263,11 @@ _.set(serverObject, 'parse', function (update) {
 						io.sockets.sockets[player.socketID].leave('admin');
 					}
 					if (!io.sockets.adapter.sids[player.socketID]['spectator']) {
+						console.log('socket is spectator');
 						io.sockets.sockets[player.socketID].join('spectator');
 						updateQue.quespectator.push(resetClient);
 					}
 				}else if (player.side === 1) {
-					console.log('socket is player in slot, side 1');
 					if (io.sockets.adapter.sids[player.socketID]['admin']) {
 						io.sockets.sockets[player.socketID].leave('admin');
 					}
@@ -268,12 +278,11 @@ _.set(serverObject, 'parse', function (update) {
 						io.sockets.sockets[player.socketID].leave(2);
 					}
 					if (!io.sockets.adapter.sids[player.socketID]['1']) {
-						console.log('join socket 1');
+						console.log('socket is player in slot, side 1');
 						io.sockets.sockets[player.socketID].join(1);
 						updateQue.que1.push(resetClient);
 					}
 				}else if (player.side === 2) {
-					console.log('socket is player in slot, side 2');
 					if (io.sockets.adapter.sids[player.socketID]['admin']) {
 						io.sockets.sockets[player.socketID].leave('admin');
 					}
@@ -284,7 +293,7 @@ _.set(serverObject, 'parse', function (update) {
 						io.sockets.sockets[player.socketID].leave(1);
 					}
 					if (!io.sockets.adapter.sids[player.socketID]['2']) {
-						console.log('join socket 2');
+						console.log('socket is player in slot, side 2');
 						io.sockets.sockets[player.socketID].join(2);
 						updateQue.que2.push(resetClient);
 					}
