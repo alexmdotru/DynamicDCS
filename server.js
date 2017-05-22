@@ -32,7 +32,8 @@ var serverObject = {
 var updateQue = {
 	que1: [],
 	que2: [],
-	queall: []
+	quespectator: [],
+	queadmin: []
 };
 
 //utility functions, move someday
@@ -61,14 +62,17 @@ io.on('connection', function( socket ) {
 	console.log("Units: "+serverObject.units.length);
 	socket.on('clientUpd', function (data) {
 		var initQue = {que:[]};
-		var pSlot = _.find(serverObject.players, { 'socketID': _.get(socket, 'id') }).slot;
-		var pSide = _.find(serverObject.players, { 'socketID': _.get(socket, 'id') }).side;
-		console.log(data);
+		var pSlot = _.get(_.find(serverObject.players, { 'socketID': _.get(socket, 'id') }), 'slot', '');
+		var pSide = _.get(_.find(serverObject.players, { 'socketID': _.get(socket, 'id') }), 'side', 0);
+		var spectator = {
+			action: 'spectator',
+			data: {}
+		};
 		//first resend clientInfo
 		function initUnits (units, side) {
 			if (units.length > 0) {
 				_.forEach(units, function(unit) {
-					if(_.get(unit, 'coalition') === side){
+					if(_.get(unit, 'coalition') === side || side === 'A'){
 						var curObj = {
 							action: 'INIT',
 							data: {
@@ -81,7 +85,6 @@ io.on('connection', function( socket ) {
 							}
 						};
 						initQue.que.push(_.cloneDeep(curObj));
-						console.log(initQue.que);
 					}
 				});
 			}
@@ -89,24 +92,24 @@ io.on('connection', function( socket ) {
 
 		if (data.action === 'unitINIT') {
 			initQue.que.push(_.get(serverObject, 'sockInfo'));
-			if(isNumeric(parseInt(pSlot))){
+			if(false){
+			//isadmin
+				console.log('user is admin');
+				initUnits (initSrvObj, 'A');
+
+			}else if(isNumeric(parseInt(pSlot))){
 				//real vehicle, send correct side info
 				console.log('user in vehicle: ',pSlot);
 				initUnits (initSrvObj, pSide);
-
 			}else if(pSlot){
 				//user on side but not in vehicle
 				console.log('user on side but not in vehicle: ',pSlot);
 				initUnits (initSrvObj, pSide);
-
-
 			}else{
 				//user not chosen side
 				console.log('user not on side: ');
+				initUnits (spectator, pSide);
 			}
-
-
-
 
 			var sendAmt = 0;
 			//console.log(updateQue[que].length);
@@ -148,7 +151,7 @@ _.set(serverObject, 'oppositeSide', function(side){
 _.set(serverObject, 'parse', function (update) {
 	//console.log(_.get(update, 'action'));
 	var curObj = {};
-    if (_.get(update, 'action') == 'C') {
+    if (_.get(update, 'action') === 'C') {
         if (typeof _.find(serverObject.units, { 'unitID': _.get(update, 'data.unitID') }) !== "undefined") {
             _.find(serverObject.units, { 'unitID': _.get(update, 'data.unitID') }).action = 'U';
         }else{
@@ -165,9 +168,10 @@ _.set(serverObject, 'parse', function (update) {
 			};
             serverObject.units.push(_.cloneDeep(curObj.data));
 			updateQue['que'+parseFloat(_.get(update, 'data.coalition'))].push(_.cloneDeep(curObj));
+			updateQue.queadmin.push(_.cloneDeep(curObj));
         }
     }
-    if (_.get(update, 'action') == 'U') {
+    if (_.get(update, 'action') === 'U') {
 		if (typeof _.find(serverObject.units, { 'unitID': _.get(update, 'data.unitID') }) !== "undefined") {
             _.find(serverObject.units, { 'unitID': _.get(update, 'data.unitID') }).lat = _.get(update, 'data.lat');
             _.find(serverObject.units, { 'unitID': _.get(update, 'data.unitID') }).lon =  _.get(update, 'data.lon');
@@ -180,9 +184,10 @@ _.set(serverObject, 'parse', function (update) {
 				}
             };
 			updateQue['que'+_.find(serverObject.units, { 'unitID': _.get(update, 'data.unitID') }).coalition].push(_.cloneDeep(curObj));
+			updateQue.queadmin.push(_.cloneDeep(curObj));
         }
     }
-    if (_.get(update, 'action') == 'D') {
+    if (_.get(update, 'action') === 'D') {
 		curObj = {
 			action: 'D',
 			data: {
@@ -193,13 +198,14 @@ _.set(serverObject, 'parse', function (update) {
 		};
 		_.remove(serverObject.units, { 'unitID': _.get(update, 'unitID') });
 		updateQue['que'+_.find(serverObject.units, { 'unitID': _.get(update, 'data.unitID') }).coalition].push(_.cloneDeep(curObj));
+		updateQue.queadmin.push(_.cloneDeep(curObj));
     }
 
     //playerUpdate
-	if (_.get(update, 'action') == 'players') {
+	if (_.get(update, 'action') === 'players') {
+		var resetClient = {action: 'reset'};
 		serverObject.players = update.data;
 		_.forEach(serverObject.players, function(player) {
-			var opSide = serverObject.oppositeSide(player.side);
 			var pArry = player.ipaddr.split(":");
 			if(pArry[0] === '' ){
 				_.set(player, 'socketID', _.get(_.find(_.get(io, 'sockets.sockets'), function (socket) {
@@ -216,86 +222,171 @@ _.set(serverObject, 'parse', function (update) {
 					return false;
 				}), 'id', {}));
 			}
+
+			//rewrite this someday, sets up the socket.io information rooms for updates
 			if(!_.isEmpty(player.socketID)) {
-				if (!io.sockets.adapter.sids[player.socketID][player.side]) {
-					io.sockets.sockets[player.socketID].join(player.side);
-					io.sockets.sockets[player.socketID].leave(opSide);
+				if (false) {
+					//figure admins later
+					console.log('socket is admin');
+					if (io.sockets.adapter.sids[player.socketID]['1']) {
+						io.sockets.sockets[player.socketID].leave(1);
+					}
+					if (io.sockets.adapter.sids[player.socketID]['2']) {
+						io.sockets.sockets[player.socketID].leave(2);
+					}
+					if (io.sockets.adapter.sids[player.socketID]['spectator']) {
+						io.sockets.sockets[player.socketID].leave('spectator');
+					}
+					if (!io.sockets.adapter.sids[player.socketID]['admin']) {
+						io.sockets.sockets[player.socketID].join('admin');
+						updateQue.queadmin.push(resetClient);
+					}
+				}else if (player.side === 0) {
+					console.log('socket is spectator');
+					if (io.sockets.adapter.sids[player.socketID]['1']) {
+						io.sockets.sockets[player.socketID].leave(1);
+					}
+					if (io.sockets.adapter.sids[player.socketID]['2']) {
+						io.sockets.sockets[player.socketID].leave(2);
+					}
+					if (io.sockets.adapter.sids[player.socketID]['admin']) {
+						io.sockets.sockets[player.socketID].leave('admin');
+					}
+					if (!io.sockets.adapter.sids[player.socketID]['spectator']) {
+						io.sockets.sockets[player.socketID].join('spectator');
+						updateQue.quespectator.push(resetClient);
+					}
+				}else if (player.side === 1) {
+					console.log('socket is player in slot, side 1');
+					if (io.sockets.adapter.sids[player.socketID]['admin']) {
+						io.sockets.sockets[player.socketID].leave('admin');
+					}
+					if (io.sockets.adapter.sids[player.socketID]['spectator']) {
+						io.sockets.sockets[player.socketID].leave('spectator');
+					}
+					if (io.sockets.adapter.sids[player.socketID]['2']) {
+						io.sockets.sockets[player.socketID].leave(2);
+					}
+					if (!io.sockets.adapter.sids[player.socketID]['1']) {
+						console.log('join socket 1');
+						io.sockets.sockets[player.socketID].join(1);
+						updateQue.que1.push(resetClient);
+					}
+				}else if (player.side === 2) {
+					console.log('socket is player in slot, side 2');
+					if (io.sockets.adapter.sids[player.socketID]['admin']) {
+						io.sockets.sockets[player.socketID].leave('admin');
+					}
+					if (io.sockets.adapter.sids[player.socketID]['spectator']) {
+						io.sockets.sockets[player.socketID].leave('spectator');
+					}
+					if (io.sockets.adapter.sids[player.socketID]['1']) {
+						io.sockets.sockets[player.socketID].leave(1);
+					}
+					if (!io.sockets.adapter.sids[player.socketID]['2']) {
+						console.log('join socket 2');
+						io.sockets.sockets[player.socketID].join(2);
+						updateQue.que2.push(resetClient);
+					}
 				}
 			}
 		});
 		//apply local information object
 		updateQue.que1.push(_.cloneDeep(update));
 		updateQue.que2.push(_.cloneDeep(update));
+		updateQue.quespectator.push(_.cloneDeep(update));
+		updateQue.queadmin.push(_.cloneDeep(update));
 	}
 
 	//Cmd Response
-	if (_.get(update, 'action') == 'CMDRESPONSE') {
+	if (_.get(update, 'action') === 'CMDRESPONSE') {
     	//send response straight to client id
 		updateQue.que1.push(_.cloneDeep(update));
 		updateQue.que2.push(_.cloneDeep(update));
+		updateQue.queadmin.push(_.cloneDeep(update));
 	}
 
 	//mesg
-	if (_.get(update, 'action') == 'MESG') {
-    	//console.log(_.get(update, 'data.message'),
-		//	_.find(serverObject.players, { 'id': _.get(update, 'data.playerID') }).side,
-		//	_.find(serverObject.players, { 'id': _.get(update, 'data.playerID') }).name);
-    	//see if player is on side, map him to que
-		//console.log(_.find(serverObject.players, { 'id': _.get(update, 'data.playerID') }).coalition);
+	if (_.get(update, 'action') === 'MESG') {
 		if (_.isNumber(_.find(serverObject.players, { 'id': _.get(update, 'data.playerID') }).side)) {
 			updateQue['que'+_.find(serverObject.players, { 'id': _.get(update, 'data.playerID') }).side]
 				.push(_.cloneDeep(update));
 		}
+		updateQue.queadmin.push(_.cloneDeep(update));
 	}
 
 	//events
-	if (_.get(update, 'action') == 'friendly_fire') {
+	if (_.get(update, 'action') === 'friendly_fire') {
 		updateQue.que1.push(_.cloneDeep(update));
 		updateQue.que2.push(_.cloneDeep(update));
+		updateQue.quespectator.push(_.cloneDeep(update));
+		updateQue.queadmin.push(_.cloneDeep(update));
 	}
-	if (_.get(update, 'action') == 'mission_end') {
+	if (_.get(update, 'action') === 'mission_end') {
 		updateQue.que1.push(_.cloneDeep(update));
 		updateQue.que2.push(_.cloneDeep(update));
+		updateQue.quespectator.push(_.cloneDeep(update));
+		updateQue.queadmin.push(_.cloneDeep(update));
 	}
-	if (_.get(update, 'action') == 'kill') {
+	if (_.get(update, 'action') === 'kill') {
 		updateQue.que1.push(_.cloneDeep(update));
 		updateQue.que2.push(_.cloneDeep(update));
+		updateQue.quespectator.push(_.cloneDeep(update));
+		updateQue.queadmin.push(_.cloneDeep(update));
 	}
-	if (_.get(update, 'action') == 'self_kill') {
+	if (_.get(update, 'action') === 'self_kill') {
 		updateQue.que1.push(_.cloneDeep(update));
 		updateQue.que2.push(_.cloneDeep(update));
+		updateQue.quespectator.push(_.cloneDeep(update));
+		updateQue.queadmin.push(_.cloneDeep(update));
 	}
-	if (_.get(update, 'action') == 'change_slot') {
+	if (_.get(update, 'action') === 'change_slot') {
 		updateQue.que1.push(_.cloneDeep(update));
 		updateQue.que2.push(_.cloneDeep(update));
+		updateQue.quespectator.push(_.cloneDeep(update));
+		updateQue.queadmin.push(_.cloneDeep(update));
 	}
-	if (_.get(update, 'action') == 'connect') {
+	if (_.get(update, 'action') === 'connect') {
 		updateQue.que1.push(_.cloneDeep(update));
 		updateQue.que2.push(_.cloneDeep(update));
+		updateQue.quespectator.push(_.cloneDeep(update));
+		updateQue.queadmin.push(_.cloneDeep(update));
 	}
-	if (_.get(update, 'action') == 'disconnect') {
+	if (_.get(update, 'action') === 'disconnect') {
 		updateQue.que1.push(_.cloneDeep(update));
 		updateQue.que2.push(_.cloneDeep(update));
+		updateQue.quespectator.push(_.cloneDeep(update));
+		updateQue.queadmin.push(_.cloneDeep(update));
 	}
-	if (_.get(update, 'action') == 'crash') {
+	if (_.get(update, 'action') === 'crash') {
 		updateQue.que1.push(_.cloneDeep(update));
 		updateQue.que2.push(_.cloneDeep(update));
+		updateQue.quespectator.push(_.cloneDeep(update));
+		updateQue.queadmin.push(_.cloneDeep(update));
 	}
-	if (_.get(update, 'action') == 'eject') {
+	if (_.get(update, 'action') === 'eject') {
 		updateQue.que1.push(_.cloneDeep(update));
 		updateQue.que2.push(_.cloneDeep(update));
+		updateQue.quespectator.push(_.cloneDeep(update));
+		updateQue.queadmin.push(_.cloneDeep(update));
 	}
-	if (_.get(update, 'action') == 'takeoff') {
+	if (_.get(update, 'action') === 'takeoff') {
 		updateQue.que1.push(_.cloneDeep(update));
 		updateQue.que2.push(_.cloneDeep(update));
+		updateQue.quespectator.push(_.cloneDeep(update));
+		updateQue.queadmin.push(_.cloneDeep(update));
 	}
-	if (_.get(update, 'action') == 'landing') {
+	if (_.get(update, 'action') === 'landing') {
 		updateQue.que1.push(_.cloneDeep(update));
 		updateQue.que2.push(_.cloneDeep(update));
+		updateQue.quespectator.push(_.cloneDeep(update));
+		updateQue.queadmin.push(_.cloneDeep(update));
 	}
-	if (_.get(update, 'action') == 'pilot_death') {
+	if (_.get(update, 'action') === 'pilot_death') {
 		updateQue.que1.push(_.cloneDeep(update));
 		updateQue.que2.push(_.cloneDeep(update));
+		updateQue.quespectator.push(_.cloneDeep(update));
+		updateQue.queadmin.push(_.cloneDeep(update));
 	}
 	return true;
 });
@@ -304,7 +395,7 @@ _.set(serverObject, 'parse', function (update) {
 //emit payload, every sec to start
 setInterval(function(){
 	//units
-	_.forEach(['que1','que2'], function (que) {
+	_.forEach(['que1','que2','quespectator','queadmin'], function (que) {
 		var sendAmt = 0;
 
 		//console.log(updateQue[que].length);
@@ -317,18 +408,20 @@ setInterval(function(){
 		for (x=0; x < sendAmt; x++ ) {
 			chkPayload.que.push(updateQue[que][0]);
 			updateQue[que].shift();
-			//console.log(x);
 		}
 		//console.log('payload: '+chkPayload);
 		if (que === 'que1' && chkPayload.que.length){
-			//console.log('B1');
 			io.to(1).emit('srvUpd', chkPayload);
 		}
 		if (que === 'que2' && chkPayload.que.length){
-			//console.log('B2');
 			io.to(2).emit('srvUpd', chkPayload);
 		}
-
+		if (que === 'quespectator' && chkPayload.que.length){
+			io.to('spectator').emit('srvUpd', chkPayload);
+		}
+		if (que === 'queadmin' && chkPayload.que.length){
+			io.to('admin').emit('srvUpd', chkPayload);
+		}
 	});
 }, 1 * 500);
 

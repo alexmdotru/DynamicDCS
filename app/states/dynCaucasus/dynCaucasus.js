@@ -11,6 +11,12 @@
 			que: []
 		});
 
+		$scope.$on('socket:connect', function () {
+			_.set(cObj, 'units', []);
+			gmapControls.resetMarkers();
+			socket.emit('clientUpd', { action: 'unitINIT' });
+		});
+
 		//socket.io connectors
 		$scope.$on('socket:srvUpd', function (ev, data) {
 			console.log(data);
@@ -31,9 +37,10 @@
 						cObj.units.push(_.get(que, 'data'));
 						gmapControls.processUnitStream(que);
 					}
+				}else if (que.action === 'reset') { //spectator
+					_.set(cObj, 'units', []);
+					gmapControls.resetMarkers();
 				}else if (que.action === 'players') { //player
-					//console.log('PLAYER: ', que.action, que.data);
-
 					_.set(cObj, 'players', que.data);
 				}else if (que.action === 'MESG') { //send mesg
 					console.log('MESG: ', que.action, que.data)
