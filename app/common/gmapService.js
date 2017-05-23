@@ -100,30 +100,10 @@
 				markers: [],
 				markersEvents: {
 					click: function(marker, eventName, model, args) {
-						console.log(marker, eventName, model);
 						gSrv.gmapObj.window.model = model;
 						gSrv.gmapObj.window.show = true;
 					}
 				}
-				/*
-				events: {
-					/
-					click: function (map, eventName, originalEventArgs) {
-						var e = originalEventArgs[0];
-						var lat = e.latLng.lat(),
-							lon = e.latLng.lng();
-						var marker = {
-							id: Date.now(),
-							coords: {
-								latitude: lat,
-								longitude: lon
-							}
-						};
-						gSrv.gmapObj.markers.push(marker);
-						$rootScope.$apply();
-					}
-
-				} */
 			});
 		});
 
@@ -133,13 +113,14 @@
 		});
 
 		//process inbound Unit Stream
-		console.log(_.get(gSrv, 'gmapObj.markers'));
+		//console.log(_.get(gSrv, 'gmapObj.markers'));
 		_.set(gSrv, 'processUnitStream', function (update) {
 			if( _.get(update, 'action') == 'C' || _.get(update, 'action') == 'INIT') {
 				var curMarker = {
 					id: update.data.unitID,
 					icon: {
-						url: 'data:image/svg+xml;utf-8,'+gSrv.buildSIDC(update.data)
+						url: 'data:image/svg+xml;utf-8,'+gSrv.buildSIDC(update.data),
+						anchor: new $window.google.maps.Point(20, 0),
 					},
 					type: update.data.type,
 					playername: update.data.playername,
