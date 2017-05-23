@@ -39,6 +39,9 @@
 			'ui.bootstrap',
 			'dynamic-dcs.chat-box'
 		])
+		.config(['$qProvider', function ($qProvider) {
+			$qProvider.errorOnUnhandledRejections(false);
+		}])
 		.controller('dynamicDCSController', dynamicDCSController)
 	;
 

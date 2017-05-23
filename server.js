@@ -34,7 +34,7 @@ var serverObject = {
 var updateQue = {
 	que1: [],
 	que2: [],
-	quespectator: [],
+	que0: [],
 	queadmin: []
 };
 
@@ -112,8 +112,8 @@ io.on('connection', function( socket ) {
 	console.log(' new request from : '+clientIpAddress);
 	//send socketid payload to client
 
-	if (!io.sockets.adapter.sids[socket.id]['spectator']) {
-		io.sockets.sockets[socket.id].join('spectator');
+	if (!io.sockets.adapter.sids[socket.id]['0']) {
+		io.sockets.sockets[socket.id].join(0);
 	}
 
 	//client updates
@@ -197,85 +197,87 @@ _.set(serverObject, 'parse', function (update) {
 	if (_.get(update, 'action') === 'players') {
 		serverObject.players = update.data;
 		_.forEach(serverObject.players, function(player) {
-			var pArry = player.ipaddr.split(":");
-			if(pArry[0] === '' ){
-				_.set(player, 'socketID', _.get(_.find(_.get(io, 'sockets.sockets'), function (socket) {
-					if(socket.conn.remoteAddress === '::ffff:127.0.0.1' || socket.conn.remoteAddress === '::1'){
-						return true;
-					}
-					return false;
-				}), 'id', {}));
-			}else{
-				_.set(player, 'socketID', _.get(_.find(_.get(io, 'sockets.sockets'), function (socket) {
-					if(socket.conn.remoteAddress === '::ffff:'+player.ipaddr){
-						return true;
-					}
-					return false;
-				}), 'id', {}));
-			}
+			if (player.ipaddr){
+				var pArry = player.ipaddr.split(":");
+				if(pArry[0] === '' ){
+					_.set(player, 'socketID', _.get(_.find(_.get(io, 'sockets.sockets'), function (socket) {
+						if(socket.conn.remoteAddress === '::ffff:127.0.0.1' || socket.conn.remoteAddress === '::1'){
+							return true;
+						}
+						return false;
+					}), 'id', {}));
+				}else{
+					_.set(player, 'socketID', _.get(_.find(_.get(io, 'sockets.sockets'), function (socket) {
+						if(socket.conn.remoteAddress === '::ffff:'+player.ipaddr){
+							return true;
+						}
+						return false;
+					}), 'id', {}));
+				}
 
-			//rewrite this someday, sets up the socket.io information rooms for updates
-			if(!_.isEmpty(player.socketID)) {
-				if (admin) {
-					//figure admins later
-					if (io.sockets.adapter.sids[player.socketID]['1']) {
-						io.sockets.sockets[player.socketID].leave(1);
-					}
-					if (io.sockets.adapter.sids[player.socketID]['2']) {
-						io.sockets.sockets[player.socketID].leave(2);
-					}
-					if (io.sockets.adapter.sids[player.socketID]['spectator']) {
-						io.sockets.sockets[player.socketID].leave('spectator');
-					}
-					if (!io.sockets.adapter.sids[player.socketID]['admin']) {
-						console.log(player.name + ' socket is admin');
-						io.sockets.sockets[player.socketID].join('admin');
-						sendInit(player.socketID);
-					}
-				}else if (player.side === 0) {
-					if (io.sockets.adapter.sids[player.socketID]['1']) {
-						io.sockets.sockets[player.socketID].leave(1);
-					}
-					if (io.sockets.adapter.sids[player.socketID]['2']) {
-						io.sockets.sockets[player.socketID].leave(2);
-					}
-					if (io.sockets.adapter.sids[player.socketID]['admin']) {
-						io.sockets.sockets[player.socketID].leave('admin');
-					}
-					if (!io.sockets.adapter.sids[player.socketID]['spectator']) {
-						console.log(player.name + ' is spectator');
-						io.sockets.sockets[player.socketID].join('spectator');
-						sendInit(player.socketID);
-					}
-				}else if (player.side === 1) {
-					if (io.sockets.adapter.sids[player.socketID]['admin']) {
-						io.sockets.sockets[player.socketID].leave('admin');
-					}
-					if (io.sockets.adapter.sids[player.socketID]['spectator']) {
-						io.sockets.sockets[player.socketID].leave('spectator');
-					}
-					if (io.sockets.adapter.sids[player.socketID]['2']) {
-						io.sockets.sockets[player.socketID].leave(2);
-					}
-					if (!io.sockets.adapter.sids[player.socketID]['1']) {
-						console.log(player.name + ' is player in slot, side 1');
-						io.sockets.sockets[player.socketID].join(1);
-						sendInit(player.socketID);
-					}
-				}else if (player.side === 2) {
-					if (io.sockets.adapter.sids[player.socketID]['admin']) {
-						io.sockets.sockets[player.socketID].leave('admin');
-					}
-					if (io.sockets.adapter.sids[player.socketID]['spectator']) {
-						io.sockets.sockets[player.socketID].leave('spectator');
-					}
-					if (io.sockets.adapter.sids[player.socketID]['1']) {
-						io.sockets.sockets[player.socketID].leave(1);
-					}
-					if (!io.sockets.adapter.sids[player.socketID]['2']) {
-						console.log(player.name + ' is player in slot, side 2');
-						io.sockets.sockets[player.socketID].join(2);
-						sendInit(player.socketID);
+				//rewrite this someday, sets up the socket.io information rooms for updates
+				if(!_.isEmpty(player.socketID)) {
+					if (admin) {
+						//figure admins later
+						if (io.sockets.adapter.sids[player.socketID]['1']) {
+							io.sockets.sockets[player.socketID].leave(1);
+						}
+						if (io.sockets.adapter.sids[player.socketID]['2']) {
+							io.sockets.sockets[player.socketID].leave(2);
+						}
+						if (io.sockets.adapter.sids[player.socketID]['0']) {
+							io.sockets.sockets[player.socketID].leave(0);
+						}
+						if (!io.sockets.adapter.sids[player.socketID]['admin']) {
+							console.log(player.name + ' socket is admin');
+							io.sockets.sockets[player.socketID].join('admin');
+							sendInit(player.socketID);
+						}
+					}else if (player.side === 0) {
+						if (io.sockets.adapter.sids[player.socketID]['1']) {
+							io.sockets.sockets[player.socketID].leave(1);
+						}
+						if (io.sockets.adapter.sids[player.socketID]['2']) {
+							io.sockets.sockets[player.socketID].leave(2);
+						}
+						if (io.sockets.adapter.sids[player.socketID]['admin']) {
+							io.sockets.sockets[player.socketID].leave('admin');
+						}
+						if (!io.sockets.adapter.sids[player.socketID]['0']) {
+							console.log(player.name + ' is spectator');
+							io.sockets.sockets[player.socketID].join(0);
+							sendInit(player.socketID);
+						}
+					}else if (player.side === 1) {
+						if (io.sockets.adapter.sids[player.socketID]['admin']) {
+							io.sockets.sockets[player.socketID].leave('admin');
+						}
+						if (io.sockets.adapter.sids[player.socketID]['0']) {
+							io.sockets.sockets[player.socketID].leave(0);
+						}
+						if (io.sockets.adapter.sids[player.socketID]['2']) {
+							io.sockets.sockets[player.socketID].leave(2);
+						}
+						if (!io.sockets.adapter.sids[player.socketID]['1']) {
+							console.log(player.name + ' is player in slot, side 1');
+							io.sockets.sockets[player.socketID].join(1);
+							sendInit(player.socketID);
+						}
+					}else if (player.side === 2) {
+						if (io.sockets.adapter.sids[player.socketID]['admin']) {
+							io.sockets.sockets[player.socketID].leave('admin');
+						}
+						if (io.sockets.adapter.sids[player.socketID]['0']) {
+							io.sockets.sockets[player.socketID].leave(0);
+						}
+						if (io.sockets.adapter.sids[player.socketID]['1']) {
+							io.sockets.sockets[player.socketID].leave(1);
+						}
+						if (!io.sockets.adapter.sids[player.socketID]['2']) {
+							console.log(player.name + ' is player in slot, side 2');
+							io.sockets.sockets[player.socketID].join(2);
+							sendInit(player.socketID);
+						}
 					}
 				}
 			}
@@ -283,7 +285,7 @@ _.set(serverObject, 'parse', function (update) {
 		//apply local information object
 		updateQue.que1.push(_.cloneDeep(update));
 		updateQue.que2.push(_.cloneDeep(update));
-		updateQue.quespectator.push(_.cloneDeep(update));
+		updateQue.que0.push(_.cloneDeep(update));
 		updateQue.queadmin.push(_.cloneDeep(update));
 	}
 
@@ -297,84 +299,87 @@ _.set(serverObject, 'parse', function (update) {
 
 	//mesg
 	if (_.get(update, 'action') === 'MESG') {
-		if (_.isNumber(_.find(serverObject.players, { 'id': _.get(update, 'data.playerID') }).side)) {
-			updateQue['que'+_.find(serverObject.players, { 'id': _.get(update, 'data.playerID') }).side]
-				.push(_.cloneDeep(update));
-		}
-		updateQue.queadmin.push(_.cloneDeep(update));
+    	console.log(update);
+    	console.log(serverObject.players);
+    	if(_.get(update, 'data.playerID'))
+			if (_.isNumber(_.find(serverObject.players, { 'id': _.get(update, 'data.playerID') }).side)) {
+				updateQue['que'+_.find(serverObject.players, { 'id': _.get(update, 'data.playerID') }).side]
+					.push(_.cloneDeep(update));
+				updateQue.queadmin.push(_.cloneDeep(update));
+			}
 	}
 
 	//events
 	if (_.get(update, 'action') === 'friendly_fire') {
+		updateQue.que0.push(_.cloneDeep(update));
 		updateQue.que1.push(_.cloneDeep(update));
 		updateQue.que2.push(_.cloneDeep(update));
-		updateQue.quespectator.push(_.cloneDeep(update));
 		updateQue.queadmin.push(_.cloneDeep(update));
 	}
 	if (_.get(update, 'action') === 'mission_end') {
 		updateQue.que1.push(_.cloneDeep(update));
 		updateQue.que2.push(_.cloneDeep(update));
-		updateQue.quespectator.push(_.cloneDeep(update));
+		updateQue.que0.push(_.cloneDeep(update));
 		updateQue.queadmin.push(_.cloneDeep(update));
 	}
 	if (_.get(update, 'action') === 'kill') {
 		updateQue.que1.push(_.cloneDeep(update));
 		updateQue.que2.push(_.cloneDeep(update));
-		updateQue.quespectator.push(_.cloneDeep(update));
+		updateQue.que0.push(_.cloneDeep(update));
 		updateQue.queadmin.push(_.cloneDeep(update));
 	}
 	if (_.get(update, 'action') === 'self_kill') {
 		updateQue.que1.push(_.cloneDeep(update));
 		updateQue.que2.push(_.cloneDeep(update));
-		updateQue.quespectator.push(_.cloneDeep(update));
+		updateQue.que0.push(_.cloneDeep(update));
 		updateQue.queadmin.push(_.cloneDeep(update));
 	}
 	if (_.get(update, 'action') === 'change_slot') {
 		updateQue.que1.push(_.cloneDeep(update));
 		updateQue.que2.push(_.cloneDeep(update));
-		updateQue.quespectator.push(_.cloneDeep(update));
+		updateQue.que0.push(_.cloneDeep(update));
 		updateQue.queadmin.push(_.cloneDeep(update));
 	}
 	if (_.get(update, 'action') === 'connect') {
 		updateQue.que1.push(_.cloneDeep(update));
 		updateQue.que2.push(_.cloneDeep(update));
-		updateQue.quespectator.push(_.cloneDeep(update));
+		updateQue.que0.push(_.cloneDeep(update));
 		updateQue.queadmin.push(_.cloneDeep(update));
 	}
 	if (_.get(update, 'action') === 'disconnect') {
 		updateQue.que1.push(_.cloneDeep(update));
 		updateQue.que2.push(_.cloneDeep(update));
-		updateQue.quespectator.push(_.cloneDeep(update));
+		updateQue.que0.push(_.cloneDeep(update));
 		updateQue.queadmin.push(_.cloneDeep(update));
 	}
 	if (_.get(update, 'action') === 'crash') {
 		updateQue.que1.push(_.cloneDeep(update));
 		updateQue.que2.push(_.cloneDeep(update));
-		updateQue.quespectator.push(_.cloneDeep(update));
+		updateQue.que0.push(_.cloneDeep(update));
 		updateQue.queadmin.push(_.cloneDeep(update));
 	}
 	if (_.get(update, 'action') === 'eject') {
 		updateQue.que1.push(_.cloneDeep(update));
 		updateQue.que2.push(_.cloneDeep(update));
-		updateQue.quespectator.push(_.cloneDeep(update));
+		updateQue.que0.push(_.cloneDeep(update));
 		updateQue.queadmin.push(_.cloneDeep(update));
 	}
 	if (_.get(update, 'action') === 'takeoff') {
 		updateQue.que1.push(_.cloneDeep(update));
 		updateQue.que2.push(_.cloneDeep(update));
-		updateQue.quespectator.push(_.cloneDeep(update));
+		updateQue.que0.push(_.cloneDeep(update));
 		updateQue.queadmin.push(_.cloneDeep(update));
 	}
 	if (_.get(update, 'action') === 'landing') {
 		updateQue.que1.push(_.cloneDeep(update));
 		updateQue.que2.push(_.cloneDeep(update));
-		updateQue.quespectator.push(_.cloneDeep(update));
+		updateQue.que0.push(_.cloneDeep(update));
 		updateQue.queadmin.push(_.cloneDeep(update));
 	}
 	if (_.get(update, 'action') === 'pilot_death') {
 		updateQue.que1.push(_.cloneDeep(update));
 		updateQue.que2.push(_.cloneDeep(update));
-		updateQue.quespectator.push(_.cloneDeep(update));
+		updateQue.que0.push(_.cloneDeep(update));
 		updateQue.queadmin.push(_.cloneDeep(update));
 	}
 	return true;
@@ -384,7 +389,7 @@ _.set(serverObject, 'parse', function (update) {
 //emit payload, every sec to start
 setInterval(function(){
 	//units
-	_.forEach(['que1','que2','quespectator','queadmin'], function (que) {
+	_.forEach(['que1','que2','que0','queadmin'], function (que) {
 		var sendAmt = 0;
 
 		//console.log(updateQue[que].length);
@@ -405,8 +410,8 @@ setInterval(function(){
 		if (que === 'que2' && chkPayload.que.length){
 			io.to(2).emit('srvUpd', chkPayload);
 		}
-		if (que === 'quespectator' && chkPayload.que.length){
-			io.to('spectator').emit('srvUpd', chkPayload);
+		if (que === 'que0' && chkPayload.que.length){
+			io.to(0).emit('srvUpd', chkPayload);
 		}
 		if (que === 'queadmin' && chkPayload.que.length){
 			io.to('admin').emit('srvUpd', chkPayload);

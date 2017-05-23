@@ -89,13 +89,25 @@
 					longitude: 41.2920366
 				},
 				zoom: 8,
+				window: {
+					model: {},
+					show: false
+				},
 				options: {
 					mapTypeId: 'terrain',
 					styles: gSrv.mapStyles()
 				},
 				markers: [],
+				markersEvents: {
+					click: function(marker, eventName, model, args) {
+						console.log(marker, eventName, model);
+						gSrv.gmapObj.window.model = model;
+						gSrv.gmapObj.window.show = true;
+					}
+				}
+				/*
 				events: {
-					/*
+					/
 					click: function (map, eventName, originalEventArgs) {
 						var e = originalEventArgs[0];
 						var lat = e.latLng.lat(),
@@ -110,8 +122,8 @@
 						gSrv.gmapObj.markers.push(marker);
 						$rootScope.$apply();
 					}
-					*/
-				}
+
+				} */
 			});
 		});
 
@@ -121,6 +133,7 @@
 		});
 
 		//process inbound Unit Stream
+		console.log(_.get(gSrv, 'gmapObj.markers'));
 		_.set(gSrv, 'processUnitStream', function (update) {
 			if( _.get(update, 'action') == 'C' || _.get(update, 'action') == 'INIT') {
 				var curMarker = {
@@ -128,19 +141,20 @@
 					icon: {
 						url: 'data:image/svg+xml;utf-8,'+gSrv.buildSIDC(update.data)
 					},
-					coords: {
-						latitude: update.data.lat,
-						longitude: update.data.lon
-					},
-					optimized: false
+					type: update.data.type,
+					playername: update.data.playername,
+					coalition: update.data.coalition,
+					latitude: update.data.lat,
+					longitude: update.data.lon,
+					zIndex: update.data.unitID
 				};
 				_.get(gSrv, 'gmapObj.markers').push(curMarker);
 			}
 			if( _.get(update, 'action') == 'U') {
 				_.set(_.find(_.get(gSrv, 'gmapObj.markers'),
-					{id: update.data.unitID}), 'coords.latitude', update.data.lat);
+					{id: update.data.unitID}), 'latitude', update.data.lat);
 				_.set(_.find(_.get(gSrv, 'gmapObj.markers'),
-					{id: update.data.unitID}), 'coords.longitude', update.data.lon);
+					{id: update.data.unitID}), 'longitude', update.data.lon);
 			}
 			if( _.get(update, 'action') == 'D') {
 				_.remove(_.get(gSrv, 'gmapObj.markers'), {id: update.data.unitID});

@@ -89,5 +89,6 @@
 			});
 		})
 		.controller('dynCaucasusController', dynCaucasusController)
+		.controller('templateController',function(){})
 	;
 }(angular));
