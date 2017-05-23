@@ -37,13 +37,82 @@ var updateQue = {
 	quespectator: [],
 	queadmin: []
 };
-var resetClient = {action: 'reset'};
 
 //utility functions, move someday
 function isNumeric(x) {
 	return !(isNaN(x)) && (typeof x !== "object") &&
 		(x != Number.POSITIVE_INFINITY) && (x != Number.NEGATIVE_INFINITY);
 }
+
+//initArray Push
+function sendInit(socketID) {
+	console.log('sendINIT');
+	var initQue = {que: []};
+	//var pSlot = _.get(_.find(serverObject.players, {'socketID': socketID}), 'slot', '');
+	var pSide = _.get(_.find(serverObject.players, {'socketID': socketID}), 'side', 0);
+	if(admin) {pSide = 'A';}
+	var spectator = {
+		action: 'spectator',
+		data: {}
+	};
+
+	initQue.que.push(_.get(serverObject, 'sockInfo'));
+
+	if (_.get(serverObject, 'units', []).length > 0) {
+		_.forEach(_.get(serverObject, 'units', []), function (unit) {
+			if (_.get(unit, 'coalition') === pSide || pSide === 'A') {
+				var curObj = {
+					action: 'INIT',
+					data: {
+						unitID: parseFloat(_.get(unit, 'unitID')),
+						type: _.get(unit, 'type'),
+						coalition: parseFloat(_.get(unit, 'coalition')),
+						lat: parseFloat(_.get(unit, 'lat')),
+						lon: parseFloat(_.get(unit, 'lon')),
+						playername: _.get(unit, 'playername', '')
+					}
+				};
+				initQue.que.push(_.cloneDeep(curObj));
+			}
+		});
+	}
+
+
+	/*
+	 if(admin){
+	 //isadmin
+	 console.log('user is admin');
+	 initUnits (initSrvObj, 'A');
+
+	 }else if(isNumeric(parseInt(pSlot))){
+	 //real vehicle, send correct side info
+	 console.log('user in vehicle: ',pSlot);
+	 initUnits (initSrvObj, pSide);
+	 }else if(pSlot){
+	 //user on side but not in vehicle
+	 console.log('user on side but not in vehicle: ',pSlot);
+	 initUnits (initSrvObj, pSide);
+	 }else{
+	 //user not chosen side
+	 console.log('user not on side: ');
+	 initUnits (spectator, pSide);
+	 }
+	 */
+	var sendAmt = 0;
+	//console.log(updateQue[que].length);
+	if (initQue.que.length < perSendMax) {
+		sendAmt = initQue.que.length;
+	} else {
+		sendAmt = perSendMax
+	}
+	var chkPayload = {que: [{action: 'reset'}]};
+	for (x = 0; x < sendAmt; x++) {
+		chkPayload.que.push(initQue.que[0]);
+		initQue.que.shift();
+	}
+	io.to(socketID).emit('srvUpd', chkPayload);
+}
+
 
 //setup socket io
 io.on('connection', function( socket ) {
@@ -59,83 +128,17 @@ io.on('connection', function( socket ) {
 	console.log(' new request from : '+clientIpAddress);
 	//send socketid payload to client
 
-	//add admin to admin channel updates
-	if (admin) {
-		//admin
-		if (!io.sockets.adapter.sids[socket.id]['admin']) {
-			console.log('socket is admin');
-			io.sockets.sockets[socket.id].join('admin');
-			updateQue.queadmin.push(resetClient);
-		}
+	if (!io.sockets.adapter.sids[socket.id]['spectator']) {
+		io.sockets.sockets[socket.id].join('spectator');
 	}
 
 	//client updates
 	var initSrvObj =  _.get(serverObject, 'units', []);
 	console.log("Units: "+serverObject.units.length);
 	socket.on('clientUpd', function (data) {
-		var initQue = {que:[]};
-		var pSlot = _.get(_.find(serverObject.players, { 'socketID': _.get(socket, 'id') }), 'slot', '');
-		var pSide = _.get(_.find(serverObject.players, { 'socketID': _.get(socket, 'id') }), 'side', 0);
-		var spectator = {
-			action: 'spectator',
-			data: {}
-		};
-		//first resend clientInfo
-		function initUnits (units, side) {
-			if (units.length > 0) {
-				_.forEach(units, function(unit) {
-					if(_.get(unit, 'coalition') === side){
-						var curObj = {
-							action: 'INIT',
-							data: {
-								unitID: parseFloat(_.get(unit, 'unitID')),
-								type: _.get(unit, 'type'),
-								coalition: parseFloat(_.get(unit, 'coalition')),
-								lat: parseFloat(_.get(unit, 'lat')),
-								lon: parseFloat(_.get(unit, 'lon')),
-								playername: _.get(unit, 'playername', '')
-							}
-						};
-						initQue.que.push(_.cloneDeep(curObj));
-					}
-				});
-			}
-		}
-
-		if (data.action === 'unitINIT') {
-			initQue.que.push(_.get(serverObject, 'sockInfo'));
-			if(admin){
-			//isadmin
-				console.log('user is admin');
-				initUnits (initSrvObj, 'A');
-
-			}else if(isNumeric(parseInt(pSlot))){
-				//real vehicle, send correct side info
-				console.log('user in vehicle: ',pSlot);
-				initUnits (initSrvObj, pSide);
-			}else if(pSlot){
-				//user on side but not in vehicle
-				console.log('user on side but not in vehicle: ',pSlot);
-				initUnits (initSrvObj, pSide);
-			}else{
-				//user not chosen side
-				console.log('user not on side: ');
-				initUnits (spectator, pSide);
-			}
-
-			var sendAmt = 0;
-			//console.log(updateQue[que].length);
-			if (initQue.que.length < perSendMax) {
-				sendAmt = initQue.que.length;
-			}else{
-				sendAmt = perSendMax
-			}
-			var chkPayload = {que:[]};
-			for (x=0; x < sendAmt; x++ ) {
-				chkPayload.que.push(initQue.que[0]);
-				initQue.que.shift();
-			}
-			io.to(socket.id).emit('srvUpd', chkPayload);
+		if(data.action === 'unitINIT') {
+			console.log(socket.id + ' is having unit desync');
+			sendInit(socket.id);
 		}
 	});
 
@@ -152,13 +155,6 @@ io.on('connection', function( socket ) {
 });
 
 console.log(':: SERVER IS RUNNING!');
-
-_.set(serverObject, 'oppositeSide', function(side){
-	if(side === 1){
-		return 2;
-	}
-	return 1;
-});
 
 _.set(serverObject, 'parse', function (update) {
 	//console.log(_.get(update, 'action'));
@@ -236,7 +232,7 @@ _.set(serverObject, 'parse', function (update) {
 
 			//rewrite this someday, sets up the socket.io information rooms for updates
 			if(!_.isEmpty(player.socketID)) {
-				if (false) {
+				if (admin) {
 					//figure admins later
 					if (io.sockets.adapter.sids[player.socketID]['1']) {
 						io.sockets.sockets[player.socketID].leave(1);
@@ -248,9 +244,9 @@ _.set(serverObject, 'parse', function (update) {
 						io.sockets.sockets[player.socketID].leave('spectator');
 					}
 					if (!io.sockets.adapter.sids[player.socketID]['admin']) {
-						console.log('socket is admin');
+						console.log(player.name + ' socket is admin');
 						io.sockets.sockets[player.socketID].join('admin');
-						updateQue.queadmin.push(resetClient);
+						sendInit(player.socketID);
 					}
 				}else if (player.side === 0) {
 					if (io.sockets.adapter.sids[player.socketID]['1']) {
@@ -263,9 +259,9 @@ _.set(serverObject, 'parse', function (update) {
 						io.sockets.sockets[player.socketID].leave('admin');
 					}
 					if (!io.sockets.adapter.sids[player.socketID]['spectator']) {
-						console.log('socket is spectator');
+						console.log(player.name + ' is spectator');
 						io.sockets.sockets[player.socketID].join('spectator');
-						updateQue.quespectator.push(resetClient);
+						sendInit(player.socketID);
 					}
 				}else if (player.side === 1) {
 					if (io.sockets.adapter.sids[player.socketID]['admin']) {
@@ -278,9 +274,9 @@ _.set(serverObject, 'parse', function (update) {
 						io.sockets.sockets[player.socketID].leave(2);
 					}
 					if (!io.sockets.adapter.sids[player.socketID]['1']) {
-						console.log('socket is player in slot, side 1');
+						console.log(player.name + ' is player in slot, side 1');
 						io.sockets.sockets[player.socketID].join(1);
-						updateQue.que1.push(resetClient);
+						sendInit(player.socketID);
 					}
 				}else if (player.side === 2) {
 					if (io.sockets.adapter.sids[player.socketID]['admin']) {
@@ -293,9 +289,9 @@ _.set(serverObject, 'parse', function (update) {
 						io.sockets.sockets[player.socketID].leave(1);
 					}
 					if (!io.sockets.adapter.sids[player.socketID]['2']) {
-						console.log('socket is player in slot, side 2');
+						console.log(player.name + ' is player in slot, side 2');
 						io.sockets.sockets[player.socketID].join(2);
-						updateQue.que2.push(resetClient);
+						sendInit(player.socketID);
 					}
 				}
 			}
