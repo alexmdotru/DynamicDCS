@@ -25,7 +25,6 @@
 					if(que.action === 'C' || que.action === 'INIT') {
 						if (typeof _.find(cObj.units, { 'unitID': _.get(que, 'data.unitID') }) !== "undefined") {
 							_.find(cObj.units, { 'unitID': _.get(que, 'data.unitID') }).action = 'U';
-							console.log('cTurnU');
 						}
 					}
 					if(que.action === 'U') {

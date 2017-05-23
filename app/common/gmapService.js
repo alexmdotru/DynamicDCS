@@ -1,7 +1,7 @@
 (function (angular) {
 	'use strict';
 
-	function controlService ($rootScope, $window, mySocket, $http) {
+	function controlService ($window, mySocket, $http) {
 		var gSrv = this;
 
 		_.set(gSrv, 'mySocket', mySocket);
@@ -205,7 +205,7 @@
 		});
 
 	}
-	controlService.$inject = ['$rootScope', '$window', 'mySocket', '$http'];
+	controlService.$inject = ['$window', 'mySocket', '$http'];
 
 	function initializeGmapService (gmapService) {
 		gmapService.init();
