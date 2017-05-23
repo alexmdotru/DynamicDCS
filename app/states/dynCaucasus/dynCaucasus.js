@@ -22,6 +22,12 @@
 			console.log(data);
 			_.forEach(data.que, function(que) {
 				if (que.action === 'INIT' || que.action === 'C' || que.action === 'U' || que.action === 'D') {
+					if(que.action === 'C' || que.action === 'INIT') {
+						if (typeof _.find(cObj.units, { 'unitID': _.get(que, 'data.unitID') }) !== "undefined") {
+							_.find(cObj.units, { 'unitID': _.get(que, 'data.unitID') }).action = 'U';
+							console.log('cTurnU');
+						}
+					}
 					if(que.action === 'U') {
 						if(!_.find(cObj.units, {'unitID': _.get(que, 'data.unitID')})){
 							_.set(cObj, 'units', []);

@@ -77,40 +77,24 @@ function sendInit(socketID) {
 		});
 	}
 
-
-	/*
-	 if(admin){
-	 //isadmin
-	 console.log('user is admin');
-	 initUnits (initSrvObj, 'A');
-
-	 }else if(isNumeric(parseInt(pSlot))){
-	 //real vehicle, send correct side info
-	 console.log('user in vehicle: ',pSlot);
-	 initUnits (initSrvObj, pSide);
-	 }else if(pSlot){
-	 //user on side but not in vehicle
-	 console.log('user on side but not in vehicle: ',pSlot);
-	 initUnits (initSrvObj, pSide);
-	 }else{
-	 //user not chosen side
-	 console.log('user not on side: ');
-	 initUnits (spectator, pSide);
-	 }
-	 */
 	var sendAmt = 0;
-	//console.log(updateQue[que].length);
-	if (initQue.que.length < perSendMax) {
-		sendAmt = initQue.que.length;
-	} else {
-		sendAmt = perSendMax
-	}
+	var totalChkLoops = _.ceil(initQue.que.length/perSendMax);
+	console.log(totalChkLoops);
+
 	var chkPayload = {que: [{action: 'reset'}]};
-	for (x = 0; x < sendAmt; x++) {
-		chkPayload.que.push(initQue.que[0]);
-		initQue.que.shift();
+	for (x = 0; x < totalChkLoops; x++) {
+		if (initQue.que.length < perSendMax) {
+			sendAmt = initQue.que.length;
+		} else {
+			sendAmt = perSendMax
+		}
+		for (y = 0; y < sendAmt; y++) {
+			chkPayload.que.push(initQue.que[0]);
+			initQue.que.shift();
+		}
+		io.to(socketID).emit('srvUpd', chkPayload);
+		chkPayload = {que:[]};
 	}
-	io.to(socketID).emit('srvUpd', chkPayload);
 }
 
 
