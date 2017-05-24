@@ -3,8 +3,11 @@
 
 	function dynCaucasusController ($scope, gmapControls) {
 		console.log('dynCaucasus controller loaded');
-		console.log(gmapControls);
+
+		//set the object to the map
 		_.set($scope, 'map', _.get(gmapControls, 'gmapObj'));
+
+
 	}
 	dynCaucasusController.$inject = ['$scope', 'gmapService'];
 
