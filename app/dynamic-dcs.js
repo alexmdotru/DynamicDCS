@@ -35,9 +35,10 @@
 	angular
 		.module('dynamic-dcs', [
 			'dynamic-dcs.templates',
+			'dynamic-dcs.dynMsgService',
+			'dynamic-dcs.chat-box',
 			'states',
-			'ui.bootstrap',
-			'dynamic-dcs.chat-box'
+			'ui.bootstrap'
 		])
 		.config(['$qProvider', function ($qProvider) {
 			$qProvider.errorOnUnhandledRejections(false);
