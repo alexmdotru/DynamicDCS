@@ -2,20 +2,7 @@
 	'use strict';
 
 	function dynRedDawnController () {
-		console.log('dynRedDawn controller loaded');
-		/*
-		//socket.io connectors
-		$scope.$on('socket:srvUnitUpd', function (ev, data) {
-			console.log('StreamingData');
-			_.forEach(data, function(que) {
-				gmapControls.processUnitStream(_.get(que, 'curUnit'));
-			});
-		});
-		$scope.$on('socket:error', function (ev, data) {
-			console.log(ev, data);
-		});
-		_.set($scope, 'map', _.get(gmapControls, 'gmapObj'));
-		*/
+		// console.log('dynRedDawn controller loaded');
 	}
 	dynRedDawnController.$inject = [];
 
@@ -46,4 +33,4 @@
 		})
 		.controller('dynRedDawnController', dynRedDawnController)
 	;
-}(angular));
+}(angular))

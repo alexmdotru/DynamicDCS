@@ -99,7 +99,7 @@
 				},
 				markers: [],
 				markersEvents: {
-					click: function(marker, eventName, model, args) {
+					click: function(marker, eventName, model) {
 						gSrv.gmapObj.window.model = model;
 						gSrv.gmapObj.window.show = true;
 					}
@@ -109,7 +109,7 @@
 
 		_.set(gSrv, 'resetMarkers', function() {
 			_.set(gSrv, 'gmapObj.markers', []);
-			console.log('reset markers');
+			// console.log('reset markers');
 		});
 
 		//process inbound Unit Stream
@@ -120,7 +120,7 @@
 					id: update.data.unitID,
 					icon: {
 						url: 'data:image/svg+xml;utf-8,'+gSrv.buildSIDC(update.data),
-						anchor: new $window.google.maps.Point(20, 0),
+						anchor: new $window.google.maps.Point(20, 0)
 					},
 					type: update.data.type,
 					playername: update.data.playername,

@@ -2,7 +2,7 @@
 	'use strict';
 
 	function indexController () {
-		console.log('main index and leaderboard');
+		// console.log('main index and leaderboard');
 	}
 	indexController.$inject = [];
 

@@ -2,7 +2,7 @@
 	'use strict';
 
 	function dynCaucasusController ($scope, gmapControls) {
-		console.log('dynCaucasus controller loaded');
+		// console.log('dynCaucasus controller loaded');
 
 		//set the object to the map
 		_.set($scope, 'map', _.get(gmapControls, 'gmapObj'));
