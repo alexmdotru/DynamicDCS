@@ -20,7 +20,6 @@
 
 		//socket.io connectors
 		socket.on('srvUpd', function (data) {
-			console.log(data);
 			_.forEach(data.que, function(que) {
 				if (que.action === 'INIT' || que.action === 'C' || que.action === 'U' || que.action === 'D') {
 					if(que.action === 'C' || que.action === 'INIT') {
@@ -50,16 +49,16 @@
 					_.set(dmSrv, 'cObj.players', que.data);
 				}else if (que.action === 'MESG') { //send mesg
 					console.log('MESG: ', que.action, que.data);
-					_.set(dmSrv, 'cObj.msgs', que.data);
+					_.get(dmSrv, 'cObj.msgs').push(que.data);
 				}else if (que.action === 'CMD') { //send command responses
 					console.log('CMD: ', que.action, que.data);
-					_.set(dmSrv, 'cObj.cmds', que.data);
+					_.get(dmSrv, 'cObj.cmds').push(que.data);
 				}else if (que.action === 'socketInfo') { //send client info
 					console.log('CLIENT: ', que.action, que.data);
 					_.set(dmSrv, 'cObj.client', que.data);
 				} else {
 					console.log('EVENT', que.action, que.data);
-					_.set(dmSrv, 'cObj.events', que.data);
+					_.get(dmSrv, 'cObj.events').push(que.data);
 				}
 				_.set(dmSrv, 'cObj.client.player', _.find(_.get(dmSrv, 'cObj.players'), {socketID: _.get(dmSrv, 'cObj.client.id')}));
 			});

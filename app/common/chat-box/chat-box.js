@@ -3,11 +3,11 @@
 
 	function chatBoxController (dynMsgService) {
 		var cbt = this;
-		_.set(cbt, 'dynMsgService', dynMsgService);
-		console.log(cbt.dynMsgService);
+		_.set(cbt, 'msgs', _.get(dynMsgService, ['cObj', 'msgs']));
+
 	}
 	chatBoxController.$injector = ['dynMsgService'];
-
+//['cObj', cbt.socketSub]
 	function chatBox() {
 		return {
 			restrict: 'E',
@@ -31,3 +31,5 @@
 		.controller('chatBoxController', chatBoxController)
 	;
 }(angular));
+//dmSrv, 'cObj.events'
+//eventMsg
