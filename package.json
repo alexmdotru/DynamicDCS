@@ -1,6 +1,6 @@
 {
   "name": "dynamic-dcs",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "dynamic dcs engine",
   "main": "index.js",
   "peerDependencies": {
