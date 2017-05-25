@@ -197,8 +197,8 @@ _.set(serverObject, 'parse', function (update) {
 	if (_.get(update, 'action') === 'players') {
 		serverObject.players = update.data;
 		_.forEach(serverObject.players, function(player) {
-			if (player.ipaddr){
-				var pArry = player.ipaddr.split(":");
+			if (_.get(player, 'ipaddr')){
+				var pArry = _.get(player, 'ipaddr').split(":");
 				if(pArry[0] === '' ){
 					_.set(player, 'socketID', _.get(_.find(_.get(io, 'sockets.sockets'), function (socket) {
 						if(socket.conn.remoteAddress === '::ffff:127.0.0.1' || socket.conn.remoteAddress === '::1'){
@@ -301,9 +301,9 @@ _.set(serverObject, 'parse', function (update) {
 	if (_.get(update, 'action') === 'MESG') {
     	console.log(update);
     	console.log(serverObject.players);
-    	if(_.get(update, 'data.playerID'))
-			if (_.isNumber(_.find(serverObject.players, { 'id': _.get(update, 'data.playerID') }).side)) {
-				updateQue['que'+_.find(serverObject.players, { 'id': _.get(update, 'data.playerID') }).side]
+    	if(_.get(update, 'data.playerID') )
+			if (_.isNumber(_.get(_.find(serverObject.players, { 'id': _.get(update, 'data.playerID') }), 'side'))) {
+				updateQue['que'+_.get(_.find(serverObject.players, { 'id': _.get(update, 'data.playerID') }), 'side')]
 					.push(_.cloneDeep(update));
 				updateQue.queadmin.push(_.cloneDeep(update));
 			}

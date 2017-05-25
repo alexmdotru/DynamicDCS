@@ -33,4 +33,4 @@
 		})
 		.controller('dynRedDawnController', dynRedDawnController)
 	;
-}(angular))
+}(angular));
