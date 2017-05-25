@@ -6,7 +6,7 @@
 
 		$scope.initialise = function() {
 
-			_.set($scope, 'isCollapsed', false);
+			_.set($scope, 'isCollapsed', true);
 			_.set($scope, 'go', function(state) {
 				$state.go(state);
 			});

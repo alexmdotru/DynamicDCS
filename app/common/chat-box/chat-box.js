@@ -1,12 +1,13 @@
 (function (angular) {
 	'use strict';
 
-	function chatBoxController (dynMsgService) {
+	function chatBoxController ($timeout, dynMsgService) {
 		var cbt = this;
-		_.set(cbt, 'msgs', _.get(dynMsgService, ['cObj', 'msgs']));
-
+		$timeout(function() {
+			_.set(cbt, 'msgs', _.get(dynMsgService, ['cObj', cbt.socketSub]));
+		});
 	}
-	chatBoxController.$injector = ['dynMsgService'];
+	chatBoxController.$injector = ['$timeout', 'dynMsgService'];
 //['cObj', cbt.socketSub]
 	function chatBox() {
 		return {

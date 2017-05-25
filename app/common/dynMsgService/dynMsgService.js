@@ -7,9 +7,10 @@
 			client: {},
 			units: [],
 			players: [],
-			msgs: [],
+			chatMsgs: [],
 			cmds: [],
-			events: []
+			events: [],
+			eventMsgs: []
 		});
 
 		socket.on('connect', function () {
@@ -48,17 +49,20 @@
 				}else if (que.action === 'players') { //player
 					_.set(dmSrv, 'cObj.players', que.data);
 				}else if (que.action === 'MESG') { //send mesg
-					console.log('MESG: ', que.action, que.data);
-					_.get(dmSrv, 'cObj.msgs').push(que.data);
+					_.set(que, 'data.name', _.find(_.get(dmSrv, 'cObj.players'), {id: que.data.playerID}).name);
+					_.set(que, 'data.side', _.find(_.get(dmSrv, 'cObj.players'), {id: que.data.playerID}).side);
+					//console.log('MESG: ', que.action, que.data);
+					_.get(dmSrv, 'cObj.chatMsgs').push(que.data);
 				}else if (que.action === 'CMD') { //send command responses
 					console.log('CMD: ', que.action, que.data);
 					_.get(dmSrv, 'cObj.cmds').push(que.data);
 				}else if (que.action === 'socketInfo') { //send client info
-					console.log('CLIENT: ', que.action, que.data);
+					//console.log('CLIENT: ', que.action, que.data);
 					_.set(dmSrv, 'cObj.client', que.data);
 				} else {
-					console.log('EVENT', que.action, que.data);
+					//console.log('EVENT', que.action, que.data);
 					_.get(dmSrv, 'cObj.events').push(que.data);
+					_.get(dmSrv, 'cObj.eventMsgs').push({message: JSON.stringify(que.data)});
 				}
 				_.set(dmSrv, 'cObj.client.player', _.find(_.get(dmSrv, 'cObj.players'), {socketID: _.get(dmSrv, 'cObj.client.id')}));
 			});

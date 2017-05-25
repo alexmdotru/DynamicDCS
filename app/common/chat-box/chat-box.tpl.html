@@ -1,6 +1,8 @@
 <div class="chatBoxArea">
 	<ul class="messages" >
-		<li ng-repeat="mesg in cbCtrl.msgs">{{mesg.message}}</li>
+		<li ng-if="mesg.name && mesg.side == 1" ng-repeat="mesg in cbCtrl.msgs"><span class="redText">{{mesg.name}}</span>: {{mesg.message}}</li>
+		<li ng-if="mesg.name && mesg.side == 2" ng-repeat="mesg in cbCtrl.msgs"><span class="blueText">{{mesg.name}}</span>: {{mesg.message}}</li>
+		<li ng-if="!mesg.name" ng-repeat="mesg in cbCtrl.msgs">{{mesg.message}}</li>
 	</ul>
 </div>
 <div class="row row-no-padding">
@@ -8,7 +10,7 @@
 		<input ng-if="cbCtrl.chatTo" class="chatInput" placeholder="Type here..."/>
 	</div>
 	<div class="col-xs-2">
-		<div class="btn-group-xs" ng-if="cbCtrl.socketSub == 'msgs'">
+		<div class="btn-group-xs" ng-if="cbCtrl.socketSub == 'chatMsgs'">
 			<label class="btn btn-primary" ng-model="cbCtrl.chatTo" uib-btn-radio="'Allies'">Allies</label>
 			<label class="btn btn-primary" ng-model="cbCtrl.chatTo" uib-btn-radio="'All'">All</label>
 		</div>

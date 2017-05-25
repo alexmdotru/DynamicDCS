@@ -66,10 +66,10 @@
 			Future Map Tools Here
 		</div>
 		<div uib-accordion-group class="panel-default" heading="Events" >
-			<chat-box socket-sub="events"></chat-box>
+			<chat-box socket-sub="eventMsgs"></chat-box>
 		</div>
 		<div uib-accordion-group class="panel-default" is-open="true" heading="Chat" >
-			<chat-box socket-sub="msgs" chat-to="Allies"></chat-box>
+			<chat-box socket-sub="chatMsgs" chat-to="Allies"></chat-box>
 		</div>
 		<div uib-accordion-group class="panel-default" heading="Srv Cmds" >
 			<chat-box socket-sub="cmds" chat-to="Msn"></chat-box>
