@@ -302,7 +302,7 @@ _.set(serverObject, 'parse', function (update) {
     	console.log(update);
     	console.log(serverObject.players);
     	if(_.get(update, 'data.playerID') )
-			if (_.isNumber(_.get(_.find(serverObject.players, { 'id': _.get(update, 'data.playerID') }), 'side'))) {
+			if (_.isNumber(_.get(_.find(serverObject.players, { 'id': _.get(update, 'data.playerID') }), 'side', 0))) {
 				updateQue['que'+_.get(_.find(serverObject.players, { 'id': _.get(update, 'data.playerID') }), 'side')]
 					.push(_.cloneDeep(update));
 				updateQue.queadmin.push(_.cloneDeep(update));
