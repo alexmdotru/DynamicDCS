@@ -4,12 +4,15 @@
 	function dynMsgService (gmapControls, socket) {
 		var dmSrv = this;
 		_.set(dmSrv, 'cObj', {
+			client: {},
 			units: [],
 			players: [],
-			msgs: []
+			msgs: [],
+			cmds: [],
+			events: []
 		});
 
-		socket.on('connect', function (data) {
+		socket.on('connect', function () {
 			_.set(dmSrv, 'cObj.units', []);
 			gmapControls.resetMarkers();
 			socket.emit('clientUpd', { action: 'unitINIT' });
@@ -46,12 +49,19 @@
 				}else if (que.action === 'players') { //player
 					_.set(dmSrv, 'cObj.players', que.data);
 				}else if (que.action === 'MESG') { //send mesg
-					console.log('MESG: ', que.action, que.data)
+					console.log('MESG: ', que.action, que.data);
+					_.set(dmSrv, 'cObj.msgs', que.data);
 				}else if (que.action === 'CMD') { //send command responses
-					console.log('CMD: ', que.action, que.data)
+					console.log('CMD: ', que.action, que.data);
+					_.set(dmSrv, 'cObj.cmds', que.data);
+				}else if (que.action === 'socketInfo') { //send client info
+					console.log('CLIENT: ', que.action, que.data);
+					_.set(dmSrv, 'cObj.client', que.data);
 				} else {
-					console.log('EVENT', que.action, que.data)
+					console.log('EVENT', que.action, que.data);
+					_.set(dmSrv, 'cObj.events', que.data);
 				}
+				_.set(dmSrv, 'cObj.client.player', _.find(_.get(dmSrv, 'cObj.players'), {socketID: _.get(dmSrv, 'cObj.client.id')}));
 			});
 		});
 		socket.on('error', function (data) {

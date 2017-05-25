@@ -44,7 +44,8 @@
 			<li><a href="http://www.16agr.com" target="_blank">Join The 16AGR!</a></li>
 			<li><a href="" ng-click="isCollapsed = !isCollapsed" data-ng-show="$state.includes('dynCaucasus') || $state.includes('dynRedDawn')">Tools</a></li> <!--temp until better show function -->
 			<li uib-dropdown>
-				<a href="#" uib-dropdown-toggle>Profile <b class="caret"></b></a>
+				<a ng-if="cObj.client.player.side === 1" href="#" uib-dropdown-toggle><strong class="redText">{{cObj.client.player.name}}</strong> <b class="caret"></b></a>
+				<a ng-if="cObj.client.player.side === 2" href="#" uib-dropdown-toggle><strong class="blueText">{{cObj.client.player.name}}</strong> <b class="caret"></b></a>
 				<ul uib-dropdown-menu>
 					<li><a href="#">Settings</a></li>
 					<li><a href="#">Logout</a></li>
@@ -58,7 +59,6 @@
 		<div ui-view></div>
 	</div>
 </div>
-
 <div uib-collapse="isCollapsed" class="floating-sidepanel">
 	<uib-accordion close-others="false">
 		<div uib-accordion-group class="panel-default"  heading="Map Tools" >
