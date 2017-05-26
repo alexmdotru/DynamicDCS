@@ -3,7 +3,7 @@
 var _ = require('lodash');
 var express = require('express');
 
-var perSendMax = 250;
+var perSendMax = 500;
 
 //startup node server
 var app = express();
@@ -422,7 +422,7 @@ setInterval(function(){
 function getDCSDataClient(dataCallback) {
 
     const PORT = 3001;
-    const ADDRESS = "192.168.44.61";
+    const ADDRESS = "127.0.0.1";
     var connOpen = true;
 
     const net = require('net');
@@ -475,7 +475,7 @@ function getDCSDataClient(dataCallback) {
 function getDCSDataGameGui(dataCallback) {
 
 	var port = 3002;
-	var address = "192.168.44.61";
+	var address = "127.0.0.1";
 	var connOpen = true;
 
 	const net = require('net');
