@@ -3,7 +3,7 @@
 var _ = require('lodash');
 var express = require('express');
 
-var perSendMax = 500;
+var perSendMax = 250;
 
 //startup node server
 var app = express();
@@ -300,10 +300,10 @@ _.set(serverObject, 'parse', function (update) {
 	//mesg
 	if (_.get(update, 'action') === 'MESG') {
     	console.log(update);
-    	console.log(serverObject.players);
+    	//console.log(serverObject.players);
     	if(_.get(update, 'data.playerID') )
 			if (_.isNumber(_.get(_.find(serverObject.players, { 'id': _.get(update, 'data.playerID') }), 'side', 0))) {
-				updateQue['que'+_.get(_.find(serverObject.players, { 'id': _.get(update, 'data.playerID') }), 'side')]
+				updateQue['que'+_.get(_.find(serverObject.players, { 'id': _.get(update, 'data.playerID') }), 'side', 0)]
 					.push(_.cloneDeep(update));
 				updateQue.queadmin.push(_.cloneDeep(update));
 			}
@@ -422,14 +422,14 @@ setInterval(function(){
 function getDCSDataClient(dataCallback) {
 
     const PORT = 3001;
-    const ADDRESS = "127.0.0.1";
+    const ADDRESS = "192.168.44.61";
     var connOpen = true;
 
     const net = require('net');
     var buffer;
 
     function connect() {
-
+	console.log('running client connect');
         const client = net.createConnection({host: ADDRESS, port: PORT}, () => {
             var time = new Date();
             console.log(time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + ' :: Connected to DCS Client!');
@@ -466,7 +466,7 @@ function getDCSDataClient(dataCallback) {
 
     setInterval(function(){
         if (connOpen === true) {
-            connect();
+           connect();
         }else{
         }
     }, 1 * 1000);
@@ -475,7 +475,7 @@ function getDCSDataClient(dataCallback) {
 function getDCSDataGameGui(dataCallback) {
 
 	var port = 3002;
-	var address = "127.0.0.1";
+	var address = "192.168.44.61";
 	var connOpen = true;
 
 	const net = require('net');
@@ -484,7 +484,7 @@ function getDCSDataGameGui(dataCallback) {
 
 	function connect() {
 
-
+	console.log('server connect');
 
 		const client = net.createConnection({host: address, port: port}, () => {
 			var time = new Date();
