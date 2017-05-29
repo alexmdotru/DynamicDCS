@@ -109,7 +109,7 @@ io.on('connection', function( socket ) {
 			ip: clientIpAddress
 		}
 	});
-	console.log(' new request from : '+clientIpAddress);
+	console.log(' new request from : ',clientIpAddress, serverObject.sockInfo);
 	//send socketid payload to client
 
 	if (!io.sockets.adapter.sids[socket.id]['0']) {
@@ -206,13 +206,16 @@ _.set(serverObject, 'parse', function (update) {
 						}
 						return false;
 					}), 'id', {}));
+					//console.log('1',pArry[0], player.socketID);
 				}else{
 					_.set(player, 'socketID', _.get(_.find(_.get(io, 'sockets.sockets'), function (socket) {
-						if(socket.conn.remoteAddress === '::ffff:'+player.ipaddr){
+						//console.log(socket.conn.remoteAddress, '::ffff:'+pArry[0]);
+						if(socket.conn.remoteAddress === '::ffff:'+pArry[0]){
 							return true;
 						}
 						return false;
 					}), 'id', {}));
+					//console.log('2',pArry[0], player.socketID);
 				}
 
 				//rewrite this someday, sets up the socket.io information rooms for updates
@@ -422,7 +425,7 @@ setInterval(function(){
 function getDCSDataClient(dataCallback) {
 
     const PORT = 3001;
-    const ADDRESS = "127.0.0.1";
+    const ADDRESS = "192.168.44.61";
     var connOpen = true;
 
     const net = require('net');
@@ -475,7 +478,7 @@ function getDCSDataClient(dataCallback) {
 function getDCSDataGameGui(dataCallback) {
 
 	var port = 3002;
-	var address = "127.0.0.1";
+	var address = "192.168.44.61";
 	var connOpen = true;
 
 	const net = require('net');
