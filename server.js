@@ -1,4 +1,8 @@
 ﻿var admin = false;
+var serverAddress = "192.168.44.61";
+var clientPort = 3002;
+var gameGuiPort = 3002;
+
 
 var _ = require('lodash');
 var express = require('express');
@@ -109,7 +113,7 @@ io.on('connection', function( socket ) {
 			ip: clientIpAddress
 		}
 	});
-	console.log(' new request from : '+clientIpAddress);
+	console.log(' new request from : ',clientIpAddress, serverObject.sockInfo);
 	//send socketid payload to client
 
 	if (!io.sockets.adapter.sids[socket.id]['0']) {
@@ -197,8 +201,8 @@ _.set(serverObject, 'parse', function (update) {
 	if (_.get(update, 'action') === 'players') {
 		serverObject.players = update.data;
 		_.forEach(serverObject.players, function(player) {
-			if (player.ipaddr){
-				var pArry = player.ipaddr.split(":");
+			if (_.get(player, 'ipaddr')){
+				var pArry = _.get(player, 'ipaddr').split(":");
 				if(pArry[0] === '' ){
 					_.set(player, 'socketID', _.get(_.find(_.get(io, 'sockets.sockets'), function (socket) {
 						if(socket.conn.remoteAddress === '::ffff:127.0.0.1' || socket.conn.remoteAddress === '::1'){
@@ -206,13 +210,16 @@ _.set(serverObject, 'parse', function (update) {
 						}
 						return false;
 					}), 'id', {}));
+					//console.log('1',pArry[0], player.socketID);
 				}else{
 					_.set(player, 'socketID', _.get(_.find(_.get(io, 'sockets.sockets'), function (socket) {
-						if(socket.conn.remoteAddress === '::ffff:'+player.ipaddr){
+						//console.log(socket.conn.remoteAddress, '::ffff:'+pArry[0]);
+						if(socket.conn.remoteAddress === '::ffff:'+pArry[0]){
 							return true;
 						}
 						return false;
 					}), 'id', {}));
+					//console.log('2',pArry[0], player.socketID);
 				}
 
 				//rewrite this someday, sets up the socket.io information rooms for updates
@@ -300,10 +307,10 @@ _.set(serverObject, 'parse', function (update) {
 	//mesg
 	if (_.get(update, 'action') === 'MESG') {
     	console.log(update);
-    	console.log(serverObject.players);
-    	if(_.get(update, 'data.playerID'))
-			if (_.isNumber(_.find(serverObject.players, { 'id': _.get(update, 'data.playerID') }).side)) {
-				updateQue['que'+_.find(serverObject.players, { 'id': _.get(update, 'data.playerID') }).side]
+    	//console.log(serverObject.players);
+    	if(_.get(update, 'data.playerID') )
+			if (_.isNumber(_.get(_.find(serverObject.players, { 'id': _.get(update, 'data.playerID') }), 'side', 0))) {
+				updateQue['que'+_.get(_.find(serverObject.players, { 'id': _.get(update, 'data.playerID') }), 'side', 0)]
 					.push(_.cloneDeep(update));
 				updateQue.queadmin.push(_.cloneDeep(update));
 			}
@@ -419,18 +426,17 @@ setInterval(function(){
 	});
 }, 1 * 500);
 
+
 function getDCSDataClient(dataCallback) {
 
-    const PORT = 3001;
-    const ADDRESS = "127.0.0.1";
     var connOpen = true;
 
     const net = require('net');
     var buffer;
 
     function connect() {
-
-        const client = net.createConnection({host: ADDRESS, port: PORT}, () => {
+	console.log('running client connect');
+        const client = net.createConnection({host: serverAddress, port: clientPort}, () => {
             var time = new Date();
             console.log(time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + ' :: Connected to DCS Client!');
             connOpen = false;
@@ -466,7 +472,7 @@ function getDCSDataClient(dataCallback) {
 
     setInterval(function(){
         if (connOpen === true) {
-            connect();
+           connect();
         }else{
         }
     }, 1 * 1000);
@@ -474,8 +480,6 @@ function getDCSDataClient(dataCallback) {
 
 function getDCSDataGameGui(dataCallback) {
 
-	var port = 3002;
-	var address = "127.0.0.1";
 	var connOpen = true;
 
 	const net = require('net');
@@ -484,9 +488,9 @@ function getDCSDataGameGui(dataCallback) {
 
 	function connect() {
 
+	console.log('server connect');
 
-
-		const client = net.createConnection({host: address, port: port}, () => {
+		const client = net.createConnection({host: gameGuiPort, port: gameGuiPort}, () => {
 			var time = new Date();
 			console.log(time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + ' :: Connected to DCS GameGUI!');
 			connOpen = false;

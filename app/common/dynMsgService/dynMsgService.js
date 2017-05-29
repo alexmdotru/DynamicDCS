@@ -21,6 +21,7 @@
 
 		//socket.io connectors
 		socket.on('srvUpd', function (data) {
+			console.log(data);
 			_.forEach(data.que, function(que) {
 				if (que.action === 'INIT' || que.action === 'C' ||
 					que.action === 'U' || que.action === 'D') {
@@ -53,13 +54,19 @@
 					_.set(dmSrv, 'cObj.units', []);
 					gmapControls.resetMarkers();
 				}else if (que.action === 'players') { //player
-					_.set(dmSrv, 'cObj.players', que.data);
+					var curPObj = [];
+					_.forEach(que.data, function (player) {
+						if ( typeof player !== "undefined"){
+							curPObj.push(player);
+						}
+					});
+					_.set(dmSrv, 'cObj.players', curPObj);
 				}else if (que.action === 'MESG') { //send mesg
 					_.set(que, 'data.name',
 						_.find(_.get(dmSrv, 'cObj.players'), {id: que.data.playerID}).name);
 					_.set(que, 'data.side',
 						_.find(_.get(dmSrv, 'cObj.players'), {id: que.data.playerID}).side);
-					//console.log('MESG: ', que.action, que.data);
+					console.log('MESG: ', que.action, que.data);
 					_.get(dmSrv, 'cObj.chatMsgs').push(que.data);
 				}else if (que.action === 'CMD') { //send command responses
 					//console.log('CMD: ', que.action, que.data);
@@ -74,7 +81,7 @@
 				}
 				_.set(dmSrv, 'cObj.client.player',
 					_.find(_.get(dmSrv, 'cObj.players'),
-						{socketID: _.get(dmSrv, 'cObj.client.id')}));
+						{socketID: _.get(dmSrv, 'cObj.client.id', '')}));
 			});
 		});
 		socket.on('error', function () {
