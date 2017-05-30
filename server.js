@@ -90,7 +90,7 @@ function initUnits ( socketID ) {
 
 	var sendAmt = 0;
 	var totalChkLoops = _.ceil(initQue.que.length / perSendMax);
-	console.log(totalChkLoops);
+	//console.log(totalChkLoops);
 
 	var chkPayload = {que: [{action: 'reset'}]};
 	for (x = 0; x < totalChkLoops; x++) {
@@ -103,7 +103,7 @@ function initUnits ( socketID ) {
 			chkPayload.que.push(initQue.que[0]);
 			initQue.que.shift();
 		}
-		console.log('que: ',chkPayload);
+		//console.log('que: ',chkPayload);
 		io.to(socketID).emit('srvUpd', chkPayload);
 		chkPayload = {que: []};
 	}
