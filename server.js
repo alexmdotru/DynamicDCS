@@ -78,6 +78,9 @@ function initUnits ( socketID ) {
 						coalition: parseFloat(_.get(unit, 'coalition')),
 						lat: parseFloat(_.get(unit, 'lat')),
 						lon: parseFloat(_.get(unit, 'lon')),
+						alt: parseFloat(_.get(unit, 'alt')),
+						hdg: parseFloat(_.get(unit, 'hdg')),
+						speed: parseFloat(_.get(unit, 'speed')),
 						playername: _.get(unit, 'playername', '')
 					}
 				};

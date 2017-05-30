@@ -127,6 +127,9 @@
 					coalition: update.data.coalition,
 					latitude: update.data.lat,
 					longitude: update.data.lon,
+					alt: update.data.alt,
+					hdg: update.data.hdg,
+					speed: update.data.speed,
 					zIndex: update.data.unitID
 				};
 				if(update.data.playername){
@@ -140,10 +143,13 @@
 				_.get(gSrv, 'gmapObj.markers').push(curMarker);
 			}
 			if( _.get(update, 'action') == 'U') {
-				_.set(_.find(_.get(gSrv, 'gmapObj.markers'),
-					{id: update.data.unitID}), 'latitude', update.data.lat);
-				_.set(_.find(_.get(gSrv, 'gmapObj.markers'),
-					{id: update.data.unitID}), 'longitude', update.data.lon);
+				var curMarker = _.find(_.get(gSrv, 'gmapObj.markers'), {id: update.data.unitID});
+				_.set(curMarker, 'latitude', update.data.lat);
+				_.set(curMarker, 'longitude', update.data.lon);
+				_.set(curMarker, 'alt', update.data.alt);
+				_.set(curMarker, 'hdg', update.data.hdg);
+				_.set(curMarker, 'speed', update.data.speed);
+				_.set(curMarker, 'icon.url', 'data:image/svg+xml;utf-8,'+gSrv.buildSIDC(curMarker));
 			}
 			if( _.get(update, 'action') == 'D') {
 				_.remove(_.get(gSrv, 'gmapObj.markers'), {id: update.data.unitID});
@@ -190,20 +196,21 @@
 			}
 
 			var ratio = window.devicePixelRatio || 1;
+			var sidOpt = {
+				size: 25 * ratio,
+				//altitudeDepth: 'FL' + unit.alt,
+				//type: unit.type,
+				//uniqueDesignation: 'TR' + f.getProperties().name,
+				fill: markerColor,
+				stroke: 'rgb(0, 0, 0)',
+				infoColor: 'black'
+			};
 
-			var symbol =  new $window.ms.Symbol(
-				_sidc + '***',
-				{
-					size: 25 * ratio,
-					//altitudeDepth: unit.playername,
-					//direction: update.data.hdg,
-					//speed: Math.round(f.getProperties().speed) + ' kt',
-					//type: unit.type,
-					//uniqueDesignation: 'TR' + f.getProperties().name,
-					fill: markerColor,
-					stroke: 'rgb(0, 0, 0)',
-					infoColor: 'black'
-				}).asSVG();
+			if (Math.round(unit.speed) > 0) {
+				_.set(sidOpt, 'direction', unit.hdg);
+				_.set(sidOpt, 'speed', Math.round(unit.speed) + ' kt');
+			}
+			var symbol =  new $window.ms.Symbol( _sidc + '***', sidOpt ).asSVG();
 			return symbol;
 		});
 
