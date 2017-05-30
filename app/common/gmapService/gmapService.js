@@ -91,7 +91,10 @@
 				zoom: 8,
 				window: {
 					model: {},
-					show: false
+					show: false,
+					options: {
+						disableAutoPan: false
+					}
 				},
 				options: {
 					mapTypeId: 'terrain',
@@ -118,10 +121,11 @@
 			if( _.get(update, 'action') == 'C' || _.get(update, 'action') == 'INIT') {
 				var curMarker = {
 					id: update.data.unitID,
-					icon: {
-						url: 'data:image/svg+xml;utf-8,'+gSrv.buildSIDC(update.data),
-						anchor: new $window.google.maps.Point(15, 0)
-					},
+					//icon: {
+					//	url: 'data:image/svg+xml;utf-8,'+gSrv.buildSIDC(update.data),
+					//	anchor: new $window.google.maps.Point(15, 0)
+					//},
+					icon: gSrv.buildSIDC(update.data),
 					type: update.data.type,
 					playername: update.data.playername,
 					coalition: update.data.coalition,
@@ -149,7 +153,7 @@
 				_.set(curMarker, 'alt', update.data.alt);
 				_.set(curMarker, 'hdg', update.data.hdg);
 				_.set(curMarker, 'speed', update.data.speed);
-				_.set(curMarker, 'icon.url', 'data:image/svg+xml;utf-8,'+gSrv.buildSIDC(curMarker));
+				_.set(curMarker, 'icon', gSrv.buildSIDC(curMarker));
 			}
 			if( _.get(update, 'action') == 'D') {
 				_.remove(_.get(gSrv, 'gmapObj.markers'), {id: update.data.unitID});
@@ -210,7 +214,7 @@
 				_.set(sidOpt, 'direction', unit.hdg);
 				_.set(sidOpt, 'speed', Math.round(unit.speed) + ' kt');
 			}
-			var symbol =  new $window.ms.Symbol( _sidc + '***', sidOpt ).asSVG();
+			var symbol =  new $window.ms.Symbol( _sidc + '***', sidOpt ).asCanvas().toDataURL();
 			return symbol;
 		});
 
