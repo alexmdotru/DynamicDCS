@@ -1,5 +1,5 @@
 ﻿var admin = false;
-var serverAddress = "127.0.0.1";
+var serverAddress = "192.168.44.61";
 var clientPort = 3001;
 var gameGuiPort = 3002;
 
