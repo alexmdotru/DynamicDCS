@@ -120,7 +120,7 @@
 					id: update.data.unitID,
 					icon: {
 						url: 'data:image/svg+xml;utf-8,'+gSrv.buildSIDC(update.data),
-						anchor: new $window.google.maps.Point(20, 0)
+						anchor: new $window.google.maps.Point(15, 0)
 					},
 					type: update.data.type,
 					playername: update.data.playername,
@@ -129,6 +129,14 @@
 					longitude: update.data.lon,
 					zIndex: update.data.unitID
 				};
+				if(update.data.playername){
+					_.set(curMarker, 'options', {
+						labelContent: update.data.playername,
+						labelAnchor: "10 -35",
+						labelClass: "marker-labels"
+					});
+				}
+
 				_.get(gSrv, 'gmapObj.markers').push(curMarker);
 			}
 			if( _.get(update, 'action') == 'U') {
@@ -187,8 +195,8 @@
 				_sidc + '***',
 				{
 					size: 25,
-					altitudeDepth: unit.playername,
-					//direction: f.getProperties().hdg,
+					//altitudeDepth: unit.playername,
+					//direction: update.data.hdg,
 					//speed: Math.round(f.getProperties().speed) + ' kt',
 					//type: unit.type,
 					//uniqueDesignation: 'TR' + f.getProperties().name,
