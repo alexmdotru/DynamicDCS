@@ -25,16 +25,11 @@ var io  = require('socket.io').listen(server);
 //setup globals
 var serverObject = {
 	units: [],
-	msgs: [],
-	events: [],
-	globalMsgs: [],
-	globalCmds: [],
 	players: [],
-	sockInfo: {},
 	ClientRequestArray: [],
-	GameGUIRequestArray: [],
-	socketUsers: []
+	GameGUIRequestArray: []
 };
+
 var updateQue = {
 	que1: [],
 	que2: [],
@@ -42,27 +37,37 @@ var updateQue = {
 	queadmin: []
 };
 
+function initClear( serverType ) {
+	if (serverType === 'client') {
+		_.set(serverObject, 'units', []);
+		_.set(serverObject, 'ClientRequestArray', []);
+	}
+	if (serverType === 'server') {
+		_.set(serverObject, 'GameGUIRequestArray', []);
+	}
+}
+
 //utility functions, move someday
 function isNumeric(x) {
 	return !(isNaN(x)) && (typeof x !== "object") &&
 		(x != Number.POSITIVE_INFINITY) && (x != Number.NEGATIVE_INFINITY);
 }
 
-//initArray Push
-function sendInit(socketID) {
+
+function initUnits ( socketID ) {
 	console.log('sendINIT');
 	var initQue = {que: []};
 	//var pSlot = _.get(_.find(serverObject.players, {'socketID': socketID}), 'slot', '');
 	var pSide = _.get(_.find(serverObject.players, {'socketID': socketID}), 'side', 0);
-	if(admin) {pSide = 'A';}
+	if (admin) {
+		pSide = 'A';
+	}
 	var spectator = {
 		action: 'spectator',
 		data: {}
 	};
 
-	initQue.que.push(_.get(serverObject, 'sockInfo'));
-
-	if (_.get(serverObject, 'units', []).length > 0) {
+	if (_.get(serverObject, 'units', []).length > 0 && pSide !== 0) {
 		_.forEach(_.get(serverObject, 'units', []), function (unit) {
 			if (_.get(unit, 'coalition') === pSide || pSide === 'A') {
 				var curObj = {
@@ -79,10 +84,12 @@ function sendInit(socketID) {
 				initQue.que.push(_.cloneDeep(curObj));
 			}
 		});
+	} else {
+		io.to(socketID).emit('srvUpd', {que: [{action: 'reset'}]});
 	}
 
 	var sendAmt = 0;
-	var totalChkLoops = _.ceil(initQue.que.length/perSendMax);
+	var totalChkLoops = _.ceil(initQue.que.length / perSendMax);
 	console.log(totalChkLoops);
 
 	var chkPayload = {que: [{action: 'reset'}]};
@@ -96,8 +103,23 @@ function sendInit(socketID) {
 			chkPayload.que.push(initQue.que[0]);
 			initQue.que.shift();
 		}
+		console.log('que: ',chkPayload);
 		io.to(socketID).emit('srvUpd', chkPayload);
-		chkPayload = {que:[]};
+		chkPayload = {que: []};
+	}
+}
+
+
+//initArray Push
+function sendInit(socketID) {
+
+	if (socketID === 'all'){
+		_.forEach(io.sockets.sockets, function ( socket ) {
+			console.log('send init to all clients', socket.id);
+			initUnits ( socket.id );
+		});
+	}else {
+		initUnits ( socketID );
 	}
 }
 
@@ -106,14 +128,18 @@ function sendInit(socketID) {
 io.on('connection', function( socket ) {
 	var clientIpAddress = socket.request.headers['x-forwarded-for'] || socket.request.connection.remoteAddress;
 	clientIpAddress = clientIpAddress.replace(/^.*:/, '');
-	_.set(serverObject, 'sockInfo', {
+
+	var  sockInfo = {
 		action: 'socketInfo',
 		data: {
 			id: socket.id,
 			ip: clientIpAddress
 		}
-	});
-	console.log(' new request from : ',clientIpAddress, serverObject.sockInfo);
+	};
+
+	io.to(socket.id).emit('srvUpd', sockInfo);
+
+	console.log(' new request from : ',clientIpAddress, sockInfo);
 	//send socketid payload to client
 
 	if (!io.sockets.adapter.sids[socket.id]['0']) {
@@ -443,6 +469,7 @@ function getDCSDataClient(dataCallback) {
         });
 
         client.on('connect', function() {
+			initClear( 'client' );
             client.write('{"action":"INIT"}'+"\n");
         });
 
@@ -461,6 +488,7 @@ function getDCSDataClient(dataCallback) {
         client.on('close', () => {
             time = new Date();
             console.log(time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + ' :: Reconnecting DCS Client....');
+			io.emit('srvUpd', {que: [{action: 'reset'}]});
             connOpen = true;
         });
 
@@ -494,6 +522,7 @@ function getDCSDataGameGui(dataCallback) {
 		});
 
 		client.on('connect', function() {
+			initClear( 'server' );
 			client.write('{"action":"INIT"}'+"\n");
 		});
 
