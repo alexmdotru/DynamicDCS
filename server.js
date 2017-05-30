@@ -173,9 +173,12 @@ console.log(':: SERVER IS RUNNING!');
 _.set(serverObject, 'parse', function (update) {
 	//console.log(_.get(update, 'action'));
 	var curObj = {};
+
+	var curUnit = _.find(serverObject.units, { 'unitID': _.get(update, 'data.unitID') })
+
     if (_.get(update, 'action') === 'C') {
-        if (typeof _.find(serverObject.units, { 'unitID': _.get(update, 'data.unitID') }) !== "undefined") {
-            _.find(serverObject.units, { 'unitID': _.get(update, 'data.unitID') }).action = 'U';
+        if (typeof curUnit !== "undefined") {
+			curUnit.action = 'U';
         }else{
             curObj = {
             	action: 'C',
@@ -185,6 +188,9 @@ _.set(serverObject, 'parse', function (update) {
 					coalition: parseFloat(_.get(update, 'data.coalition')),
 					lat: parseFloat(_.get(update, 'data.lat')),
 					lon: parseFloat(_.get(update, 'data.lon')),
+					alt: parseFloat(_.get(update, 'data.alt')),
+					hdg: parseFloat(_.get(update, 'data.hdg')),
+					speed: parseFloat(_.get(update, 'data.speed')),
 					playername: _.get(update, 'data.playername', '')
 				}
 			};
@@ -194,18 +200,24 @@ _.set(serverObject, 'parse', function (update) {
         }
     }
     if (_.get(update, 'action') === 'U') {
-		if (typeof _.find(serverObject.units, { 'unitID': _.get(update, 'data.unitID') }) !== "undefined") {
-            _.find(serverObject.units, { 'unitID': _.get(update, 'data.unitID') }).lat = _.get(update, 'data.lat');
-            _.find(serverObject.units, { 'unitID': _.get(update, 'data.unitID') }).lon =  _.get(update, 'data.lon');
+		if (typeof curUnit !== "undefined") {
+			curUnit.lat = parseFloat(_.get(update, 'data.lat'));
+			curUnit.lon =  parseFloat(_.get(update, 'data.lon'));
+			curUnit.alt =  parseFloat(_.get(update, 'data.alt'));
+			curUnit.hdg =  parseFloat(_.get(update, 'data.hdg'));
+			curUnit.speed =  parseFloat(_.get(update, 'data.speed'));
 			curObj = {
 				action: 'U',
 				data: {
 					unitID: _.get(update, 'data.unitID'),
-					lat: _.get(update, 'data.lat'),
-					lon: _.get(update, 'data.lon'),
+					lat: parseFloat(_.get(update, 'data.lat')),
+					lon: parseFloat(_.get(update, 'data.lon')),
+					alt: parseFloat(_.get(update, 'data.alt')),
+					hdg: parseFloat(_.get(update, 'data.hdg')),
+					speed: parseFloat(_.get(update, 'data.speed'))
 				}
             };
-			updateQue['que'+_.find(serverObject.units, { 'unitID': _.get(update, 'data.unitID') }).coalition].push(_.cloneDeep(curObj));
+			updateQue['que'+curUnit.coalition].push(_.cloneDeep(curObj));
 			updateQue.queadmin.push(_.cloneDeep(curObj));
         }
     }
@@ -213,13 +225,13 @@ _.set(serverObject, 'parse', function (update) {
 		curObj = {
 			action: 'D',
 			data: {
-				unitID: _.get(update, 'data.unitID'),
-				lat: _.get(update, 'data.lat'),
-				lon: _.get(update, 'data.lon'),
+				unitID: _.get(update, 'data.unitID')
+				//lat: _.get(update, 'data.lat'),
+				//lon: _.get(update, 'data.lon'),
 			}
 		};
 		_.remove(serverObject.units, { 'unitID': _.get(update, 'unitID') });
-		updateQue['que'+_.find(serverObject.units, { 'unitID': _.get(update, 'data.unitID') }).coalition].push(_.cloneDeep(curObj));
+		updateQue['que'+curUnit.coalition].push(_.cloneDeep(curObj));
 		updateQue.queadmin.push(_.cloneDeep(curObj));
     }
 

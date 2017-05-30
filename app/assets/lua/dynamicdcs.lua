@@ -34,8 +34,8 @@ do
 			table.remove(updateQue.que, i)
 		end
 
-		--unit updating system
-        local function addUnit(unit, unitID, coalition, lat, lon, action)
+		--unit updating system unit, unitID, coalition, lat, lon, alt, hdg, speed, action
+        local function addUnit(unit, unitID, coalition, lat, lon, alt, hdg, speed, action)
             local curUnit = {
                 action = action,
                 data = {
@@ -46,8 +46,14 @@ do
                 cacheDB[unitID] = {}
                 cacheDB[unitID].lat = lat
                 cacheDB[unitID].lon = lon
+				cacheDB[unitID].alt = alt
+				cacheDB[unitID].hdg = hdg
+				cacheDB[unitID].speed = speed
                 curUnit.data.lat = lat
                 curUnit.data.lon = lon
+				curUnit.data.alt = alt
+				curUnit.data.hdg = hdg
+				curUnit.data.speed = speed
                 if action == "C" then
                     curUnit.data.type = unit:getTypeName()
                     curUnit.data.coalition = coalition
@@ -70,16 +76,25 @@ do
                     local unit = units[unitIndex]
                     --check against cache table (keep tabs on if unit is new to table, if table has unit that no longer exists or if unit moved
                      if Unit.isActive(unit) then
-                         local unitPosition = unit:getPosition();
-                         local lat, lon, alt = coord.LOtoLL(unitPosition.p);
-                         local unitID = tonumber(unit:getID())
+						 local unitPosition = unit:getPosition()
+						 local lat, lon, alt = coord.LOtoLL(unitPosition.p)
+						 local unitID = tonumber(unit:getID())
+						 local unitXYZNorthCorr = coord.LLtoLO(lat + 1, lon)
+						 local headingNorthCorr = math.atan2(unitXYZNorthCorr.z - unitPosition.p.z, unitXYZNorthCorr.x - unitPosition.p.x)
+						 local heading = math.atan2(unitPosition.x.z, unitPosition.x.x) + headingNorthCorr
+						 if heading < 0 then
+							 heading = heading + 2 * math.pi
+						 end
+						 local hdg = math.floor(heading / math.pi * 180);
+						 local velocity = unit:getVelocity()
+						 local speed = math.sqrt(velocity.x^2 + velocity.z^2)
                          if cacheDB[unitID] ~= nil then
                              --log('cachelat: '..cacheDB[unitID].lat..' reg lat: '..lat..' cachelon: '..cacheDB[unitID].lon..' reg lon: '..lon)
                              if cacheDB[unitID].lat ~= lat or cacheDB[unitID].lon ~= lon then
-                                 addUnit(unit, unitID, coalition, lat, lon, "U")
+                                 addUnit(unit, unitID, coalition, lat, lon, alt, hdg, speed, "U")
                              end
                          else
-                             addUnit(unit, unitID, coalition, lat, lon, "C")
+                             addUnit(unit, unitID, coalition, lat, lon, alt, hdg, speed, "C")
                          end
                          checkDead[unitID] = 1
                     end
@@ -96,7 +111,7 @@ do
         local unitCnt = 0
         for k, v in pairs( cacheDB ) do
             if checkDead[k] == nil then
-                addUnit(0, k, 0, 0, 0, "D")
+                addUnit(0, k, 0, 0, 0, 0, 0, 0, "D")
 				cacheDB[k] = nil
             end
             unitCnt = unitCnt + 1

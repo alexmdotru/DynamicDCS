@@ -189,12 +189,12 @@
 				_sidc += _sidcObject[atr];
 			}
 
-
+			var ratio = window.devicePixelRatio || 1;
 
 			var symbol =  new $window.ms.Symbol(
 				_sidc + '***',
 				{
-					size: 25,
+					size: 25 * ratio,
 					//altitudeDepth: unit.playername,
 					//direction: update.data.hdg,
 					//speed: Math.round(f.getProperties().speed) + ' kt',
