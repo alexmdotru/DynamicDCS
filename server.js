@@ -1,5 +1,5 @@
 ﻿var admin = false;
-var serverAddress = "192.168.44.61";
+var serverAddress = "127.0.0.1";
 var clientPort = 3001;
 var gameGuiPort = 3002;
 
@@ -435,7 +435,6 @@ function getDCSDataClient(dataCallback) {
     var buffer;
 
     function connect() {
-	console.log('running client connect');
         const client = net.createConnection({host: serverAddress, port: clientPort}, () => {
             var time = new Date();
             console.log(time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + ' :: Connected to DCS Client!');
@@ -487,17 +486,14 @@ function getDCSDataGameGui(dataCallback) {
 	var request;
 
 	function connect() {
-
-	console.log('server connect');
-
-		const client = net.createConnection({host: gameGuiPort, port: gameGuiPort}, () => {
+		const client = net.createConnection({host: serverAddress, port: gameGuiPort}, () => {
 			var time = new Date();
 			console.log(time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + ' :: Connected to DCS GameGUI!');
 			connOpen = false;
 			buffer = "";
 		});
 
-		client.on('connect', function() {;
+		client.on('connect', function() {
 			client.write('{"action":"INIT"}'+"\n");
 		});
 

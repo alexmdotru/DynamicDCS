@@ -1,6 +1,8 @@
 --dynamicDCSGameGUI to export player information and run player commands
 
-local dynDCS = {};
+local dynDCS = {}
+local cacheDB = {}
+local updateQue = {["que"] = {}}
 
 local PORT = 3002
 local DATA_TIMEOUT_SEC = 1
@@ -16,9 +18,11 @@ local function log(msg)
 	net.log("DynamicDCSGameGUI: " .. msg)
 end
 
-local cacheDB = {}
-local updateQue = {}
-updateQue.que = {}
+local function clearVar()
+	cacheDB = {}
+	updateQue = {["que"] = {}}
+end
+
 
 local function getDataMessage()
 	--chunk send back updateQue.que
@@ -29,7 +33,7 @@ local function getDataMessage()
 		table.insert(payload.que, updateQue.que[i])
 		table.remove(updateQue.que, i)
 	end
-	log(JSON:encode(playerSync()))
+	--log(JSON:encode(playerSync()))
 	local curPlayers = playerSync()
 	table.insert(payload.que, curPlayers)
 	return payload
@@ -37,10 +41,10 @@ end
 
 local function runRequest(request)
 	if request.action ~= nil then
-		if request.action == "INIT" then
-			log('RUNNING REQUEST INIT')
-			cacheDB = {}
-		end
+		--if request.action == "INIT" then
+		--	log('RUNNING REQUEST INIT')
+		--	cacheDB = {}
+		--end
 		if request.action == "CMD" and request.cmd ~= nil and request.reqID ~= nil then
 			log('RUNNING CMD')
 			pcallCommand(request.cmd, request.reqID)
@@ -85,6 +89,7 @@ local function step()
 		if client then
 			tcp:settimeout(0.001)
 			log("Connection established")
+			clearVar()
 		end
 	end
 

@@ -3,6 +3,9 @@ do
     local PORT = 3001
     local DATA_TIMEOUT_SEC = 0.5
 
+	local cacheDB = {}
+	local updateQue = {["que"] = {}}
+
     package.path = package.path..";.\\LuaSocket\\?.lua"
     package.cpath = package.cpath..";.\\LuaSocket\\?.dll"
 
@@ -16,9 +19,10 @@ do
         env.info("DynamicDCS (t=" .. timer.getTime() .. "): " .. msg)
     end
 
-    local cacheDB = {}
-	local updateQue = {}
-	updateQue.que = {}
+	local function clearVar()
+		cacheDB = {}
+		updateQue = {["que"] = {}}
+	end
 
     local function getDataMessage()
         local checkDead = {}
@@ -104,10 +108,10 @@ do
 	local function runRequest(request)
 		env.info(request);
 		if request.action ~= nil then
-			if request.action == "INIT" then
-				log('RUNNING REQUEST INIT')
-				cacheDB = {}
-			end
+			--if request.action == "INIT" then
+			--	log('RUNNING REQUEST INIT')
+			--	cacheDB = {}
+			--end
 			if request.action == "CMD" and request.cmd ~= nil and request.reqID ~= nil then
 				log('RUNNING CMD')
 				pcallCommand(request.cmd, request.reqID)
@@ -155,6 +159,7 @@ do
             if client then
                 tcp:settimeout(0.001)
                 log("Connection established")
+				clearVar()
             end
         end
 
