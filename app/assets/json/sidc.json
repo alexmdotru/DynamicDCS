@@ -2104,5 +2104,95 @@
     "functionID": "CLCC-",
     "modifier1": "-",
     "modifier2": "-"
+  },
+  "2B11 mortar": {
+    "codingScheme": "S",
+    "affiliation": "U",
+    "battleDimension": "G",
+    "status": "-",
+    "functionID": "UCFM-",
+    "modifier1": "-",
+    "modifier2": "-"
+  },
+  "SAU Gvozdika": {
+    "codingScheme": "S",
+    "affiliation": "U",
+    "battleDimension": "G",
+    "status": "-",
+    "functionID": "UCFH-",
+    "modifier1": "-",
+    "modifier2": "-"
+  },
+  "SAU Akatsia": {
+    "codingScheme": "S",
+    "affiliation": "U",
+    "battleDimension": "G",
+    "status": "-",
+    "functionID": "UCFH-",
+    "modifier1": "-",
+    "modifier2": "-"
+  },
+  "SAU 2-C9": {
+    "codingScheme": "S",
+    "affiliation": "U",
+    "battleDimension": "G",
+    "status": "-",
+    "functionID": "UCFH-",
+    "modifier1": "-",
+    "modifier2": "-"
+  },
+  "SAU Msta": {
+    "codingScheme": "S",
+    "affiliation": "U",
+    "battleDimension": "G",
+    "status": "-",
+    "functionID": "UCFH-",
+    "modifier1": "-",
+    "modifier2": "-"
+  },
+  "M-109": {
+    "codingScheme": "S",
+    "affiliation": "U",
+    "battleDimension": "G",
+    "status": "-",
+    "functionID": "UCFH-",
+    "modifier1": "-",
+    "modifier2": "-"
+  },
+  "Grad-URAL": {
+    "codingScheme": "S",
+    "affiliation": "U",
+    "battleDimension": "G",
+    "status": "-",
+    "functionID": "UCFRM",
+    "modifier1": "S",
+    "modifier2": "-"
+  },
+  "Uragan_BM-27": {
+    "codingScheme": "S",
+    "affiliation": "U",
+    "battleDimension": "G",
+    "status": "-",
+    "functionID": "UCFRM",
+    "modifier1": "S",
+    "modifier2": "-"
+  },
+  "Smerch": {
+    "codingScheme": "S",
+    "affiliation": "U",
+    "battleDimension": "G",
+    "status": "-",
+    "functionID": "UCFRM",
+    "modifier1": "S",
+    "modifier2": "-"
+  },
+  "MLRS": {
+    "codingScheme": "S",
+    "affiliation": "U",
+    "battleDimension": "G",
+    "status": "-",
+    "functionID": "UCFRM",
+    "modifier1": "S",
+    "modifier2": "-"
   }
 }
