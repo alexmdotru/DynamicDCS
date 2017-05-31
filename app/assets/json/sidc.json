@@ -265,7 +265,7 @@
     "affiliation": "U",
     "battleDimension": "A",
     "status": "-",
-    "functionID": "MFKD-",
+    "functionID": "MFC--",
     "modifier1": "-",
     "modifier2": "-"
   },
@@ -274,7 +274,7 @@
     "affiliation": "U",
     "battleDimension": "A",
     "status": "-",
-    "functionID": "MFC--",
+    "functionID": "MFKD-",
     "modifier1": "-",
     "modifier2": "-"
   },
@@ -967,7 +967,7 @@
     "affiliation": "U",
     "battleDimension": "G",
     "status": "-",
-    "functionID": "H-",
+    "functionID": "H----",
     "modifier1": "-",
     "modifier2": "-"
   },
@@ -1922,6 +1922,132 @@
     "battleDimension": "G",
     "status": "-",
     "functionID": "UU---",
+    "modifier1": "-",
+    "modifier2": "-"
+  },
+  "ELNYA": {
+    "codingScheme": "S",
+    "affiliation": "U",
+    "battleDimension": "S",
+    "status": "-",
+    "functionID": "XMO--",
+    "modifier1": "-",
+    "modifier2": "-"
+  },
+  "Dry-cargo ship-2": {
+    "codingScheme": "S",
+    "affiliation": "U",
+    "battleDimension": "S",
+    "status": "-",
+    "functionID": "XMC--",
+    "modifier1": "-",
+    "modifier2": "-"
+  },
+  "Dry-cargo ship-1": {
+    "codingScheme": "S",
+    "affiliation": "U",
+    "battleDimension": "S",
+    "status": "-",
+    "functionID": "XMC--",
+    "modifier1": "-",
+    "modifier2": "-"
+  },
+  "ZWEZDNY": {
+    "codingScheme": "S",
+    "affiliation": "U",
+    "battleDimension": "S",
+    "status": "-",
+    "functionID": "XMC--",
+    "modifier1": "-",
+    "modifier2": "-"
+  },
+  "ALBATROS": {
+    "codingScheme": "S",
+    "affiliation": "U",
+    "battleDimension": "S",
+    "status": "-",
+    "functionID": "CLFF-",
+    "modifier1": "-",
+    "modifier2": "-"
+  },
+  "KUZNECOW": {
+    "codingScheme": "S",
+    "affiliation": "U",
+    "battleDimension": "S",
+    "status": "-",
+    "functionID": "CLCV-",
+    "modifier1": "-",
+    "modifier2": "-"
+  },
+  "MOLNIYA": {
+    "codingScheme": "S",
+    "affiliation": "U",
+    "battleDimension": "S",
+    "status": "-",
+    "functionID": "CLFF-",
+    "modifier1": "-",
+    "modifier2": "-"
+  },
+  "MOSCOW": {
+    "codingScheme": "S",
+    "affiliation": "U",
+    "battleDimension": "S",
+    "status": "-",
+    "functionID": "CLCC-",
+    "modifier1": "-",
+    "modifier2": "-"
+  },
+  "NEUSTRASH": {
+    "codingScheme": "S",
+    "affiliation": "U",
+    "battleDimension": "S",
+    "status": "-",
+    "functionID": "CLFF-",
+    "modifier1": "-",
+    "modifier2": "-"
+  },
+  "PIOTR": {
+    "codingScheme": "S",
+    "affiliation": "U",
+    "battleDimension": "S",
+    "status": "-",
+    "functionID": "CLCC-",
+    "modifier1": "-",
+    "modifier2": "-"
+  },
+  "REZKY": {
+    "codingScheme": "S",
+    "affiliation": "U",
+    "battleDimension": "S",
+    "status": "-",
+    "functionID": "CLFF-",
+    "modifier1": "-",
+    "modifier2": "-"
+  },
+  "VINSON": {
+    "codingScheme": "S",
+    "affiliation": "U",
+    "battleDimension": "S",
+    "status": "-",
+    "functionID": "CLCV-",
+    "modifier1": "-",
+    "modifier2": "-"
+  },
+  "PERRY": {
+    "codingScheme": "S",
+    "affiliation": "U",
+    "battleDimension": "S",
+    "status": "-",
+    "functionID": "CLFF-",
+    "modifier1": "-",
+    "modifier2": "-"
+  },
+  "TICONDEROG": {
+    "codingScheme": "S",
+    "affiliation": "U",
+    "battleDimension": "S",
+    "status": "-",
+    "functionID": "CLCC-",
     "modifier1": "-",
     "modifier2": "-"
   }
