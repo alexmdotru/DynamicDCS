@@ -841,9 +841,9 @@
     "affiliation": "U",
     "battleDimension": "G",
     "status": "-",
-    "functionID": "H----",
+    "functionID": "I----",
     "modifier1": "-",
-    "modifier2": "-"
+    "modifier2": "H"
   },
   "Cobra": {
     "codingScheme": "S",
@@ -967,9 +967,9 @@
     "affiliation": "U",
     "battleDimension": "G",
     "status": "-",
-    "functionID": "H----",
+    "functionID": "I----",
     "modifier1": "-",
-    "modifier2": "-"
+    "modifier2": "H"
   },
   "Soldier AK": {
     "codingScheme": "S",
