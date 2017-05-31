@@ -136,6 +136,8 @@
 					speed: update.data.speed,
 					zIndex: update.data.unitID
 				};
+
+				/*
 				if(update.data.playername){
 					_.set(curMarker, 'options', {
 						labelContent: update.data.playername,
@@ -143,7 +145,7 @@
 						labelClass: "marker-labels"
 					});
 				}
-
+				*/
 				_.get(gSrv, 'gmapObj.markers').push(curMarker);
 			}
 			if( _.get(update, 'action') == 'U') {
@@ -215,6 +217,11 @@
 				_.set(sidOpt, 'direction', unit.hdg);
 				_.set(sidOpt, 'speed', Math.round(unit.speed) + ' kt');
 			}
+			if (unit.playername !== '') {
+				_.set(sidOpt, 'quantity', unit.playername);
+			}
+
+
 			var symbol =  new $window.ms.Symbol( _sidc + '****', sidOpt ).asCanvas().toDataURL();
 			return symbol;
 		});
