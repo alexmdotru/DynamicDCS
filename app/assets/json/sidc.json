@@ -845,6 +845,51 @@
     "modifier1": "-",
     "modifier2": "H"
   },
+  "house1arm": {
+    "codingScheme": "S",
+    "affiliation": "U",
+    "battleDimension": "G",
+    "status": "-",
+    "functionID": "I----",
+    "modifier1": "-",
+    "modifier2": "H"
+  },
+  "house2arm": {
+  "codingScheme": "S",
+  "affiliation": "U",
+  "battleDimension": "G",
+  "status": "-",
+  "functionID": "I----",
+  "modifier1": "-",
+  "modifier2": "H"
+  },
+  "outpost_road": {
+    "codingScheme": "S",
+    "affiliation": "U",
+    "battleDimension": "G",
+    "status": "-",
+    "functionID": "I----",
+    "modifier1": "-",
+    "modifier2": "H"
+  },
+  "outpost": {
+    "codingScheme": "S",
+    "affiliation": "U",
+    "battleDimension": "G",
+    "status": "-",
+    "functionID": "I----",
+    "modifier1": "-",
+    "modifier2": "H"
+  },
+  "houseA_arm": {
+    "codingScheme": "S",
+    "affiliation": "U",
+    "battleDimension": "G",
+    "status": "-",
+    "functionID": "I----",
+    "modifier1": "-",
+    "modifier2": "H"
+  },
   "Cobra": {
     "codingScheme": "S",
     "affiliation": "U",
