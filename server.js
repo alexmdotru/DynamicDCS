@@ -253,7 +253,9 @@ _.set(serverObject, 'parse', function (update) {
 					//lon: _.get(queObj, 'data.lon'),
 				}
 			};
-			_.remove(serverObject.units, { 'unitID': _.get(queObj, 'unitID') });
+			//console.log('before: '+_.find(serverObject.units, { 'unitID': _.get(queObj, 'data.unitID') }));
+			_.remove(serverObject.units, { 'unitID': _.get(queObj, 'data.unitID') });
+			//console.log('after: '+_.find(serverObject.units, { 'unitID': _.get(queObj, 'data.unitID') }));
 			updateQue['que'+curUnit.coalition].push(_.cloneDeep(curObj));
 			updateQue.queadmin.push(_.cloneDeep(curObj));
 		}
