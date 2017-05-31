@@ -6,8 +6,7 @@
     "status": "-",
     "functionID": "-----",
     "modifier1": "-",
-    "modifier2": "-",
-    "modifier3": "*"
+    "modifier2": "-"
   },
   "AJS37": {
     "codingScheme": "S",
@@ -16,8 +15,7 @@
     "status": "-",
     "functionID": "MFA--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "A-10A": {
     "codingScheme": "S",
@@ -26,8 +24,7 @@
     "status": "-",
     "functionID": "MFA--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "A-10C": {
     "codingScheme": "S",
@@ -36,8 +33,7 @@
     "status": "-",
     "functionID": "MFA--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "A-50": {
     "codingScheme": "S",
@@ -46,8 +42,7 @@
     "status": "-",
     "functionID": "MFRW-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "An-26B": {
     "codingScheme": "S",
@@ -56,8 +51,7 @@
     "status": "-",
     "functionID": "MFC--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "An-30M": {
     "codingScheme": "S",
@@ -66,8 +60,7 @@
     "status": "-",
     "functionID": "MFC--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "B-1B": {
     "codingScheme": "S",
@@ -76,8 +69,7 @@
     "status": "-",
     "functionID": "MFB--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "B-52H": {
     "codingScheme": "S",
@@ -86,8 +78,7 @@
     "status": "-",
     "functionID": "MFB--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Bf-109K-4": {
     "codingScheme": "S",
@@ -96,8 +87,7 @@
     "status": "-",
     "functionID": "MFF--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "C-101CC": {
     "codingScheme": "S",
@@ -106,8 +96,7 @@
     "status": "-",
     "functionID": "MFF--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "C-101EB": {
     "codingScheme": "S",
@@ -116,8 +105,7 @@
     "status": "-",
     "functionID": "MFF--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "C-130": {
     "codingScheme": "S",
@@ -126,8 +114,7 @@
     "status": "-",
     "functionID": "MFC--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "C-17A": {
     "codingScheme": "S",
@@ -136,8 +123,7 @@
     "status": "-",
     "functionID": "MFC--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "E-2C": {
     "codingScheme": "S",
@@ -146,8 +132,7 @@
     "status": "-",
     "functionID": "MFRW-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "E-3A": {
     "codingScheme": "S",
@@ -156,8 +141,7 @@
     "status": "-",
     "functionID": "MFRW-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "F-14A": {
     "codingScheme": "S",
@@ -166,8 +150,7 @@
     "status": "-",
     "functionID": "MFF--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "F-15C": {
     "codingScheme": "S",
@@ -176,8 +159,7 @@
     "status": "-",
     "functionID": "MFF--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "F-15E": {
     "codingScheme": "S",
@@ -186,8 +168,7 @@
     "status": "-",
     "functionID": "MFF--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "F-16A MLU": {
     "codingScheme": "S",
@@ -196,8 +177,7 @@
     "status": "-",
     "functionID": "MFF--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "F-16A": {
     "codingScheme": "S",
@@ -206,8 +186,7 @@
     "status": "-",
     "functionID": "MFF--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "F-16C bl.50": {
     "codingScheme": "S",
@@ -216,8 +195,7 @@
     "status": "-",
     "functionID": "MFF--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "F-16C bl.52d": {
     "codingScheme": "S",
@@ -226,8 +204,7 @@
     "status": "-",
     "functionID": "MFF--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "F-5E-3": {
     "codingScheme": "S",
@@ -236,8 +213,7 @@
     "status": "-",
     "functionID": "MFF--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "F-5E": {
     "codingScheme": "S",
@@ -246,8 +222,7 @@
     "status": "-",
     "functionID": "MFF--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "F-86F Sabre": {
     "codingScheme": "S",
@@ -256,8 +231,7 @@
     "status": "-",
     "functionID": "MFF--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "FA-18C": {
     "codingScheme": "S",
@@ -266,8 +240,7 @@
     "status": "-",
     "functionID": "MFF--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "FW-190D9": {
     "codingScheme": "S",
@@ -276,8 +249,7 @@
     "status": "-",
     "functionID": "MFF--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Hawk": {
     "codingScheme": "S",
@@ -286,8 +258,7 @@
     "status": "-",
     "functionID": "MFF--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "IL-76MD": {
     "codingScheme": "S",
@@ -296,8 +267,7 @@
     "status": "-",
     "functionID": "MFC--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "IL-78M": {
     "codingScheme": "S",
@@ -306,8 +276,7 @@
     "status": "-",
     "functionID": "MFKD-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "KC-135": {
     "codingScheme": "S",
@@ -316,8 +285,7 @@
     "status": "-",
     "functionID": "MFKB-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "L-39C": {
     "codingScheme": "S",
@@ -326,8 +294,7 @@
     "status": "-",
     "functionID": "MFF--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "L-39ZA": {
     "codingScheme": "S",
@@ -336,8 +303,7 @@
     "status": "-",
     "functionID": "MFT--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "M-2000C": {
     "codingScheme": "S",
@@ -346,8 +312,7 @@
     "status": "-",
     "functionID": "MFF--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "MiG-15bis": {
     "codingScheme": "S",
@@ -356,8 +321,7 @@
     "status": "-",
     "functionID": "MFF--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "MiG-21Bis": {
     "codingScheme": "S",
@@ -366,8 +330,7 @@
     "status": "-",
     "functionID": "MFF--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "MiG-23MLD": {
     "codingScheme": "S",
@@ -376,8 +339,7 @@
     "status": "-",
     "functionID": "MFF--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "MiG-25PD": {
     "codingScheme": "S",
@@ -386,8 +348,7 @@
     "status": "-",
     "functionID": "MFF--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "MiG-25RBT": {
     "codingScheme": "S",
@@ -396,8 +357,7 @@
     "status": "-",
     "functionID": "MFF--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "MiG-27K": {
     "codingScheme": "S",
@@ -406,8 +366,7 @@
     "status": "-",
     "functionID": "MFF--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "MiG-29A": {
     "codingScheme": "S",
@@ -416,8 +375,7 @@
     "status": "-",
     "functionID": "MFF--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "MiG-29G": {
     "codingScheme": "S",
@@ -426,8 +384,7 @@
     "status": "-",
     "functionID": "MFF--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "MiG-29S": {
     "codingScheme": "S",
@@ -436,8 +393,7 @@
     "status": "-",
     "functionID": "MFF--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "MiG-31": {
     "codingScheme": "S",
@@ -446,8 +402,7 @@
     "status": "-",
     "functionID": "MFF--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Mirage 2000-5": {
     "codingScheme": "S",
@@ -456,8 +411,7 @@
     "status": "-",
     "functionID": "MFF--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "P-51D": {
     "codingScheme": "S",
@@ -466,8 +420,7 @@
     "status": "-",
     "functionID": "MFF--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "RQ-1A Predator": {
     "codingScheme": "S",
@@ -476,8 +429,7 @@
     "status": "-",
     "functionID": "MFQA-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "S-3B Tanker": {
     "codingScheme": "S",
@@ -486,8 +438,7 @@
     "status": "-",
     "functionID": "MFKD-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "S-3B": {
     "codingScheme": "S",
@@ -496,8 +447,7 @@
     "status": "-",
     "functionID": "MFC--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Su-17M4": {
     "codingScheme": "S",
@@ -506,8 +456,7 @@
     "status": "-",
     "functionID": "MFF--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Su-24M": {
     "codingScheme": "S",
@@ -516,8 +465,7 @@
     "status": "-",
     "functionID": "MFF--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Su-24MR": {
     "codingScheme": "S",
@@ -526,8 +474,7 @@
     "status": "-",
     "functionID": "MFF--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Su-25": {
     "codingScheme": "S",
@@ -536,8 +483,7 @@
     "status": "-",
     "functionID": "MFA--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Su-25T": {
     "codingScheme": "S",
@@ -546,8 +492,7 @@
     "status": "-",
     "functionID": "MFA--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Su-25TM": {
     "codingScheme": "S",
@@ -556,8 +501,7 @@
     "status": "-",
     "functionID": "MFA--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Su-27": {
     "codingScheme": "S",
@@ -566,8 +510,7 @@
     "status": "-",
     "functionID": "MFF--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Su-30": {
     "codingScheme": "S",
@@ -576,8 +519,7 @@
     "status": "-",
     "functionID": "MFF--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Su-33": {
     "codingScheme": "S",
@@ -586,8 +528,7 @@
     "status": "-",
     "functionID": "MFF--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Su-34": {
     "codingScheme": "S",
@@ -596,8 +537,7 @@
     "status": "-",
     "functionID": "MFF--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "TF-51D": {
     "codingScheme": "S",
@@ -606,8 +546,7 @@
     "status": "-",
     "functionID": "MFR--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Tornado GR4": {
     "codingScheme": "S",
@@ -616,8 +555,7 @@
     "status": "-",
     "functionID": "MFF--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Tornado IDS": {
     "codingScheme": "S",
@@ -626,8 +564,7 @@
     "status": "-",
     "functionID": "MFF--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Tu-142": {
     "codingScheme": "S",
@@ -636,8 +573,7 @@
     "status": "-",
     "functionID": "MFB--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Tu-160": {
     "codingScheme": "S",
@@ -646,8 +582,7 @@
     "status": "-",
     "functionID": "MFB--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Tu-22M3": {
     "codingScheme": "S",
@@ -656,8 +591,7 @@
     "status": "-",
     "functionID": "MFB--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Tu-95MS": {
     "codingScheme": "S",
@@ -666,8 +600,7 @@
     "status": "-",
     "functionID": "MFB--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Yak-40": {
     "codingScheme": "S",
@@ -676,8 +609,7 @@
     "status": "-",
     "functionID": "MFC--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "AH-1W": {
     "codingScheme": "S",
@@ -686,8 +618,7 @@
     "status": "-",
     "functionID": "MHA--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "AH-64A": {
     "codingScheme": "S",
@@ -696,8 +627,7 @@
     "status": "-",
     "functionID": "MHA--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "AH-64D": {
     "codingScheme": "S",
@@ -706,8 +636,7 @@
     "status": "-",
     "functionID": "MHA--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "CH-47D": {
     "codingScheme": "S",
@@ -716,8 +645,7 @@
     "status": "-",
     "functionID": "MHC--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "CH-53E": {
     "codingScheme": "S",
@@ -726,8 +654,7 @@
     "status": "-",
     "functionID": "MHC--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Ka-27": {
     "codingScheme": "S",
@@ -736,8 +663,7 @@
     "status": "-",
     "functionID": "MHA--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Ka-50": {
     "codingScheme": "S",
@@ -746,8 +672,7 @@
     "status": "-",
     "functionID": "MHA--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Mi-24V": {
     "codingScheme": "S",
@@ -756,8 +681,7 @@
     "status": "-",
     "functionID": "MHA--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Mi-26": {
     "codingScheme": "S",
@@ -766,8 +690,7 @@
     "status": "-",
     "functionID": "MHC--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Mi-28N": {
     "codingScheme": "S",
@@ -776,8 +699,7 @@
     "status": "-",
     "functionID": "MHA--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Mi-8MT": {
     "codingScheme": "S",
@@ -786,8 +708,7 @@
     "status": "-",
     "functionID": "MHC--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "OH-58D": {
     "codingScheme": "S",
@@ -796,8 +717,7 @@
     "status": "-",
     "functionID": "MHR--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "SA342M": {
     "codingScheme": "S",
@@ -806,8 +726,7 @@
     "status": "-",
     "functionID": "MHA--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "SH-60B": {
     "codingScheme": "S",
@@ -816,8 +735,7 @@
     "status": "-",
     "functionID": "MHC--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "UH-1H": {
     "codingScheme": "S",
@@ -826,8 +744,7 @@
     "status": "-",
     "functionID": "MHC--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "UH-60A": {
     "codingScheme": "S",
@@ -836,8 +753,7 @@
     "status": "-",
     "functionID": "MHC--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "AAV7": {
     "codingScheme": "S",
@@ -846,8 +762,7 @@
     "status": "-",
     "functionID": "UCATW",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "BMD-1": {
     "codingScheme": "S",
@@ -856,8 +771,7 @@
     "status": "-",
     "functionID": "UCATW",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "BMP-1": {
     "codingScheme": "S",
@@ -866,8 +780,7 @@
     "status": "-",
     "functionID": "UCATW",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "BMP-2": {
     "codingScheme": "S",
@@ -876,8 +789,7 @@
     "status": "-",
     "functionID": "UCATW",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "BMP-3": {
     "codingScheme": "S",
@@ -886,8 +798,7 @@
     "status": "-",
     "functionID": "UCATW",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Boman": {
     "codingScheme": "S",
@@ -896,8 +807,7 @@
     "status": "-",
     "functionID": "UCATW",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "BRDM-2": {
     "codingScheme": "S",
@@ -906,8 +816,7 @@
     "status": "-",
     "functionID": "UCAWW",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "BTR-80": {
     "codingScheme": "S",
@@ -916,8 +825,7 @@
     "status": "-",
     "functionID": "UCAWW",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "BTR_D": {
     "codingScheme": "S",
@@ -926,8 +834,7 @@
     "status": "-",
     "functionID": "UCII-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Bunker": {
     "codingScheme": "S",
@@ -936,8 +843,7 @@
     "status": "-",
     "functionID": "I----",
     "modifier1": "-",
-    "modifier2": "-",
-    "modifier3": "H"
+    "modifier2": "H"
   },
   "Cobra": {
     "codingScheme": "S",
@@ -946,8 +852,7 @@
     "status": "-",
     "functionID": "UCII-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "LAV-25": {
     "codingScheme": "S",
@@ -956,8 +861,7 @@
     "status": "-",
     "functionID": "UCRRL",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "M1043 HMMWV Armament": {
     "codingScheme": "S",
@@ -966,8 +870,7 @@
     "status": "-",
     "functionID": "UCII-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "M1045 HMMWV TOW": {
     "codingScheme": "S",
@@ -976,8 +879,7 @@
     "status": "-",
     "functionID": "UCII-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "M1126 Stryker ICV": {
     "codingScheme": "S",
@@ -986,8 +888,7 @@
     "status": "-",
     "functionID": "UCII-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "M-113": {
     "codingScheme": "S",
@@ -996,8 +897,7 @@
     "status": "-",
     "functionID": "UCII-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "M1134 Stryker ATGM": {
     "codingScheme": "S",
@@ -1006,8 +906,7 @@
     "status": "-",
     "functionID": "UCII-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "M-2 Bradley": {
     "codingScheme": "S",
@@ -1016,8 +915,7 @@
     "status": "-",
     "functionID": "UCII-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Marder": {
     "codingScheme": "S",
@@ -1026,8 +924,7 @@
     "status": "-",
     "functionID": "UCII-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "MCV-80": {
     "codingScheme": "S",
@@ -1036,8 +933,7 @@
     "status": "-",
     "functionID": "UCAAA",
     "modifier1": "T",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "MTLB": {
     "codingScheme": "S",
@@ -1046,8 +942,7 @@
     "status": "-",
     "functionID": "UCATW",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Paratrooper RPG-16": {
     "codingScheme": "S",
@@ -1056,8 +951,7 @@
     "status": "-",
     "functionID": "UCIS-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Paratrooper AKS-74": {
     "codingScheme": "S",
@@ -1066,8 +960,7 @@
     "status": "-",
     "functionID": "UCIS-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Sandbox": {
     "codingScheme": "S",
@@ -1076,8 +969,7 @@
     "status": "-",
     "functionID": "I----",
     "modifier1": "-",
-    "modifier2": "-",
-    "modifier3": "G"
+    "modifier2": "H"
   },
   "Soldier AK": {
     "codingScheme": "S",
@@ -1086,8 +978,7 @@
     "status": "-",
     "functionID": "UCI--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Infantry AK": {
     "codingScheme": "S",
@@ -1096,8 +987,7 @@
     "status": "-",
     "functionID": "UCI--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Soldier M249": {
     "codingScheme": "S",
@@ -1106,8 +996,7 @@
     "status": "-",
     "functionID": "UCI--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Soldier M4": {
     "codingScheme": "S",
@@ -1116,8 +1005,7 @@
     "status": "-",
     "functionID": "UCI--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Soldier M4 GRG": {
     "codingScheme": "S",
@@ -1126,8 +1014,7 @@
     "status": "-",
     "functionID": "UCI--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Soldier RPG": {
     "codingScheme": "S",
@@ -1136,8 +1023,7 @@
     "status": "-",
     "functionID": "UCI--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "TPZ": {
     "codingScheme": "S",
@@ -1146,8 +1032,7 @@
     "status": "-",
     "functionID": "UCII-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Challenger2": {
     "codingScheme": "S",
@@ -1156,8 +1041,7 @@
     "status": "-",
     "functionID": "UCA--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Leclerc": {
     "codingScheme": "S",
@@ -1166,8 +1050,7 @@
     "status": "-",
     "functionID": "UCA--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*",
+    "modifier2": "-"
   },
   "Leopard1A3": {
     "codingScheme": "S",
@@ -1176,8 +1059,7 @@
     "status": "-",
     "functionID": "UCA--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Leopard-2": {
     "codingScheme": "S",
@@ -1186,8 +1068,7 @@
     "status": "-",
     "functionID": "UCA--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Merkava_Mk4": {
     "codingScheme": "S",
@@ -1196,8 +1077,7 @@
     "status": "-",
     "functionID": "UCA--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "M-60": {
     "codingScheme": "S",
@@ -1206,8 +1086,7 @@
     "status": "-",
     "functionID": "UCA--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "M1128 Stryker MGS": {
     "codingScheme": "S",
@@ -1216,8 +1095,7 @@
     "status": "-",
     "functionID": "UCA--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "M-1 Abrams": {
     "codingScheme": "S",
@@ -1226,8 +1104,7 @@
     "status": "-",
     "functionID": "UCA--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "T-55": {
     "codingScheme": "S",
@@ -1236,8 +1113,7 @@
     "status": "-",
     "functionID": "UCA--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "T-72B": {
     "codingScheme": "S",
@@ -1246,8 +1122,7 @@
     "status": "-",
     "functionID": "UCA--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "T-80UD": {
     "codingScheme": "S",
@@ -1256,8 +1131,7 @@
     "status": "-",
     "functionID": "UCA--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "T-90": {
     "codingScheme": "S",
@@ -1266,8 +1140,7 @@
     "status": "-",
     "functionID": "UCA--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "2S6 Tunguska": {
     "codingScheme": "S",
@@ -1276,8 +1149,7 @@
     "status": "-",
     "functionID": "UCDML",
     "modifier1": "A",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Kub 2P25 ln": {
     "codingScheme": "S",
@@ -1286,8 +1158,7 @@
     "status": "-",
     "functionID": "UCDML",
     "modifier1": "A",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "5p73 s-125 ln": {
     "codingScheme": "S",
@@ -1296,8 +1167,7 @@
     "status": "-",
     "functionID": "UCDMH",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "S-300PS 5P85C ln": {
     "codingScheme": "S",
@@ -1306,8 +1176,7 @@
     "status": "-",
     "functionID": "UCDMH",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "S-300PS 5P85D ln": {
     "codingScheme": "S",
@@ -1316,8 +1185,7 @@
     "status": "-",
     "functionID": "UCDMH",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "SA-11 Buk LN 9A310M1": {
     "codingScheme": "S",
@@ -1326,8 +1194,7 @@
     "status": "-",
     "functionID": "UCDMM",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Osa 9A33 ln": {
     "codingScheme": "S",
@@ -1336,8 +1203,7 @@
     "status": "-",
     "functionID": "UCDML",
     "modifier1": "A",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Tor 9A331": {
     "codingScheme": "S",
@@ -1346,8 +1212,7 @@
     "status": "-",
     "functionID": "UCDML",
     "modifier1": "A",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Strela-10M3": {
     "codingScheme": "S",
@@ -1356,8 +1221,7 @@
     "status": "-",
     "functionID": "UCDS-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Strela-1 9P31": {
     "codingScheme": "S",
@@ -1366,8 +1230,7 @@
     "status": "-",
     "functionID": "UCDS-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "SA-11 Buk CC 9S470M1": {
     "codingScheme": "S",
@@ -1376,8 +1239,7 @@
     "status": "-",
     "functionID": "UCDT-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "SA-8 Osa LD 9T217": {
     "codingScheme": "S",
@@ -1386,8 +1248,7 @@
     "status": "-",
     "functionID": "UCDML",
     "modifier1": "A",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Patriot AMG": {
     "codingScheme": "S",
@@ -1396,8 +1257,7 @@
     "status": "-",
     "functionID": "UCDT-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Patriot ECS": {
     "codingScheme": "S",
@@ -1406,8 +1266,7 @@
     "status": "-",
     "functionID": "UCDHP",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Gepard": {
     "codingScheme": "S",
@@ -1416,8 +1275,7 @@
     "status": "-",
     "functionID": "UCDG-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Hawk pcp": {
     "codingScheme": "S",
@@ -1426,8 +1284,7 @@
     "status": "-",
     "functionID": "UCDT-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "SA-18 Igla manpad": {
     "codingScheme": "S",
@@ -1436,8 +1293,7 @@
     "status": "-",
     "functionID": "UCDSS",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "SA-18 Igla comm": {
     "codingScheme": "S",
@@ -1446,8 +1302,7 @@
     "status": "-",
     "functionID": "UCDSS",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Igla manpad INS": {
     "codingScheme": "S",
@@ -1456,8 +1311,7 @@
     "status": "-",
     "functionID": "UCDSS",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "SA-18 Igla-S manpad": {
     "codingScheme": "S",
@@ -1466,8 +1320,7 @@
     "status": "-",
     "functionID": "UCDSS",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "SA-18 Igla-S comm": {
     "codingScheme": "S",
@@ -1476,8 +1329,7 @@
     "status": "-",
     "functionID": "UCDSS",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Vulcan": {
     "codingScheme": "S",
@@ -1486,8 +1338,7 @@
     "status": "-",
     "functionID": "UCDSV",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Hawk ln": {
     "codingScheme": "S",
@@ -1496,8 +1347,7 @@
     "status": "-",
     "functionID": "UCDHH",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "M48 Chaparral": {
     "codingScheme": "S",
@@ -1506,8 +1356,7 @@
     "status": "-",
     "functionID": "UCDSC",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "M6 Linebacker": {
     "codingScheme": "S",
@@ -1516,8 +1365,7 @@
     "status": "-",
     "functionID": "UCDML",
     "modifier1": "A",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Patriot ln": {
     "codingScheme": "S",
@@ -1526,8 +1374,7 @@
     "status": "-",
     "functionID": "UCDHP",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "M1097 Avenger": {
     "codingScheme": "S",
@@ -1536,8 +1383,7 @@
     "status": "-",
     "functionID": "UCDML",
     "modifier1": "A",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Patriot EPP": {
     "codingScheme": "S",
@@ -1546,8 +1392,7 @@
     "status": "-",
     "functionID": "UCDHP",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Patriot cp": {
     "codingScheme": "S",
@@ -1556,8 +1401,7 @@
     "status": "-",
     "functionID": "UCDHP",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Roland ADS": {
     "codingScheme": "S",
@@ -1566,8 +1410,7 @@
     "status": "-",
     "functionID": "UCDML",
     "modifier1": "A",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "S-300PS 54K6 cp": {
     "codingScheme": "S",
@@ -1576,8 +1419,7 @@
     "status": "-",
     "functionID": "UCDT-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Stinger manpad GRG": {
     "codingScheme": "S",
@@ -1586,8 +1428,7 @@
     "status": "-",
     "functionID": "UCDSS",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Stinger manpad dsr": {
     "codingScheme": "S",
@@ -1596,8 +1437,7 @@
     "status": "-",
     "functionID": "UCDSS",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Stinger comm dsr": {
     "codingScheme": "S",
@@ -1606,8 +1446,7 @@
     "status": "-",
     "functionID": "UCDSS",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Stinger manpad": {
     "codingScheme": "S",
@@ -1616,8 +1455,7 @@
     "status": "-",
     "functionID": "UCDSS",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Stinger comm": {
     "codingScheme": "S",
@@ -1626,8 +1464,7 @@
     "status": "-",
     "functionID": "UCDSS",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "ZSU-23-4 Shilka": {
     "codingScheme": "S",
@@ -1636,8 +1473,7 @@
     "status": "-",
     "functionID": "UCDG-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "ZU-23 Emplacement Closed": {
     "codingScheme": "S",
@@ -1646,8 +1482,7 @@
     "status": "-",
     "functionID": "UCDG-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "ZU-23 Emplacement": {
     "codingScheme": "S",
@@ -1656,8 +1491,7 @@
     "status": "-",
     "functionID": "UCDG-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "ZU-23 Closed Insurgent": {
     "codingScheme": "S",
@@ -1666,8 +1500,7 @@
     "status": "-",
     "functionID": "UCDG-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Ural-375 ZU-23 Insurgent": {
     "codingScheme": "S",
@@ -1676,8 +1509,7 @@
     "status": "-",
     "functionID": "UCDG-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "ZU-23 Insurgent": {
     "codingScheme": "S",
@@ -1686,8 +1518,7 @@
     "status": "-",
     "functionID": "UCDG-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Ural-375 ZU-23": {
     "codingScheme": "S",
@@ -1696,8 +1527,7 @@
     "status": "-",
     "functionID": "UCDG-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "1L13 EWR": {
     "codingScheme": "I",
@@ -1706,8 +1536,7 @@
     "status": "-",
     "functionID": "SRE--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Kub 1S91 str": {
     "codingScheme": "S",
@@ -1716,8 +1545,7 @@
     "status": "-",
     "functionID": "UCDMM",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "S-300PS 40B6M tr": {
     "codingScheme": "S",
@@ -1726,8 +1554,7 @@
     "status": "-",
     "functionID": "UCDT-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "S-300PS 40B6MD sr": {
     "codingScheme": "S",
@@ -1736,8 +1563,7 @@
     "status": "-",
     "functionID": "UCDT-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "55G6 EWR": {
     "codingScheme": "I",
@@ -1746,8 +1572,7 @@
     "status": "-",
     "functionID": "SRE--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "S-300PS 64H6E sr": {
     "codingScheme": "S",
@@ -1756,8 +1581,7 @@
     "status": "-",
     "functionID": "UCDT-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "SA-11 Buk SR 9S18M1": {
     "codingScheme": "S",
@@ -1766,8 +1590,7 @@
     "status": "-",
     "functionID": "UCDT-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Dog Ear radar": {
     "codingScheme": "S",
@@ -1776,8 +1599,7 @@
     "status": "-",
     "functionID": "UCDT-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Hawk tr": {
     "codingScheme": "S",
@@ -1786,8 +1608,7 @@
     "status": "-",
     "functionID": "UCDT-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Hawk sr": {
     "codingScheme": "S",
@@ -1796,8 +1617,7 @@
     "status": "-",
     "functionID": "UCDT-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Patriot str": {
     "codingScheme": "S",
@@ -1806,8 +1626,7 @@
     "status": "-",
     "functionID": "UCDT-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Hawk cwar": {
     "codingScheme": "S",
@@ -1816,8 +1635,7 @@
     "status": "-",
     "functionID": "UCDT-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "p-19 s-125 sr": {
     "codingScheme": "S",
@@ -1826,8 +1644,7 @@
     "status": "-",
     "functionID": "UCDT-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Roland Radar": {
     "codingScheme": "S",
@@ -1836,8 +1653,7 @@
     "status": "-",
     "functionID": "UCDT-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "snr s-125 tr": {
     "codingScheme": "S",
@@ -1846,8 +1662,7 @@
     "status": "-",
     "functionID": "UCDT-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Ural-4320 APA-5D": {
     "codingScheme": "S",
@@ -1856,8 +1671,7 @@
     "status": "-",
     "functionID": "UU---",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "ATMZ-5": {
     "codingScheme": "S",
@@ -1866,8 +1680,7 @@
     "status": "-",
     "functionID": "UU---",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "ATZ-10": {
     "codingScheme": "S",
@@ -1876,8 +1689,7 @@
     "status": "-",
     "functionID": "UU---",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "GAZ-3307": {
     "codingScheme": "S",
@@ -1886,8 +1698,7 @@
     "status": "-",
     "functionID": "UU---",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "GAZ-3308": {
     "codingScheme": "S",
@@ -1896,8 +1707,7 @@
     "status": "-",
     "functionID": "UU---",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "GAZ-66": {
     "codingScheme": "S",
@@ -1906,8 +1716,7 @@
     "status": "-",
     "functionID": "UU---",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "M978 HEMTT Tanker": {
     "codingScheme": "S",
@@ -1916,8 +1725,7 @@
     "status": "-",
     "functionID": "UU---",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "HEMTT TFFT": {
     "codingScheme": "S",
@@ -1926,8 +1734,7 @@
     "status": "-",
     "functionID": "UU---",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "IKARUS Bus": {
     "codingScheme": "S",
@@ -1936,8 +1743,7 @@
     "status": "-",
     "functionID": "UU---",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "KAMAZ Truck": {
     "codingScheme": "S",
@@ -1946,8 +1752,7 @@
     "status": "-",
     "functionID": "UU---",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "LAZ Bus": {
     "codingScheme": "S",
@@ -1956,8 +1761,7 @@
     "status": "-",
     "functionID": "UU---",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Hummer": {
     "codingScheme": "S",
@@ -1966,8 +1770,7 @@
     "status": "-",
     "functionID": "UU---",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "M 818": {
     "codingScheme": "S",
@@ -1976,8 +1779,7 @@
     "status": "-",
     "functionID": "UU---",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "MAZ-6303": {
     "codingScheme": "S",
@@ -1986,8 +1788,7 @@
     "status": "-",
     "functionID": "UU---",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Predator GCS": {
     "codingScheme": "S",
@@ -1996,8 +1797,7 @@
     "status": "-",
     "functionID": "UU---",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Predator TrojanSpirit": {
     "codingScheme": "S",
@@ -2006,8 +1806,7 @@
     "status": "-",
     "functionID": "UU---",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Suidae": {
     "codingScheme": "S",
@@ -2016,8 +1815,7 @@
     "status": "-",
     "functionID": "UU---",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Tigr_233036": {
     "codingScheme": "S",
@@ -2026,8 +1824,7 @@
     "status": "-",
     "functionID": "UU---",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Trolley bus": {
     "codingScheme": "S",
@@ -2036,8 +1833,7 @@
     "status": "-",
     "functionID": "UU---",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "UAZ-469": {
     "codingScheme": "S",
@@ -2046,8 +1842,7 @@
     "status": "-",
     "functionID": "UU---",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Ural ATsP-6": {
     "codingScheme": "S",
@@ -2056,8 +1851,7 @@
     "status": "-",
     "functionID": "UU---",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Ural-375 PBU": {
     "codingScheme": "S",
@@ -2066,8 +1860,7 @@
     "status": "-",
     "functionID": "UU---",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Ural-375": {
     "codingScheme": "S",
@@ -2076,8 +1869,7 @@
     "status": "-",
     "functionID": "UU---",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Ural-4320-31": {
     "codingScheme": "S",
@@ -2086,8 +1878,7 @@
     "status": "-",
     "functionID": "UU---",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Ural-4320T": {
     "codingScheme": "S",
@@ -2096,8 +1887,7 @@
     "status": "-",
     "functionID": "UU---",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "VAZ Car": {
     "codingScheme": "S",
@@ -2106,8 +1896,7 @@
     "status": "-",
     "functionID": "UU---",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "ZiL-131 APA-80": {
     "codingScheme": "S",
@@ -2116,8 +1905,7 @@
     "status": "-",
     "functionID": "UU---",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "SKP-11": {
     "codingScheme": "S",
@@ -2126,8 +1914,7 @@
     "status": "-",
     "functionID": "UU---",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "ZIL-131 KUNG": {
     "codingScheme": "S",
@@ -2136,8 +1923,7 @@
     "status": "-",
     "functionID": "UU---",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "ZIL-4331": {
     "codingScheme": "S",
@@ -2146,8 +1932,7 @@
     "status": "-",
     "functionID": "UU---",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "ELNYA": {
     "codingScheme": "S",
@@ -2156,8 +1941,7 @@
     "status": "-",
     "functionID": "XMO--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Dry-cargo ship-2": {
     "codingScheme": "S",
@@ -2166,8 +1950,7 @@
     "status": "-",
     "functionID": "XMC--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "Dry-cargo ship-1": {
     "codingScheme": "S",
@@ -2176,8 +1959,7 @@
     "status": "-",
     "functionID": "XMC--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "ZWEZDNY": {
     "codingScheme": "S",
@@ -2186,8 +1968,7 @@
     "status": "-",
     "functionID": "XMC--",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "ALBATROS": {
     "codingScheme": "S",
@@ -2196,8 +1977,7 @@
     "status": "-",
     "functionID": "CLFF-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "KUZNECOW": {
     "codingScheme": "S",
@@ -2206,8 +1986,7 @@
     "status": "-",
     "functionID": "CLCV-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "MOLNIYA": {
     "codingScheme": "S",
@@ -2216,8 +1995,7 @@
     "status": "-",
     "functionID": "CLFF-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "MOSCOW": {
     "codingScheme": "S",
@@ -2226,8 +2004,7 @@
     "status": "-",
     "functionID": "CLCC-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "NEUSTRASH": {
     "codingScheme": "S",
@@ -2236,8 +2013,7 @@
     "status": "-",
     "functionID": "CLFF-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "PIOTR": {
     "codingScheme": "S",
@@ -2246,8 +2022,7 @@
     "status": "-",
     "functionID": "CLCC-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "REZKY": {
     "codingScheme": "S",
@@ -2256,8 +2031,7 @@
     "status": "-",
     "functionID": "CLFF-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "VINSON": {
     "codingScheme": "S",
@@ -2266,8 +2040,7 @@
     "status": "-",
     "functionID": "CLCV-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "PERRY": {
     "codingScheme": "S",
@@ -2276,8 +2049,7 @@
     "status": "-",
     "functionID": "CLFF-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   },
   "TICONDEROG": {
     "codingScheme": "S",
@@ -2286,7 +2058,6 @@
     "status": "-",
     "functionID": "CLCC-",
     "modifier1": "-",
-    "modifier2": "-",
-		"modifier3": "*"
+    "modifier2": "-"
   }
 }
