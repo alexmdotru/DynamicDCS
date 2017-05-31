@@ -9,6 +9,9 @@ var express = require('express');
 
 var perSendMax = 500;
 
+var outOfSyncUnitCnt = 0;
+var outOfSyncUnitThreshold = 60;
+
 //startup node server
 var app = express();
 
@@ -150,7 +153,6 @@ io.on('connection', function( socket ) {
 	}
 
 	//client updates
-	var initSrvObj =  _.get(serverObject, 'units', []);
 	console.log("Units: "+serverObject.units.length);
 	socket.on('clientUpd', function (data) {
 		if(data.action === 'unitINIT') {
@@ -174,263 +176,282 @@ io.on('connection', function( socket ) {
 console.log(':: SERVER IS RUNNING!');
 
 _.set(serverObject, 'parse', function (update) {
-	//console.log(_.get(update, 'action'));
-	var curObj = {};
 
-	var curUnit = _.find(serverObject.units, { 'unitID': _.get(update, 'data.unitID') })
+	if (typeof update.unitCount !== 'undefined'){
+		if(update.unitCount !== serverObject.units.length){
+			console.log('out of sync for '+outOfSyncUnitCnt);
+			if ( outOfSyncUnitCnt > outOfSyncUnitThreshold){
+				outOfSyncUnitCnt = 0;
+				console.log('reset server units');
+				initClear( 'client' );
+				_.get(serverObject, 'ClientRequestArray').push({"action":"INIT"});
+				sendInit( 'all' );
+			}else{
+				outOfSyncUnitCnt++;
+			}
+		}else{
+			outOfSyncUnitCnt = 0;
+		}
+		console.log('compare: '+update.unitCount+' vs '+serverObject.units.length);
+	}
 
-    if (_.get(update, 'action') === 'C') {
-        if (typeof curUnit !== "undefined") {
-			curUnit.action = 'U';
-        }else{
-            curObj = {
-            	action: 'C',
-            	data: {
-					unitID: parseFloat(_.get(update, 'data.unitID')),
-					type: _.get(update, 'data.type'),
-					coalition: parseFloat(_.get(update, 'data.coalition')),
-					lat: parseFloat(_.get(update, 'data.lat')),
-					lon: parseFloat(_.get(update, 'data.lon')),
-					alt: parseFloat(_.get(update, 'data.alt')),
-					hdg: parseFloat(_.get(update, 'data.hdg')),
-					speed: parseFloat(_.get(update, 'data.speed')),
-					playername: _.get(update, 'data.playername', '')
+	_.forEach(update.que, function (queObj) {
+		var curObj = {};
+		var curUnit = _.find(serverObject.units, { 'unitID': _.get(queObj, 'data.unitID') });
+
+		if (_.get(queObj, 'action') === 'C') {
+			if (typeof curUnit !== "undefined") {
+				curUnit.action = 'U';
+			}else{
+				curObj = {
+					action: 'C',
+					data: {
+						unitID: parseFloat(_.get(queObj, 'data.unitID')),
+						type: _.get(queObj, 'data.type'),
+						coalition: parseFloat(_.get(queObj, 'data.coalition')),
+						lat: parseFloat(_.get(queObj, 'data.lat')),
+						lon: parseFloat(_.get(queObj, 'data.lon')),
+						alt: parseFloat(_.get(queObj, 'data.alt')),
+						hdg: parseFloat(_.get(queObj, 'data.hdg')),
+						speed: parseFloat(_.get(queObj, 'data.speed')),
+						playername: _.get(queObj, 'data.playername', '')
+					}
+				};
+				serverObject.units.push(_.cloneDeep(curObj.data));
+				updateQue['que'+parseFloat(_.get(queObj, 'data.coalition'))].push(_.cloneDeep(curObj));
+				updateQue.queadmin.push(_.cloneDeep(curObj));
+			}
+		}
+		if (_.get(queObj, 'action') === 'U') {
+			if (typeof curUnit !== "undefined") {
+				curUnit.lat = parseFloat(_.get(queObj, 'data.lat'));
+				curUnit.lon =  parseFloat(_.get(queObj, 'data.lon'));
+				curUnit.alt =  parseFloat(_.get(queObj, 'data.alt'));
+				curUnit.hdg =  parseFloat(_.get(queObj, 'data.hdg'));
+				curUnit.speed =  parseFloat(_.get(queObj, 'data.speed'));
+				curObj = {
+					action: 'U',
+					data: {
+						unitID: _.get(queObj, 'data.unitID'),
+						lat: parseFloat(_.get(queObj, 'data.lat')),
+						lon: parseFloat(_.get(queObj, 'data.lon')),
+						alt: parseFloat(_.get(queObj, 'data.alt')),
+						hdg: parseFloat(_.get(queObj, 'data.hdg')),
+						speed: parseFloat(_.get(queObj, 'data.speed'))
+					}
+				};
+				updateQue['que'+curUnit.coalition].push(_.cloneDeep(curObj));
+				updateQue.queadmin.push(_.cloneDeep(curObj));
+			}
+		}
+		if (_.get(queObj, 'action') === 'D') {
+			curObj = {
+				action: 'D',
+				data: {
+					unitID: _.get(queObj, 'data.unitID')
+					//lat: _.get(queObj, 'data.lat'),
+					//lon: _.get(queObj, 'data.lon'),
 				}
 			};
-            serverObject.units.push(_.cloneDeep(curObj.data));
-			updateQue['que'+parseFloat(_.get(update, 'data.coalition'))].push(_.cloneDeep(curObj));
-			updateQue.queadmin.push(_.cloneDeep(curObj));
-        }
-    }
-    if (_.get(update, 'action') === 'U') {
-		if (typeof curUnit !== "undefined") {
-			curUnit.lat = parseFloat(_.get(update, 'data.lat'));
-			curUnit.lon =  parseFloat(_.get(update, 'data.lon'));
-			curUnit.alt =  parseFloat(_.get(update, 'data.alt'));
-			curUnit.hdg =  parseFloat(_.get(update, 'data.hdg'));
-			curUnit.speed =  parseFloat(_.get(update, 'data.speed'));
-			curObj = {
-				action: 'U',
-				data: {
-					unitID: _.get(update, 'data.unitID'),
-					lat: parseFloat(_.get(update, 'data.lat')),
-					lon: parseFloat(_.get(update, 'data.lon')),
-					alt: parseFloat(_.get(update, 'data.alt')),
-					hdg: parseFloat(_.get(update, 'data.hdg')),
-					speed: parseFloat(_.get(update, 'data.speed'))
-				}
-            };
+			_.remove(serverObject.units, { 'unitID': _.get(queObj, 'unitID') });
 			updateQue['que'+curUnit.coalition].push(_.cloneDeep(curObj));
 			updateQue.queadmin.push(_.cloneDeep(curObj));
-        }
-    }
-    if (_.get(update, 'action') === 'D') {
-		curObj = {
-			action: 'D',
-			data: {
-				unitID: _.get(update, 'data.unitID')
-				//lat: _.get(update, 'data.lat'),
-				//lon: _.get(update, 'data.lon'),
-			}
-		};
-		_.remove(serverObject.units, { 'unitID': _.get(update, 'unitID') });
-		updateQue['que'+curUnit.coalition].push(_.cloneDeep(curObj));
-		updateQue.queadmin.push(_.cloneDeep(curObj));
-    }
+		}
 
-    //playerUpdate
-	if (_.get(update, 'action') === 'players') {
-		serverObject.players = update.data;
-		_.forEach(serverObject.players, function(player) {
-			if (_.get(player, 'ipaddr')){
-				var pArry = _.get(player, 'ipaddr').split(":");
-				if(pArry[0] === '' ){
-					_.set(player, 'socketID', _.get(_.find(_.get(io, 'sockets.sockets'), function (socket) {
-						if(socket.conn.remoteAddress === '::ffff:127.0.0.1' || socket.conn.remoteAddress === '::1'){
-							return true;
-						}
-						return false;
-					}), 'id', {}));
-					//console.log('1',pArry[0], player.socketID);
-				}else{
-					_.set(player, 'socketID', _.get(_.find(_.get(io, 'sockets.sockets'), function (socket) {
-						//console.log(socket.conn.remoteAddress, '::ffff:'+pArry[0]);
-						if(socket.conn.remoteAddress === '::ffff:'+pArry[0]){
-							return true;
-						}
-						return false;
-					}), 'id', {}));
-					//console.log('2',pArry[0], player.socketID);
-				}
+		//playerUpdate
+		if (_.get(queObj, 'action') === 'players') {
+			serverObject.players = queObj.data;
+			_.forEach(serverObject.players, function(player) {
+				if (_.get(player, 'ipaddr')){
+					var pArry = _.get(player, 'ipaddr').split(":");
+					if(pArry[0] === '' ){
+						_.set(player, 'socketID', _.get(_.find(_.get(io, 'sockets.sockets'), function (socket) {
+							if(socket.conn.remoteAddress === '::ffff:127.0.0.1' || socket.conn.remoteAddress === '::1'){
+								return true;
+							}
+							return false;
+						}), 'id', {}));
+						//console.log('1',pArry[0], player.socketID);
+					}else{
+						_.set(player, 'socketID', _.get(_.find(_.get(io, 'sockets.sockets'), function (socket) {
+							//console.log(socket.conn.remoteAddress, '::ffff:'+pArry[0]);
+							if(socket.conn.remoteAddress === '::ffff:'+pArry[0]){
+								return true;
+							}
+							return false;
+						}), 'id', {}));
+						//console.log('2',pArry[0], player.socketID);
+					}
 
-				//rewrite this someday, sets up the socket.io information rooms for updates
-				if(!_.isEmpty(player.socketID)) {
-					if (admin) {
-						//figure admins later
-						if (io.sockets.adapter.sids[player.socketID]['1']) {
-							io.sockets.sockets[player.socketID].leave(1);
-						}
-						if (io.sockets.adapter.sids[player.socketID]['2']) {
-							io.sockets.sockets[player.socketID].leave(2);
-						}
-						if (io.sockets.adapter.sids[player.socketID]['0']) {
-							io.sockets.sockets[player.socketID].leave(0);
-						}
-						if (!io.sockets.adapter.sids[player.socketID]['admin']) {
-							console.log(player.name + ' socket is admin');
-							io.sockets.sockets[player.socketID].join('admin');
-							sendInit(player.socketID);
-						}
-					}else if (player.side === 0) {
-						if (io.sockets.adapter.sids[player.socketID]['1']) {
-							io.sockets.sockets[player.socketID].leave(1);
-						}
-						if (io.sockets.adapter.sids[player.socketID]['2']) {
-							io.sockets.sockets[player.socketID].leave(2);
-						}
-						if (io.sockets.adapter.sids[player.socketID]['admin']) {
-							io.sockets.sockets[player.socketID].leave('admin');
-						}
-						if (!io.sockets.adapter.sids[player.socketID]['0']) {
-							console.log(player.name + ' is spectator');
-							io.sockets.sockets[player.socketID].join(0);
-							sendInit(player.socketID);
-						}
-					}else if (player.side === 1) {
-						if (io.sockets.adapter.sids[player.socketID]['admin']) {
-							io.sockets.sockets[player.socketID].leave('admin');
-						}
-						if (io.sockets.adapter.sids[player.socketID]['0']) {
-							io.sockets.sockets[player.socketID].leave(0);
-						}
-						if (io.sockets.adapter.sids[player.socketID]['2']) {
-							io.sockets.sockets[player.socketID].leave(2);
-						}
-						if (!io.sockets.adapter.sids[player.socketID]['1']) {
-							console.log(player.name + ' is player in slot, side 1');
-							io.sockets.sockets[player.socketID].join(1);
-							sendInit(player.socketID);
-						}
-					}else if (player.side === 2) {
-						if (io.sockets.adapter.sids[player.socketID]['admin']) {
-							io.sockets.sockets[player.socketID].leave('admin');
-						}
-						if (io.sockets.adapter.sids[player.socketID]['0']) {
-							io.sockets.sockets[player.socketID].leave(0);
-						}
-						if (io.sockets.adapter.sids[player.socketID]['1']) {
-							io.sockets.sockets[player.socketID].leave(1);
-						}
-						if (!io.sockets.adapter.sids[player.socketID]['2']) {
-							console.log(player.name + ' is player in slot, side 2');
-							io.sockets.sockets[player.socketID].join(2);
-							sendInit(player.socketID);
+					//rewrite this someday, sets up the socket.io information rooms for updates
+					if(!_.isEmpty(player.socketID)) {
+						if (admin) {
+							//figure admins later
+							if (io.sockets.adapter.sids[player.socketID]['1']) {
+								io.sockets.sockets[player.socketID].leave(1);
+							}
+							if (io.sockets.adapter.sids[player.socketID]['2']) {
+								io.sockets.sockets[player.socketID].leave(2);
+							}
+							if (io.sockets.adapter.sids[player.socketID]['0']) {
+								io.sockets.sockets[player.socketID].leave(0);
+							}
+							if (!io.sockets.adapter.sids[player.socketID]['admin']) {
+								console.log(player.name + ' socket is admin');
+								io.sockets.sockets[player.socketID].join('admin');
+								sendInit(player.socketID);
+							}
+						}else if (player.side === 0) {
+							if (io.sockets.adapter.sids[player.socketID]['1']) {
+								io.sockets.sockets[player.socketID].leave(1);
+							}
+							if (io.sockets.adapter.sids[player.socketID]['2']) {
+								io.sockets.sockets[player.socketID].leave(2);
+							}
+							if (io.sockets.adapter.sids[player.socketID]['admin']) {
+								io.sockets.sockets[player.socketID].leave('admin');
+							}
+							if (!io.sockets.adapter.sids[player.socketID]['0']) {
+								console.log(player.name + ' is spectator');
+								io.sockets.sockets[player.socketID].join(0);
+								sendInit(player.socketID);
+							}
+						}else if (player.side === 1) {
+							if (io.sockets.adapter.sids[player.socketID]['admin']) {
+								io.sockets.sockets[player.socketID].leave('admin');
+							}
+							if (io.sockets.adapter.sids[player.socketID]['0']) {
+								io.sockets.sockets[player.socketID].leave(0);
+							}
+							if (io.sockets.adapter.sids[player.socketID]['2']) {
+								io.sockets.sockets[player.socketID].leave(2);
+							}
+							if (!io.sockets.adapter.sids[player.socketID]['1']) {
+								console.log(player.name + ' is player in slot, side 1');
+								io.sockets.sockets[player.socketID].join(1);
+								sendInit(player.socketID);
+							}
+						}else if (player.side === 2) {
+							if (io.sockets.adapter.sids[player.socketID]['admin']) {
+								io.sockets.sockets[player.socketID].leave('admin');
+							}
+							if (io.sockets.adapter.sids[player.socketID]['0']) {
+								io.sockets.sockets[player.socketID].leave(0);
+							}
+							if (io.sockets.adapter.sids[player.socketID]['1']) {
+								io.sockets.sockets[player.socketID].leave(1);
+							}
+							if (!io.sockets.adapter.sids[player.socketID]['2']) {
+								console.log(player.name + ' is player in slot, side 2');
+								io.sockets.sockets[player.socketID].join(2);
+								sendInit(player.socketID);
+							}
 						}
 					}
 				}
-			}
-		});
-		//apply local information object
-		updateQue.que1.push(_.cloneDeep(update));
-		updateQue.que2.push(_.cloneDeep(update));
-		updateQue.que0.push(_.cloneDeep(update));
-		updateQue.queadmin.push(_.cloneDeep(update));
-	}
+			});
+			//apply local information object
+			updateQue.que1.push(_.cloneDeep(queObj));
+			updateQue.que2.push(_.cloneDeep(queObj));
+			updateQue.que0.push(_.cloneDeep(queObj));
+			updateQue.queadmin.push(_.cloneDeep(queObj));
+		}
 
-	//Cmd Response
-	if (_.get(update, 'action') === 'CMDRESPONSE') {
-    	//send response straight to client id
-		updateQue.que1.push(_.cloneDeep(update));
-		updateQue.que2.push(_.cloneDeep(update));
-		updateQue.queadmin.push(_.cloneDeep(update));
-	}
+		//Cmd Response
+		if (_.get(queObj, 'action') === 'CMDRESPONSE') {
+			//send response straight to client id
+			updateQue.que1.push(_.cloneDeep(queObj));
+			updateQue.que2.push(_.cloneDeep(queObj));
+			updateQue.queadmin.push(_.cloneDeep(queObj));
+		}
 
-	//mesg
-	if (_.get(update, 'action') === 'MESG') {
-    	console.log(update);
-    	//console.log(serverObject.players);
-    	if(_.get(update, 'data.playerID') )
-			if (_.isNumber(_.get(_.find(serverObject.players, { 'id': _.get(update, 'data.playerID') }), 'side', 0))) {
-				updateQue['que'+_.get(_.find(serverObject.players, { 'id': _.get(update, 'data.playerID') }), 'side', 0)]
-					.push(_.cloneDeep(update));
-				updateQue.queadmin.push(_.cloneDeep(update));
-			}
-	}
+		//mesg
+		if (_.get(queObj, 'action') === 'MESG') {
+			console.log(queObj);
+			//console.log(serverObject.players);
+			if(_.get(queObj, 'data.playerID') )
+				if (_.isNumber(_.get(_.find(serverObject.players, { 'id': _.get(queObj, 'data.playerID') }), 'side', 0))) {
+					updateQue['que'+_.get(_.find(serverObject.players, { 'id': _.get(queObj, 'data.playerID') }), 'side', 0)]
+						.push(_.cloneDeep(queObj));
+					updateQue.queadmin.push(_.cloneDeep(queObj));
+				}
+		}
 
-	//events
-	if (_.get(update, 'action') === 'friendly_fire') {
-		updateQue.que0.push(_.cloneDeep(update));
-		updateQue.que1.push(_.cloneDeep(update));
-		updateQue.que2.push(_.cloneDeep(update));
-		updateQue.queadmin.push(_.cloneDeep(update));
-	}
-	if (_.get(update, 'action') === 'mission_end') {
-		updateQue.que1.push(_.cloneDeep(update));
-		updateQue.que2.push(_.cloneDeep(update));
-		updateQue.que0.push(_.cloneDeep(update));
-		updateQue.queadmin.push(_.cloneDeep(update));
-	}
-	if (_.get(update, 'action') === 'kill') {
-		updateQue.que1.push(_.cloneDeep(update));
-		updateQue.que2.push(_.cloneDeep(update));
-		updateQue.que0.push(_.cloneDeep(update));
-		updateQue.queadmin.push(_.cloneDeep(update));
-	}
-	if (_.get(update, 'action') === 'self_kill') {
-		updateQue.que1.push(_.cloneDeep(update));
-		updateQue.que2.push(_.cloneDeep(update));
-		updateQue.que0.push(_.cloneDeep(update));
-		updateQue.queadmin.push(_.cloneDeep(update));
-	}
-	if (_.get(update, 'action') === 'change_slot') {
-		updateQue.que1.push(_.cloneDeep(update));
-		updateQue.que2.push(_.cloneDeep(update));
-		updateQue.que0.push(_.cloneDeep(update));
-		updateQue.queadmin.push(_.cloneDeep(update));
-	}
-	if (_.get(update, 'action') === 'connect') {
-		updateQue.que1.push(_.cloneDeep(update));
-		updateQue.que2.push(_.cloneDeep(update));
-		updateQue.que0.push(_.cloneDeep(update));
-		updateQue.queadmin.push(_.cloneDeep(update));
-	}
-	if (_.get(update, 'action') === 'disconnect') {
-		updateQue.que1.push(_.cloneDeep(update));
-		updateQue.que2.push(_.cloneDeep(update));
-		updateQue.que0.push(_.cloneDeep(update));
-		updateQue.queadmin.push(_.cloneDeep(update));
-	}
-	if (_.get(update, 'action') === 'crash') {
-		updateQue.que1.push(_.cloneDeep(update));
-		updateQue.que2.push(_.cloneDeep(update));
-		updateQue.que0.push(_.cloneDeep(update));
-		updateQue.queadmin.push(_.cloneDeep(update));
-	}
-	if (_.get(update, 'action') === 'eject') {
-		updateQue.que1.push(_.cloneDeep(update));
-		updateQue.que2.push(_.cloneDeep(update));
-		updateQue.que0.push(_.cloneDeep(update));
-		updateQue.queadmin.push(_.cloneDeep(update));
-	}
-	if (_.get(update, 'action') === 'takeoff') {
-		updateQue.que1.push(_.cloneDeep(update));
-		updateQue.que2.push(_.cloneDeep(update));
-		updateQue.que0.push(_.cloneDeep(update));
-		updateQue.queadmin.push(_.cloneDeep(update));
-	}
-	if (_.get(update, 'action') === 'landing') {
-		updateQue.que1.push(_.cloneDeep(update));
-		updateQue.que2.push(_.cloneDeep(update));
-		updateQue.que0.push(_.cloneDeep(update));
-		updateQue.queadmin.push(_.cloneDeep(update));
-	}
-	if (_.get(update, 'action') === 'pilot_death') {
-		updateQue.que1.push(_.cloneDeep(update));
-		updateQue.que2.push(_.cloneDeep(update));
-		updateQue.que0.push(_.cloneDeep(update));
-		updateQue.queadmin.push(_.cloneDeep(update));
-	}
-	return true;
+		//events
+		if (_.get(queObj, 'action') === 'friendly_fire') {
+			updateQue.que0.push(_.cloneDeep(queObj));
+			updateQue.que1.push(_.cloneDeep(queObj));
+			updateQue.que2.push(_.cloneDeep(queObj));
+			updateQue.queadmin.push(_.cloneDeep(queObj));
+		}
+		if (_.get(queObj, 'action') === 'mission_end') {
+			updateQue.que1.push(_.cloneDeep(queObj));
+			updateQue.que2.push(_.cloneDeep(queObj));
+			updateQue.que0.push(_.cloneDeep(queObj));
+			updateQue.queadmin.push(_.cloneDeep(queObj));
+		}
+		if (_.get(queObj, 'action') === 'kill') {
+			updateQue.que1.push(_.cloneDeep(queObj));
+			updateQue.que2.push(_.cloneDeep(queObj));
+			updateQue.que0.push(_.cloneDeep(queObj));
+			updateQue.queadmin.push(_.cloneDeep(queObj));
+		}
+		if (_.get(queObj, 'action') === 'self_kill') {
+			updateQue.que1.push(_.cloneDeep(queObj));
+			updateQue.que2.push(_.cloneDeep(queObj));
+			updateQue.que0.push(_.cloneDeep(queObj));
+			updateQue.queadmin.push(_.cloneDeep(queObj));
+		}
+		if (_.get(queObj, 'action') === 'change_slot') {
+			updateQue.que1.push(_.cloneDeep(queObj));
+			updateQue.que2.push(_.cloneDeep(queObj));
+			updateQue.que0.push(_.cloneDeep(queObj));
+			updateQue.queadmin.push(_.cloneDeep(queObj));
+		}
+		if (_.get(queObj, 'action') === 'connect') {
+			updateQue.que1.push(_.cloneDeep(queObj));
+			updateQue.que2.push(_.cloneDeep(queObj));
+			updateQue.que0.push(_.cloneDeep(queObj));
+			updateQue.queadmin.push(_.cloneDeep(queObj));
+		}
+		if (_.get(queObj, 'action') === 'disconnect') {
+			updateQue.que1.push(_.cloneDeep(queObj));
+			updateQue.que2.push(_.cloneDeep(queObj));
+			updateQue.que0.push(_.cloneDeep(queObj));
+			updateQue.queadmin.push(_.cloneDeep(queObj));
+		}
+		if (_.get(queObj, 'action') === 'crash') {
+			updateQue.que1.push(_.cloneDeep(queObj));
+			updateQue.que2.push(_.cloneDeep(queObj));
+			updateQue.que0.push(_.cloneDeep(queObj));
+			updateQue.queadmin.push(_.cloneDeep(queObj));
+		}
+		if (_.get(queObj, 'action') === 'eject') {
+			updateQue.que1.push(_.cloneDeep(queObj));
+			updateQue.que2.push(_.cloneDeep(queObj));
+			updateQue.que0.push(_.cloneDeep(queObj));
+			updateQue.queadmin.push(_.cloneDeep(queObj));
+		}
+		if (_.get(queObj, 'action') === 'takeoff') {
+			updateQue.que1.push(_.cloneDeep(queObj));
+			updateQue.que2.push(_.cloneDeep(queObj));
+			updateQue.que0.push(_.cloneDeep(queObj));
+			updateQue.queadmin.push(_.cloneDeep(queObj));
+		}
+		if (_.get(queObj, 'action') === 'landing') {
+			updateQue.que1.push(_.cloneDeep(queObj));
+			updateQue.que2.push(_.cloneDeep(queObj));
+			updateQue.que0.push(_.cloneDeep(queObj));
+			updateQue.queadmin.push(_.cloneDeep(queObj));
+		}
+		if (_.get(queObj, 'action') === 'pilot_death') {
+			updateQue.que1.push(_.cloneDeep(queObj));
+			updateQue.que2.push(_.cloneDeep(queObj));
+			updateQue.que0.push(_.cloneDeep(queObj));
+			updateQue.queadmin.push(_.cloneDeep(queObj));
+		}
+		return true;
+	});
 });
 
 
@@ -485,7 +506,7 @@ function getDCSDataClient(dataCallback) {
 
         client.on('connect', function() {
 			initClear( 'client' );
-            client.write('{"action":"INIT"}'+"\n");
+            client.write('{"action":"NONE"}'+"\n");
         });
 
         client.on('data', (data) => {
@@ -496,7 +517,7 @@ function getDCSDataClient(dataCallback) {
                 buffer = buffer.substring(i + 1);
 				request = _.get(serverObject, 'ClientRequestArray[0]',{action:'NONE'});
                 client.write(JSON.stringify(request)+"\n");
-                _.set(_.drop(_.get(serverObject, 'ClientRequestArray'), 1));
+                serverObject.ClientRequestArray.shift();
             }
         });
 
@@ -549,7 +570,7 @@ function getDCSDataGameGui(dataCallback) {
 				buffer = buffer.substring(i + 1);
 				request = _.get(serverObject, 'GameGUIrequestArray[0]',{action:'NONE'});
 				client.write(JSON.stringify(request)+"\n");
-				_.set(_.drop(_.get(serverObject, 'GameGUIrequestArray'), 1));
+				serverObject.GameGUIRequestArray.shift();
 			}
 		});
 
@@ -580,8 +601,9 @@ function syncDCSData (DCSData) {
 	//var timetest = new Date();
 	//_.set(serverObject, 'ClientRequestArray[0]', {action:'CMD',  reqID: _.random(1,9999)+'|'+timetest.getHours() + ':' + timetest.getMinutes() + ':' + timetest.getSeconds(), cmd:'trigger.action.outText("IT WORKS MOFO!", 2)'});
 	//accept updates
+
 	if (!_.isEmpty(DCSData.que)) {
-        _.forEach(DCSData.que, serverObject.parse);
+		serverObject.parse(DCSData);
     }
     //send commands back client
 }
@@ -591,7 +613,7 @@ function syncDCSDataGameGUI (DCSData) {
 	//_.set(serverObject, 'GameGUIrequestArray[0]', {action:'CMD',  reqID: _.random(1,9999)+'|'+timetest.getHours() + ':' + timetest.getMinutes() + ':' + timetest.getSeconds(), cmd:'net.get_player_list()'});
 	//accept updates
 	if (!_.isEmpty(DCSData.que)) {
-		_.forEach(DCSData.que, serverObject.parse);
+		serverObject.parse(DCSData);
 	}
 	//send commands back client
 }

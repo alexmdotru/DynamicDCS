@@ -123,10 +123,10 @@ do
 	local function runRequest(request)
 		env.info(request);
 		if request.action ~= nil then
-			--if request.action == "INIT" then
-			--	log('RUNNING REQUEST INIT')
-			--	cacheDB = {}
-			--end
+			if request.action == "INIT" then
+				log('RUNNING REQUEST INIT')
+				clearVar();
+			end
 			if request.action == "CMD" and request.cmd ~= nil and request.reqID ~= nil then
 				log('RUNNING CMD')
 				pcallCommand(request.cmd, request.reqID)
