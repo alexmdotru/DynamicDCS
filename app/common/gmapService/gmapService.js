@@ -171,6 +171,7 @@
 			_sidcObject["functionID"] = '-----';
 			_sidcObject["modifier1"] = '-';
 			_sidcObject["modifier2"] = '-';
+			_sidcObject["modifier3"] = '*';
 
 			// make a SIDC Object to store all values, so that we can override these as needed
 			var lookup = gSrv.SIDC[unit.type];
@@ -214,7 +215,7 @@
 				_.set(sidOpt, 'direction', unit.hdg);
 				_.set(sidOpt, 'speed', Math.round(unit.speed) + ' kt');
 			}
-			var symbol =  new $window.ms.Symbol( _sidc + '***', sidOpt ).asCanvas().toDataURL();
+			var symbol =  new $window.ms.Symbol( _sidc + '****', sidOpt ).asCanvas().toDataURL();
 			return symbol;
 		});
 
