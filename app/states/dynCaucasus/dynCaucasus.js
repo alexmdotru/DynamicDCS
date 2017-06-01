@@ -13,10 +13,10 @@
 
 			uiGmapGoogleMapApi.then(function (googleMaps) {
 				//console.log(googleMaps);
-				var imageBounds = {north: 41.773941, south: 41.712216, east: 41.22544, west: 41.12655};
-				//var imageBounds = new googleMaps.LatLngBounds(
-				//	new googleMaps.LatLng(41.773941,41.22544),
-				//	new googleMaps.LatLng(41.712216,41.12655));
+				//var imageBounds = {north: 41.6129410, south: 41.59566182, east: 41.634134, west: 41.58429107};
+				var imageBounds = new googleMaps.LatLngBounds(
+					new googleMaps.LatLng(41.59687897449084, 41.58176701846196),
+					new googleMaps.LatLng(41.62282934176421, 41.62036918520812));
 				$scope.historicalOverlay = new googleMaps.GroundOverlay( 'imgs/mapOverlays/Batumi_Blue.png',imageBounds);
 				$scope.historicalOverlay.setMap($scope.currentMap);
 			});
