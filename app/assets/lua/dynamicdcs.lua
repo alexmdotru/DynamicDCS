@@ -25,14 +25,7 @@ do
 	end
 
     local function getDataMessage()
-        local checkDead = {}
-		local chkSize = 500
-		local payload = {}
-		payload.que = {}
-		for i = 1,chkSize do
-			table.insert(payload.que, updateQue.que[i])
-			table.remove(updateQue.que, i)
-		end
+		local checkDead = {}
 
 		--unit updating system unit, unitID, coalition, lat, lon, alt, hdg, speed, action
         local function addUnit(unit, unitID, coalition, lat, lon, alt, hdg, speed, action)
@@ -115,7 +108,24 @@ do
 				cacheDB[k] = nil
             end
             unitCnt = unitCnt + 1
-        end
+		end
+
+		--send base info, working off unitAccess.state for now
+		table.insert(updateQue.que, {
+			action = "baseInfo",
+			data = unitAccess.state
+		})
+
+
+		local chkSize = 500
+		local payload = {}
+		payload.que = {}
+		for i = 1,chkSize do
+			table.insert(payload.que, updateQue.que[i])
+			table.remove(updateQue.que, i)
+		end
+
+
         payload.unitCount = unitCnt
         return payload
     end
