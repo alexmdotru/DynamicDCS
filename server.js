@@ -193,7 +193,7 @@ _.set(serverObject, 'parse', function (update) {
 		}else{
 			outOfSyncUnitCnt = 0;
 		}
-		console.log('compare: '+update.unitCount+' vs '+serverObject.units.length);
+		//console.log('compare: '+update.unitCount+' vs '+serverObject.units.length);
 	}
 
 	_.forEach(update.que, function (queObj) {
