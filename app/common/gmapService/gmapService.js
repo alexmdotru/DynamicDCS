@@ -218,7 +218,7 @@
 				_.set(sidOpt, 'speed', Math.round(unit.speed) + ' kt');
 			}
 			if (unit.playername !== '') {
-				_.set(sidOpt, 'type', unit.playername);
+				_.set(sidOpt, 'Quantity', unit.playername);
 			}
 
 
