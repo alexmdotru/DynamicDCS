@@ -29,6 +29,7 @@ var io  = require('socket.io').listen(server);
 //setup globals
 var serverObject = {
 	units: [],
+	bases: [],
 	players: [],
 	ClientRequestArray: [],
 	GameGUIRequestArray: []
@@ -357,6 +358,16 @@ _.set(serverObject, 'parse', function (update) {
 			updateQue.que1.push(_.cloneDeep(queObj));
 			updateQue.que2.push(_.cloneDeep(queObj));
 			updateQue.que0.push(_.cloneDeep(queObj));
+			updateQue.queadmin.push(_.cloneDeep(queObj));
+		}
+
+		//Base Info
+		if (_.get(queObj, 'action') === 'baseInfo') {
+			//var blah = 'Vaziani-West_FARP';
+			//console.log('baseinfo: ', queObj, queObj.data[blah]);
+			//send response straight to client id
+			updateQue.que1.push(_.cloneDeep(queObj));
+			updateQue.que2.push(_.cloneDeep(queObj));
 			updateQue.queadmin.push(_.cloneDeep(queObj));
 		}
 
