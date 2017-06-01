@@ -83,6 +83,14 @@
 				];
 			});
 
+			function displayCoordinates(pnt) {
+				var lat = pnt.lat();
+				lat = lat.toFixed(4);
+				var lng = pnt.lng();
+				lng = lng.toFixed(4);
+				console.log("Latitude: " + lat + "  Longitude: " + lng);
+			};
+
 			_.set(gSrv, 'gmapObj', {
 				center: {
 					latitude: 43.4275113,
