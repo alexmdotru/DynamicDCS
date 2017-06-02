@@ -21,7 +21,7 @@
 
 		 _.set(gSrv, 'addOverlay', function (base, side) {
 		 	//console.log('addoverlay gmap: ',base,side);
-		 	if (typeof gSrv.overlayCoords[base] != "undefined") {
+		 	if (typeof gSrv.overlayCoords[base] !== "undefined" && typeof gSrv.overlayCoords[base] !== "undefined") {
 				var imageBounds = new gSrv.googleMaps.LatLngBounds(
 					new gSrv.googleMaps.LatLng(gSrv.overlayCoords[base].lat1, gSrv.overlayCoords[base].lng1),
 					new gSrv.googleMaps.LatLng(gSrv.overlayCoords[base].lat2, gSrv.overlayCoords[base].lng2));
