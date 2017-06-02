@@ -4,6 +4,9 @@
 	function controlService ($window, $http, uiGmapIsReady, uiGmapGoogleMapApi) {
 		var gSrv = this;
 
+		var overlay;
+
+
 		_.set(gSrv, 'baseOverlay', {});
 		 $http.get('json/overlayCoords.json').then(function(overlayCoordsJSON) {
 		 	_.set(gSrv, 'overlayCoords', overlayCoordsJSON.data);
@@ -14,7 +17,6 @@
 
 		 	uiGmapGoogleMapApi.then(function (googleMaps) {
 		 		_.set(gSrv, 'googleMaps', googleMaps);
-				//gSrv.addOverlay('Batumi', 2);
 		 	});
 
 		 });
@@ -22,11 +24,23 @@
 		 _.set(gSrv, 'addOverlay', function (base, side) {
 		 	//console.log('addoverlay gmap: ',base,side);
 		 	if (typeof gSrv.overlayCoords[base] !== "undefined" && typeof gSrv.overlayCoords[base] !== "undefined") {
+
 				var imageBounds = new gSrv.googleMaps.LatLngBounds(
+					new gSrv.googleMaps.LatLng(gSrv.overlayCoords[base].lat1, gSrv.overlayCoords[base].lng1),
+					new gSrv.googleMaps.LatLng(gSrv.overlayCoords[base].lat2, gSrv.overlayCoords[base].lng2));
+
+				_.set(gSrv, ['baseOverlay', base], new gSrv.googleMaps.GroundOverlay( 'imgs/mapOverlays/'+base+'_'+side+'.png',imageBounds));
+				_.get(gSrv, ['baseOverlay', base]).setMap(gSrv.currentMap);
+
+
+
+		 		/* working method
+		 		var imageBounds = new gSrv.googleMaps.LatLngBounds(
 					new gSrv.googleMaps.LatLng(gSrv.overlayCoords[base].lat1, gSrv.overlayCoords[base].lng1),
 					new gSrv.googleMaps.LatLng(gSrv.overlayCoords[base].lat2, gSrv.overlayCoords[base].lng2));
 				_.set(gSrv, ['baseOverlay', base], new gSrv.googleMaps.GroundOverlay( 'imgs/mapOverlays/'+base+'_'+side+'.png',imageBounds));
 				_.get(gSrv, ['baseOverlay', base]).setMap(gSrv.currentMap);
+				*/
 			}
 		 });
 
