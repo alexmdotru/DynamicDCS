@@ -17,6 +17,7 @@
 
 		 	uiGmapGoogleMapApi.then(function (googleMaps) {
 		 		_.set(gSrv, 'googleMaps', googleMaps);
+		 		_.set(gSrv, 'gmapObj.options.mapTypeControlOptions.position', googleMaps.ControlPosition.LEFT_BOTTOM );
 		 	});
 
 		 });
@@ -31,8 +32,6 @@
 
 				_.set(gSrv, ['baseOverlay', base], new gSrv.googleMaps.GroundOverlay( 'imgs/mapOverlays/'+base+'_'+side+'.png',imageBounds));
 				_.get(gSrv, ['baseOverlay', base]).setMap(gSrv.currentMap);
-
-
 
 		 		/* working method
 		 		var imageBounds = new gSrv.googleMaps.LatLngBounds(
