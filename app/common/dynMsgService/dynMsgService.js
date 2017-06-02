@@ -1,12 +1,13 @@
 (function (angular) {
 	'use strict';
 
-	function dynMsgService (gmapControls, socket) {
+	function dynMsgService (gmapService, socket) {
 		var dmSrv = this;
 		_.set(dmSrv, 'cObj', {
 			client: {},
 			units: [],
 			bases: [],
+			overlays: [],
 			players: [],
 			chatMsgs: [],
 			cmds: [],
@@ -16,7 +17,7 @@
 
 		socket.on('connect', function () {
 			_.set(dmSrv, 'cObj.units', []);
-			gmapControls.resetMarkers();
+			gmapService.resetMarkers();
 			socket.emit('clientUpd', { action: 'unitINIT' });
 		});
 
@@ -37,23 +38,23 @@
 						if(!_.find(_.get(dmSrv, 'cObj.units'),
 								{'unitID': _.get(que, 'data.unitID')})){
 							_.set(dmSrv, 'cObj.units', []);
-							gmapControls.resetMarkers();
+							gmapService.resetMarkers();
 							socket.emit('clientUpd', { action: 'unitINIT' });
 						}else{
 							_.find(_.get(dmSrv, 'cObj.units'),
 								{'unitID': _.get(que, 'data.unitID')}).lat = _.get(que, 'data.lat');
 							_.find(_.get(dmSrv, 'cObj.units'),
 								{'unitID': _.get(que, 'data.unitID')}).lon = _.get(que, 'data.lon');
-							gmapControls.processUnitStream(que);
+							gmapService.processUnitStream(que);
 						}
 					}else{
 						//send map updates
 						dmSrv.cObj.units.push(_.get(que, 'data'));
-						gmapControls.processUnitStream(que);
+						gmapService.processUnitStream(que);
 					}
 				}else if (que.action === 'reset') { //spectator
 					_.set(dmSrv, 'cObj.units', []);
-					gmapControls.resetMarkers();
+					gmapService.resetMarkers();
 				}else if (que.action === 'players') { //player
 					var curPObj = [];
 					_.forEach(que.data, function (player) {
