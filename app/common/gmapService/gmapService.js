@@ -1,29 +1,43 @@
 (function (angular) {
 	'use strict';
 
-	function controlService ($window, mySocket, $http, uiGmapIsReady, uiGmapGoogleMapApi ) {
+	function controlService ($window, $http, uiGmapIsReady, uiGmapGoogleMapApi) {
 		var gSrv = this;
 
-		/*
+		_.set(gSrv, 'baseOverlay', {});
 		 $http.get('json/overlayCoords.json').then(function(overlayCoordsJSON) {
-		 _.set(dynC, 'overlayCoords', overlayCoordsJSON.data);
+		 	_.set(gSrv, 'overlayCoords', overlayCoordsJSON.data);
 		 });
 
 		 uiGmapIsReady.promise(1).then(function (maps) {
-		 $scope.currentMap = maps[0].map;
-		 uiGmapGoogleMapApi.then(function (googleMaps) {
-		 _.forOwn(dynC.overlayCoords, function (bObj, base) {
-		 var imageBounds = new googleMaps.LatLngBounds(
-		 new googleMaps.LatLng(bObj.lat1, bObj.lng1),
-		 new googleMaps.LatLng(bObj.lat2, bObj.lng2));
-		 $scope.historicalOverlay = new googleMaps.GroundOverlay( 'imgs/mapOverlays/'+base+'_1.png',imageBounds);
-		 $scope.historicalOverlay.setMap($scope.currentMap);
-		 });
-		 });
-		 });
-		 */
+		 	gSrv.currentMap = maps[0].map;
 
-		_.set(gSrv, 'mySocket', mySocket);
+		 	uiGmapGoogleMapApi.then(function (googleMaps) {
+		 		_.set(gSrv, 'googleMaps', googleMaps);
+				//gSrv.addOverlay('Batumi', 2);
+		 	});
+
+		 });
+
+		 _.set(gSrv, 'addOverlay', function (base, side) {
+		 	//console.log('addoverlay gmap: ',base,side);
+		 	if (typeof gSrv.overlayCoords[base] != "undefined") {
+				var imageBounds = new gSrv.googleMaps.LatLngBounds(
+					new gSrv.googleMaps.LatLng(gSrv.overlayCoords[base].lat1, gSrv.overlayCoords[base].lng1),
+					new gSrv.googleMaps.LatLng(gSrv.overlayCoords[base].lat2, gSrv.overlayCoords[base].lng2));
+				_.set(gSrv, ['baseOverlay', base], new gSrv.googleMaps.GroundOverlay( 'imgs/mapOverlays/'+base+'_'+side+'.png',imageBounds));
+				_.get(gSrv, ['baseOverlay', base]).setMap(gSrv.currentMap);
+			}
+		 });
+
+
+
+		_.set(gSrv, 'updateOverlay', function (base, side) {
+			_.get(gSrv, ['baseOverlay', base]).setMap(null);
+			gSrv.addOverlay(base, side);
+		});
+
+
 		_.set(gSrv, 'init', function () {
 			$http.get('json/sidc.json').then(function(sidJSON) {
 				_.set(gSrv, 'SIDC', sidJSON.data);
@@ -101,14 +115,6 @@
 					}
 				];
 			});
-
-			function displayCoordinates(pnt) {
-				var lat = pnt.lat();
-				lat = lat.toFixed(4);
-				var lng = pnt.lng();
-				lng = lng.toFixed(4);
-				console.log("Latitude: " + lat + "  Longitude: " + lng);
-			};
 
 			_.set(gSrv, 'gmapObj', {
 				center: {
@@ -254,7 +260,7 @@
 		});
 
 	}
-	controlService.$inject = ['$window', 'mySocket', '$http'];
+	controlService.$inject = ['$window', '$http', 'uiGmapIsReady', 'uiGmapGoogleMapApi'];
 
 	function initializeGmapService (gmapService) {
 		gmapService.init();

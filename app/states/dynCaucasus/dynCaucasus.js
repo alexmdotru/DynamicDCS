@@ -1,13 +1,13 @@
 (function (angular) {
 	'use strict';
 
-	function dynCaucasusController ($scope, gmapService, $http) {
+	function dynCaucasusController ($scope, gmapService) {
 		// console.log('dynCaucasus controller loaded');
 		var dynC = this;
 		//future this can retrieve the right map object for the correct map
 		_.set($scope, 'map', _.get(gmapService, 'gmapObj'));
 	}
-	dynCaucasusController.$inject = ['$scope', 'gmapService', '$http'];
+	dynCaucasusController.$inject = ['$scope', 'gmapService'];
 
 	function configFunction($stateProvider) {
 		$stateProvider

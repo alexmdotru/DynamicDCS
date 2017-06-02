@@ -72,6 +72,16 @@
 					_.get(dmSrv, 'cObj.chatMsgs').push(que.data);
 				}else if (que.action === 'baseInfo') { //send command responses
 					//console.log('CMD: ', que.action, que.data);
+					_.forEach(que.data, function (value, key) {
+						if (typeof gmapService.baseOverlay[key] !== "undefined") {
+							if(_.get(dmSrv, ['cObj', 'bases', key]) !== value){
+								console.log('base captured, updating overlay');
+								gmapService.updateOverlay(key, value);
+							}
+						}else{
+							gmapService.addOverlay(key, value);
+						}
+					});
 					_.set(dmSrv, 'cObj.bases', que.data);
 				}else if (que.action === 'CMD') { //send command responses
 					//console.log('CMD: ', que.action, que.data);
