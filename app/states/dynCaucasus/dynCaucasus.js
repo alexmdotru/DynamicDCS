@@ -19,7 +19,7 @@
 							new googleMaps.LatLng(bObj.lat1, bObj.lng1),
 							new googleMaps.LatLng(bObj.lat2, bObj.lng2));
 						console.log(imageBounds, 'imgs/mapOverlays/'+base+'_'+dynMsgService.cObj.bases[base]+'.png'); //'+dynMsgService.cObj.bases[base]+'
-						$scope.historicalOverlay = new googleMaps.GroundOverlay( 'imgs/mapOverlays/'+base+'_2.png',imageBounds);
+						$scope.historicalOverlay = new googleMaps.GroundOverlay( 'imgs/mapOverlays/'+base+'_1.png',imageBounds);
 						$scope.historicalOverlay.setMap($scope.currentMap);
 						console.log($scope.historicalOverlay);
 					});
