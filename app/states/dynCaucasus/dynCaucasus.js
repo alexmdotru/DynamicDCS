@@ -1,28 +1,33 @@
 (function (angular) {
 	'use strict';
 
-	function dynCaucasusController ($scope, gmapControls, uiGmapIsReady, uiGmapGoogleMapApi) {
+	function dynCaucasusController ($scope, gmapControls, uiGmapIsReady, uiGmapGoogleMapApi, $http, dynMsgService) {
 		// console.log('dynCaucasus controller loaded');
-		_.set($scope, 'map', _.get(gmapControls, 'gmapObj'));
+		var dynC = this;
 
-		var imageBounds = {north: 40.773941, south: 40.712216, east: -74.12544, west: -74.22655};
-		//$scope.historicalOverlay = new google.maps.GroundOverlay( 'https://www.lib.utexas.edu/maps/historical /newark_nj_1922.jpg',imageBounds);
-		uiGmapIsReady.promise(1).then(function (maps) {
-			$scope.currentMap = maps[0].map;
-			//$scope.historicalOverlay.setMap($scope.currentMap);
+		$http.get('json/overlayCoords.json').then(function(overlayCoordsJSON) {
+			_.set(dynC, 'overlayCoords', overlayCoordsJSON.data);
 
-			uiGmapGoogleMapApi.then(function (googleMaps) {
-				//console.log(googleMaps);
-				//var imageBounds = {north: 41.6129410, south: 41.59566182, east: 41.634134, west: 41.58429107};
-				var imageBounds = new googleMaps.LatLngBounds(
-					new googleMaps.LatLng(41.59687897449084, 41.58176701846196),
-					new googleMaps.LatLng(41.62282934176421, 41.62036918520812));
-				$scope.historicalOverlay = new googleMaps.GroundOverlay( 'imgs/mapOverlays/Batumi_Blue.png',imageBounds);
-				$scope.historicalOverlay.setMap($scope.currentMap);
+
+			_.set($scope, 'map', _.get(gmapControls, 'gmapObj'));
+			uiGmapIsReady.promise(1).then(function (maps) {
+				$scope.currentMap = maps[0].map;
+				uiGmapGoogleMapApi.then(function (googleMaps) {
+					_.forOwn(dynC.overlayCoords, function (bObj, base) {
+						console.log('forOwn: ',bObj, base, dynMsgService.cObj.bases[base]);
+						var imageBounds = new googleMaps.LatLngBounds(
+							new googleMaps.LatLng(bObj.lat1, bObj.lng1),
+							new googleMaps.LatLng(bObj.lat2, bObj.lng2));
+						console.log(imageBounds, 'imgs/mapOverlays/'+base+'_'+dynMsgService.cObj.bases[base]+'.png'); //'+dynMsgService.cObj.bases[base]+'
+						$scope.historicalOverlay = new googleMaps.GroundOverlay( 'imgs/mapOverlays/'+base+'_2.png',imageBounds);
+						$scope.historicalOverlay.setMap($scope.currentMap);
+						console.log($scope.historicalOverlay);
+					});
+				});
 			});
 		});
-	};
-	dynCaucasusController.$inject = ['$scope', 'gmapService', 'uiGmapIsReady', 'uiGmapGoogleMapApi'];
+	}
+	dynCaucasusController.$inject = ['$scope', 'gmapService', 'uiGmapIsReady', 'uiGmapGoogleMapApi', '$http', 'dynMsgService'];
 
 	function configFunction($stateProvider) {
 		$stateProvider

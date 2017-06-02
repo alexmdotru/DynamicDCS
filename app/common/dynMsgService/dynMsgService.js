@@ -6,6 +6,7 @@
 		_.set(dmSrv, 'cObj', {
 			client: {},
 			units: [],
+			bases: [],
 			players: [],
 			chatMsgs: [],
 			cmds: [],
@@ -68,6 +69,9 @@
 						_.find(_.get(dmSrv, 'cObj.players'), {id: que.data.playerID}).side);
 					console.log('MESG: ', que.action, que.data);
 					_.get(dmSrv, 'cObj.chatMsgs').push(que.data);
+				}else if (que.action === 'baseInfo') { //send command responses
+					//console.log('CMD: ', que.action, que.data);
+					_.set(dmSrv, 'cObj.bases', que.data);
 				}else if (que.action === 'CMD') { //send command responses
 					//console.log('CMD: ', que.action, que.data);
 					_.get(dmSrv, 'cObj.cmds').push(que.data);
