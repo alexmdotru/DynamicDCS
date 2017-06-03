@@ -14,10 +14,22 @@
 			gSrv.currentMap = maps[0].map;
 
 		 	uiGmapGoogleMapApi.then(function (googleMaps) {
-		 		_.set(gSrv, 'googleMaps', googleMaps);
-		 		_.set(gSrv, 'gmapObj.options.mapTypeControlOptions.position', googleMaps.ControlPosition.LEFT_BOTTOM );
-		 	});
+				_.set(gSrv, 'googleMaps', googleMaps);
+				_.set(gSrv, 'gmapObj.options.mapTypeControlOptions.position', googleMaps.ControlPosition.LEFT_BOTTOM);
 
+				gSrv.googleMaps.event.addListener(gSrv.currentMap, 'zoom_changed', function () {
+					var zoomLevel = gSrv.currentMap.getZoom();
+					if( zoomLevel > 11){
+						_.forOwn(gSrv.circleOverlay, function (value, key){
+							gSrv.circleOverlay[key].setVisible(false);
+						});
+					}else{
+						_.forOwn(gSrv.circleOverlay, function (value, key){
+							gSrv.circleOverlay[key].setVisible(true);
+						});
+					}
+				});
+			});
 		});
 
 		_.set(gSrv, 'addOverlay', function (base, side) {
@@ -31,10 +43,7 @@
 					_.set(gSrv, ['baseOverlay', base], new gSrv.googleMaps.GroundOverlay('imgs/mapOverlays/' + base + '_' + side + '.png', imageBounds));
 					_.get(gSrv, ['baseOverlay', base]).setMap(gSrv.currentMap);
 				}
-
-				console.log(base);
 				var center =  {lat: gSrv.overlayCoords[base].latc, lng: gSrv.overlayCoords[base].lngc};
-
 				//setup 2 sides color
 				var sideColor = {};
 				sideColor[2] = '#00aaff';
@@ -67,7 +76,7 @@
 
 		_.set(gSrv, 'updateOverlay', function (base, side) {
 			_.get(gSrv, ['baseOverlay', base]).setMap(null);
-			_.get(gSrv, ['circleOverlay', base]).setMap(null);
+			_.set(gSrv, ['circleOverlay', base, map], null);
 			gSrv.addOverlay(base, side);
 		});
 

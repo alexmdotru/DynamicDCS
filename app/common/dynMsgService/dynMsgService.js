@@ -16,8 +16,10 @@
 		});
 
 		socket.on('connect', function () {
-			_.set(dmSrv, 'cObj.units', []);
-			gmapService.resetMarkers();
+			if (dmSrv.cObj.units.length > 0){
+				_.set(dmSrv, 'cObj.units', []);
+				gmapService.resetMarkers();
+			}
 			socket.emit('clientUpd', { action: 'unitINIT' });
 		});
 
