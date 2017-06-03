@@ -34,12 +34,18 @@
 
 				console.log(base);
 				var center =  {lat: gSrv.overlayCoords[base].latc, lng: gSrv.overlayCoords[base].lngc};
+
+				//setup 2 sides color
+				var sideColor = {};
+				sideColor[2] = '#00aaff';
+				sideColor[1] = '#ff5555';
+
 				if( typeof gSrv.circleOverlay[base] === "undefined" ) {
 					_.set(gSrv, ['circleOverlay', base], new gSrv.googleMaps.Circle({
-						strokeColor: '#FF0000',
-						fillColor: '#FF0000',
+						strokeColor: sideColor[side],
+						fillColor: sideColor[side],
 						strokeOpacity: 0.2,
-						strokeWeight: 4,
+						strokeWeight: 0,
 						map: gSrv.currentMap,
 						center: center,
 						radius: 30000
