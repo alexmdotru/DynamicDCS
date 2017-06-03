@@ -258,7 +258,8 @@ _.set(serverObject, 'parse', function (update) {
 			//console.log('before: '+_.find(serverObject.units, { 'unitID': _.get(queObj, 'data.unitID') }));
 			_.remove(serverObject.units, { 'unitID': _.get(queObj, 'data.unitID') });
 			//console.log('after: '+_.find(serverObject.units, { 'unitID': _.get(queObj, 'data.unitID') }));
-			updateQue['que'+curUnit.coalition].push(_.cloneDeep(curObj));
+			updateQue['que1'].push(_.cloneDeep(curObj));
+			updateQue['que2'].push(_.cloneDeep(curObj));
 			updateQue.queadmin.push(_.cloneDeep(curObj));
 		}
 
