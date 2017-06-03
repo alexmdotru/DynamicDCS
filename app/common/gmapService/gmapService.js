@@ -67,6 +67,7 @@
 
 		_.set(gSrv, 'updateOverlay', function (base, side) {
 			_.get(gSrv, ['baseOverlay', base]).setMap(null);
+			_.get(gSrv, ['circleOverlay', base]).setMap(null);
 			gSrv.addOverlay(base, side);
 		});
 
