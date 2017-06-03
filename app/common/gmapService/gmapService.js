@@ -43,22 +43,25 @@
 					_.set(gSrv, ['baseOverlay', base], new gSrv.googleMaps.GroundOverlay('imgs/mapOverlays/' + base + '_' + side + '.png', imageBounds));
 					_.get(gSrv, ['baseOverlay', base]).setMap(gSrv.currentMap);
 				}
-				var center =  {lat: gSrv.overlayCoords[base].latc, lng: gSrv.overlayCoords[base].lngc};
-				//setup 2 sides color
-				var sideColor = {};
-				sideColor[2] = '#00aaff';
-				sideColor[1] = '#ff5555';
 
 				if( typeof gSrv.circleOverlay[base] === "undefined" ) {
-					_.set(gSrv, ['circleOverlay', base], new gSrv.googleMaps.Circle({
-						strokeColor: sideColor[side],
-						fillColor: sideColor[side],
-						strokeOpacity: 0.2,
-						strokeWeight: 0,
-						map: gSrv.currentMap,
-						center: center,
-						radius: 30000
-					}));
+					if ( typeof gSrv.overlayCoords[base].latc !== "undefined" ) {
+						var center =  {lat: gSrv.overlayCoords[base].latc, lng: gSrv.overlayCoords[base].lngc};
+						//setup 2 sides color
+						var sideColor = {};
+						sideColor[2] = '#00aaff';
+						sideColor[1] = '#ff5555';
+
+						_.set(gSrv, ['circleOverlay', base], new gSrv.googleMaps.Circle({
+							strokeColor: sideColor[side],
+							fillColor: sideColor[side],
+							strokeOpacity: 0.2,
+							strokeWeight: 0,
+							map: gSrv.currentMap,
+							center: center,
+							radius: 30000
+						}));
+					}
 				}
 			}
 				//draw circle around base
@@ -76,7 +79,7 @@
 
 		_.set(gSrv, 'updateOverlay', function (base, side) {
 			_.get(gSrv, ['baseOverlay', base]).setMap(null);
-			_.set(gSrv, ['circleOverlay', base, map], null);
+			_.get(gSrv, ['circleOverlay', base]).setMap(null);
 			gSrv.addOverlay(base, side);
 		});
 
