@@ -4,34 +4,50 @@
 	function controlService ($window, $http, uiGmapIsReady, uiGmapGoogleMapApi) {
 		var gSrv = this;
 
-		var overlay;
-
-
 		_.set(gSrv, 'baseOverlay', {});
-		 $http.get('json/overlayCoords.json').then(function(overlayCoordsJSON) {
-		 	_.set(gSrv, 'overlayCoords', overlayCoordsJSON.data);
-		 });
+		_.set(gSrv, 'circleOverlay', {});
+		$http.get('json/overlayCoords.json').then(function(overlayCoordsJSON) {
+			_.set(gSrv, 'overlayCoords', overlayCoordsJSON.data);
+		});
 
-		 uiGmapIsReady.promise(1).then(function (maps) {
-		 	gSrv.currentMap = maps[0].map;
+		uiGmapIsReady.promise(1).then(function (maps) {
+			gSrv.currentMap = maps[0].map;
 
 		 	uiGmapGoogleMapApi.then(function (googleMaps) {
 		 		_.set(gSrv, 'googleMaps', googleMaps);
 		 		_.set(gSrv, 'gmapObj.options.mapTypeControlOptions.position', googleMaps.ControlPosition.LEFT_BOTTOM );
 		 	});
 
-		 });
+		});
 
-		 _.set(gSrv, 'addOverlay', function (base, side) {
-		 	//console.log('addoverlay gmap: ',base,side);
-		 	if (typeof gSrv.overlayCoords[base] !== "undefined" && typeof gSrv.overlayCoords[base] !== "undefined") {
+		_.set(gSrv, 'addOverlay', function (base, side) {
+		//console.log('addoverlay gmap: ',base,side);
+			if ( typeof gSrv.overlayCoords[base] !== "undefined" ) {
+				if ( typeof gSrv.overlayCoords[base].lat1 !== "undefined" ) {
+					var imageBounds = new gSrv.googleMaps.LatLngBounds(
+						new gSrv.googleMaps.LatLng(gSrv.overlayCoords[base].lat1, gSrv.overlayCoords[base].lng1),
+						new gSrv.googleMaps.LatLng(gSrv.overlayCoords[base].lat2, gSrv.overlayCoords[base].lng2)
+					);
+					_.set(gSrv, ['baseOverlay', base], new gSrv.googleMaps.GroundOverlay('imgs/mapOverlays/' + base + '_' + side + '.png', imageBounds));
+					_.get(gSrv, ['baseOverlay', base]).setMap(gSrv.currentMap);
+				}
 
-				var imageBounds = new gSrv.googleMaps.LatLngBounds(
-					new gSrv.googleMaps.LatLng(gSrv.overlayCoords[base].lat1, gSrv.overlayCoords[base].lng1),
-					new gSrv.googleMaps.LatLng(gSrv.overlayCoords[base].lat2, gSrv.overlayCoords[base].lng2));
+				console.log(base);
+				var center =  {lat: gSrv.overlayCoords[base].latc, lng: gSrv.overlayCoords[base].lngc};
+				if( typeof gSrv.circleOverlay[base] === "undefined" ) {
+					_.set(gSrv, ['circleOverlay', base], new gSrv.googleMaps.Circle({
+						strokeColor: '#FF0000',
+						fillColor: '#FF0000',
+						strokeOpacity: 0.2,
+						strokeWeight: 4,
+						map: gSrv.currentMap,
+						center: center,
+						radius: 30000
+					}));
+				}
+			}
+				//draw circle around base
 
-				_.set(gSrv, ['baseOverlay', base], new gSrv.googleMaps.GroundOverlay( 'imgs/mapOverlays/'+base+'_'+side+'.png',imageBounds));
-				_.get(gSrv, ['baseOverlay', base]).setMap(gSrv.currentMap);
 
 		 		/* working method
 		 		var imageBounds = new gSrv.googleMaps.LatLngBounds(
@@ -40,10 +56,8 @@
 				_.set(gSrv, ['baseOverlay', base], new gSrv.googleMaps.GroundOverlay( 'imgs/mapOverlays/'+base+'_'+side+'.png',imageBounds));
 				_.get(gSrv, ['baseOverlay', base]).setMap(gSrv.currentMap);
 				*/
-			}
+
 		 });
-
-
 
 		_.set(gSrv, 'updateOverlay', function (base, side) {
 			_.get(gSrv, ['baseOverlay', base]).setMap(null);

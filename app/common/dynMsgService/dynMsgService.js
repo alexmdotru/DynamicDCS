@@ -73,7 +73,7 @@
 				}else if (que.action === 'baseInfo') { //send command responses
 					//console.log('CMD: ', que.action, que.data);
 					_.forEach(que.data, function (value, key) {
-						if (typeof gmapService.baseOverlay[key] !== "undefined") {
+						if (typeof gmapService.circleOverlay[key] !== "undefined") {
 							if(_.get(dmSrv, ['cObj', 'bases', key]) !== value){
 								console.log('base captured, updating overlay');
 								gmapService.updateOverlay(key, value);
