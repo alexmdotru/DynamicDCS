@@ -44,24 +44,22 @@
 					_.get(gSrv, ['baseOverlay', base]).setMap(gSrv.currentMap);
 				}
 
-				if( typeof gSrv.circleOverlay[base] === "undefined" ) {
-					if ( typeof gSrv.overlayCoords[base].latc !== "undefined" ) {
-						var center =  {lat: gSrv.overlayCoords[base].latc, lng: gSrv.overlayCoords[base].lngc};
-						//setup 2 sides color
-						var sideColor = {};
-						sideColor[2] = '#00aaff';
-						sideColor[1] = '#ff5555';
+				if ( typeof gSrv.overlayCoords[base].latc !== "undefined" ) {
+					var center =  {lat: gSrv.overlayCoords[base].latc, lng: gSrv.overlayCoords[base].lngc};
+					//setup 2 sides color
+					var sideColor = {};
+					sideColor[2] = '#00aaff';
+					sideColor[1] = '#ff5555';
 
-						_.set(gSrv, ['circleOverlay', base], new gSrv.googleMaps.Circle({
-							strokeColor: sideColor[side],
-							fillColor: sideColor[side],
-							strokeOpacity: 0.2,
-							strokeWeight: 0,
-							map: gSrv.currentMap,
-							center: center,
-							radius: 30000
-						}));
-					}
+					_.set(gSrv, ['circleOverlay', base], new gSrv.googleMaps.Circle({
+						strokeColor: sideColor[side],
+						fillColor: sideColor[side],
+						strokeOpacity: 0.2,
+						strokeWeight: 0,
+						map: gSrv.currentMap,
+						center: center,
+						radius: 30000
+					}));
 				}
 			}
 				//draw circle around base
