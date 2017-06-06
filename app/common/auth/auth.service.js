@@ -11,14 +11,14 @@
 
 		function handleAuthentication() {
 			angularAuth0.parseHash(function(err, authResult) {
-				if (authResult && authResult.accessToken && authResult.idToken) {
+				if (authResult && authResult.idToken) {
 					setSession(authResult);
-					$state.go('/');
+					$state.go('index');
 				} else if (err) {
 					$timeout(function() {
-						$state.go('/');
+						$state.go('index');
 					});
-					//console.log(err);
+					console.log(err);
 					alert('Error: ' + err.error + '. Check the console for further details.');
 				}
 			});
@@ -52,6 +52,7 @@
 			localStorage.setItem('access_token', authResult.accessToken);
 			localStorage.setItem('id_token', authResult.idToken);
 			localStorage.setItem('expires_at', expiresAt);
+			console.log('setting session: ', localStorage);
 		}
 
 		function logout() {

@@ -27,6 +27,11 @@
 		;
 	}
 
+	function authHandler(authService) {
+		authService.handleAuthentication();
+	}
+	authHandler.$inject = ['authService'];
+
 	angular
 		.module('state.index', [
 			'ui.router',
@@ -35,6 +40,7 @@
 			'dynamic-dcs.gmapService'
 		])
 		.config(['$stateProvider', '$urlRouterProvider', configFunction])
+		.run(authHandler)
 		.controller('indexController', indexController)
 	;
 }(angular));

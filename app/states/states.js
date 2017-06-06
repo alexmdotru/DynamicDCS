@@ -2,23 +2,27 @@
 	'use strict';
 
 	function configureStates($urlRouterProvider, $locationProvider, angularAuth0Provider) {
+
+		$urlRouterProvider.otherwise('/');
+
+		// Initialization for the angular-auth0 library
 		angularAuth0Provider.init({
-			clientID: '3TPd6XVVFb2g3BhjppKdCz5X8q4Mraek',
-			domain: 'afinegan.auth0.com',
+			clientID: AUTH0_CLIENT_ID,
+			domain: AUTH0_DOMAIN,
 			responseType: 'token id_token',
-			audience: 'https://afinegan.auth0.com/userinfo',
-			redirectUri: 'http://127.0.0.1:8080/#!/AuthCallback',
-			scope: 'openid profile',
+			audience: 'https://' + AUTH0_DOMAIN + '/userinfo',
+			redirectUri: AUTH0_CALLBACK_URL,
+			scope: 'openid',
 			leeway: 30
 		});
 
-		$urlRouterProvider.when('', '/');
 		$urlRouterProvider.otherwise('/');
 
-		$locationProvider.html5Mode({
-			enabled: true,
-			requireBase: false
-		});
+		$locationProvider.hashPrefix('');
+
+		// Comment out the line below to run the app
+		// without HTML5 mode (will use hashes in routes)
+		$locationProvider.html5Mode(false);
 
 
 	}
@@ -34,7 +38,7 @@
 		'state.index',
 		'state.dynCaucasus',
 		'state.dynRedDawn',
-		'state.authCallback'
+		'state.authController'
 	])
 	.config(configureStates)
 	.run(['$rootScope', '$state', '$stateParams',
