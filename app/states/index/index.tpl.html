@@ -1,7 +1,7 @@
 <div class="nav-border">
 	<h1>Leaderboard Coming Soon</h1>
-	<br><br><br>
-	<div class="panel panel-default profile-area">
+	<br><br><br>{{auth}}
+	<div ng-if="auth.isAuthenticated()" class="panel panel-default profile-area">
 		<div class="panel-heading"><h3>Profile</h3></div>
 		<div class="panel-body">
 			<img ng-src="{{indxCtrl.profile.picture }}" class="avatar" alt="avatar">

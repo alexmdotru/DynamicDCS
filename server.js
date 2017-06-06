@@ -6,14 +6,8 @@ var gameGuiPort = 3002;
 
 var _ = require('lodash');
 var express = require('express');
-
-var perSendMax = 500;
-
-var outOfSyncUnitCnt = 0;
-var outOfSyncUnitThreshold = 60;
-
-//startup node server
 var app = express();
+const path = require('path');
 
 // app.use/routes/etc...
 app.use('/', express.static(__dirname + '/dist'));
@@ -27,6 +21,11 @@ var server  = app.listen(8080);
 var io  = require('socket.io').listen(server);
 
 //setup globals
+var perSendMax = 500;
+
+var outOfSyncUnitCnt = 0;
+var outOfSyncUnitThreshold = 60;
+
 var serverObject = {
 	units: [],
 	bases: [],
@@ -60,7 +59,7 @@ function isNumeric(x) {
 
 
 function initUnits ( socketID ) {
-	console.log('sendINIT');
+	console.log('sendINIT',socketID);
 	var initQue = {que: []};
 	//var pSlot = _.get(_.find(serverObject.players, {'socketID': socketID}), 'slot', '');
 	var pSide = _.get(_.find(serverObject.players, {'socketID': socketID}), 'side', 0);
@@ -158,7 +157,7 @@ io.on('connection', function( socket ) {
 	console.log("Units: "+serverObject.units.length);
 	socket.on('clientUpd', function (data) {
 		if(data.action === 'unitINIT') {
-			console.log(socket.id + ' is having unit desync');
+			console.log(socket.id + ' is having unit desync, or initial INIT');
 			sendInit(socket.id);
 		}
 	});
@@ -332,9 +331,9 @@ _.set(serverObject, 'parse', function (update) {
 								io.sockets.sockets[player.socketID].leave(2);
 							}
 							if (!io.sockets.adapter.sids[player.socketID]['1']) {
-								console.log(player.name + ' is player in slot, side 1');
 								io.sockets.sockets[player.socketID].join(1);
 								sendInit(player.socketID);
+								console.log(player.name + ' is player in slot, side 1');
 							}
 						}else if (player.side === 2) {
 							if (io.sockets.adapter.sids[player.socketID]['admin']) {
@@ -347,9 +346,9 @@ _.set(serverObject, 'parse', function (update) {
 								io.sockets.sockets[player.socketID].leave(1);
 							}
 							if (!io.sockets.adapter.sids[player.socketID]['2']) {
-								console.log(player.name + ' is player in slot, side 2');
 								io.sockets.sockets[player.socketID].join(2);
 								sendInit(player.socketID);
+								console.log(player.name + ' is player in slot, side 2');
 							}
 						}
 					}
