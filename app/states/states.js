@@ -37,8 +37,7 @@
 		'ui.router',
 		'state.index',
 		'state.dynCaucasus',
-		'state.dynRedDawn',
-		'state.authController'
+		'state.dynRedDawn'
 	])
 	.config(configureStates)
 	.run(['$rootScope', '$state', '$stateParams',
