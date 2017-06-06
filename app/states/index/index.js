@@ -7,10 +7,10 @@
 		_.set(indxCtrl, 'auth', authService);
 
 		if (authService.getCachedProfile()) {
-			_.set(indxCtrl, profile, authService.getCachedProfile());
+			_.set(indxCtrl, 'profile', authService.getCachedProfile());
 		} else {
 			authService.getProfile(function(err, profile) {
-				_.set(indxCtrl, profile, profile);
+				_.set(indxCtrl, 'profile', profile);
 			});
 		}
 	}

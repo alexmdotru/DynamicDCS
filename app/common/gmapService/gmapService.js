@@ -13,9 +13,10 @@
 		uiGmapIsReady.promise(1).then(function (maps) {
 			gSrv.currentMap = maps[0].map;
 
-		 	uiGmapGoogleMapApi.then(function (googleMaps) {
+			uiGmapGoogleMapApi.then(function (googleMaps) {
 				_.set(gSrv, 'googleMaps', googleMaps);
-				_.set(gSrv, 'gmapObj.options.mapTypeControlOptions.position', googleMaps.ControlPosition.LEFT_BOTTOM);
+				_.set(gSrv, 'gmapObj.options.mapTypeControlOptions.position',
+					googleMaps.ControlPosition.LEFT_BOTTOM);
 
 				gSrv.googleMaps.event.addListener(gSrv.currentMap, 'zoom_changed', function () {
 					var zoomLevel = gSrv.currentMap.getZoom();
@@ -34,18 +35,24 @@
 
 		_.set(gSrv, 'addOverlay', function (base, side) {
 		//console.log('addoverlay gmap: ',base,side);
-			if ( typeof gSrv.overlayCoords[base] !== "undefined" && typeof gSrv.googleMaps !== "undefined") {
+			if ( typeof gSrv.overlayCoords[base] !== "undefined" &&
+				typeof gSrv.googleMaps !== "undefined") {
 				if ( typeof gSrv.overlayCoords[base].lat1 !== "undefined" ) {
 					var imageBounds = new gSrv.googleMaps.LatLngBounds(
-						new gSrv.googleMaps.LatLng(gSrv.overlayCoords[base].lat1, gSrv.overlayCoords[base].lng1),
-						new gSrv.googleMaps.LatLng(gSrv.overlayCoords[base].lat2, gSrv.overlayCoords[base].lng2)
+						new gSrv.googleMaps.LatLng(gSrv.overlayCoords[base].lat1,
+							gSrv.overlayCoords[base].lng1),
+						new gSrv.googleMaps.LatLng(gSrv.overlayCoords[base].lat2,
+							gSrv.overlayCoords[base].lng2)
 					);
-					_.set(gSrv, ['baseOverlay', base], new gSrv.googleMaps.GroundOverlay('imgs/mapOverlays/' + base + '_' + side + '.png', imageBounds));
+					_.set(gSrv, ['baseOverlay', base],
+						new gSrv.googleMaps.GroundOverlay('imgs/mapOverlays/' +
+							base + '_' + side + '.png', imageBounds));
 					_.get(gSrv, ['baseOverlay', base]).setMap(gSrv.currentMap);
 				}
 
 				if ( typeof gSrv.overlayCoords[base].latc !== "undefined" ) {
-					var center =  {lat: gSrv.overlayCoords[base].latc, lng: gSrv.overlayCoords[base].lngc};
+					var center =  {lat: gSrv.overlayCoords[base].latc,
+						lng: gSrv.overlayCoords[base].lngc};
 					//setup 2 sides color
 					var sideColor = {};
 					sideColor[2] = '#00aaff';
@@ -62,18 +69,7 @@
 					}));
 				}
 			}
-				//draw circle around base
-
-
-		 		/* working method
-		 		var imageBounds = new gSrv.googleMaps.LatLngBounds(
-					new gSrv.googleMaps.LatLng(gSrv.overlayCoords[base].lat1, gSrv.overlayCoords[base].lng1),
-					new gSrv.googleMaps.LatLng(gSrv.overlayCoords[base].lat2, gSrv.overlayCoords[base].lng2));
-				_.set(gSrv, ['baseOverlay', base], new gSrv.googleMaps.GroundOverlay( 'imgs/mapOverlays/'+base+'_'+side+'.png',imageBounds));
-				_.get(gSrv, ['baseOverlay', base]).setMap(gSrv.currentMap);
-				*/
-
-		 });
+		});
 
 		_.set(gSrv, 'updateOverlay', function (base, side) {
 			_.get(gSrv, ['baseOverlay', base]).setMap(null);
@@ -195,8 +191,9 @@
 		//process inbound Unit Stream
 		//console.log(_.get(gSrv, 'gmapObj.markers'));
 		_.set(gSrv, 'processUnitStream', function (update) {
+			var curMarker;
 			if( _.get(update, 'action') == 'C' || _.get(update, 'action') == 'INIT') {
-				var curMarker = {
+				curMarker = {
 					id: update.data.unitID,
 					//icon: {
 					//	url: 'data:image/svg+xml;utf-8,'+gSrv.buildSIDC(update.data),
@@ -226,7 +223,7 @@
 				_.get(gSrv, 'gmapObj.markers').push(curMarker);
 			}
 			if( _.get(update, 'action') == 'U') {
-				var curMarker = _.find(_.get(gSrv, 'gmapObj.markers'), {id: update.data.unitID});
+				curMarker = _.find(_.get(gSrv, 'gmapObj.markers'), {id: update.data.unitID});
 				_.set(curMarker, 'latitude', update.data.lat);
 				_.set(curMarker, 'longitude', update.data.lon);
 				_.set(curMarker, 'alt', update.data.alt);
@@ -237,7 +234,6 @@
 			if( _.get(update, 'action') == 'D') {
 				_.remove(_.get(gSrv, 'gmapObj.markers'), {id: update.data.unitID});
 			}
-			//$rootScope.$apply();
 		});
 
 		//process inbound Unit Stream

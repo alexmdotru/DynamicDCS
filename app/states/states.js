@@ -8,7 +8,7 @@
 			responseType: 'token id_token',
 			audience: 'https://afinegan.auth0.com/userinfo',
 			redirectUri: 'http://127.0.0.1:8080/#!/AuthCallback',
-			scope: 'openid',
+			scope: 'openid profile',
 			leeway: 30
 		});
 

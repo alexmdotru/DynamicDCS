@@ -3,7 +3,6 @@
 
 	function dynCaucasusController ($scope, gmapService) {
 		// console.log('dynCaucasus controller loaded');
-		var dynC = this;
 		//future this can retrieve the right map object for the correct map
 		_.set($scope, 'map', _.get(gmapService, 'gmapObj'));
 	}
