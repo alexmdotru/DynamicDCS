@@ -1,13 +1,16 @@
 (function (angular) {
 	'use strict';
 
-	function configureStates($urlRouterProvider) {
-		$urlRouterProvider.when('', '/');
+	function configureStates($urlRouterProvider, $locationProvider) {
 
+		$locationProvider.html5Mode(false);
+		$locationProvider.hashPrefix('!');
+		$urlRouterProvider.when('', '/');
 		$urlRouterProvider.otherwise('/');
 	}
 	configureStates.$inject = [
-		'$urlRouterProvider'
+		'$urlRouterProvider',
+		'$locationProvider'
 	];
 
 	angular.module('states', [
