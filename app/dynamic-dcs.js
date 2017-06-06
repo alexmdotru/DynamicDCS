@@ -5,8 +5,17 @@
 		_.set(this, 'startPage', '/dynamic-dcs.tpl.html');
 
 		_.set($scope, 'auth', authService);
+		/*
+		_.set($scope, 'profile', {});
 
-		console.log(authService);
+		if (authService.getCachedProfile()) {
+			_.set($scope, profile, authService.getCachedProfile());
+		} else {
+			authService.getProfile(function(err, profile) {
+				_.set($scope, profile, profile);
+			});
+		}
+		*/
 
 		$scope.initialise = function() {
 

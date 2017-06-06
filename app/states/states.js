@@ -7,7 +7,7 @@
 			domain: 'afinegan.auth0.com',
 			responseType: 'token id_token',
 			audience: 'https://afinegan.auth0.com/userinfo',
-			redirectUri: 'http://127.0.0.1:8080',
+			redirectUri: 'http://127.0.0.1:8080/#!/AuthCallback',
 			scope: 'openid',
 			leeway: 30
 		});
@@ -33,7 +33,8 @@
 		'ui.router',
 		'state.index',
 		'state.dynCaucasus',
-		'state.dynRedDawn'
+		'state.dynRedDawn',
+		'state.authCallback'
 	])
 	.config(configureStates)
 	.run(['$rootScope', '$state', '$stateParams',

@@ -3,6 +3,8 @@
 
 	function authService($state, angularAuth0, $timeout) {
 
+		var userProfile;
+
 		function login() {
 			angularAuth0.authorize();
 		}
@@ -20,6 +22,28 @@
 					alert('Error: ' + err.error + '. Check the console for further details.');
 				}
 			});
+		}
+
+		function getProfile(cb) {
+			var accessToken = localStorage.getItem('access_token');
+			console.log('get profile: ', accessToken);
+			if (!accessToken) {
+				throw new Error('Access token must exist to fetch profile');
+			}
+			angularAuth0.client.userInfo(accessToken, function(err, profile) {
+				if (profile) {
+					setUserProfile(profile);
+				}
+				cb(err, profile);
+			});
+		}
+
+		function setUserProfile(profile) {
+			userProfile = profile;
+		}
+
+		function getCachedProfile() {
+			return userProfile;
 		}
 
 		function setSession(authResult) {
@@ -46,6 +70,8 @@
 
 		return {
 			login: login,
+			getProfile: getProfile,
+			getCachedProfile: getCachedProfile,
 			handleAuthentication: handleAuthentication,
 			logout: logout,
 			isAuthenticated: isAuthenticated

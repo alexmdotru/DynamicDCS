@@ -1,24 +1,26 @@
 (function (angular) {
 	'use strict';
 
-	function indexController () {
+	function indexController (authService) {
 		// console.log('main index and leaderboard');
-	}
-	indexController.$inject = [];
+		var indxCtrl = this;
+		_.set(indxCtrl, 'auth', authService);
 
-	function processAuthService(authService) {
-		// Handle the authentication
-		// result in the hash
-		console.log('processingAuthentication');
-		authService.handleAuthentication();
+		if (authService.getCachedProfile()) {
+			_.set(indxCtrl, profile, authService.getCachedProfile());
+		} else {
+			authService.getProfile(function(err, profile) {
+				_.set(indxCtrl, profile, profile);
+			});
+		}
 	}
-	processAuthService.$inject = ['authService'];
+	indexController.$inject = ['authService'];
 
 	function configFunction($stateProvider) {
 		$stateProvider
 			.state('index', {
 				controller: 'indexController',
-				controllerAs: 'ctrl',
+				controllerAs: 'indxCtrl',
 				templateUrl: '/apps/dynamic-dcs/states/index/index.tpl.html',
 				url: '/'
 			})
@@ -33,7 +35,6 @@
 			'dynamic-dcs.gmapService'
 		])
 		.config(['$stateProvider', '$urlRouterProvider', configFunction])
-		.run(processAuthService)
 		.controller('indexController', indexController)
 	;
 }(angular));
