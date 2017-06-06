@@ -6,6 +6,14 @@
 	}
 	indexController.$inject = [];
 
+	function processAuthService(authService) {
+		// Handle the authentication
+		// result in the hash
+		console.log('processingAuthentication');
+		authService.handleAuthentication();
+	}
+	processAuthService.$inject = ['authService'];
+
 	function configFunction($stateProvider) {
 		$stateProvider
 			.state('index', {
@@ -25,6 +33,7 @@
 			'dynamic-dcs.gmapService'
 		])
 		.config(['$stateProvider', '$urlRouterProvider', configFunction])
+		.run(processAuthService)
 		.controller('indexController', indexController)
 	;
 }(angular));

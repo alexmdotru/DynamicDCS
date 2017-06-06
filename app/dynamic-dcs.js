@@ -1,8 +1,12 @@
 (function (angular) {
 	'use strict';
 
-	function dynamicDCSController($scope, $state, dynMsgService) {
+	function dynamicDCSController($scope, $state, dynMsgService, authService) {
 		_.set(this, 'startPage', '/dynamic-dcs.tpl.html');
+
+		_.set($scope, 'auth', authService);
+
+		console.log(authService);
 
 		$scope.initialise = function() {
 
@@ -29,7 +33,7 @@
 
 		$scope.initialise();
 	}
-	dynamicDCSController.$inject = ['$scope','$state', 'dynMsgService'];
+	dynamicDCSController.$inject = ['$scope','$state', 'dynMsgService', 'authService'];
 
 	angular
 		.module('dynamic-dcs', [
@@ -37,7 +41,8 @@
 			'dynamic-dcs.dynMsgService',
 			'dynamic-dcs.chat-box',
 			'states',
-			'ui.bootstrap'
+			'ui.bootstrap',
+			'dynamic-dcs.authService'
 		])
 		.config(['$qProvider', function ($qProvider) {
 			$qProvider.errorOnUnhandledRejections(false);

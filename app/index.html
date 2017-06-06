@@ -44,12 +44,12 @@
 			<li><a href="http://www.16agr.com" target="_blank">Join The 16AGR!</a></li>
 			<li><a href="" ng-click="isCollapsed = !isCollapsed" data-ng-show="$state.includes('dynCaucasus') || $state.includes('dynRedDawn')">Tools</a></li> <!--temp until better show function -->
 			<li uib-dropdown>
-				<a ng-if="!cObj.client.player.side" href="#" uib-dropdown-toggle><div>Login <b class="caret"></b></div></a>
-				<a ng-if="cObj.client.player.side === 1" href="#" uib-dropdown-toggle><div class="redText">{{cObj.client.player.name}} <b class="caret"></b></div></a>
-				<a ng-if="cObj.client.player.side === 2" href="#" uib-dropdown-toggle><div class="blueText">{{cObj.client.player.name}} <b class="caret"></b></div></a>
-				<ul uib-dropdown-menu>
+				<a ng-if="!auth.isAuthenticated()" uib-dropdown-toggle><div ng-click="auth.login()">Login</div></a>
+				<a ng-if="auth.isAuthenticated()" uib-dropdown-toggle><div class="redText">{{cObj.client.player.name}} <b class="caret"></b></div></a>
+				<!--<a ng-if="cObj.client.player.side === 2" href="#" uib-dropdown-toggle><div class="blueText">{{cObj.client.player.name}} <b class="caret"></b></div></a>-->
+				<ul ng-if="auth.isAuthenticated()" uib-dropdown-menu>
 					<li><a href="#">Settings</a></li>
-					<li><a href="#">Logout</a></li>
+					<li><a ng-click="auth.logout()">Logout</a></li>
 				</ul>
 			</li>
 		</ul>
