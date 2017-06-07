@@ -20,6 +20,7 @@
 		_.set($scope, 'animationsEnabled', true);
 
 		_.set($scope, 'openSettingsModal', function (size) {
+
 			var modalInstance = $uibModal.open({
 				animation: $scope.animationsEnabled,
 				ariaLabelledBy: 'modal-title',
@@ -65,8 +66,16 @@
 	}
 	dynamicDCSController.$inject = ['$scope','$state', 'dynMsgService', 'authService', '$uibModal'];
 
-	function settingsModalController($uibModalInstance) {
+	function settingsModalController($uibModalInstance, authService) {
 		var setCtrl = this;
+		if (authService.getCachedProfile()) {
+			_.set(setCtrl, 'auth', authService.getCachedProfile());
+		} else {
+			authService.getProfile(function(err, profile) {
+				_.set(setCtrl, 'auth', profile);
+			});
+		}
+
 		setCtrl.save = function () {
 			console.log('save');
 			$uibModalInstance.close('Save');
@@ -77,7 +86,7 @@
 			$uibModalInstance.dismiss('Cancel');
 		};
 	}
-	settingsModalController.$inject = ['$uibModalInstance'];
+	settingsModalController.$inject = ['$uibModalInstance','authService'];
 
 	angular
 		.module('dynamic-dcs', [

@@ -13,7 +13,7 @@
 			responseType: 'token id_token',
 			audience: 'https://' + AUTH0_DOMAIN + '/userinfo',
 			redirectUri: AUTH0_CALLBACK_URL,
-			scope: 'openid',
+			scope: 'openid profile email',
 			leeway: 30
 		});
 		/* eslint-enable no-undef */

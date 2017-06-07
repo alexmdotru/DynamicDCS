@@ -25,17 +25,18 @@
 		}
 
 		function getProfile(cb) {
-			var accessToken = localStorage.getItem('access_token');
-			//console.log('get profile: ', accessToken);
-			if (!accessToken) {
-				throw new Error('Access token must exist to fetch profile');
-			}
-			angularAuth0.client.userInfo(accessToken, function(err, profile) {
-				if (profile) {
-					setUserProfile(profile);
+			if (localStorage.getItem('access_token') !== null) {
+				var accessToken = localStorage.getItem('access_token');
+				if (!accessToken) {
+					console.log('Access token must exist to fetch profile');
 				}
-				cb(err, profile);
-			});
+				angularAuth0.client.userInfo(accessToken, function(err, profile) {
+					if (profile) {
+						setUserProfile(profile);
+					}
+					cb(err, profile);
+				});
+			}
 		}
 
 		function setUserProfile(profile) {
@@ -52,7 +53,7 @@
 			localStorage.setItem('access_token', authResult.accessToken);
 			localStorage.setItem('id_token', authResult.idToken);
 			localStorage.setItem('expires_at', expiresAt);
-			console.log('setting session: ', localStorage);
+			//console.log('setting session: ', localStorage);
 		}
 
 		function logout() {
