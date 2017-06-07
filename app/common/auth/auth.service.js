@@ -70,13 +70,31 @@
 			return new Date().getTime() < expiresAt;
 		}
 
+		console.log(angularAuth0);
+		function updateMetadata (user, context, callback) {
+			user.user_metadata = user.user_metadata || {};
+			// update the user_metadata that will be part of the response
+			user.user_metadata.preferences = user.user_metadata.preferences || {};
+			user.user_metadata.preferences.fontSize = 12;
+
+			// persist the user_metadata update
+			angularAuth0.users.updateUserMetadata(user.user_id, user.user_metadata)
+				.then(function(){
+					callback(null, user, context);
+				})
+				.catch(function(err){
+					callback(err);
+				});
+		}
+
 		return {
 			login: login,
 			getProfile: getProfile,
 			getCachedProfile: getCachedProfile,
 			handleAuthentication: handleAuthentication,
 			logout: logout,
-			isAuthenticated: isAuthenticated
+			isAuthenticated: isAuthenticated,
+			updateMetadata: updateMetadata
 		}
 	}
 
