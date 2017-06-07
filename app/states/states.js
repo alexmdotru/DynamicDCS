@@ -5,6 +5,7 @@
 
 		$urlRouterProvider.otherwise('/');
 
+		/* eslint-disable no-undef */
 		// Initialization for the angular-auth0 library
 		angularAuth0Provider.init({
 			clientID: AUTH0_CLIENT_ID,
@@ -15,6 +16,7 @@
 			scope: 'openid',
 			leeway: 30
 		});
+		/* eslint-enable no-undef */
 
 		$urlRouterProvider.otherwise('/');
 
