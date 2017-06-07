@@ -1,5 +1,5 @@
 ﻿var admin = false;
-var serverAddress = "192.168.44.61";
+var serverAddress = "127.0.0.1";
 var clientPort = 3001;
 var gameGuiPort = 3002;
 
@@ -13,6 +13,7 @@ const path = require('path');
 app.use('/', express.static(__dirname + '/dist'));
 app.use('/json', express.static(__dirname + '/app/assets/json'));
 app.use('/css', express.static(__dirname + '/app/assets/css'));
+app.use('/fonts', express.static(__dirname + '/app/assets/fonts'));
 app.use('/imgs', express.static(__dirname + '/app/assets/images'));
 app.use('/tabs', express.static(__dirname + '/app/tabs'));
 app.use('/libs', express.static(__dirname + '/node_modules'));

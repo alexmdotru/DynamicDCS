@@ -12,10 +12,9 @@
 	</form>
 	<strong>Misc Info</strong>
 	<div>{{setCtrl}}</div>
-
-
 </div>
 <div class="modal-footer">
 	<button class="btn btn-warning" type="button" ng-click="setCtrl.cancel()">Cancel</button>
+	<button class="btn btn-warning" type="button" ng-click="setCtrl.authService.setMetadata()">setMeta</button>
 	<button class="btn btn-primary" type="button" ng-click="setCtrl.save()">Save</button>
 </div>

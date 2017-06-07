@@ -53,7 +53,6 @@
 			localStorage.setItem('access_token', authResult.accessToken);
 			localStorage.setItem('id_token', authResult.idToken);
 			localStorage.setItem('expires_at', expiresAt);
-			//console.log('setting session: ', localStorage);
 		}
 
 		function logout() {
@@ -64,13 +63,10 @@
 		}
 
 		function isAuthenticated() {
-			// Check whether the current time is past the
-			// access token's expiry time
 			var expiresAt = JSON.parse(localStorage.getItem('expires_at'));
 			return new Date().getTime() < expiresAt;
 		}
 
-		console.log(angularAuth0);
 		function updateMetadata (user, context, callback) {
 			user.user_metadata = user.user_metadata || {};
 			// update the user_metadata that will be part of the response
@@ -93,8 +89,7 @@
 			getCachedProfile: getCachedProfile,
 			handleAuthentication: handleAuthentication,
 			logout: logout,
-			isAuthenticated: isAuthenticated,
-			updateMetadata: updateMetadata
+			isAuthenticated: isAuthenticated
 		}
 	}
 
