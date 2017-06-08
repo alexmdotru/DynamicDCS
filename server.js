@@ -56,7 +56,7 @@ function initClear( serverType ) {
 	if (serverType === 'client') {
 		_.set(serverObject, 'units', []);
 		//Unit.collection.drop();
-		dbServiceController.unitActions('dropall');
+		dbServiceController.unitActions('dropall'); //someday maps will persist, reset all units
 		_.set(serverObject, 'ClientRequestArray', []);
 	}
 	if (serverType === 'server') {
@@ -249,6 +249,7 @@ _.set(serverObject, 'parse', function (update) {
 				curObj = {
 					action: 'U',
 					data: {
+						_id: parseFloat(_.get(queObj, 'data.unitID')),
 						unitID: _.get(queObj, 'data.unitID'),
 						lat: parseFloat(_.get(queObj, 'data.lat')),
 						lon: parseFloat(_.get(queObj, 'data.lon')),
@@ -257,6 +258,8 @@ _.set(serverObject, 'parse', function (update) {
 						speed: parseFloat(_.get(queObj, 'data.speed'))
 					}
 				};
+				dbServiceController.unitActions('update', curObj.data);
+
 				updateQue['que'+curUnit.coalition].push(_.cloneDeep(curObj));
 				updateQue.queadmin.push(_.cloneDeep(curObj));
 			}
@@ -265,14 +268,13 @@ _.set(serverObject, 'parse', function (update) {
 			curObj = {
 				action: 'D',
 				data: {
+					_id: parseFloat(_.get(queObj, 'data.unitID')),
 					unitID: _.get(queObj, 'data.unitID')
-					//lat: _.get(queObj, 'data.lat'),
-					//lon: _.get(queObj, 'data.lon'),
 				}
 			};
-			//console.log('before: '+_.find(serverObject.units, { 'unitID': _.get(queObj, 'data.unitID') }));
+
+			dbServiceController.unitActions('delete', curObj.data);
 			_.remove(serverObject.units, { 'unitID': _.get(queObj, 'data.unitID') });
-			//console.log('after: '+_.find(serverObject.units, { 'unitID': _.get(queObj, 'data.unitID') }));
 			updateQue['que1'].push(_.cloneDeep(curObj));
 			updateQue['que2'].push(_.cloneDeep(curObj));
 			updateQue.queadmin.push(_.cloneDeep(curObj));
@@ -290,7 +292,7 @@ _.set(serverObject, 'parse', function (update) {
 								return true;
 							}
 							return false;
-						}), 'id', {}));
+						}), 'id', ''));
 						//console.log('1',pArry[0], player.socketID);
 					}else{
 						_.set(player, 'socketID', _.get(_.find(_.get(io, 'sockets.sockets'), function (socket) {
@@ -299,7 +301,7 @@ _.set(serverObject, 'parse', function (update) {
 								return true;
 							}
 							return false;
-						}), 'id', {}));
+						}), 'id', ''));
 						//console.log('2',pArry[0], player.socketID);
 					}
 
@@ -371,6 +373,11 @@ _.set(serverObject, 'parse', function (update) {
 				}
 			});
 			//apply local information object
+			_.forEach(queObj.data, function ( data ){
+				_.set(data, '_id', data.ucid);
+				dbServiceController.srcPlayerActions('update', data);
+			});
+
 			updateQue.que1.push(_.cloneDeep(queObj));
 			updateQue.que2.push(_.cloneDeep(queObj));
 			updateQue.que0.push(_.cloneDeep(queObj));
@@ -382,6 +389,15 @@ _.set(serverObject, 'parse', function (update) {
 			//var blah = 'Vaziani-West_FARP';
 			//console.log('baseinfo: ', queObj, queObj.data[blah]);
 			//send response straight to client id
+			_.forEach(queObj.data, function (value, key){
+				var curObj = {
+					_id: key,
+					name: key,
+					coalition: value
+				};
+				dbServiceController.baseActions('update', curObj);
+			});
+
 			updateQue.que1.push(_.cloneDeep(queObj));
 			updateQue.que2.push(_.cloneDeep(queObj));
 			updateQue.queadmin.push(_.cloneDeep(queObj));
