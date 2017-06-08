@@ -29,7 +29,6 @@ exports.baseActions = function (action, obj){
 };
 
 exports.srcPlayerActions = function (action, obj){
-	console.log('sa: ',obj);
 	var query = {_id: obj._id},
 		update = { $set: obj },
 		options = { upsert: true, new: true, setDefaultsOnInsert: true };
