@@ -1,14 +1,30 @@
-﻿var admin = false;
-var serverAddress = "127.0.0.1";
-var clientPort = 3001;
-var gameGuiPort = 3002;
+﻿
+
+const express = require('express'),
+	app = express(),
+	path = require('path'),
+	assert = require('assert'),
+	_ = require('lodash'),
+	config = require('./config/main');
+
+// Start the server
+var server;
+var serverAddress;
+if (process.env.NODE_ENV !== config.test_env) { //SET NODE_ENV=test
+	server = app.listen(config.port);
+	serverAddress = config.dcs_socket;
+	console.log(`Your server is running on port ${config.port}.`);
+} else{
+	server = app.listen(config.test_port);
+	serverAddress = config.test_dcs_socket;
+}
+var io  = require('socket.io').listen(server);
+
+//Controllers
+const dbServiceController = require('./controllers/dbService');
 
 
-var _ = require('lodash');
-var express = require('express');
-var app = express();
-const path = require('path');
-
+var admin = false;
 // app.use/routes/etc...
 app.use('/', express.static(__dirname + '/dist'));
 app.use('/json', express.static(__dirname + '/app/assets/json'));
@@ -18,14 +34,8 @@ app.use('/imgs', express.static(__dirname + '/app/assets/images'));
 app.use('/tabs', express.static(__dirname + '/app/tabs'));
 app.use('/libs', express.static(__dirname + '/node_modules'));
 
-var server  = app.listen(8080);
-var io  = require('socket.io').listen(server);
-
 //setup globals
-var perSendMax = 500;
-
 var outOfSyncUnitCnt = 0;
-var outOfSyncUnitThreshold = 60;
 
 var serverObject = {
 	units: [],
@@ -45,6 +55,8 @@ var updateQue = {
 function initClear( serverType ) {
 	if (serverType === 'client') {
 		_.set(serverObject, 'units', []);
+		//Unit.collection.drop();
+		dbServiceController.unitActions('dropall');
 		_.set(serverObject, 'ClientRequestArray', []);
 	}
 	if (serverType === 'server') {
@@ -97,15 +109,15 @@ function initUnits ( socketID ) {
 	}
 
 	var sendAmt = 0;
-	var totalChkLoops = _.ceil(initQue.que.length / perSendMax);
+	var totalChkLoops = _.ceil(initQue.que.length / config.perSendMax);
 	//console.log(totalChkLoops);
 
 	var chkPayload = {que: [{action: 'reset'}]};
 	for (x = 0; x < totalChkLoops; x++) {
-		if (initQue.que.length < perSendMax) {
+		if (initQue.que.length < config.perSendMax) {
 			sendAmt = initQue.que.length;
 		} else {
-			sendAmt = perSendMax
+			sendAmt = config.perSendMax
 		}
 		for (y = 0; y < sendAmt; y++) {
 			chkPayload.que.push(initQue.que[0]);
@@ -182,7 +194,7 @@ _.set(serverObject, 'parse', function (update) {
 	if (typeof update.unitCount !== 'undefined'){
 		if(update.unitCount !== serverObject.units.length){
 			console.log('out of sync for '+outOfSyncUnitCnt);
-			if ( outOfSyncUnitCnt > outOfSyncUnitThreshold){
+			if ( outOfSyncUnitCnt > config.outOfSyncUnitThreshold){
 				outOfSyncUnitCnt = 0;
 				console.log('reset server units');
 				initClear( 'client' );
@@ -194,7 +206,6 @@ _.set(serverObject, 'parse', function (update) {
 		}else{
 			outOfSyncUnitCnt = 0;
 		}
-		//console.log('compare: '+update.unitCount+' vs '+serverObject.units.length);
 	}
 
 	_.forEach(update.que, function (queObj) {
@@ -208,6 +219,7 @@ _.set(serverObject, 'parse', function (update) {
 				curObj = {
 					action: 'C',
 					data: {
+						_id: parseFloat(_.get(queObj, 'data.unitID')),
 						unitID: parseFloat(_.get(queObj, 'data.unitID')),
 						type: _.get(queObj, 'data.type'),
 						coalition: parseFloat(_.get(queObj, 'data.coalition')),
@@ -219,6 +231,9 @@ _.set(serverObject, 'parse', function (update) {
 						playername: _.get(queObj, 'data.playername', '')
 					}
 				};
+
+				dbServiceController.unitActions('save', curObj.data);
+
 				serverObject.units.push(_.cloneDeep(curObj.data));
 				updateQue['que'+parseFloat(_.get(queObj, 'data.coalition'))].push(_.cloneDeep(curObj));
 				updateQue.queadmin.push(_.cloneDeep(curObj));
@@ -477,10 +492,10 @@ setInterval(function(){
 		var sendAmt = 0;
 
 		//console.log(updateQue[que].length);
-		if (updateQue[que].length < perSendMax) {
+		if (updateQue[que].length < config.perSendMax) {
 			sendAmt = updateQue[que].length;
 		}else{
-			sendAmt = perSendMax
+			sendAmt = config.perSendMax
 		}
 		var chkPayload = {que:[]};
 		for (x=0; x < sendAmt; x++ ) {
@@ -512,7 +527,7 @@ function getDCSDataClient(dataCallback) {
     var buffer;
 
     function connect() {
-        const client = net.createConnection({host: serverAddress, port: clientPort}, () => {
+        const client = net.createConnection({host: serverAddress, port: config.clientPort}, () => {
             var time = new Date();
             console.log(time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + ' :: Connected to DCS Client!');
             connOpen = false;
@@ -565,7 +580,7 @@ function getDCSDataGameGui(dataCallback) {
 	var request;
 
 	function connect() {
-		const client = net.createConnection({host: serverAddress, port: gameGuiPort}, () => {
+		const client = net.createConnection({host: serverAddress, port: config.gameGuiPort}, () => {
 			var time = new Date();
 			console.log(time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + ' :: Connected to DCS GameGUI!');
 			connOpen = false;
