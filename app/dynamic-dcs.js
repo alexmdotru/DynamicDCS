@@ -3,24 +3,9 @@
 
 	function dynamicDCSController($scope, $state, dynMsgService, authService, $uibModal) {
 		_.set(this, 'startPage', '/dynamic-dcs.tpl.html');
-
 		_.set($scope, 'auth', authService);
-		/*
-		_.set($scope, 'profile', {});
-
-		if (authService.getCachedProfile()) {
-			_.set($scope, profile, authService.getCachedProfile());
-		} else {
-			authService.getProfile(function(err, profile) {
-				_.set($scope, profile, profile);
-			});
-		}
-		*/
-
 		_.set($scope, 'animationsEnabled', true);
-
 		_.set($scope, 'openSettingsModal', function (size) {
-
 			var modalInstance = $uibModal.open({
 				animation: $scope.animationsEnabled,
 				ariaLabelledBy: 'modal-title',
@@ -30,10 +15,26 @@
 				controllerAs: 'setCtrl',
 				size: size
 			});
-
 			modalInstance.result
 				.then(function (selectedItem) {
-					console.log('sel',selectedItem);
+					console.log('setSel',selectedItem);
+				}, function () {
+					console.log('Modal dismissed at: ' + new Date());
+				});
+		});
+		_.set($scope, 'openAdminModal', function (size) {
+			var modalInstance = $uibModal.open({
+				animation: $scope.animationsEnabled,
+				ariaLabelledBy: 'modal-title',
+				ariaDescribedBy: 'modal-body',
+				templateUrl: '/apps/dynamic-dcs/common/modals/admin/adminModal.tpl.html',
+				controller: 'adminModalController',
+				controllerAs: 'adminCtrl',
+				size: size
+			});
+			modalInstance.result
+				.then(function (selectedItem) {
+					console.log('adminSel',selectedItem);
 				}, function () {
 					console.log('Modal dismissed at: ' + new Date());
 				});
@@ -88,6 +89,28 @@
 	}
 	settingsModalController.$inject = ['$uibModalInstance','authService'];
 
+	function adminModalController($uibModalInstance, authService) {
+		var adminCtrl = this;
+		if (authService.getCachedProfile()) {
+			_.set(adminCtrl, 'auth', authService.getCachedProfile());
+		} else {
+			authService.getProfile(function(err, profile) {
+				_.set(adminCtrl, 'auth', profile);
+			});
+		}
+
+		adminCtrl.save = function () {
+			console.log('save');
+			$uibModalInstance.close('Save');
+		};
+
+		adminCtrl.cancel = function () {
+			console.log('cancel');
+			$uibModalInstance.dismiss('Cancel');
+		};
+	}
+	adminModalController.$inject = ['$uibModalInstance','authService'];
+
 	angular
 		.module('dynamic-dcs', [
 			'dynamic-dcs.templates',
@@ -104,6 +127,7 @@
 		}])
 		.controller('dynamicDCSController', dynamicDCSController)
 		.controller('settingsModalController', settingsModalController)
+		.controller('adminModalController', adminModalController)
 	;
 
 }(angular));
