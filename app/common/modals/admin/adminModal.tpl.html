@@ -2,10 +2,34 @@
 	<h3 class="modal-title" id="modal-title">Admin Settings</h3>
 </div>
 <div class="modal-body" id="modal-body">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<div class="panel-title"><strong>Servers</strong><button class="btn btn-sm btn-success pull-right">New Server</button></div>
+		</div>
+		<div class="panel-body">
+			<uib-accordion>
+				<div uib-accordion-group class="panel-default" is-open="status.open">
+					<uib-accordion-heading>
+						<div>
+							<i class="glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>&nbsp;
+								DynamicCaucasus
+						</div>
+					</uib-accordion-heading>
+					This is just some content to illustrate fancy headings.
+				</div>
+				<div uib-accordion-group class="panel-default" is-open="status2.open">
+					<uib-accordion-heading>
+						<div><i class="glyphicon" ng-class="{'glyphicon-chevron-down': status2.open, 'glyphicon-chevron-right': !status2.open}"></i>&nbsp;DynamicRedDawn</div>
+					</uib-accordion-heading>
+					This is just some content to illustrate fancy headings.
+				</div>
+			</uib-accordion>
+		</div>
+	</div>
 	<strong>Misc Info</strong>
 	<div>{{adminCtrl}}</div>
 </div>
 <div class="modal-footer">
-	<button class="btn btn-warning" type="button" ng-click="adminCtrl.cancel()">Cancel</button>
-	<button class="btn btn-primary" type="button" ng-click="adminCtrl.save()">Save</button>
+	<button class="btn btn-sm btn-default" type="button" ng-click="adminCtrl.cancel()">Cancel</button>
+	<button class="btn btn-sm btn-primary" type="button" ng-click="adminCtrl.save()">Save</button>
 </div>

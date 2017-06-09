@@ -2,6 +2,7 @@
 
 const express = require('express'),
 	app = express(),
+	bodyParser = require('body-parser'),
 	path = require('path'),
 	assert = require('assert'),
 	_ = require('lodash'),
@@ -23,9 +24,89 @@ var io  = require('socket.io').listen(server);
 //Controllers
 const dbServiceController = require('./controllers/dbService');
 
-
 var admin = false;
+
+var router = express.Router();
+router.use(function(req, res, next) {
+	console.log('Something is happening.');
+	next();
+});
+
+router.route('/servers')
+	.post(function(req, res) {
+		console.log('post: ', req.body);
+		res.json({1:'it worked'});
+		/*
+		var bear = new Bear();
+		bear.name = req.body.name;
+		bear.save(function(err) {
+			if (err)
+				res.send(err);
+			res.json({ message: 'Bear created!' });
+		});
+		*/
+
+	})
+	.get(function(req, res) {
+		console.log('get: ', req.body);
+		res.json({1:'it worked'});
+		/*
+		Bear.find(function(err, bears) {
+			if (err)
+				res.send(err);
+
+			res.json(bears);
+		});
+		*/
+	});
+router.route('/servers/:server_name')
+	.get(function(req, res) {
+		console.log('get 2: ', req.body);
+		res.json({1:'it worked'});
+		/*
+		Bear.findById(req.params.bear_id, function(err, bear) {
+			if (err)
+				res.send(err);
+			res.json(bear);
+		});
+		*/
+	})
+	.put(function(req, res) {
+		console.log('put: ', req.body);
+		res.json({1:'it worked'});
+
+		/*
+		Bear.findById(req.params.bear_id, function(err, bear) {
+			if (err)
+				res.send(err);
+			bear.name = req.body.name;  // update the bears info
+			bear.save(function(err) {
+				if (err)
+					res.send(err);
+				res.json({ message: 'Bear updated!' });
+			});
+		});
+		*/
+	})
+	.delete(function(req, res) {
+		console.log('delete: ', req.body);
+		res.json({1:'it worked'});
+		/*
+		Bear.remove({
+			_id: req.params.bear_id
+		}, function(err, bear) {
+			if (err)
+				res.send(err);
+			res.json({ message: 'Successfully deleted' });
+		});
+		*/
+	});
+
+
 // app.use/routes/etc...
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use('/api', router);
 app.use('/', express.static(__dirname + '/dist'));
 app.use('/json', express.static(__dirname + '/app/assets/json'));
 app.use('/css', express.static(__dirname + '/app/assets/css'));

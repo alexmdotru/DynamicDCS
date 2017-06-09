@@ -16,7 +16,33 @@ db.once('open', function() {
 const Airfield = require('../models/airfield');
 const SrvPlayer = require('../models/srvPlayer');
 const Unit = require('../models/unit');
+const Server = require('../models/server');
 
+exports.serverActions = function (action, obj){
+	if(action === 'save') {
+		const server = new Server(obj);
+		server.save(function (err) {
+			if (err) return console.error(err);
+		});
+	}
+	if(action === 'update') {
+		Server.update(
+			{name: obj.name},
+			{$set: obj},
+			function(err) {
+				if (err) return console.error(err);
+			}
+		);
+	}
+	if(action === 'delete') {
+		Unit.findOneAndRemove(obj._name, function (err) {
+			if (err) return console.error(err);
+		});
+	}
+	if(action === 'dropall') {
+		mongoose.connection.db.dropCollection('servers');
+	}
+};
 
 exports.baseActions = function (action, obj){
 	var query = {_id: obj._id},
@@ -45,17 +71,15 @@ exports.unitActions = function (action, obj){
 			if (err) return console.error(err);
 		});
 	}
-
 	if(action === 'update') {
 		Unit.update(
 			{_id: obj._id},
-			{$set: obj} ,
+			{$set: obj},
 			function(err) {
 				if (err) return console.error(err);
 			}
 		);
 	}
-
 	if(action === 'delete') {
 		Unit.findByIdAndRemove(obj._id, function (err) {
 			if (err) return console.error(err);
