@@ -3,7 +3,10 @@ const mongoose = require('mongoose'),
 
 // Schema defines how chat messages will be stored in MongoDB
 const ServerSchema = new Schema({
-		_id: Number,
+		_id: {
+			type: String,
+			required: true
+		},
 		name: {
 			type: String,
 			required: true
@@ -35,4 +38,4 @@ ServerSchema.static('findByName', function (name, callback) {
 	return this.find({ name: name }, callback);
 });
 
-module.exports = mongoose.model('Server', ServerSchema);
+module.exports = ServerSchema;

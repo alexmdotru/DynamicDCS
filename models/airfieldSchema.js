@@ -25,4 +25,4 @@ AirfieldSchema.static('findByName', function (name, callback) {
 	return this.find({ name: name }, callback);
 });
 
-module.exports = mongoose.model('Airfield', AirfieldSchema);
+module.exports = AirfieldSchema;

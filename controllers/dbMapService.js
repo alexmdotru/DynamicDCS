@@ -4,47 +4,16 @@ const mongoose = require('mongoose'),
 
 //changing promises to bluebird
 mongoose.Promise = require('bluebird');
-mongoose.connect(dbConfig.database);
 
-var db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function() {
-	console.log('connected to mongodb');
-});
+var mapdb = mongoose.createConnection();
+mapdb.open(dbConfig.dynamicHost, dbConfig.dynamicDatabase);
 
-// include mongoose db schemas
-const Airfield = require('../models/airfield');
-const SrvPlayer = require('../models/srvPlayer');
-const Unit = require('../models/unit');
-const Server = require('../models/server');
-
-exports.serverActions = function (action, obj){
-	if(action === 'save') {
-		const server = new Server(obj);
-		server.save(function (err) {
-			if (err) return console.error(err);
-		});
-	}
-	if(action === 'update') {
-		Server.update(
-			{name: obj.name},
-			{$set: obj},
-			function(err) {
-				if (err) return console.error(err);
-			}
-		);
-	}
-	if(action === 'delete') {
-		Unit.findOneAndRemove(obj._name, function (err) {
-			if (err) return console.error(err);
-		});
-	}
-	if(action === 'dropall') {
-		mongoose.connection.db.dropCollection('servers');
-	}
-};
+var airfieldSchema = require('../models/airfieldSchema');
+var srvPlayerSchema = require('../models/srvPlayerSchema');
+var unitSchema = require('../models/unitSchema');
 
 exports.baseActions = function (action, obj){
+	const Airfield = mapdb.model('airfield', airfieldSchema);
 	var query = {_id: obj._id},
 		update = { $set: obj },
 		options = { upsert: true, new: true, setDefaultsOnInsert: true };
@@ -55,6 +24,7 @@ exports.baseActions = function (action, obj){
 };
 
 exports.srcPlayerActions = function (action, obj){
+	const SrvPlayer = mapdb.model('srvPlayer', srvPlayerSchema);
 	var query = {_id: obj._id},
 		update = { $set: obj },
 		options = { upsert: true, new: true, setDefaultsOnInsert: true };
@@ -65,6 +35,7 @@ exports.srcPlayerActions = function (action, obj){
 };
 
 exports.unitActions = function (action, obj){
+	const Unit = mapdb.model('unit', unitSchema);
 	if(action === 'save') {
 		const unit = new Unit(obj);
 		unit.save(function (err) {
@@ -86,7 +57,7 @@ exports.unitActions = function (action, obj){
 		});
 	}
 	if(action === 'dropall') {
-		mongoose.connection.db.dropCollection('units');
+		Unit.collection.drop();
 	}
 };
 

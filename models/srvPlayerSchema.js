@@ -38,4 +38,4 @@ const srvPlayerSchema = new Schema({
 	}
 );
 
-module.exports = mongoose.model('srvPlayer', srvPlayerSchema);
+module.exports = srvPlayerSchema;

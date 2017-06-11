@@ -3,6 +3,7 @@
 const express = require('express'),
 	app = express(),
 	bodyParser = require('body-parser'),
+	router = express.Router(),
 	path = require('path'),
 	assert = require('assert'),
 	_ = require('lodash'),
@@ -22,90 +23,14 @@ if (process.env.NODE_ENV !== config.test_env) { //SET NODE_ENV=test
 var io  = require('socket.io').listen(server);
 
 //Controllers
-const dbServiceController = require('./controllers/dbService');
+const dbSystemServiceController = require('./controllers/dbSystemService');
+const dbMapServiceController = require('./controllers/dbMapService');
 
 var admin = false;
 
-var router = express.Router();
-router.use(function(req, res, next) {
-	console.log('Something is happening.');
-	next();
-});
-
-router.route('/servers')
-	.post(function(req, res) {
-		console.log('post: ', req.body);
-		res.json({1:'it worked'});
-		/*
-		var bear = new Bear();
-		bear.name = req.body.name;
-		bear.save(function(err) {
-			if (err)
-				res.send(err);
-			res.json({ message: 'Bear created!' });
-		});
-		*/
-
-	})
-	.get(function(req, res) {
-		console.log('get: ', req.body);
-		res.json({1:'it worked'});
-		/*
-		Bear.find(function(err, bears) {
-			if (err)
-				res.send(err);
-
-			res.json(bears);
-		});
-		*/
-	});
-router.route('/servers/:server_name')
-	.get(function(req, res) {
-		console.log('get 2: ', req.body);
-		res.json({1:'it worked'});
-		/*
-		Bear.findById(req.params.bear_id, function(err, bear) {
-			if (err)
-				res.send(err);
-			res.json(bear);
-		});
-		*/
-	})
-	.put(function(req, res) {
-		console.log('put: ', req.body);
-		res.json({1:'it worked'});
-
-		/*
-		Bear.findById(req.params.bear_id, function(err, bear) {
-			if (err)
-				res.send(err);
-			bear.name = req.body.name;  // update the bears info
-			bear.save(function(err) {
-				if (err)
-					res.send(err);
-				res.json({ message: 'Bear updated!' });
-			});
-		});
-		*/
-	})
-	.delete(function(req, res) {
-		console.log('delete: ', req.body);
-		res.json({1:'it worked'});
-		/*
-		Bear.remove({
-			_id: req.params.bear_id
-		}, function(err, bear) {
-			if (err)
-				res.send(err);
-			res.json({ message: 'Successfully deleted' });
-		});
-		*/
-	});
-
-
 // app.use/routes/etc...
-app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/api', router);
 app.use('/', express.static(__dirname + '/dist'));
 app.use('/json', express.static(__dirname + '/app/assets/json'));
@@ -114,6 +39,47 @@ app.use('/fonts', express.static(__dirname + '/app/assets/fonts'));
 app.use('/imgs', express.static(__dirname + '/app/assets/images'));
 app.use('/tabs', express.static(__dirname + '/app/tabs'));
 app.use('/libs', express.static(__dirname + '/node_modules'));
+
+router.use(function(req, res, next) {
+	console.log('Something is happening.');
+	next();
+});
+
+router.route('/servers')
+	.post(function(req, res) {
+		dbSystemServiceController.serverActions('create', req.body)
+			.then(function (resp){
+				res.json(resp);
+			});
+	})
+	.get(function(req, res) {
+		dbSystemServiceController.serverActions('read')
+			.then(function (resp){
+				res.json(resp);
+			});
+	});
+router.route('/servers/:server_name')
+	.get(function(req, res) {
+		_.set(req, 'body.server_name', req.params.server_name);
+		dbSystemServiceController.serverActions('read', req.body)
+			.then(function (resp){
+				res.json(resp);
+			});
+	})
+	.put(function(req, res) {
+		_.set(req, 'body.server_name', req.params.server_name);
+		dbSystemServiceController.serverActions('update', req.body)
+			.then(function (resp){
+				res.json(resp);
+			});
+	})
+	.delete(function(req, res) {
+		_.set(req, 'body.server_name', req.params.server_name);
+		dbSystemServiceController.serverActions('delete', req.body)
+			.then(function (resp){
+				res.json(resp);
+			});
+	});
 
 //setup globals
 var outOfSyncUnitCnt = 0;
@@ -137,7 +103,7 @@ function initClear( serverType ) {
 	if (serverType === 'client') {
 		_.set(serverObject, 'units', []);
 		//Unit.collection.drop();
-		dbServiceController.unitActions('dropall'); //someday maps will persist, reset all units
+		dbMapServiceController.unitActions('dropall'); //someday maps will persist, reset all units
 		_.set(serverObject, 'ClientRequestArray', []);
 	}
 	if (serverType === 'server') {
@@ -313,7 +279,7 @@ _.set(serverObject, 'parse', function (update) {
 					}
 				};
 
-				dbServiceController.unitActions('save', curObj.data);
+				dbMapServiceController.unitActions('save', curObj.data);
 
 				serverObject.units.push(_.cloneDeep(curObj.data));
 				updateQue['que'+parseFloat(_.get(queObj, 'data.coalition'))].push(_.cloneDeep(curObj));
@@ -339,7 +305,7 @@ _.set(serverObject, 'parse', function (update) {
 						speed: parseFloat(_.get(queObj, 'data.speed'))
 					}
 				};
-				dbServiceController.unitActions('update', curObj.data);
+				dbMapServiceController.unitActions('update', curObj.data);
 
 				updateQue['que'+curUnit.coalition].push(_.cloneDeep(curObj));
 				updateQue.queadmin.push(_.cloneDeep(curObj));
@@ -354,7 +320,7 @@ _.set(serverObject, 'parse', function (update) {
 				}
 			};
 
-			dbServiceController.unitActions('delete', curObj.data);
+			dbMapServiceController.unitActions('delete', curObj.data);
 			_.remove(serverObject.units, { 'unitID': _.get(queObj, 'data.unitID') });
 			updateQue['que1'].push(_.cloneDeep(curObj));
 			updateQue['que2'].push(_.cloneDeep(curObj));
@@ -456,7 +422,7 @@ _.set(serverObject, 'parse', function (update) {
 			//apply local information object
 			_.forEach(queObj.data, function ( data ){
 				_.set(data, '_id', data.ucid);
-				dbServiceController.srcPlayerActions('update', data);
+				dbMapServiceController.srcPlayerActions('update', data);
 			});
 
 			updateQue.que1.push(_.cloneDeep(queObj));
@@ -476,7 +442,7 @@ _.set(serverObject, 'parse', function (update) {
 					name: key,
 					coalition: value
 				};
-				dbServiceController.baseActions('update', curObj);
+				dbMapServiceController.baseActions('update', curObj);
 			});
 
 			updateQue.que1.push(_.cloneDeep(queObj));
