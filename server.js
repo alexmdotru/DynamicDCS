@@ -80,6 +80,13 @@ router.route('/servers/:server_name')
 				res.json(resp);
 			});
 	});
+router.route('/theaters')
+	.get(function(req, res) {
+		dbSystemServiceController.theaterActions('read')
+			.then(function (resp){
+				res.json(resp);
+			});
+	});
 
 //setup globals
 var outOfSyncUnitCnt = 0;

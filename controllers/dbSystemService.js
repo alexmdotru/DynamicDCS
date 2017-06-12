@@ -8,15 +8,6 @@ mongoose.Promise = require('bluebird');
 var systemdb = mongoose.createConnection();
 systemdb.open(dbConfig.systemHost, dbConfig.systemDatabase);
 
-/*
-console.log(systemmongoose);
-var systemdb = systemmongoose.createConnection(dbConfig.systemDatabase);
-systemdb.on('error', console.error.bind(console, 'connection error:'));
-systemdb.once('open', function() {
-	console.log('connected to Mongo System');
-});
-*/
-
 // include mongoose db schemas
 var serverSchema = require('../models/serverSchema');
 const Server = systemdb.model('server', serverSchema);
@@ -55,6 +46,20 @@ exports.serverActions = function (action, obj){
 	if(action === 'delete') {
 		return new Promise(function(resolve, reject) {
 			Unit.findOneAndRemove(obj._name, function (err, servers) {
+				if (err) { reject(err) }
+				resolve(servers);
+			});
+		});
+	}
+};
+
+var theaterSchema = require('../models/theaterSchema');
+const Theater = systemdb.model('theater', theaterSchema);
+
+exports.theaterActions = function (action){
+	if(action === 'read') {
+		return new Promise(function(resolve, reject) {
+			Theater.find(function (err, servers) {
 				if (err) { reject(err) }
 				resolve(servers);
 			});
