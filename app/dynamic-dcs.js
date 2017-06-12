@@ -1,10 +1,13 @@
 (function (angular) {
 	'use strict';
 
-	function dynamicDCSController($scope, $state, dynMsgService, authService, $uibModal) {
+	function dynamicDCSController($scope, $state, dynMsgService, authService, alertService, $uibModal) {
 		_.set(this, 'startPage', '/dynamic-dcs.tpl.html');
 		_.set($scope, 'auth', authService);
 		_.set($scope, 'animationsEnabled', true);
+
+		_.set($scope, 'alertService', alertService);
+
 		_.set($scope, 'openSettingsModal', function (size) {
 			var modalInstance = $uibModal.open({
 				animation: $scope.animationsEnabled,
@@ -80,7 +83,7 @@
 
 		$scope.initialise();
 	}
-	dynamicDCSController.$inject = ['$scope','$state', 'dynMsgService', 'authService', '$uibModal'];
+	dynamicDCSController.$inject = ['$scope','$state', 'dynMsgService', 'authService', 'alertService', '$uibModal'];
 
 	function settingsModalController($uibModalInstance, authService) {
 		var setCtrl = this;
@@ -103,7 +106,7 @@
 	}
 	settingsModalController.$inject = ['$uibModalInstance','authService'];
 
-	function adminModalController($uibModalInstance, authService, DDCSServers) {
+	function adminModalController($uibModalInstance, authService, alertService, DDCSServers, DCSServerAPI) {
 		var adminCtrl = this;
 		_.set(adminCtrl, 'DDCSServers', DDCSServers);
 		if (authService.getCachedProfile()) {
@@ -113,30 +116,41 @@
 				_.set(adminCtrl, 'auth', profile);
 			});
 		}
-		console.log(adminCtrl);
-		adminCtrl.save = function () {
-			console.log('save');
-			$uibModalInstance.close('Save');
+
+		adminCtrl.save = function (server) {
+			var curPayload = _.cloneDeep(server);
+			_.set(curPayload, 'auth', _.cloneDeep(adminCtrl.auth));
+			DCSServerAPI.update(curPayload)
+				.$promise
+				.then(function (resp) {
+					alertService.addAlert('success', 'Server Options Successfully Saved!');
+					return resp;
+				})
+				.catch(function (err) {
+					alertService.addAlert('danger', 'There was a problem saving server options.');
+					return err;
+				});
+			//$uibModalInstance.close('Save');
 		};
 
-		adminCtrl.cancel = function () {
-			console.log('cancel');
+		adminCtrl.close = function () {
 			$uibModalInstance.dismiss('Cancel');
 		};
 	}
-	adminModalController.$inject = ['$uibModalInstance','authService', 'DDCSServers'];
+	adminModalController.$inject = ['$uibModalInstance','authService', 'alertService', 'DDCSServers', 'dynamic-dcs.api.server'];
 
 	angular
 		.module('dynamic-dcs', [
 			'dynamic-dcs.templates',
 			'dynamic-dcs.dynMsgService',
 			'dynamic-dcs.chat-box',
+			'dynamic-dcs.api.server',
+			'dynamic-dcs.alertService',
 			'states',
 			'ui.bootstrap',
 			'dynamic-dcs.authService',
 			'ngAnimate',
-			'ngSanitize',
-			'dynamic-dcs.api.server'
+			'ngSanitize'
 		])
 		.config(['$qProvider', function ($qProvider) {
 			$qProvider.errorOnUnhandledRejections(false);

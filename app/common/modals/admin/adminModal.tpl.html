@@ -31,12 +31,11 @@
 										<input type="radio" data-ng-model="server.enabled" data-ng-value="true">&nbsp;Enable</input>
 									</div>
 								</div>
-							</form>
+							</form>{{adminCtrl}}
 						</div>
 						<div class="panel-footer">
 							<div class="pull-right">
-								<button class="btn btn-sm btn-default" type="button" ng-click="adminCtrl.cancel()">Cancel</button>
-								<button class="btn btn-sm btn-primary" type="button" ng-click="adminCtrl.save()">Save</button>
+								<button class="btn btn-sm btn-primary" type="button" ng-click="adminCtrl.save(server)">Save</button>
 							</div>
 							<div class="clearfix"></div>
 						</div>
@@ -47,4 +46,5 @@
 	</div>
 </div>
 <div class="modal-footer">
+	<button class="btn btn-sm btn-default" type="button" ng-click="adminCtrl.close()">Close</button>
 </div>

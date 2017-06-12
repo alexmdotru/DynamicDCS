@@ -4,9 +4,26 @@
 	function serverFactory($resource){
 		var resourceUrl = '/api/servers';
 		return $resource(
-			resourceUrl + '/:server_name',
-			{server_name: '@server_name'},
-			{}
+			resourceUrl,
+			{name: '@name'},
+			{
+				get: {
+					method: 'GET',
+					url: resourceUrl + '/:name'
+				},
+				delete: {
+					method: 'DELETE',
+					url: resourceUrl + '/:name'
+				},
+				save: {
+					method: 'POST',
+					url: resourceUrl + '/:name'
+				},
+				update: {
+					method: 'PUT',
+					url: resourceUrl + '/:name'
+				}
+			}
 		);
 	}
 	serverFactory.$inject = ['$resource'];

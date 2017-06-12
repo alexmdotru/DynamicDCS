@@ -13,6 +13,9 @@
 	<% } %>
 </head>
 <body common-css data-ng-app="dynamic-dcs" data-ng-controller="dynamicDCSController as app" data-mg-strict-di>
+<div class="alert-box repeat-item" ng-repeat="alert in alertService.alerts" >
+	<div uib-alert  ng-class="'alert-' + (alert.type || 'warning')" close="alertService.closeAlert($index)" dismiss-on-timeout="1500">{{alert.msg}}</div>
+</div>
 <nav class="navbar navbar-default" role="navigation">
 	<!-- Brand and toggle get grouped for better mobile display -->
 	<div class="navbar-header">
