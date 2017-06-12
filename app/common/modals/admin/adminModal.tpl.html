@@ -21,6 +21,10 @@
 								<div class="form-group">
 									<label for="ip">Ip:</label>
 									<input type="text" class="form-control" id="ip" placeholder="ip address" ng-model="server.ip"><br>
+									<label for="theaterSelect"> Theater: </label><br>
+									<select name="theaterSelect" id="theaterSelect" ng-model="server.theater">
+										<option ng-repeat="option in adminCtrl.DDCSTheaters" value="{{option._id}}">{{option.name}}</option>
+									</select><br><br>
 									<label for="clientPort">DCS Client Port</label>
 									<input type="text" class="form-control" id="clientPort" placeholder="DCS Client Port" ng-model="server.dcsClientPort"><br>
 									<label for="gameguiPort">DCS GameGui Port</label>
@@ -31,7 +35,7 @@
 										<input type="radio" data-ng-model="server.enabled" data-ng-value="true">&nbsp;Enable</input>
 									</div>
 								</div>
-							</form>{{adminCtrl}}
+							</form>
 						</div>
 						<div class="panel-footer">
 							<div class="pull-right">

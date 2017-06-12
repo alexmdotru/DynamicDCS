@@ -45,7 +45,20 @@
 								.catch(function () {
 									return [];
 								})
-								;
+							;
+						}
+					],
+					DDCSTheaters: [
+						'dynamic-dcs.api.theater', function (api) {
+							return api.query()
+								.$promise
+								.then(function (response) {
+									return response;
+								})
+								.catch(function () {
+									return [];
+								})
+							;
 						}
 					]
 				}
@@ -106,9 +119,10 @@
 	}
 	settingsModalController.$inject = ['$uibModalInstance','authService'];
 
-	function adminModalController($uibModalInstance, authService, alertService, DDCSServers, DCSServerAPI) {
+	function adminModalController($uibModalInstance, authService, alertService, DDCSServers, DDCSTheaters, DCSServerAPI) {
 		var adminCtrl = this;
 		_.set(adminCtrl, 'DDCSServers', DDCSServers);
+		_.set(adminCtrl, 'DDCSTheaters', DDCSTheaters);
 		if (authService.getCachedProfile()) {
 			_.set(adminCtrl, 'auth', authService.getCachedProfile());
 		} else {
@@ -137,7 +151,7 @@
 			$uibModalInstance.dismiss('Cancel');
 		};
 	}
-	adminModalController.$inject = ['$uibModalInstance','authService', 'alertService', 'DDCSServers', 'dynamic-dcs.api.server'];
+	adminModalController.$inject = ['$uibModalInstance','authService', 'alertService', 'DDCSServers', 'DDCSTheaters', 'dynamic-dcs.api.server'];
 
 	angular
 		.module('dynamic-dcs', [
@@ -145,6 +159,7 @@
 			'dynamic-dcs.dynMsgService',
 			'dynamic-dcs.chat-box',
 			'dynamic-dcs.api.server',
+			'dynamic-dcs.api.theater',
 			'dynamic-dcs.alertService',
 			'states',
 			'ui.bootstrap',

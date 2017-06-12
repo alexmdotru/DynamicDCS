@@ -11,6 +11,10 @@ const ServerSchema = new Schema({
 			type: String,
 			required: true
 		},
+		theater: {
+			type: String,
+			required: true
+		},
 		ip: {
 			type: String,
 			required: true
