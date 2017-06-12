@@ -30,7 +30,22 @@
 				templateUrl: '/apps/dynamic-dcs/common/modals/admin/adminModal.tpl.html',
 				controller: 'adminModalController',
 				controllerAs: 'adminCtrl',
-				size: size
+				size: size,
+				resolve: {
+					DDCSServers: [
+						'dynamic-dcs.api.server', function (api) {
+							return api.query()
+								.$promise
+								.then(function (response) {
+									return response;
+								})
+								.catch(function () {
+									return [];
+								})
+								;
+						}
+					]
+				}
 			});
 			modalInstance.result
 				.then(function (selectedItem) {
@@ -76,7 +91,6 @@
 				_.set(setCtrl, 'auth', profile);
 			});
 		}
-
 		setCtrl.save = function () {
 			console.log('save');
 			$uibModalInstance.close('Save');
@@ -89,8 +103,9 @@
 	}
 	settingsModalController.$inject = ['$uibModalInstance','authService'];
 
-	function adminModalController($uibModalInstance, authService) {
+	function adminModalController($uibModalInstance, authService, DDCSServers) {
 		var adminCtrl = this;
+		_.set(adminCtrl, 'DDCSServers', DDCSServers);
 		if (authService.getCachedProfile()) {
 			_.set(adminCtrl, 'auth', authService.getCachedProfile());
 		} else {
@@ -98,7 +113,7 @@
 				_.set(adminCtrl, 'auth', profile);
 			});
 		}
-
+		console.log(adminCtrl);
 		adminCtrl.save = function () {
 			console.log('save');
 			$uibModalInstance.close('Save');
@@ -109,7 +124,7 @@
 			$uibModalInstance.dismiss('Cancel');
 		};
 	}
-	adminModalController.$inject = ['$uibModalInstance','authService'];
+	adminModalController.$inject = ['$uibModalInstance','authService', 'DDCSServers'];
 
 	angular
 		.module('dynamic-dcs', [
@@ -120,7 +135,8 @@
 			'ui.bootstrap',
 			'dynamic-dcs.authService',
 			'ngAnimate',
-			'ngSanitize'
+			'ngSanitize',
+			'dynamic-dcs.api.server'
 		])
 		.config(['$qProvider', function ($qProvider) {
 			$qProvider.errorOnUnhandledRejections(false);

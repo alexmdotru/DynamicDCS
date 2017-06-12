@@ -8,31 +8,43 @@
 		</div>
 		<div class="panel-body">
 			<uib-accordion>
-				<div uib-accordion-group class="panel-default" is-open="status.open">
+				<div ng-repeat="server in adminCtrl.DDCSServers" uib-accordion-group class="panel-default" is-open="status.open">
 					<uib-accordion-heading>
 						<div>
 							<i class="glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
-								DynamicCaucasus
+								{{server.name}}
 						</div>
 					</uib-accordion-heading>
-					This is just some content to illustrate fancy headings.
-				</div>
-				<div uib-accordion-group class="panel-default" is-open="status2.open">
-					<uib-accordion-heading>
-						<div>
-							<i class="glyphicon" ng-class="{'glyphicon-chevron-down': status2.open, 'glyphicon-chevron-right': !status2.open}"></i>
-								DynamicRedDawn
+					<div class="panel panel-default">
+						<div class="admin-panel-body">
+							<form>
+								<div class="form-group">
+									<label for="ip">Ip:</label>
+									<input type="text" class="form-control" id="ip" placeholder="ip address" ng-model="server.ip"><br>
+									<label for="clientPort">DCS Client Port</label>
+									<input type="text" class="form-control" id="clientPort" placeholder="DCS Client Port" ng-model="server.dcsClientPort"><br>
+									<label for="gameguiPort">DCS GameGui Port</label>
+									<input type="text" class="form-control" id="gameguiPort" placeholder="DCS GameGui Port" ng-model="server.dcsGameGuiPort"><br>
+									<label>Status</label><br>
+									<div class="btn-group">
+										<input type="radio" data-ng-model="server.enabled" data-ng-value="false">&nbsp;Disable&nbsp;&nbsp;</input>
+										<input type="radio" data-ng-model="server.enabled" data-ng-value="true">&nbsp;Enable</input>
+									</div>
+								</div>
+							</form>
 						</div>
-					</uib-accordion-heading>
-					This is just some content to illustrate fancy headings.
+						<div class="panel-footer">
+							<div class="pull-right">
+								<button class="btn btn-sm btn-default" type="button" ng-click="adminCtrl.cancel()">Cancel</button>
+								<button class="btn btn-sm btn-primary" type="button" ng-click="adminCtrl.save()">Save</button>
+							</div>
+							<div class="clearfix"></div>
+						</div>
+					</div>
 				</div>
 			</uib-accordion>
 		</div>
 	</div>
-	<strong>Misc Info</strong>
-	<div>{{adminCtrl}}</div>
 </div>
 <div class="modal-footer">
-	<button class="btn btn-sm btn-default" type="button" ng-click="adminCtrl.cancel()">Cancel</button>
-	<button class="btn btn-sm btn-primary" type="button" ng-click="adminCtrl.save()">Save</button>
 </div>
