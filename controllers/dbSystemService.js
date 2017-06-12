@@ -41,11 +41,13 @@ exports.serverActions = function (action, obj){
 	}
 	if(action === 'update') {
 		return new Promise(function(resolve, reject) {
-			Server.update(
+			Server.findOneAndUpdate(
 				{name: obj.name},
 				{$set: obj},
+				{new: true},
 				function(err, servers) {
 					if (err) { reject(err) }
+					console.log(servers);
 					resolve(servers);
 				}
 			);

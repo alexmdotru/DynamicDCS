@@ -120,7 +120,7 @@
 		adminCtrl.save = function (server) {
 			var curPayload = _.cloneDeep(server);
 			_.set(curPayload, 'auth', _.cloneDeep(adminCtrl.auth));
-			DCSServerAPI.update(curPayload)
+			return DCSServerAPI.update(curPayload)
 				.$promise
 				.then(function (resp) {
 					alertService.addAlert('success', 'Server Options Successfully Saved!');
@@ -129,8 +129,8 @@
 				.catch(function (err) {
 					alertService.addAlert('danger', 'There was a problem saving server options.');
 					return err;
-				});
-			//$uibModalInstance.close('Save');
+				})
+			;
 		};
 
 		adminCtrl.close = function () {
