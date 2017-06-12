@@ -17,7 +17,7 @@
 				},
 				save: {
 					method: 'POST',
-					url: resourceUrl + '/:name'
+					url: resourceUrl
 				},
 				update: {
 					method: 'PUT',

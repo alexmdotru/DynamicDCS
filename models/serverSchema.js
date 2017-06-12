@@ -13,19 +13,23 @@ const ServerSchema = new Schema({
 		},
 		theater: {
 			type: String,
-			required: true
+			required: true,
+			default: 'Caucasus'
 		},
 		ip: {
 			type: String,
-			required: true
+			required: true,
+			default: 'localhost'
 		},
 		dcsClientPort: {
 			type: Number,
-			required: true
+			required: true,
+			default: 3001
 		},
 		dcsGameGuiPort: {
 			type: Number,
-			required: true
+			required: true,
+			default: 3002
 		},
 		enabled: {
 			type: Boolean,

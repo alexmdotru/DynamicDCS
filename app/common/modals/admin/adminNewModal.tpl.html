@@ -1,0 +1,19 @@
+<div class="modal-header">
+	<h3 class="modal-title" id="modal-title">New Server</h3>
+</div>
+<div class="modal-body" id="modal-body">
+	<div class="panel panel-default">
+		<div class="admin-panel-body">
+			<form>
+				<div class="form-group">
+					<label for="name">New Server Name:</label>
+					<input type="text" class="form-control" id="name" placeholder="Server Name" ng-model="server.name"><br>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+<div class="modal-footer">
+	<button class="btn btn-sm btn-default" type="button" ng-click="adminNewCtrl.close()">Cancel</button>
+	<button class="btn btn-sm btn-primary" type="button" ng-click="adminNewCtrl.save(server)">Create New Server</button>
+</div>
