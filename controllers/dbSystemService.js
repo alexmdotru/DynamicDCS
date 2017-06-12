@@ -47,7 +47,6 @@ exports.serverActions = function (action, obj){
 				{new: true},
 				function(err, servers) {
 					if (err) { reject(err) }
-					console.log(servers);
 					resolve(servers);
 				}
 			);
