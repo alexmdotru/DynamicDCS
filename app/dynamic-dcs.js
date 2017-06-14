@@ -35,19 +35,6 @@
 				controllerAs: 'adminCtrl',
 				size: size,
 				resolve: {
-					DDCSServers: [
-						'dynamic-dcs.api.server', function (api) {
-							return api.query()
-								.$promise
-								.then(function (response) {
-									return response;
-								})
-								.catch(function () {
-									return [];
-								})
-							;
-						}
-					],
 					DDCSTheaters: [
 						'dynamic-dcs.api.theater', function (api) {
 							return api.query()
@@ -63,12 +50,6 @@
 					]
 				}
 			});
-			modalInstance.result
-				.then(function (selectedItem) {
-					console.log('adminSel',selectedItem);
-				}, function () {
-					console.log('Modal dismissed at: ' + new Date());
-				});
 		});
 
 		$scope.initialise = function() {
@@ -119,93 +100,84 @@
 	}
 	settingsModalController.$inject = ['$uibModalInstance','authService'];
 
-	function adminNewModalController($uibModalInstance, authService, alertService, DCSServerAPI) {
+	function adminNewModalController($uibModalInstance, srvService) {
 		var adminNewCtrl = this;
-
-		if (authService.getCachedProfile()) {
-			_.set(adminNewCtrl, 'auth', authService.getCachedProfile());
-		} else {
-			authService.getProfile(function(err, profile) {
-				_.set(adminNewCtrl, 'auth', profile);
-			});
-		}
+		_.set(adminNewCtrl, 'srvService', srvService);
 
 		adminNewCtrl.save = function (server) {
 			var curPayload = _.cloneDeep(server);
 			_.set(curPayload, '_id', _.cloneDeep(server.name));
-			_.set(curPayload, 'auth', _.cloneDeep(adminNewCtrl.auth));
-			return DCSServerAPI.save(curPayload)
-				.$promise
-				.then(function (resp) {
-					alertService.addAlert('success', 'New Server Created!');
-					$uibModalInstance.dismiss('Cancel');
-					console.log(DCSServerAPI, ' -bet- ', resp);
-					console.log(adminNewCtrl);
-					return resp;
-				})
-				.catch(function (err) {
-					alertService.addAlert('danger', 'Server could not be created.');
-					return err;
-				})
-				;
+			srvService.createServer(curPayload);
+			$uibModalInstance.dismiss('Cancel');
 		};
 
 		adminNewCtrl.close = function () {
 			$uibModalInstance.dismiss('Cancel');
 		};
 	}
-	adminNewModalController.$inject = ['$uibModalInstance','authService', 'alertService', 'dynamic-dcs.api.server'];
+	adminNewModalController.$inject = ['$uibModalInstance','srvService'];
 
-	function adminModalController($scope, $uibModal, $uibModalInstance, authService, alertService, DDCSServers, DDCSTheaters, DCSServerAPI) {
+	function adminDeleteModalController($uibModalInstance, srvService, server) {
+		var adminDeleteCtrl = this;
+		_.set(adminDeleteCtrl, 'srvService', srvService);
+
+		adminDeleteCtrl.delete = function () {
+			srvService.deleteServer(server);
+			$uibModalInstance.dismiss('Cancel');
+		};
+
+		adminDeleteCtrl.close = function () {
+			$uibModalInstance.dismiss('Cancel');
+		};
+	}
+	adminDeleteModalController.$inject = ['$uibModalInstance','srvService', 'serverid'];
+
+	//function adminModalController($scope, $uibModal, $uibModalInstance, authService, alertService, DDCSServers, DDCSTheaters, DCSServerAPI, srvService) {
+	function adminModalController($scope, $uibModal, $uibModalInstance, srvService, DDCSTheaters) {
+
 		var adminCtrl = this;
-		_.set(adminCtrl, 'DDCSServers', DDCSServers);
+		_.set(adminCtrl, 'srvService', srvService);
 		_.set(adminCtrl, 'DDCSTheaters', DDCSTheaters);
-		if (authService.getCachedProfile()) {
-			_.set(adminCtrl, 'auth', authService.getCachedProfile());
-		} else {
-			authService.getProfile(function(err, profile) {
-				_.set(adminCtrl, 'auth', profile);
-			});
-		}
 
 		adminCtrl.save = function (server) {
 			var curPayload = _.cloneDeep(server);
-			_.set(curPayload, 'auth', _.cloneDeep(adminCtrl.auth));
-			return DCSServerAPI.update(curPayload)
-				.$promise
-				.then(function (resp) {
-					alertService.addAlert('success', 'Server Options Successfully Saved!');
-					return resp;
-				})
-				.catch(function (err) {
-					alertService.addAlert('danger', 'There was a problem saving server options.');
-					return err;
-				})
-			;
+			srvService.updateServer(curPayload);
 		};
 
 		adminCtrl.close = function () {
 			$uibModalInstance.dismiss('Cancel');
 		};
+
 		_.set(adminCtrl, 'openNewAdminModal', function (size) {
-			var modalInstance = $uibModal.open({
+			var modalNewInstance = $uibModal.open({
 				animation: $scope.animationsEnabled,
 				ariaLabelledBy: 'modal-title',
 				ariaDescribedBy: 'modal-body',
 				templateUrl: '/apps/dynamic-dcs/common/modals/admin/adminNewModal.tpl.html',
 				controller: 'adminNewModalController',
 				controllerAs: 'adminNewCtrl',
-				size: size,
+				size: size
 			});
-			modalInstance.result
-				.then(function (selectedItem) {
-					console.log('setSel',selectedItem);
-				}, function () {
-					console.log('Modal dismissed at: ' + new Date());
-				});
+		});
+		_.set(adminCtrl, 'openDeleteAdminModal', function (size, server) {
+			var modalDelInstance = $uibModal.open({
+				animation: $scope.animationsEnabled,
+				ariaLabelledBy: 'modal-title',
+				ariaDescribedBy: 'modal-body',
+				templateUrl: '/apps/dynamic-dcs/common/modals/admin/adminDeleteModal.tpl.html',
+				controller: 'adminDeleteModalController',
+				controllerAs: 'adminDeleteCtrl',
+				size: size,
+				resolve: {
+					serverid: function() {
+						return server
+					}
+				}
+			});
 		});
 	}
-	adminModalController.$inject = ['$scope', '$uibModal', '$uibModalInstance','authService', 'alertService', 'DDCSServers', 'DDCSTheaters', 'dynamic-dcs.api.server'];
+	//adminModalController.$inject = ['$scope', '$uibModal', '$uibModalInstance','authService', 'alertService', 'DDCSServers', 'DDCSTheaters', 'dynamic-dcs.api.server', 'srvService'];
+	adminModalController.$inject = ['$scope', '$uibModal', '$uibModalInstance', 'srvService', 'DDCSTheaters'];
 
 	angular
 		.module('dynamic-dcs', [
@@ -215,6 +187,7 @@
 			'dynamic-dcs.api.server',
 			'dynamic-dcs.api.theater',
 			'dynamic-dcs.alertService',
+			'dynamic-dcs.srvService',
 			'states',
 			'ui.bootstrap',
 			'dynamic-dcs.authService',
@@ -228,6 +201,7 @@
 		.controller('settingsModalController', settingsModalController)
 		.controller('adminModalController', adminModalController)
 		.controller('adminNewModalController', adminNewModalController)
+		.controller('adminDeleteModalController', adminDeleteModalController)
 	;
 
 }(angular));

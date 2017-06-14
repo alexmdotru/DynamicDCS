@@ -7,6 +7,11 @@
 			resourceUrl,
 			{name: '@name'},
 			{
+				query: {
+					method: 'GET',
+					url: resourceUrl,
+					isArray:true
+				},
 				get: {
 					method: 'GET',
 					url: resourceUrl + '/:name'

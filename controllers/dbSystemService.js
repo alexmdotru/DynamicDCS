@@ -45,7 +45,7 @@ exports.serverActions = function (action, obj){
 	}
 	if(action === 'delete') {
 		return new Promise(function(resolve, reject) {
-			Unit.findOneAndRemove(obj._name, function (err, servers) {
+			Server.findOneAndRemove({name: obj.name}, function (err, servers) {
 				if (err) { reject(err) }
 				resolve(servers);
 			});

@@ -74,7 +74,7 @@ router.route('/servers/:server_name')
 			});
 	})
 	.delete(function(req, res) {
-		_.set(req, 'body.server_name', req.params.server_name);
+		_.set(req, 'body.name', req.params.server_name);
 		dbSystemServiceController.serverActions('delete', req.body)
 			.then(function (resp){
 				res.json(resp);
@@ -428,8 +428,12 @@ _.set(serverObject, 'parse', function (update) {
 			});
 			//apply local information object
 			_.forEach(queObj.data, function ( data ){
-				_.set(data, '_id', data.ucid);
-				dbMapServiceController.srcPlayerActions('update', data);
+				if(data) {
+					if (!data.ucid) {
+						_.set(data, '_id', data.ucid);
+						dbMapServiceController.srcPlayerActions('update', data);
+					}
+				}
 			});
 
 			updateQue.que1.push(_.cloneDeep(queObj));
