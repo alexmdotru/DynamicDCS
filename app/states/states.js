@@ -1,7 +1,7 @@
 (function (angular) {
 	'use strict';
 
-	function configureStates($urlRouterProvider, $locationProvider, angularAuth0Provider) {
+	function configureStates($urlRouterProvider, $locationProvider, $httpProvider, jwtOptionsProvider, angularAuth0Provider) {
 
 		$urlRouterProvider.otherwise('/');
 
@@ -11,11 +11,20 @@
 			clientID: AUTH0_CLIENT_ID,
 			domain: AUTH0_DOMAIN,
 			responseType: 'token id_token',
-			audience: 'https://' + AUTH0_DOMAIN + '/userinfo',
+			audience: AUTH0_AUDIENCE,
 			redirectUri: AUTH0_CALLBACK_URL,
-			scope: 'openid profile email',
+			scope: REQUESTED_SCOPES,
 			leeway: 30
 		});
+
+		jwtOptionsProvider.config({
+			tokenGetter: function() {
+				return localStorage.getItem('access_token');
+			},
+			whiteListedDomains: ['localhost']
+		});
+
+		$httpProvider.interceptors.push('jwtInterceptor');
 		/* eslint-enable no-undef */
 
 		$urlRouterProvider.otherwise('/');
@@ -31,6 +40,8 @@
 	configureStates.$inject = [
 		'$urlRouterProvider',
 		'$locationProvider',
+		'$httpProvider',
+		'jwtOptionsProvider',
 		'angularAuth0Provider'
 	];
 
@@ -39,7 +50,8 @@
 		'ui.router',
 		'state.index',
 		'state.dynCaucasus',
-		'state.dynRedDawn'
+		'state.dynRedDawn',
+		'angular-jwt'
 	])
 	.config(configureStates)
 	.run(['$rootScope', '$state', '$stateParams',

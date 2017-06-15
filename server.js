@@ -2,12 +2,21 @@
 
 const express = require('express'),
 	app = express(),
+	jwt = require('express-jwt'),
+	jwtAuthz = require('express-jwt-authz'),
+	jwksRsa = require('jwks-rsa'),
+	cors = require('cors'),
 	bodyParser = require('body-parser'),
 	router = express.Router(),
 	path = require('path'),
 	assert = require('assert'),
 	_ = require('lodash'),
 	config = require('./config/main');
+	require('dotenv').config();
+
+if (!process.env.AUTH0_DOMAIN || !process.env.AUTH0_AUDIENCE) {
+	throw 'Make sure you have AUTH0_DOMAIN, and AUTH0_AUDIENCE in your .env file'
+}
 
 // Start the server
 var server;
@@ -31,6 +40,7 @@ var admin = false;
 // app.use/routes/etc...
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors());
 app.use('/api', router);
 app.use('/', express.static(__dirname + '/dist'));
 app.use('/json', express.static(__dirname + '/app/assets/json'));
@@ -39,6 +49,55 @@ app.use('/fonts', express.static(__dirname + '/app/assets/fonts'));
 app.use('/imgs', express.static(__dirname + '/app/assets/images'));
 app.use('/tabs', express.static(__dirname + '/app/tabs'));
 app.use('/libs', express.static(__dirname + '/node_modules'));
+
+/*
+console.log('signedkey: ',jwksRsa.expressJwtSecret({
+	cache: true,
+	rateLimit: true,
+	jwksRequestsPerMinute: 5,
+	jwksUri: 'https://'+process.env.AUTH0_DOMAIN+'/.well-known/jwks.json'
+}));
+*/
+console.log('https://'+process.env.AUTH0_DOMAIN+'/.well-known/jwks.json', process.env.AUTH0_AUDIENCE);
+
+const checkJwt = jwt({
+	// Dynamically provide a signing key based on the kid in the header and the singing keys provided by the JWKS endpoint.
+	secret: jwksRsa.expressJwtSecret({
+		cache: true,
+		rateLimit: true,
+		jwksRequestsPerMinute: 5,
+		jwksUri: 'https://'+process.env.AUTH0_DOMAIN+'/.well-known/jwks.json'
+	}),
+	// Validate the audience and the issuer.
+	audience: process.env.AUTH0_AUDIENCE,
+	issuer: 'https://'+process.env.AUTH0_DOMAIN+'/',
+	algorithms: ['RS256']
+});
+
+
+const checkScopes = jwtAuthz([ 'read:messages' ]);
+
+router.use(checkJwt);
+
+const checkPermissions = function(req, res, next){
+	console.log(req.user.scope);
+	switch(req.path){
+		case '/theaters':{
+			var permissions = ['create:timesheets'];
+			for(var i = 0; i < permissions.length; i++){
+				if(req.user.scope.includes(permissions[i])){
+					next();
+				} else {
+					res.status(403).send({message:'Forbidden'});
+				}
+			}
+			break;
+		}
+	}
+};
+router.use(checkPermissions);
+
+//router.use(checkScopes);
 
 router.use(function(req, res, next) {
 	console.log('Something is happening.');

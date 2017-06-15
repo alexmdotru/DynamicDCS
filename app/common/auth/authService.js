@@ -11,6 +11,7 @@
 
 		function handleAuthentication() {
 			angularAuth0.parseHash(function(err, authResult) {
+				//console.log('CONSOLE AUTH: ',authResult, authResult.idToken);
 				if (authResult && authResult.idToken) {
 					setSession(authResult);
 					$state.go('index');
@@ -50,9 +51,13 @@
 		function setSession(authResult) {
 			// Set the time that the access token will expire at
 			var expiresAt = JSON.stringify((authResult.expiresIn * 1000) + new Date().getTime());
+
+			var scopes = authResult.scope || REQUESTED_SCOPES || '';
+
 			localStorage.setItem('access_token', authResult.accessToken);
 			localStorage.setItem('id_token', authResult.idToken);
 			localStorage.setItem('expires_at', expiresAt);
+			localStorage.setItem('scopes', JSON.stringify(scopes));
 		}
 
 		function logout() {
@@ -60,11 +65,23 @@
 			localStorage.removeItem('access_token');
 			localStorage.removeItem('id_token');
 			localStorage.removeItem('expires_at');
+			localStorage.removeItem('scopes');
+			$state.go('index');
 		}
 
 		function isAuthenticated() {
 			var expiresAt = JSON.parse(localStorage.getItem('expires_at'));
 			return new Date().getTime() < expiresAt;
+		}
+
+		function userHasScopes(scopes) {
+			var grantedScopes = JSON.parse(localStorage.getItem('scopes')).split(' ');
+			for (var i = 0; i < scopes.length; i++) {
+				if (grantedScopes.indexOf(scopes[i]) < 0) {
+					return false;
+				}
+			}
+			return true;
 		}
 
 		return {
@@ -73,7 +90,8 @@
 			getCachedProfile: getCachedProfile,
 			handleAuthentication: handleAuthentication,
 			logout: logout,
-			isAuthenticated: isAuthenticated
+			isAuthenticated: isAuthenticated,
+			userHasScopes: userHasScopes
 		}
 	}
 

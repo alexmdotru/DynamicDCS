@@ -1,7 +1,7 @@
 (function (angular) {
 	'use strict';
 
-	function srvService(DCSServerAPI, alertService) {
+	function srvService(DCSServerAPI, alertService, authService) {
 		var dSrv = this;
 
 		_.set(dSrv, 'createServer', function (server) {
@@ -65,7 +65,7 @@
 			dSrv.readServer();
 		});
 	}
-	srvService.$inject = ['dynamic-dcs.api.server', 'alertService'];
+	srvService.$inject = ['dynamic-dcs.api.server', 'alertService', 'authService'];
 
 	function initializeSrvService (srvService) {
 		srvService.init();
@@ -73,7 +73,7 @@
 	initializeSrvService.$inject = ['srvService'];
 
 	angular
-		.module('dynamic-dcs.srvService',['dynamic-dcs.api.server'])
+		.module('dynamic-dcs.srvService',['dynamic-dcs.api.server', 'dynamic-dcs.authService'])
 		.service('srvService', srvService)
 		.run(initializeSrvService)
 	;
