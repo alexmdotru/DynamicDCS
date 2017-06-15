@@ -1,15 +1,15 @@
 (function (angular) {
 	'use strict';
 
-	function srvService(DCSServerAPI, alertService) {
-		var dSrv = this;
+	function userAccountService(DCSUserAccountsAPI, alertService) {
+		var uASrv = this;
 
-		_.set(dSrv, 'createServer', function (server) {
-			var dsave = DCSServerAPI.save(server);
+		_.set(uASrv, 'createUser', function (userAccount) {
+			var dsave = DCSUserAccountsAPI.save(userAccount);
 			dsave.$promise
 				.then(function(data) {
-					alertService.addAlert('success', 'Server successfully created!');
-					dSrv.readServer();
+					alertService.addAlert('success', 'User Account successfully created!');
+					uASrv.readUser();
 					return data;
 				})
 				.catch(function(err){
@@ -19,11 +19,11 @@
 			;
 		});
 
-		_.set(dSrv, 'readServer', function () {
-			var dread = DCSServerAPI.query();
+		_.set(uASrv, 'readUser', function () {
+			var dread = DCSUserAccountsAPI.query();
 			dread.$promise
 				.then(function(data) {
-					_.set(dSrv, 'servers', data);
+					_.set(uASrv, 'userAccounts', data);
 				})
 				.catch(function(err){
 					alertService.addAlert('danger', 'Server service could not be queryed.');
@@ -32,8 +32,8 @@
 			;
 		});
 
-		_.set(dSrv, 'updateServer', function (server) {
-			var dupdate = DCSServerAPI.update(server);
+		_.set(uASrv, 'updateServer', function (userAccount) {
+			var dupdate = DCSUserAccountsAPI.update(userAccount);
 			dupdate.$promise
 				.then(function(data) {
 					alertService.addAlert('success', 'Server options successfully saved!');
@@ -45,8 +45,8 @@
 				})
 			;
 		});
-
-		_.set(dSrv, 'deleteServer', function (server) {
+		/*
+		_.set(uASrv, 'disableUser', function (userAccount) {
 			var ddelete = DCSServerAPI.delete(server);
 			ddelete.$promise
 				.then(function(data) {
@@ -60,21 +60,21 @@
 				})
 			;
 		});
-
-		_.set(dSrv, 'init', function () {
-			dSrv.readServer();
+		*/
+		_.set(uASrv, 'init', function () {
+			uASrv.readUser();
 		});
 	}
-	srvService.$inject = ['dynamic-dcs.api.server', 'alertService'];
+	userAccountService.$inject = ['dynamic-dcs.api.userAccounts', 'alertService'];
 
-	function initializeSrvService (srvService) {
-		srvService.init();
+	function initializeUserAccountServiceService (userAccountService) {
+		userAccountService.init();
 	}
-	initializeSrvService.$inject = ['srvService'];
+	initializeUserAccountServiceService.$inject = ['userAccountService'];
 
 	angular
-		.module('dynamic-dcs.srvService',['dynamic-dcs.api.server', 'dynamic-dcs.alertService'])
-		.service('srvService', srvService)
-		.run(initializeSrvService)
+		.module('dynamic-dcs.userAccountService',['dynamic-dcs.api.userAccounts', 'dynamic-dcs.alertService'])
+		.service('userAccountService', userAccountService)
+		.run(initializeUserAccountServiceService)
 	;
 })(angular);

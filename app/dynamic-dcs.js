@@ -1,10 +1,11 @@
 (function (angular) {
 	'use strict';
 
-	function dynamicDCSController($scope, $state, dynMsgService, authService, alertService, $uibModal) {
+	function dynamicDCSController($scope, $state, dynMsgService, userAccountService, authService, alertService, $uibModal) {
 		_.set(this, 'startPage', '/dynamic-dcs.tpl.html');
 		_.set($scope, 'auth', authService);
 		_.set($scope, 'animationsEnabled', true);
+		_.set($scope, 'userAccounts', _.get(userAccountService, 'userAccounts', []));
 		_.set($scope, 'alertService', alertService);
 
 		_.set($scope, 'openSettingsModal', function (size) {
@@ -77,7 +78,7 @@
 
 		$scope.initialise();
 	}
-	dynamicDCSController.$inject = ['$scope','$state', 'dynMsgService', 'authService', 'alertService', '$uibModal'];
+	dynamicDCSController.$inject = ['$scope','$state', 'dynMsgService', 'userAccountService', 'authService', 'alertService', '$uibModal'];
 
 	function settingsModalController($uibModalInstance, authService) {
 		var setCtrl = this;
@@ -188,6 +189,7 @@
 			'dynamic-dcs.api.theater',
 			'dynamic-dcs.alertService',
 			'dynamic-dcs.srvService',
+			'dynamic-dcs.userAccountService',
 			'states',
 			'ui.bootstrap',
 			'dynamic-dcs.authService',

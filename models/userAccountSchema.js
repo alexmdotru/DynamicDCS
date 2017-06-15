@@ -4,7 +4,13 @@ const mongoose = require('mongoose'),
 const UserAccountSchema = new Schema({
 		authId: {
 			type: String,
-			required: true
+			required: true,
+			index: { unique: true }
+		},
+		permLvl: {
+			type: Number,
+			required: true,
+			default: 100
 		},
 		gameName: {
 			type: String
@@ -30,7 +36,8 @@ const UserAccountSchema = new Schema({
 			type: String
 		},
 		ucid: {
-			type: String
+			type: String,
+			index: { unique: true }
 		}
 	},
 	{
@@ -38,5 +45,7 @@ const UserAccountSchema = new Schema({
 		upsert: true
 	}
 );
+
+UserAccountSchema.index({ authId: 1 });
 
 module.exports = UserAccountSchema;

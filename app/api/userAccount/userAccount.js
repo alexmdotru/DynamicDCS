@@ -1,7 +1,7 @@
 (function (angular) {
 	'use strict';
 
-	function serverFactory($resource){
+	function userAccountFactory($resource){
 		var resourceUrl = '/api';
 		return $resource(
 			resourceUrl,
@@ -27,8 +27,8 @@
 			}
 		);
 	}
-	serverFactory.$inject = ['$resource'];
+	userAccountFactory.$inject = ['$resource'];
 
-	angular.module('dynamic-dcs.api.server', ['ngResource'])
-	.factory('dynamic-dcs.api.server', serverFactory);
+	angular.module('dynamic-dcs.api.userAccounts', ['ngResource'])
+	.factory('dynamic-dcs.api.userAccounts', userAccountFactory);
 }(angular));
