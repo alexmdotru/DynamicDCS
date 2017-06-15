@@ -15,7 +15,7 @@
 <body common-css data-ng-app="dynamic-dcs" data-ng-controller="dynamicDCSController as app" data-mg-strict-di>
 <div class="alert-box repeat-item" ng-repeat="alert in alertService.alerts" >
 	<div uib-alert  ng-class="'alert-' + (alert.type || 'warning')" close="alertService.closeAlert($index)" dismiss-on-timeout="1500">{{alert.msg}}</div>
-</div>{{userAccounts}}
+</div>
 <nav class="navbar navbar-default" role="navigation">
 	<!-- Brand and toggle get grouped for better mobile display -->
 	<div class="navbar-header">
@@ -46,7 +46,7 @@
 			<li><a href="#" ng-click="isCollapsed = !isCollapsed" data-ng-show="$state.includes('dynCaucasus') || $state.includes('dynRedDawn')">Tools</a></li> <!--temp until better show function -->
 			<li><a href="#" ng-if="!auth.isAuthenticated()" ng-click="auth.login()">Login</a></li>
 			<li ng-if="auth.isAuthenticated()" uib-dropdown>
-				<a href="#" uib-dropdown-toggle><div class="redText">{{cObj.client.player.name}} <b class="caret"></b></div></a>
+				<a href="#" uib-dropdown-toggle><div class="redText">{{userAccountService.userAccounts[0].gameName}} <b class="caret"></b></div></a>
 				<ul uib-dropdown-menu>
 					<li><a ng-click="openSettingsModal('lg')">Settings</a></li>
 					<li><a ng-click="openAdminModal('lg')">Admin</a></li>

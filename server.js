@@ -491,9 +491,19 @@ _.set(serverObject, 'parse', function (update) {
 			//apply local information object
 			_.forEach(queObj.data, function ( data ){
 				if(data) {
-					if (!data.ucid) {
+					if (data.ucid) {
 						_.set(data, '_id', data.ucid);
+						//update map based player table
 						dbMapServiceController.srcPlayerActions('update', data);
+
+						//update user based table (based on ucid)
+						var curActUpdate = {
+							gameName: _.get(data, 'name', ''),
+							lastIp: _.get(data, 'ipaddr', ''),
+							curSocket: _.get(data, 'socketID', ''),
+							ucid: _.get(data, 'ucid')
+						};
+						dbSystemServiceController.userAccountActions('update', curActUpdate);
 					}
 				}
 			});

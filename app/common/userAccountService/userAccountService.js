@@ -3,7 +3,7 @@
 
 	function userAccountService(DCSUserAccountsAPI, alertService) {
 		var uASrv = this;
-
+		var userAccounts;
 		_.set(uASrv, 'createUser', function (userAccount) {
 			var dsave = DCSUserAccountsAPI.save(userAccount);
 			dsave.$promise

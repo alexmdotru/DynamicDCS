@@ -31,6 +31,51 @@ exports.userAccountActions = function (action, obj){
 		});
 	}
 	if(action === 'update') {
+
+		console.log(obj);
+		return new Promise(function(resolve, reject) {
+			UserAccount.find({ucid: obj.ucid}, function (err, ucidUser) {
+				if (err) {
+					reject(err);
+				}
+				console.log('uciduser: ',ucidUser.length);
+				if (ucidUser.length === 0) {
+					console.log('lastIp: ',obj.lastIp);
+					UserAccount.find({lastIp: obj.lastIp}, function (err, ipUser) {
+						console.log('ipuser: ',ipUser.length);
+						if (err) {
+							reject(err);
+						}
+						if (ipUser.length === 0) {
+							console.log('cant match up user with account');
+							reject('cant match up user with account');
+						}
+						ipUser = ipUser[0];
+						_.set(ipUser, 'gameName', _.get(obj, 'gameName'));
+						_.set(ipUser, 'curSocket', _.get(obj, 'cursocket'));
+						_.set(ipUser, 'ucid', _.get(obj, 'ucid'));
+						ipUser.save(function (err) {
+							if (err) {
+								reject(err);
+							}
+							resolve();
+						});
+					});
+				} else {
+					ucidUser = ucidUser[0];
+					_.set(ucidUser, 'gameName', _.get(obj, 'gameName'));
+					_.set(ucidUser, 'curSocket', _.get(obj, 'cursocket'));
+					_.set(ucidUser, 'lastIp', _.get(obj, 'lastIp'));
+					ucidUser.save(function (err) {
+						if (err) {
+							reject(err);
+						}
+						resolve();
+					});
+				}
+			});
+		});
+		/*
 		return new Promise(function(resolve, reject) {
 			UserAccount.findOneAndUpdate(
 				{_id: obj._id},
@@ -42,6 +87,7 @@ exports.userAccountActions = function (action, obj){
 				}
 			);
 		});
+		*/
 	}
 };
 
