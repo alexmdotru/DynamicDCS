@@ -67,33 +67,6 @@ const checkJwt = jwt({
 	algorithms: ['RS256']
 });
 
-
-
-/*
-const checkScopes = jwtAuthz([ 'read:messages' ]);
-const checkPermissions = function(req, res, next){
-	console.log(req.user.scope);
-	switch(req.path){
-		case '/theaters':{
-			var permissions = ['create:timesheets'];
-			for(var i = 0; i < permissions.length; i++){
-				if(req.user.scope.includes(permissions[i])){
-					next();
-				} else {
-					res.status(403).send({message:'Forbidden'});
-				}
-			}
-			break;
-		}
-	}
-};
-router.use(checkPermissions);
-//router.use(checkScopes);
-router.use(function(req, res, next) {
-	console.log('Something is happening.');
-	next();
-});
- */
 router.route('/theaters')
 	.get(function(req, res) {
 		dbSystemServiceController.theaterActions('read')
@@ -112,6 +85,21 @@ router.route('/servers/:server_name')
 	.get(function(req, res) {
 		_.set(req, 'body.server_name', req.params.server_name);
 		dbSystemServiceController.serverActions('read', req.body)
+			.then(function (resp){
+				res.json(resp);
+			});
+	});
+router.route('/userAccounts')
+	.get(function(req, res) {
+		dbSystemServiceController.userAccountActions('read')
+			.then(function (resp){
+				res.json(resp);
+			});
+	});
+router.route('/userAccounts/:userAccount')
+	.get(function(req, res) {
+		_.set(req, 'body.userAccount', req.params.userAccount);
+		dbSystemServiceController.userAccountActions('read', req.body)
 			.then(function (resp){
 				res.json(resp);
 			});
@@ -141,6 +129,24 @@ protectedRouter.route('/servers/:server_name')
 				res.json(resp);
 			});
 	});
+
+protectedRouter.route('/userAccounts')
+	.post(function(req, res) {
+		dbSystemServiceController.userAccountActions('create', req.body)
+			.then(function (resp){
+				res.json(resp);
+			});
+	});
+protectedRouter.route('/userAccounts/:userAccount')
+	.put(function(req, res) {
+		_.set(req, 'body.userAccount', req.params.userAccount);
+		dbSystemServiceController.userAccountActions('update', req.body)
+			.then(function (resp){
+				res.json(resp);
+			});
+	});
+
+
 
 //setup globals
 var outOfSyncUnitCnt = 0;

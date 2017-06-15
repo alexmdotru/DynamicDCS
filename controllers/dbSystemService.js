@@ -9,6 +9,43 @@ var systemdb = mongoose.createConnection();
 systemdb.open(dbConfig.systemHost, dbConfig.systemDatabase);
 
 // include mongoose db schemas
+var userAccountSchema = require('../models/userAccountSchema');
+const UserAccount = systemdb.model('userAccount', userAccountSchema);
+
+exports.userAccountActions = function (action, obj){
+	if(action === 'create') {
+		return new Promise(function(resolve, reject) {
+			const useraccount = new UserAccount(obj);
+			useraccount.save(function (err, useraccount) {
+				if (err) { reject(err) }
+				resolve(useraccount);
+			});
+		});
+	}
+	if(action === 'read') {
+		return new Promise(function(resolve, reject) {
+			UserAccount.find(function (err, useraccount) {
+				if (err) { reject(err) }
+				resolve(useraccount);
+			});
+		});
+	}
+	if(action === 'update') {
+		return new Promise(function(resolve, reject) {
+			UserAccount.findOneAndUpdate(
+				{_id: obj._id},
+				{$set: obj},
+				{new: true},
+				function(err, useraccount) {
+					if (err) { reject(err) }
+					resolve(useraccount);
+				}
+			);
+		});
+	}
+};
+
+
 var serverSchema = require('../models/serverSchema');
 const Server = systemdb.model('server', serverSchema);
 
