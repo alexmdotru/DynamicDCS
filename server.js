@@ -8,6 +8,7 @@ const express = require('express'),
 	cors = require('cors'),
 	bodyParser = require('body-parser'),
 	router = express.Router(),
+	protectedRouter = express.Router(),
 	path = require('path'),
 	assert = require('assert'),
 	_ = require('lodash'),
@@ -42,6 +43,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 app.use('/api', router);
+app.use('/api/protected', protectedRouter);
 app.use('/', express.static(__dirname + '/dist'));
 app.use('/json', express.static(__dirname + '/app/assets/json'));
 app.use('/css', express.static(__dirname + '/app/assets/css'));
@@ -50,15 +52,6 @@ app.use('/imgs', express.static(__dirname + '/app/assets/images'));
 app.use('/tabs', express.static(__dirname + '/app/tabs'));
 app.use('/libs', express.static(__dirname + '/node_modules'));
 
-/*
-console.log('signedkey: ',jwksRsa.expressJwtSecret({
-	cache: true,
-	rateLimit: true,
-	jwksRequestsPerMinute: 5,
-	jwksUri: 'https://'+process.env.AUTH0_DOMAIN+'/.well-known/jwks.json'
-}));
-*/
-console.log('https://'+process.env.AUTH0_DOMAIN+'/.well-known/jwks.json', process.env.AUTH0_AUDIENCE);
 
 const checkJwt = jwt({
 	// Dynamically provide a signing key based on the kid in the header and the singing keys provided by the JWKS endpoint.
@@ -75,10 +68,9 @@ const checkJwt = jwt({
 });
 
 
+
+/*
 const checkScopes = jwtAuthz([ 'read:messages' ]);
-
-router.use(checkJwt);
-
 const checkPermissions = function(req, res, next){
 	console.log(req.user.scope);
 	switch(req.path){
@@ -96,21 +88,20 @@ const checkPermissions = function(req, res, next){
 	}
 };
 router.use(checkPermissions);
-
 //router.use(checkScopes);
-
 router.use(function(req, res, next) {
 	console.log('Something is happening.');
 	next();
 });
-
-router.route('/servers')
-	.post(function(req, res) {
-		dbSystemServiceController.serverActions('create', req.body)
+ */
+router.route('/theaters')
+	.get(function(req, res) {
+		dbSystemServiceController.theaterActions('read')
 			.then(function (resp){
 				res.json(resp);
 			});
-	})
+	});
+router.route('/servers')
 	.get(function(req, res) {
 		dbSystemServiceController.serverActions('read')
 			.then(function (resp){
@@ -124,7 +115,18 @@ router.route('/servers/:server_name')
 			.then(function (resp){
 				res.json(resp);
 			});
-	})
+	});
+
+//start of protected endpoints
+protectedRouter.use(checkJwt);
+protectedRouter.route('/servers')
+	.post(function(req, res) {
+		dbSystemServiceController.serverActions('create', req.body)
+			.then(function (resp){
+				res.json(resp);
+			});
+	});
+protectedRouter.route('/servers/:server_name')
 	.put(function(req, res) {
 		_.set(req, 'body.server_name', req.params.server_name);
 		dbSystemServiceController.serverActions('update', req.body)
@@ -135,13 +137,6 @@ router.route('/servers/:server_name')
 	.delete(function(req, res) {
 		_.set(req, 'body.name', req.params.server_name);
 		dbSystemServiceController.serverActions('delete', req.body)
-			.then(function (resp){
-				res.json(resp);
-			});
-	});
-router.route('/theaters')
-	.get(function(req, res) {
-		dbSystemServiceController.theaterActions('read')
 			.then(function (resp){
 				res.json(resp);
 			});

@@ -2,31 +2,31 @@
 	'use strict';
 
 	function serverFactory($resource){
-		var resourceUrl = '/api/servers';
+		var resourceUrl = '/api';
 		return $resource(
 			resourceUrl,
 			{name: '@name'},
 			{
 				query: {
 					method: 'GET',
-					url: resourceUrl,
+					url: resourceUrl + '/servers',
 					isArray:true
 				},
 				get: {
 					method: 'GET',
-					url: resourceUrl + '/:name'
+					url: resourceUrl + '/servers/:name'
 				},
 				delete: {
 					method: 'DELETE',
-					url: resourceUrl + '/:name'
+					url: resourceUrl + '/protected/servers/:name'
 				},
 				save: {
 					method: 'POST',
-					url: resourceUrl
+					url: resourceUrl + '/protected/servers'
 				},
 				update: {
 					method: 'PUT',
-					url: resourceUrl + '/:name'
+					url: resourceUrl + '/protected/servers/:name'
 				}
 			}
 		);
