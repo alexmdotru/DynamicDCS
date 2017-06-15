@@ -98,9 +98,9 @@ router.route('/userAccounts')
 				res.json(resp);
 			});
 	});
-router.route('/userAccounts/:userAccount')
+router.route('/userAccounts/:_id')
 	.get(function(req, res) {
-		_.set(req, 'body.userAccount', req.params.userAccount);
+		_.set(req, 'body._id', req.params._id);
 		dbSystemServiceController.userAccountActions('read', req.body)
 			.then(function (resp){
 				res.json(resp);
@@ -139,9 +139,9 @@ protectedRouter.route('/userAccounts')
 				res.json(resp);
 			});
 	});
-protectedRouter.route('/userAccounts/:userAccount')
+protectedRouter.route('/userAccounts/:_id')
 	.put(function(req, res) {
-		_.set(req, 'body.userAccount', req.params.userAccount);
+		_.set(req, 'body._id', req.params._id);
 		dbSystemServiceController.userAccountActions('update', req.body)
 			.then(function (resp){
 				res.json(resp);

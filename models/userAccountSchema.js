@@ -2,7 +2,7 @@ const mongoose = require('mongoose'),
 	Schema = mongoose.Schema;
 
 const UserAccountSchema = new Schema({
-		_id: {
+		authId: {
 			type: String,
 			required: true
 		},
