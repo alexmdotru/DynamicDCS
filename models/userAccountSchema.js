@@ -12,6 +12,11 @@ const UserAccountSchema = new Schema({
 		realName: {
 			type: String
 		},
+		side: {
+			type: Number,
+			min: 1,
+			max: 2
+		},
 		lastIp: {
 			type: String
 		},
