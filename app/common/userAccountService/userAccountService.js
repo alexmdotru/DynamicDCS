@@ -45,22 +45,18 @@
 				})
 			;
 		});
-		/*
-		_.set(uASrv, 'disableUser', function (userAccount) {
-			var ddelete = DCSServerAPI.delete(server);
-			ddelete.$promise
+		_.set(uASrv, 'checkUserAccount', function (profile) {
+			var dsave = DCSUserAccountsAPI.checkUserAccount(profile);
+			dsave.$promise
 				.then(function(data) {
-					alertService.addAlert('success', 'Server has been successfully deleted!');
-					dSrv.readServer();
 					return data;
 				})
 				.catch(function(err){
-					alertService.addAlert('danger', 'Server options could not be updated.');
 					console.log(err);
 				})
 			;
 		});
-		*/
+
 		_.set(uASrv, 'init', function () {
 			uASrv.readUser();
 		});

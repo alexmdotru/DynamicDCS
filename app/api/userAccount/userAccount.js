@@ -23,6 +23,10 @@
 				update: {
 					method: 'PUT',
 					url: resourceUrl + '/protected/userAccounts/:_id'
+				},
+				checkUserAccount: {
+					method: 'POST',
+					url: resourceUrl + '/protected/checkUserAccount'
 				}
 			}
 		);

@@ -31,35 +31,47 @@ exports.userAccountActions = function (action, obj){
 		});
 	}
 	if(action === 'update') {
-
-		console.log(obj);
 		return new Promise(function(resolve, reject) {
 			UserAccount.find({ucid: obj.ucid}, function (err, ucidUser) {
 				if (err) {
 					reject(err);
 				}
-				console.log('uciduser: ',ucidUser.length);
 				if (ucidUser.length === 0) {
-					console.log('lastIp: ',obj.lastIp);
+					// if ip is 10308 its the same as ::1
+					if(obj.ipaddr === ':10308' || obj.ipaddr === '::ffff:127.0.0.1'){
+						_.set(obj, 'lastIp', '127.0.0.1');
+					}
 					UserAccount.find({lastIp: obj.lastIp}, function (err, ipUser) {
-						console.log('ipuser: ',ipUser.length);
 						if (err) {
 							reject(err);
 						}
 						if (ipUser.length === 0) {
-							console.log('cant match up user with account');
-							reject('cant match up user with account');
-						}
-						ipUser = ipUser[0];
-						_.set(ipUser, 'gameName', _.get(obj, 'gameName'));
-						_.set(ipUser, 'curSocket', _.get(obj, 'cursocket'));
-						_.set(ipUser, 'ucid', _.get(obj, 'ucid'));
-						ipUser.save(function (err) {
-							if (err) {
-								reject(err);
+							console.log('cant match up user with account ', obj.lastIp);
+							/*
+							var curObj = {
+								gameName: _.get(obj, 'gameName'),
+								curSocket: _.get(obj, 'cursocket'),
+								ucid: _.get(obj, 'ucid'),
+								lastIp: _.get(obj, 'lastIp')
 							}
-							resolve();
-						});
+							const useraccount = new UserAccount(curObj);
+							useraccount.save(function (err, useraccount) {
+								if (err) { reject(err) }
+								resolve(useraccount);
+							});
+							*/
+						}else{
+							ipUser = ipUser[0];
+							_.set(ipUser, 'gameName', _.get(obj, 'gameName'));
+							_.set(ipUser, 'curSocket', _.get(obj, 'cursocket'));
+							_.set(ipUser, 'ucid', _.get(obj, 'ucid'));
+							ipUser.save(function (err) {
+								if (err) {
+									reject(err);
+								}
+								resolve();
+							});
+						}
 					});
 				} else {
 					ucidUser = ucidUser[0];
@@ -88,6 +100,41 @@ exports.userAccountActions = function (action, obj){
 			);
 		});
 		*/
+	}
+	if(action === 'checkAccount') {
+		return new Promise(function(resolve, reject) {
+			var curIP;
+			UserAccount.find({authId: obj.user.sub}, function (err, userAccount) {
+				if (err) {
+					reject(err);
+				}
+				if (userAccount.length === 0) {
+					curIP = obj.ip;
+					if(obj.ip === ':10308' || obj.ip === '::ffff:127.0.0.1'){
+						curIP = '127.0.0.1';
+					}
+					console.log('no users for authId: ',obj.user.sub, ' Now Creating for: ', curIP);
+					const useraccount = new UserAccount({
+						authId: obj.user.sub,
+						lastIp: curIP,
+						realName: _.get(obj, 'body.name'),
+						firstName: _.get(obj, 'body.given_name'),
+						lastName: _.get(obj, 'body.family_name'),
+						nickName: _.get(obj, 'body.nickname'),
+						picture: _.get(obj, 'body.picture'),
+						gender: _.get(obj, 'body.gender'),
+						locale: _.get(obj, 'body.locale')
+					});
+					useraccount.save(function (err, useraccount) {
+						if (err) { reject(err) }
+						resolve(useraccount);
+					});
+				} else {
+					console.log('usersFound');
+					resolve();
+				}
+			});
+		});
 	}
 };
 

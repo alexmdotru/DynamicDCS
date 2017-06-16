@@ -1,6 +1,4 @@
-﻿
-
-const express = require('express'),
+﻿const express = require('express'),
 	app = express(),
 	jwt = require('express-jwt'),
 	jwtAuthz = require('express-jwt-authz'),
@@ -134,6 +132,7 @@ protectedRouter.route('/servers/:server_name')
 
 protectedRouter.route('/userAccounts')
 	.post(function(req, res) {
+		console.log(req.user.sub);
 		dbSystemServiceController.userAccountActions('create', req.body)
 			.then(function (resp){
 				res.json(resp);
@@ -148,7 +147,13 @@ protectedRouter.route('/userAccounts/:_id')
 			});
 	});
 
-
+protectedRouter.route('/checkUserAccount')
+	.post(function(req, res) {
+		dbSystemServiceController.userAccountActions('checkAccount', req)
+			.then(function (resp){
+				res.json(resp);
+			});
+	});
 
 //setup globals
 var outOfSyncUnitCnt = 0;
@@ -495,7 +500,9 @@ _.set(serverObject, 'parse', function (update) {
 						_.set(data, '_id', data.ucid);
 						//update map based player table
 						dbMapServiceController.srcPlayerActions('update', data);
-
+						if(data.ipaddr === ':10308' || data.ipaddr === '::ffff:127.0.0.1'){
+							data.ipaddr = '127.0.0.1';
+						}
 						//update user based table (based on ucid)
 						var curActUpdate = {
 							gameName: _.get(data, 'name', ''),

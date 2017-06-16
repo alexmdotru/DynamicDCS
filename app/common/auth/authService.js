@@ -1,7 +1,7 @@
 (function (angular) {
 	'use strict';
 
-	function authService($state, angularAuth0, $timeout) {
+	function authService($state, angularAuth0, $timeout, DDCSuserAccounts) {
 
 		var userProfile;
 
@@ -11,8 +11,10 @@
 
 		function handleAuthentication() {
 			angularAuth0.parseHash(function(err, authResult) {
+				console.log('handling AUTH');
 				//console.log('CONSOLE AUTH: ',authResult, authResult.idToken);
 				if (authResult && authResult.idToken) {
+					getProfile();
 					setSession(authResult);
 					$state.go('index');
 				} else if (err) {
@@ -42,6 +44,8 @@
 
 		function setUserProfile(profile) {
 			userProfile = profile;
+			//send payload to server
+			DDCSuserAccounts.checkUserAccount(profile);
 		}
 
 		function getCachedProfile() {
@@ -58,6 +62,9 @@
 			localStorage.setItem('id_token', authResult.idToken);
 			localStorage.setItem('expires_at', expiresAt);
 			localStorage.setItem('scopes', JSON.stringify(scopes));
+
+			//
+
 		}
 
 		function logout() {
@@ -95,10 +102,12 @@
 		}
 	}
 
-	authService.$inject = ['$state', 'angularAuth0', '$timeout'];
+	authService.$inject = ['$state', 'angularAuth0', '$timeout', 'dynamic-dcs.api.userAccounts'];
 
 	angular
-		.module('dynamic-dcs.authService',[])
+		.module('dynamic-dcs.authService',[
+			'dynamic-dcs.userAccountService'
+		])
 		.service('authService', authService)
 	;
 })(angular);

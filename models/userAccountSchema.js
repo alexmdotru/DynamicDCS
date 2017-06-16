@@ -27,6 +27,24 @@ const UserAccountSchema = new Schema({
 		ucid: {
 			type: String,
 			index: { unique: true }
+		},
+		firstName: {
+			type: String
+		},
+		lastName: {
+			type: String
+		},
+		nickName: {
+			type: String
+		},
+		picture: {
+			type: String
+		},
+		gender: {
+			type: String
+		},
+		locale: {
+			type: String
 		}
 	},
 	{
