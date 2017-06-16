@@ -13,7 +13,7 @@
 				//console.log('CONSOLE AUTH: ',authResult, authResult.idToken);
 				if (authResult && authResult.idToken) {
 					setSession(authResult);
-					getProfile(userAccountService.readUser);
+					getProfile();
 					$state.go('index');
 				} else if (err) {
 					$timeout(function() {
@@ -25,7 +25,7 @@
 			});
 		}
 
-		function getProfile(cb) {
+		function getProfile() {
 			if (localStorage.getItem('access_token') !== null) {
 				var accessToken = localStorage.getItem('access_token');
 				if (!accessToken) {
@@ -35,7 +35,7 @@
 					if (profile) {
 						setUserProfile(profile);
 					}
-					cb(err, profile);
+					//cb(err, profile);
 				});
 			}
 		}

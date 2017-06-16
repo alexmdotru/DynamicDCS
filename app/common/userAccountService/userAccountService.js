@@ -51,6 +51,7 @@
 			var dsave = DCSUserAccountsAPI.checkUserAccount(profile);
 			dsave.$promise
 				.then(function(data) {
+					uASrv.readUser();
 					return data;
 				})
 				.catch(function(err){
