@@ -2,7 +2,6 @@
 	'use strict';
 
 	function dynamicDCSController($scope, $state, dynMsgService, userAccountService, authService, alertService, $uibModal) {
-		console.log(userAccountService);
 		_.set(this, 'startPage', '/dynamic-dcs.tpl.html');
 		_.set($scope, 'auth', authService);
 		_.set($scope, 'animationsEnabled', true);
