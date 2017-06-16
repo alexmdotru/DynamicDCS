@@ -4,6 +4,7 @@
 	function userAccountService(DCSUserAccountsAPI, alertService) {
 		var uASrv = this;
 		var userAccounts;
+		var localAccount;
 		_.set(uASrv, 'createUser', function (userAccount) {
 			var dsave = DCSUserAccountsAPI.save(userAccount);
 			dsave.$promise
@@ -24,6 +25,7 @@
 			dread.$promise
 				.then(function(data) {
 					_.set(uASrv, 'userAccounts', data);
+					_.set(uASrv, 'localAccount', _.find(data, {authId: localStorage.getItem('sub')}));
 				})
 				.catch(function(err){
 					alertService.addAlert('danger', 'Server service could not be queryed.');

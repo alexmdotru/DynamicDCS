@@ -1,21 +1,19 @@
 (function (angular) {
 	'use strict';
 
-	function authService($state, angularAuth0, $timeout, DDCSuserAccounts) {
+	function authService($state, angularAuth0, $timeout, userAccountService) {
 
 		var userProfile;
-
 		function login() {
 			angularAuth0.authorize();
 		}
 
 		function handleAuthentication() {
 			angularAuth0.parseHash(function(err, authResult) {
-				console.log('handling AUTH');
 				//console.log('CONSOLE AUTH: ',authResult, authResult.idToken);
 				if (authResult && authResult.idToken) {
-					getProfile();
 					setSession(authResult);
+					getProfile(userAccountService.readUser);
 					$state.go('index');
 				} else if (err) {
 					$timeout(function() {
@@ -45,7 +43,7 @@
 		function setUserProfile(profile) {
 			userProfile = profile;
 			//send payload to server
-			DDCSuserAccounts.checkUserAccount(profile);
+			userAccountService.checkUserAccount(profile);
 		}
 
 		function getCachedProfile() {
@@ -60,17 +58,16 @@
 
 			localStorage.setItem('access_token', authResult.accessToken);
 			localStorage.setItem('id_token', authResult.idToken);
+			localStorage.setItem('sub', authResult.idTokenPayload.sub);
 			localStorage.setItem('expires_at', expiresAt);
 			localStorage.setItem('scopes', JSON.stringify(scopes));
-
-			//
-
 		}
 
 		function logout() {
 			// Remove tokens and expiry time from localStorage
 			localStorage.removeItem('access_token');
 			localStorage.removeItem('id_token');
+			localStorage.removeItem('sub');
 			localStorage.removeItem('expires_at');
 			localStorage.removeItem('scopes');
 			$state.go('index');
@@ -102,7 +99,7 @@
 		}
 	}
 
-	authService.$inject = ['$state', 'angularAuth0', '$timeout', 'dynamic-dcs.api.userAccounts'];
+	authService.$inject = ['$state', 'angularAuth0', '$timeout', 'userAccountService'];
 
 	angular
 		.module('dynamic-dcs.authService',[

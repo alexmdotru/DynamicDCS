@@ -63,7 +63,6 @@ exports.userAccountActions = function (action, obj){
 						}else{
 							ipUser = ipUser[0];
 							_.set(ipUser, 'gameName', _.get(obj, 'gameName'));
-							_.set(ipUser, 'curSocket', _.get(obj, 'cursocket'));
 							_.set(ipUser, 'ucid', _.get(obj, 'ucid'));
 							ipUser.save(function (err) {
 								if (err) {
@@ -76,7 +75,6 @@ exports.userAccountActions = function (action, obj){
 				} else {
 					ucidUser = ucidUser[0];
 					_.set(ucidUser, 'gameName', _.get(obj, 'gameName'));
-					_.set(ucidUser, 'curSocket', _.get(obj, 'cursocket'));
 					_.set(ucidUser, 'lastIp', _.get(obj, 'lastIp'));
 					ucidUser.save(function (err) {
 						if (err) {
@@ -104,6 +102,8 @@ exports.userAccountActions = function (action, obj){
 	if(action === 'checkAccount') {
 		return new Promise(function(resolve, reject) {
 			var curIP;
+			var curSocket = _.get(obj, 'headers.cookie').substr(3);
+			console.log('curSocket: ',curSocket);
 			UserAccount.find({authId: obj.user.sub}, function (err, userAccount) {
 				if (err) {
 					reject(err);
@@ -113,7 +113,9 @@ exports.userAccountActions = function (action, obj){
 					if(obj.ip === ':10308' || obj.ip === '::ffff:127.0.0.1'){
 						curIP = '127.0.0.1';
 					}
-					console.log('no users for authId: ',obj.user.sub, ' Now Creating for: ', curIP);
+					//console.log('no users for authId: ',obj.user.sub, ' Now Creating for: ', curIP);
+					//console.log('headers: ', obj.headers);
+
 					const useraccount = new UserAccount({
 						authId: obj.user.sub,
 						lastIp: curIP,
@@ -123,7 +125,8 @@ exports.userAccountActions = function (action, obj){
 						nickName: _.get(obj, 'body.nickname'),
 						picture: _.get(obj, 'body.picture'),
 						gender: _.get(obj, 'body.gender'),
-						locale: _.get(obj, 'body.locale')
+						locale: _.get(obj, 'body.locale'),
+						curSocket: curSocket
 					});
 					useraccount.save(function (err, useraccount) {
 						if (err) { reject(err) }

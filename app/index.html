@@ -46,10 +46,10 @@
 			<li><a href="#" ng-click="isCollapsed = !isCollapsed" data-ng-show="$state.includes('dynCaucasus') || $state.includes('dynRedDawn')">Tools</a></li> <!--temp until better show function -->
 			<li><a href="#" ng-if="!auth.isAuthenticated()" ng-click="auth.login()">Login</a></li>
 			<li ng-if="auth.isAuthenticated()" uib-dropdown>
-				<a href="#" uib-dropdown-toggle><div class="redText">{{userAccountService.userAccounts[0].gameName}} <b class="caret"></b></div></a>
+				<a href="#" uib-dropdown-toggle><div class="redText">{{userAccountService.localAccount.gameName}} <b class="caret"></b></div></a>
 				<ul uib-dropdown-menu>
 					<li><a ng-click="openSettingsModal('lg')">Settings</a></li>
-					<li><a ng-click="openAdminModal('lg')">Admin</a></li>
+					<li><a ng-if="userAccountService.localAccount.permLvl < 10" ng-click="openAdminModal('lg')">Admin</a></li>
 					<li><a ng-click="auth.logout()">Logout</a></li>
 				</ul>
 			</li>
