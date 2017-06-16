@@ -107,6 +107,18 @@ router.route('/userAccounts/:_id')
 
 //start of protected endpoints
 protectedRouter.use(checkJwt);
+protectedRouter.use(function (req, res, next) {
+	dbSystemServiceController.userAccountActions('getPerm', req.user.sub)
+		.then(function (resp){
+			if( resp[0].permLvl > 10 ){
+				res.status('503').json({ message: "You dont have permissions to do requested action." });
+			} else {
+				next();
+			}
+		})
+	;
+});
+
 protectedRouter.route('/servers')
 	.post(function(req, res) {
 		dbSystemServiceController.serverActions('create', req.body)

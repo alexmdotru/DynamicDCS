@@ -30,6 +30,14 @@ exports.userAccountActions = function (action, obj){
 			});
 		});
 	}
+	if(action === 'getPerm') {
+		return new Promise(function(resolve, reject) {
+			UserAccount.find({authId: obj}, function (err, useraccount) {
+				if (err) { reject(err) }
+				resolve(useraccount);
+			});
+		});
+	}
 	if(action === 'update') {
 		return new Promise(function(resolve, reject) {
 			UserAccount.find({ucid: obj.ucid}, function (err, ucidUser) {
