@@ -47,19 +47,6 @@ exports.userAccountActions = function (action, obj){
 						}
 						if (ipUser.length === 0) {
 							console.log('cant match up user with account ', obj.lastIp);
-							/*
-							var curObj = {
-								gameName: _.get(obj, 'gameName'),
-								curSocket: _.get(obj, 'cursocket'),
-								ucid: _.get(obj, 'ucid'),
-								lastIp: _.get(obj, 'lastIp')
-							}
-							const useraccount = new UserAccount(curObj);
-							useraccount.save(function (err, useraccount) {
-								if (err) { reject(err) }
-								resolve(useraccount);
-							});
-							*/
 						}else{
 							ipUser = ipUser[0];
 							_.set(ipUser, 'gameName', _.get(obj, 'gameName'));
@@ -85,19 +72,6 @@ exports.userAccountActions = function (action, obj){
 				}
 			});
 		});
-		/*
-		return new Promise(function(resolve, reject) {
-			UserAccount.findOneAndUpdate(
-				{_id: obj._id},
-				{$set: obj},
-				{new: true},
-				function(err, useraccount) {
-					if (err) { reject(err) }
-					resolve(useraccount);
-				}
-			);
-		});
-		*/
 	}
 	if(action === 'checkAccount') {
 		return new Promise(function(resolve, reject) {
@@ -113,8 +87,6 @@ exports.userAccountActions = function (action, obj){
 					if(obj.ip === ':10308' || obj.ip === '::ffff:127.0.0.1'){
 						curIP = '127.0.0.1';
 					}
-					//console.log('no users for authId: ',obj.user.sub, ' Now Creating for: ', curIP);
-					//console.log('headers: ', obj.headers);
 
 					const useraccount = new UserAccount({
 						authId: obj.user.sub,
