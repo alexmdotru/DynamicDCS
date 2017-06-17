@@ -686,127 +686,12 @@ setInterval(function(){
 }, 1 * 500);
 
 
-// serveraddress, port, 			callback, io, initClear, serverObject.ClientRequestArray[0],
-
-
-
-/*
-function getDCSDataClient(dataCallback) {
-
-    var connOpen = true;
-
-    const net = require('net');
-    var buffer;
-
-    function connect() {
-        const client = net.createConnection({host: serverAddress, port: config.clientPort}, () => {
-            var time = new Date();
-            console.log(time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + ' :: Connected to DCS Client!');
-            connOpen = false;
-            buffer = "";
-        });
-
-        client.on('connect', function() {
-			initClear( 'client' );
-            client.write('{"action":"NONE"}'+"\n");
-        });
-
-        client.on('data', (data) => {
-            buffer += data;
-            while ((i = buffer.indexOf("\n")) >= 0) {
-                var data = JSON.parse(buffer.substring(0, i));
-                dataCallback(data);
-                buffer = buffer.substring(i + 1);
-				request = _.get(serverObject, 'ClientRequestArray[0]',{action:'NONE'});
-                client.write(JSON.stringify(request)+"\n");
-                serverObject.ClientRequestArray.shift();
-            }
-        });
-
-        client.on('close', () => {
-            time = new Date();
-            console.log(time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + ' :: Reconnecting DCS Client....');
-			io.emit('srvUpd', {que: [{action: 'reset'}]});
-            connOpen = true;
-        });
-
-        client.on('error', () => {
-            connOpen = true;
-        });
-    }
-
-    setInterval(function(){
-        if (connOpen === true) {
-           connect();
-        }else{
-        }
-    }, 1 * 1000);
-};
-
-function getDCSDataGameGui(dataCallback) {
-
-	var connOpen = true;
-
-	const net = require('net');
-	var buffer;
-	var request;
-
-	function connect() {
-		const client = net.createConnection({host: serverAddress, port: config.gameGuiPort}, () => {
-			var time = new Date();
-			console.log(time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + ' :: Connected to DCS GameGUI!');
-			connOpen = false;
-			buffer = "";
-		});
-
-		client.on('connect', function() {
-			initClear( 'server' );
-			client.write('{"action":"INIT"}'+"\n");
-		});
-
-		client.on('data', (data) => {
-			buffer += data;
-			while ((i = buffer.indexOf("\n")) >= 0) {
-				var data = JSON.parse(buffer.substring(0, i));
-				dataCallback(data);
-				buffer = buffer.substring(i + 1);
-				request = _.get(serverObject, 'GameGUIrequestArray[0]',{action:'NONE'});
-				client.write(JSON.stringify(request)+"\n");
-				serverObject.GameGUIRequestArray.shift();
-			}
-		});
-
-		client.on('close', () => {
-			time = new Date();
-			console.log(time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + ' :: Reconnecting DCS GameGUI....');
-			connOpen = true;
-		});
-
-		client.on('error', () => {
-			connOpen = true;
-		});
-	}
-
-	setInterval(function(){
-		if (connOpen === true) {
-			connect();
-		}else{
-		}
-	}, 1 * 1000);
-};
-
-getDCSDataClient(syncDCSData);
-getDCSDataGameGui(syncDCSDataGameGUI);
-*/
-
 var socketCntrl1 = new DCSSocket('testServer', serverAddress, config.clientPort, config.gameGuiPort, syncDCSData, io, initClear, serverObject.ClientRequestArray, serverObject.GameGUIRequestArray);
-console.log('socketcntrl1: ',socketCntrl1);
+//console.log('socketcntrl1: ',socketCntrl1);
 socketCntrl1.connectClient();
 socketCntrl1.connectServer();
 
 function syncDCSData (DCSData) {
-	//console.log(DCSData);
-	//console.log('mission: ',DCSData);
 	//var timetest = new Date();
 	//_.set(serverObject, 'ClientRequestArray[0]', {action:'CMD',  reqID: _.random(1,9999)+'|'+timetest.getHours() + ':' + timetest.getMinutes() + ':' + timetest.getSeconds(), cmd:'trigger.action.outText("IT WORKS MOFO!", 2)'});
 	//accept updates
@@ -814,15 +699,4 @@ function syncDCSData (DCSData) {
 	if (!_.isEmpty(DCSData.que)) {
 		serverObject.parse(DCSData);
     }
-    //send commands back client
-}
-
-function syncDCSDataGameGUI (DCSData) {
-	//var timetest = new Date();
-	//_.set(serverObject, 'GameGUIrequestArray[0]', {action:'CMD',  reqID: _.random(1,9999)+'|'+timetest.getHours() + ':' + timetest.getMinutes() + ':' + timetest.getSeconds(), cmd:'net.get_player_list()'});
-	//accept updates
-	if (!_.isEmpty(DCSData.que)) {
-		serverObject.parse(DCSData);
-	}
-	//send commands back client
 }
