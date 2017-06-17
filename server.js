@@ -33,6 +33,7 @@ var io  = require('socket.io').listen(server);
 //Controllers
 const dbSystemServiceController = require('./controllers/dbSystemService');
 const dbMapServiceController = require('./controllers/dbMapService');
+const DCSSocket = require('./controllers/DCSSocket');
 
 var admin = false;
 
@@ -110,11 +111,11 @@ protectedRouter.use(checkJwt);
 protectedRouter.use(function (req, res, next) {
 	dbSystemServiceController.userAccountActions('getPerm', req.user.sub)
 		.then(function (resp){
+			console.log('permlvl: ',resp[0].permLvl, resp);
 			if( resp[0].permLvl > 10 ){
 				res.status('503').json({ message: "You dont have permissions to do requested action." });
-			} else {
-				next();
-			}
+			} else {}
+			next();
 		})
 	;
 });
@@ -342,6 +343,7 @@ _.set(serverObject, 'parse', function (update) {
 	}
 
 	_.forEach(update.que, function (queObj) {
+		//console.log(queObj);
 		var curObj = {};
 		var curUnit = _.find(serverObject.units, { 'unitID': _.get(queObj, 'data.unitID') });
 
@@ -684,6 +686,11 @@ setInterval(function(){
 }, 1 * 500);
 
 
+// serveraddress, port, 			callback, io, initClear, serverObject.ClientRequestArray[0],
+
+
+
+/*
 function getDCSDataClient(dataCallback) {
 
     var connOpen = true;
@@ -790,8 +797,15 @@ function getDCSDataGameGui(dataCallback) {
 
 getDCSDataClient(syncDCSData);
 getDCSDataGameGui(syncDCSDataGameGUI);
+*/
+
+var socketCntrl1 = new DCSSocket('testServer', serverAddress, config.clientPort, config.gameGuiPort, syncDCSData, io, initClear, serverObject.ClientRequestArray, serverObject.GameGUIRequestArray);
+console.log('socketcntrl1: ',socketCntrl1);
+socketCntrl1.connectClient();
+socketCntrl1.connectServer();
 
 function syncDCSData (DCSData) {
+	//console.log(DCSData);
 	//console.log('mission: ',DCSData);
 	//var timetest = new Date();
 	//_.set(serverObject, 'ClientRequestArray[0]', {action:'CMD',  reqID: _.random(1,9999)+'|'+timetest.getHours() + ':' + timetest.getMinutes() + ':' + timetest.getSeconds(), cmd:'trigger.action.outText("IT WORKS MOFO!", 2)'});
