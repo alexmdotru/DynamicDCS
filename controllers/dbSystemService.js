@@ -54,7 +54,7 @@ exports.userAccountActions = function (action, obj){
 							reject(err);
 						}
 						if (ipUser.length === 0) {
-							console.log('cant match up user with account ', obj.lastIp);
+							//console.log('cant match up user with account ', obj.lastIp);
 						}else{
 							ipUser = ipUser[0];
 							_.set(ipUser, 'gameName', _.get(obj, 'gameName'));

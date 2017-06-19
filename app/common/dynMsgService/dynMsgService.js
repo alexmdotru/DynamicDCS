@@ -3,28 +3,28 @@
 
 	function dynMsgService (gmapService, socket) {
 		var dmSrv = this;
-		_.set(dmSrv, 'cObj', {
-			client: {},
-			units: [],
-			bases: [],
-			overlays: [],
-			players: [],
-			chatMsgs: [],
-			cmds: [],
-			events: [],
-			eventMsgs: []
-		});
 
 		socket.on('connect', function () {
-			if (dmSrv.cObj.units.length > 0){
-				_.set(dmSrv, 'cObj.units', []);
-				gmapService.resetMarkers();
-			}
+			_.set(dmSrv, 'mObj', {});
+			gmapService.resetMarkers();
 			socket.emit('clientUpd', { action: 'unitINIT' });
 		});
 
 		//socket.io connectors
 		socket.on('srvUpd', function (data) {
+/*
+			_.set(dmSrv, 'mObj', {
+				client: {},
+				units: [],
+				bases: [],
+				overlays: [],
+				players: [],
+				chatMsgs: [],
+				cmds: [],
+				events: [],
+				eventMsgs: []
+			});
+*/
 			console.log(data);
 			_.forEach(data.que, function(que) {
 				if (que.action === 'INIT' || que.action === 'C' ||
@@ -104,19 +104,9 @@
 		socket.on('error', function () {
 			//console.log(ev, data);
 		});
-
-
 	}
 	dynMsgService.$inject = ['gmapService', 'mySocket'];
-/*
-	function initializedynMsgService (dynMsgService) {
-		console.log('init msg service');
-		//dynMsgService.init();
-	}
-	initializedynMsgService.$inject = [
-		'dynMsgService'
-	];
-*/
+
 	angular
 		.module('dynamic-dcs.dynMsgService',[
 			'dynamic-dcs.socketFactory',

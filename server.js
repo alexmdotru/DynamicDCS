@@ -199,7 +199,6 @@ function initUnits (serverName, socketID) {
 	console.log('sendINIT for ', serverName, ' for socket ', socketID);
 	var initQue = {que: []};
 	//var pSlot = _.get(_.find(serverObject.players, {'socketID': socketID}), 'slot', '');
-	console.log(curServers, curServers[serverName], serverName);
 	var pSide = _.get(_.find(curServers[serverName].serverObject.players, {'socketID': socketID}), 'side', 0);
 	if (admin) {
 		pSide = 'A';
@@ -265,7 +264,7 @@ function sendInit(serverName, socketID) {
 			initUnits (serverName, socket.id);
 		});
 	}else {
-		console.log('server name: ', serverName, curServers);
+		//console.log('server name: ', serverName, curServers);
 		initUnits (serverName, socketID);
 	}
 }
@@ -318,7 +317,7 @@ io.on('connection', function( socket ) {
 });
 
 _.set(curServers, 'processQue', function (serverName, update) {
-console.log('process que: ', serverName, update);
+	//console.log('process que: ', serverName, update);
 	if (typeof update.unitCount !== 'undefined'){
 		if(update.unitCount !== curServers[serverName].serverObject.units.length){
 			console.log('out of sync for '+outOfSyncUnitCnt);
@@ -666,7 +665,7 @@ setInterval(function(){
 							curServers[server.name].updateQue[que].shift();
 						}
 						if (chkPayload.que.length){
-							io.to(key).emit('srvUpd', chkPayload);
+							//io.to(key).emit('srvUpd', chkPayload);
 						}
 					});
 				}
@@ -704,7 +703,7 @@ setInterval(function(){
 							queadmin: []
 						});
 						curServers[server.name].DCSSocket = new DCSSocket(server.name, server.ip, server.dcsClientPort, server.dcsGameGuiPort, syncDCSData, io, initClear, curServers[server.name].serverObject.ClientRequestArray, curServers[server.name].serverObject.GameGUIRequestArray);
-						console.log('creating object: ', server.name, curServers[server.name]);
+						//console.log('creating object: ', server.name, curServers[server.name]);
 					}
 				}
 			});
@@ -712,7 +711,7 @@ setInterval(function(){
 }, 1 * 1 * 1000);
 
 function syncDCSData (serverName, DCSData) {
-	console.log('incoming data: ', DCSData);
+	//console.log('incoming data: ', DCSData);
 	//var timetest = new Date();
 	//_.set(serverObject, 'ClientRequestArray[0]', {action:'CMD',  reqID: _.random(1,9999)+'|'+timetest.getHours() + ':' + timetest.getMinutes() + ':' + timetest.getSeconds(), cmd:'trigger.action.outText("IT WORKS MOFO!", 2)'});
 	//accept updates

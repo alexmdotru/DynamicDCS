@@ -1,0 +1,34 @@
+<base href="/DynamicCaucasus">
+<ui-gmap-google-map
+		id="gmapcaucasus"
+		center="map.center"
+		zoom="map.zoom"
+		options="map.options"
+		draggable="true"
+		events="map.events">
+	<ui-gmap-markers
+			models="map.markers"
+			coords="'self'"
+			icon="'icon'"
+			idKey="'id'"
+			options="'options'"
+			events="map.markersEvents">
+	</ui-gmap-markers>
+	<ui-gmap-window show="map.window.show" coords="map.window.model">
+		<div ng-controller="templateController">
+			Unit ID: {{map.window.model.id}}<br>
+			Unit Type: {{map.window.model.type}}<br>
+			Player Name: {{map.window.model.playername}}<br>
+			Coalition: {{map.window.model.coalition}}<br>
+			Latitude: {{map.window.model.latitude}}<br>
+			Longitude: {{map.window.model.longitude}}<br>
+			Alt: {{map.window.model.alt}}<br>
+			Hdg: {{map.window.model.hdg}}<br>
+			Speed: {{map.window.model.speed}} kts
+		</div>
+	</ui-gmap-window>
+</ui-gmap-google-map>
+
+
+
+

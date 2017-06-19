@@ -49,7 +49,7 @@
 		'auth0.auth0',
 		'ui.router',
 		'state.index',
-		'state.dynCaucasus',
+		'state.dynMap',
 		'state.dynRedDawn',
 		'angular-jwt'
 	])

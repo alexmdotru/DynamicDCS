@@ -1,12 +1,13 @@
 (function (angular) {
 	'use strict';
 
-	function dynamicDCSController($scope, $state, dynMsgService, userAccountService, authService, alertService, $uibModal) {
+	function dynamicDCSController($scope, $state, dynMsgService, userAccountService, srvService, authService, alertService, $uibModal) {
 		_.set(this, 'startPage', '/dynamic-dcs.tpl.html');
 		_.set($scope, 'auth', authService);
 		_.set($scope, 'animationsEnabled', true);
 		_.set($scope, 'userAccountService', userAccountService);
 		_.set($scope, 'alertService', alertService);
+		_.set($scope, 'srvService', srvService);
 
 		_.set($scope, 'openSettingsModal', function (size) {
 			var modalInstance = $uibModal.open({
@@ -54,31 +55,16 @@
 		});
 
 		$scope.initialise = function() {
-
 			_.set($scope, 'isCollapsed', true);
 			_.set($scope, 'go', function(state) {
 				$state.go(state);
 			});
-			_.set($scope, 'tabData', [
-				{
-					heading: 'Leaderboard',
-					route:   'index'
-				},
-				{
-					heading: 'DynamicCaucasus',
-					route:   'dynCaucasus'
-				},
-				{
-					heading: 'DynamicRedDawn',
-					route:   'dynRedDawn'
-				}
-			]);
 			_.set($scope, 'cObj', _.get(dynMsgService, 'cObj'));
 		};
 
 		$scope.initialise();
 	}
-	dynamicDCSController.$inject = ['$scope','$state', 'dynMsgService', 'userAccountService', 'authService', 'alertService', '$uibModal'];
+	dynamicDCSController.$inject = ['$scope','$state', 'dynMsgService', 'userAccountService', 'srvService', 'authService', 'alertService', '$uibModal'];
 
 	function settingsModalController($uibModalInstance, authService) {
 		var setCtrl = this;
