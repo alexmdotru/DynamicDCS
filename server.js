@@ -111,7 +111,7 @@ protectedRouter.use(checkJwt);
 protectedRouter.use(function (req, res, next) {
 	dbSystemServiceController.userAccountActions('getPerm', req.user.sub)
 		.then(function (resp){
-			console.log('permlvl: ',resp[0].permLvl, resp);
+			//console.log('permlvl: ',resp[0].permLvl, resp);
 			if( resp[0].permLvl > 10 ){
 				res.status('503').json({ message: "You dont have permissions to do requested action." });
 			} else {}
@@ -170,31 +170,22 @@ protectedRouter.route('/checkUserAccount')
 
 //setup globals
 var outOfSyncUnitCnt = 0;
+var socketQues = ['que1','que2','que0','queadmin'];
+var curServers = {};
+//var serverObject;
+//var updateQue;
 
-var serverObject = {
-	units: [],
-	bases: [],
-	players: [],
-	ClientRequestArray: [],
-	GameGUIRequestArray: []
-};
 
-var updateQue = {
-	que1: [],
-	que2: [],
-	que0: [],
-	queadmin: []
-};
 
-function initClear( serverType ) {
+function initClear( serverName, serverType ) {
 	if (serverType === 'client') {
-		_.set(serverObject, 'units', []);
+		_.set(curServers, ['serverObject', serverName, 'units'], []);
 		//Unit.collection.drop();
-		dbMapServiceController.unitActions('dropall'); //someday maps will persist, reset all units
-		_.set(serverObject, 'ClientRequestArray', []);
+		dbMapServiceController.unitActions('dropall', serverName); //someday maps will persist, reset all units
+		_.set(curServers, ['serverObject', serverName, 'ClientRequestArray'], []);
 	}
 	if (serverType === 'server') {
-		_.set(serverObject, 'GameGUIRequestArray', []);
+		_.set(curServers, ['serverObject', serverName, 'GameGUIRequestArray'], []);
 	}
 }
 
@@ -204,12 +195,12 @@ function isNumeric(x) {
 		(x != Number.POSITIVE_INFINITY) && (x != Number.NEGATIVE_INFINITY);
 }
 
-
-function initUnits ( socketID ) {
-	console.log('sendINIT',socketID);
+function initUnits (serverName, socketID) {
+	console.log('sendINIT for ', serverName, ' for socket ', socketID);
 	var initQue = {que: []};
 	//var pSlot = _.get(_.find(serverObject.players, {'socketID': socketID}), 'slot', '');
-	var pSide = _.get(_.find(serverObject.players, {'socketID': socketID}), 'side', 0);
+	console.log(curServers, curServers[serverName], serverName);
+	var pSide = _.get(_.find(curServers[serverName].serverObject.players, {'socketID': socketID}), 'side', 0);
 	if (admin) {
 		pSide = 'A';
 	}
@@ -218,8 +209,8 @@ function initUnits ( socketID ) {
 		data: {}
 	};
 
-	if (_.get(serverObject, 'units', []).length > 0 && pSide !== 0) {
-		_.forEach(_.get(serverObject, 'units', []), function (unit) {
+	if (_.get(curServers, [serverName, 'serverObject', 'units'], []).length > 0 && pSide !== 0) {
+		_.forEach(_.get(curServers, [serverName, 'serverObject', 'units'], []), function (unit) {
 			if (_.get(unit, 'coalition') === pSide || pSide === 'A') {
 				var curObj = {
 					action: 'INIT',
@@ -265,15 +256,17 @@ function initUnits ( socketID ) {
 
 
 //initArray Push
-function sendInit(socketID) {
+function sendInit(serverName, socketID) {
 
 	if (socketID === 'all'){
+		//problem, find out what sockets are on what server.....
 		_.forEach(io.sockets.sockets, function ( socket ) {
 			console.log('send init to all clients', socket.id);
-			initUnits ( socket.id );
+			initUnits (serverName, socket.id);
 		});
 	}else {
-		initUnits ( socketID );
+		console.log('server name: ', serverName, curServers);
+		initUnits (serverName, socketID);
 	}
 }
 
@@ -301,11 +294,14 @@ io.on('connection', function( socket ) {
 	}
 
 	//client updates
-	console.log("Units: "+serverObject.units.length);
+	//console.log("Units: "+serverObject.units.length);
 	socket.on('clientUpd', function (data) {
 		if(data.action === 'unitINIT') {
 			console.log(socket.id + ' is having unit desync, or initial INIT');
-			sendInit(socket.id);
+			var serverName = 'DynamicCaucasus'; // temp, this needs to go.
+			if( curServers[serverName] ) {
+				sendInit(serverName, socket.id);
+			}
 		}
 	});
 
@@ -321,19 +317,17 @@ io.on('connection', function( socket ) {
 	});
 });
 
-console.log(':: SERVER IS RUNNING!');
-
-_.set(serverObject, 'parse', function (update) {
-
+_.set(curServers, 'processQue', function (serverName, update) {
+console.log('process que: ', serverName, update);
 	if (typeof update.unitCount !== 'undefined'){
-		if(update.unitCount !== serverObject.units.length){
+		if(update.unitCount !== curServers[serverName].serverObject.units.length){
 			console.log('out of sync for '+outOfSyncUnitCnt);
 			if ( outOfSyncUnitCnt > config.outOfSyncUnitThreshold){
 				outOfSyncUnitCnt = 0;
 				console.log('reset server units');
-				initClear( 'client' );
-				_.get(serverObject, 'ClientRequestArray').push({"action":"INIT"});
-				sendInit( 'all' );
+				initClear( serverName, 'client' );
+				_.get(curServers, [serverName, 'serverObject', 'ClientRequestArray']).push({"action":"INIT"});
+				sendInit(serverName, 'all');
 			}else{
 				outOfSyncUnitCnt++;
 			}
@@ -345,7 +339,7 @@ _.set(serverObject, 'parse', function (update) {
 	_.forEach(update.que, function (queObj) {
 		//console.log(queObj);
 		var curObj = {};
-		var curUnit = _.find(serverObject.units, { 'unitID': _.get(queObj, 'data.unitID') });
+		var curUnit = _.find(curServers[serverName].serverObject.units, { 'unitID': _.get(queObj, 'data.unitID') });
 
 		if (_.get(queObj, 'action') === 'C') {
 			if (typeof curUnit !== "undefined") {
@@ -367,11 +361,11 @@ _.set(serverObject, 'parse', function (update) {
 					}
 				};
 
-				dbMapServiceController.unitActions('save', curObj.data);
+				dbMapServiceController.unitActions('save', serverName, curObj.data);
 
-				serverObject.units.push(_.cloneDeep(curObj.data));
-				updateQue['que'+parseFloat(_.get(queObj, 'data.coalition'))].push(_.cloneDeep(curObj));
-				updateQue.queadmin.push(_.cloneDeep(curObj));
+				curServers[serverName].serverObject.units.push(_.cloneDeep(curObj.data));
+				curServers[serverName].updateQue['que'+parseFloat(_.get(queObj, 'data.coalition'))].push(_.cloneDeep(curObj));
+				curServers[serverName].updateQue.queadmin.push(_.cloneDeep(curObj));
 			}
 		}
 		if (_.get(queObj, 'action') === 'U') {
@@ -393,10 +387,10 @@ _.set(serverObject, 'parse', function (update) {
 						speed: parseFloat(_.get(queObj, 'data.speed'))
 					}
 				};
-				dbMapServiceController.unitActions('update', curObj.data);
+				dbMapServiceController.unitActions('update', serverName, curObj.data);
 
-				updateQue['que'+curUnit.coalition].push(_.cloneDeep(curObj));
-				updateQue.queadmin.push(_.cloneDeep(curObj));
+				curServers[serverName].updateQue['que'+curUnit.coalition].push(_.cloneDeep(curObj));
+				curServers[serverName].updateQue.queadmin.push(_.cloneDeep(curObj));
 			}
 		}
 		if (_.get(queObj, 'action') === 'D') {
@@ -408,17 +402,17 @@ _.set(serverObject, 'parse', function (update) {
 				}
 			};
 
-			dbMapServiceController.unitActions('delete', curObj.data);
-			_.remove(serverObject.units, { 'unitID': _.get(queObj, 'data.unitID') });
-			updateQue['que1'].push(_.cloneDeep(curObj));
-			updateQue['que2'].push(_.cloneDeep(curObj));
-			updateQue.queadmin.push(_.cloneDeep(curObj));
+			dbMapServiceController.unitActions('delete', serverName, curObj.data);
+			_.remove(curServers[serverName].serverObject.units, { 'unitID': _.get(queObj, 'data.unitID') });
+			curServers[serverName].updateQue['que1'].push(_.cloneDeep(curObj));
+			curServers[serverName].updateQue['que2'].push(_.cloneDeep(curObj));
+			curServers[serverName].updateQue.queadmin.push(_.cloneDeep(curObj));
 		}
 
 		//playerUpdate
 		if (_.get(queObj, 'action') === 'players') {
-			serverObject.players = queObj.data;
-			_.forEach(serverObject.players, function(player) {
+			curServers[serverName].serverObject.players = queObj.data;
+			_.forEach(curServers[serverName].serverObject.players, function(player) {
 				if (_.get(player, 'ipaddr')){
 					var pArry = _.get(player, 'ipaddr').split(":");
 					if(pArry[0] === '' ){
@@ -456,7 +450,7 @@ _.set(serverObject, 'parse', function (update) {
 							if (!io.sockets.adapter.sids[player.socketID]['admin']) {
 								console.log(player.name + ' socket is admin');
 								io.sockets.sockets[player.socketID].join('admin');
-								sendInit(player.socketID);
+								sendInit(serverName, player.socketID);
 							}
 						}else if (player.side === 0) {
 							if (io.sockets.adapter.sids[player.socketID]['1']) {
@@ -471,7 +465,7 @@ _.set(serverObject, 'parse', function (update) {
 							if (!io.sockets.adapter.sids[player.socketID]['0']) {
 								console.log(player.name + ' is spectator');
 								io.sockets.sockets[player.socketID].join(0);
-								sendInit(player.socketID);
+								sendInit(serverName, player.socketID);
 							}
 						}else if (player.side === 1) {
 							if (io.sockets.adapter.sids[player.socketID]['admin']) {
@@ -485,7 +479,7 @@ _.set(serverObject, 'parse', function (update) {
 							}
 							if (!io.sockets.adapter.sids[player.socketID]['1']) {
 								io.sockets.sockets[player.socketID].join(1);
-								sendInit(player.socketID);
+								sendInit(serverName, player.socketID);
 								console.log(player.name + ' is player in slot, side 1');
 							}
 						}else if (player.side === 2) {
@@ -500,7 +494,7 @@ _.set(serverObject, 'parse', function (update) {
 							}
 							if (!io.sockets.adapter.sids[player.socketID]['2']) {
 								io.sockets.sockets[player.socketID].join(2);
-								sendInit(player.socketID);
+								sendInit(serverName, player.socketID);
 								console.log(player.name + ' is player in slot, side 2');
 							}
 						}
@@ -513,7 +507,7 @@ _.set(serverObject, 'parse', function (update) {
 					if (data.ucid) {
 						_.set(data, '_id', data.ucid);
 						//update map based player table
-						dbMapServiceController.srcPlayerActions('update', data);
+						dbMapServiceController.srcPlayerActions('update', serverName, data);
 						if(data.ipaddr === ':10308' || data.ipaddr === '::ffff:127.0.0.1'){
 							data.ipaddr = '127.0.0.1';
 						}
@@ -524,15 +518,15 @@ _.set(serverObject, 'parse', function (update) {
 							curSocket: _.get(data, 'socketID', ''),
 							ucid: _.get(data, 'ucid')
 						};
-						dbSystemServiceController.userAccountActions('update', curActUpdate);
+						dbSystemServiceController.userAccountActions('update', serverName, curActUpdate);
 					}
 				}
 			});
 
-			updateQue.que1.push(_.cloneDeep(queObj));
-			updateQue.que2.push(_.cloneDeep(queObj));
-			updateQue.que0.push(_.cloneDeep(queObj));
-			updateQue.queadmin.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.que1.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.que2.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.que0.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.queadmin.push(_.cloneDeep(queObj));
 		}
 
 		//Base Info
@@ -546,20 +540,20 @@ _.set(serverObject, 'parse', function (update) {
 					name: key,
 					coalition: value
 				};
-				dbMapServiceController.baseActions('update', curObj);
+				dbMapServiceController.baseActions('update', serverName, curObj);
 			});
 
-			updateQue.que1.push(_.cloneDeep(queObj));
-			updateQue.que2.push(_.cloneDeep(queObj));
-			updateQue.queadmin.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.que1.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.que2.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.queadmin.push(_.cloneDeep(queObj));
 		}
 
 		//Cmd Response
 		if (_.get(queObj, 'action') === 'CMDRESPONSE') {
 			//send response straight to client id
-			updateQue.que1.push(_.cloneDeep(queObj));
-			updateQue.que2.push(_.cloneDeep(queObj));
-			updateQue.queadmin.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.que1.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.que2.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.queadmin.push(_.cloneDeep(queObj));
 		}
 
 		//mesg
@@ -567,85 +561,85 @@ _.set(serverObject, 'parse', function (update) {
 			console.log(queObj);
 			//console.log(serverObject.players);
 			if(_.get(queObj, 'data.playerID') )
-				if (_.isNumber(_.get(_.find(serverObject.players, { 'id': _.get(queObj, 'data.playerID') }), 'side', 0))) {
-					updateQue['que'+_.get(_.find(serverObject.players, { 'id': _.get(queObj, 'data.playerID') }), 'side', 0)]
+				if (_.isNumber(_.get(_.find(curServers[serverName].serverObject.players, { 'id': _.get(queObj, 'data.playerID') }), 'side', 0))) {
+					curServers[serverName].updateQue['que'+_.get(_.find(curServers[serverName].serverObject.players, { 'id': _.get(queObj, 'data.playerID') }), 'side', 0)]
 						.push(_.cloneDeep(queObj));
-					updateQue.queadmin.push(_.cloneDeep(queObj));
+					curServers[serverName].updateQue.queadmin.push(_.cloneDeep(queObj));
 				}
 		}
 
 		//events
 		if (_.get(queObj, 'action') === 'friendly_fire') {
-			updateQue.que0.push(_.cloneDeep(queObj));
-			updateQue.que1.push(_.cloneDeep(queObj));
-			updateQue.que2.push(_.cloneDeep(queObj));
-			updateQue.queadmin.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.que0.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.que1.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.que2.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.queadmin.push(_.cloneDeep(queObj));
 		}
 		if (_.get(queObj, 'action') === 'mission_end') {
-			updateQue.que1.push(_.cloneDeep(queObj));
-			updateQue.que2.push(_.cloneDeep(queObj));
-			updateQue.que0.push(_.cloneDeep(queObj));
-			updateQue.queadmin.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.que1.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.que2.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.que0.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.queadmin.push(_.cloneDeep(queObj));
 		}
 		if (_.get(queObj, 'action') === 'kill') {
-			updateQue.que1.push(_.cloneDeep(queObj));
-			updateQue.que2.push(_.cloneDeep(queObj));
-			updateQue.que0.push(_.cloneDeep(queObj));
-			updateQue.queadmin.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.que1.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.que2.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.que0.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.queadmin.push(_.cloneDeep(queObj));
 		}
 		if (_.get(queObj, 'action') === 'self_kill') {
-			updateQue.que1.push(_.cloneDeep(queObj));
-			updateQue.que2.push(_.cloneDeep(queObj));
-			updateQue.que0.push(_.cloneDeep(queObj));
-			updateQue.queadmin.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.que1.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.que2.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.que0.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.queadmin.push(_.cloneDeep(queObj));
 		}
 		if (_.get(queObj, 'action') === 'change_slot') {
-			updateQue.que1.push(_.cloneDeep(queObj));
-			updateQue.que2.push(_.cloneDeep(queObj));
-			updateQue.que0.push(_.cloneDeep(queObj));
-			updateQue.queadmin.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.que1.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.que2.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.que0.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.queadmin.push(_.cloneDeep(queObj));
 		}
 		if (_.get(queObj, 'action') === 'connect') {
-			updateQue.que1.push(_.cloneDeep(queObj));
-			updateQue.que2.push(_.cloneDeep(queObj));
-			updateQue.que0.push(_.cloneDeep(queObj));
-			updateQue.queadmin.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.que1.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.que2.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.que0.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.queadmin.push(_.cloneDeep(queObj));
 		}
 		if (_.get(queObj, 'action') === 'disconnect') {
-			updateQue.que1.push(_.cloneDeep(queObj));
-			updateQue.que2.push(_.cloneDeep(queObj));
-			updateQue.que0.push(_.cloneDeep(queObj));
-			updateQue.queadmin.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.que1.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.que2.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.que0.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.queadmin.push(_.cloneDeep(queObj));
 		}
 		if (_.get(queObj, 'action') === 'crash') {
-			updateQue.que1.push(_.cloneDeep(queObj));
-			updateQue.que2.push(_.cloneDeep(queObj));
-			updateQue.que0.push(_.cloneDeep(queObj));
-			updateQue.queadmin.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.que1.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.que2.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.que0.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.queadmin.push(_.cloneDeep(queObj));
 		}
 		if (_.get(queObj, 'action') === 'eject') {
-			updateQue.que1.push(_.cloneDeep(queObj));
-			updateQue.que2.push(_.cloneDeep(queObj));
-			updateQue.que0.push(_.cloneDeep(queObj));
-			updateQue.queadmin.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.que1.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.que2.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.que0.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.queadmin.push(_.cloneDeep(queObj));
 		}
 		if (_.get(queObj, 'action') === 'takeoff') {
-			updateQue.que1.push(_.cloneDeep(queObj));
-			updateQue.que2.push(_.cloneDeep(queObj));
-			updateQue.que0.push(_.cloneDeep(queObj));
-			updateQue.queadmin.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.que1.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.que2.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.que0.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.queadmin.push(_.cloneDeep(queObj));
 		}
 		if (_.get(queObj, 'action') === 'landing') {
-			updateQue.que1.push(_.cloneDeep(queObj));
-			updateQue.que2.push(_.cloneDeep(queObj));
-			updateQue.que0.push(_.cloneDeep(queObj));
-			updateQue.queadmin.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.que1.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.que2.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.que0.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.queadmin.push(_.cloneDeep(queObj));
 		}
 		if (_.get(queObj, 'action') === 'pilot_death') {
-			updateQue.que1.push(_.cloneDeep(queObj));
-			updateQue.que2.push(_.cloneDeep(queObj));
-			updateQue.que0.push(_.cloneDeep(queObj));
-			updateQue.queadmin.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.que1.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.que2.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.que0.push(_.cloneDeep(queObj));
+			curServers[serverName].updateQue.queadmin.push(_.cloneDeep(queObj));
 		}
 		return true;
 	});
@@ -654,49 +648,75 @@ _.set(serverObject, 'parse', function (update) {
 
 //emit payload, every sec to start
 setInterval(function(){
-	//units
-	_.forEach(['que1','que2','que0','queadmin'], function (que) {
-		var sendAmt = 0;
-
-		//console.log(updateQue[que].length);
-		if (updateQue[que].length < config.perSendMax) {
-			sendAmt = updateQue[que].length;
-		}else{
-			sendAmt = config.perSendMax
-		}
-		var chkPayload = {que:[]};
-		for (x=0; x < sendAmt; x++ ) {
-			chkPayload.que.push(updateQue[que][0]);
-			updateQue[que].shift();
-		}
-		//console.log('payload: '+chkPayload);
-		if (que === 'que1' && chkPayload.que.length){
-			io.to(1).emit('srvUpd', chkPayload);
-		}
-		if (que === 'que2' && chkPayload.que.length){
-			io.to(2).emit('srvUpd', chkPayload);
-		}
-		if (que === 'que0' && chkPayload.que.length){
-			io.to(0).emit('srvUpd', chkPayload);
-		}
-		if (que === 'queadmin' && chkPayload.que.length){
-			io.to('admin').emit('srvUpd', chkPayload);
-		}
-	});
+	dbSystemServiceController.serverActions('read')
+		.then(function (resp){
+			_.forEach(resp, function (server) {
+				if (server.enabled) {
+					_.forEach(socketQues, function (que, key) {
+						var sendAmt = 0;
+						//console.log(updateQue[que].length);
+						if (curServers[server.name].updateQue[que].length < config.perSendMax) {
+							sendAmt = curServers[server.name].updateQue[que].length;
+						}else{
+							sendAmt = config.perSendMax
+						}
+						var chkPayload = {que:[]};
+						for (x=0; x < sendAmt; x++ ) {
+							chkPayload.que.push(curServers[server.name].updateQue[que][0]);
+							curServers[server.name].updateQue[que].shift();
+						}
+						if (chkPayload.que.length){
+							io.to(key).emit('srvUpd', chkPayload);
+						}
+					});
+				}
+			});
+		})
+	;
 }, 1 * 500);
 
+//dcs socket engine connection handler
+setInterval(function(){
+	dbSystemServiceController.serverActions('read')
+		.then(function (resp){
+			_.forEach(resp, function (server) {
+				if (server.enabled) {
+					if (_.has(curServers, server.name)) {
+						if (curServers[server.name].DCSSocket.clientConnOpen === true) {
+							curServers[server.name].DCSSocket.connectClient();
+						}
+						if (curServers[server.name].DCSSocket.gameGUIConnOpen === true) {
+							curServers[server.name].DCSSocket.connectServer();
+						}
+					} else {
+						_.set(curServers, [server.name, 'serverObject'], {
+							units: [],
+							bases: [],
+							players: [],
+							ClientRequestArray: [],
+							GameGUIRequestArray: []
+						});
 
-var socketCntrl1 = new DCSSocket('testServer', serverAddress, config.clientPort, config.gameGuiPort, syncDCSData, io, initClear, serverObject.ClientRequestArray, serverObject.GameGUIRequestArray);
-//console.log('socketcntrl1: ',socketCntrl1);
-socketCntrl1.connectClient();
-socketCntrl1.connectServer();
+						_.set(curServers, [server.name, 'updateQue'], {
+							que1: [],
+							que2: [],
+							que0: [],
+							queadmin: []
+						});
+						curServers[server.name].DCSSocket = new DCSSocket(server.name, server.ip, server.dcsClientPort, server.dcsGameGuiPort, syncDCSData, io, initClear, curServers[server.name].serverObject.ClientRequestArray, curServers[server.name].serverObject.GameGUIRequestArray);
+						console.log('creating object: ', server.name, curServers[server.name]);
+					}
+				}
+			});
+		});
+}, 1 * 1 * 1000);
 
-function syncDCSData (DCSData) {
+function syncDCSData (serverName, DCSData) {
+	console.log('incoming data: ', DCSData);
 	//var timetest = new Date();
 	//_.set(serverObject, 'ClientRequestArray[0]', {action:'CMD',  reqID: _.random(1,9999)+'|'+timetest.getHours() + ':' + timetest.getMinutes() + ':' + timetest.getSeconds(), cmd:'trigger.action.outText("IT WORKS MOFO!", 2)'});
 	//accept updates
-
 	if (!_.isEmpty(DCSData.que)) {
-		serverObject.parse(DCSData);
+		curServers.processQue(serverName, DCSData);
     }
 }

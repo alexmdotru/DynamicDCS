@@ -113,7 +113,7 @@ exports.userAccountActions = function (action, obj){
 						resolve(useraccount);
 					});
 				} else {
-					console.log('usersFound');
+					//console.log('usersFound');
 					resolve();
 				}
 			});

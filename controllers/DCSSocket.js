@@ -29,14 +29,14 @@ function DCSSocket(serverName, serveraddress, clientPort, gameGuiPort, callback,
 			dsock.clientBuffer = "";
 		});
 		dsock.client.on('connect', function () {
-			dsock.initClear('client');
+			dsock.initClear(serverName, 'client');
 			dsock.client.write('{"action":"NONE"}' + "\n");
 		});
 		dsock.client.on('data', (data) => {
 			dsock.clientBuffer += data;
 			while ((i = dsock.clientBuffer.indexOf("\n")) >= 0) {
 				var data = JSON.parse(dsock.clientBuffer.substring(0, i));
-				dsock.callback(data);
+				dsock.callback(serverName, data);
 				dsock.clientBuffer = dsock.clientBuffer.substring(i + 1);
 				dsock.client.write(JSON.stringify(_.get(dsock, 'reqClientArray', {action: 'NONE'})) + "\n");
 				dsock.reqClientArray.shift();
@@ -65,14 +65,14 @@ function DCSSocket(serverName, serveraddress, clientPort, gameGuiPort, callback,
 			dsock.gameGUIBuffer = "";
 		});
 		dsock.gameGUI.on('connect', function () {
-			dsock.initClear('server');
+			dsock.initClear(serverName, 'server');
 			dsock.gameGUI.write('{"action":"NONE"}' + "\n");
 		});
 		dsock.gameGUI.on('data', (data) => {
 			dsock.gameGUIBuffer += data;
 			while ((i = dsock.gameGUIBuffer.indexOf("\n")) >= 0) {
 				var data = JSON.parse(dsock.gameGUIBuffer.substring(0, i));
-				dsock.callback(data);
+				dsock.callback(serverName, data);
 				dsock.gameGUIBuffer = dsock.gameGUIBuffer.substring(i + 1);
 				dsock.gameGUI.write(JSON.stringify(_.get(dsock, 'regGameGuiArray', {action: 'NONE'})) + "\n");
 				dsock.regGameGuiArray.shift();

@@ -12,8 +12,8 @@ var airfieldSchema = require('../models/airfieldSchema');
 var srvPlayerSchema = require('../models/srvPlayerSchema');
 var unitSchema = require('../models/unitSchema');
 
-exports.baseActions = function (action, obj){
-	const Airfield = mapdb.model('airfield', airfieldSchema);
+exports.baseActions = function (action, serverName, obj){
+	const Airfield = mapdb.model(serverName+'_airfield', airfieldSchema);
 	var query = {_id: obj._id},
 		update = { $set: obj },
 		options = { upsert: true, new: true, setDefaultsOnInsert: true };
@@ -23,8 +23,8 @@ exports.baseActions = function (action, obj){
 	});
 };
 
-exports.srcPlayerActions = function (action, obj){
-	const SrvPlayer = mapdb.model('srvPlayer', srvPlayerSchema);
+exports.srcPlayerActions = function (action, serverName, obj){
+	const SrvPlayer = mapdb.model(serverName+'_srvPlayer', srvPlayerSchema);
 	var query = {_id: obj._id},
 		update = { $set: obj },
 		options = { upsert: true, new: true, setDefaultsOnInsert: true };
@@ -34,8 +34,8 @@ exports.srcPlayerActions = function (action, obj){
 	});
 };
 
-exports.unitActions = function (action, obj){
-	const Unit = mapdb.model('unit', unitSchema);
+exports.unitActions = function (action, serverName, obj){
+	const Unit = mapdb.model(serverName+'_unit', unitSchema);
 	if(action === 'save') {
 		const unit = new Unit(obj);
 		unit.save(function (err) {
