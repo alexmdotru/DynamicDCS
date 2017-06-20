@@ -1,7 +1,7 @@
 (function (angular) {
 	'use strict';
 
-	function dynMapController ($scope, $stateParams, userAccountService, gmapService, socket) {
+	function dynMapController ($scope, $stateParams, userAccountService, gmapService, srvPlayerAPI, socket) {
 		var dmCtrl = this;
 		var pSide;
 
@@ -20,13 +20,18 @@
 				events: [],
 				eventMsgs: []
 			});
+			console.log(userAccountService.localAccount);
 			// join page room, find out what side there suppose to be on, or set them as neutral
-			console.log(_.get(userAccountService, ['localAccount', 'ucid'], 0));
+			var spread = srvPlayerAPI.query({name: $stateParams.name});
+			spread.$promise
+				.then(function(srvPlayers) {
+					pSide = _.find( srvPlayers, {ucid: _.get(userAccountService, ['localAccount', 'ucid'])});
+					console.log('last player side:', pSide.side);
+					socket.emit('room', {room: $stateParams.name+'_q'+pSide.side});
+				})
+			;
 			// find out last side they were on
-			pSide = _.find( dmCtrl.mObj.players, {ucid: _.get(userAccountService, ['localAccount', 'ucid'])});
-			console.log(_.get(userAccountService, ['localAccount', 'ucid'], 0), dmCtrl.mObj.players, pSide);
 
-			socket.emit('room', {room: $stateParams.name+'_q'+pSide});
 			// init data
 			//gmapService.resetMarkers($stateParams.name);
 			//socket.emit('clientUpd', { name: $stateParams.name, action: 'unitINIT' });
@@ -117,7 +122,7 @@
 
 		_.set($scope, 'map', _.get(gmapService, 'gmapObj'));
 	}
-	dynMapController.$inject = ['$scope', '$stateParams', 'userAccountService', 'gmapService', 'mySocket'];
+	dynMapController.$inject = ['$scope', '$stateParams', 'userAccountService', 'gmapService', 'dynamic-dcs.api.srvPlayer', 'mySocket'];
 
 	function configFunction($stateProvider) {
 		$stateProvider
@@ -134,6 +139,7 @@
 		.module('state.dynMap', [
 			'ui.router',
 			'dynamic-dcs.gmapService',
+			'dynamic-dcs.api.srvPlayer',
 			'dynamic-dcs.socketFactory'
 		])
 		.config(['$stateProvider', '$urlRouterProvider', configFunction])
