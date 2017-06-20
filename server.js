@@ -57,9 +57,9 @@ app.use('/libs', express.static(__dirname + '/node_modules'));
 const checkJwt = jwt({
 	// Dynamically provide a signing key based on the kid in the header and the singing keys provided by the JWKS endpoint.
 	secret: jwksRsa.expressJwtSecret({
-		cache: true,
-		rateLimit: true,
-		jwksRequestsPerMinute: 5,
+		//cache: true,
+		//rateLimit: true,
+		//jwksRequestsPerMinute: 5,
 		jwksUri: 'https://'+process.env.AUTH0_DOMAIN+'/.well-known/jwks.json'
 	}),
 	// Validate the audience and the issuer.
@@ -106,7 +106,7 @@ router.route('/userAccounts')
 	});
 router.route('/userAccounts/:_id')
 	.get(function(req, res) {
-		_.set(req, 'body._id', req.params._id);
+		_.set(req, 'body.ucid', req.params._id);
 		dbSystemServiceController.userAccountActions('read', req.body)
 			.then(function (resp){
 				res.json(resp);
@@ -152,7 +152,7 @@ protectedRouter.route('/servers/:server_name')
 
 protectedRouter.route('/userAccounts')
 	.post(function(req, res) {
-		console.log(req.user.sub);
+		//console.log(req.user.sub);
 		dbSystemServiceController.userAccountActions('create', req.body)
 			.then(function (resp){
 				res.json(resp);
@@ -199,62 +199,68 @@ function isNumeric(x) {
 }
 
 function initUnits (serverName, socketID) {
-	console.log('sendINIT for ', serverName, ' for socket ', socketID);
+	console.log('sendInitUNITS for ', serverName, ' for socket ', socketID);
 	var initQue = {que: []};
-	//var pSlot = _.get(_.find(serverObject.players, {'socketID': socketID}), 'slot', '');
-	var pSide = _.get(_.find(curServers[serverName].serverObject.players, {'socketID': socketID}), 'side', 0);
-	console.log('pside: ', pSide);
-	if (admin) {
-		pSide = 'A';
-	}
-	var spectator = {
-		action: 'spectator',
-		data: {}
-	};
 
-	if (_.get(curServers, [serverName, 'serverObject', 'units'], []).length > 0 && pSide !== 0) {
-		_.forEach(_.get(curServers, [serverName, 'serverObject', 'units'], []), function (unit) {
-			if (_.get(unit, 'coalition') === pSide || pSide === 'A') {
-				var curObj = {
-					action: 'INIT',
-					data: {
-						unitID: parseFloat(_.get(unit, 'unitID')),
-						type: _.get(unit, 'type'),
-						coalition: parseFloat(_.get(unit, 'coalition')),
-						lat: parseFloat(_.get(unit, 'lat')),
-						lon: parseFloat(_.get(unit, 'lon')),
-						alt: parseFloat(_.get(unit, 'alt')),
-						hdg: parseFloat(_.get(unit, 'hdg')),
-						speed: parseFloat(_.get(unit, 'speed')),
-						playername: _.get(unit, 'playername', '')
+	dbSystemServiceController.userAccountActions('read')
+		.then(function (userAccounts){
+			var curAccount = _.find(userAccounts, {curSocket: socketID});
+			//console.log('checkaccount: ', curAccount);
+			dbMapServiceController.srvPlayerActions('read', serverName)
+				.then(function (srvPlayers){
+					var curSrvPlayer = _.find(srvPlayers, {ucid: curAccount.ucid});
+					//console.log('srvp: ', curSrvPlayer, srvPlayers, curAccount);
+
+					if ( curAccount.permLvl < 20 ){
+						pSide = 'admin';
+					} else {
+						var pSide = _.get(curSrvPlayer, 'side', 0);
 					}
-				};
-				initQue.que.push(_.cloneDeep(curObj));
-			}
-		});
-	} else {
-		io.to(socketID).emit('srvUpd', {que: [{action: 'reset'}]});
-	}
 
-	var sendAmt = 0;
-	var totalChkLoops = _.ceil(initQue.que.length / config.perSendMax);
-	//console.log(totalChkLoops);
+					if (_.get(curServers, [serverName, 'serverObject', 'units'], []).length > 0 && pSide !== 0) {
+						_.forEach(_.get(curServers, [serverName, 'serverObject', 'units'], []), function (unit) {
+							if (_.get(unit, 'coalition') === pSide || pSide === 'A') {
+								var curObj = {
+									action: 'INIT',
+									data: {
+										unitID: parseFloat(_.get(unit, 'unitID')),
+										type: _.get(unit, 'type'),
+										coalition: parseFloat(_.get(unit, 'coalition')),
+										lat: parseFloat(_.get(unit, 'lat')),
+										lon: parseFloat(_.get(unit, 'lon')),
+										alt: parseFloat(_.get(unit, 'alt')),
+										hdg: parseFloat(_.get(unit, 'hdg')),
+										speed: parseFloat(_.get(unit, 'speed')),
+										playername: _.get(unit, 'playername', '')
+									}
+								};
+								initQue.que.push(_.cloneDeep(curObj));
+							}
+						});
+					}
 
-	var chkPayload = {que: [{action: 'reset'}]};
-	for (x = 0; x < totalChkLoops; x++) {
-		if (initQue.que.length < config.perSendMax) {
-			sendAmt = initQue.que.length;
-		} else {
-			sendAmt = config.perSendMax
-		}
-		for (y = 0; y < sendAmt; y++) {
-			chkPayload.que.push(initQue.que[0]);
-			initQue.que.shift();
-		}
-		//console.log('que: ',chkPayload);
-		io.to(socketID).emit('srvUpd', chkPayload);
-		chkPayload = {que: []};
-	}
+					var sendAmt = 0;
+					var totalChkLoops = _.ceil(initQue.que.length / config.perSendMax);
+
+					var chkPayload = {que: [{action: 'reset'}]};
+					for (x = 0; x < totalChkLoops; x++) {
+						if (initQue.que.length < config.perSendMax) {
+							sendAmt = initQue.que.length;
+						} else {
+							sendAmt = config.perSendMax
+						}
+						for (y = 0; y < sendAmt; y++) {
+							chkPayload.que.push(initQue.que[0]);
+							initQue.que.shift();
+						}
+						//console.log('que: ',chkPayload);
+						io.to(socketID).emit('srvUpd', chkPayload);
+						chkPayload = {que: []};
+					}
+				})
+			;
+		})
+	;
 }
 
 
@@ -276,41 +282,38 @@ function sendInit(serverName, socketID) {
 //setup socket io
 io.on('connection', function( socket ) {
 
-	/*
-	var clientIpAddress = socket.request.headers['x-forwarded-for'] || socket.request.connection.remoteAddress;
-	clientIpAddress = clientIpAddress.replace(/^.*:/, '');
-
-	var  sockInfo = {
-		action: 'socketInfo',
-		data: {
-			id: socket.id,
-			ip: clientIpAddress
-		}
-	};
-
-	io.to(socket.id).emit('srvUpd', sockInfo);
-
-	console.log(' new request from : ',clientIpAddress, sockInfo);
-	//send socketid payload to client
-
-	if (!io.sockets.adapter.sids[socket.id]['0']) {
-		io.sockets.sockets[socket.id].join(0);
-	}
-	*/
 	socket.on('room', function(roomObj){
-		// check for permissions!!!!
-		if(socket.room)
-			socket.leave(socket.room);
-
-		console.log('joining socket room: ', roomObj.room);
-		socket.room = roomObj.room;
-		socket.join(roomObj.room);
+		dbSystemServiceController.userAccountActions('read')
+			.then(function (userAccounts){
+				var curAccount = _.find(userAccounts, {authId: roomObj.authId}); // might have to decrypt authtoken...
+				_.set(curAccount, 'curSocket', socket.id);
+				var curIP = socket.conn.remoteAddress;
+				if(curIP === ':10308' || curIP === '::ffff:127.0.0.1'){
+					curIP = '127.0.0.1';
+				}
+				//console.log('curupdating: ', '_id:', curAccount._id, 'curSocket: ', socket.id, 'lastIp:', curIP);
+				dbSystemServiceController.userAccountActions('update', {_id: curAccount._id, curSocket: socket.id, lastIp: curIP, ucid: ''})
+					.then(function () {
+						//console.log('useraccount: ', userAccounts, curAccount);
+						if(socket.room)
+							socket.leave(socket.room);
+						if (_.includes(roomObj.room, 'admin') && curAccount.permLvl > 20){
+							console.log('you lack the permissions to do this action!');
+						} else {
+							//console.log(roomObj.authId+' joining socket room: ' + roomObj.room);
+							socket.room = roomObj.room;
+							socket.join(roomObj.room);
+						}
+					})
+				;
+			})
+		;
 	});
 
 	socket.on('clientUpd', function (data) {
-		console.log('clientupd: ',data);
+		//console.log('clientupd: ',data);
 		if(data.action === 'unitINIT') {
-			console.log(socket.id + ' on '+data.name + ' is having unit desync, or initial INIT');
+			//console.log(socket.id + ' on '+data.name + ' is having unit desync, or initial INIT');
 			if( curServers[data.name] ) {
 				sendInit(data.name, socket.id);
 			}
@@ -424,97 +427,6 @@ _.set(curServers, 'processQue', function (serverName, update) {
 		//playerUpdate
 		if (_.get(queObj, 'action') === 'players') {
 			curServers[serverName].serverObject.players = queObj.data;
-			_.forEach(curServers[serverName].serverObject.players, function(player) {
-				if (_.get(player, 'ipaddr')){
-					var pArry = _.get(player, 'ipaddr').split(":");
-					if(pArry[0] === '' ){
-						_.set(player, 'socketID', _.get(_.find(_.get(io, 'sockets.sockets'), function (socket) {
-							if(socket.conn.remoteAddress === '::ffff:127.0.0.1' || socket.conn.remoteAddress === '::1'){
-								return true;
-							}
-							return false;
-						}), 'id', ''));
-						//console.log('1',pArry[0], player.socketID);
-					}else{
-						_.set(player, 'socketID', _.get(_.find(_.get(io, 'sockets.sockets'), function (socket) {
-							//console.log(socket.conn.remoteAddress, '::ffff:'+pArry[0]);
-							if(socket.conn.remoteAddress === '::ffff:'+pArry[0]){
-								return true;
-							}
-							return false;
-						}), 'id', ''));
-						//console.log('2',pArry[0], player.socketID);
-					}
-
-					/*
-					//rewrite this someday, sets up the socket.io information rooms for updates
-					if(!_.isEmpty(player.socketID)) {
-						if (admin) {
-							//figure admins later
-							if (io.sockets.adapter.sids[player.socketID]['1']) {
-								io.sockets.sockets[player.socketID].leave(1);
-							}
-							if (io.sockets.adapter.sids[player.socketID]['2']) {
-								io.sockets.sockets[player.socketID].leave(2);
-							}
-							if (io.sockets.adapter.sids[player.socketID]['0']) {
-								io.sockets.sockets[player.socketID].leave(0);
-							}
-							if (!io.sockets.adapter.sids[player.socketID]['admin']) {
-								console.log(player.name + ' socket is admin');
-								io.sockets.sockets[player.socketID].join('admin');
-								sendInit(serverName, player.socketID);
-							}
-						}else if (player.side === 0) {
-							if (io.sockets.adapter.sids[player.socketID]['1']) {
-								io.sockets.sockets[player.socketID].leave(1);
-							}
-							if (io.sockets.adapter.sids[player.socketID]['2']) {
-								io.sockets.sockets[player.socketID].leave(2);
-							}
-							if (io.sockets.adapter.sids[player.socketID]['admin']) {
-								io.sockets.sockets[player.socketID].leave('admin');
-							}
-							if (!io.sockets.adapter.sids[player.socketID]['0']) {
-								console.log(player.name + ' is spectator');
-								io.sockets.sockets[player.socketID].join(0);
-								sendInit(serverName, player.socketID);
-							}
-						}else if (player.side === 1) {
-							if (io.sockets.adapter.sids[player.socketID]['admin']) {
-								io.sockets.sockets[player.socketID].leave('admin');
-							}
-							if (io.sockets.adapter.sids[player.socketID]['0']) {
-								io.sockets.sockets[player.socketID].leave(0);
-							}
-							if (io.sockets.adapter.sids[player.socketID]['2']) {
-								io.sockets.sockets[player.socketID].leave(2);
-							}
-							if (!io.sockets.adapter.sids[player.socketID]['1']) {
-								io.sockets.sockets[player.socketID].join(1);
-								sendInit(serverName, player.socketID);
-								console.log(player.name + ' is player in slot, side 1');
-							}
-						}else if (player.side === 2) {
-							if (io.sockets.adapter.sids[player.socketID]['admin']) {
-								io.sockets.sockets[player.socketID].leave('admin');
-							}
-							if (io.sockets.adapter.sids[player.socketID]['0']) {
-								io.sockets.sockets[player.socketID].leave(0);
-							}
-							if (io.sockets.adapter.sids[player.socketID]['1']) {
-								io.sockets.sockets[player.socketID].leave(1);
-							}
-							if (!io.sockets.adapter.sids[player.socketID]['2']) {
-								io.sockets.sockets[player.socketID].join(2);
-								sendInit(serverName, player.socketID);
-								console.log(player.name + ' is player in slot, side 2');
-							}
-						}
-					}
-					*/
-				}
-			});
 			//apply local information object
 			_.forEach(queObj.data, function ( data ){
 				if(data) {
@@ -526,13 +438,13 @@ _.set(curServers, 'processQue', function (serverName, update) {
 							data.ipaddr = '127.0.0.1';
 						}
 						//update user based table (based on ucid)
+						//console.log('playerstime: ', data);
 						var curActUpdate = {
 							gameName: _.get(data, 'name', ''),
 							lastIp: _.get(data, 'ipaddr', ''),
-							curSocket: _.get(data, 'socketID', ''),
-							ucid: _.get(data, 'ucid')
+							ucid: _.get(data, 'ucid', '')
 						};
-						dbSystemServiceController.userAccountActions('update', serverName, curActUpdate);
+						dbSystemServiceController.userAccountActions('update', curActUpdate);
 					}
 				}
 			});
@@ -660,27 +572,28 @@ _.set(curServers, 'processQue', function (serverName, update) {
 	});
 });
 
-
 //emit payload, every sec to start
 setInterval(function(){
 	dbSystemServiceController.serverActions('read')
 		.then(function (resp){
 			_.forEach(resp, function (server) {
 				if (server.enabled) {
-					_.forEach(socketQues, function (que, key) {
-						var sendAmt = 0;
-						if (curServers[server.name].updateQue[que].length < config.perSendMax) {
-							sendAmt = curServers[server.name].updateQue[que].length;
-						}else{
-							sendAmt = config.perSendMax
-						}
-						var chkPayload = {que:[]};
-						for (x=0; x < sendAmt; x++ ) {
-							chkPayload.que.push(curServers[server.name].updateQue[que][0]);
-							curServers[server.name].updateQue[que].shift();
-						}
-						if (chkPayload.que.length){
-							io.to(server.name+'_'+que).emit('srvUpd', chkPayload);
+					_.forEach(socketQues, function (que) {
+						if(typeof curServers[server.name] !== 'undefined') {
+							var sendAmt = 0;
+							if (curServers[server.name].updateQue[que].length < config.perSendMax) {
+								sendAmt = curServers[server.name].updateQue[que].length;
+							} else {
+								sendAmt = config.perSendMax
+							}
+							var chkPayload = {que: []};
+							for (x = 0; x < sendAmt; x++) {
+								chkPayload.que.push(curServers[server.name].updateQue[que][0]);
+								curServers[server.name].updateQue[que].shift();
+							}
+							if (chkPayload.que.length) {
+								io.to(server.name + '_' + que).emit('srvUpd', chkPayload);
+							}
 						}
 					});
 				}

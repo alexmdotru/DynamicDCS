@@ -34,10 +34,14 @@ exports.srvPlayerActions = function (action, serverName, obj){
 		});
 	}
 	if (action === 'update') {
+		curIP = obj.ipaddr;
+		if(obj.ipaddr === ':10308' || obj.ipaddr === '::ffff:127.0.0.1'){
+			curIP = '127.0.0.1';
+		}
+		_.set(obj, 'ipaddr', curIP);
 		var query = {_id: obj._id},
 			update = {$set: obj},
 			options = {upsert: true, new: true, setDefaultsOnInsert: true};
-
 		SrvPlayer.findOneAndUpdate(query, update, options, function (err) {
 			if (err) return console.error(err);
 		});

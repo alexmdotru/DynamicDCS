@@ -40,25 +40,30 @@ exports.userAccountActions = function (action, obj){
 	}
 	if(action === 'update') {
 		return new Promise(function(resolve, reject) {
+			//console.log('insideUpdate: ', obj);
 			UserAccount.find({ucid: obj.ucid}, function (err, ucidUser) {
 				if (err) {
 					reject(err);
 				}
 				if (ucidUser.length === 0) {
 					// if ip is 10308 its the same as ::1
-					if(obj.ipaddr === ':10308' || obj.ipaddr === '::ffff:127.0.0.1'){
+					if(obj.lastIp === ':10308' || obj.lastIp === '::ffff:127.0.0.1'){
 						_.set(obj, 'lastIp', '127.0.0.1');
 					}
 					UserAccount.find({lastIp: obj.lastIp}, function (err, ipUser) {
 						if (err) {
 							reject(err);
 						}
+						//console.log('ipUser found: ', ipUser);
 						if (ipUser.length === 0) {
 							//console.log('cant match up user with account ', obj.lastIp);
 						}else{
 							ipUser = ipUser[0];
 							_.set(ipUser, 'gameName', _.get(obj, 'gameName'));
 							_.set(ipUser, 'ucid', _.get(obj, 'ucid'));
+							if(_.get(obj, 'curSocket') !== ''){
+								_.set(ucidUser, 'curSocket', _.get(obj, 'curSocket'));
+							}
 							ipUser.save(function (err) {
 								if (err) {
 									reject(err);
@@ -68,9 +73,13 @@ exports.userAccountActions = function (action, obj){
 						}
 					});
 				} else {
+
 					ucidUser = ucidUser[0];
 					_.set(ucidUser, 'gameName', _.get(obj, 'gameName'));
 					_.set(ucidUser, 'lastIp', _.get(obj, 'lastIp'));
+					if(_.get(obj, 'curSocket') !== ''){
+						_.set(ucidUser, 'curSocket', _.get(obj, 'curSocket'));
+					}
 					ucidUser.save(function (err) {
 						if (err) {
 							reject(err);

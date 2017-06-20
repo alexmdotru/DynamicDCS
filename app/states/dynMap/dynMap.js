@@ -20,21 +20,18 @@
 				events: [],
 				eventMsgs: []
 			});
-			console.log(userAccountService.localAccount);
-			// join page room, find out what side there suppose to be on, or set them as neutral
-			var spread = srvPlayerAPI.query({name: $stateParams.name});
-			spread.$promise
-				.then(function(srvPlayers) {
-					pSide = _.find( srvPlayers, {ucid: _.get(userAccountService, ['localAccount', 'ucid'])});
-					console.log('last player side:', pSide.side);
-					socket.emit('room', {room: $stateParams.name+'_q'+pSide.side});
-				})
-			;
-			// find out last side they were on
-
-			// init data
-			//gmapService.resetMarkers($stateParams.name);
-			//socket.emit('clientUpd', { name: $stateParams.name, action: 'unitINIT' });
+			if ( userAccountService.localAccount.permLvl < 20 ){
+				socket.emit('room', {server: $stateParams.name, room: $stateParams.name+'_qadmin', authId: _.get(userAccountService, ['localAccount', 'authId'])});
+			} else {
+				var spread = srvPlayerAPI.query({name: $stateParams.name});
+				spread.$promise
+					.then(function(srvPlayers) {
+						pSide = _.find( srvPlayers, {authId: _.get(userAccountService, ['localAccount', 'authId'])});
+						console.log('last player side:', pSide.side, _.get(userAccountService, ['localAccount', 'authId']));
+						socket.emit('room', {server: $stateParams.name, room: $stateParams.name+'_q'+pSide.side, authId: _.get(userAccountService, ['localAccount', 'authId'])});
+					})
+				;
+			}
 		});
 
 		//socket.io connectors
