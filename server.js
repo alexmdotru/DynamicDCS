@@ -198,28 +198,30 @@ function isNumeric(x) {
 		(x != Number.POSITIVE_INFINITY) && (x != Number.NEGATIVE_INFINITY);
 }
 
-function initUnits (serverName, socketID) {
+function initUnits (serverName, socketID, authId) {
 	console.log('sendInitUNITS for ', serverName, ' for socket ', socketID);
 	var initQue = {que: []};
 
 	dbSystemServiceController.userAccountActions('read')
 		.then(function (userAccounts){
-			var curAccount = _.find(userAccounts, {curSocket: socketID});
 			//console.log('checkaccount: ', curAccount);
 			dbMapServiceController.srvPlayerActions('read', serverName)
 				.then(function (srvPlayers){
+					var pSide;
+					var curAccount = _.find(userAccounts, {authId: authId});
+					//console.log('srvp: ', srvPlayers, userAccounts);
 					var curSrvPlayer = _.find(srvPlayers, {ucid: curAccount.ucid});
-					//console.log('srvp: ', curSrvPlayer, srvPlayers, curAccount);
 
 					if ( curAccount.permLvl < 20 ){
 						pSide = 'admin';
 					} else {
-						var pSide = _.get(curSrvPlayer, 'side', 0);
+						pSide = _.get(curSrvPlayer, 'side', 0);
 					}
 
+					//console.log('pside: ', pSide);
 					if (_.get(curServers, [serverName, 'serverObject', 'units'], []).length > 0 && pSide !== 0) {
 						_.forEach(_.get(curServers, [serverName, 'serverObject', 'units'], []), function (unit) {
-							if (_.get(unit, 'coalition') === pSide || pSide === 'A') {
+							if (_.get(unit, 'coalition') === pSide || pSide === 'admin') {
 								var curObj = {
 									action: 'INIT',
 									data: {
@@ -265,16 +267,16 @@ function initUnits (serverName, socketID) {
 
 
 //initArray Push
-function sendInit(serverName, socketID) {
+function sendInit(serverName, socketID, authId) {
 
 	if (socketID === 'all'){
 		//problem, find out what sockets are on what server.....
 		_.forEach(io.sockets.sockets, function ( socket ) {
 			console.log('send init to all clients', socket.id);
-			initUnits (serverName, socket.id);
+			initUnits (serverName, socket.id, authId);
 		});
 	}else {
-		initUnits (serverName, socketID);
+		initUnits (serverName, socketID, authId);
 	}
 }
 
@@ -292,7 +294,7 @@ io.on('connection', function( socket ) {
 					curIP = '127.0.0.1';
 				}
 				//console.log('curupdating: ', '_id:', curAccount._id, 'curSocket: ', socket.id, 'lastIp:', curIP);
-				dbSystemServiceController.userAccountActions('update', {_id: curAccount._id, curSocket: socket.id, lastIp: curIP, ucid: ''})
+				dbSystemServiceController.userAccountActions('update', {_id: curAccount._id, curSocket: socket.id, lastIp: curIP})
 					.then(function () {
 						//console.log('useraccount: ', userAccounts, curAccount);
 						if(socket.room)
@@ -314,8 +316,9 @@ io.on('connection', function( socket ) {
 		//console.log('clientupd: ',data);
 		if(data.action === 'unitINIT') {
 			//console.log(socket.id + ' on '+data.name + ' is having unit desync, or initial INIT');
+
 			if( curServers[data.name] ) {
-				sendInit(data.name, socket.id);
+				sendInit(data.name, socket.id, data.authId );
 			}
 		}
 	});

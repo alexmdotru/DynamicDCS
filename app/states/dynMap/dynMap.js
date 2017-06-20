@@ -50,7 +50,7 @@
 					if (que.action === 'U') {
 						if (!_.find(_.get(dmCtrl, 'mObj.units'),{'unitID': _.get(que, 'data.unitID')})) {
 							_.set(dmCtrl, 'mObj.units', []);
-							socket.emit('clientUpd', {name: $stateParams.name, action: 'unitINIT'});
+							socket.emit('clientUpd', {name: $stateParams.name, action: 'unitINIT', authId: _.get(userAccountService, ['localAccount', 'authId'])});
 							return false; // stops the rest of the updates since where doing a resync
 						} else {
 							_.find(_.get(dmCtrl, 'mObj.units'),
