@@ -1,7 +1,7 @@
 (function (angular) {
 	'use strict';
 
-	function dynamicDCSController($scope, $state, dynMsgService, userAccountService, srvService, authService, alertService, $uibModal) {
+	function dynamicDCSController($scope, $state, userAccountService, srvService, authService, alertService, $uibModal) {
 		_.set(this, 'startPage', '/dynamic-dcs.tpl.html');
 		_.set($scope, 'auth', authService);
 		_.set($scope, 'animationsEnabled', true);
@@ -59,12 +59,11 @@
 			_.set($scope, 'go', function(state) {
 				$state.go(state);
 			});
-			_.set($scope, 'cObj', _.get(dynMsgService, 'cObj'));
 		};
 
 		$scope.initialise();
 	}
-	dynamicDCSController.$inject = ['$scope','$state', 'dynMsgService', 'userAccountService', 'srvService', 'authService', 'alertService', '$uibModal'];
+	dynamicDCSController.$inject = ['$scope','$state', 'userAccountService', 'srvService', 'authService', 'alertService', '$uibModal'];
 
 	function settingsModalController($uibModalInstance, authService) {
 		var setCtrl = this;
@@ -163,13 +162,11 @@
 			});
 		});
 	}
-	//adminModalController.$inject = ['$scope', '$uibModal', '$uibModalInstance','authService', 'alertService', 'DDCSServers', 'DDCSTheaters', 'dynamic-dcs.api.server', 'srvService'];
 	adminModalController.$inject = ['$scope', '$uibModal', '$uibModalInstance', 'srvService', 'DDCSTheaters'];
 
 	angular
 		.module('dynamic-dcs', [
 			'dynamic-dcs.templates',
-			'dynamic-dcs.dynMsgService',
 			'dynamic-dcs.chat-box',
 			'dynamic-dcs.api.server',
 			'dynamic-dcs.api.theater',

@@ -23,15 +23,25 @@ exports.baseActions = function (action, serverName, obj){
 	});
 };
 
-exports.srcPlayerActions = function (action, serverName, obj){
+exports.srvPlayerActions = function (action, serverName, obj){
 	const SrvPlayer = mapdb.model(serverName+'_srvPlayer', srvPlayerSchema);
-	var query = {_id: obj._id},
-		update = { $set: obj },
-		options = { upsert: true, new: true, setDefaultsOnInsert: true };
+	if (action === 'read') {
+		return new Promise(function(resolve, reject) {
+			SrvPlayer.find(function (err, srcPlayer) {
+				if (err) { reject(err) }
+				resolve(srcPlayer);
+			});
+		});
+	}
+	if (action === 'update') {
+		var query = {_id: obj._id},
+			update = {$set: obj},
+			options = {upsert: true, new: true, setDefaultsOnInsert: true};
 
-	SrvPlayer.findOneAndUpdate( query, update, options, function(err) {
-		if (err) return console.error(err);
-	});
+		SrvPlayer.findOneAndUpdate(query, update, options, function (err) {
+			if (err) return console.error(err);
+		});
+	}
 };
 
 exports.unitActions = function (action, serverName, obj){

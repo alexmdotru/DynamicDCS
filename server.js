@@ -68,6 +68,13 @@ const checkJwt = jwt({
 	algorithms: ['RS256']
 });
 
+router.route('/srvPlayers/:name')
+	.get(function(req, res) {
+		dbMapServiceController.srvPlayerActions('read', req.params.name)
+			.then(function (resp){
+				res.json(resp);
+			});
+	});
 router.route('/theaters')
 	.get(function(req, res) {
 		dbSystemServiceController.theaterActions('read')
@@ -196,6 +203,7 @@ function initUnits (serverName, socketID) {
 	var initQue = {que: []};
 	//var pSlot = _.get(_.find(serverObject.players, {'socketID': socketID}), 'slot', '');
 	var pSide = _.get(_.find(curServers[serverName].serverObject.players, {'socketID': socketID}), 'side', 0);
+	console.log('pside: ', pSide);
 	if (admin) {
 		pSide = 'A';
 	}
@@ -260,7 +268,6 @@ function sendInit(serverName, socketID) {
 			initUnits (serverName, socket.id);
 		});
 	}else {
-		//console.log('server name: ', serverName, curServers);
 		initUnits (serverName, socketID);
 	}
 }
@@ -290,14 +297,14 @@ io.on('connection', function( socket ) {
 		io.sockets.sockets[socket.id].join(0);
 	}
 	*/
-	socket.on('room', function(room){
+	socket.on('room', function(roomObj){
 		// check for permissions!!!!
 		if(socket.room)
 			socket.leave(socket.room);
 
-		console.log('joining socket room: ', room);
-		socket.room = room;
-		socket.join(room);
+		console.log('joining socket room: ', roomObj.room);
+		socket.room = roomObj.room;
+		socket.join(roomObj.room);
 	});
 
 	socket.on('clientUpd', function (data) {
@@ -514,7 +521,7 @@ _.set(curServers, 'processQue', function (serverName, update) {
 					if (data.ucid) {
 						_.set(data, '_id', data.ucid);
 						//update map based player table
-						dbMapServiceController.srcPlayerActions('update', serverName, data);
+						dbMapServiceController.srvPlayerActions('update', serverName, data);
 						if(data.ipaddr === ':10308' || data.ipaddr === '::ffff:127.0.0.1'){
 							data.ipaddr = '127.0.0.1';
 						}

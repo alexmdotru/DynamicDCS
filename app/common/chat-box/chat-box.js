@@ -1,13 +1,15 @@
 (function (angular) {
 	'use strict';
 
-	function chatBoxController ($timeout, dynMsgService) {
+	function chatBoxController () {
 		var cbt = this;
-		$timeout(function() {
-			_.set(cbt, 'msgs', _.get(dynMsgService, ['cObj', cbt.socketSub]));
-		});
+		// $timeout, dynMsgService
+		// $timeout(function() {
+		//	_.set(cbt, 'msgs', _.get(dynMsgService, ['cObj', cbt.socketSub]));
+		// });
+		// '$timeout', 'dynMsgService'
 	}
-	chatBoxController.$injector = ['$timeout', 'dynMsgService'];
+	chatBoxController.$injector = [];
 //['cObj', cbt.socketSub]
 	function chatBox() {
 		return {
@@ -25,9 +27,7 @@
 	chatBox.$inject = [];
 
 	angular
-		.module('dynamic-dcs.chat-box', [
-			'dynamic-dcs.dynMsgService'
-		])
+		.module('dynamic-dcs.chat-box', [])
 		.directive('chatBox', chatBox)
 		.controller('chatBoxController', chatBoxController)
 	;
