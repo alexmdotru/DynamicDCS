@@ -301,8 +301,9 @@ io.on('connection', function( socket ) {
 							socket.leave(socket.room);
 						if (_.includes(roomObj.room, 'admin') && curAccount.permLvl > 20){
 							console.log('you lack the permissions to do this action!');
+							socket.room = roomObj.room;
+							socket.join(roomObj.room);
 						} else {
-							//console.log(roomObj.authId+' joining socket room: ' + roomObj.room);
 							socket.room = roomObj.room;
 							socket.join(roomObj.room);
 						}
