@@ -1,20 +1,13 @@
 (function (angular) {
 	'use strict';
 
-	function indexController (authService) {
+	function indexController (socket) {
 		// console.log('main index and leaderboard');
 		var indxCtrl = this;
-		_.set(indxCtrl, 'auth', authService);
 
-		if (authService.getCachedProfile()) {
-			_.set(indxCtrl, 'profile', authService.getCachedProfile());
-		} else {
-			authService.getProfile(function(err, profile) {
-				_.set(indxCtrl, 'profile', profile);
-			});
-		}
+		socket.emit('room', {server: 'leaderboard', pSide: 'all'});
 	}
-	indexController.$inject = ['authService'];
+	indexController.$inject = ['mySocket'];
 
 	function configFunction($stateProvider) {
 		$stateProvider

@@ -3,6 +3,9 @@
 
 	function SocketFactory (socketFactory) {
 		var mySocket = socketFactory();
+
+		mySocket.on('connect', function () {});
+
 		return mySocket;
 	}
 	SocketFactory.$inject = [

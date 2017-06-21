@@ -7,36 +7,49 @@
 
 		_.set(dmCtrl, 'userAccountService', userAccountService);
 
-		socket.on('connect', function () {
-			//init vars on connect
-			_.set(dmCtrl, 'mObj', {
-				client: {},
-				units: [],
-				bases: [],
-				overlays: [],
-				players: [],
-				chatMsgs: [],
-				cmds: [],
-				events: [],
-				eventMsgs: []
-			});
-			if ( userAccountService.localAccount.permLvl < 20 ){
-				socket.emit('room', {server: $stateParams.name, pSide: 'admin', authId: _.get(userAccountService, ['localAccount', 'authId'])});
-			} else {
-				var spread = srvPlayerAPI.query({name: $stateParams.name});
-				spread.$promise
-					.then(function(srvPlayers) {
-						pSide = _.find( srvPlayers, {ucid: _.get(userAccountService, ['localAccount', 'ucid'])});
-						socket.emit('room', {server: $stateParams.name, pSide: pSide.side, authId: _.get(userAccountService, ['localAccount', 'authId'])});
-					})
-				;
-			}
+
+		//init vars on connect
+		_.set(dmCtrl, 'mObj', {
+			client: {},
+			units: [],
+			bases: {},
+			overlays: [],
+			players: [],
+			chatMsgs: [],
+			cmds: [],
+			events: [],
+			eventMsgs: []
 		});
+		gmapService.resetMarkers();
+		gmapService.resetOverlays();
+		console.log('main obj reset: ',dmCtrl.mObj);
+
+
+		if (typeof userAccountService.localAccount !== 'undefined' && userAccountService.localAccount.permLvl < 20) {
+			socket.emit('room', {
+				server: $stateParams.name,
+				pSide: 'admin',
+				authId: _.get(userAccountService, ['localAccount', 'authId'])
+			});
+		} else {
+			var spread = srvPlayerAPI.query({name: $stateParams.name});
+			spread.$promise
+				.then(function (srvPlayers) {
+					pSide = _.find(srvPlayers, {ucid: _.get(userAccountService, ['localAccount', 'ucid'])});
+					socket.emit('room', {
+						server: $stateParams.name,
+						pSide: pSide.side,
+						authId: _.get(userAccountService, ['localAccount', 'authId'])
+					});
+				})
+			;
+		}
+
 
 		//socket.io connectors
 		socket.on('srvUpd', function (data) {
 			console.log(data);
-			_.forEach(data.que, function(que) {
+			_.forEach(data.que, function (que) {
 				if (que.action === 'INIT' || que.action === 'C' ||
 					que.action === 'U' || que.action === 'D') {
 					if (que.action === 'C' || que.action === 'INIT') {
@@ -47,16 +60,24 @@
 						}
 					}
 					if (que.action === 'U') {
-						if (!_.find(_.get(dmCtrl, 'mObj.units'),{'unitID': _.get(que, 'data.unitID')})) {
+						if (!_.find(_.get(dmCtrl, 'mObj.units'), {'unitID': _.get(que, 'data.unitID')})) {
 							_.set(dmCtrl, 'mObj.units', []);
-								socket.emit('clientUpd', {name: $stateParams.name, action: 'unitINIT', authId: _.get(userAccountService, ['localAccount', 'authId'])});
+							socket.emit('clientUpd', {
+								name: $stateParams.name,
+								action: 'unitINIT',
+								authId: _.get(userAccountService, ['localAccount', 'authId'])
+							});
 							return false; // stops the rest of the updates since where doing a resync
 						} else {
 							_.find(_.get(dmCtrl, 'mObj.units'),
 								{'unitID': _.get(que, 'data.unitID')}).lat = _.get(que, 'data.lat');
 							_.find(_.get(dmCtrl, 'mObj.units'),
 								{'unitID': _.get(que, 'data.unitID')}).lon = _.get(que, 'data.lon');
-							gmapService.processUnitStream(que);
+							if(typeof que.data.type !== 'undefined'){
+								gmapService.processUnitStream(que);
+							} else {
+								//console.log('this is undefined: ', que.data);  //what to do with these???? what are these???
+							}
 						}
 					} else {
 						//send map updates
@@ -66,6 +87,7 @@
 				} else if (que.action === 'reset') { //spectator
 					_.set(dmCtrl, 'mObj.units', []);
 					gmapService.resetMarkers();
+					gmapService.resetOverlays();
 				} else if (que.action === 'players') { //player
 					var curPObj = [];
 					_.forEach(que.data, function (player) {
@@ -74,39 +96,37 @@
 						}
 					});
 					_.set(dmCtrl, 'mObj.players', curPObj);
+				} else if (que.action === 'MESG') { //send mesg
+					_.set(que, 'data.name',
+						_.find(_.get(dmCtrl, 'mObj.players'), {id: que.data.playerID}).name);
+					_.set(que, 'data.side',
+						_.find(_.get(dmCtrl, 'mObj.players'), {id: que.data.playerID}).side);
+					console.log('MESG: ', que.action, que.data);
+					_.get(dmCtrl, 'mObj.chatMsgs').push(que.data);
+				} else if (que.action === 'baseInfo') { //send command responses
+					_.forEach(que.data, function (value, key) {
+						if (typeof gmapService.circleOverlay[key] != "undefined") {
 
-					/*
-					 }else if (que.action === 'MESG') { //send mesg
-					 _.set(que, 'data.name',
-					 _.find(_.get(dmCtrl, 'mObj.players'), {id: que.data.playerID}).name);
-					 _.set(que, 'data.side',
-					 _.find(_.get(dmCtrl, 'mObj.players'), {id: que.data.playerID}).side);
-					 console.log('MESG: ', que.action, que.data);
-					 _.get(dmCtrl, 'mObj.chatMsgs').push(que.data);
-					 }else if (que.action === 'baseInfo') { //send command responses
-					 _.forEach(que.data, function (value, key) {
-					 if (typeof gmapService.circleOverlay[key] !== "undefined") {
-					 console.log('local base info: ', _.get(dmCtrl, ['mObj', 'bases', key]), ' verse ', value);
-					 if(_.get(dmCtrl, ['mObj', 'bases', key]) !== value){
-					 console.log('base captured, updating overlay');
-					 gmapService.updateOverlay(key, value);
-					 }
-					 }else{
-					 gmapService.addOverlay(key, value);
-					 }
-					 });
-					 _.set(dmCtrl, 'mObj.bases', que.data);
-					 }else if (que.action === 'CMD') { //send command responses
-					 //console.log('CMD: ', que.action, que.data);
-					 _.get(dmCtrl, 'mObj.cmds').push(que.data);
-					 }else if (que.action === 'socketInfo') { //send client info
-					 //console.log('CLIENT: ', que.action, que.data);
-					 _.set(dmCtrl, 'mObj.client', que.data);
-					 } else {
-					 //console.log('EVENT', que.action, que.data);
-					 _.get(dmCtrl, 'mObj.events').push(que.data);
-					 _.get(dmCtrl, 'mObj.eventMsgs').push({message: JSON.stringify(que.data)});
-				*/
+							if (_.get(dmCtrl, ['mObj', 'bases', key]) !== value) {
+								console.log('base captured, updating overlay');
+								gmapService.updateOverlay(key, value);
+							}
+						} else {
+							//console.log('add baseInfo: ',que.data, dmCtrl.mObj.bases);
+							gmapService.addOverlay(key, value);
+						}
+					});
+					_.set(dmCtrl, 'mObj.bases', que.data);
+				} else if (que.action === 'CMD') { //send command responses
+					//console.log('CMD: ', que.action, que.data);
+					_.get(dmCtrl, 'mObj.cmds').push(que.data);
+				} else if (que.action === 'socketInfo') { //send client info
+					//console.log('CLIENT: ', que.action, que.data);
+					_.set(dmCtrl, 'mObj.client', que.data);
+				} else {
+					//console.log('EVENT', que.action, que.data);
+					_.get(dmCtrl, 'mObj.events').push(que.data);
+					_.get(dmCtrl, 'mObj.eventMsgs').push({message: JSON.stringify(que.data)});
 				}
 				_.set(dmCtrl, 'mObj.client.player',
 					_.find(_.get(dmCtrl, 'mObj.players'),
@@ -116,7 +136,6 @@
 		socket.on('error', function () {
 			//console.log(ev, data);
 		});
-
 		_.set($scope, 'map', _.get(gmapService, 'gmapObj'));
 	}
 	dynMapController.$inject = ['$scope', '$stateParams', 'userAccountService', 'gmapService', 'dynamic-dcs.api.srvPlayer', 'mySocket'];
