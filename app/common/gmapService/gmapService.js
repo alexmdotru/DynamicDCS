@@ -185,7 +185,9 @@
 				_.set(curMarker, 'alt', update.data.alt);
 				_.set(curMarker, 'hdg', update.data.hdg);
 				_.set(curMarker, 'speed', update.data.speed);
-				_.set(curMarker, 'icon', gSrv.buildSIDC(curMarker));
+				if (typeof _.get(curMarker, 'type') !== 'undefined') {
+					_.set(curMarker, 'icon', gSrv.buildSIDC(curMarker));
+				}
 			}
 			if( _.get(update, 'action') == 'D') {
 				_.remove(_.get(gSrv, 'gmapObj.markers'), {id: update.data.unitID});

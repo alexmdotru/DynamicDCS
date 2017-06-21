@@ -590,7 +590,7 @@ _.set(curServers, 'processQue', function (serverName, update) {
 });
 
 //emit payload, every sec to start
-setInterval(function(){
+setInterval(function(){ //sending FULL SPEED AHEAD, 1 per milsec (watch for weird errors, etc)
 	dbSystemServiceController.serverActions('read')
 		.then(function (resp){
 			_.forEach(resp, function (server) {
@@ -603,6 +603,7 @@ setInterval(function(){
 							} else {
 								sendAmt = config.perSendMax
 							}
+							//console.log('message send, sending: ', sendAmt);
 							var chkPayload = {que: []};
 							for (x = 0; x < sendAmt; x++) {
 								chkPayload.que.push(curServers[server.name].updateQue[que][0]);
@@ -617,7 +618,7 @@ setInterval(function(){
 			});
 		})
 	;
-}, 1 * 500);
+}, 1);
 
 //dcs socket engine connection handler
 setInterval(function(){
