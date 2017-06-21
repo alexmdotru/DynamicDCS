@@ -26,8 +26,7 @@
 				var spread = srvPlayerAPI.query({name: $stateParams.name});
 				spread.$promise
 					.then(function(srvPlayers) {
-						pSide = _.find( srvPlayers, {authId: _.get(userAccountService, ['localAccount', 'authId'])});
-						console.log('last player side:', pSide.side, _.get(userAccountService, ['localAccount', 'authId']));
+						pSide = _.find( srvPlayers, {ucid: _.get(userAccountService, ['localAccount', 'ucid'])});
 						socket.emit('room', {server: $stateParams.name, room: $stateParams.name+'_q'+pSide.side, authId: _.get(userAccountService, ['localAccount', 'authId'])});
 					})
 				;
@@ -50,7 +49,7 @@
 					if (que.action === 'U') {
 						if (!_.find(_.get(dmCtrl, 'mObj.units'),{'unitID': _.get(que, 'data.unitID')})) {
 							_.set(dmCtrl, 'mObj.units', []);
-							socket.emit('clientUpd', {name: $stateParams.name, action: 'unitINIT', authId: _.get(userAccountService, ['localAccount', 'authId'])});
+								socket.emit('clientUpd', {name: $stateParams.name, action: 'unitINIT', authId: _.get(userAccountService, ['localAccount', 'authId'])});
 							return false; // stops the rest of the updates since where doing a resync
 						} else {
 							_.find(_.get(dmCtrl, 'mObj.units'),

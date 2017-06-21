@@ -285,6 +285,7 @@ function sendInit(serverName, socketID, authId) {
 io.on('connection', function( socket ) {
 
 	socket.on('room', function(roomObj){
+		console.log('roomObj: ',roomObj);
 		dbSystemServiceController.userAccountActions('read')
 			.then(function (userAccounts){
 				var curAccount = _.find(userAccounts, {authId: roomObj.authId}); // might have to decrypt authtoken...
@@ -293,10 +294,8 @@ io.on('connection', function( socket ) {
 				if(curIP === ':10308' || curIP === '::ffff:127.0.0.1'){
 					curIP = '127.0.0.1';
 				}
-				//console.log('curupdating: ', '_id:', curAccount._id, 'curSocket: ', socket.id, 'lastIp:', curIP);
 				dbSystemServiceController.userAccountActions('update', {_id: curAccount._id, curSocket: socket.id, lastIp: curIP})
 					.then(function () {
-						//console.log('useraccount: ', userAccounts, curAccount);
 						if(socket.room)
 							socket.leave(socket.room);
 						if (_.includes(roomObj.room, 'admin') && curAccount.permLvl > 20){
@@ -314,10 +313,7 @@ io.on('connection', function( socket ) {
 	});
 
 	socket.on('clientUpd', function (data) {
-		//console.log('clientupd: ',data);
 		if(data.action === 'unitINIT') {
-			//console.log(socket.id + ' on '+data.name + ' is having unit desync, or initial INIT');
-
 			if( curServers[data.name] ) {
 				sendInit(data.name, socket.id, data.authId );
 			}
