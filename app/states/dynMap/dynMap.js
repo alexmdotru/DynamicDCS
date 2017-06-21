@@ -21,13 +21,13 @@
 				eventMsgs: []
 			});
 			if ( userAccountService.localAccount.permLvl < 20 ){
-				socket.emit('room', {server: $stateParams.name, room: $stateParams.name+'_qadmin', authId: _.get(userAccountService, ['localAccount', 'authId'])});
+				socket.emit('room', {server: $stateParams.name, pSide: 'admin', authId: _.get(userAccountService, ['localAccount', 'authId'])});
 			} else {
 				var spread = srvPlayerAPI.query({name: $stateParams.name});
 				spread.$promise
 					.then(function(srvPlayers) {
 						pSide = _.find( srvPlayers, {ucid: _.get(userAccountService, ['localAccount', 'ucid'])});
-						socket.emit('room', {server: $stateParams.name, room: $stateParams.name+'_q'+pSide.side, authId: _.get(userAccountService, ['localAccount', 'authId'])});
+						socket.emit('room', {server: $stateParams.name, pSide: pSide.side, authId: _.get(userAccountService, ['localAccount', 'authId'])});
 					})
 				;
 			}

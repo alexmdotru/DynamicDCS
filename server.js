@@ -285,27 +285,33 @@ function sendInit(serverName, socketID, authId) {
 io.on('connection', function( socket ) {
 
 	socket.on('room', function(roomObj){
-		console.log('roomObj: ',roomObj);
+		var curIP = socket.conn.remoteAddress;
+		if(curIP === ':10308' || curIP === '::ffff:127.0.0.1'){
+			curIP = '127.0.0.1';
+		}
 		dbSystemServiceController.userAccountActions('read')
 			.then(function (userAccounts){
 				var curAccount = _.find(userAccounts, {authId: roomObj.authId}); // might have to decrypt authtoken...
-				_.set(curAccount, 'curSocket', socket.id);
-				var curIP = socket.conn.remoteAddress;
-				if(curIP === ':10308' || curIP === '::ffff:127.0.0.1'){
-					curIP = '127.0.0.1';
+				if (typeof curAccount === 'undefined') {
+					console.log('curAccount is empty, match with ip now');
 				}
+				_.set(curAccount, 'curSocket', socket.id);
 				dbSystemServiceController.userAccountActions('update', {_id: curAccount._id, curSocket: socket.id, lastIp: curIP})
 					.then(function () {
-						if(socket.room)
+						if(socket.room) {
 							socket.leave(socket.room);
-						if (_.includes(roomObj.room, 'admin') && curAccount.permLvl > 20){
-							console.log('you lack the permissions to do this action!');
-							socket.room = roomObj.room;
-							socket.join(roomObj.room);
-						} else {
-							socket.room = roomObj.room;
-							socket.join(roomObj.room);
 						}
+						if (roomObj.pSide === 'admin' && curAccount.permLvl < 20){
+							socket.room = roomObj.server+'_padmin';
+							socket.join(roomObj.server+'_padmin');
+						}else if (roomObj.pSide === 1 || roomObj.pSide === 2) {
+							socket.room = roomObj.server+'_q'+roomObj.pSide;
+							socket.join(roomObj.server+'_q'+roomObj.pSide);
+						} else {
+							socket.room = roomObj.server+'_q0';
+							socket.join(roomObj.server+'_q0');
+						}
+						console.log('socket.room: ', socket.room);
 					})
 				;
 			})
