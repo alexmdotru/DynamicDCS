@@ -20,10 +20,7 @@
 			events: [],
 			eventMsgs: []
 		});
-		gmapService.resetMarkers();
-		gmapService.resetOverlays();
-		console.log('main obj reset: ',dmCtrl.mObj);
-
+		gmapService.init();
 
 		if (typeof userAccountService.localAccount !== 'undefined' && userAccountService.localAccount.permLvl < 20) {
 			socket.emit('room', {
@@ -61,7 +58,7 @@
 					}
 					if (que.action === 'U') {
 						if (!_.find(_.get(dmCtrl, 'mObj.units'), {'unitID': _.get(que, 'data.unitID')})) {
-							_.set(dmCtrl, 'mObj.units', []);
+							// data is out of sync, request full payload
 							socket.emit('clientUpd', {
 								name: $stateParams.name,
 								action: 'unitINIT',
@@ -73,11 +70,7 @@
 								{'unitID': _.get(que, 'data.unitID')}).lat = _.get(que, 'data.lat');
 							_.find(_.get(dmCtrl, 'mObj.units'),
 								{'unitID': _.get(que, 'data.unitID')}).lon = _.get(que, 'data.lon');
-							if(typeof que.data.type !== 'undefined'){
 								gmapService.processUnitStream(que);
-							} else {
-								//console.log('this is undefined: ', que.data);  //what to do with these???? what are these???
-							}
 						}
 					} else {
 						//send map updates
@@ -87,7 +80,6 @@
 				} else if (que.action === 'reset') { //spectator
 					_.set(dmCtrl, 'mObj.units', []);
 					gmapService.resetMarkers();
-					gmapService.resetOverlays();
 				} else if (que.action === 'players') { //player
 					var curPObj = [];
 					_.forEach(que.data, function (player) {
@@ -136,6 +128,7 @@
 		socket.on('error', function () {
 			//console.log(ev, data);
 		});
+
 		_.set($scope, 'map', _.get(gmapService, 'gmapObj'));
 	}
 	dynMapController.$inject = ['$scope', '$stateParams', 'userAccountService', 'gmapService', 'dynamic-dcs.api.srvPlayer', 'mySocket'];

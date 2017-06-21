@@ -4,87 +4,36 @@
 	function controlService ($window, $http, uiGmapIsReady, uiGmapGoogleMapApi) {
 		var gSrv = this;
 
-		_.set(gSrv, 'baseOverlay', {});
-		_.set(gSrv, 'circleOverlay', {});
-		$http.get('json/overlayCoords.json').then(function(overlayCoordsJSON) {
-			_.set(gSrv, 'overlayCoords', overlayCoordsJSON.data);
-		});
-
-		uiGmapIsReady.promise(1).then(function (maps) {
-			gSrv.currentMap = maps[0].map;
-
-			uiGmapGoogleMapApi.then(function (googleMaps) {
-				_.set(gSrv, 'googleMaps', googleMaps);
-				_.set(gSrv, 'gmapObj.options.mapTypeControlOptions.position',
-					googleMaps.ControlPosition.LEFT_BOTTOM);
-
-				gSrv.googleMaps.event.addListener(gSrv.currentMap, 'zoom_changed', function () {
-					var zoomLevel = gSrv.currentMap.getZoom();
-					if( zoomLevel > 11){
-						_.forOwn(gSrv.circleOverlay, function (value, key){
-							gSrv.circleOverlay[key].setVisible(false);
-						});
-					}else{
-						_.forOwn(gSrv.circleOverlay, function (value, key){
-							gSrv.circleOverlay[key].setVisible(true);
-						});
-					}
-				});
-			});
-		});
-
-		_.set(gSrv, 'addOverlay', function (base, side) {
-		//console.log('addoverlay gmap: ',base,side);
-			if ( typeof gSrv.overlayCoords[base] !== "undefined" &&
-				typeof gSrv.googleMaps !== "undefined") {
-				if ( typeof gSrv.overlayCoords[base].lat1 !== "undefined" ) {
-					var imageBounds = new gSrv.googleMaps.LatLngBounds(
-						new gSrv.googleMaps.LatLng(gSrv.overlayCoords[base].lat1,
-							gSrv.overlayCoords[base].lng1),
-						new gSrv.googleMaps.LatLng(gSrv.overlayCoords[base].lat2,
-							gSrv.overlayCoords[base].lng2)
-					);
-					_.set(gSrv, ['baseOverlay', base],
-						new gSrv.googleMaps.GroundOverlay('imgs/mapOverlays/' +
-							base + '_' + side + '.png', imageBounds));
-					_.get(gSrv, ['baseOverlay', base]).setMap(gSrv.currentMap);
-				}
-
-				if ( typeof gSrv.overlayCoords[base].latc !== "undefined" ) {
-					var center =  {lat: gSrv.overlayCoords[base].latc,
-						lng: gSrv.overlayCoords[base].lngc};
-					//setup 2 sides color
-					var sideColor = {};
-					sideColor[2] = '#00aaff';
-					sideColor[1] = '#ff5555';
-
-					_.set(gSrv, ['circleOverlay', base], new gSrv.googleMaps.Circle({
-						strokeColor: sideColor[side],
-						fillColor: sideColor[side],
-						strokeOpacity: 0.2,
-						strokeWeight: 0,
-						map: gSrv.currentMap,
-						center: center,
-						radius: 30000
-					}));
-				}
-			}
-		});
-
-		_.set(gSrv, 'updateOverlay', function (base, side) {
-			_.get(gSrv, ['baseOverlay', base]).setMap(null);
-			_.get(gSrv, ['circleOverlay', base]).setMap(null);
-			//console.log('base and side: ', base, side);
-			gSrv.addOverlay(base, side);
-		});
-
-		_.set(gSrv, 'resetOverlays', function () {
+		_.set(gSrv, 'init', function () {
 			_.set(gSrv, 'baseOverlay', {});
 			_.set(gSrv, 'circleOverlay', {});
-		});
+			$http.get('json/overlayCoords.json').then(function(overlayCoordsJSON) {
+				_.set(gSrv, 'overlayCoords', overlayCoordsJSON.data);
+			});
 
+			uiGmapIsReady.promise(1).then(function (maps) {
+				gSrv.currentMap = maps[0].map;
 
-		_.set(gSrv, 'init', function () {
+				uiGmapGoogleMapApi.then(function (googleMaps) {
+					_.set(gSrv, 'googleMaps', googleMaps);
+					_.set(gSrv, 'gmapObj.options.mapTypeControlOptions.position',
+						googleMaps.ControlPosition.LEFT_BOTTOM);
+
+					gSrv.googleMaps.event.addListener(gSrv.currentMap, 'zoom_changed', function () {
+						var zoomLevel = gSrv.currentMap.getZoom();
+						if( zoomLevel > 11){
+							_.forOwn(gSrv.circleOverlay, function (value, key){
+								gSrv.circleOverlay[key].setVisible(false);
+							});
+						}else{
+							_.forOwn(gSrv.circleOverlay, function (value, key){
+								gSrv.circleOverlay[key].setVisible(true);
+							});
+						}
+					});
+				});
+			});
+
 			$http.get('json/sidc.json').then(function(sidJSON) {
 				_.set(gSrv, 'SIDC', sidJSON.data);
 			});
@@ -162,6 +111,7 @@
 				];
 			});
 
+			console.log('reinit gmapObj');
 			_.set(gSrv, 'gmapObj', {
 				center: {
 					latitude: 43.4275113,
@@ -305,21 +255,72 @@
 			return symbol;
 		});
 
+		_.set(gSrv, 'addOverlay', function (base, side) {
+			//console.log('addoverlay gmap: ',base,side);
+			if ( typeof gSrv.overlayCoords[base] !== "undefined" &&
+				typeof gSrv.googleMaps !== "undefined") {
+				if ( typeof gSrv.overlayCoords[base].lat1 !== "undefined" ) {
+					var imageBounds = new gSrv.googleMaps.LatLngBounds(
+						new gSrv.googleMaps.LatLng(gSrv.overlayCoords[base].lat1,
+							gSrv.overlayCoords[base].lng1),
+						new gSrv.googleMaps.LatLng(gSrv.overlayCoords[base].lat2,
+							gSrv.overlayCoords[base].lng2)
+					);
+					_.set(gSrv, ['baseOverlay', base],
+						new gSrv.googleMaps.GroundOverlay('imgs/mapOverlays/' +
+							base + '_' + side + '.png', imageBounds));
+					_.get(gSrv, ['baseOverlay', base]).setMap(gSrv.currentMap);
+				}
+
+				if ( typeof gSrv.overlayCoords[base].latc !== "undefined" ) {
+					var center =  {lat: gSrv.overlayCoords[base].latc,
+						lng: gSrv.overlayCoords[base].lngc};
+					//setup 2 sides color
+					var sideColor = {};
+					sideColor[2] = '#00aaff';
+					sideColor[1] = '#ff5555';
+
+					_.set(gSrv, ['circleOverlay', base], new gSrv.googleMaps.Circle({
+						strokeColor: sideColor[side],
+						fillColor: sideColor[side],
+						strokeOpacity: 0.2,
+						strokeWeight: 0,
+						map: gSrv.currentMap,
+						center: center,
+						radius: 30000
+					}));
+				}
+			}
+		});
+
+		_.set(gSrv, 'updateOverlay', function (base, side) {
+			if(!_.includes(base, 'FARP')){ //until farps have a img overlay, bypass them...
+				_.get(gSrv, ['baseOverlay', base]).setMap(null);
+				delete gSrv.baseOverlay[base];
+			}
+			_.get(gSrv, ['circleOverlay', base]).setMap(null);
+			delete gSrv.circleOverlay[base];
+
+			gSrv.addOverlay(base, side);
+		});
+
 	}
 	controlService.$inject = ['$window', '$http', 'uiGmapIsReady', 'uiGmapGoogleMapApi'];
 
+	/*
 	function initializeGmapService (gmapService) {
 		gmapService.init();
 	}
 	initializeGmapService.$inject = [
 		'gmapService'
 	];
+	*/
 
 	angular
 		.module('dynamic-dcs.gmapService',[
 			'uiGmapgoogle-maps'
 		])
-		.run(initializeGmapService)
+		//.run(initializeGmapService)
 		.config(function(uiGmapGoogleMapApiProvider) {
 			uiGmapGoogleMapApiProvider.configure({
 				key: 'AIzaSyBtYlyyT5iCffhuFc07z8I-fTq6zuWkFjI',
