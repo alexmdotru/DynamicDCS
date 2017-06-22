@@ -166,6 +166,7 @@ protectedRouter.route('/userAccounts')
 				res.json(resp);
 			});
 	});
+/*
 protectedRouter.route('/userAccounts/:_id')
 	.put(function(req, res) {
 		_.set(req, 'body._id', req.params._id);
@@ -174,7 +175,7 @@ protectedRouter.route('/userAccounts/:_id')
 				res.json(resp);
 			});
 	});
-
+*/
 //setup globals
 var outOfSyncUnitCnt = 0;
 var socketQues = ['q0','q1','q2','qadmin'];
@@ -283,6 +284,7 @@ function sendInit(serverName, socketID, authId) {
 
 //setup socket io
 io.on('connection', function( socket ) {
+	console.log(socket.id+' connected');
 
 	socket.on('room', function(roomObj){
 		console.log('room change: ', roomObj);
@@ -299,31 +301,33 @@ io.on('connection', function( socket ) {
 			socket.join(roomObj.server+'_p'+roomObj.pSide);
 			console.log('socket.room: ', socket.room);
 		} else {
+			console.log('switch room start db read');
 			dbSystemServiceController.userAccountActions('read')
 				.then(function (userAccounts){
 					var curAccount = _.find(userAccounts, {authId: roomObj.authId}); // might have to decrypt authtoken...
-					if (typeof curAccount === 'undefined') {
+					if (typeof curAccount !== 'undefined') {
+						//console.log('curaccount: ',curAccount);
+						dbSystemServiceController.userAccountActions('update', {authId: curAccount.ucid, curSocket: socket.id, lastIp: curIP})
+							.then(function () {
+								if(socket.room) {
+									socket.leave(socket.room);
+								}
+								if (roomObj.pSide === 'admin' && curAccount.permLvl < 20){
+									socket.room = roomObj.server+'_padmin';
+									socket.join(roomObj.server+'_padmin');
+								}else if (roomObj.pSide === 1 || roomObj.pSide === 2) {
+									socket.room = roomObj.server+'_q'+roomObj.pSide;
+									socket.join(roomObj.server+'_q'+roomObj.pSide);
+								} else {
+									socket.room = roomObj.server+'_q0';
+									socket.join(roomObj.server+'_q0');
+								}
+								//console.log('socket.room: ', socket.room);
+							})
+						;
+					} else {
 						console.log('curAccount is empty, match with ip now');
 					}
-					_.set(curAccount, 'curSocket', socket.id);
-					dbSystemServiceController.userAccountActions('update', {_id: curAccount._id, curSocket: socket.id, lastIp: curIP})
-						.then(function () {
-							if(socket.room) {
-								socket.leave(socket.room);
-							}
-							if (roomObj.pSide === 'admin' && curAccount.permLvl < 20){
-								socket.room = roomObj.server+'_padmin';
-								socket.join(roomObj.server+'_padmin');
-							}else if (roomObj.pSide === 1 || roomObj.pSide === 2) {
-								socket.room = roomObj.server+'_q'+roomObj.pSide;
-								socket.join(roomObj.server+'_q'+roomObj.pSide);
-							} else {
-								socket.room = roomObj.server+'_q0';
-								socket.join(roomObj.server+'_q0');
-							}
-							console.log('socket.room: ', socket.room);
-						})
-					;
 				})
 			;
 		}
@@ -443,12 +447,23 @@ _.set(curServers, 'processQue', function (serverName, update) {
 
 		//playerUpdate
 		if (_.get(queObj, 'action') === 'players') {
+			//switch players socket room on side change
+			_.forEach(queObj.data, function (player) {
+				var matchPlayer = _.find(curServers[serverName].serverObject.players, {ucid: player.ucid});
+				if (matchPlayer && matchPlayer.side !== player.side) {
+
+				}
+			});
+
+
+			//console.log(curServers[serverName].serverObject.players);
 			curServers[serverName].serverObject.players = queObj.data;
 			//apply local information object
 			_.forEach(queObj.data, function ( data ){
 				if(data) {
 					if (data.ucid) {
 						_.set(data, '_id', data.ucid);
+						_.set(data, 'playerId', data.id);
 						//update map based player table
 						if (data.side === 0) {
 							delete data.side;
@@ -459,12 +474,16 @@ _.set(curServers, 'processQue', function (serverName, update) {
 						}
 						//update user based table (based on ucid)
 						//console.log('playerstime: ', data);
+						//console.log('playerinc: ', data);
 						var curActUpdate = {
+							playerId: _.get(data, 'id', ''),
+							ucid: _.get(data, 'ucid', ''),
 							gameName: _.get(data, 'name', ''),
-							lastIp: _.get(data, 'ipaddr', ''),
-							ucid: _.get(data, 'ucid', '')
+							lastIp: _.get(data, 'ipaddr', '')
 						};
-						dbSystemServiceController.userAccountActions('update', curActUpdate);
+						if (curActUpdate.ucid !== '') {
+							dbSystemServiceController.userAccountActions('update', curActUpdate);
+						}
 					}
 				}
 			});

@@ -33,7 +33,7 @@
 				})
 			;
 		});
-
+/*
 		_.set(uASrv, 'updateServer', function (userAccount) {
 			var dupdate = DCSUserAccountsAPI.update(userAccount);
 			dupdate.$promise
@@ -47,6 +47,7 @@
 				})
 			;
 		});
+		*/
 		_.set(uASrv, 'checkUserAccount', function (profile) {
 			var dsave = DCSUserAccountsAPI.checkUserAccount(profile);
 			dsave.$promise

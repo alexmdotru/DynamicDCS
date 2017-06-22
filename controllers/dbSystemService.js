@@ -13,6 +13,11 @@ var userAccountSchema = require('../models/userAccountSchema');
 const UserAccount = systemdb.model('userAccount', userAccountSchema);
 
 exports.userAccountActions = function (action, obj){
+	//console.log('frontobj', obj);
+	var curIp;
+	if(typeof obj !== 'undefined' && (obj.lastIp === ':10308' || obj.lastIp === '::ffff:127.0.0.1')){
+		curIp = '127.0.0.1';
+	}
 	if(action === 'create') {
 		return new Promise(function(resolve, reject) {
 			const useraccount = new UserAccount(obj);
@@ -40,29 +45,24 @@ exports.userAccountActions = function (action, obj){
 	}
 	if(action === 'update') {
 		return new Promise(function(resolve, reject) {
-			//console.log('insideUpdate: ', obj);
 			UserAccount.find({ucid: obj.ucid}, function (err, ucidUser) {
 				if (err) {
 					reject(err);
 				}
 				if (ucidUser.length === 0) {
-					// if ip is 10308 its the same as ::1
-					if(obj.lastIp === ':10308' || obj.lastIp === '::ffff:127.0.0.1'){
-						_.set(obj, 'lastIp', '127.0.0.1');
-					}
-					UserAccount.find({lastIp: obj.lastIp}, function (err, ipUser) {
+					UserAccount.find({lastIp: curIp}, function (err, ipUser) {
 						if (err) {
 							reject(err);
 						}
-						//console.log('ipUser found: ', ipUser);
 						if (ipUser.length === 0) {
 							//console.log('cant match up user with account ', obj.lastIp);
 						}else{
 							ipUser = ipUser[0];
 							_.set(ipUser, 'gameName', _.get(obj, 'gameName'));
 							_.set(ipUser, 'ucid', _.get(obj, 'ucid'));
-							if(_.get(obj, 'curSocket') !== ''){
-								_.set(ucidUser, 'curSocket', _.get(obj, 'curSocket'));
+							if(typeof obj.curSocket !== 'undefined'){
+								console.log('inside socket..', ipUser.curSocket);
+								_.set(ipUser, 'curSocket', _.get(obj, 'curSocket'));
 							}
 							ipUser.save(function (err) {
 								if (err) {
@@ -73,11 +73,11 @@ exports.userAccountActions = function (action, obj){
 						}
 					});
 				} else {
-
 					ucidUser = ucidUser[0];
 					_.set(ucidUser, 'gameName', _.get(obj, 'gameName'));
-					_.set(ucidUser, 'lastIp', _.get(obj, 'lastIp'));
-					if(_.get(obj, 'curSocket') !== ''){
+					_.set(ucidUser, 'lastIp', curIp);
+					if(typeof obj.curSocket !== 'undefined'){
+						console.log('inside socket..', ucidUser.curSocket);
 						_.set(ucidUser, 'curSocket', _.get(obj, 'curSocket'));
 					}
 					ucidUser.save(function (err) {
@@ -92,18 +92,11 @@ exports.userAccountActions = function (action, obj){
 	}
 	if(action === 'checkAccount') {
 		return new Promise(function(resolve, reject) {
-			var curIP;
-			var curSocket = _.get(obj, 'headers.cookie').substr(3);
-			console.log('curSocket: ',curSocket);
 			UserAccount.find({authId: obj.user.sub}, function (err, userAccount) {
 				if (err) {
 					reject(err);
 				}
 				if (userAccount.length === 0) {
-					curIP = obj.ip;
-					if(obj.ip === ':10308' || obj.ip === '::ffff:127.0.0.1'){
-						curIP = '127.0.0.1';
-					}
 
 					const useraccount = new UserAccount({
 						authId: obj.user.sub,
@@ -114,16 +107,19 @@ exports.userAccountActions = function (action, obj){
 						nickName: _.get(obj, 'body.nickname'),
 						picture: _.get(obj, 'body.picture'),
 						gender: _.get(obj, 'body.gender'),
-						locale: _.get(obj, 'body.locale'),
-						curSocket: curSocket
+						locale: _.get(obj, 'body.locale')
 					});
 					useraccount.save(function (err, useraccount) {
 						if (err) { reject(err) }
 						resolve(useraccount);
 					});
 				} else {
-					//console.log('usersFound');
-					resolve();
+					useraccount = userAccount[0];
+					_.set(useraccount, 'lastIp', curIP);
+					useraccount.save(function (err, useraccount) {
+						if (err) { reject(err) }
+						resolve(useraccount);
+					});
 				}
 			});
 		});
