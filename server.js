@@ -314,7 +314,7 @@ io.on('connection', function( socket ) {
 								console.log('pSide: ', roomObj.pSide);
 								console.log('settingsock: ', socket.id);
 								if (roomObj.pSide === 'admin' && curAccount.permLvl < 20){
-									setSocketRoom (socket, roomObj.server+'_padmin');
+									setSocketRoom (socket, roomObj.server+'_qadmin');
 								}else if (roomObj.pSide === 1 || roomObj.pSide === 2) {
 									setSocketRoom (socket, roomObj.server+'_q'+roomObj.pSide);
 								}
