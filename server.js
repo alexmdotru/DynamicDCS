@@ -113,7 +113,7 @@ router.route('/userAccounts/:_id')
 			});
 	});
 
-//start of protected endpoints
+//start of protected endpoints, must have auth token
 protectedRouter.use(checkJwt);
 protectedRouter.route('/checkUserAccount')
 	.post(function(req, res) {
@@ -123,6 +123,7 @@ protectedRouter.route('/checkUserAccount')
 			});
 	});
 
+//past this point must have permission value less than 10
 protectedRouter.use(function (req, res, next) {
 	dbSystemServiceController.userAccountActions('getPerm', req.user.sub)
 		.then(function (resp){
@@ -449,6 +450,9 @@ _.set(curServers, 'processQue', function (serverName, update) {
 					if (data.ucid) {
 						_.set(data, '_id', data.ucid);
 						//update map based player table
+						if (data.side === 0) {
+							delete data.side;
+						}
 						dbMapServiceController.srvPlayerActions('update', serverName, data);
 						if(data.ipaddr === ':10308' || data.ipaddr === '::ffff:127.0.0.1'){
 							data.ipaddr = '127.0.0.1';
