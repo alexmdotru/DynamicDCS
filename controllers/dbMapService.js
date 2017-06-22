@@ -39,6 +39,9 @@ exports.srvPlayerActions = function (action, serverName, obj){
 			curIP = '127.0.0.1';
 		}
 		_.set(obj, 'ipaddr', curIP);
+		if(obj.side === 0){ //keep the user on the last side
+			delete obj.side
+		}
 		var query = {_id: obj._id},
 			update = {$set: obj},
 			options = {upsert: true, new: true, setDefaultsOnInsert: true};

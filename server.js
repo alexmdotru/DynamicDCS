@@ -200,7 +200,7 @@ function isNumeric(x) {
 }
 
 function initUnits (serverName, socketID, authId) {
-	console.log('sendInitUNITS for ', serverName, ' for socket ', socketID);
+	//console.log('sendInitUNITS for ', serverName, ' for socket ', socketID);
 	var initQue = {que: []};
 
 	dbSystemServiceController.userAccountActions('read')
@@ -282,26 +282,28 @@ function sendInit(serverName, socketID, authId) {
 }
 
 
+function setSocketRoom (socket, room) {
+	if(socket.room) {
+		console.log('leaving room: ', socket.room);
+		socket.leave(socket.room);
+	}
+	socket.room = room;
+	socket.join(room);
+	console.log('socket.room: ', room);
+}
+
 //setup socket io
 io.on('connection', function( socket ) {
 	console.log(socket.id+' connected');
 
 	socket.on('room', function(roomObj){
-		console.log('room change: ', roomObj);
 		var curIP = socket.conn.remoteAddress;
 		if(curIP === ':10308' || curIP === '::ffff:127.0.0.1'){
 			curIP = '127.0.0.1';
 		}
 		if(roomObj.server === 'leaderboard') {
-			if(socket.room) {
-				console.log('leaving room: ', socket.room);
-				socket.leave(socket.room);
-			}
-			socket.room = roomObj.server+'_p'+roomObj.pSide;
-			socket.join(roomObj.server+'_p'+roomObj.pSide);
-			console.log('socket.room: ', socket.room);
+			setSocketRoom (socket, 'leaderboard');
 		} else {
-			console.log('switch room start db read');
 			dbSystemServiceController.userAccountActions('read')
 				.then(function (userAccounts){
 					var curAccount = _.find(userAccounts, {authId: roomObj.authId}); // might have to decrypt authtoken...
@@ -309,20 +311,13 @@ io.on('connection', function( socket ) {
 						//console.log('curaccount: ',curAccount);
 						dbSystemServiceController.userAccountActions('update', {authId: curAccount.ucid, curSocket: socket.id, lastIp: curIP})
 							.then(function () {
-								if(socket.room) {
-									socket.leave(socket.room);
-								}
 								if (roomObj.pSide === 'admin' && curAccount.permLvl < 20){
-									socket.room = roomObj.server+'_padmin';
-									socket.join(roomObj.server+'_padmin');
+									setSocketRoom (socket, roomObj.server+'_padmin');
 								}else if (roomObj.pSide === 1 || roomObj.pSide === 2) {
-									socket.room = roomObj.server+'_q'+roomObj.pSide;
-									socket.join(roomObj.server+'_q'+roomObj.pSide);
+									setSocketRoom (socket, roomObj.server+'_q'+roomObj.pSide);
 								} else {
-									socket.room = roomObj.server+'_q0';
-									socket.join(roomObj.server+'_q0');
+									setSocketRoom (socket, roomObj.server+'_q0');
 								}
-								//console.log('socket.room: ', socket.room);
 							})
 						;
 					} else {
@@ -451,7 +446,7 @@ _.set(curServers, 'processQue', function (serverName, update) {
 			_.forEach(queObj.data, function (player) {
 				var matchPlayer = _.find(curServers[serverName].serverObject.players, {ucid: player.ucid});
 				if (matchPlayer && matchPlayer.side !== player.side) {
-
+						//console.log('plyr switched sides: ', matchPlayer);
 				}
 			});
 
@@ -462,13 +457,13 @@ _.set(curServers, 'processQue', function (serverName, update) {
 			_.forEach(queObj.data, function ( data ){
 				if(data) {
 					if (data.ucid) {
+						var curSide = data.side;
 						_.set(data, '_id', data.ucid);
 						_.set(data, 'playerId', data.id);
 						//update map based player table
-						if (data.side === 0) {
-							delete data.side;
-						}
 						dbMapServiceController.srvPlayerActions('update', serverName, data);
+
+
 						if(data.ipaddr === ':10308' || data.ipaddr === '::ffff:127.0.0.1'){
 							data.ipaddr = '127.0.0.1';
 						}
@@ -479,8 +474,10 @@ _.set(curServers, 'processQue', function (serverName, update) {
 							playerId: _.get(data, 'id', ''),
 							ucid: _.get(data, 'ucid', ''),
 							gameName: _.get(data, 'name', ''),
-							lastIp: _.get(data, 'ipaddr', '')
+							lastIp: _.get(data, 'ipaddr', ''),
+							side: _.get(data, 'side', '')
 						};
+
 						if (curActUpdate.ucid !== '') {
 							dbSystemServiceController.userAccountActions('update', curActUpdate);
 						}
@@ -640,7 +637,7 @@ setInterval(function(){ //sending FULL SPEED AHEAD, 1 per milsec (watch for weir
 			});
 		})
 	;
-}, 1);
+}, 35);
 
 //dcs socket engine connection handler
 setInterval(function(){

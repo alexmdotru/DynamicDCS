@@ -61,7 +61,6 @@ exports.userAccountActions = function (action, obj){
 							_.set(ipUser, 'gameName', _.get(obj, 'gameName'));
 							_.set(ipUser, 'ucid', _.get(obj, 'ucid'));
 							if(typeof obj.curSocket !== 'undefined'){
-								console.log('inside socket..', ipUser.curSocket);
 								_.set(ipUser, 'curSocket', _.get(obj, 'curSocket'));
 							}
 							ipUser.save(function (err) {
@@ -77,7 +76,6 @@ exports.userAccountActions = function (action, obj){
 					_.set(ucidUser, 'gameName', _.get(obj, 'gameName'));
 					_.set(ucidUser, 'lastIp', curIp);
 					if(typeof obj.curSocket !== 'undefined'){
-						console.log('inside socket..', ucidUser.curSocket);
 						_.set(ucidUser, 'curSocket', _.get(obj, 'curSocket'));
 					}
 					ucidUser.save(function (err) {
