@@ -57,9 +57,9 @@ app.use('/libs', express.static(__dirname + '/node_modules'));
 const checkJwt = jwt({
 	// Dynamically provide a signing key based on the kid in the header and the singing keys provided by the JWKS endpoint.
 	secret: jwksRsa.expressJwtSecret({
-		//cache: true,
-		//rateLimit: true,
-		//jwksRequestsPerMinute: 5,
+		cache: true,
+		rateLimit: true,
+		jwksRequestsPerMinute: 5,
 		jwksUri: 'https://'+process.env.AUTH0_DOMAIN+'/.well-known/jwks.json'
 	}),
 	// Validate the audience and the issuer.
@@ -115,14 +115,21 @@ router.route('/userAccounts/:_id')
 
 //start of protected endpoints
 protectedRouter.use(checkJwt);
+protectedRouter.route('/checkUserAccount')
+	.post(function(req, res) {
+		dbSystemServiceController.userAccountActions('checkAccount', req)
+			.then(function (resp){
+				res.json(resp);
+			});
+	});
+
 protectedRouter.use(function (req, res, next) {
 	dbSystemServiceController.userAccountActions('getPerm', req.user.sub)
 		.then(function (resp){
-			//console.log('permlvl: ',resp[0].permLvl, resp);
-			if( resp[0].permLvl > 10 ){
-				res.status('503').json({ message: "You dont have permissions to do requested action." });
-			} else {}
-			next();
+			if( resp[0].permLvl < 10 ){
+				next();
+			}
+			res.status('503').json({ message: "You dont have permissions to do requested action." });
 		})
 	;
 });
@@ -162,14 +169,6 @@ protectedRouter.route('/userAccounts/:_id')
 	.put(function(req, res) {
 		_.set(req, 'body._id', req.params._id);
 		dbSystemServiceController.userAccountActions('update', req.body)
-			.then(function (resp){
-				res.json(resp);
-			});
-	});
-
-protectedRouter.route('/checkUserAccount')
-	.post(function(req, res) {
-		dbSystemServiceController.userAccountActions('checkAccount', req)
 			.then(function (resp){
 				res.json(resp);
 			});

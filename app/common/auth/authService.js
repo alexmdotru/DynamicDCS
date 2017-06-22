@@ -56,6 +56,8 @@
 
 			var scopes = authResult.scope || REQUESTED_SCOPES || '';
 
+			console.log('sub is: ', authResult.idTokenPayload.sub);
+
 			localStorage.setItem('access_token', authResult.accessToken);
 			localStorage.setItem('id_token', authResult.idToken);
 			localStorage.setItem('sub', authResult.idTokenPayload.sub);
