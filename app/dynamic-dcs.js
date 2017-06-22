@@ -118,7 +118,6 @@
 	}
 	adminDeleteModalController.$inject = ['$uibModalInstance','srvService', 'serverid'];
 
-	//function adminModalController($scope, $uibModal, $uibModalInstance, authService, alertService, DDCSServers, DDCSTheaters, DCSServerAPI, srvService) {
 	function adminModalController($scope, $uibModal, $uibModalInstance, srvService, DDCSTheaters) {
 
 		var adminCtrl = this;

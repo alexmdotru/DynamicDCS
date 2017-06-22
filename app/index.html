@@ -45,7 +45,8 @@
 			<li><a href="" ng-if="!auth.isAuthenticated()" ng-click="auth.login()">Login</a></li>
 			<li ng-if="auth.isAuthenticated()" uib-dropdown>
 				<a href="" uib-dropdown-toggle>
-					<div>{{userAccountService.localAccount.gameName}}<b class="caret"></b></div>
+					<div ng-if="userAccountService.localAccount.gameName">{{userAccountService.localAccount.gameName}}<b class="caret"></b></div>
+					<div ng-if="!userAccountService.localAccount.gameName">{{userAccountService.localAccount.firstName}}<b class="caret"></b></div>
 				</a>
 				<ul uib-dropdown-menu>
 					<li><a href="" ng-click="openSettingsModal('lg')">Settings</a></li>
