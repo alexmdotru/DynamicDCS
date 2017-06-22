@@ -309,14 +309,14 @@ io.on('connection', function( socket ) {
 					var curAccount = _.find(userAccounts, {authId: roomObj.authId}); // might have to decrypt authtoken...
 					if (typeof curAccount !== 'undefined') {
 						//console.log('curaccount: ',curAccount);
-						dbSystemServiceController.userAccountActions('update', {authId: curAccount.ucid, curSocket: socket.id, lastIp: curIP})
+						dbSystemServiceController.userAccountActions('update', {authId: curAccount.authId, curSocket: socket.id, lastIp: curIP})
 							.then(function () {
+								console.log('pSide: ', roomObj.pSide);
+								console.log('settingsock: ', socket.id);
 								if (roomObj.pSide === 'admin' && curAccount.permLvl < 20){
 									setSocketRoom (socket, roomObj.server+'_padmin');
 								}else if (roomObj.pSide === 1 || roomObj.pSide === 2) {
 									setSocketRoom (socket, roomObj.server+'_q'+roomObj.pSide);
-								} else {
-									setSocketRoom (socket, roomObj.server+'_q0');
 								}
 							})
 						;
@@ -445,12 +445,26 @@ _.set(curServers, 'processQue', function (serverName, update) {
 			//switch players socket room on side change
 			_.forEach(queObj.data, function (player) {
 				var matchPlayer = _.find(curServers[serverName].serverObject.players, {ucid: player.ucid});
-				if (matchPlayer && matchPlayer.side !== player.side) {
-						//console.log('plyr switched sides: ', matchPlayer);
+				if ((matchPlayer && matchPlayer.side !== player.side) && player.side !== 0) {
+						//setSocketRoom (socket, room)
+						//console.log('plyr switched sides: ', matchPlayer); <20
+					dbSystemServiceController.userAccountActions('read')
+						.then(function (resp) {
+							var switchedPlayer = _.find(resp, {ucid: player.ucid});
+							var curSocketId = switchedPlayer.curSocket;
+							console.log('switched player socket: ', curSocketId);
+							if (switchedPlayer.permLvl < 20){
+								setSocketRoom (io.sockets.connected[switchedPlayer.curSocket], serverName+'_padmin');
+							}else if (player.side === 1 || player.side === 2) {
+								setSocketRoom (io.sockets.connected[switchedPlayer.curSocket], serverName+'_q'+player.side);
+							} else {
+								//setSocketRoom (io.sockets.connected[switchedPlayer.curSocket], serverName+'_q0');
+							}
+						})
+					;
 				}
 			});
-
-
+			//
 			//console.log(curServers[serverName].serverObject.players);
 			curServers[serverName].serverObject.players = queObj.data;
 			//apply local information object
