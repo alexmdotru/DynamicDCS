@@ -1,21 +1,23 @@
 (function (angular) {
 	'use strict';
 
-	function indexController (authService, userAccountService) {
+	function indexController (userAccountService, DCSUserAccountsAPI, socket) {
 		var indxCtrl = this;
-		_.set(indxCtrl, 'userAccountService', userAccountService);
-		console.log('localAccount: ', indxCtrl.userAccountService);
-		_.set(indxCtrl, 'auth', authService);
 
-		if (authService.getCachedProfile()) {
-			_.set(indxCtrl, 'profile', authService.getCachedProfile());
-		} else {
-			authService.getProfile(function(err, profile) {
-				_.set(indxCtrl, 'profile', profile);
-			});
-		}
+		var dread = DCSUserAccountsAPI.query();
+		dread.$promise
+			.then(function (data) {
+				_.set(userAccountService, 'userAccounts', data);
+				_.set(userAccountService, 'localAccount', _.find(data, {authId: localStorage.getItem('sub')}));
+				socket.emit('room', {
+					server: 'leaderboard',
+					pSide: 'all',
+					authId: _.get(userAccountService, ['localAccount', 'authId'])
+				});
+			})
+		;
 	}
-	indexController.$inject = ['authService', 'userAccountService'];
+	indexController.$inject = ['userAccountService', 'dynamic-dcs.api.userAccounts', 'mySocket'];
 
 	function configFunction($stateProvider) {
 		$stateProvider
