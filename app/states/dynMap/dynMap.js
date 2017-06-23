@@ -1,13 +1,13 @@
 (function (angular) {
 	'use strict';
 
-	function dynMapController ($scope, $state, $stateParams, userAccountService, gmapService, DCSUserAccountsAPI, srvPlayerAPI, mySocket) {
+	function dynMapController($scope, $state, $stateParams, userAccountService, gmapService, DCSUserAccountsAPI, srvPlayerAPI, mySocket) {
 		var dmCtrl = this;
 		var pSide;
-		var initLoad = true;
 
-		_.set(dmCtrl, 'rejoinRoom', function () {
+		_.set(dmCtrl, 'resetMap', function () {
 			//init vars on connect
+			gmapService.init();
 			_.set(dmCtrl, 'mObj', {
 				client: {},
 				units: [],
@@ -19,44 +19,47 @@
 				events: [],
 				eventMsgs: []
 			});
-
-			gmapService.init();
 			_.set($scope, 'map', _.get(gmapService, 'gmapObj'));
-
-			var dread = DCSUserAccountsAPI.query();
-			dread.$promise
-				.then(function(data) {
-					_.set(userAccountService, 'userAccounts', data);
-					_.set(userAccountService, 'localAccount', _.find(data, {authId: localStorage.getItem('sub')}));
-					if (typeof userAccountService.localAccount !== 'undefined' && userAccountService.localAccount.permLvl < 20) {
-						console.log('joinroom: ', $stateParams.name, _.get(userAccountService, ['localAccount', 'authId']));
-						mySocket.emit('room', {
-							server: $stateParams.name,
-							pSide: 'admin',
-							authId: _.get(userAccountService, ['localAccount', 'authId'])
-						});
-					} else {
-						var spread = srvPlayerAPI.query({name: $stateParams.name});
-						spread.$promise
-							.then(function (srvPlayers) {
-								pSide = _.find(srvPlayers, {ucid: userAccountService.localAccount.ucid});
-								// console.log('pside: ', pSide, 'srvplayers: ');
-								mySocket.emit('room', {
-									server: $stateParams.name,
-									pSide: pSide.side,
-									authId: _.get(userAccountService, ['localAccount', 'authId'])
-								});
-							})
-						;
-					}
-
-				})
-			;
 		});
+		dmCtrl.resetMap();
+
+
+		var dread = DCSUserAccountsAPI.query();
+		dread.$promise
+			.then(function (data) {
+				_.set(userAccountService, 'userAccounts', data);
+				_.set(userAccountService, 'localAccount', _.find(data, {authId: localStorage.getItem('sub')}));
+				if (typeof userAccountService.localAccount !== 'undefined' && userAccountService.localAccount.permLvl < 20) {
+					console.log('joinroom: ', $stateParams.name, _.get(userAccountService, ['localAccount', 'authId']));
+					mySocket.emit('room', {
+						server: $stateParams.name,
+						pSide: 'admin',
+						authId: localStorage.getItem('sub')
+					});
+					localStorage.setItem('lastStream', $stateParams.name);
+					localStorage.setItem('lastSide', 'admin');
+				} else {
+					var spread = srvPlayerAPI.query({name: $stateParams.name});
+					spread.$promise
+						.then(function (srvPlayers) {
+							pSide = _.find(srvPlayers, {ucid: userAccountService.localAccount.ucid});
+							// console.log('pside: ', pSide, 'srvplayers: ');
+							mySocket.emit('room', {
+								server: $stateParams.name,
+								pSide: pSide.side,
+								authId: localStorage.getItem('sub')
+							});
+							localStorage.setItem('lastStream', $stateParams.name);
+							localStorage.setItem('lastSide', pSide.side);
+						})
+					;
+				}
+
+			})
+		;
 
 		//socket.io connectors
 		mySocket.on('srvUpd', function (data) {
-			initLoad = false;
 			console.log(data);
 			_.forEach(data.que, function (que) {
 				if (que.action === 'INIT' || que.action === 'C' ||
@@ -141,15 +144,18 @@
 			//console.log(ev, data);
 		});
 
-		$scope.$on('socket:connect', function (ev, data) {
-			if(initLoad !== true) {
-				dmCtrl.rejoinRoom(); //THIS WONT REJOIN THE ROOM.....
-				//initLoad = true;
-			}
+		mySocket.on('reconnect', function () {
+			setTimeout(function(){
+				dmCtrl.resetMap();
+				mySocket.emit('room', {
+					server: localStorage.getItem('lastStream'),
+					pSide: localStorage.getItem('lastSide'),
+					authId: localStorage.getItem('sub')
+				});
+			}, 1 * 1000);
 		});
-
-		dmCtrl.rejoinRoom();
 	}
+
 	dynMapController.$inject = ['$scope', '$state', '$stateParams', 'userAccountService', 'gmapService', 'dynamic-dcs.api.userAccounts', 'dynamic-dcs.api.srvPlayer', 'mySocket'];
 
 	function configFunction($stateProvider) {
@@ -173,6 +179,7 @@
 		])
 		.config(['$stateProvider', '$urlRouterProvider', configFunction])
 		.controller('dynMapController', dynMapController)
-		.controller('templateController',function(){})
+		.controller('templateController', function () {
+		})
 	;
 }(angular));

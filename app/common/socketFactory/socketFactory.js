@@ -9,7 +9,6 @@
 		var mySocket = socketFactory({
 			ioSocket: myIoSocket
 		});
-		mySocket.forward('connect');
 		return mySocket;
 	}
 	SocketFactoryController.$inject = [
