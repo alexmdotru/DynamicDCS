@@ -3,6 +3,7 @@
 	jwt = require('express-jwt'),
 	jwtAuthz = require('express-jwt-authz'),
 	jwksRsa = require('jwks-rsa'),
+	socketioJwt = require('socketio-jwt'),
 	cors = require('cors'),
 	bodyParser = require('body-parser'),
 	router = express.Router(),
@@ -28,8 +29,9 @@ if (process.env.NODE_ENV !== config.test_env) { //SET NODE_ENV=test
 	server = app.listen(config.test_port);
 	serverAddress = config.test_dcs_socket;
 }
-var io  = require('socket.io').listen(server);
 
+//secure sockets
+var io  = require('socket.io').listen(server);
 //Controllers
 const dbSystemServiceController = require('./controllers/dbSystemService');
 const dbMapServiceController = require('./controllers/dbMapService');
@@ -67,6 +69,14 @@ const checkJwt = jwt({
 	issuer: 'https://'+process.env.AUTH0_DOMAIN+'/',
 	algorithms: ['RS256']
 });
+io.use(function(socket, next) {
+	// hack the token checker!! :-P
+	var req = {};
+	var res;
+	_.set(req, 'headers.authorization', socket.handshake.query.token);
+	checkJwt(req, res, next);
+});
+
 
 router.route('/srvPlayers/:name')
 	.get(function(req, res) {
@@ -114,6 +124,9 @@ router.route('/userAccounts/:_id')
 	});
 
 //start of protected endpoints, must have auth token
+protectedRouter.use(function (a , b, c) {
+	console.log(a);
+});
 protectedRouter.use(checkJwt);
 protectedRouter.route('/checkUserAccount')
 	.post(function(req, res) {
@@ -292,60 +305,81 @@ function setSocketRoom (socket, room) {
 	console.log('socket.room: ', room);
 }
 
+function setRoomSide (socket, roomObj) {
+	if(roomObj.server === 'leaderboard') {
+		setSocketRoom (socket, 'leaderboard');
+	} else {
+		dbSystemServiceController.userAccountActions('read')
+			.then(function (userAccounts){
+				var curAccount = _.find(userAccounts, {authId: roomObj.authId}); // might have to decrypt authtoken...
+				if (typeof curAccount !== 'undefined') {
+					//console.log('curaccount: ',curAccount);
+					console.log('pSide: ', roomObj.pSide);
+					console.log('settingsock: ', socket.id);
+					if (roomObj.pSide === 'admin' && curAccount.permLvl < 20){
+						setSocketRoom (socket, roomObj.server+'_qadmin');
+					}else if (roomObj.pSide === 1 || roomObj.pSide === 2) {
+						setSocketRoom (socket, roomObj.server+'_q'+roomObj.pSide);
+					}
+				} else {
+					console.log('curAccount is empty, match with ip now');
+				}
+			})
+		;
+	}
+}
+
 //setup socket io
 io.on('connection', function( socket ) {
-	console.log(socket.id+' connected');
+	var curIP = socket.conn.remoteAddress;
+	if(curIP === ':10308' || curIP === '::ffff:127.0.0.1'){
+		curIP = '127.0.0.1';
+	}
 
-	socket.on('room', function(roomObj){
-		var curIP = socket.conn.remoteAddress;
-		if(curIP === ':10308' || curIP === '::ffff:127.0.0.1'){
-			curIP = '127.0.0.1';
-		}
-		if(roomObj.server === 'leaderboard') {
-			setSocketRoom (socket, 'leaderboard');
-		} else {
-			dbSystemServiceController.userAccountActions('read')
-				.then(function (userAccounts){
-					var curAccount = _.find(userAccounts, {authId: roomObj.authId}); // might have to decrypt authtoken...
-					if (typeof curAccount !== 'undefined') {
-						//console.log('curaccount: ',curAccount);
-						dbSystemServiceController.userAccountActions('update', {authId: curAccount.authId, curSocket: socket.id, lastIp: curIP})
-							.then(function () {
-								console.log('pSide: ', roomObj.pSide);
-								console.log('settingsock: ', socket.id);
-								if (roomObj.pSide === 'admin' && curAccount.permLvl < 20){
-									setSocketRoom (socket, roomObj.server+'_qadmin');
-								}else if (roomObj.pSide === 1 || roomObj.pSide === 2) {
-									setSocketRoom (socket, roomObj.server+'_q'+roomObj.pSide);
-								}
-							})
-						;
-					} else {
-						console.log('curAccount is empty, match with ip now');
+	console.log(socket.id+' connected on '+curIP+' with ID: '+socket.handshake.query.authId);
+	if (socket.handshake.query.authId !== '') {
+		dbSystemServiceController.userAccountActions('update', {authId: socket.handshake.query.authId, curSocket: socket.id, lastIp: curIP})
+			.then(function (data) {
+				console.log('update data resp: ', data);
+				socket.on('room', function(roomObj){
+					setRoomSide (socket, roomObj);
+				});
+
+				socket.on('clientUpd', function (data) {
+					if(data.action === 'unitINIT') {
+						if( curServers[data.name] ) {
+							sendInit(data.name, socket.id, data.authId );
+						}
 					}
-				})
-			;
-		}
-	});
+				});
 
-	socket.on('clientUpd', function (data) {
-		if(data.action === 'unitINIT') {
-			if( curServers[data.name] ) {
-				sendInit(data.name, socket.id, data.authId );
-			}
-		}
-	});
+				socket.on('disconnect', function(){
+					console.log(socket.id+' user disconnected');
+				});
+				socket.on('error', function(err) {
+					if(err === 'handshake error') {
+						console.log('handshake error', err);
+					} else {
+						console.log('io error', err);
+					}
+				});
 
-    socket.on('disconnect', function(){
-        console.log(socket.id+' user disconnected');
-    });
-	socket.on('error', function(err) {
-		if(err === 'handshake error') {
-			console.log('handshake error', err);
-		} else {
-			console.log('io error', err);
-		}
-	});
+				//dbMapServiceController.srvPlayerActions
+				//setup room
+				/*
+				setRoomSide ({
+					server: $stateParams.name,
+					pSide: 'admin',
+					authId: socket.handshake.query.authId
+				});
+				*/
+			})
+		;
+	} else {
+		console.log('NOT LOGGED IN');
+		//setup no ip room
+
+	}
 });
 
 _.set(curServers, 'processQue', function (serverName, update) {

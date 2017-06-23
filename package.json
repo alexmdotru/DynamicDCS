@@ -92,6 +92,7 @@
     "semver-truncate": "^1.1.2",
     "serve-static": "^1.10.2",
     "socket.io": "^2.0.1",
+    "socketio-jwt": "^4.5.0",
     "sortablejs": "^1.5.1",
     "supports-color": "^3.1.2",
     "time-grunt": "^1.4.0",

@@ -14,10 +14,6 @@ const UserAccount = systemdb.model('userAccount', userAccountSchema);
 
 exports.userAccountActions = function (action, obj){
 	//console.log('frontobj', obj);
-	var curIp;
-	if(typeof obj !== 'undefined' && (obj.lastIp === ':10308' || obj.lastIp === '::ffff:127.0.0.1')){
-		curIp = '127.0.0.1';
-	}
 	if(action === 'create') {
 		return new Promise(function(resolve, reject) {
 			const useraccount = new UserAccount(obj);
@@ -44,13 +40,14 @@ exports.userAccountActions = function (action, obj){
 		});
 	}
 	if(action === 'update') {
+		//console.log(obj);
 		return new Promise(function(resolve, reject) {
 			UserAccount.find({ucid: obj.ucid}, function (err, ucidUser) {
 				if (err) {
 					reject(err);
 				}
 				if (ucidUser.length === 0) {
-					UserAccount.find({lastIp: curIp}, function (err, ipUser) {
+					UserAccount.find({lastIp: obj.lastIp}, function (err, ipUser) {
 						if (err) {
 							reject(err);
 						}
@@ -67,14 +64,14 @@ exports.userAccountActions = function (action, obj){
 								if (err) {
 									reject(err);
 								}
-								resolve();
+								resolve(ipUser);
 							});
 						}
 					});
 				} else {
 					ucidUser = ucidUser[0];
 					_.set(ucidUser, 'gameName', _.get(obj, 'gameName'));
-					_.set(ucidUser, 'lastIp', curIp);
+					_.set(ucidUser, 'lastIp', _.get(obj, 'lastIp'));
 					if(typeof obj.curSocket !== 'undefined'){
 						_.set(ucidUser, 'curSocket', _.get(obj, 'curSocket'));
 					}
@@ -82,7 +79,7 @@ exports.userAccountActions = function (action, obj){
 						if (err) {
 							reject(err);
 						}
-						resolve();
+						resolve(ucidUser);
 					});
 				}
 			});

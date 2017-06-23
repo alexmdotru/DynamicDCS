@@ -1,7 +1,7 @@
 (function (angular) {
 	'use strict';
 
-	function dynMapController ($scope, $stateParams, userAccountService, gmapService, DCSUserAccountsAPI, srvPlayerAPI, socket) {
+	function dynMapController ($scope, $stateParams, userAccountService, gmapService, DCSUserAccountsAPI, srvPlayerAPI, mySocket) {
 		var dmCtrl = this;
 		var pSide;
 
@@ -26,7 +26,7 @@
 				_.set(userAccountService, 'localAccount', _.find(data, {authId: localStorage.getItem('sub')}));
 
 				if (typeof userAccountService.localAccount !== 'undefined' && userAccountService.localAccount.permLvl < 20) {
-					socket.emit('room', {
+					mySocket.emit('room', {
 						server: $stateParams.name,
 						pSide: 'admin',
 						authId: _.get(userAccountService, ['localAccount', 'authId'])
@@ -37,7 +37,7 @@
 						.then(function (srvPlayers) {
 							pSide = _.find(srvPlayers, {ucid: userAccountService.localAccount.ucid});
 							// console.log('pside: ', pSide, 'srvplayers: ');
-							socket.emit('room', {
+							mySocket.emit('room', {
 								server: $stateParams.name,
 								pSide: pSide.side,
 								authId: _.get(userAccountService, ['localAccount', 'authId'])
@@ -47,7 +47,7 @@
 				}
 
 				//socket.io connectors
-				socket.on('srvUpd', function (data) {
+				mySocket.on('srvUpd', function (data) {
 					console.log(data);
 					_.forEach(data.que, function (que) {
 						if (que.action === 'INIT' || que.action === 'C' ||
@@ -62,7 +62,7 @@
 							if (que.action === 'U') {
 								if (!_.find(_.get(dmCtrl, 'mObj.units'), {'unitID': _.get(que, 'data.unitID')})) {
 									// data is out of sync, request full payload
-									socket.emit('clientUpd', {
+									mySocket.emit('clientUpd', {
 										name: $stateParams.name,
 										action: 'unitINIT',
 										authId: _.get(userAccountService, ['localAccount', 'authId'])
@@ -128,7 +128,7 @@
 								{socketID: _.get(dmCtrl, 'mObj.client.id', '')}));
 					});
 				});
-				socket.on('error', function () {
+				mySocket.on('error', function () {
 					//console.log(ev, data);
 				});
 

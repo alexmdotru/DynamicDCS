@@ -1,12 +1,17 @@
 (function (angular) {
 	'use strict';
 
-	function SocketFactory (socketFactory) {
-		var mySocket = socketFactory();
-		mySocket.on('connect', function () {});
+	function SocketFactoryController (socketFactory) {
+
+		var myIoSocket = io.connect('/', {
+			query: 'token=Bearer '+localStorage.getItem('access_token')+'&authId='+localStorage.getItem('sub')
+		});
+		var mySocket = socketFactory({
+			ioSocket: myIoSocket
+		});
 		return mySocket;
 	}
-	SocketFactory.$inject = [
+	SocketFactoryController.$inject = [
 		'socketFactory'
 	];
 
@@ -14,7 +19,7 @@
 		.module('dynamic-dcs.socketFactory', [
 			'btford.socket-io'
 		])
-		.factory('mySocket', SocketFactory)
+		.factory('mySocket', SocketFactoryController)
 	;
 }(angular));
 
