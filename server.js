@@ -296,13 +296,15 @@ function sendInit(serverName, socketID, authId) {
 
 
 function setSocketRoom (socket, room) {
-	if(socket.room) {
-		console.log('leaving room: ', socket.room);
-		socket.leave(socket.room);
+	if (true){
+		if(socket.room) {
+			console.log('leaving room: ', socket.room);
+			socket.leave(socket.room);
+		}
+		socket.room = room;
+		socket.join(room);
+		console.log('socket.room: ', room);
 	}
-	socket.room = room;
-	socket.join(room);
-	console.log('socket.room: ', room);
 }
 
 function setRoomSide (socket, roomObj) {
@@ -340,7 +342,7 @@ io.on('connection', function( socket ) {
 	if (socket.handshake.query.authId !== '') {
 		dbSystemServiceController.userAccountActions('update', {authId: socket.handshake.query.authId, curSocket: socket.id, lastIp: curIP})
 			.then(function (data) {
-				console.log('update data resp: ', data);
+				//console.log('update data resp: ', data);
 				socket.on('room', function(roomObj){
 					setRoomSide (socket, roomObj);
 				});
