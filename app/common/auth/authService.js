@@ -14,10 +14,10 @@
 				if (authResult && authResult.idToken) {
 					setSession(authResult);
 					getProfile();
-					$state.go('index');
+					location.reload();
 				} else if (err) {
 					$timeout(function() {
-						$state.go('index');
+						location.reload();
 					});
 					console.log(err);
 					alert('Error: ' + err.error + '. Check the console for further details.');
