@@ -5,8 +5,15 @@
 		var gSrv = this;
 
 		_.set(gSrv, 'init', function () {
+			_.forEach(gSrv.baseOverlay, function (base) {
+				base.setMap(null);
+			});
+			_.forEach(gSrv.circleOverlay, function (circle) {
+				circle.setMap(null);
+			});
 			_.set(gSrv, 'baseOverlay', {});
 			_.set(gSrv, 'circleOverlay', {});
+
 			$http.get('json/overlayCoords.json').then(function(overlayCoordsJSON) {
 				_.set(gSrv, 'overlayCoords', overlayCoordsJSON.data);
 			});
@@ -141,14 +148,12 @@
 
 		_.set(gSrv, 'resetMarkers', function() {
 			_.set(gSrv, 'gmapObj.markers', []);
-			// console.log('reset markers');
 		});
 
 		//process inbound Unit Stream
-		//console.log(_.get(gSrv, 'gmapObj.markers'));
 		_.set(gSrv, 'processUnitStream', function (update) {
 			var curMarker;
-			if( _.get(update, 'action') == 'C' || _.get(update, 'action') == 'INIT') {
+			if( _.get(update, 'action') === 'C' || _.get(update, 'action') === 'INIT') {
 				curMarker = {
 					id: update.data.unitID,
 					//icon: {
