@@ -124,9 +124,6 @@ router.route('/userAccounts/:_id')
 	});
 
 //start of protected endpoints, must have auth token
-protectedRouter.use(function (a, b, c) {
-	console.log(a);
-});
 protectedRouter.use(checkJwt);
 protectedRouter.route('/checkUserAccount')
 	.post(function (req, res) {
@@ -490,7 +487,7 @@ _.set(curServers, 'processQue', function (serverName, update) {
 						.then(function (resp) {
 							var switchedPlayer = _.find(resp, {ucid: player.ucid});
 							var curSocketId = switchedPlayer.curSocket;
-							console.log('switched player socket: ', curSocketId);
+							//console.log('switched player socket: ', curSocketId);
 							if (switchedPlayer.permLvl < 20) {
 								setSocketRoom(io.sockets.connected[switchedPlayer.curSocket], serverName + '_padmin');
 							} else if (player.side === 1 || player.side === 2) {

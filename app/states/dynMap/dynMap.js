@@ -23,40 +23,42 @@
 		});
 		dmCtrl.resetMap();
 
+		setTimeout(function(){
+			var dread = DCSUserAccountsAPI.query();
+			dread.$promise
+				.then(function (data) {
+					_.set(userAccountService, 'userAccounts', data);
+					_.set(userAccountService, 'localAccount', _.find(data, {authId: localStorage.getItem('sub')}));
+					if (typeof userAccountService.localAccount !== 'undefined' && userAccountService.localAccount.permLvl < 20) {
+						console.log('joinroom: ', $stateParams.name, _.get(userAccountService, ['localAccount', 'authId']));
+						mySocket.emit('room', {
+							server: $stateParams.name,
+							pSide: 'admin',
+							authId: localStorage.getItem('sub')
+						});
+						localStorage.setItem('lastStream', $stateParams.name);
+						localStorage.setItem('lastSide', 'admin');
+					} else {
+						var spread = srvPlayerAPI.query({name: $stateParams.name});
+						spread.$promise
+							.then(function (srvPlayers) {
+								pSide = _.find(srvPlayers, {ucid: userAccountService.localAccount.ucid});
+								// console.log('pside: ', pSide, 'srvplayers: ');
+								mySocket.emit('room', {
+									server: $stateParams.name,
+									pSide: pSide.side,
+									authId: localStorage.getItem('sub')
+								});
+								localStorage.setItem('lastStream', $stateParams.name);
+								localStorage.setItem('lastSide', pSide.side);
+							})
+						;
+					}
 
-		var dread = DCSUserAccountsAPI.query();
-		dread.$promise
-			.then(function (data) {
-				_.set(userAccountService, 'userAccounts', data);
-				_.set(userAccountService, 'localAccount', _.find(data, {authId: localStorage.getItem('sub')}));
-				if (typeof userAccountService.localAccount !== 'undefined' && userAccountService.localAccount.permLvl < 20) {
-					console.log('joinroom: ', $stateParams.name, _.get(userAccountService, ['localAccount', 'authId']));
-					mySocket.emit('room', {
-						server: $stateParams.name,
-						pSide: 'admin',
-						authId: localStorage.getItem('sub')
-					});
-					localStorage.setItem('lastStream', $stateParams.name);
-					localStorage.setItem('lastSide', 'admin');
-				} else {
-					var spread = srvPlayerAPI.query({name: $stateParams.name});
-					spread.$promise
-						.then(function (srvPlayers) {
-							pSide = _.find(srvPlayers, {ucid: userAccountService.localAccount.ucid});
-							// console.log('pside: ', pSide, 'srvplayers: ');
-							mySocket.emit('room', {
-								server: $stateParams.name,
-								pSide: pSide.side,
-								authId: localStorage.getItem('sub')
-							});
-							localStorage.setItem('lastStream', $stateParams.name);
-							localStorage.setItem('lastSide', pSide.side);
-						})
-					;
-				}
+				})
+			;
+		}, 1 * 1000);
 
-			})
-		;
 
 		//socket.io connectors
 		mySocket.on('srvUpd', function (data) {
