@@ -219,19 +219,15 @@ function initUnits(serverName, socketID, authId) {
 
 	dbSystemServiceController.userAccountActions('read')
 		.then(function (userAccounts) {
-			//console.log('checkaccount: ', curAccount);
+			var curAccount;
+			if(authId) {
+				curAccount = _.find(userAccounts, {authId: authId});
+			} else {
+				curAccount = _.find(userAccounts, {lastIp: curIP});
+			}
 			dbMapServiceController.srvPlayerActions('read', serverName)
 				.then(function (srvPlayers) {
 					var pSide;
-					var curAccount;
-					console.log('authId: ', authId, lastIp, authId);
-					if(authId) {
-						curAccount = _.find(userAccounts, {ipaddr: lastIp});
-					} else {
-						curAccount = _.find(userAccounts, {authId: authId});
-					}
-					console.log('curaccount: ', curAccount);
-					//console.log('srvp: ', srvPlayers, userAccounts);
 					var curSrvPlayer = _.find(srvPlayers, {ucid: curAccount.ucid});
 
 					if (curAccount.permLvl < 20) {
