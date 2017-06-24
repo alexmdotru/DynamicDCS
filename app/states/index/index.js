@@ -11,7 +11,6 @@
 				_.set(userAccountService, 'localAccount', _.find(data, {authId: localStorage.getItem('sub')}));
 				socket.emit('room', {
 					server: 'leaderboard',
-					pSide: 'all',
 					authId: _.get(userAccountService, ['localAccount', 'authId'])
 				});
 			})

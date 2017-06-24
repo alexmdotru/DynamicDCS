@@ -69,13 +69,13 @@ const checkJwt = jwt({
 	issuer: 'https://' + process.env.AUTH0_DOMAIN + '/',
 	algorithms: ['RS256']
 });
-io.use(function (socket, next) {
-	// hack the token checker!! :-P
-	var req = {};
-	var res;
-	_.set(req, 'headers.authorization', socket.handshake.query.token);
-	checkJwt(req, res, next);
-});
+//io.use(function (socket, next) {
+//	// hack the token checker!! :-P
+//	var req = {};
+//	var res;
+//	_.set(req, 'headers.authorization', socket.handshake.query.token);
+//	checkJwt(req, res, next);
+//});
 
 
 router.route('/srvPlayers/:name')
@@ -211,7 +211,11 @@ function isNumeric(x) {
 
 function initUnits(serverName, socketID, authId) {
 	//console.log('sendInitUNITS for ', serverName, ' for socket ', socketID);
+	var curIP = io.sockets.connected[socketID].conn.remoteAddress;
 	var initQue = {que: []};
+	if (curIP === ':10308' || curIP === '::ffff:127.0.0.1') {
+		curIP = '127.0.0.1';
+	}
 
 	dbSystemServiceController.userAccountActions('read')
 		.then(function (userAccounts) {
@@ -219,7 +223,14 @@ function initUnits(serverName, socketID, authId) {
 			dbMapServiceController.srvPlayerActions('read', serverName)
 				.then(function (srvPlayers) {
 					var pSide;
-					var curAccount = _.find(userAccounts, {authId: authId});
+					var curAccount;
+					console.log('authId: ', authId, lastIp, authId);
+					if(authId) {
+						curAccount = _.find(userAccounts, {ipaddr: lastIp});
+					} else {
+						curAccount = _.find(userAccounts, {authId: authId});
+					}
+					console.log('curaccount: ', curAccount);
 					//console.log('srvp: ', srvPlayers, userAccounts);
 					var curSrvPlayer = _.find(srvPlayers, {ucid: curAccount.ucid});
 
@@ -310,16 +321,32 @@ function setRoomSide(socket, roomObj) {
 			.then(function (userAccounts) {
 				var curAccount = _.find(userAccounts, {authId: roomObj.authId}); // might have to decrypt authtoken...
 				if (typeof curAccount !== 'undefined') {
-					//console.log('curaccount: ',curAccount);
-					console.log('pSide: ', roomObj.pSide);
-					console.log('settingsock: ', socket.id);
-					if (roomObj.pSide === 'admin' && curAccount.permLvl < 20) {
-						setSocketRoom(socket, roomObj.server + '_qadmin');
-					} else if (roomObj.pSide === 1 || roomObj.pSide === 2) {
-						setSocketRoom(socket, roomObj.server + '_q' + roomObj.pSide);
-					}
+					dbMapServiceController.srvPlayerActions('read', roomObj.server)
+						.then(function (srvPlayers) {
+							pSide = _.find(srvPlayers, {ucid: curAccount.ucid});
+							console.log('settingsock: ', socket.id+' side: ', pSide);
+							if (curAccount.permLvl < 20) {
+								setSocketRoom(socket, roomObj.server + '_qadmin');
+							} else if (roomObj.pSide === 1 || roomObj.pSide === 2) {
+								setSocketRoom(socket, roomObj.server + '_q' + roomObj.pSide);
+							}
+						})
+					;
 				} else {
-					console.log('curAccount is empty, match with ip now');
+					console.log('no account detected, match with ip now');
+					var curIP = socket.conn.remoteAddress;
+					if (curIP === ':10308' || curIP === '::ffff:127.0.0.1') {
+						curIP = '127.0.0.1';
+					}
+					dbMapServiceController.srvPlayerActions('read', roomObj.server)
+						.then(function (srvPlayers) {
+							var curPlayer = _.find(srvPlayers, {ipaddr: curIP});
+							if( curPlayer ) {
+								setSocketRoom(socket, roomObj.server + '_q' + curPlayer.side);
+							}
+							//console.log('match: ', curIP, srvPlayers);
+						})
+					;
 				}
 			})
 		;

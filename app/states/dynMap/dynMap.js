@@ -33,24 +33,18 @@
 						console.log('joinroom: ', $stateParams.name, _.get(userAccountService, ['localAccount', 'authId']));
 						mySocket.emit('room', {
 							server: $stateParams.name,
-							pSide: 'admin',
 							authId: localStorage.getItem('sub')
 						});
 						localStorage.setItem('lastStream', $stateParams.name);
-						localStorage.setItem('lastSide', 'admin');
 					} else {
 						var spread = srvPlayerAPI.query({name: $stateParams.name});
 						spread.$promise
 							.then(function (srvPlayers) {
-								pSide = _.find(srvPlayers, {ucid: userAccountService.localAccount.ucid});
-								// console.log('pside: ', pSide, 'srvplayers: ');
 								mySocket.emit('room', {
 									server: $stateParams.name,
-									pSide: pSide.side,
 									authId: localStorage.getItem('sub')
 								});
 								localStorage.setItem('lastStream', $stateParams.name);
-								localStorage.setItem('lastSide', pSide.side);
 							})
 						;
 					}
@@ -151,7 +145,6 @@
 				dmCtrl.resetMap();
 				mySocket.emit('room', {
 					server: localStorage.getItem('lastStream'),
-					pSide: localStorage.getItem('lastSide'),
 					authId: localStorage.getItem('sub')
 				});
 			}, 1 * 1000);
