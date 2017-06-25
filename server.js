@@ -525,11 +525,10 @@ _.set(curServers, 'processQue', function (serverName, update) {
 				if ((matchPlayer && matchPlayer.side !== player.side) && player.side !== 0) {
 					dbSystemServiceController.userAccountActions('read')
 						.then(function (resp) {
-							var switchedPlayer = _.find(resp, {ucid: player.ucid});
+							switchedPlayer = nonaccountUsers[player.ucid];
 							if(typeof switchedPlayer === 'undefined') {
-								switchedPlayer = nonaccountUsers[player.ucid]
+								var switchedPlayer = _.find(resp, {ucid: player.ucid});
 							}
-							//console.log(switchedPlayer, nonaccountUsers);
 							if (typeof switchedPlayer !== 'undefined' &&switchedPlayer.permLvl < 20) {
 								setSocketRoom(io.sockets.connected[switchedPlayer.curSocket], serverName + '_padmin');
 							} else if (player.side === 1 || player.side === 2) {
