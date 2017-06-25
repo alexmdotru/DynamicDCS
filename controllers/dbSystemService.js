@@ -47,13 +47,12 @@ exports.userAccountActions = function (action, obj){
 					reject(err);
 				}
 				if (ucidUser.length === 0) {
+					//console.log('ucid user', obj.lastIp);
 					UserAccount.find({lastIp: obj.lastIp}, function (err, ipUser) {
 						if (err) {
 							reject(err);
 						}
-						if (ipUser.length === 0) {
-							//console.log('cant match up user with account ', obj.lastIp);
-						}else{
+						if (ipUser.length !== 0) {
 							ipUser = ipUser[0];
 							_.set(ipUser, 'gameName', _.get(obj, 'gameName'));
 							_.set(ipUser, 'ucid', _.get(obj, 'ucid'));

@@ -32,6 +32,7 @@ if (process.env.NODE_ENV !== config.test_env) { //SET NODE_ENV=test
 
 //secure sockets
 var io = require('socket.io').listen(server);
+
 //Controllers
 const dbSystemServiceController = require('./controllers/dbSystemService');
 const dbMapServiceController = require('./controllers/dbMapService');
@@ -190,6 +191,7 @@ protectedRouter.route('/userAccounts')
 var outOfSyncUnitCnt = 0;
 var socketQues = ['q0', 'q1', 'q2', 'qadmin'];
 var curServers = {};
+var nonaccountUsers = {};
 
 function initClear(serverName, serverType) {
 	if (serverType === 'client') {
@@ -228,13 +230,19 @@ function initUnits(serverName, socketID, authId) {
 			dbMapServiceController.srvPlayerActions('read', serverName)
 				.then(function (srvPlayers) {
 					var pSide;
-					var curSrvPlayer = _.find(srvPlayers, {ucid: curAccount.ucid});
 
-					if (curAccount.permLvl < 20) {
-						pSide = 'admin';
+					if(typeof curAccount !== 'undefined') {
+						var curSrvPlayer = _.find(srvPlayers, {ucid: curAccount.ucid});
+
+						if (curAccount.permLvl < 20) {
+							pSide = 'admin';
+						} else {
+							pSide = _.get(curSrvPlayer, 'side', 0);
+						}
 					} else {
-						pSide = _.get(curSrvPlayer, 'side', 0);
+						pSide = _.find(srvPlayers, {ipaddr: curIP}).side;
 					}
+
 
 					//console.log('pside: ', pSide);
 					if (_.get(curServers, [serverName, 'serverObject', 'units'], []).length > 0 && pSide !== 0) {
@@ -319,8 +327,8 @@ function setRoomSide(socket, roomObj) {
 				if (typeof curAccount !== 'undefined') {
 					dbMapServiceController.srvPlayerActions('read', roomObj.server)
 						.then(function (srvPlayers) {
-							pSide = _.find(srvPlayers, {ucid: curAccount.ucid}).side;
-							console.log('settingsock: ', socket.id+' side: ', pSide);
+							//pSide = _.find(srvPlayers, {ucid: curAccount.ucid}).side;
+							//console.log('settingsock: ', socket.id+' side: ', pSide);
 							if (curAccount.permLvl < 20) {
 								setSocketRoom(socket, roomObj.server + '_qadmin');
 							} else if (pSide === 1 || pSide === 2) {
@@ -339,8 +347,10 @@ function setRoomSide(socket, roomObj) {
 							var curPlayer = _.find(srvPlayers, {ipaddr: curIP});
 							if( curPlayer ) {
 								setSocketRoom(socket, roomObj.server + '_q' + curPlayer.side);
+								nonaccountUsers[curPlayer.ucid] = {
+									curSocket: socket.id
+								};
 							}
-							//console.log('match: ', curIP, srvPlayers);
 						})
 					;
 				}
@@ -357,7 +367,32 @@ io.on('connection', function (socket) {
 	}
 
 	console.log(socket.id + ' connected on ' + curIP + ' with ID: ' + socket.handshake.query.authId);
-	if (socket.handshake.query.authId !== '') {
+	if (socket.handshake.query.authId === 'null') {
+		console.log('NOT LOGGED IN', socket.handshake.query.authId);
+		socket.on('room', function (roomObj) {
+			setRoomSide(socket, roomObj);
+		});
+
+		socket.on('clientUpd', function (data) {
+			if (data.action === 'unitINIT') {
+				if (curServers[data.name]) {
+					sendInit(data.name, socket.id, data.authId);
+				}
+			}
+		});
+
+		socket.on('disconnect', function () {
+			console.log(socket.id + ' user disconnected');
+		});
+		socket.on('error', function (err) {
+			if (err === 'handshake error') {
+				console.log('handshake error', err);
+			} else {
+				console.log('io error', err);
+			}
+		});
+	} else {
+		console.log('LOGGED IN', socket.handshake.query.authId);
 		dbSystemServiceController.userAccountActions('update', {
 			authId: socket.handshake.query.authId,
 			curSocket: socket.id,
@@ -387,22 +422,8 @@ io.on('connection', function (socket) {
 						console.log('io error', err);
 					}
 				});
-
-				//dbMapServiceController.srvPlayerActions
-				//setup room
-				/*
-				 setRoomSide ({
-				 server: $stateParams.name,
-				 pSide: 'admin',
-				 authId: socket.handshake.query.authId
-				 });
-				 */
 			})
 		;
-	} else {
-		console.log('NOT LOGGED IN');
-		//setup no ip room
-
 	}
 });
 
@@ -499,19 +520,20 @@ _.set(curServers, 'processQue', function (serverName, update) {
 		}
 
 		//playerUpdate
+
 		if (_.get(queObj, 'action') === 'players') {
 			//switch players socket room on side change
 			_.forEach(queObj.data, function (player) {
 				var matchPlayer = _.find(curServers[serverName].serverObject.players, {ucid: player.ucid});
 				if ((matchPlayer && matchPlayer.side !== player.side) && player.side !== 0) {
-					//setSocketRoom (socket, room)
-					//console.log('plyr switched sides: ', matchPlayer); <20
 					dbSystemServiceController.userAccountActions('read')
 						.then(function (resp) {
 							var switchedPlayer = _.find(resp, {ucid: player.ucid});
-							var curSocketId = switchedPlayer.curSocket;
-							//console.log('switched player socket: ', curSocketId);
-							if (switchedPlayer.permLvl < 20) {
+							if(typeof switchedPlayer === 'undefined') {
+								switchedPlayer = nonaccountUsers[player.ucid]
+							}
+							//console.log(switchedPlayer, nonaccountUsers);
+							if (typeof switchedPlayer !== 'undefined' &&switchedPlayer.permLvl < 20) {
 								setSocketRoom(io.sockets.connected[switchedPlayer.curSocket], serverName + '_padmin');
 							} else if (player.side === 1 || player.side === 2) {
 								setSocketRoom(io.sockets.connected[switchedPlayer.curSocket], serverName + '_q' + player.side);
@@ -526,6 +548,7 @@ _.set(curServers, 'processQue', function (serverName, update) {
 			//console.log(curServers[serverName].serverObject.players);
 			curServers[serverName].serverObject.players = queObj.data;
 			//apply local information object
+
 			_.forEach(queObj.data, function (data) {
 				if (data) {
 					if (data.ucid) {
