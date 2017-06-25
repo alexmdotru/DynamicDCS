@@ -195,13 +195,13 @@ var nonaccountUsers = {};
 
 function initClear(serverName, serverType) {
 	if (serverType === 'client') {
-		_.set(curServers, ['serverObject', serverName, 'units'], []);
+		_.set(curServers, [serverName, 'serverObject', 'units'], []);
 		//Unit.collection.drop();
 		dbMapServiceController.unitActions('dropall', serverName); //someday maps will persist, reset all units
-		_.set(curServers, ['serverObject', serverName, 'ClientRequestArray'], []);
+		_.set(curServers, [serverName, 'serverObject', 'ClientRequestArray'], []);
 	}
 	if (serverType === 'server') {
-		_.set(curServers, ['serverObject', serverName, 'GameGUIRequestArray'], []);
+		_.set(curServers, [serverName, 'serverObject', 'GameGUIRequestArray'], []);
 	}
 }
 
@@ -230,7 +230,6 @@ function initUnits(serverName, socketID, authId) {
 			dbMapServiceController.srvPlayerActions('read', serverName)
 				.then(function (srvPlayers) {
 					var pSide;
-
 					if(typeof curAccount !== 'undefined') {
 						var curSrvPlayer = _.find(srvPlayers, {ucid: curAccount.ucid});
 
@@ -243,8 +242,6 @@ function initUnits(serverName, socketID, authId) {
 						pSide = _.find(srvPlayers, {ipaddr: curIP}).side;
 					}
 
-
-					//console.log('pside: ', pSide);
 					if (_.get(curServers, [serverName, 'serverObject', 'units'], []).length > 0 && pSide !== 0) {
 						_.forEach(_.get(curServers, [serverName, 'serverObject', 'units'], []), function (unit) {
 							if (_.get(unit, 'coalition') === pSide || pSide === 'admin') {
@@ -327,7 +324,7 @@ function setRoomSide(socket, roomObj) {
 				if (typeof curAccount !== 'undefined') {
 					dbMapServiceController.srvPlayerActions('read', roomObj.server)
 						.then(function (srvPlayers) {
-							//pSide = _.find(srvPlayers, {ucid: curAccount.ucid}).side;
+							pSide = _.find(srvPlayers, {ucid: curAccount.ucid}).side;
 							//console.log('settingsock: ', socket.id+' side: ', pSide);
 							if (curAccount.permLvl < 20) {
 								setSocketRoom(socket, roomObj.server + '_qadmin');
@@ -768,7 +765,7 @@ setInterval(function () {
 				}
 			});
 		});
-}, 1 * 1 * 1000);
+}, 1 * 10 * 1000);
 
 function syncDCSData(serverName, DCSData) {
 	//console.log('incoming data: ', DCSData);
