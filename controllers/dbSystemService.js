@@ -87,6 +87,7 @@ exports.userAccountActions = function (action, obj){
 	}
 	if(action === 'checkAccount') {
 		return new Promise(function(resolve, reject) {
+			console.log('check account: ', obj.user.sub);
 			UserAccount.find({authId: obj.user.sub}, function (err, userAccount) {
 				if (err) {
 					reject(err);

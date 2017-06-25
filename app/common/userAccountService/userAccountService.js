@@ -53,6 +53,7 @@
 			dsave.$promise
 				.then(function(data) {
 					uASrv.readUser();
+					location.reload();
 					return data;
 				})
 				.catch(function(err){

@@ -14,7 +14,7 @@
 				if (authResult && authResult.idToken) {
 					setSession(authResult);
 					getProfile();
-					location.reload();
+					//location.reload();
 				} else if (err) {
 					$timeout(function() {
 						location.reload();
