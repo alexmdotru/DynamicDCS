@@ -319,12 +319,12 @@ function setRoomSide(socket, roomObj) {
 				if (typeof curAccount !== 'undefined') {
 					dbMapServiceController.srvPlayerActions('read', roomObj.server)
 						.then(function (srvPlayers) {
-							pSide = _.find(srvPlayers, {ucid: curAccount.ucid});
+							pSide = _.find(srvPlayers, {ucid: curAccount.ucid}).side;
 							console.log('settingsock: ', socket.id+' side: ', pSide);
 							if (curAccount.permLvl < 20) {
 								setSocketRoom(socket, roomObj.server + '_qadmin');
-							} else if (roomObj.pSide === 1 || roomObj.pSide === 2) {
-								setSocketRoom(socket, roomObj.server + '_q' + roomObj.pSide);
+							} else if (pSide === 1 || pSide === 2) {
+								setSocketRoom(socket, roomObj.server + '_q' + pSide);
 							}
 						})
 					;
