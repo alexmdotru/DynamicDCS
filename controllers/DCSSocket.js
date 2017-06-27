@@ -4,7 +4,7 @@ const net = require('net'),
 function DCSSocket(serverName, serveraddress, clientPort, gameGuiPort, callback, io, initClear, reqClientArray, regGameGuiArray) {
 	var dsock = this;
 	dsock.serverName = serverName;
-	dsock.serveraddress = serveraddress;
+	dsock.serverAddress = serveraddress;
 	dsock.clientPort = clientPort;
 	dsock.GameGuiPort = gameGuiPort;
 	dsock.callback = callback;
