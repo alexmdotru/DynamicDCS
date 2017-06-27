@@ -131,8 +131,9 @@ protectedRouter.use(function (req, res, next) {
 		.then(function (resp) {
 			if (resp[0].permLvl < 10) {
 				next();
+			} else {
+				res.status('503').json({message: "You dont have permissions to do requested action."});
 			}
-			res.status('503').json({message: "You dont have permissions to do requested action."});
 		})
 	;
 });
