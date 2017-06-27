@@ -50,8 +50,9 @@ function DCSSocket(serverName, serveraddress, clientPort, gameGuiPort, callback,
 			dsock.clientConnOpen = true;
 		});
 
-		dsock.client.on('error', () => {
+		dsock.client.on('error', function (err) {
 			dsock.clientConnOpen = true;
+			console.log('Client Error: ', err);
 		});
 	},
 	dsock.connectServer = function () {
@@ -84,8 +85,9 @@ function DCSSocket(serverName, serveraddress, clientPort, gameGuiPort, callback,
 			dsock.io.emit('srvUpd', {que: [{action: 'reset'}]});
 			dsock.gameGUIConnOpen = true;
 		});
-		dsock.gameGUI.on('error', () => {
+		dsock.gameGUI.on('error', function (err) {
 			dsock.gameGUIConnOpen = true;
+			console.log('GameGUI Error: ', err);
 		});
 	};
 }
