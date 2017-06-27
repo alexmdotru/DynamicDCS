@@ -1,10 +1,10 @@
 const net = require('net'),
 	_ = require('lodash');
 
-function DCSSocket(serverName, serveraddress, clientPort, gameGuiPort, callback, io, initClear, reqClientArray, regGameGuiArray) {
+function DCSSocket(serverName, serverAddress, clientPort, gameGuiPort, callback, io, initClear, reqClientArray, regGameGuiArray) {
 	var dsock = this;
 	dsock.serverName = serverName;
-	dsock.serverAddress = serveraddress;
+	dsock.serverAddress = serverAddress;
 	dsock.clientPort = clientPort;
 	dsock.GameGuiPort = gameGuiPort;
 	dsock.callback = callback;
@@ -24,7 +24,7 @@ function DCSSocket(serverName, serveraddress, clientPort, gameGuiPort, callback,
 			port: dsock.clientPort
 		}, () => {
 			var time = new Date();
-			console.log(time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + ' :: Connected to DCS Client at '+dsock.serveraddress+':'+dsock.clientPort+' !');
+			console.log(time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + ' :: Connected to DCS Client at '+dsock.serverAddress+':'+dsock.clientPort+' !');
 			dsock.clientConnOpen = false;
 			dsock.clientBuffer = "";
 		});
@@ -45,7 +45,7 @@ function DCSSocket(serverName, serveraddress, clientPort, gameGuiPort, callback,
 
 		dsock.client.on('close', () => {
 			time = new Date();
-			console.log(time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + ' :: Reconnecting DCS Client on '+dsock.serveraddress+':'+dsock.clientPort+'....');
+			console.log(time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + ' :: Reconnecting DCS Client on '+dsock.serverAddress+':'+dsock.clientPort+'....');
 			dsock.io.emit('srvUpd', {que: [{action: 'reset'}]});
 			dsock.clientConnOpen = true;
 		});
@@ -61,7 +61,7 @@ function DCSSocket(serverName, serveraddress, clientPort, gameGuiPort, callback,
 			port: dsock.GameGuiPort
 		}, () => {
 			var time = new Date();
-			console.log(time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + ' :: Connected to DCS GameGUI at '+dsock.serveraddress+':'+dsock.GameGuiPort+'!');
+			console.log(time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + ' :: Connected to DCS GameGUI at '+dsock.serverAddress+':'+dsock.GameGuiPort+'!');
 			dsock.gameGUIConnOpen = false;
 			dsock.gameGUIBuffer = "";
 		});
@@ -81,7 +81,7 @@ function DCSSocket(serverName, serveraddress, clientPort, gameGuiPort, callback,
 		});
 		dsock.gameGUI.on('close', () => {
 			time = new Date();
-			console.log(time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + ' :: Reconnecting DCS GameGUI at '+dsock.serveraddress+':'+dsock.GameGuiPort+'....');
+			console.log(time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + ' :: Reconnecting DCS GameGUI at '+dsock.serverAddress+':'+dsock.GameGuiPort+'....');
 			dsock.io.emit('srvUpd', {que: [{action: 'reset'}]});
 			dsock.gameGUIConnOpen = true;
 		});
