@@ -342,6 +342,7 @@ function setRoomSide(socket, roomObj) {
 					dbMapServiceController.srvPlayerActions('read', roomObj.server)
 						.then(function (srvPlayers) {
 							var curPlayer = _.find(srvPlayers, function (player) { //{ipaddr: curIP}
+								console.log('ipcomp: ', player.ipaddr, curIP );
 								if (_.includes(player.ipaddr, curIP)) {
 									return true;
 								}
@@ -526,8 +527,11 @@ _.set(curServers, 'processQue', function (serverName, update) {
 		if (_.get(queObj, 'action') === 'players') {
 			var switchedPlayer;
 			_.forEach(queObj.data, function (player) {
-				var matchPlayer = _.find(curServers[serverName].serverObject.players, {ucid: player.ucid});
-				if ((matchPlayer && matchPlayer.side !== player.side) && player.side !== 0) {
+				if (player !== null) {	
+			//console.log('playerupd: ', player);
+				
+					var matchPlayer = _.find(curServers[serverName].serverObject.players, {ucid: player.ucid});
+					if ((matchPlayer && matchPlayer.side !== player.side) && player.side !== 0) {
 					dbSystemServiceController.userAccountActions('read')
 						.then(function (resp) {
 							switchedPlayer = nonaccountUsers[player.ucid];
@@ -543,7 +547,9 @@ _.set(curServers, 'processQue', function (serverName, update) {
 							}
 						})
 					;
+					}
 				}
+
 			});
 			//
 			//console.log(curServers[serverName].serverObject.players);
@@ -769,7 +775,7 @@ setInterval(function () {
 				}
 			});
 		});
-}, 1 * 10 * 1000);
+}, 1 * 1 * 1000);
 
 function syncDCSData(serverName, DCSData) {
 	//console.log('incoming data: ', DCSData);
