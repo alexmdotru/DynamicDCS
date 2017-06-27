@@ -35,7 +35,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 	}
 	if (action === 'update') {
 		curIP = obj.ipaddr;
-		if(obj.ipaddr === ':10308'){
+		if(obj.ipaddr === ':10308' || obj.ipaddr === '127.0.0.1'){
 			curIP = '127.0.0.1';
 		}
 		_.set(obj, 'ipaddr', curIP);
