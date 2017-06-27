@@ -205,9 +205,9 @@ function isNumeric(x) {
 
 function initUnits(serverName, socketID, authId) {
 	//console.log('sendInitUNITS for ', serverName, ' for socket ', socketID);
-	var curIP = io.sockets.connected[socketID].conn.remoteAddress;
+	var curIP = io.sockets.connected[socketID].conn.remoteAddress.replace("::ffff:", "");
 	var initQue = {que: []};
-	if (curIP === ':10308' || curIP === '::ffff:127.0.0.1') {
+	if (curIP === ':10308') {
 		curIP = '127.0.0.1';
 	}
 
@@ -335,8 +335,8 @@ function setRoomSide(socket, roomObj) {
 					;
 				} else {
 					console.log('no account detected, match with ip now');
-					var curIP = socket.conn.remoteAddress;
-					if (curIP === ':10308' || curIP === '::ffff:127.0.0.1') {
+					var curIP = socket.conn.remoteAddress.replace("::ffff:", "");
+					if (curIP === ':10308') {
 						curIP = '127.0.0.1';
 					}
 					dbMapServiceController.srvPlayerActions('read', roomObj.server)
@@ -364,8 +364,8 @@ function setRoomSide(socket, roomObj) {
 
 //setup socket io
 io.on('connection', function (socket) {
-	var curIP = socket.conn.remoteAddress;
-	if (curIP === ':10308' || curIP === '::ffff:127.0.0.1') {
+	var curIP = socket.conn.remoteAddress.replace("::ffff:", "");
+	if (curIP === ':10308') {
 		curIP = '127.0.0.1';
 	}
 
@@ -527,9 +527,9 @@ _.set(curServers, 'processQue', function (serverName, update) {
 		if (_.get(queObj, 'action') === 'players') {
 			var switchedPlayer;
 			_.forEach(queObj.data, function (player) {
-				if (player !== null) {	
+				if (player !== null) {
 			//console.log('playerupd: ', player);
-				
+
 					var matchPlayer = _.find(curServers[serverName].serverObject.players, {ucid: player.ucid});
 					if ((matchPlayer && matchPlayer.side !== player.side) && player.side !== 0) {
 					dbSystemServiceController.userAccountActions('read')
@@ -564,9 +564,7 @@ _.set(curServers, 'processQue', function (serverName, update) {
 						_.set(data, 'playerId', data.id);
 						//update map based player table
 						dbMapServiceController.srvPlayerActions('update', serverName, data);
-
-
-						if (data.ipaddr === ':10308' || data.ipaddr === '::ffff:127.0.0.1') {
+						if (data.ipaddr === ':10308') {
 							data.ipaddr = '127.0.0.1';
 						}
 						//update user based table (based on ucid)
