@@ -18,17 +18,8 @@ if (!process.env.AUTH0_DOMAIN || !process.env.AUTH0_AUDIENCE) {
 	throw 'Make sure you have AUTH0_DOMAIN, and AUTH0_AUDIENCE in your .env file'
 }
 
-// Start the server
-var server;
-var serverAddress;
-if (process.env.NODE_ENV !== config.test_env) { //SET NODE_ENV=test
-	server = app.listen(config.port);
-	serverAddress = config.dcs_socket;
-	console.log(`Your server is running on port ${config.port}.`);
-} else {
-	server = app.listen(config.test_port);
-	serverAddress = config.test_dcs_socket;
-}
+//main server ip
+server = app.listen(config.port);
 
 //secure sockets
 var io = require('socket.io').listen(server);
@@ -236,7 +227,7 @@ function initUnits(serverName, socketID, authId) {
 						if (curAccount.permLvl < 20) {
 							pSide = 'admin';
 						} else {
-							pSide = _.get(curSrvPlayer, 'side', 0);
+							pSide = _.get(curSrvPlayer, 'side', 0);n
 						}
 					} else {
 						pSide = _.find(srvPlayers, {ipaddr: curIP}).side;
@@ -519,7 +510,7 @@ _.set(curServers, 'processQue', function (serverName, update) {
 		//playerUpdate
 
 		if (_.get(queObj, 'action') === 'players') {
-			//switch players socket room on side change
+			var switchedPlayer;
 			_.forEach(queObj.data, function (player) {
 				var matchPlayer = _.find(curServers[serverName].serverObject.players, {ucid: player.ucid});
 				if ((matchPlayer && matchPlayer.side !== player.side) && player.side !== 0) {
@@ -527,7 +518,7 @@ _.set(curServers, 'processQue', function (serverName, update) {
 						.then(function (resp) {
 							switchedPlayer = nonaccountUsers[player.ucid];
 							if(typeof switchedPlayer === 'undefined') {
-								var switchedPlayer = _.find(resp, {ucid: player.ucid});
+								switchedPlayer = _.find(resp, {ucid: player.ucid});
 							}
 							if (typeof switchedPlayer !== 'undefined' &&switchedPlayer.permLvl < 20) {
 								setSocketRoom(io.sockets.connected[switchedPlayer.curSocket], serverName + '_padmin');

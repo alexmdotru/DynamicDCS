@@ -24,7 +24,7 @@ function DCSSocket(serverName, serveraddress, clientPort, gameGuiPort, callback,
 			port: dsock.clientPort
 		}, () => {
 			var time = new Date();
-			console.log(time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + ' :: Connected to DCS Client!');
+			console.log(time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + ' :: Connected to DCS Client at '+dsock.serveraddress+':'+dsock.clientPort+' !');
 			dsock.clientConnOpen = false;
 			dsock.clientBuffer = "";
 		});
@@ -45,7 +45,7 @@ function DCSSocket(serverName, serveraddress, clientPort, gameGuiPort, callback,
 
 		dsock.client.on('close', () => {
 			time = new Date();
-			console.log(time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + ' :: Reconnecting DCS Client....');
+			console.log(time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + ' :: Reconnecting DCS Client on '+dsock.serveraddress+':'+dsock.clientPort+'....');
 			dsock.io.emit('srvUpd', {que: [{action: 'reset'}]});
 			dsock.clientConnOpen = true;
 		});
@@ -60,7 +60,7 @@ function DCSSocket(serverName, serveraddress, clientPort, gameGuiPort, callback,
 			port: dsock.GameGuiPort
 		}, () => {
 			var time = new Date();
-			console.log(time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + ' :: Connected to DCS GameGUI!');
+			console.log(time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + ' :: Connected to DCS GameGUI at '+dsock.serveraddress+':'+dsock.GameGuiPort+'!');
 			dsock.gameGUIConnOpen = false;
 			dsock.gameGUIBuffer = "";
 		});
@@ -80,7 +80,7 @@ function DCSSocket(serverName, serveraddress, clientPort, gameGuiPort, callback,
 		});
 		dsock.gameGUI.on('close', () => {
 			time = new Date();
-			console.log(time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + ' :: Reconnecting DCS GameGUI....');
+			console.log(time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + ' :: Reconnecting DCS GameGUI at '+dsock.serveraddress+':'+dsock.GameGuiPort+'....');
 			dsock.io.emit('srvUpd', {que: [{action: 'reset'}]});
 			dsock.gameGUIConnOpen = true;
 		});
