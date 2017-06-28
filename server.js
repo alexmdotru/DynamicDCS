@@ -216,7 +216,7 @@ function initUnits(serverName, socketID, authId) {
 	dbSystemServiceController.userAccountActions('read')
 		.then(function (userAccounts) {
 			var curAccount;
-			console.log('aithid1: ', authId);
+			//console.log('authid1: ', authId);
 			if (typeof authId !== 'undefined') {
 				curAccount = _.find(userAccounts, {authId: authId});
 			} else {
@@ -397,13 +397,12 @@ io.on('connection', function (socket) {
 		});
 	} else {
 		console.log('LOGGED IN', socket.handshake.query.authId);
-		dbSystemServiceController.userAccountActions('update', {
+		dbSystemServiceController.userAccountActions('updateSocket', {
 			authId: socket.handshake.query.authId,
 			curSocket: socket.id,
 			lastIp: curIP
 		})
 			.then(function (data) {
-				//console.log('update data resp: ', data);
 				socket.on('room', function (roomObj) {
 					setRoomSide(socket, roomObj);
 				});
