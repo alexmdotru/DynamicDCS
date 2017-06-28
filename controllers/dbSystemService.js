@@ -46,8 +46,9 @@ exports.userAccountActions = function (action, obj){
 				if (err) {
 					reject(err);
 				}
+				//console.log('ucidUser.length: ', ucidUser.length);
 				if (ucidUser.length === 0) {
-					//console.log('ip user', obj);
+					//console.log('ip user', obj.lastIp);
 					UserAccount.find({lastIp: obj.lastIp}, function (err, ipUser) {
 						if (err) {
 							reject(err);

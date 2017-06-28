@@ -216,18 +216,42 @@ function initUnits(serverName, socketID, authId) {
 			var curAccount;
 			//console.log('user1');
 			if (typeof authId !== 'undefined') {
-				//console.log('user2');
 				curAccount = _.find(userAccounts, {authId: authId});
+				//console.log('user2', curAccount);
 			}
 			//console.log('user3');
 			//console.log('curAccountucid1: ', curAccount.ucid);
 			dbMapServiceController.srvPlayerActions('read', serverName)
 				.then(function (srvPlayers) {
-					//console.log('user4');
 					var pSide;
+					var curSrvPlayer;
+					var curActUpdate;
 					if (typeof curAccount !== 'undefined') {
 						//console.log('cur account not undefined');
-						var curSrvPlayer = _.find(srvPlayers, {ucid: curAccount.ucid});
+						if ( typeof curAccount.ucid !== 'undefined' ) {
+							curSrvPlayer = _.find(srvPlayers, {ucid: curAccount.ucid});
+						} else {
+							curSrvPlayer = _.find(srvPlayers, function (player) {
+								if (_.includes(player.ipaddr, curIP)) {
+									return true;
+								}
+								return false
+							});
+							//console.log('curSrvPlayer: ', curSrvPlayer);
+							curActUpdate = {
+								ucid: _.get(curSrvPlayer, 'ucid', ''),
+								gameName: _.get(curSrvPlayer, 'name', ''),
+								lastIp: _.get(curSrvPlayer, 'ipaddr', '')
+							};
+							//console.log('curActUpdate: ', curActUpdate);
+							dbSystemServiceController.userAccountActions('update', curActUpdate)
+								.then(function (data) {
+
+								})
+								.catch(function (err) {
+									console.log(err);
+								});
+						}
 						if (curAccount.permLvl < 20) {
 							pSide = 'admin';
 						} else {
@@ -312,17 +336,47 @@ function setSocketRoom(socket, room) {
 }
 
 function setRoomSide(socket, roomObj) {
+	var srvPlayer;
+	var pSide;
+	//console.log('setroom: ', roomObj);
+	var curIP = socket.conn.remoteAddress.replace("::ffff:", "");
+	if (curIP === ':10308' || curIP ==='127.0.0.1') {
+		curIP = '192.168.44.148';
+	}
 	if (roomObj.server === 'leaderboard') {
 		setSocketRoom(socket, 'leaderboard');
 	} else {
 		dbSystemServiceController.userAccountActions('read')
 			.then(function (userAccounts) {
+				//console.log(userAccounts);
 				var curAccount = _.find(userAccounts, {authId: roomObj.authId}); // might have to decrypt authtoken...
 				if (typeof curAccount !== 'undefined') {
+					//console.log('curacct: ', curAccount);
 					dbMapServiceController.srvPlayerActions('read', roomObj.server)
 						.then(function (srvPlayers) {
-							pSide = _.find(srvPlayers, {ucid: curAccount.ucid}).side;
-							//console.log('settingsock: ', socket.id+' side: ', pSide);
+							//console.log('srvPlayers: ',srvPlayers);
+							if(typeof curAccount.ucid !== 'undefined') {
+								srvPlayer = _.find(srvPlayers, {ucid: curAccount.ucid});
+								if(typeof srvPlayer.side !== 'undefined') {
+									pSide = srvPlayer.side;
+								} else {
+									console.log('srvPlayer doesnt have a side');
+								}
+							} else {
+								srvPlayer = _.find(srvPlayers, function (player) { //{ipaddr: curIP}
+									//console.log('ipcomp: ', player.ipaddr, curIP );
+									if (_.includes(player.ipaddr, curIP)) {
+										return true;
+									}
+									return false;
+								});
+								if(typeof srvPlayer.side !== 'undefined') {
+									pSide = srvPlayer.side;
+								} else {
+									console.log('srvPlayer doesnt have a side.2');
+								}
+							}
+							console.log('setroomPSide: ', pSide);
 							if (curAccount.permLvl < 20) {
 								setSocketRoom(socket, roomObj.server + '_qadmin');
 							} else if (pSide === 1 || pSide === 2) {
@@ -332,10 +386,6 @@ function setRoomSide(socket, roomObj) {
 					;
 				} else {
 					console.log('no account detected, match with ip now');
-					var curIP = socket.conn.remoteAddress.replace("::ffff:", "");
-					if (curIP === ':10308' || curIP ==='127.0.0.1') {
-						curIP = '192.168.44.148';
-					}
 					dbMapServiceController.srvPlayerActions('read', roomObj.server)
 						.then(function (srvPlayers) {
 							var curPlayer = _.find(srvPlayers, function (player) { //{ipaddr: curIP}
