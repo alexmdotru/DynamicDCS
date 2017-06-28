@@ -211,27 +211,22 @@ function initUnits(serverName, socketID, authId) {
 		curIP = '192.168.44.148';
 	}
 
-	//console.log('curip: ', curIP);
-
 	dbSystemServiceController.userAccountActions('read')
 		.then(function (userAccounts) {
 			var curAccount;
-			//console.log('authid1: ', authId);
+			//console.log('user1');
 			if (typeof authId !== 'undefined') {
+				//console.log('user2');
 				curAccount = _.find(userAccounts, {authId: authId});
-			} else {
-				curAccount = _.find(userAccounts, function (user) { //{ipaddr: curIP}
-					if (_.includes(user.lastIp, curIP)) {
-						return true;
-					}
-					return false;
-				});
 			}
-			console.log('curAccountucid1: ', curAccount.ucid);
+			//console.log('user3');
+			//console.log('curAccountucid1: ', curAccount.ucid);
 			dbMapServiceController.srvPlayerActions('read', serverName)
 				.then(function (srvPlayers) {
+					//console.log('user4');
 					var pSide;
-					if (typeof curAccount.ucid !== 'undefined') {
+					if (typeof curAccount !== 'undefined') {
+						//console.log('cur account not undefined');
 						var curSrvPlayer = _.find(srvPlayers, {ucid: curAccount.ucid});
 						if (curAccount.permLvl < 20) {
 							pSide = 'admin';
@@ -239,6 +234,7 @@ function initUnits(serverName, socketID, authId) {
 							pSide = _.get(curSrvPlayer, 'side', 0);
 						}
 					} else {
+						console.log('cur account IS undefined');
 						pSide = _.find(srvPlayers, function (player) {
 							if (_.includes(player.ipaddr, curIP)) {
 								return true;
@@ -343,7 +339,7 @@ function setRoomSide(socket, roomObj) {
 					dbMapServiceController.srvPlayerActions('read', roomObj.server)
 						.then(function (srvPlayers) {
 							var curPlayer = _.find(srvPlayers, function (player) { //{ipaddr: curIP}
-								console.log('ipcomp: ', player.ipaddr, curIP );
+								//console.log('ipcomp: ', player.ipaddr, curIP );
 								if (_.includes(player.ipaddr, curIP)) {
 									return true;
 								}
@@ -528,10 +524,7 @@ _.set(curServers, 'processQue', function (serverName, update) {
 			var switchedPlayer;
 			_.forEach(queObj.data, function (player) {
 				if (player !== null) {
-			//console.log('playerupd: ', player);
-
 					var matchPlayer = _.find(curServers[serverName].serverObject.players, {ucid: player.ucid});
-
 					if(typeof matchPlayer !== 'undefined') {
 						if ((matchPlayer.side !== player.side) && player.side !== 0) {
 							dbSystemServiceController.userAccountActions('read')

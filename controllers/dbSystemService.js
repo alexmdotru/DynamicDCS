@@ -41,6 +41,7 @@ exports.userAccountActions = function (action, obj){
 	if(action === 'update') {
 		//console.log('updateobj: ', obj);
 		return new Promise(function(resolve, reject) {
+			//console.log('userAccountActionsUCID: ', obj.ucid);
 			UserAccount.find({ucid: obj.ucid}, function (err, ucidUser) {
 				if (err) {
 					reject(err);
