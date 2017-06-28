@@ -204,87 +204,88 @@ function isNumeric(x) {
 }
 
 function initUnits(serverName, socketID, authId) {
-	//console.log('sendInitUNITS for ', serverName, ' for socket ', socketID);
+	console.log('sendInitUNITS for ', serverName, ' for socket ', socketID);
 	var curIP = io.sockets.connected[socketID].conn.remoteAddress.replace("::ffff:", "");
 	var initQue = {que: []};
-	if (curIP === ':10308' || curIP ==='127.0.0.1') {
+	if (curIP === ':10308' || curIP === '127.0.0.1') {
 		curIP = '192.168.44.148';
 	}
+
+	//console.log('curip: ', curIP);
 
 	dbSystemServiceController.userAccountActions('read')
 		.then(function (userAccounts) {
 			var curAccount;
-			if (authId) {
+			console.log('aithid1: ', authId);
+			if (typeof authId !== 'undefined') {
 				curAccount = _.find(userAccounts, {authId: authId});
 			} else {
 				curAccount = _.find(userAccounts, function (user) { //{ipaddr: curIP}
 					if (_.includes(user.lastIp, curIP)) {
 						return true;
 					}
+					return false;
 				});
-				dbMapServiceController.srvPlayerActions('read', serverName)
-					.then(function (srvPlayers) {
-						var pSide;
-						if (typeof curAccount !== 'undefined') {
-							var curSrvPlayer = _.find(srvPlayers, {ucid: curAccount.ucid});
-
-							if (curAccount.permLvl < 20) {
-								pSide = 'admin';
-							} else {
-								pSide = _.get(curSrvPlayer, 'side', 0);
-							}
-						} else {
-							pSide = _.find(srvPlayers, function (player) {
-								if (_.includes(player.ipaddr, curIP)) {
-									return true;
-								}
-								return false
-							}).side;
-
-							if (_.get(curServers, [serverName, 'serverObject', 'units'], []).length > 0 && pSide !== 0) {
-								_.forEach(_.get(curServers, [serverName, 'serverObject', 'units'], []), function (unit) {
-									if (_.get(unit, 'coalition') === pSide || pSide === 'admin') {
-										var curObj = {
-											action: 'INIT',
-											data: {
-												unitID: parseFloat(_.get(unit, 'unitID')),
-												type: _.get(unit, 'type'),
-												coalition: parseFloat(_.get(unit, 'coalition')),
-												lat: parseFloat(_.get(unit, 'lat')),
-												lon: parseFloat(_.get(unit, 'lon')),
-												alt: parseFloat(_.get(unit, 'alt')),
-												hdg: parseFloat(_.get(unit, 'hdg')),
-												speed: parseFloat(_.get(unit, 'speed')),
-												playername: _.get(unit, 'playername', '')
-											}
-										};
-										initQue.que.push(_.cloneDeep(curObj));
-									}
-								});
-							}
-
-							var sendAmt = 0;
-							var totalChkLoops = _.ceil(initQue.que.length / config.perSendMax);
-
-							var chkPayload = {que: [{action: 'reset'}]};
-							for (x = 0; x < totalChkLoops; x++) {
-								if (initQue.que.length < config.perSendMax) {
-									sendAmt = initQue.que.length;
-								} else {
-									sendAmt = config.perSendMax
-								}
-								for (y = 0; y < sendAmt; y++) {
-									chkPayload.que.push(initQue.que[0]);
-									initQue.que.shift();
-								}
-								//console.log('que: ',chkPayload);
-								io.to(socketID).emit('srvUpd', chkPayload);
-								chkPayload = {que: []};
-							}
-						}
-					})
-				;
 			}
+			console.log('curAccountucid1: ', curAccount.ucid);
+			dbMapServiceController.srvPlayerActions('read', serverName)
+				.then(function (srvPlayers) {
+					var pSide;
+					if (typeof curAccount.ucid !== 'undefined') {
+						var curSrvPlayer = _.find(srvPlayers, {ucid: curAccount.ucid});
+						if (curAccount.permLvl < 20) {
+							pSide = 'admin';
+						} else {
+							pSide = _.get(curSrvPlayer, 'side', 0);
+						}
+					} else {
+						pSide = _.find(srvPlayers, function (player) {
+							if (_.includes(player.ipaddr, curIP)) {
+								return true;
+							}
+							return false
+						}).side;
+					}
+					if (_.get(curServers, [serverName, 'serverObject', 'units'], []).length > 0 && pSide !== 0) {
+						_.forEach(_.get(curServers, [serverName, 'serverObject', 'units'], []), function (unit) {
+							if (_.get(unit, 'coalition') === pSide || pSide === 'admin') {
+								var curObj = {
+									action: 'INIT',
+									data: {
+										unitID: parseFloat(_.get(unit, 'unitID')),
+										type: _.get(unit, 'type'),
+										coalition: parseFloat(_.get(unit, 'coalition')),
+										lat: parseFloat(_.get(unit, 'lat')),
+										lon: parseFloat(_.get(unit, 'lon')),
+										alt: parseFloat(_.get(unit, 'alt')),
+										hdg: parseFloat(_.get(unit, 'hdg')),
+										speed: parseFloat(_.get(unit, 'speed')),
+										playername: _.get(unit, 'playername', '')
+									}
+								};
+								initQue.que.push(_.cloneDeep(curObj));
+							}
+						});
+					}
+					var sendAmt = 0;
+					var totalChkLoops = _.ceil(initQue.que.length / config.perSendMax);
+					var chkPayload = {que: [{action: 'reset'}]};
+					for (x = 0; x < totalChkLoops; x++) {
+						if (initQue.que.length < config.perSendMax) {
+							sendAmt = initQue.que.length;
+						} else {
+							sendAmt = config.perSendMax
+						}
+						for (y = 0; y < sendAmt; y++) {
+							chkPayload.que.push(initQue.que[0]);
+							initQue.que.shift();
+						}
+						//console.log('que: ',chkPayload);
+						io.to(socketID).emit('srvUpd', chkPayload);
+						chkPayload = {que: []};
+					}
+				})
+			;
 		})
 	;
 }
@@ -531,13 +532,39 @@ _.set(curServers, 'processQue', function (serverName, update) {
 			//console.log('playerupd: ', player);
 
 					var matchPlayer = _.find(curServers[serverName].serverObject.players, {ucid: player.ucid});
-					if ((matchPlayer && matchPlayer.side !== player.side) && player.side !== 0) {
-					dbSystemServiceController.userAccountActions('read')
-						.then(function (resp) {
-							switchedPlayer = nonaccountUsers[player.ucid];
-							if(typeof switchedPlayer === 'undefined') {
-								switchedPlayer = _.find(resp, {ucid: player.ucid});
-							}
+
+					if(typeof matchPlayer !== 'undefined') {
+						if ((matchPlayer.side !== player.side) && player.side !== 0) {
+							dbSystemServiceController.userAccountActions('read')
+								.then(function (resp) {
+									switchedPlayer = nonaccountUsers[player.ucid];
+									if(typeof switchedPlayer === 'undefined') {
+										switchedPlayer = _.find(resp, {ucid: player.ucid});
+									}
+									if (typeof switchedPlayer !== 'undefined' &&switchedPlayer.permLvl < 20) {
+										setSocketRoom(io.sockets.connected[switchedPlayer.curSocket], serverName + '_padmin');
+									} else if (player.side === 1 || player.side === 2) {
+										setSocketRoom(io.sockets.connected[switchedPlayer.curSocket], serverName + '_q' + player.side);
+									} else {
+										//setSocketRoom (io.sockets.connected[switchedPlayer.curSocket], serverName+'_q0');
+									}
+								})
+							;
+						}
+					} else {
+						console.log('match player by ip');
+						/*
+						var curIP = socket.conn.remoteAddress.replace("::ffff:", "");
+						if (curIP === ':10308' || curIP ==='127.0.0.1') {
+							curIP = '192.168.44.148';
+						}
+						if(_.includes(player.ipaddr, curIP)) {
+							dbSystemServiceController.userAccountActions('read')
+								.then(function (resp) {
+									switchedPlayer = _.find(resp, {lastIp: player.ipaddr});
+								})
+							;
+							console.log('ip match switchplayer: ', switchedPlayer);
 							if (typeof switchedPlayer !== 'undefined' &&switchedPlayer.permLvl < 20) {
 								setSocketRoom(io.sockets.connected[switchedPlayer.curSocket], serverName + '_padmin');
 							} else if (player.side === 1 || player.side === 2) {
@@ -545,8 +572,8 @@ _.set(curServers, 'processQue', function (serverName, update) {
 							} else {
 								//setSocketRoom (io.sockets.connected[switchedPlayer.curSocket], serverName+'_q0');
 							}
-						})
-					;
+						}
+						*/
 					}
 				}
 
