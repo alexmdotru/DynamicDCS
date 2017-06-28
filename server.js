@@ -207,8 +207,8 @@ function initUnits(serverName, socketID, authId) {
 	console.log('sendInitUNITS for ', serverName, ' for socket ', socketID);
 	var curIP = io.sockets.connected[socketID].conn.remoteAddress.replace("::ffff:", "");
 	var initQue = {que: []};
-	if (curIP === ':10308' || curIP === '127.0.0.1') {
-		curIP = '192.168.44.148';
+	if (curIP === ':10308') {
+		curIP = '127.0.0.1';
 	}
 
 	dbSystemServiceController.userAccountActions('read')
@@ -340,8 +340,8 @@ function setRoomSide(socket, roomObj) {
 	var pSide;
 	//console.log('setroom: ', roomObj);
 	var curIP = socket.conn.remoteAddress.replace("::ffff:", "");
-	if (curIP === ':10308' || curIP ==='127.0.0.1') {
-		curIP = '192.168.44.148';
+	if (curIP === ':10308') {
+		curIP = '127.0.0.1';
 	}
 	if (roomObj.server === 'leaderboard') {
 		setSocketRoom(socket, 'leaderboard');
@@ -412,9 +412,11 @@ function setRoomSide(socket, roomObj) {
 //setup socket io
 io.on('connection', function (socket) {
 	var curIP = socket.conn.remoteAddress.replace("::ffff:", "");
-	if (curIP === ':10308' || curIP ==='127.0.0.1') {
-		curIP = '192.168.44.148';
+	if (curIP === ':10308') {
+		curIP = '127.0.0.1';
 	}
+
+	console.log('curIP: ', curIP);
 
 	console.log(socket.id + ' connected on ' + curIP + ' with ID: ' + socket.handshake.query.authId);
 	if (socket.handshake.query.authId === 'null') {
@@ -595,27 +597,6 @@ _.set(curServers, 'processQue', function (serverName, update) {
 						}
 					} else {
 						console.log('match player by ip');
-						/*
-						var curIP = socket.conn.remoteAddress.replace("::ffff:", "");
-						if (curIP === ':10308' || curIP ==='127.0.0.1') {
-							curIP = '192.168.44.148';
-						}
-						if(_.includes(player.ipaddr, curIP)) {
-							dbSystemServiceController.userAccountActions('read')
-								.then(function (resp) {
-									switchedPlayer = _.find(resp, {lastIp: player.ipaddr});
-								})
-							;
-							console.log('ip match switchplayer: ', switchedPlayer);
-							if (typeof switchedPlayer !== 'undefined' &&switchedPlayer.permLvl < 20) {
-								setSocketRoom(io.sockets.connected[switchedPlayer.curSocket], serverName + '_padmin');
-							} else if (player.side === 1 || player.side === 2) {
-								setSocketRoom(io.sockets.connected[switchedPlayer.curSocket], serverName + '_q' + player.side);
-							} else {
-								//setSocketRoom (io.sockets.connected[switchedPlayer.curSocket], serverName+'_q0');
-							}
-						}
-						*/
 					}
 				}
 
@@ -633,8 +614,8 @@ _.set(curServers, 'processQue', function (serverName, update) {
 						_.set(data, 'playerId', data.id);
 						//update map based player table
 						dbMapServiceController.srvPlayerActions('update', serverName, data);
-						if (data.ipaddr === ':10308' || data.ipaddr === ':127.0.0.1') {
-							data.ipaddr = '192.168.44.148';
+						if (data.ipaddr === ':10308') {
+							data.ipaddr = '127.0.0.1';
 						}
 						//update user based table (based on ucid)
 						//console.log('playerstime: ', data);
