@@ -153,14 +153,14 @@
 		//process inbound Unit Stream
 		_.set(gSrv, 'processUnitStream', function (update) {
 			var curMarker;
+			var curSymbol;
 			if( _.get(update, 'action') === 'C' || _.get(update, 'action') === 'INIT') {
+
+				curSymbol = gSrv.buildSIDC(update.data);
 				curMarker = {
 					id: update.data.unitID,
-					//icon: {
-					//	url: 'data:image/svg+xml;utf-8,'+gSrv.buildSIDC(update.data),
-					//	anchor: new $window.google.maps.Point(15, 0)
-					//},
-					icon: gSrv.buildSIDC(update.data),
+					anchorPoint: curSymbol.getAnchor(),
+					icon: curSymbol.asCanvas().toDataURL(),
 					type: update.data.type,
 					playername: update.data.playername,
 					coalition: update.data.coalition,
@@ -169,7 +169,7 @@
 					alt: update.data.alt,
 					hdg: update.data.hdg,
 					speed: update.data.speed,
-					zIndex: update.data.unitID
+					zIndex: update.data.unitID,
 				};
 
 				/*
@@ -191,7 +191,9 @@
 				_.set(curMarker, 'hdg', update.data.hdg);
 				_.set(curMarker, 'speed', update.data.speed);
 				if (typeof _.get(curMarker, 'type') !== 'undefined') {
-					_.set(curMarker, 'icon', gSrv.buildSIDC(curMarker));
+					curSymbol = gSrv.buildSIDC(curMarker);
+					_.set(curMarker, 'anchorPoint', curSymbol.getAnchor());
+					_.set(curMarker, 'icon', curSymbol.asCanvas().toDataURL());
 				}
 			}
 			if( _.get(update, 'action') == 'D') {
@@ -258,7 +260,7 @@
 			}
 
 
-			var symbol =  new $window.ms.Symbol( _sidc + '****', sidOpt ).asCanvas().toDataURL();
+			var symbol =  new $window.ms.Symbol( _sidc + '****', sidOpt );
 			return symbol;
 		});
 
