@@ -1,10 +1,11 @@
 (function (angular) {
 	'use strict';
 
-	function controlService ($window, $http, uiGmapIsReady, uiGmapGoogleMapApi) {
+	function controlService ($rootScope, $window, $http, uiGmapIsReady, uiGmapGoogleMapApi) {
 		var gSrv = this;
 
 		_.set(gSrv, 'init', function () {
+			_.set(gSrv, 'gmapObj.markers', []);
 			_.forEach(gSrv.baseOverlay, function (base) {
 				base.setMap(null);
 			});
@@ -126,11 +127,7 @@
 				},
 				zoom: 8,
 				window: {
-					model: {},
-					show: false,
-					options: {
-						disableAutoPan: false
-					}
+					model: {}
 				},
 				options: {
 					mapTypeId: 'terrain',
@@ -139,8 +136,18 @@
 				markers: [],
 				markersEvents: {
 					click: function(marker, eventName, model) {
-						gSrv.gmapObj.window.model = model;
-						gSrv.gmapObj.window.show = true;
+						gSrv.gmapObj.window = {
+							coords: {
+								latitude: model.latitude,
+								longitude: model.longitude
+							},
+							options: {
+								visible: true,
+								pixelOffset: {height: -32, width: 0}
+							},
+							model: model,
+							show: true
+						};
 					}
 				}
 			});
@@ -164,6 +171,10 @@
 					type: update.data.type,
 					playername: update.data.playername,
 					coalition: update.data.coalition,
+					coords: {
+						latitude: update.data.lat,
+						longitude: update.data.lon
+					},
 					latitude: update.data.lat,
 					longitude: update.data.lon,
 					alt: update.data.alt,
@@ -259,7 +270,6 @@
 				_.set(sidOpt, 'type', unit.playername);
 			}
 
-
 			var symbol =  new $window.ms.Symbol( _sidc + '****', sidOpt );
 			return symbol;
 		});
@@ -314,16 +324,7 @@
 		});
 
 	}
-	controlService.$inject = ['$window', '$http', 'uiGmapIsReady', 'uiGmapGoogleMapApi'];
-
-	/*
-	function initializeGmapService (gmapService) {
-		gmapService.init();
-	}
-	initializeGmapService.$inject = [
-		'gmapService'
-	];
-	*/
+	controlService.$inject = ['$rootScope', '$window', '$http', 'uiGmapIsReady', 'uiGmapGoogleMapApi'];
 
 	angular
 		.module('dynamic-dcs.gmapService',[
