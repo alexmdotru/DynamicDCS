@@ -683,72 +683,85 @@ _.set(curServers, 'processQue', function (serverName, update) {
 
 		//events
 		if (_.get(queObj, 'action') === 'friendly_fire') {
+
+			console.log('event: ', queObj);
 			curServers[serverName].updateQue.q0.push(_.cloneDeep(queObj));
 			curServers[serverName].updateQue.q1.push(_.cloneDeep(queObj));
 			curServers[serverName].updateQue.q2.push(_.cloneDeep(queObj));
 			curServers[serverName].updateQue.qadmin.push(_.cloneDeep(queObj));
 		}
 		if (_.get(queObj, 'action') === 'mission_end') {
+			console.log('event: ', queObj);
 			curServers[serverName].updateQue.q0.push(_.cloneDeep(queObj));
 			curServers[serverName].updateQue.q1.push(_.cloneDeep(queObj));
 			curServers[serverName].updateQue.q2.push(_.cloneDeep(queObj));
 			curServers[serverName].updateQue.qadmin.push(_.cloneDeep(queObj));
 		}
 		if (_.get(queObj, 'action') === 'kill') {
+			console.log('event: ', queObj);
 			curServers[serverName].updateQue.q0.push(_.cloneDeep(queObj));
 			curServers[serverName].updateQue.q1.push(_.cloneDeep(queObj));
 			curServers[serverName].updateQue.q2.push(_.cloneDeep(queObj));
 			curServers[serverName].updateQue.qadmin.push(_.cloneDeep(queObj));
 		}
 		if (_.get(queObj, 'action') === 'self_kill') {
+			console.log('event: ', queObj);
 			curServers[serverName].updateQue.q0.push(_.cloneDeep(queObj));
 			curServers[serverName].updateQue.q1.push(_.cloneDeep(queObj));
 			curServers[serverName].updateQue.q2.push(_.cloneDeep(queObj));
 			curServers[serverName].updateQue.qadmin.push(_.cloneDeep(queObj));
 		}
 		if (_.get(queObj, 'action') === 'change_slot') {
+			console.log('event: ', queObj);
 			curServers[serverName].updateQue.q0.push(_.cloneDeep(queObj));
 			curServers[serverName].updateQue.q1.push(_.cloneDeep(queObj));
 			curServers[serverName].updateQue.q2.push(_.cloneDeep(queObj));
 			curServers[serverName].updateQue.qadmin.push(_.cloneDeep(queObj));
 		}
 		if (_.get(queObj, 'action') === 'connect') {
+			console.log('event: ', queObj);
 			curServers[serverName].updateQue.q0.push(_.cloneDeep(queObj));
 			curServers[serverName].updateQue.q1.push(_.cloneDeep(queObj));
 			curServers[serverName].updateQue.q2.push(_.cloneDeep(queObj));
 			curServers[serverName].updateQue.qadmin.push(_.cloneDeep(queObj));
 		}
 		if (_.get(queObj, 'action') === 'disconnect') {
+			console.log('event: ', queObj);
 			curServers[serverName].updateQue.q0.push(_.cloneDeep(queObj));
 			curServers[serverName].updateQue.q1.push(_.cloneDeep(queObj));
 			curServers[serverName].updateQue.q2.push(_.cloneDeep(queObj));
 			curServers[serverName].updateQue.qadmin.push(_.cloneDeep(queObj));
 		}
 		if (_.get(queObj, 'action') === 'crash') {
+			console.log('event: ', queObj);
 			curServers[serverName].updateQue.q0.push(_.cloneDeep(queObj));
 			curServers[serverName].updateQue.q1.push(_.cloneDeep(queObj));
 			curServers[serverName].updateQue.q2.push(_.cloneDeep(queObj));
 			curServers[serverName].updateQue.qadmin.push(_.cloneDeep(queObj));
 		}
 		if (_.get(queObj, 'action') === 'eject') {
+			console.log('event: ', queObj);
 			curServers[serverName].updateQue.q0.push(_.cloneDeep(queObj));
 			curServers[serverName].updateQue.q1.push(_.cloneDeep(queObj));
 			curServers[serverName].updateQue.q2.push(_.cloneDeep(queObj));
 			curServers[serverName].updateQue.qadmin.push(_.cloneDeep(queObj));
 		}
 		if (_.get(queObj, 'action') === 'takeoff') {
+			console.log('event: ', queObj);
 			curServers[serverName].updateQue.q0.push(_.cloneDeep(queObj));
 			curServers[serverName].updateQue.q1.push(_.cloneDeep(queObj));
 			curServers[serverName].updateQue.q2.push(_.cloneDeep(queObj));
 			curServers[serverName].updateQue.qadmin.push(_.cloneDeep(queObj));
 		}
 		if (_.get(queObj, 'action') === 'landing') {
+			console.log('event: ', queObj);
 			curServers[serverName].updateQue.q0.push(_.cloneDeep(queObj));
 			curServers[serverName].updateQue.q1.push(_.cloneDeep(queObj));
 			curServers[serverName].updateQue.q2.push(_.cloneDeep(queObj));
 			curServers[serverName].updateQue.qadmin.push(_.cloneDeep(queObj));
 		}
 		if (_.get(queObj, 'action') === 'pilot_death') {
+			console.log('event: ', queObj);
 			curServers[serverName].updateQue.q0.push(_.cloneDeep(queObj));
 			curServers[serverName].updateQue.q1.push(_.cloneDeep(queObj));
 			curServers[serverName].updateQue.q2.push(_.cloneDeep(queObj));
@@ -787,7 +800,7 @@ setInterval(function () { //sending FULL SPEED AHEAD, 1 per milsec (watch for we
 			});
 		})
 	;
-}, 35);
+}, 200);
 
 //dcs socket engine connection handler
 setInterval(function () {

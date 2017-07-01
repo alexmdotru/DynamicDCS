@@ -262,10 +262,13 @@
 				infoColor: 'black'
 			};
 
+			/*
+			// makes the pictures flicker for some reason lol
 			if (Math.round(unit.speed) > 0) {
 				_.set(sidOpt, 'direction', unit.hdg);
 				_.set(sidOpt, 'speed', Math.round(unit.speed) + ' kt');
 			}
+			*/
 			if (unit.playername !== '') {
 				_.set(sidOpt, 'type', unit.playername);
 			}
