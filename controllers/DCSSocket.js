@@ -18,17 +18,24 @@ function DCSSocket(serverName, serverAddress, clientPort, gameGuiPort, callback,
 	dsock.gameGUI;
 	dsock.clientBuffer;
 	dsock.gameGUIBuffer;
+	dsock.startTime = new Date().valueOf() ;
+	dsock.sessionName = serverName+'_'+dsock.startTime;
 	dsock.connectClient = function () {
+
+
 		dsock.client = net.createConnection({
 			host: dsock.serverAddress,
 			port: dsock.clientPort
 		}, () => {
+			console.log('sessionname: ', dsock.sessionName);
 			var time = new Date();
 			console.log(time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + ' :: Connected to DCS Client at '+dsock.serverAddress+':'+dsock.clientPort+' !');
 			dsock.clientConnOpen = false;
 			dsock.clientBuffer = "";
 		});
 		dsock.client.on('connect', function () {
+			dsock.startTime = new Date().valueOf() ;
+			dsock.sessionName = serverName+'_'+dsock.startTime;
 			dsock.initClear(serverName, 'client');
 			dsock.client.write('{"action":"NONE"}' + "\n");
 		});
@@ -36,7 +43,7 @@ function DCSSocket(serverName, serverAddress, clientPort, gameGuiPort, callback,
 			dsock.clientBuffer += data;
 			while ((i = dsock.clientBuffer.indexOf("\n")) >= 0) {
 				var data = JSON.parse(dsock.clientBuffer.substring(0, i));
-				dsock.callback(serverName, data);
+				dsock.callback(serverName, dsock.sessionName, data);
 				dsock.clientBuffer = dsock.clientBuffer.substring(i + 1);
 				dsock.client.write(JSON.stringify(_.get(dsock, 'reqClientArray', {action: 'NONE'})) + "\n");
 				dsock.reqClientArray.shift();
@@ -73,7 +80,7 @@ function DCSSocket(serverName, serverAddress, clientPort, gameGuiPort, callback,
 			dsock.gameGUIBuffer += data;
 			while ((i = dsock.gameGUIBuffer.indexOf("\n")) >= 0) {
 				var data = JSON.parse(dsock.gameGUIBuffer.substring(0, i));
-				dsock.callback(serverName, data);
+				dsock.callback(serverName, dsock.sessionName, data);
 				dsock.gameGUIBuffer = dsock.gameGUIBuffer.substring(i + 1);
 				dsock.gameGUI.write(JSON.stringify(_.get(dsock, 'regGameGuiArray', {action: 'NONE'})) + "\n");
 				dsock.regGameGuiArray.shift();

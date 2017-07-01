@@ -11,6 +11,8 @@ mapdb.open(dbConfig.dynamicHost, dbConfig.dynamicDatabase);
 var airfieldSchema = require('../models/airfieldSchema');
 var srvPlayerSchema = require('../models/srvPlayerSchema');
 var unitSchema = require('../models/unitSchema');
+var statSessionSchema = require('../models/statSessionSchema');
+var statSrvEventSchema = require('../models/statSrvEventSchema');
 
 exports.baseActions = function (action, serverName, obj){
 	const Airfield = mapdb.model(serverName+'_airfield', airfieldSchema);
@@ -91,3 +93,45 @@ exports.unitActions = function (action, serverName, obj){
 	}
 };
 
+exports.statSessionActions = function (action, serverName, obj){
+	const StatSession = mapdb.model(serverName+'_statSession', statSessionSchema);
+	if (action === 'read') {
+		return new Promise(function(resolve, reject) {
+			StatSession.find(function (err, statSession) {
+				if (err) { reject(err) }
+				resolve(statSession);
+			});
+		});
+	}
+	if(action === 'save') {
+		return new Promise(function(resolve, reject) {
+			const statsession = new StatSession(obj);
+			statsession.save(function (err, statSession) {
+				if (err) { reject(err) }
+				resolve(statSession);
+			});
+		});
+	}
+};
+
+exports.statSrvEventActions = function (action, serverName, obj){
+	const StatSrvEvent = mapdb.model(serverName+'_statSrvEvent', statSrvEventSchema);
+	console.log(obj);
+	if (action === 'read') {
+		return new Promise(function(resolve, reject) {
+			StatSrvEvent.find(function (err, statSrvEvent) {
+				if (err) { reject(err) }
+				resolve(statSrvEvent);
+			});
+		});
+	}
+	if(action === 'save') {
+		return new Promise(function(resolve, reject) {
+			const statsrvevent = new StatSrvEvent(obj);
+			statsrvevent.save(function (err, statSrvEvent) {
+				if (err) { reject(err) }
+				resolve(statSrvEvent);
+			});
+		});
+	}
+};

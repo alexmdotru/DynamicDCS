@@ -179,7 +179,7 @@ dynDCS.onChatMessage = function(message,playerID)
 	end
 end
 
-dynDCS.onGameEvent = function(eventName,arg1,arg2,arg3,arg4,arg5,arg6,arg7)
+dynDCS.onGameEvent = function(eventName,arg1,arg2,arg3,arg4,arg5,arg6,arg7, arg8, arg9)
 	local curUpdate = {}
 	--log(eventName)
 	if( eventName == "friendly_fire" ) then
@@ -188,9 +188,15 @@ dynDCS.onGameEvent = function(eventName,arg1,arg2,arg3,arg4,arg5,arg6,arg7)
 			action = eventName,
 			data = {
 				name = eventName,
-				playerID = arg1,
-				weaponName = arg2,
-				victimPlayerID = arg3
+				arg1 = arg1,
+				arg2 = arg2,
+				arg3 = arg3,
+				arg4 = arg4,
+				arg5 = arg5,
+				arg6 = arg6,
+				arg7 = arg7,
+				arg8 = arg8,
+				arg9 = arg9
 			}
 		}
 		table.insert(updateQue.que, curUpdate)
@@ -201,8 +207,15 @@ dynDCS.onGameEvent = function(eventName,arg1,arg2,arg3,arg4,arg5,arg6,arg7)
 			action = eventName,
 			data = {
 				name = eventName,
-				winner = arg1,
-				msg = arg2
+				arg1 = arg1,
+				arg2 = arg2,
+				arg3 = arg3,
+				arg4 = arg4,
+				arg5 = arg5,
+				arg6 = arg6,
+				arg7 = arg7,
+				arg8 = arg8,
+				arg9 = arg9
 			}
 		}
 		table.insert(updateQue.que, curUpdate)
@@ -213,13 +226,15 @@ dynDCS.onGameEvent = function(eventName,arg1,arg2,arg3,arg4,arg5,arg6,arg7)
 			action = eventName,
 			data = {
 				name = eventName,
-				killerPlayerID = arg1,
-				killerUnitType = arg2,
-				killerSide = arg3,
-				victimPlayerID = arg4,
-				victimUnitType = arg5,
-				victimSide = arg6,
-				weaponName = arg7
+				arg1 = arg1,
+				arg2 = arg2,
+				arg3 = arg3,
+				arg4 = arg4,
+				arg5 = arg5,
+				arg6 = arg6,
+				arg7 = arg7,
+				arg8 = arg8,
+				arg9 = arg9
 			}
 		}
 		table.insert(updateQue.que, curUpdate)
@@ -230,7 +245,15 @@ dynDCS.onGameEvent = function(eventName,arg1,arg2,arg3,arg4,arg5,arg6,arg7)
 			action = eventName,
 			data = {
 				name = eventName,
-				playerID = arg1
+				arg1 = arg1,
+				arg2 = arg2,
+				arg3 = arg3,
+				arg4 = arg4,
+				arg5 = arg5,
+				arg6 = arg6,
+				arg7 = arg7,
+				arg8 = arg8,
+				arg9 = arg9
 			}
 		}
 		table.insert(updateQue.que, curUpdate)
@@ -241,9 +264,15 @@ dynDCS.onGameEvent = function(eventName,arg1,arg2,arg3,arg4,arg5,arg6,arg7)
 			action = eventName,
 			data = {
 				name = eventName,
-				playerID = arg1,
-				slotID = arg2,
-				prevSide = arg3
+				arg1 = arg1,
+				arg2 = arg2,
+				arg3 = arg3,
+				arg4 = arg4,
+				arg5 = arg5,
+				arg6 = arg6,
+				arg7 = arg7,
+				arg8 = arg8,
+				arg9 = arg9
 			}
 		}
 		table.insert(updateQue.que, curUpdate)
@@ -254,8 +283,15 @@ dynDCS.onGameEvent = function(eventName,arg1,arg2,arg3,arg4,arg5,arg6,arg7)
 			action = eventName,
 			data = {
 				name = eventName,
-				id = arg1,
-				name = arg2
+				arg1 = arg1,
+				arg2 = arg2,
+				arg3 = arg3,
+				arg4 = arg4,
+				arg5 = arg5,
+				arg6 = arg6,
+				arg7 = arg7,
+				arg8 = arg8,
+				arg9 = arg9
 			}
 		}
 		table.insert(updateQue.que, curUpdate)
@@ -266,10 +302,15 @@ dynDCS.onGameEvent = function(eventName,arg1,arg2,arg3,arg4,arg5,arg6,arg7)
 			action = eventName,
 			data = {
 				name = eventName,
-				ID_ = arg1,
-				name = arg2,
-				playerSide = arg3,
-				reason_code = arg4
+				arg1 = arg1,
+				arg2 = arg2,
+				arg3 = arg3,
+				arg4 = arg4,
+				arg5 = arg5,
+				arg6 = arg6,
+				arg7 = arg7,
+				arg8 = arg8,
+				arg9 = arg9
 			}
 		}
 		table.insert(updateQue.que, curUpdate)
@@ -280,8 +321,15 @@ dynDCS.onGameEvent = function(eventName,arg1,arg2,arg3,arg4,arg5,arg6,arg7)
 			action = eventName,
 			data = {
 				name = eventName,
-				playerID = arg1,
-				unit_missionID = arg2
+				arg1 = arg1,
+				arg2 = arg2,
+				arg3 = arg3,
+				arg4 = arg4,
+				arg5 = arg5,
+				arg6 = arg6,
+				arg7 = arg7,
+				arg8 = arg8,
+				arg9 = arg9
 			}
 		}
 		table.insert(updateQue.que, curUpdate)
@@ -292,8 +340,15 @@ dynDCS.onGameEvent = function(eventName,arg1,arg2,arg3,arg4,arg5,arg6,arg7)
 			action = eventName,
 			data = {
 				name = eventName,
-				playerID = arg1,
-				unit_missionID = arg2
+				arg1 = arg1,
+				arg2 = arg2,
+				arg3 = arg3,
+				arg4 = arg4,
+				arg5 = arg5,
+				arg6 = arg6,
+				arg7 = arg7,
+				arg8 = arg8,
+				arg9 = arg9
 			}
 		}
 		table.insert(updateQue.que, curUpdate)
@@ -304,9 +359,15 @@ dynDCS.onGameEvent = function(eventName,arg1,arg2,arg3,arg4,arg5,arg6,arg7)
 			action = eventName,
 			data = {
 				name = eventName,
-				playerID = arg1,
-				unit_missionID = arg2,
-				airdromeName = arg3
+				arg1 = arg1,
+				arg2 = arg2,
+				arg3 = arg3,
+				arg4 = arg4,
+				arg5 = arg5,
+				arg6 = arg6,
+				arg7 = arg7,
+				arg8 = arg8,
+				arg9 = arg9
 			}
 		}
 		table.insert(updateQue.que, curUpdate)
@@ -317,9 +378,15 @@ dynDCS.onGameEvent = function(eventName,arg1,arg2,arg3,arg4,arg5,arg6,arg7)
 			action = eventName,
 			data = {
 				name = eventName,
-				playerID = arg1,
-				unit_missionID = arg2,
-				airdromeName = arg3
+				arg1 = arg1,
+				arg2 = arg2,
+				arg3 = arg3,
+				arg4 = arg4,
+				arg5 = arg5,
+				arg6 = arg6,
+				arg7 = arg7,
+				arg8 = arg8,
+				arg9 = arg9
 			}
 		}
 		table.insert(updateQue.que, curUpdate)
@@ -330,8 +397,15 @@ dynDCS.onGameEvent = function(eventName,arg1,arg2,arg3,arg4,arg5,arg6,arg7)
 			action = eventName,
 			data = {
 				name = eventName,
-				playerID = arg1,
-				unit_missionID = arg2
+				arg1 = arg1,
+				arg2 = arg2,
+				arg3 = arg3,
+				arg4 = arg4,
+				arg5 = arg5,
+				arg6 = arg6,
+				arg7 = arg7,
+				arg8 = arg8,
+				arg9 = arg9
 			}
 		}
 		table.insert(updateQue.que, curUpdate)
