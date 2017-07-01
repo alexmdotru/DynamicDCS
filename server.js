@@ -673,12 +673,13 @@ _.set(curServers, 'processQue', function (serverName, update) {
 		if (_.get(queObj, 'action') === 'MESG') {
 			console.log(queObj);
 			//console.log(serverObject.players);
-			if (_.get(queObj, 'data.playerID'))
+			if (_.get(queObj, 'data.playerID')) {
 				if (_.isNumber(_.get(_.find(curServers[serverName].serverObject.players, {'id': _.get(queObj, 'data.playerID')}), 'side', 0))) {
 					curServers[serverName].updateQue['q' + _.get(_.find(curServers[serverName].serverObject.players, {'id': _.get(queObj, 'data.playerID')}), 'side', 0)]
 						.push(_.cloneDeep(queObj));
 					curServers[serverName].updateQue.qadmin.push(_.cloneDeep(queObj));
 				}
+			}
 		}
 
 		//events
