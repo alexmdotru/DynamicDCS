@@ -500,7 +500,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 	_.forEach(update.que, function (queObj) {
 		//console.log(queObj);
 		var curObj = {};
-		var curEvent = {};
 		var curUnit = _.find(curServers[serverName].serverObject.units, {'unitID': _.get(queObj, 'data.unitID')});
 
 		if (_.get(queObj, 'action') === 'C') {
@@ -690,15 +689,20 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			}
 		}
 
-
-		_.set(queObj, 'sessionName', sessionName);
-		curEvent = queObj.data;
-		_.set(curEvent, 'sessionName', sessionName);
-
-
+		_.set(queObj, 'data.sessionName', sessionName);
+		//console.log('players: ', _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg1}));
 		//events
 		if (_.get(queObj, 'action') === 'friendly_fire') {
-			dbMapServiceController.statSrvEventActions('save', serverName, curEvent);
+			// "friendly_fire", playerID, weaponName, victimPlayerID
+			var cPlayer = _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg1});
+			if (cPlayer) {
+				_.set(queObj, ['data', 'arg1'], _.get(cPlayer, 'ucid', queObj.data.arg1));
+			}
+			var vPlayer = _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg1});
+			if (vPlayer) {
+				_.set(queObj, ['data', 'arg3'], _.get(vPlayer, 'ucid', queObj.data.arg3));
+			}
+			dbMapServiceController.statSrvEventActions('save', serverName, queObj.data);
 			console.log('event: ', queObj);
 			curServers[serverName].updateQue.q0.push(_.cloneDeep(queObj));
 			curServers[serverName].updateQue.q1.push(_.cloneDeep(queObj));
@@ -706,7 +710,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			curServers[serverName].updateQue.qadmin.push(_.cloneDeep(queObj));
 		}
 		if (_.get(queObj, 'action') === 'mission_end') {
-			dbMapServiceController.statSrvEventActions('save', serverName, curEvent);
+			// "mission_end", winner, msg
+			dbMapServiceController.statSrvEventActions('save', serverName, queObj.data);
 			console.log('event: ', queObj);
 			curServers[serverName].updateQue.q0.push(_.cloneDeep(queObj));
 			curServers[serverName].updateQue.q1.push(_.cloneDeep(queObj));
@@ -714,7 +719,16 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			curServers[serverName].updateQue.qadmin.push(_.cloneDeep(queObj));
 		}
 		if (_.get(queObj, 'action') === 'kill') {
-			dbMapServiceController.statSrvEventActions('save', serverName, curEvent);
+			// "kill", killerPlayerID, killerUnitType, killerSide, victimPlayerID, victimUnitType, victimSide, weaponName
+			var cPlayer = _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg1});
+			if (cPlayer) {
+				_.set(queObj, ['data', 'arg1'], _.get(cPlayer, 'ucid', queObj.data.arg1));
+			}
+			var vPlayer = _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg1});
+			if (vPlayer) {
+				_.set(queObj, ['data', 'arg4'], _.get(vPlayer, 'ucid', queObj.data.arg4));
+			}
+			dbMapServiceController.statSrvEventActions('save', serverName, queObj.data);
 			console.log('event: ', queObj);
 			curServers[serverName].updateQue.q0.push(_.cloneDeep(queObj));
 			curServers[serverName].updateQue.q1.push(_.cloneDeep(queObj));
@@ -722,7 +736,12 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			curServers[serverName].updateQue.qadmin.push(_.cloneDeep(queObj));
 		}
 		if (_.get(queObj, 'action') === 'self_kill') {
-			dbMapServiceController.statSrvEventActions('save', serverName, curEvent);
+			// "self_kill", playerID
+			var cPlayer = _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg1});
+			if (cPlayer) {
+				_.set(queObj, ['data', 'arg1'], _.get(cPlayer, 'ucid', queObj.data.arg1));
+			}
+			dbMapServiceController.statSrvEventActions('save', serverName, queObj.data);
 			console.log('event: ', queObj);
 			curServers[serverName].updateQue.q0.push(_.cloneDeep(queObj));
 			curServers[serverName].updateQue.q1.push(_.cloneDeep(queObj));
@@ -730,7 +749,16 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			curServers[serverName].updateQue.qadmin.push(_.cloneDeep(queObj));
 		}
 		if (_.get(queObj, 'action') === 'change_slot') {
-			dbMapServiceController.statSrvEventActions('save', serverName, curEvent);
+			// "change_slot", playerID, slotID, prevSide
+			var cPlayer = _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg1});
+			if (cPlayer) {
+				_.set(queObj, ['data', 'arg1'], _.get(cPlayer, 'ucid', queObj.data.arg1));
+			}
+			var cUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg2});
+			if (cUnit) {
+				_.set(queObj, ['data', 'arg2'], _.get(cUnit, 'type', queObj.data.arg2));
+			}
+			dbMapServiceController.statSrvEventActions('save', serverName, queObj.data);
 			console.log('event: ', queObj);
 			curServers[serverName].updateQue.q0.push(_.cloneDeep(queObj));
 			curServers[serverName].updateQue.q1.push(_.cloneDeep(queObj));
@@ -738,7 +766,12 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			curServers[serverName].updateQue.qadmin.push(_.cloneDeep(queObj));
 		}
 		if (_.get(queObj, 'action') === 'connect') {
-			dbMapServiceController.statSrvEventActions('save', serverName, curEvent);
+			// "connect", playerID, name
+			var cPlayer = _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg1});
+			if (cPlayer) {
+				_.set(queObj, ['data', 'arg1'], _.get(cPlayer, 'ucid', queObj.data.arg1));
+			}
+			dbMapServiceController.statSrvEventActions('save', serverName, queObj.data);
 			console.log('event: ', queObj);
 			curServers[serverName].updateQue.q0.push(_.cloneDeep(queObj));
 			curServers[serverName].updateQue.q1.push(_.cloneDeep(queObj));
@@ -746,7 +779,12 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			curServers[serverName].updateQue.qadmin.push(_.cloneDeep(queObj));
 		}
 		if (_.get(queObj, 'action') === 'disconnect') {
-			dbMapServiceController.statSrvEventActions('save', serverName, curEvent);
+			// "disconnect", playerID, name, playerSide, reason_code
+			var cPlayer = _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg1});
+			if (cPlayer) {
+				_.set(queObj, ['data', 'arg1'], _.get(cPlayer, 'ucid', queObj.data.arg1));
+			}
+			dbMapServiceController.statSrvEventActions('save', serverName, queObj.data);
 			console.log('event: ', queObj);
 			curServers[serverName].updateQue.q0.push(_.cloneDeep(queObj));
 			curServers[serverName].updateQue.q1.push(_.cloneDeep(queObj));
@@ -754,7 +792,12 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			curServers[serverName].updateQue.qadmin.push(_.cloneDeep(queObj));
 		}
 		if (_.get(queObj, 'action') === 'crash') {
-			dbMapServiceController.statSrvEventActions('save', serverName, curEvent);
+			// "crash", playerID, unit_missionID
+			var cPlayer = _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg1});
+			if (cPlayer) {
+				_.set(queObj, ['data', 'arg1'], _.get(cPlayer, 'ucid', queObj.data.arg1));
+			};
+			dbMapServiceController.statSrvEventActions('save', serverName, queObj.data);
 			console.log('event: ', queObj);
 			curServers[serverName].updateQue.q0.push(_.cloneDeep(queObj));
 			curServers[serverName].updateQue.q1.push(_.cloneDeep(queObj));
@@ -762,7 +805,12 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			curServers[serverName].updateQue.qadmin.push(_.cloneDeep(queObj));
 		}
 		if (_.get(queObj, 'action') === 'eject') {
-			dbMapServiceController.statSrvEventActions('save', serverName, curEvent);
+			// "eject", playerID, unit_missionID
+			var cPlayer = _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg1});
+			if (cPlayer) {
+				_.set(queObj, ['data', 'arg1'], _.get(cPlayer, 'ucid', queObj.data.arg1));
+			}
+			dbMapServiceController.statSrvEventActions('save', serverName, queObj.data);
 			console.log('event: ', queObj);
 			curServers[serverName].updateQue.q0.push(_.cloneDeep(queObj));
 			curServers[serverName].updateQue.q1.push(_.cloneDeep(queObj));
@@ -770,7 +818,12 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			curServers[serverName].updateQue.qadmin.push(_.cloneDeep(queObj));
 		}
 		if (_.get(queObj, 'action') === 'takeoff') {
-			dbMapServiceController.statSrvEventActions('save', serverName, curEvent);
+			// "takeoff", playerID, unit_missionID, airdromeName
+			var cPlayer = _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg1});
+			if (cPlayer) {
+				_.set(queObj, ['data', 'arg1'], _.get(cPlayer, 'ucid', queObj.data.arg1));
+			}
+			dbMapServiceController.statSrvEventActions('save', serverName, queObj.data);
 			console.log('event: ', queObj);
 			curServers[serverName].updateQue.q0.push(_.cloneDeep(queObj));
 			curServers[serverName].updateQue.q1.push(_.cloneDeep(queObj));
@@ -778,7 +831,12 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			curServers[serverName].updateQue.qadmin.push(_.cloneDeep(queObj));
 		}
 		if (_.get(queObj, 'action') === 'landing') {
-			dbMapServiceController.statSrvEventActions('save', serverName, curEvent);
+			// "landing", playerID, unit_missionID, airdromeName
+			var cPlayer = _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg1});
+			if (cPlayer) {
+				_.set(queObj, ['data', 'arg1'], _.get(cPlayer, 'ucid', queObj.data.arg1));
+			}
+			dbMapServiceController.statSrvEventActions('save', serverName, queObj.data);
 			console.log('event: ', queObj);
 			curServers[serverName].updateQue.q0.push(_.cloneDeep(queObj));
 			curServers[serverName].updateQue.q1.push(_.cloneDeep(queObj));
@@ -786,7 +844,12 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			curServers[serverName].updateQue.qadmin.push(_.cloneDeep(queObj));
 		}
 		if (_.get(queObj, 'action') === 'pilot_death') {
-			dbMapServiceController.statSrvEventActions('save', serverName, curEvent);
+			// "pilot_death", playerID, unit_missionID
+			var cPlayer = _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg1});
+			if (cPlayer) {
+				_.set(queObj, ['data', 'arg1'], _.get(cPlayer, 'ucid', queObj.data.arg1));
+			}
+			dbMapServiceController.statSrvEventActions('save', serverName, queObj.data);
 			console.log('event: ', queObj);
 			curServers[serverName].updateQue.q0.push(_.cloneDeep(queObj));
 			curServers[serverName].updateQue.q1.push(_.cloneDeep(queObj));

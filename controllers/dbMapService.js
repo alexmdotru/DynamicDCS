@@ -119,6 +119,14 @@ exports.statSrvEventActions = function (action, serverName, obj){
 	console.log(obj);
 	if (action === 'read') {
 		return new Promise(function(resolve, reject) {
+			StatSrvEvent.find({sessionName: obj}, function (err, statSrvEvent) {
+				if (err) { reject(err) }
+				resolve(statSrvEvent);
+			});
+		});
+	}
+	if (action === 'readAll') {
+		return new Promise(function(resolve, reject) {
 			StatSrvEvent.find(function (err, statSrvEvent) {
 				if (err) { reject(err) }
 				resolve(statSrvEvent);
