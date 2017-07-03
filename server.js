@@ -698,7 +698,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			if (cPlayer) {
 				_.set(queObj, ['data', 'arg1'], _.get(cPlayer, 'ucid', queObj.data.arg1));
 			}
-			var vPlayer = _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg1});
+			var vPlayer = _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg3});
 			if (vPlayer) {
 				_.set(queObj, ['data', 'arg3'], _.get(vPlayer, 'ucid', queObj.data.arg3));
 			}
@@ -724,7 +724,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			if (cPlayer) {
 				_.set(queObj, ['data', 'arg1'], _.get(cPlayer, 'ucid', queObj.data.arg1));
 			}
-			var vPlayer = _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg1});
+			var vPlayer = _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg4});
 			if (vPlayer) {
 				_.set(queObj, ['data', 'arg4'], _.get(vPlayer, 'ucid', queObj.data.arg4));
 			}
