@@ -501,6 +501,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		var curObj = {};
 		var iPlayer = {};
 		var tPlayer = {};
+		var iUnit = {};
+		var tUnit = {};
 		var curUnit = _.find(curServers[serverName].serverObject.units, {'unitID': _.get(queObj, 'data.unitID')});
 
 		if (_.get(queObj, 'action') === 'C') {
@@ -702,9 +704,9 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				_.set(curObj, 'iPlayerUcid', _.get(iPlayer, 'ucid', queObj.data.arg1));
 			}
 			_.set(curObj, 'weaponName', _.get(queObj, 'data.arg2'));
-			var vPlayer = _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg3});
-			if (vPlayer) {
-				_.set(curObj, 'tPlayerUcid', _.get(vPlayer, 'ucid', queObj.data.arg3));
+			tPlayer = _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg3});
+			if (tPlayer) {
+				_.set(curObj, 'tPlayerUcid', _.get(tPlayer, 'ucid', queObj.data.arg3));
 			}
 			console.log('event: ', curObj);
 			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
@@ -753,7 +755,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			if (iPlayer) {
 				_.set(curObj, 'iPlayerUcid', _.get(iPlayer, 'ucid', queObj.data.arg1));
 			}
-			var iUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg2});
+			iUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg2});
 			if (iUnit) {
 				_.set(queObj, 'iPlayerSlotType', _.get(cUnit, 'type', queObj.data.arg2));
 			}
@@ -865,7 +867,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			_.set(curObj, 'eventId', _.get(queObj, 'data.arg1'));
 			_.set(curObj, 'time', _.get(queObj, 'data.arg2'));
 			_.set(curObj, 'weaponName', _.get(queObj, 'data.arg7'));
-			var iUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg3});
+			iUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg3});
 			if (iUnit) {
 				_.set(curObj, 'iPlayerUnitType', _.get(iUnit, 'type', ''));
 				_.set(curObj, 'iPlayerSide', _.get(iUnit, 'coalition', 0));
@@ -892,7 +894,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			_.set(curObj, 'eventId', _.get(queObj, 'data.arg1'));
 			_.set(curObj, 'time', _.get(queObj, 'data.arg2'));
 			_.set(curObj, 'weaponName', _.get(queObj, 'data.arg7'));
-			var iUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg3});
+			iUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg3});
 			if (iUnit) {
 				_.set(curObj, 'iPlayerUnitType', _.get(iUnit, 'type', ''));
 				_.set(curObj, 'iPlayerSide', _.get(iUnit, 'coalition', 0));
@@ -905,8 +907,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 
 				}
 			}
-			var tUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg4});
-			if (iUnit) {
+			tUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg4});
+			if (tUnit) {
 				_.set(curObj, 'tPlayerUnitType', _.get(tUnit, 'type', ''));
 				_.set(curObj, 'tPlayerSide', _.get(tUnit, 'coalition', 0));
 				_.set(curObj, 'tPlayerName', _.get(tUnit, 'playername', ''));
