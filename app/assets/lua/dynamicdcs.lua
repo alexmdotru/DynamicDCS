@@ -1,7 +1,7 @@
 do
     --
     local PORT = 3001
-    local DATA_TIMEOUT_SEC = 0.2
+    local DATA_TIMEOUT_SEC = 0.5
 
 	local cacheDB = {}
 	local updateQue = {["que"] = {}}

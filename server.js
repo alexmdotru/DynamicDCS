@@ -889,7 +889,7 @@ setInterval(function () { //sending FULL SPEED AHEAD, 1 per milsec (watch for we
 			});
 		})
 	;
-}, 200);
+}, 500);
 
 //dcs socket engine connection handler
 setInterval(function () {
