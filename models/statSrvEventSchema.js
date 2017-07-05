@@ -11,31 +11,61 @@ const StatSrvEventSchema = new Schema({
 			type: String,
 			required: true
 		},
-		arg1: {
+		weaponName: {
 			type: String
 		},
-		arg2: {
+		winner: {
 			type: String
 		},
-		arg3: {
+		msg: {
 			type: String
 		},
-		arg4: {
+		iPlayerUcid: {
 			type: String
 		},
-		arg5: {
+		iPlayerName: {
 			type: String
 		},
-		arg6: {
+		iPlayerUnitType: {
 			type: String
 		},
-		arg7: {
+		iPlayerSide: {
 			type: String
 		},
-		arg8: {
+		iPlayerSlotType: {
 			type: String
 		},
-		arg9: {
+		tPlayerUcid: {
+			type: String
+		},
+		tPlayerName: {
+			type: String
+		},
+		tPlayerUnitType: {
+			type: String
+		},
+		tPlayerSide: {
+			type: String
+		},
+		tPlayerSlotType: {
+			type: String
+		},
+		prevSide: {
+			type: String
+		},
+		reasonCode: {
+			type: String
+		},
+		unitMissionId: {
+			type: String
+		},
+		airdromeName: {
+			type: String
+		},
+		time: {
+			type: String
+		},
+		eventId: {
 			type: String
 		}
 	},

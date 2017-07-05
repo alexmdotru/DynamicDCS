@@ -1,3 +1,20 @@
+clientEventHandler = {}
+
+function tprint (tbl, indent)
+	if not indent then indent = 0 end
+	for k, v in pairs(tbl) do
+		formatting = string.rep("  ", indent) .. k .. ": "
+		if type(v) == "table" then
+			env.info(formatting)
+			--tprint(v, indent+1)
+		elseif type(v) == 'boolean' then
+			env.info(formatting .. tostring(v))
+		else
+			env.info(formatting .. tostring(v))
+		end
+	end
+end
+
 do
     --
     local PORT = 3001
@@ -28,7 +45,7 @@ do
 		local checkDead = {}
 
 		--unit updating system unit, unitID, coalition, lat, lon, alt, hdg, speed, action
-        local function addUnit(unit, unitID, coalition, lat, lon, alt, hdg, speed, action)
+        local function addUnit(unit, unitID, coalition, lat, lon, alt, hdg, speed, category, action)
             local curUnit = {
                 action = action,
                 data = {
@@ -50,6 +67,7 @@ do
                 if action == "C" then
                     curUnit.data.type = unit:getTypeName()
                     curUnit.data.coalition = coalition
+					curUnit.data.category = category
                     local PlayerName = unit:getPlayerName()
                     if PlayerName ~= nil then
                         curUnit.data.playername = PlayerName
@@ -61,6 +79,14 @@ do
             table.insert(updateQue.que, curUnit)
         end
 
+		local CategoryNames = {
+			[Unit.Category.AIRPLANE] = "Airplane",
+			[Unit.Category.HELICOPTER] = "Helicopter",
+			[Unit.Category.GROUND_UNIT] = "Ground Unit",
+			[Unit.Category.SHIP] = "Ship",
+			[Unit.Category.STRUCTURE] = "Structure",
+		}
+
         local function addGroups(groups, coalition)
             for groupIndex = 1, #groups do
                 local group = groups[groupIndex]
@@ -69,6 +95,7 @@ do
                     local unit = units[unitIndex]
                     --check against cache table (keep tabs on if unit is new to table, if table has unit that no longer exists or if unit moved
                      if Unit.isActive(unit) then
+						 local category = CategoryNames[unit:getDesc().category]
 						 local unitPosition = unit:getPosition()
 						 local lat, lon, alt = coord.LOtoLL(unitPosition.p)
 						 local unitID = tonumber(unit:getID())
@@ -84,10 +111,10 @@ do
                          if cacheDB[unitID] ~= nil then
                              --log('cachelat: '..cacheDB[unitID].lat..' reg lat: '..lat..' cachelon: '..cacheDB[unitID].lon..' reg lon: '..lon)
                              if cacheDB[unitID].lat ~= lat or cacheDB[unitID].lon ~= lon then
-                                 addUnit(unit, unitID, coalition, lat, lon, alt, hdg, speed, "U")
+                                 addUnit(unit, unitID, coalition, lat, lon, alt, hdg, speed, category, "U")
                              end
                          else
-                             addUnit(unit, unitID, coalition, lat, lon, alt, hdg, speed, "C")
+                             addUnit(unit, unitID, coalition, lat, lon, alt, hdg, speed, category, "C")
                          end
                          checkDead[unitID] = 1
                     end
@@ -254,4 +281,86 @@ do
 		return loadstring("return " ..s)()
 	end
 
+	--Send Mission Events Back
+	local eventTypes = {
+		[0] = "S_EVENT_INVALID",
+		[1] = "S_EVENT_SHOT",
+		[2] = "S_EVENT_HIT",
+		[3] = "S_EVENT_TAKEOFF",
+		[4] = "S_EVENT_LAND",
+		[5] = "S_EVENT_CRASH",
+		[6] = "S_EVENT_EJECTION",
+		[7] = "S_EVENT_REFUELING",
+		[8] = "S_EVENT_DEAD",
+		[9] = "S_EVENT_PILOT_DEAD",
+		[10] = "S_EVENT_BASE_CAPTURED",
+		[11] = "S_EVENT_MISSION_START",
+		[12] = "S_EVENT_MISSION_END",
+		[13] = "S_EVENT_TOOK_CONTROL",
+		[14] = "S_EVENT_REFUELING_STOP",
+		[15] = "S_EVENT_BIRTH",
+		[16] = "S_EVENT_HUMAN_FAILURE",
+		[17] = "S_EVENT_ENGINE_STARTUP",
+		[18] = "S_EVENT_ENGINE_SHUTDOWN",
+		[19] = "S_EVENT_PLAYER_ENTER_UNIT",
+		[20] = "S_EVENT_PLAYER_LEAVE_UNIT",
+		[21] = "S_EVENT_PLAYER_COMMENT",
+		[22] = "S_EVENT_SHOOTING_START",
+		[23] = "S_EVENT_SHOOTING_END",
+		[24] = "S_EVENT_MAX"
+	}
+	local birthTypes = {
+		"wsBirthPlace_Air",
+		"wsBirthPlace_RunWay",
+		"wsBirthPlace_Park",
+		"wsBirthPlace_Heliport_Hot",
+		"wsBirthPlace_Heliport_Cold"
+	}
+
+
+	function clientEventHandler:onEvent(_event)
+		local status, err = pcall(
+			function(_event)
+				if _event == nil or _event.initiator == nil then
+					return false
+				else
+					local curEvent = {}
+					if _event.id ~= nil then
+						curEvent.name = eventTypes[_event.id]
+						curEvent.arg1 = _event.id
+					end
+					if _event.time ~= nil then
+						curEvent.arg2 = _event.time
+					end
+					if _event.initiator ~= nil then
+						curEvent.arg3 = tonumber(_event.initiator:getID())
+					end
+					if _event.target ~= nil then
+						curEvent.arg4 = tonumber(_event.target:getID())
+					end
+					if _event.place ~= nil then
+						curEvent.arg5 = _event.place:getName()
+					end
+					if _event.subPlace ~= nil then
+						curEvent.arg6 = birthTypes[_event.subPlace]
+					end
+					if _event.weapon ~= nil then
+						curEvent.arg7 = _event.weapon:getName()
+					end
+					--env.info('eventFiring: '..eventTypes[_event.id]);
+					table.insert(updateQue.que, {
+						action = eventTypes[_event.id],
+						data = curEvent
+					})
+					return true
+				end
+			end
+		, _event)
+		if (not status) then
+			env.info(string.format("Error while handling event %s", err), false)
+		end
+	end
 end
+
+world.addEventHandler(clientEventHandler)
+env.info("dynamicDCS event handler added")
