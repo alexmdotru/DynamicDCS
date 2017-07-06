@@ -22,18 +22,6 @@ function DCSSocket(serverName, serverAddress, clientPort, gameGuiPort, callback,
 	dsock.sessionName = serverName+'_'+dsock.startTime;
 
 	dsock.connectClient = function () {
-		setInterval(function () { // keep ques updated from database updated to the database
-			dbMapServiceController.cmdQueActions('read', serverName, {queName: 'clientArray'})
-				.then(function (resp) {
-					console.log('clientArry: ',resp);
-					dsock.reqClientArray = resp;
-				});
-			dbMapServiceController.cmdQueActions('read', serverName, {queName: 'gameGuiArray'})
-				.then(function (resp) {
-					console.log('gameGuiArry: ',resp);
-					dsock.regGameGuiArray = resp;
-				});
-		}, 500);
 
 		dsock.client = net.createConnection({
 			host: dsock.serverAddress,
@@ -57,8 +45,19 @@ function DCSSocket(serverName, serverAddress, clientPort, gameGuiPort, callback,
 				var data = JSON.parse(dsock.clientBuffer.substring(0, i));
 				dsock.callback(serverName, dsock.sessionName, data);
 				dsock.clientBuffer = dsock.clientBuffer.substring(i + 1);
+				dbMapServiceController.cmdQueActions('grabNextQue', serverName, {queName: 'clientArray'})
+					.then(function (resp) {
+						console.log('clientArry: ',resp);
+						if (resp.length > 0) {
+							dsock.reqClientArray = {
+								action: resp[0].action,
+								cmd: resp[0].cmd,
+								reqID: resp[0]._id
+							};
+						}
+					});
 				dsock.client.write(JSON.stringify(_.get(dsock, 'reqClientArray', {action: 'NONE'})) + "\n");
-				// dsock.reqClientArray.shift();
+				//delete form database
 			}
 		});
 

@@ -147,9 +147,9 @@ exports.statSrvEventActions = function (action, serverName, obj){
 
 exports.cmdQueActions = function (action, serverName, obj){
 	const CmdQue = mapdb.model(serverName+'_cmdque', cmdQueSchema);
-	if (action === 'read') {
+	if (action === 'grabNextQue') {
 		return new Promise(function(resolve, reject) {
-			CmdQue.find({queName: obj.queName}).sort('createdAt').limit(50).exec()
+			CmdQue.find({queName: obj.queName}).sort('createdAt').limit(1).exec()
 				.then(function (resp) {
 					resolve(resp);
 				})
