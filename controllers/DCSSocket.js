@@ -56,7 +56,7 @@ function DCSSocket(serverName, serverAddress, clientPort, gameGuiPort, callback,
 							};
 						}
 					});
-				dsock.client.write(JSON.stringify(_.get(dsock, 'reqClientArray', {action: 'NONE'})) + "\n");
+				dsock.client.write(JSON.stringify(_.get(dsock, 'reqClientArray', {action: 'NONE'})) + "\n"); // dont ever let this line wait, it will stop the entire server waiting......
 				//delete form database
 			}
 		});
