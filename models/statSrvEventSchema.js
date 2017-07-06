@@ -26,6 +26,12 @@ const StatSrvEventSchema = new Schema({
 		iPlayerName: {
 			type: String
 		},
+		iPlayerId: {
+			type: String
+		},
+		iPlayerUnitId: {
+			type: String
+		},
 		iPlayerUnitType: {
 			type: String
 		},
@@ -39,6 +45,12 @@ const StatSrvEventSchema = new Schema({
 			type: String
 		},
 		tPlayerName: {
+			type: String
+		},
+		tPlayerId: {
+			type: String
+		},
+		tPlayerUnitId: {
 			type: String
 		},
 		tPlayerUnitType: {
@@ -66,6 +78,12 @@ const StatSrvEventSchema = new Schema({
 			type: String
 		},
 		eventId: {
+			type: String
+		},
+		place: {
+			type: String
+		},
+		subPlace: {
 			type: String
 		}
 	},

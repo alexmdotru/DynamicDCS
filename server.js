@@ -482,7 +482,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 	//console.log('process que: ', serverName, update);
 	if (typeof update.unitCount !== 'undefined') {
 		if (update.unitCount !== curServers[serverName].serverObject.units.length) {
-			console.log('out of sync for ' + outOfSyncUnitCnt);
+			console.log('out of sync for ' + outOfSyncUnitCnt + ' units: '+ update.unitCount + ' verse ' + curServers[serverName].serverObject.units.length);
 			if (outOfSyncUnitCnt > config.outOfSyncUnitThreshold) {
 				outOfSyncUnitCnt = 0;
 				console.log('reset server units');
@@ -698,12 +698,14 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		// server side events
 		if (_.get(queObj, 'action') === 'friendly_fire') {
 			// "friendly_fire", playerID, weaponName, victimPlayerID
-			curObj = {name: queObj.data.name};
+			curObj = {sessionName: sessionName, name: queObj.data.name};
+			_.set(curObj, 'iPlayerId', _.get(queObj, 'data.arg1'));
 			iPlayer = _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg1});
 			if (iPlayer) {
 				_.set(curObj, 'iPlayerUcid', _.get(iPlayer, 'ucid', queObj.data.arg1));
 			}
 			_.set(curObj, 'weaponName', _.get(queObj, 'data.arg2'));
+			_.set(curObj, 'tPlayerId', _.get(queObj, 'data.arg3'));
 			tPlayer = _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg3});
 			if (tPlayer) {
 				_.set(curObj, 'tPlayerUcid', _.get(tPlayer, 'ucid', queObj.data.arg3));
@@ -713,7 +715,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		}
 		if (_.get(queObj, 'action') === 'mission_end') {
 			// "mission_end", winner, msg
-			curObj = {name: queObj.data.name};
+			curObj = {sessionName: sessionName, name: queObj.data.name};
 			_.set(curObj, 'winner', _.get(queObj, 'data.arg1'));
 			_.set(curObj, 'msg', _.get(queObj, 'data.arg2'));
 			console.log('event: ', curObj);
@@ -721,13 +723,15 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		}
 		if (_.get(queObj, 'action') === 'kill') {
 			// "kill", killerPlayerID, killerUnitType, killerSide, victimPlayerID, victimUnitType, victimSide, weaponName
-			curObj = {name: queObj.data.name};
+			curObj = {sessionName: sessionName, name: queObj.data.name};
+			_.set(curObj, 'iPlayerId', _.get(queObj, 'data.arg1'));
 			iPlayer = _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg1});
 			if (iPlayer) {
 				_.set(curObj, 'iPlayerUcid', _.get(iPlayer, 'ucid', queObj.data.arg1));
 			}
 			_.set(curObj, 'iPlayerUnitType', _.get(queObj, 'data.arg2'));
 			_.set(curObj, 'iPlayerSide', _.get(queObj, 'data.arg3'));
+			_.set(curObj, 'tPlayerId', _.get(queObj, 'data.arg4'));
 			tPlayer = _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg4});
 			if (tPlayer) {
 				_.set(curObj, 'tPlayerUcid', _.get(tPlayer, 'ucid', queObj.data.arg4));
@@ -740,7 +744,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		}
 		if (_.get(queObj, 'action') === 'self_kill') {
 			// "self_kill", playerID
-			curObj = {name: queObj.data.name};
+			curObj = {sessionName: sessionName, name: queObj.data.name};
+			_.set(curObj, 'iPlayerId', _.get(queObj, 'data.arg1'));
 			iPlayer = _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg1});
 			if (iPlayer) {
 				_.set(curObj, 'iPlayerUcid', _.get(iPlayer, 'ucid', queObj.data.arg1));
@@ -750,14 +755,16 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		}
 		if (_.get(queObj, 'action') === 'change_slot') {
 			// "change_slot", playerID, slotID, prevSide
-			curObj = {name: queObj.data.name};
+			curObj = {sessionName: sessionName, name: queObj.data.name};
+			_.set(curObj, 'iPlayerId', _.get(queObj, 'data.arg1'));
 			iPlayer = _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg1});
 			if (iPlayer) {
 				_.set(curObj, 'iPlayerUcid', _.get(iPlayer, 'ucid', queObj.data.arg1));
 			}
+			_.set(curObj, 'iPlayerUnitId', _.get(queObj, 'data.arg2'));
 			iUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg2});
 			if (iUnit) {
-				_.set(queObj, 'iPlayerSlotType', _.get(cUnit, 'type', queObj.data.arg2));
+				_.set(queObj, 'iPlayerSlotType', _.get(iUnit, 'type', queObj.data.arg2));
 			}
 			_.set(curObj, 'prevSide', _.get(queObj, 'data.arg3'));
 			console.log('event: ', curObj);
@@ -765,7 +772,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		}
 		if (_.get(queObj, 'action') === 'connect') {
 			// "connect", playerID, name
-			curObj = {name: queObj.data.name};
+			curObj = {sessionName: sessionName, name: queObj.data.name};
+			_.set(curObj, 'iPlayerId', _.get(queObj, 'data.arg1'));
 			iPlayer = _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg1});
 			if (iPlayer) {
 				_.set(queObj, 'iPlayerUcid', _.get(iPlayer, 'ucid', queObj.data.arg1));
@@ -776,7 +784,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		}
 		if (_.get(queObj, 'action') === 'disconnect') {
 			// "disconnect", playerID, name, playerSide, reason_code
-			curObj = {name: queObj.data.name};
+			curObj = {sessionName: sessionName, name: queObj.data.name};
+			_.set(curObj, 'iPlayerId', _.get(queObj, 'data.arg1'));
 			iPlayer = _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg1});
 			if (iPlayer) {
 				_.set(queObj, 'iPlayerUcid', _.get(iPlayer, 'ucid', queObj.data.arg1));
@@ -789,7 +798,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		}
 		if (_.get(queObj, 'action') === 'crash') {
 			// "crash", playerID, unit_missionID
-			curObj = {name: queObj.data.name};
+			curObj = {sessionName: sessionName, name: queObj.data.name};
+			_.set(curObj, 'iPlayerId', _.get(queObj, 'data.arg1'));
 			iPlayer = _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg1});
 			if (iPlayer) {
 				_.set(queObj, 'iPlayerUcid', _.get(iPlayer, 'ucid', queObj.data.arg1));
@@ -800,7 +810,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		}
 		if (_.get(queObj, 'action') === 'eject') {
 			// "eject", playerID, unit_missionID
-			curObj = {name: queObj.data.name};
+			curObj = {sessionName: sessionName, name: queObj.data.name};
+			_.set(curObj, 'iPlayerId', _.get(queObj, 'data.arg1'));
 			iPlayer = _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg1});
 			if (iPlayer) {
 				_.set(queObj, 'iPlayerUcid', _.get(iPlayer, 'ucid', queObj.data.arg1));
@@ -811,7 +822,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		}
 		if (_.get(queObj, 'action') === 'takeoff') {
 			// "takeoff", playerID, unit_missionID, airdromeName
-			curObj = {name: queObj.data.name};
+			curObj = {sessionName: sessionName, name: queObj.data.name};
+			_.set(curObj, 'iPlayerId', _.get(queObj, 'data.arg1'));
 			iPlayer = _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg1});
 			if (iPlayer) {
 				_.set(queObj, 'iPlayerUcid', _.get(iPlayer, 'ucid', queObj.data.arg1));
@@ -823,7 +835,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		}
 		if (_.get(queObj, 'action') === 'landing') {
 			// "landing", playerID, unit_missionID, airdromeName
-			curObj = {name: queObj.data.name};
+			curObj = {sessionName: sessionName, name: queObj.data.name};
+			_.set(curObj, 'iPlayerId', _.get(queObj, 'data.arg1'));
 			iPlayer = _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg1});
 			if (iPlayer) {
 				_.set(queObj, 'iPlayerUcid', _.get(iPlayer, 'ucid', queObj.data.arg1));
@@ -835,7 +848,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		}
 		if (_.get(queObj, 'action') === 'pilot_death') {
 			// "pilot_death", playerID, unit_missionID
-			curObj = {name: queObj.data.name};
+			curObj = {sessionName: sessionName, name: queObj.data.name};
+			_.set(curObj, 'iPlayerId', _.get(queObj, 'data.arg1'));
 			iPlayer = _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg1});
 			if (iPlayer) {
 				_.set(queObj, 'iPlayerUcid', _.get(iPlayer, 'ucid', queObj.data.arg1));
@@ -863,10 +877,11 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			// arg3 = initiatorId
 			// arg7 = weapon
 
-			curObj = {name: queObj.data.name};
+			curObj = {sessionName: sessionName, name: queObj.data.name};
 			_.set(curObj, 'eventId', _.get(queObj, 'data.arg1'));
 			_.set(curObj, 'time', _.get(queObj, 'data.arg2'));
 			_.set(curObj, 'weaponName', _.get(queObj, 'data.arg7'));
+			_.set(curObj, 'iPlayerUnitId', _.get(queObj, 'data.arg3'));
 			iUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg3});
 			if (iUnit) {
 				_.set(curObj, 'iPlayerUnitType', _.get(iUnit, 'type', ''));
@@ -877,7 +892,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					if (iPlayer) {
 						_.set(curObj, 'iPlayerUcid', iPlayer.ucid);
 					}
-
 				}
 			}
 			console.log('event: ', curObj);
@@ -890,10 +904,11 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			// arg3 = initiatorId
 			// arg4 = targetId
 			// arg7 = WeaponId
-			curObj = {name: queObj.data.name};
+			curObj = {sessionName: sessionName, name: queObj.data.name};
 			_.set(curObj, 'eventId', _.get(queObj, 'data.arg1'));
 			_.set(curObj, 'time', _.get(queObj, 'data.arg2'));
 			_.set(curObj, 'weaponName', _.get(queObj, 'data.arg7'));
+			_.set(curObj, 'iPlayerUnitId', _.get(queObj, 'data.arg3'));
 			iUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg3});
 			if (iUnit) {
 				_.set(curObj, 'iPlayerUnitType', _.get(iUnit, 'type', ''));
@@ -904,9 +919,9 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					if (iPlayer) {
 						_.set(curObj, 'iPlayerUcid', iPlayer.ucid);
 					}
-
 				}
 			}
+			_.set(curObj, 'tPlayerUnitId', _.get(queObj, 'data.arg4'));
 			tUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg4});
 			if (tUnit) {
 				_.set(curObj, 'tPlayerUnitType', _.get(tUnit, 'type', ''));
@@ -917,7 +932,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					if (tPlayer) {
 						_.set(curObj, 'tPlayerUcid', tPlayer.ucid);
 					}
-
 				}
 			}
 			console.log('event: ', curObj);
@@ -925,129 +939,168 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_TAKEOFF') {
 			// Occurs when an aircraft takes off from an airbase, farp, or ship.
-			console.log('event: ', queObj);
-			/*
-			 var cPlayer = _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg1});
-			 if (cPlayer) {
-			 _.set(queObj, ['data', 'arg1'], _.get(cPlayer, 'ucid', queObj.data.arg1));
-			 }
-			 dbMapServiceController.statSrvEventActions('save', serverName, queObj.data);
-			 console.log('event: ', queObj);
-			 curServers[serverName].updateQue.q0.push(_.cloneDeep(queObj));
-			 curServers[serverName].updateQue.q1.push(_.cloneDeep(queObj));
-			 curServers[serverName].updateQue.q2.push(_.cloneDeep(queObj));
-			 curServers[serverName].updateQue.qadmin.push(_.cloneDeep(queObj));
-			 */
+			curObj = {sessionName: sessionName, name: queObj.data.name};
+			_.set(curObj, 'time', _.get(queObj, 'data.arg2'));
+			_.set(curObj, 'iPlayerUnitId', _.get(queObj, 'data.arg3'));
+			iUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg3});
+			if (iUnit) {
+				_.set(curObj, 'iPlayerUnitType', _.get(iUnit, 'type', ''));
+				_.set(curObj, 'iPlayerSide', _.get(iUnit, 'coalition', 0));
+				_.set(curObj, 'iPlayerName', _.get(iUnit, 'playername', ''));
+				if (iUnit.playername !== '') {
+					iPlayer = _.find(curServers[serverName].serverObject.players, {name: iUnit.playername});
+					if (iPlayer) {
+						_.set(curObj, 'iPlayerUcid', iPlayer.ucid);
+					}
+				}
+			}
+			_.set(curObj, 'place', _.get(queObj, 'data.arg5'));
+			_.set(curObj, 'subPlace', _.get(queObj, 'data.arg6'));
+			console.log('event: ', curObj);
+			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_LAND') {
 			// Occurs when an aircraft lands at an airbase, farp or ship
-			console.log('event: ', queObj);
-			/*
-			 var cPlayer = _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg1});
-			 if (cPlayer) {
-			 _.set(queObj, ['data', 'arg1'], _.get(cPlayer, 'ucid', queObj.data.arg1));
-			 }
-			 dbMapServiceController.statSrvEventActions('save', serverName, queObj.data);
-			 console.log('event: ', queObj);
-			 curServers[serverName].updateQue.q0.push(_.cloneDeep(queObj));
-			 curServers[serverName].updateQue.q1.push(_.cloneDeep(queObj));
-			 curServers[serverName].updateQue.q2.push(_.cloneDeep(queObj));
-			 curServers[serverName].updateQue.qadmin.push(_.cloneDeep(queObj));
-			 */
+			curObj = {sessionName: sessionName, name: queObj.data.name};
+			_.set(curObj, 'time', _.get(queObj, 'data.arg2'));
+			_.set(curObj, 'iPlayerUnitId', _.get(queObj, 'data.arg3'));
+			iUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg3});
+			if (iUnit) {
+				_.set(curObj, 'iPlayerUnitType', _.get(iUnit, 'type', ''));
+				_.set(curObj, 'iPlayerSide', _.get(iUnit, 'coalition', 0));
+				_.set(curObj, 'iPlayerName', _.get(iUnit, 'playername', ''));
+				if (iUnit.playername !== '') {
+					iPlayer = _.find(curServers[serverName].serverObject.players, {name: iUnit.playername});
+					if (iPlayer) {
+						_.set(curObj, 'iPlayerUcid', iPlayer.ucid);
+					}
+				}
+			}
+			_.set(curObj, 'place', _.get(queObj, 'data.arg5'));
+			_.set(curObj, 'subPlace', _.get(queObj, 'data.arg6'));
+			console.log('event: ', curObj);
+			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_CRASH') {
 			// Occurs when any aircraft crashes into the ground and is completely destroyed.
-			console.log('event: ', queObj);
-			/*
-			 var cPlayer = _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg1});
-			 if (cPlayer) {
-			 _.set(queObj, ['data', 'arg1'], _.get(cPlayer, 'ucid', queObj.data.arg1));
-			 }
-			 dbMapServiceController.statSrvEventActions('save', serverName, queObj.data);
-			 console.log('event: ', queObj);
-			 curServers[serverName].updateQue.q0.push(_.cloneDeep(queObj));
-			 curServers[serverName].updateQue.q1.push(_.cloneDeep(queObj));
-			 curServers[serverName].updateQue.q2.push(_.cloneDeep(queObj));
-			 curServers[serverName].updateQue.qadmin.push(_.cloneDeep(queObj));
-			 */
+			curObj = {sessionName: sessionName, name: queObj.data.name};
+			_.set(curObj, 'time', _.get(queObj, 'data.arg2'));
+			_.set(curObj, 'iPlayerUnitId', _.get(queObj, 'data.arg3'));
+			iUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg3});
+			if (iUnit) {
+				_.set(curObj, 'iPlayerUnitType', _.get(iUnit, 'type', ''));
+				_.set(curObj, 'iPlayerSide', _.get(iUnit, 'coalition', 0));
+				_.set(curObj, 'iPlayerName', _.get(iUnit, 'playername', ''));
+				if (iUnit.playername !== '') {
+					iPlayer = _.find(curServers[serverName].serverObject.players, {name: iUnit.playername});
+					if (iPlayer) {
+						_.set(curObj, 'iPlayerUcid', iPlayer.ucid);
+					}
+				}
+			}
+			console.log('event: ', curObj);
+			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_EJECTION') {
 			// Occurs when a pilot ejects from an aircraft
-			console.log('event: ', queObj);
-			/*
-			 var cPlayer = _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg1});
-			 if (cPlayer) {
-			 _.set(queObj, ['data', 'arg1'], _.get(cPlayer, 'ucid', queObj.data.arg1));
-			 }
-			 dbMapServiceController.statSrvEventActions('save', serverName, queObj.data);
-			 console.log('event: ', queObj);
-			 curServers[serverName].updateQue.q0.push(_.cloneDeep(queObj));
-			 curServers[serverName].updateQue.q1.push(_.cloneDeep(queObj));
-			 curServers[serverName].updateQue.q2.push(_.cloneDeep(queObj));
-			 curServers[serverName].updateQue.qadmin.push(_.cloneDeep(queObj));
-			 */
+			curObj = {sessionName: sessionName, name: queObj.data.name};
+			_.set(curObj, 'time', _.get(queObj, 'data.arg2'));
+			_.set(curObj, 'iPlayerUnitId', _.get(queObj, 'data.arg3'));
+			iUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg3});
+			if (iUnit) {
+				_.set(curObj, 'iPlayerUnitType', _.get(iUnit, 'type', ''));
+				_.set(curObj, 'iPlayerSide', _.get(iUnit, 'coalition', 0));
+				_.set(curObj, 'iPlayerName', _.get(iUnit, 'playername', ''));
+				if (iUnit.playername !== '') {
+					iPlayer = _.find(curServers[serverName].serverObject.players, {name: iUnit.playername});
+					if (iPlayer) {
+						_.set(curObj, 'iPlayerUcid', iPlayer.ucid);
+					}
+				}
+			}
+			console.log('event: ', curObj);
+			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_REFUELING') {
 			// Occurs when an aircraft connects with a tanker and begins taking on fuel.
-			console.log('event: ', queObj);
-			/*
-			 var cPlayer = _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg1});
-			 if (cPlayer) {
-			 _.set(queObj, ['data', 'arg1'], _.get(cPlayer, 'ucid', queObj.data.arg1));
-			 }
-			 dbMapServiceController.statSrvEventActions('save', serverName, queObj.data);
-			 console.log('event: ', queObj);
-			 curServers[serverName].updateQue.q0.push(_.cloneDeep(queObj));
-			 curServers[serverName].updateQue.q1.push(_.cloneDeep(queObj));
-			 curServers[serverName].updateQue.q2.push(_.cloneDeep(queObj));
-			 curServers[serverName].updateQue.qadmin.push(_.cloneDeep(queObj));
-			 */
+			curObj = {sessionName: sessionName, name: queObj.data.name};
+			_.set(curObj, 'time', _.get(queObj, 'data.arg2'));
+			_.set(curObj, 'iPlayerUnitId', _.get(queObj, 'data.arg3'));
+			iUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg3});
+			if (iUnit) {
+				_.set(curObj, 'iPlayerUnitType', _.get(iUnit, 'type', ''));
+				_.set(curObj, 'iPlayerSide', _.get(iUnit, 'coalition', 0));
+				_.set(curObj, 'iPlayerName', _.get(iUnit, 'playername', ''));
+				if (iUnit.playername !== '') {
+					iPlayer = _.find(curServers[serverName].serverObject.players, {name: iUnit.playername});
+					if (iPlayer) {
+						_.set(curObj, 'iPlayerUcid', iPlayer.ucid);
+					}
+				}
+			}
+			console.log('event: ', curObj);
+			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_DEAD') {
 			// Occurs when an object is completely destroyed.
-			console.log('event: ', queObj);
-			/*
-			 var cPlayer = _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg1});
-			 if (cPlayer) {
-			 _.set(queObj, ['data', 'arg1'], _.get(cPlayer, 'ucid', queObj.data.arg1));
-			 }
-			 dbMapServiceController.statSrvEventActions('save', serverName, queObj.data);
-			 console.log('event: ', queObj);
-			 curServers[serverName].updateQue.q0.push(_.cloneDeep(queObj));
-			 curServers[serverName].updateQue.q1.push(_.cloneDeep(queObj));
-			 curServers[serverName].updateQue.q2.push(_.cloneDeep(queObj));
-			 curServers[serverName].updateQue.qadmin.push(_.cloneDeep(queObj));
-			 */
+			curObj = {sessionName: sessionName, name: queObj.data.name};
+			_.set(curObj, 'time', _.get(queObj, 'data.arg2'));
+			_.set(curObj, 'iPlayerUnitId', _.get(queObj, 'data.arg3'));
+			iUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg3});
+			if (iUnit) {
+				_.set(curObj, 'iPlayerUnitType', _.get(iUnit, 'type', ''));
+				_.set(curObj, 'iPlayerSide', _.get(iUnit, 'coalition', 0));
+				_.set(curObj, 'iPlayerName', _.get(iUnit, 'playername', ''));
+				if (iUnit.playername !== '') {
+					iPlayer = _.find(curServers[serverName].serverObject.players, {name: iUnit.playername});
+					if (iPlayer) {
+						_.set(curObj, 'iPlayerUcid', iPlayer.ucid);
+					}
+				}
+			}
+			console.log('event: ', curObj);
+			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_PILOT_DEAD') {
 			// Occurs when the pilot of an aircraft is killed.
 			// Can occur either if the player is alive and crashes or
 			// if a weapon kills the pilot without completely destroying the plane.
-			console.log('event: ', queObj);
-			/*
-			 var cPlayer = _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg1});
-			 if (cPlayer) {
-			 _.set(queObj, ['data', 'arg1'], _.get(cPlayer, 'ucid', queObj.data.arg1));
-			 }
-			 dbMapServiceController.statSrvEventActions('save', serverName, queObj.data);
-			 console.log('event: ', queObj);
-			 curServers[serverName].updateQue.q0.push(_.cloneDeep(queObj));
-			 curServers[serverName].updateQue.q1.push(_.cloneDeep(queObj));
-			 curServers[serverName].updateQue.q2.push(_.cloneDeep(queObj));
-			 curServers[serverName].updateQue.qadmin.push(_.cloneDeep(queObj));
-			 */
+			curObj = {sessionName: sessionName, name: queObj.data.name};
+			_.set(curObj, 'time', _.get(queObj, 'data.arg2'));
+			_.set(curObj, 'iPlayerUnitId', _.get(queObj, 'data.arg3'));
+			iUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg3});
+			if (iUnit) {
+				_.set(curObj, 'iPlayerUnitType', _.get(iUnit, 'type', ''));
+				_.set(curObj, 'iPlayerSide', _.get(iUnit, 'coalition', 0));
+				_.set(curObj, 'iPlayerName', _.get(iUnit, 'playername', ''));
+				if (iUnit.playername !== '') {
+					iPlayer = _.find(curServers[serverName].serverObject.players, {name: iUnit.playername});
+					if (iPlayer) {
+						_.set(curObj, 'iPlayerUcid', iPlayer.ucid);
+					}
+				}
+			}
+			console.log('event: ', curObj);
+			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_BASE_CAPTURED') {
 			// Occurs when a ground unit captures either an airbase or a farp.
+			// not used - capture system is new
 			console.log('event: ', queObj);
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_MISSION_START') {
 			// Occurs when a mission starts
-			console.log('event: ', queObj);
+			curObj = {sessionName: sessionName, name: queObj.data.name};
+			_.set(curObj, 'time', _.get(queObj, 'data.arg2'));
+			console.log('event: ', curObj);
+			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_MISSION_END') {
 			// Occurs when a mission ends.
-			console.log('event: ', queObj);
+			curObj = {sessionName: sessionName, name: queObj.data.name};
+			_.set(curObj, 'time', _.get(queObj, 'data.arg2'));
+			console.log('event: ', curObj);
+			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_TOOK_CONTROL') {
 			// ?
@@ -1055,31 +1108,143 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_REFUELING_STOP') {
 			// Occurs when an aircraft is finished taking fuel.
-			console.log('event: ', queObj);
+			curObj = {sessionName: sessionName, name: queObj.data.name};
+			_.set(curObj, 'time', _.get(queObj, 'data.arg2'));
+			_.set(curObj, 'iPlayerUnitId', _.get(queObj, 'data.arg3'));
+			iUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg3});
+			if (iUnit) {
+				_.set(curObj, 'iPlayerUnitType', _.get(iUnit, 'type', ''));
+				_.set(curObj, 'iPlayerSide', _.get(iUnit, 'coalition', 0));
+				_.set(curObj, 'iPlayerName', _.get(iUnit, 'playername', ''));
+				if (iUnit.playername !== '') {
+					iPlayer = _.find(curServers[serverName].serverObject.players, {name: iUnit.playername});
+					if (iPlayer) {
+						_.set(curObj, 'iPlayerUcid', iPlayer.ucid);
+					}
+				}
+			}
+			console.log('event: ', curObj);
+			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_BIRTH') {
 			// Occurs when any object is spawned into the mission.
-			console.log('event: ', queObj);
+			curObj = {sessionName: sessionName, name: queObj.data.name};
+			_.set(curObj, 'time', _.get(queObj, 'data.arg2'));
+			_.set(curObj, 'iPlayerUnitId', _.get(queObj, 'data.arg3'));
+			iUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg3});
+			if (iUnit) {
+				_.set(curObj, 'iPlayerUnitType', _.get(iUnit, 'type', ''));
+				_.set(curObj, 'iPlayerSide', _.get(iUnit, 'coalition', 0));
+				_.set(curObj, 'iPlayerName', _.get(iUnit, 'playername', ''));
+				if (iUnit.playername !== '') {
+					iPlayer = _.find(curServers[serverName].serverObject.players, {name: iUnit.playername});
+					if (iPlayer) {
+						_.set(curObj, 'iPlayerUcid', iPlayer.ucid);
+					}
+				}
+			}
+			console.log('event: ', curObj);
+			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_HUMAN_FAILURE') {
 			// Occurs when any system fails on a human controlled aircraft.
-			console.log('event: ', queObj);
+			curObj = {sessionName: sessionName, name: queObj.data.name};
+			_.set(curObj, 'time', _.get(queObj, 'data.arg2'));
+			_.set(curObj, 'iPlayerUnitId', _.get(queObj, 'data.arg3'));
+			iUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg3});
+			if (iUnit) {
+				_.set(curObj, 'iPlayerUnitType', _.get(iUnit, 'type', ''));
+				_.set(curObj, 'iPlayerSide', _.get(iUnit, 'coalition', 0));
+				_.set(curObj, 'iPlayerName', _.get(iUnit, 'playername', ''));
+				if (iUnit.playername !== '') {
+					iPlayer = _.find(curServers[serverName].serverObject.players, {name: iUnit.playername});
+					if (iPlayer) {
+						_.set(curObj, 'iPlayerUcid', iPlayer.ucid);
+					}
+				}
+			}
+			console.log('event: ', curObj);
+			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_ENGINE_STARTUP') {
 			// Occurs when any aircraft starts its engines.
-			console.log('event: ', queObj);
+			curObj = {sessionName: sessionName, name: queObj.data.name};
+			_.set(curObj, 'time', _.get(queObj, 'data.arg2'));
+			_.set(curObj, 'iPlayerUnitId', _.get(queObj, 'data.arg3'));
+			iUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg3});
+			if (iUnit) {
+				_.set(curObj, 'iPlayerUnitType', _.get(iUnit, 'type', ''));
+				_.set(curObj, 'iPlayerSide', _.get(iUnit, 'coalition', 0));
+				_.set(curObj, 'iPlayerName', _.get(iUnit, 'playername', ''));
+				if (iUnit.playername !== '') {
+					iPlayer = _.find(curServers[serverName].serverObject.players, {name: iUnit.playername});
+					if (iPlayer) {
+						_.set(curObj, 'iPlayerUcid', iPlayer.ucid);
+					}
+				}
+			}
+			console.log('event: ', curObj);
+			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_ENGINE_SHUTDOWN') {
 			// Occurs when any aircraft shuts down its engines.
-			console.log('event: ', queObj);
+			curObj = {sessionName: sessionName, name: queObj.data.name};
+			_.set(curObj, 'time', _.get(queObj, 'data.arg2'));
+			_.set(curObj, 'iPlayerUnitId', _.get(queObj, 'data.arg3'));
+			iUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg3});
+			if (iUnit) {
+				_.set(curObj, 'iPlayerUnitType', _.get(iUnit, 'type', ''));
+				_.set(curObj, 'iPlayerSide', _.get(iUnit, 'coalition', 0));
+				_.set(curObj, 'iPlayerName', _.get(iUnit, 'playername', ''));
+				if (iUnit.playername !== '') {
+					iPlayer = _.find(curServers[serverName].serverObject.players, {name: iUnit.playername});
+					if (iPlayer) {
+						_.set(curObj, 'iPlayerUcid', iPlayer.ucid);
+					}
+				}
+			}
+			console.log('event: ', curObj);
+			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_PLAYER_ENTER_UNIT') {
 			// Occurs when any player assumes direct control of a unit.
-			console.log('event: ', queObj);
+			curObj = {sessionName: sessionName, name: queObj.data.name};
+			_.set(curObj, 'time', _.get(queObj, 'data.arg2'));
+			_.set(curObj, 'iPlayerUnitId', _.get(queObj, 'data.arg3'));
+			iUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg3});
+			if (iUnit) {
+				_.set(curObj, 'iPlayerUnitType', _.get(iUnit, 'type', ''));
+				_.set(curObj, 'iPlayerSide', _.get(iUnit, 'coalition', 0));
+				_.set(curObj, 'iPlayerName', _.get(iUnit, 'playername', ''));
+				if (iUnit.playername !== '') {
+					iPlayer = _.find(curServers[serverName].serverObject.players, {name: iUnit.playername});
+					if (iPlayer) {
+						_.set(curObj, 'iPlayerUcid', iPlayer.ucid);
+					}
+				}
+			}
+			console.log('event: ', curObj);
+			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_PLAYER_LEAVE_UNIT') {
 			// Occurs when any player relieves control of a unit to the AI.
-			console.log('event: ', queObj);
+			curObj = {sessionName: sessionName, name: queObj.data.name};
+			_.set(curObj, 'time', _.get(queObj, 'data.arg2'));
+			_.set(curObj, 'iPlayerUnitId', _.get(queObj, 'data.arg3'));
+			iUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg3});
+			if (iUnit) {
+				_.set(curObj, 'iPlayerUnitType', _.get(iUnit, 'type', ''));
+				_.set(curObj, 'iPlayerSide', _.get(iUnit, 'coalition', 0));
+				_.set(curObj, 'iPlayerName', _.get(iUnit, 'playername', ''));
+				if (iUnit.playername !== '') {
+					iPlayer = _.find(curServers[serverName].serverObject.players, {name: iUnit.playername});
+					if (iPlayer) {
+						_.set(curObj, 'iPlayerUcid', iPlayer.ucid);
+					}
+				}
+			}
+			console.log('event: ', curObj);
+			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_PLAYER_COMMENT') {
 			// ?
@@ -1088,12 +1253,55 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		if (_.get(queObj, 'action') === 'S_EVENT_SHOOTING_START') {
 			// Occurs when any unit begins firing a weapon that has a high rate of fire.
 			// Most common with aircraft cannons (GAU-8), autocannons, and machine guns.
-			console.log('event: ', queObj);
+			curObj = {sessionName: sessionName, name: queObj.data.name};
+			_.set(curObj, 'time', _.get(queObj, 'data.arg2'));
+			_.set(curObj, 'iPlayerUnitId', _.get(queObj, 'data.arg3'));
+			iUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg3});
+			if (iUnit) {
+				_.set(curObj, 'iPlayerUnitType', _.get(iUnit, 'type', ''));
+				_.set(curObj, 'iPlayerSide', _.get(iUnit, 'coalition', 0));
+				_.set(curObj, 'iPlayerName', _.get(iUnit, 'playername', ''));
+				if (iUnit.playername !== '') {
+					iPlayer = _.find(curServers[serverName].serverObject.players, {name: iUnit.playername});
+					if (iPlayer) {
+						_.set(curObj, 'iPlayerUcid', iPlayer.ucid);
+					}
+				}
+			}
+			_.set(curObj, 'tPlayerUnitId', _.get(queObj, 'data.arg4'));
+			tUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg4});
+			if (tUnit) {
+				_.set(curObj, 'tPlayerUnitType', _.get(tUnit, 'type', ''));
+				_.set(curObj, 'tPlayerSide', _.get(tUnit, 'coalition', 0));
+				_.set(curObj, 'tPlayerName', _.get(tUnit, 'playername', ''));
+				if (tUnit.playername !== '') {
+					tPlayer = _.find(curServers[serverName].serverObject.players, {name: tUnit.playername});
+					if (tPlayer) {
+						_.set(curObj, 'tPlayerUcid', tPlayer.ucid);
+					}
+				}
+			}
+			console.log('event: ', curObj);
+			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_SHOOTING_END') {
 			// Occurs when any unit stops firing its weapon.
 			// Event will always correspond with a shooting start event.
-			console.log('event: ', queObj);
+			curObj = {sessionName: sessionName, name: queObj.data.name};
+			_.set(curObj, 'time', _.get(queObj, 'data.arg2'));
+			_.set(curObj, 'iPlayerUnitId', _.get(queObj, 'data.arg3'));
+			iUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg3});
+			if (iUnit) {
+				_.set(curObj, 'iPlayerUnitType', _.get(iUnit, 'type', ''));
+				_.set(curObj, 'iPlayerSide', _.get(iUnit, 'coalition', 0));
+				_.set(curObj, 'iPlayerName', _.get(iUnit, 'playername', ''));
+				if (iUnit.playername !== '') {
+					iPlayer = _.find(curServers[serverName].serverObject.players, {name: iUnit.playername});
+					if (iPlayer) {
+						_.set(curObj, 'iPlayerUcid', iPlayer.ucid);
+					}
+				}
+			}
 		}
 		return true;
 	});
@@ -1158,6 +1366,7 @@ setInterval(function () {
 							q2: [],
 							qadmin: []
 						});
+						console.log('clientWriteQue: ', curServers[server.name].serverObject.ClientRequestArray);
 						curServers[server.name].DCSSocket = new DCSSocket(server.name, server.ip, server.dcsClientPort, server.dcsGameGuiPort, syncDCSData, io, initClear, curServers[server.name].serverObject.ClientRequestArray, curServers[server.name].serverObject.GameGUIRequestArray);
 						//console.log('creating object: ', server.name, curServers[server.name]);
 					}

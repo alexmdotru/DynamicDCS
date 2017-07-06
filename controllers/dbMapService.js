@@ -13,6 +13,7 @@ var srvPlayerSchema = require('../models/srvPlayerSchema');
 var unitSchema = require('../models/unitSchema');
 var statSessionSchema = require('../models/statSessionSchema');
 var statSrvEventSchema = require('../models/statSrvEventSchema');
+var cmdQueSchema = require('../models/cmdQueSchema');
 
 exports.baseActions = function (action, serverName, obj){
 	const Airfield = mapdb.model(serverName+'_airfield', airfieldSchema);
@@ -141,5 +142,41 @@ exports.statSrvEventActions = function (action, serverName, obj){
 				resolve(statSrvEvent);
 			});
 		});
+	}
+};
+
+exports.cmdQueActions = function (action, serverName, obj){
+	const CmdQue = mapdb.model(serverName+'_cmdque', cmdQueSchema);
+	if (action === 'read') {
+		return new Promise(function(resolve, reject) {
+			CmdQue.find({queName: obj.queName}).sort('createdAt').limit(50).exec()
+				.then(function (resp) {
+					resolve(resp);
+				})
+				.catch(function (err) {
+					reject(err);
+				})
+			;
+		});
+	}
+	if(action === 'save') {
+		return new Promise(function(resolve, reject) {
+			const cmdque = new CmdQue(obj);
+			cmdque.save(function (err, cmdque) {
+				if (err) { reject(err) }
+				resolve(cmdque);
+			});
+		});
+	}
+	if(action === 'delete') {
+		return new Promise(function(resolve, reject) {
+			CmdQue.findByIdAndRemove(obj._id, function (err, cmdque) {
+				if (err) { reject(err) }
+				resolve(cmdque);
+			});
+		});
+	}
+	if(action === 'dropall') {
+		CmdQue.collection.drop();
 	}
 };

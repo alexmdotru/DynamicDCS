@@ -345,7 +345,7 @@ do
 						curEvent.arg6 = birthTypes[_event.subPlace]
 					end
 					if _event.weapon ~= nil then
-						curEvent.arg7 = _event.weapon:getName()
+						curEvent.arg7 = _event.weapon:getTypeName()
 					end
 					--env.info('eventFiring: '..eventTypes[_event.id]);
 					table.insert(updateQue.que, {

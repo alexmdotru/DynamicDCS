@@ -1,7 +1,9 @@
 const net = require('net'),
 	_ = require('lodash');
 
-function DCSSocket(serverName, serverAddress, clientPort, gameGuiPort, callback, io, initClear, reqClientArray, regGameGuiArray) {
+const dbMapServiceController = require('./dbMapService'); // reqClientArray, regGameGuiArray
+
+function DCSSocket(serverName, serverAddress, clientPort, gameGuiPort, callback, io, initClear) {
 	var dsock = this;
 	dsock.serverName = serverName;
 	dsock.serverAddress = serverAddress;
@@ -10,18 +12,28 @@ function DCSSocket(serverName, serverAddress, clientPort, gameGuiPort, callback,
 	dsock.callback = callback;
 	dsock.io = io;
 	dsock.initClear = initClear;
-	dsock.reqClientArray = reqClientArray;
-	dsock.regGameGuiArray = regGameGuiArray;
 	dsock.clientConnOpen = true;
 	dsock.gameGUIConnOpen = true;
-	dsock.client;
-	dsock.gameGUI;
-	dsock.clientBuffer;
-	dsock.gameGUIBuffer;
+	dsock.client = {};
+	dsock.gameGUI = {};
+	dsock.clientBuffer = {};
+	dsock.gameGUIBuffer = {};
 	dsock.startTime = new Date().valueOf() ;
 	dsock.sessionName = serverName+'_'+dsock.startTime;
-	dsock.connectClient = function () {
 
+	dsock.connectClient = function () {
+		setInterval(function () { // keep ques updated from database updated to the database
+			dbMapServiceController.cmdQueActions('read', serverName, {queName: 'clientArray'})
+				.then(function (resp) {
+					console.log('clientArry: ',resp);
+					dsock.reqClientArray = resp;
+				});
+			dbMapServiceController.cmdQueActions('read', serverName, {queName: 'gameGuiArray'})
+				.then(function (resp) {
+					console.log('gameGuiArry: ',resp);
+					dsock.regGameGuiArray = resp;
+				});
+		}, 500);
 
 		dsock.client = net.createConnection({
 			host: dsock.serverAddress,
@@ -46,7 +58,7 @@ function DCSSocket(serverName, serverAddress, clientPort, gameGuiPort, callback,
 				dsock.callback(serverName, dsock.sessionName, data);
 				dsock.clientBuffer = dsock.clientBuffer.substring(i + 1);
 				dsock.client.write(JSON.stringify(_.get(dsock, 'reqClientArray', {action: 'NONE'})) + "\n");
-				dsock.reqClientArray.shift();
+				// dsock.reqClientArray.shift();
 			}
 		});
 
@@ -83,7 +95,7 @@ function DCSSocket(serverName, serverAddress, clientPort, gameGuiPort, callback,
 				dsock.callback(serverName, dsock.sessionName, data);
 				dsock.gameGUIBuffer = dsock.gameGUIBuffer.substring(i + 1);
 				dsock.gameGUI.write(JSON.stringify(_.get(dsock, 'regGameGuiArray', {action: 'NONE'})) + "\n");
-				dsock.regGameGuiArray.shift();
+				// dsock.regGameGuiArray.shift();
 			}
 		});
 		dsock.gameGUI.on('close', () => {
