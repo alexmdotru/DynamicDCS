@@ -190,10 +190,6 @@ function initClear(serverName, serverType) {
 		_.set(curServers, [serverName, 'serverObject', 'units'], []);
 		//Unit.collection.drop();
 		dbMapServiceController.unitActions('dropall', serverName); //someday maps will persist, reset all units
-		_.set(curServers, [serverName, 'serverObject', 'ClientRequestArray'], []);
-	}
-	if (serverType === 'server') {
-		_.set(curServers, [serverName, 'serverObject', 'GameGUIRequestArray'], []);
 	}
 }
 
@@ -487,7 +483,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				outOfSyncUnitCnt = 0;
 				console.log('reset server units');
 				initClear(serverName, 'client');
-				_.get(curServers, [serverName, 'serverObject', 'ClientRequestArray']).push({"action": "INIT"});
+				dbMapServiceController.cmdQueActions('save', serverName, {queName: 'clientArray', actionObj: {action: "INIT"}});
+				//_.get(curServers, [serverName, 'serverObject', 'ClientRequestArray']).push({"action": "INIT"});
 				sendInit(serverName, 'all');
 			} else {
 				outOfSyncUnitCnt++;
@@ -1366,7 +1363,6 @@ setInterval(function () {
 							q2: [],
 							qadmin: []
 						});
-						console.log('clientWriteQue: ', curServers[server.name].serverObject.ClientRequestArray);
 						curServers[server.name].DCSSocket = new DCSSocket(server.name, server.ip, server.dcsClientPort, server.dcsGameGuiPort, syncDCSData, io, initClear, curServers[server.name].serverObject.ClientRequestArray, curServers[server.name].serverObject.GameGUIRequestArray);
 						//console.log('creating object: ', server.name, curServers[server.name]);
 					}

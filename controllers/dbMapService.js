@@ -170,6 +170,7 @@ exports.cmdQueActions = function (action, serverName, obj){
 	}
 	if(action === 'delete') {
 		return new Promise(function(resolve, reject) {
+			console.log('delete: ', obj);
 			CmdQue.findByIdAndRemove(obj._id, function (err, cmdque) {
 				if (err) { reject(err) }
 				resolve(cmdque);
