@@ -104,7 +104,20 @@ exports.statSessionActions = function (action, serverName, obj){
 			});
 		});
 	}
+	if(action === 'update') {
+		return new Promise(function(resolve, reject) {
+			StatSession.update(
+				{name: obj.name},
+				{$set: obj},
+				function(err, statsession) {
+					if (err) { reject(err) }
+					resolve(statsession);
+				}
+			);
+		});
+	}
 	if(action === 'save') {
+		console.log('statsessionsave: ', obj);
 		return new Promise(function(resolve, reject) {
 			const statsession = new StatSession(obj);
 			statsession.save(function (err, statSession) {

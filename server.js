@@ -501,6 +501,9 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		var iUnit = {};
 		var tUnit = {};
 		var curUnit = _.find(curServers[serverName].serverObject.units, {'unitID': _.get(queObj, 'data.unitID')});
+		if (queObj.data.curAbsTime) {
+
+		}
 
 		if (_.get(queObj, 'action') === 'C') {
 			if (typeof curUnit !== "undefined") {
@@ -1377,14 +1380,23 @@ function syncDCSData(serverName, sessionName, DCSData) {
 	//var timetest = new Date();
 	//_.set(serverObject, 'ClientRequestArray[0]', {action:'CMD',  reqID: _.random(1,9999)+'|'+timetest.getHours() + ':' + timetest.getMinutes() + ':' + timetest.getSeconds(), cmd:'trigger.action.outText("IT WORKS MOFO!", 2)'});
 	//accept updates
+
 	if (!_.isEmpty(DCSData.que)) {
-		if (sessionName !== _.get(curServers, [serverName, 'sessionName'], '')) {
-			var newSession = {
-				_id: sessionName,
-				name: sessionName
-			};
+		var newSession = {
+			_id: sessionName,
+			name: sessionName
+		};
+		if (DCSData.curAbsTime) {
+			_.set(newSession, 'startAbsTime', DCSData.startAbsTime);
+			_.set(newSession, 'curAbsTime', DCSData.curAbsTime);
+		}
+		if (sessionName !== _.get(curServers, [serverName, 'sessionName'], '') || _.get(curServers, [serverName, 'curAbsTime'], 0) > DCSData.curAbsTime) {
 			_.set(curServers, [serverName, 'sessionName'], sessionName);
+			_.set(curServers, [serverName, 'curAbsTime'], DCSData.curAbsTime);
 			dbMapServiceController.statSessionActions('save', serverName, newSession);
+		} else {
+
+			dbMapServiceController.statSessionActions('update', serverName, newSession);
 		}
 		curServers.processQue(serverName, sessionName, DCSData);
 	}

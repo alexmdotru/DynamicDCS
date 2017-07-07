@@ -10,6 +10,12 @@ const StatSessionSchema = new Schema({
 		name: {
 			type: String,
 			required: true
+		},
+		startAbsTime: {
+			type: Number
+		},
+		curAbsTime: {
+			type: Number
 		}
 	},
 	{

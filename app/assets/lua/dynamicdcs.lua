@@ -151,9 +151,9 @@ do
 			table.insert(payload.que, updateQue.que[i])
 			table.remove(updateQue.que, i)
 		end
-
-
         payload.unitCount = unitCnt
+		payload.startAbsTime = timer.getTime0()
+		payload.curAbsTime = timer.getAbsTime()
         return payload
     end
 
@@ -348,6 +348,7 @@ do
 						curEvent.arg7 = _event.weapon:getTypeName()
 					end
 					--env.info('eventFiring: '..eventTypes[_event.id]);
+					--env.info('curevent: '..curEvent.startAbsTime..' -- '..curEvent.curAbsTime);
 					table.insert(updateQue.que, {
 						action = eventTypes[_event.id],
 						data = curEvent
