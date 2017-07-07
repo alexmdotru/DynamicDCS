@@ -557,6 +557,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			}
 		}
 		if (_.get(queObj, 'action') === 'D') {
+			console.log('delete: ',queObj);
 			curObj = {
 				action: 'D',
 				sessionName: sessionName,
