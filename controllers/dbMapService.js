@@ -117,7 +117,7 @@ exports.statSessionActions = function (action, serverName, obj){
 
 exports.statSrvEventActions = function (action, serverName, obj){
 	const StatSrvEvent = mapdb.model(serverName+'_statSrvEvent', statSrvEventSchema);
-	console.log(obj);
+	// console.log(obj);
 	if (action === 'read') {
 		return new Promise(function(resolve, reject) {
 			StatSrvEvent.find({sessionName: obj}, function (err, statSrvEvent) {
@@ -170,7 +170,6 @@ exports.cmdQueActions = function (action, serverName, obj){
 	}
 	if(action === 'delete') {
 		return new Promise(function(resolve, reject) {
-			console.log('delete: ', obj);
 			CmdQue.findByIdAndRemove(obj._id, function (err, cmdque) {
 				if (err) { reject(err) }
 				resolve(cmdque);
