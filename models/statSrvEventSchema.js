@@ -7,6 +7,9 @@ const StatSrvEventSchema = new Schema({
 			type: String,
 			required: true
 		},
+		score: {
+			type: Number
+		},
 		name: {
 			type: String,
 			required: true

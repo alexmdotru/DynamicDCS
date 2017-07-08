@@ -356,7 +356,7 @@ do
 						curEvent.arg7 = {
 							["typeName"] = curWeapon.typeName,
 							["displayName"] = curWeapon.displayName,
-							["category"] = weaponCategory[curWeapon.category]
+							["category"] = weaponCategory[curWeapon.category + 1]
 						}
 					end
 					--env.info('eventFiring: '..eventTypes[_event.id]);

@@ -214,3 +214,34 @@ exports.theaterActions = function (action){
 		});
 	}
 };
+
+var weaponScoreSchema = require('../models/weaponScoreSchema');
+const WeaponScore = systemdb.model('weaponScore', weaponScoreSchema);
+
+exports.weaponScoreActions = function (action, obj){
+	if(action === 'read') {
+		return new Promise(function(resolve, reject) {
+			WeaponScore.find({_id: obj.typeName}, function (err, weaponscore) {
+				if (err) { reject(err) }
+				if (weaponscore.length === 0) {
+					const curWeaponScore = new WeaponScore({
+						_id: obj.typeName,
+						name: obj.typeName,
+						displayName: obj.displayName,
+						category: obj.category,
+						unitType: obj.unitType
+					});
+					curWeaponScore.save(function (err, saveweaponscore) {
+						if (err) {
+							reject(err);
+						}
+						resolve(saveweaponscore);
+					});
+				} else {
+					var curWeaponScore = weaponscore[0];
+					resolve(curWeaponScore);
+				}
+			});
+		});
+	}
+};
