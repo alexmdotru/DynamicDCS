@@ -317,6 +317,13 @@ do
 		"wsBirthPlace_Heliport_Cold"
 	}
 
+	local weaponCategory = {
+		"SHELL",
+		"MISSILE",
+		"ROCKET",
+		"BOMB"
+	}
+
 
 	function clientEventHandler:onEvent(_event)
 		local status, err = pcall(
@@ -345,7 +352,12 @@ do
 						curEvent.arg6 = birthTypes[_event.subPlace]
 					end
 					if _event.weapon ~= nil then
-						curEvent.arg7 = _event.weapon:getTypeName()
+						local curWeapon = _event.weapon:getDesc()
+						curEvent.arg7 = {
+							["typeName"] = curWeapon.typeName,
+							["displayName"] = curWeapon.displayName,
+							["category"] = weaponCategory[curWeapon.category]
+						}
 					end
 					--env.info('eventFiring: '..eventTypes[_event.id]);
 					--env.info('curevent: '..curEvent.startAbsTime..' -- '..curEvent.curAbsTime);
