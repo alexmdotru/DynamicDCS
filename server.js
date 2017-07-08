@@ -1096,7 +1096,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		if (_.get(queObj, 'action') === 'S_EVENT_BASE_CAPTURED') {
 			// Occurs when a ground unit captures either an airbase or a farp.
 			// not used - capture system is new
-			console.log('event: ', queObj);
+			//console.log('event: ', queObj);
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_MISSION_START') {
 			// Occurs when a mission starts
@@ -1114,7 +1114,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_TOOK_CONTROL') {
 			// ?
-			console.log('event: ', queObj);
+			//console.log('event: ', queObj);
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_REFUELING_STOP') {
 			// Occurs when an aircraft is finished taking fuel.
