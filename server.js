@@ -679,7 +679,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		//mesg
 		if (_.get(queObj, 'action') === 'MESG') {
 			_.set(queObj, 'sessionName', sessionName);
-			console.log(queObj);
+			console.log('mesg: ', queObj);
 			//console.log(serverObject.players);
 			if (_.get(queObj, 'data.playerID')) {
 				if (_.isNumber(_.get(_.find(curServers[serverName].serverObject.players, {'id': _.get(queObj, 'data.playerID')}), 'side', 0))) {
