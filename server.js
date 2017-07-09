@@ -901,9 +901,11 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				.catch(function (err) {
 					console.log('Eevent: ', curObj);
 					dbMapServiceController.statSrvEventActions('save', serverName, curObj);
-				});
+				})
+			;
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_HIT') {
+			console.log('eventhit');
 			// Occurs whenever an object is hit by a weapon.
 			// arg1 = id
 			// arg2 = time
@@ -926,8 +928,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						_.set(curObj, 'iPlayerUcid', iPlayer.ucid);
 					}
 				}
+				_.set(queObj, ['data', 'arg7', 'unitType'], _.get(iUnit, 'type', ''));
 			}
-			_.set(queObj, ['data', 'arg7', 'unitType'], _.get(iUnit, 'type', ''));
 			dbSystemServiceController.weaponScoreActions('read', _.get(queObj, 'data.arg7'))
 				.then(function (weaponResp) {
 					_.set(curObj, 'weaponName', _.get(weaponResp, 'name'));
@@ -945,6 +947,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						}
 					}
 					console.log('Tevent: ', curObj);
+					dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 				})
 				.catch(function (err) {
 					console.log('Eevent: ', curObj);
