@@ -47,12 +47,11 @@
 						var toDistance;
 						_.set(userAccountService, 'localAccount.unit', _.find(gSrv.gmapObj.markers, {playername: userAccountService.localAccount.gameName}));
 						_.set(userAccountService, 'localAccount.curPointer', {lat: pnt.lat(), lng: pnt.lng()});
-						userUnit = new gSrv.googleMaps.LatLng(
-							userAccountService.localAccount.unit.latitude,
-							userAccountService.localAccount.unit.longitude
-						);
-
 						if (typeof userAccountService.localAccount.unit !== 'undefined') {
+							userUnit = new gSrv.googleMaps.LatLng(
+								userAccountService.localAccount.unit.latitude,
+								userAccountService.localAccount.unit.longitude
+							);
 							toHeading = gSrv.googleMaps.geometry.spherical.computeHeading(userUnit, pnt);
 							if (toHeading > 0) {
 								toHeading = Math.round(toHeading);
