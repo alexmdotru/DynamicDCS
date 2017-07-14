@@ -1,10 +1,11 @@
 (function (angular) {
 	'use strict';
 
-	function controlService ($rootScope, $window, $http, uiGmapIsReady, uiGmapGoogleMapApi) {
+	function controlService ($rootScope, $window, $http, userAccountService, uiGmapIsReady, uiGmapGoogleMapApi) {
 		var gSrv = this;
 
 		_.set(gSrv, 'init', function () {
+
 			_.set(gSrv, 'gmapObj.markers', []);
 			_.forEach(gSrv.baseOverlay, function (base) {
 				base.setMap(null);
@@ -39,6 +40,37 @@
 							});
 						}
 					});
+
+					_.set(gSrv, 'displayCoordinates', function (pnt) {
+						var userUnit;
+						var toHeading;
+						var toDistance;
+						_.set(userAccountService, 'localAccount.unit', _.find(gSrv.gmapObj.markers, {playername: userAccountService.localAccount.gameName}));
+						_.set(userAccountService, 'localAccount.curPointer', {lat: pnt.lat(), lng: pnt.lng()});
+						userUnit = new gSrv.googleMaps.LatLng(
+							userAccountService.localAccount.unit.latitude,
+							userAccountService.localAccount.unit.longitude
+						);
+
+						if (typeof userAccountService.localAccount.unit !== 'undefined') {
+							toHeading = gSrv.googleMaps.geometry.spherical.computeHeading(userUnit, pnt);
+							if (toHeading > 0) {
+								toHeading = Math.round(toHeading);
+							} else {
+								toHeading = Math.round(360+toHeading);
+							}
+							_.set(userAccountService, 'localAccount.headingToPoint', toHeading);
+							toDistance = (gSrv.googleMaps.geometry.spherical.computeDistanceBetween(userUnit, pnt) / 1000).toFixed(2);
+							_.set(userAccountService, 'localAccount.headerInfo', 'Lat: '+pnt.lat().toFixed(6)+' Lng: '+pnt.lng().toFixed(6)+'<br>HdgToCursor: '+toHeading+'° DistToCursor: '+toDistance+'km');
+						} else {
+							_.set(userAccountService, 'localAccount.headerInfo', 'Lat: '+pnt.lat().toFixed(6)+' Lng: '+pnt.lng().toFixed(6));
+						}
+					});
+
+					gSrv.googleMaps.event.addListener(gSrv.currentMap, 'rightclick', function (event) {
+						gSrv.displayCoordinates(event.latLng);
+					});
+
 				});
 			});
 
@@ -148,6 +180,10 @@
 							model: model,
 							show: true
 						};
+					},
+					rightclick:  function(marker, eventName, model) {
+						var curLatLng = new gSrv.googleMaps.LatLng(model.latitude, model.longitude);
+						gSrv.displayCoordinates(curLatLng);
 					}
 				}
 			});
@@ -155,6 +191,7 @@
 
 		_.set(gSrv, 'resetMarkers', function() {
 			_.set(gSrv, 'gmapObj.markers', []);
+			_.set(userAccountService, 'localAccount.headerInfo', 'Right Click Map For Point Info');
 		});
 
 		//process inbound Unit Stream
@@ -292,6 +329,10 @@
 						new gSrv.googleMaps.GroundOverlay('imgs/mapOverlays/' +
 							base + '_' + side + '.png', imageBounds));
 					_.get(gSrv, ['baseOverlay', base]).setMap(gSrv.currentMap);
+
+					gSrv.googleMaps.event.addListener(_.get(gSrv, ['baseOverlay', base]), 'rightclick', function(e){
+						gSrv.displayCoordinates(e.latLng);
+					});
 				}
 
 				if ( typeof gSrv.overlayCoords[base].latc !== "undefined" ) {
@@ -311,6 +352,10 @@
 						center: center,
 						radius: 30000
 					}));
+
+					gSrv.googleMaps.event.addListener(_.get(gSrv, ['circleOverlay', base]), 'rightclick', function(e){
+						gSrv.displayCoordinates(e.latLng);
+					});
 				}
 			}
 		});
@@ -325,9 +370,8 @@
 
 			gSrv.addOverlay(base, side);
 		});
-
 	}
-	controlService.$inject = ['$rootScope', '$window', '$http', 'uiGmapIsReady', 'uiGmapGoogleMapApi'];
+	controlService.$inject = ['$rootScope', '$window', '$http', 'userAccountService', 'uiGmapIsReady', 'uiGmapGoogleMapApi'];
 
 	angular
 		.module('dynamic-dcs.gmapService',[

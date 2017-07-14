@@ -30,31 +30,39 @@
 
 	<!-- Collect the nav links, forms, and other content for toggling -->
 	<div class="collapse navbar-collapse" ng-class="!navCollapsed && 'in'">
-		<ul class="nav navbar-nav">
-			<li><a href="/">Leaderboard</a></li>
-			<li uib-dropdown>
-				<a href="#" uib-dropdown-toggle>Live Maps <b class="caret"></b></a>
-				<ul uib-dropdown-menu>
-					<li ng-repeat="srv in srvService.servers"><a ui-sref="dynMap({name: '{{srv.name}}'})">{{srv.name}}</a></li>
+		<div class="row">
+			<div class="col-xs-3">
+				<ul class="nav navbar-nav">
+					<li><a href="/">Leaderboard</a></li>
+					<li uib-dropdown>
+						<a href="#" uib-dropdown-toggle>Live Maps <b class="caret"></b></a>
+						<ul uib-dropdown-menu>
+							<li ng-repeat="srv in srvService.servers"><a ui-sref="dynMap({name: '{{srv.name}}'})">{{srv.name}}</a></li>
+						</ul>
+					</li>
 				</ul>
-			</li>
-		</ul>
-		<ul class="nav navbar-nav navbar-right">
-			<li><a href="http://www.16agr.com" target="_blank">Join The 16AGR!</a></li>
-			<li><a href="" ng-click="isCollapsed = !isCollapsed" data-ng-show="$state.includes('dynMap')">Tools</a></li> <!--temp until better show function -->
-			<li><a href="" ng-if="!auth.isAuthenticated()" ng-click="auth.login()">Login</a></li>
-			<li ng-if="auth.isAuthenticated()" uib-dropdown>
-				<a href="" uib-dropdown-toggle>
-					<div ng-if="userAccountService.localAccount.gameName">{{userAccountService.localAccount.gameName}}<b class="caret"></b></div>
-					<div ng-if="!userAccountService.localAccount.gameName">{{userAccountService.localAccount.firstName}}<b class="caret"></b></div>
-				</a>
-				<ul uib-dropdown-menu>
-					<li><a href="" ng-click="openSettingsModal('lg')">Settings</a></li>
-					<li><a href="" ng-if="userAccountService.localAccount.permLvl < 10" ng-click="openAdminModal('lg')">Admin</a></li>
-					<li><a href="" ng-click="auth.logout()">Logout</a></li>
+			</div>
+			<div class="col-xs-3 infoHeader" data-ng-show="$state.includes('dynMap')" data-ng-bind-html="userAccountService.localAccount.headerInfo"></div>
+			<div class="col-xs-3"></div>
+			<div class="col-xs-3 pull-right">
+				<ul class="nav navbar-nav navbar-right">
+					<li><a href="http://www.16agr.com" target="_blank">Join The 16AGR!</a></li>
+					<li><a href="" ng-click="isCollapsed = !isCollapsed" data-ng-show="$state.includes('dynMap')">Tools</a></li> <!--temp until better show function -->
+					<li><a href="" ng-if="!auth.isAuthenticated()" ng-click="auth.login()">Login</a></li>
+					<li ng-if="auth.isAuthenticated()" uib-dropdown>
+						<a href="" uib-dropdown-toggle>
+							<div ng-if="userAccountService.localAccount.gameName">{{userAccountService.localAccount.gameName}}<b class="caret"></b></div>
+							<div ng-if="!userAccountService.localAccount.gameName">{{userAccountService.localAccount.firstName}}<b class="caret"></b></div>
+						</a>
+						<ul uib-dropdown-menu>
+							<li><a href="" ng-click="openSettingsModal('lg')">Settings</a></li>
+							<li><a href="" ng-if="userAccountService.localAccount.permLvl < 10" ng-click="openAdminModal('lg')">Admin</a></li>
+							<li><a href="" ng-click="auth.logout()">Logout</a></li>
+						</ul>
+					</li>
 				</ul>
-			</li>
-		</ul>
+			</div>
+		</div>
 	</div><!-- /.navbar-collapse -->
 </nav>
 	<div ui-view></div>

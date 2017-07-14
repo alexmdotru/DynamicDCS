@@ -1390,7 +1390,7 @@ setInterval(function () {
 				}
 			});
 		});
-}, 1 * 1 * 1000);
+}, 1 * 1 * 5000);
 
 function syncDCSData(serverName, sessionName, DCSData) {
 	//console.log('incoming data: ', DCSData);
