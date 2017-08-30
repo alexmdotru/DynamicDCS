@@ -48,11 +48,11 @@ function DCSSocket(serverName, serverAddress, clientPort, gameGuiPort, callback,
 				//dsock.client.write(JSON.stringify({action: 'NONE'}) + "\n")
 				dbMapServiceController.cmdQueActions('grabNextQue', serverName, {queName: 'clientArray'})
 					.then(function (resp) {
-						if (resp.length > 0) {
+						if (resp) {
 							dsock.reqClientArray = {
-								action: resp[0].actionObj.action,
-								cmd: resp[0].actionObj.cmd,
-								reqID: resp[0]._id
+								action: resp.actionObj.action,
+								cmd: resp.actionObj.cmd,
+								reqID: resp._id
 							};
 						} else {
 							dsock.reqClientArray = {action: 'NONE'};
@@ -62,9 +62,6 @@ function DCSSocket(serverName, serverAddress, clientPort, gameGuiPort, callback,
 				curClientCmd = _.get(dsock, 'reqClientArray', {action: 'NONE'});
 				dsock.client.write(JSON.stringify(curClientCmd) + "\n"); // dont ever let this line wait, it will stop the entire server waiting......
 				// console.log('cmdclient: ', curClientCmd);
-				if (curClientCmd.action !== 'NONE') {
-					dbMapServiceController.cmdQueActions('delete', serverName, {_id: curClientCmd.reqID});
-				}
 			}
 		});
 
@@ -103,11 +100,11 @@ function DCSSocket(serverName, serverAddress, clientPort, gameGuiPort, callback,
 				dsock.gameGUI.write(JSON.stringify({action: 'NONE'}) + "\n"); // dont ever let this line wait, it will stop the entire server waiting......
 				dbMapServiceController.cmdQueActions('grabNextQue', serverName, {queName: 'GameGuiArray'})
 					.then(function (resp) {
-						if (resp.length > 0) {
+						if (resp) {
 							dsock.reqGameGuiArray = {
-								action: resp[0].action,
-								cmd: resp[0].cmd,
-								reqID: resp[0]._id
+								action: resp.action,
+								cmd: resp.cmd,
+								reqID: resp._id
 							};
 						}
 					})

@@ -975,6 +975,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			_.set(curObj, 'place', _.get(queObj, 'data.arg5'));
 			_.set(curObj, 'subPlace', _.get(queObj, 'data.arg6'));
 			console.log('event: ', curObj);
+
 			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_LAND') {
@@ -997,6 +998,27 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			_.set(curObj, 'place', _.get(queObj, 'data.arg5'));
 			_.set(curObj, 'subPlace', _.get(queObj, 'data.arg6'));
 			console.log('event: ', curObj);
+
+			// obj cmd for sending mesg to clients
+			var curName;
+			if (_.get(curObj, 'iPlayerName')){
+				curName = _.get(curObj, 'iPlayerName');
+			} else {
+				curName = _.get(curObj, 'iPlayerUnitType', '""');
+			}
+
+			var place;
+			if (_.set(curObj, 'subPlace')){
+				place = _.set(curObj, 'subPlace');
+			} else {
+				place = _.set(curObj, 'place');
+			}
+
+			var curTxt = 'C: '+ curName +' has landed at ' + place;
+			var curCMD = 'trigger.action.outTextForCoalition('+_.get(curObj, 'iPlayerSide')+', '+curTxt+', 5)';
+			var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
+			_.get(curServers, [server.name, 'serverObject', 'ClientRequestArray']).push(sendClient);
+
 			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_CRASH') {
@@ -1036,6 +1058,20 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					}
 				}
 			}
+
+			var curName;
+			if (_.get(curObj, 'iPlayerName')){
+				curName = _.get(curObj, 'iPlayerName');
+			} else {
+				curName = _.get(curObj, 'iPlayerUnitType', '""');
+			}
+
+			var curTxt = 'A: '+ curName +' ejected';
+			var curCMD = 'trigger.action.outText("'+curTxt+'", 5)';
+			var sendClient = {action: 'CMD', cmd: curCMD, reqID: 0};  // cmd:'trigger.action.outText("IT WORKS MOFO!", 2)'
+			var actionObj = {actionObj: sendClient, queName: 'clientArray'};
+			dbMapServiceController.cmdQueActions('save', serverName, actionObj);
+
 			console.log('event: ', curObj);
 			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 		}
@@ -1384,7 +1420,7 @@ setInterval(function () {
 							q2: [],
 							qadmin: []
 						});
-						curServers[server.name].DCSSocket = new DCSSocket(server.name, server.ip, server.dcsClientPort, server.dcsGameGuiPort, syncDCSData, io, initClear, curServers[server.name].serverObject.ClientRequestArray, curServers[server.name].serverObject.GameGUIRequestArray);
+						curServers[server.name].DCSSocket = new DCSSocket(server.name, server.ip, server.dcsClientPort, server.dcsGameGuiPort, syncDCSData, io, initClear);
 						//console.log('creating object: ', server.name, curServers[server.name]);
 					}
 				}
