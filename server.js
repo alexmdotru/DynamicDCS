@@ -948,6 +948,28 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					}
 					console.log('Tevent: ', curObj);
 					dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+
+					// obj cmd for sending mesg to clients
+					var iPlayer;
+					if (_.get(curObj, 'iPlayerName')){
+						iPlayer = _.get(curObj, 'iPlayerName');
+					} else {
+						iPlayer = _.get(curObj, 'iPlayerUnitType', '""');
+					}
+					var tPlayer;
+					if (_.get(curObj, 'tPlayerName')){
+						iPlayer = _.get(curObj, 'tPlayerName');
+					} else {
+						iPlayer = _.get(curObj, 'tPlayerUnitType', '""');
+					}
+
+
+					var curTxt = 'A: '+ iPlayer +' has hit ' + tPlayer + ' with ' + _.get(curObj, 'weaponName') + ' - +'+_.get(curObj, 'score');
+					// var curCMD = 'trigger.action.outTextForCoalition('+_.get(curObj, 'iPlayerSide')+', "'+curTxt+'", 5)';
+					var curCMD = 'trigger.action.outText("'+curTxt+'", 5)';
+					var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
+					var actionObj = {actionObj: sendClient, queName: 'clientArray'};
+					dbMapServiceController.cmdQueActions('save', serverName, actionObj);
 				})
 				.catch(function (err) {
 					console.log('Eevent: ', curObj);
@@ -975,6 +997,28 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			_.set(curObj, 'place', _.get(queObj, 'data.arg5'));
 			_.set(curObj, 'subPlace', _.get(queObj, 'data.arg6'));
 			console.log('event: ', curObj);
+
+			// obj cmd for sending mesg to clients
+			var curName;
+			if (_.get(curObj, 'iPlayerName')){
+				curName = _.get(curObj, 'iPlayerName');
+			} else {
+				curName = _.get(curObj, 'iPlayerUnitType', '""');
+			}
+
+			var place;
+			if (_.set(curObj, 'subPlace')){
+				place = _.set(curObj, 'subPlace');
+			} else {
+				place = _.set(curObj, 'place');
+			}
+
+			var curTxt = 'C: '+ curName +' has taken off from ' + place;
+			var curCMD = 'trigger.action.outTextForCoalition('+_.get(curObj, 'iPlayerSide')+', "'+curTxt+'", 5)';
+			var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
+			var actionObj = {actionObj: sendClient, queName: 'clientArray'};
+			dbMapServiceController.cmdQueActions('save', serverName, actionObj);
+
 
 			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 		}
@@ -1015,9 +1059,10 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			}
 
 			var curTxt = 'C: '+ curName +' has landed at ' + place;
-			var curCMD = 'trigger.action.outTextForCoalition('+_.get(curObj, 'iPlayerSide')+', '+curTxt+', 5)';
+			var curCMD = 'trigger.action.outTextForCoalition('+_.get(curObj, 'iPlayerSide')+', "'+curTxt+'", 5)';
 			var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
-			_.get(curServers, [server.name, 'serverObject', 'ClientRequestArray']).push(sendClient);
+			var actionObj = {actionObj: sendClient, queName: 'clientArray'};
+			dbMapServiceController.cmdQueActions('save', serverName, actionObj);
 
 			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 		}
@@ -1039,6 +1084,21 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				}
 			}
 			console.log('event: ', curObj);
+
+			var curName;
+			if (_.get(curObj, 'iPlayerName')){
+				curName = _.get(curObj, 'iPlayerName');
+			} else {
+				curName = _.get(curObj, 'iPlayerUnitType', '""');
+			}
+
+			var curTxt = 'A: '+ curName +' has crashed';
+			// var curCMD = 'trigger.action.outTextForCoalition('+_.get(curObj, 'iPlayerSide')+', "'+curTxt+'", 5)';
+			var curCMD = 'trigger.action.outText("'+curTxt+'", 5)';
+			var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
+			var actionObj = {actionObj: sendClient, queName: 'clientArray'};
+			dbMapServiceController.cmdQueActions('save', serverName, actionObj);
+
 			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_EJECTION') {
@@ -1093,6 +1153,20 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				}
 			}
 			console.log('event: ', curObj);
+
+			var curName;
+			if (_.get(curObj, 'iPlayerName')){
+				curName = _.get(curObj, 'iPlayerName');
+			} else {
+				curName = _.get(curObj, 'iPlayerUnitType', '""');
+			}
+
+			var curTxt = 'C: '+ curName +' began refueling';
+			var curCMD = 'trigger.action.outTextForCoalition('+_.get(curObj, 'iPlayerSide')+', "'+curTxt+'", 5)';
+			var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
+			var actionObj = {actionObj: sendClient, queName: 'clientArray'};
+			dbMapServiceController.cmdQueActions('save', serverName, actionObj);
+
 			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_DEAD') {
@@ -1113,6 +1187,20 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				}
 			}
 			console.log('event: ', curObj);
+
+			var curName;
+			if (_.get(curObj, 'iPlayerName')){
+				curName = _.get(curObj, 'iPlayerName');
+			} else {
+				curName = _.get(curObj, 'iPlayerUnitType', '""');
+			}
+
+			var curTxt = 'A: '+ curName +' is dead';
+			var curCMD = 'trigger.action.outText("'+curTxt+'", 5)';
+			var sendClient = {action: 'CMD', cmd: curCMD, reqID: 0};  // cmd:'trigger.action.outText("IT WORKS MOFO!", 2)'
+			var actionObj = {actionObj: sendClient, queName: 'clientArray'};
+			dbMapServiceController.cmdQueActions('save', serverName, actionObj);
+
 			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_PILOT_DEAD') {
@@ -1135,6 +1223,20 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				}
 			}
 			console.log('event: ', curObj);
+
+			var curName;
+			if (_.get(curObj, 'iPlayerName')){
+				curName = _.get(curObj, 'iPlayerName');
+			} else {
+				curName = _.get(curObj, 'iPlayerUnitType', '""');
+			}
+
+			var curTxt = 'A: '+ curName +' pilot is dead';
+			var curCMD = 'trigger.action.outText("'+curTxt+'", 5)';
+			var sendClient = {action: 'CMD', cmd: curCMD, reqID: 0};  // cmd:'trigger.action.outText("IT WORKS MOFO!", 2)'
+			var actionObj = {actionObj: sendClient, queName: 'clientArray'};
+			dbMapServiceController.cmdQueActions('save', serverName, actionObj);
+
 			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_BASE_CAPTURED') {
@@ -1178,6 +1280,20 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				}
 			}
 			console.log('event: ', curObj);
+
+			var curName;
+			if (_.get(curObj, 'iPlayerName')){
+				curName = _.get(curObj, 'iPlayerName');
+			} else {
+				curName = _.get(curObj, 'iPlayerUnitType', '""');
+			}
+
+			var curTxt = 'C: '+ curName +' ended refueling';
+			var curCMD = 'trigger.action.outTextForCoalition('+_.get(curObj, 'iPlayerSide')+', "'+curTxt+'", 5)';
+			var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
+			var actionObj = {actionObj: sendClient, queName: 'clientArray'};
+			dbMapServiceController.cmdQueActions('save', serverName, actionObj);
+
 			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_BIRTH') {
@@ -1198,6 +1314,20 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				}
 			}
 			console.log('event: ', curObj);
+
+			var curName;
+			if (_.get(curObj, 'iPlayerName')){
+				curName = _.get(curObj, 'iPlayerName');
+			} else {
+				curName = _.get(curObj, 'iPlayerUnitType', '""');
+			}
+
+			var curTxt = 'C: '+ curName +' has spawned';
+			var curCMD = 'trigger.action.outTextForCoalition('+_.get(curObj, 'iPlayerSide')+', "'+curTxt+'", 5)';
+			var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
+			var actionObj = {actionObj: sendClient, queName: 'clientArray'};
+			dbMapServiceController.cmdQueActions('save', serverName, actionObj);
+
 			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_HUMAN_FAILURE') {
@@ -1218,6 +1348,20 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				}
 			}
 			console.log('event: ', curObj);
+
+			var curName;
+			if (_.get(curObj, 'iPlayerName')){
+				curName = _.get(curObj, 'iPlayerName');
+			} else {
+				curName = _.get(curObj, 'iPlayerUnitType', '""');
+			}
+
+			var curTxt = 'C: '+ curName +' is having trouble with his aircraft';
+			var curCMD = 'trigger.action.outTextForCoalition('+_.get(curObj, 'iPlayerSide')+', "'+curTxt+'", 5)';
+			var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
+			var actionObj = {actionObj: sendClient, queName: 'clientArray'};
+			dbMapServiceController.cmdQueActions('save', serverName, actionObj);
+
 			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_ENGINE_STARTUP') {
@@ -1238,6 +1382,20 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				}
 			}
 			console.log('event: ', curObj);
+
+			var curName;
+			if (_.get(curObj, 'iPlayerName')){
+				curName = _.get(curObj, 'iPlayerName');
+			} else {
+				curName = _.get(curObj, 'iPlayerUnitType', '""');
+			}
+
+			var curTxt = 'C: '+ curName +' has started his engine';
+			var curCMD = 'trigger.action.outTextForCoalition('+_.get(curObj, 'iPlayerSide')+', "'+curTxt+'", 5)';
+			var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
+			var actionObj = {actionObj: sendClient, queName: 'clientArray'};
+			dbMapServiceController.cmdQueActions('save', serverName, actionObj);
+
 			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_ENGINE_SHUTDOWN') {
@@ -1258,6 +1416,20 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				}
 			}
 			console.log('event: ', curObj);
+
+			var curName;
+			if (_.get(curObj, 'iPlayerName')){
+				curName = _.get(curObj, 'iPlayerName');
+			} else {
+				curName = _.get(curObj, 'iPlayerUnitType', '""');
+			}
+
+			var curTxt = 'C: '+ curName +' has shutdown his engine';
+			var curCMD = 'trigger.action.outTextForCoalition('+_.get(curObj, 'iPlayerSide')+', "'+curTxt+'", 5)';
+			var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
+			var actionObj = {actionObj: sendClient, queName: 'clientArray'};
+			dbMapServiceController.cmdQueActions('save', serverName, actionObj);
+
 			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_PLAYER_ENTER_UNIT') {
@@ -1278,6 +1450,20 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				}
 			}
 			console.log('event: ', curObj);
+
+			var curName;
+			if (_.get(curObj, 'iPlayerName')){
+				curName = _.get(curObj, 'iPlayerName');
+			} else {
+				curName = _.get(curObj, 'iPlayerUnitType', '""');
+			}
+
+			var curTxt = 'C: '+ curName +' has entered a vehicle';
+			var curCMD = 'trigger.action.outTextForCoalition('+_.get(curObj, 'iPlayerSide')+', "'+curTxt+'", 5)';
+			var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
+			var actionObj = {actionObj: sendClient, queName: 'clientArray'};
+			dbMapServiceController.cmdQueActions('save', serverName, actionObj);
+
 			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_PLAYER_LEAVE_UNIT') {
@@ -1298,6 +1484,20 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				}
 			}
 			console.log('event: ', curObj);
+
+			var curName;
+			if (_.get(curObj, 'iPlayerName')){
+				curName = _.get(curObj, 'iPlayerName');
+			} else {
+				curName = _.get(curObj, 'iPlayerUnitType', '""');
+			}
+
+			var curTxt = 'C: '+ curName +' has left a vehicle';
+			var curCMD = 'trigger.action.outTextForCoalition('+_.get(curObj, 'iPlayerSide')+', "'+curTxt+'", 5)';
+			var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
+			var actionObj = {actionObj: sendClient, queName: 'clientArray'};
+			dbMapServiceController.cmdQueActions('save', serverName, actionObj);
+
 			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_PLAYER_COMMENT') {
