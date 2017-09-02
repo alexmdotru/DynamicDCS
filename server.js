@@ -424,6 +424,7 @@ io.on('connection', function (socket) {
 
 		socket.on('clientUpd', function (data) {
 			if (data.action === 'unitINIT') {
+				console.log('socket on clientUpdate unitINIT');
 				if (curServers[data.name]) {
 					sendInit(data.name, socket.id, data.authId);
 				}
