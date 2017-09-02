@@ -5,7 +5,6 @@
 		var gSrv = this;
 
 		_.set(gSrv, 'init', function (theaterObj) {
-			console.log('tobj: ', theaterObj);
 
 			_.set(gSrv, 'gmapObj.markers', []);
 			_.forEach(gSrv.baseOverlay, function (base) {

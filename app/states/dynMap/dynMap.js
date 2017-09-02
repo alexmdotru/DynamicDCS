@@ -7,7 +7,6 @@
 	getTheaters.$inject=['theaterService'];
 
 	function dynMapController($scope, $state, $stateParams, userAccountService, gmapService, DCSUserAccountsAPI, srvPlayerAPI, mySocket, srvService, theaters) {
-		console.log('SP: ', $stateParams);
 		var dmCtrl = this;
 		var pSide;
 		var curTheater = _.get(_.find(_.get(srvService, 'servers'), {name: _.get($stateParams, 'name')}), 'theater');
