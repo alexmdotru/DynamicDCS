@@ -7,6 +7,7 @@
 	getTheaters.$inject=['theaterService'];
 
 	function dynMapController($scope, $state, $stateParams, userAccountService, gmapService, DCSUserAccountsAPI, srvPlayerAPI, mySocket, theaters) {
+		console.log('SP: ', $stateParams);
 		var dmCtrl = this;
 		var pSide;
 		console.log('ter: ', _.find(theaters, {name: 'Nevada'}));
@@ -165,6 +166,7 @@
 				controller: 'dynMapController',
 				controllerAs: 'dynC',
 				templateUrl: '/apps/dynamic-dcs/states/dynMap/dynMap.tpl.html',
+				url: '/DynamicMap?name',
 				resolve: {
 					theaters: getTheaters
 				}
