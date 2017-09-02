@@ -28,6 +28,7 @@ var io = require('socket.io').listen(server);
 const dbSystemServiceController = require('./controllers/dbSystemService');
 const dbMapServiceController = require('./controllers/dbMapService');
 const DCSSocket = require('./controllers/DCSSocket');
+const DCSLuaCommands = require('./controllers/DCSLuaCommands');
 
 var admin = false;
 
@@ -975,7 +976,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						tPlayer = _.get(curObj, 'tPlayerUnitType', '""');
 					}
 
-					
+
 
 					var curTxt = 'A: '+ getSide(_.get(curObj, 'iPlayerSide'))+' '+ iPlayer +' has hit '+getSide(_.get(curObj, 'tPlayerSide'))+' ' + tPlayer + ' with ' + _.get(curObj, 'weaponName') + ' - +'+_.get(curObj, 'score');
 					// var curCMD = 'trigger.action.outTextForCoalition('+_.get(curObj, 'iPlayerSide')+', "'+curTxt+'", 5)';
@@ -1637,8 +1638,7 @@ setInterval(function () {
 							q2: [],
 							qadmin: []
 						});
-						curServers[server.name].DCSSocket = new DCSSocket(server.name, server.ip, server.dcsClientPort, server.dcsGameGuiPort, syncDCSData, io, initClear);
-						//console.log('creating object: ', server.name, curServers[server.name]);
+						curServers[server.name].DCSSocket = new DCSSocket.createSocket(server.name, server.ip, server.dcsClientPort, server.dcsGameGuiPort, syncDCSData, io, initClear);
 					}
 				}
 			});

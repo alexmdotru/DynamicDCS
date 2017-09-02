@@ -5,11 +5,12 @@
 		var resourceUrl = '/api/theaters';
 		return $resource(
 			resourceUrl,
-			{name: '@name'},
+			{},
 			{
-				get: {
+				query: {
 					method: 'GET',
-					url: resourceUrl + '/:name'
+					url: resourceUrl,
+					isArray:true
 				}
 			}
 		);

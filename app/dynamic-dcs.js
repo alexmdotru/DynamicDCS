@@ -35,22 +35,7 @@
 				templateUrl: '/apps/dynamic-dcs/common/modals/admin/adminModal.tpl.html',
 				controller: 'adminModalController',
 				controllerAs: 'adminCtrl',
-				size: size,
-				resolve: {
-					DDCSTheaters: [
-						'dynamic-dcs.api.theater', function (api) {
-							return api.query()
-								.$promise
-								.then(function (response) {
-									return response;
-								})
-								.catch(function () {
-									return [];
-								})
-							;
-						}
-					]
-				}
+				size: size
 			});
 		});
 
@@ -118,11 +103,11 @@
 	}
 	adminDeleteModalController.$inject = ['$uibModalInstance','srvService', 'serverid'];
 
-	function adminModalController($scope, $uibModal, $uibModalInstance, srvService, DDCSTheaters) {
+	function adminModalController($scope, $uibModal, $uibModalInstance, srvService, theaterService) {
 
 		var adminCtrl = this;
 		_.set(adminCtrl, 'srvService', srvService);
-		_.set(adminCtrl, 'DDCSTheaters', DDCSTheaters);
+		_.set(adminCtrl, 'DDCSTheaters', _.get(theaterService, 'theaters'));
 
 		adminCtrl.save = function (server) {
 			var curPayload = _.cloneDeep(server);
@@ -161,14 +146,14 @@
 			});
 		});
 	}
-	adminModalController.$inject = ['$scope', '$uibModal', '$uibModalInstance', 'srvService', 'DDCSTheaters'];
+	adminModalController.$inject = ['$scope', '$uibModal', '$uibModalInstance', 'srvService', 'theaterService'];
 
 	angular
 		.module('dynamic-dcs', [
 			'dynamic-dcs.templates',
 			'dynamic-dcs.chat-box',
 			'dynamic-dcs.api.server',
-			'dynamic-dcs.api.theater',
+			'dynamic-dcs.theaterService',
 			'dynamic-dcs.alertService',
 			'dynamic-dcs.srvService',
 			'dynamic-dcs.userAccountService',

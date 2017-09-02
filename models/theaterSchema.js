@@ -10,6 +10,22 @@ const TheaterSchema = new Schema({
 		name: {
 			type: String,
 			required: true
+		},
+		lat: {
+			type: String,
+			required: true
+		},
+		lon: {
+			type: String,
+			required: true
+		},
+		zoom: {
+			type: String,
+			required: true
+		},
+		removeSideZone: {
+			type: String,
+			required: true
 		}
 	},
 	{

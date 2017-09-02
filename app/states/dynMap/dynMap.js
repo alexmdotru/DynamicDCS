@@ -1,9 +1,15 @@
 (function (angular) {
 	'use strict';
 
-	function dynMapController($scope, $state, $stateParams, userAccountService, gmapService, DCSUserAccountsAPI, srvPlayerAPI, mySocket) {
+	function getTheaters (theaterService) {
+		return theaterService.getTheaters();
+	}
+	getTheaters.$inject=['theaterService'];
+
+	function dynMapController($scope, $state, $stateParams, userAccountService, gmapService, DCSUserAccountsAPI, srvPlayerAPI, mySocket, theaters) {
 		var dmCtrl = this;
 		var pSide;
+		console.log('ter: ', _.find(theaters, {name: 'Nevada'}));
 
 		_.set(dmCtrl, 'resetMap', function () {
 			//init vars on connect
@@ -151,7 +157,7 @@
 		});
 	}
 
-	dynMapController.$inject = ['$scope', '$state', '$stateParams', 'userAccountService', 'gmapService', 'dynamic-dcs.api.userAccounts', 'dynamic-dcs.api.srvPlayer', 'mySocket'];
+	dynMapController.$inject = ['$scope', '$state', '$stateParams', 'userAccountService', 'gmapService', 'dynamic-dcs.api.userAccounts', 'dynamic-dcs.api.srvPlayer', 'mySocket', 'theaters'];
 
 	function configFunction($stateProvider) {
 		$stateProvider
@@ -159,7 +165,9 @@
 				controller: 'dynMapController',
 				controllerAs: 'dynC',
 				templateUrl: '/apps/dynamic-dcs/states/dynMap/dynMap.tpl.html',
-				url: '/DynamicMap?name'
+				resolve: {
+					theaters: getTheaters
+				}
 			})
 		;
 	}

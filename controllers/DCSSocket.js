@@ -3,7 +3,7 @@ const net = require('net'),
 
 const dbMapServiceController = require('./dbMapService'); // reqClientArray, regGameGuiArray
 
-function DCSSocket(serverName, serverAddress, clientPort, gameGuiPort, callback, io, initClear) {
+exports.createSocket = function (serverName, serverAddress, clientPort, gameGuiPort, callback, io, initClear) {
 	var dsock = this;
 	dsock.serverName = serverName;
 	dsock.serverAddress = serverAddress;
@@ -76,7 +76,7 @@ function DCSSocket(serverName, serverAddress, clientPort, gameGuiPort, callback,
 			dsock.clientConnOpen = true;
 			console.log('Client Error: ', err);
 		});
-	},
+	};
 	dsock.connectServer = function () {
 		dsock.gameGUI = net.createConnection({
 			host: dsock.serverAddress,
@@ -128,6 +128,4 @@ function DCSSocket(serverName, serverAddress, clientPort, gameGuiPort, callback,
 			console.log('GameGUI Error: ', err);
 		});
 	};
-}
-
-module.exports = DCSSocket;
+};

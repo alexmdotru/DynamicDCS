@@ -209,7 +209,7 @@ exports.theaterActions = function (action){
 		return new Promise(function(resolve, reject) {
 			Theater.find(function (err, servers) {
 				if (err) { reject(err) }
-				resolve(servers);
+				resolve({theaters: servers});
 			});
 		});
 	}
