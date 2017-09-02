@@ -693,6 +693,18 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		_.set(queObj, 'data.sessionName', sessionName);
 		//console.log('players: ', _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg1}));
 
+		function getSide (side) {
+			if(side === 0){
+				return 'Neutral';
+			}
+			if(side === 1){
+				return 'Red';
+			}
+			if(side === 2){
+				return 'Blue';
+			}
+		}
+
 		// server side events
 		if (_.get(queObj, 'action') === 'friendly_fire') {
 			// "friendly_fire", playerID, weaponName, victimPlayerID
@@ -958,13 +970,14 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					}
 					var tPlayer;
 					if (_.get(curObj, 'tPlayerName')){
-						iPlayer = _.get(curObj, 'tPlayerName');
+						tPlayer = _.get(curObj, 'tPlayerName');
 					} else {
-						iPlayer = _.get(curObj, 'tPlayerUnitType', '""');
+						tPlayer = _.get(curObj, 'tPlayerUnitType', '""');
 					}
 
+					
 
-					var curTxt = 'A: '+ iPlayer +' has hit ' + tPlayer + ' with ' + _.get(curObj, 'weaponName') + ' - +'+_.get(curObj, 'score');
+					var curTxt = 'A: '+ getSide(_.get(curObj, 'iPlayerSide'))+' '+ iPlayer +' has hit '+getSide(_.get(curObj, 'tPlayerSide'))+' ' + tPlayer + ' with ' + _.get(curObj, 'weaponName') + ' - +'+_.get(curObj, 'score');
 					// var curCMD = 'trigger.action.outTextForCoalition('+_.get(curObj, 'iPlayerSide')+', "'+curTxt+'", 5)';
 					var curCMD = 'trigger.action.outText("'+curTxt+'", 5)';
 					var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
@@ -1007,11 +1020,13 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			}
 
 			var place;
-			if (_.set(curObj, 'subPlace')){
-				place = _.set(curObj, 'subPlace');
+			if (_.get(curObj, 'subPlace')){
+				place = _.get(curObj, 'subPlace');
 			} else {
-				place = _.set(curObj, 'place');
+				place = _.get(curObj, 'place');
 			}
+
+			console.log('place: ', place);
 
 			var curTxt = 'C: '+ curName +' has taken off from ' + place;
 			var curCMD = 'trigger.action.outTextForCoalition('+_.get(curObj, 'iPlayerSide')+', "'+curTxt+'", 5)';
@@ -1052,11 +1067,12 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			}
 
 			var place;
-			if (_.set(curObj, 'subPlace')){
-				place = _.set(curObj, 'subPlace');
+			if (_.get(curObj, 'subPlace')){
+				place = _.get(curObj, 'subPlace');
 			} else {
-				place = _.set(curObj, 'place');
+				place = _.get(curObj, 'place');
 			}
+
 
 			var curTxt = 'C: '+ curName +' has landed at ' + place;
 			var curCMD = 'trigger.action.outTextForCoalition('+_.get(curObj, 'iPlayerSide')+', "'+curTxt+'", 5)';
@@ -1092,7 +1108,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				curName = _.get(curObj, 'iPlayerUnitType', '""');
 			}
 
-			var curTxt = 'A: '+ curName +' has crashed';
+
+			var curTxt = 'A: '+ getSide(_.get(curObj, 'iPlayerSide'))+' '+ curName +' has crashed';
 			// var curCMD = 'trigger.action.outTextForCoalition('+_.get(curObj, 'iPlayerSide')+', "'+curTxt+'", 5)';
 			var curCMD = 'trigger.action.outText("'+curTxt+'", 5)';
 			var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
@@ -1126,7 +1143,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				curName = _.get(curObj, 'iPlayerUnitType', '""');
 			}
 
-			var curTxt = 'A: '+ curName +' ejected';
+			var curTxt = 'A: '+getSide( _.get(curObj, 'iPlayerSide'))+' '+ curName +' ejected';
 			var curCMD = 'trigger.action.outText("'+curTxt+'", 5)';
 			var sendClient = {action: 'CMD', cmd: curCMD, reqID: 0};  // cmd:'trigger.action.outText("IT WORKS MOFO!", 2)'
 			var actionObj = {actionObj: sendClient, queName: 'clientArray'};
@@ -1195,7 +1212,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				curName = _.get(curObj, 'iPlayerUnitType', '""');
 			}
 
-			var curTxt = 'A: '+ curName +' is dead';
+			var curTxt = 'A: '+getSide(_.get(curObj, 'iPlayerSide'))+' '+ curName +' is dead';
 			var curCMD = 'trigger.action.outText("'+curTxt+'", 5)';
 			var sendClient = {action: 'CMD', cmd: curCMD, reqID: 0};  // cmd:'trigger.action.outText("IT WORKS MOFO!", 2)'
 			var actionObj = {actionObj: sendClient, queName: 'clientArray'};
@@ -1231,7 +1248,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				curName = _.get(curObj, 'iPlayerUnitType', '""');
 			}
 
-			var curTxt = 'A: '+ curName +' pilot is dead';
+			var curTxt = 'A: '+getSide(_.get(curObj, 'iPlayerSide'))+' '+ curName +' pilot is dead';
 			var curCMD = 'trigger.action.outText("'+curTxt+'", 5)';
 			var sendClient = {action: 'CMD', cmd: curCMD, reqID: 0};  // cmd:'trigger.action.outText("IT WORKS MOFO!", 2)'
 			var actionObj = {actionObj: sendClient, queName: 'clientArray'};
