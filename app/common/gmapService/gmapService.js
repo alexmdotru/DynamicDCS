@@ -4,7 +4,8 @@
 	function controlService ($rootScope, $window, $http, userAccountService, uiGmapIsReady, uiGmapGoogleMapApi) {
 		var gSrv = this;
 
-		_.set(gSrv, 'init', function () {
+		_.set(gSrv, 'init', function (theaterObj) {
+			console.log('tobj: ', theaterObj);
 
 			_.set(gSrv, 'gmapObj.markers', []);
 			_.forEach(gSrv.baseOverlay, function (base) {
@@ -30,7 +31,7 @@
 
 					gSrv.googleMaps.event.addListener(gSrv.currentMap, 'zoom_changed', function () {
 						var zoomLevel = gSrv.currentMap.getZoom();
-						if( zoomLevel > 11){
+						if( zoomLevel > _.toNumber(_.get(theaterObj, 'removeSideZone'))){
 							_.forOwn(gSrv.circleOverlay, function (value, key){
 								gSrv.circleOverlay[key].setVisible(false);
 							});
@@ -153,10 +154,10 @@
 			console.log('reinit gmapObj');
 			_.set(gSrv, 'gmapObj', {
 				center: {
-					latitude: 43.4275113,
-					longitude: 41.2920366
+					latitude: _.toNumber(_.get(theaterObj, 'lat')),
+					longitude: _.toNumber(_.get(theaterObj, 'lon'))
 				},
-				zoom: 8,
+				zoom: _.toNumber(_.get(theaterObj, 'zoom')),
 				window: {
 					model: {}
 				},

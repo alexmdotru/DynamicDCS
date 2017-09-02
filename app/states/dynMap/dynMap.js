@@ -6,15 +6,16 @@
 	}
 	getTheaters.$inject=['theaterService'];
 
-	function dynMapController($scope, $state, $stateParams, userAccountService, gmapService, DCSUserAccountsAPI, srvPlayerAPI, mySocket, theaters) {
+	function dynMapController($scope, $state, $stateParams, userAccountService, gmapService, DCSUserAccountsAPI, srvPlayerAPI, mySocket, srvService, theaters) {
 		console.log('SP: ', $stateParams);
 		var dmCtrl = this;
 		var pSide;
-		console.log('ter: ', _.find(theaters, {name: 'Nevada'}));
+		var curTheater = _.get(_.find(_.get(srvService, 'servers'), {name: _.get($stateParams, 'name')}), 'theater');
+		var theaterObj = _.find(theaters, {name: curTheater});
 
 		_.set(dmCtrl, 'resetMap', function () {
 			//init vars on connect
-			gmapService.init();
+			gmapService.init(theaterObj);
 			_.set(dmCtrl, 'mObj', {
 				client: {},
 				units: [],
@@ -158,7 +159,7 @@
 		});
 	}
 
-	dynMapController.$inject = ['$scope', '$state', '$stateParams', 'userAccountService', 'gmapService', 'dynamic-dcs.api.userAccounts', 'dynamic-dcs.api.srvPlayer', 'mySocket', 'theaters'];
+	dynMapController.$inject = ['$scope', '$state', '$stateParams', 'userAccountService', 'gmapService', 'dynamic-dcs.api.userAccounts', 'dynamic-dcs.api.srvPlayer', 'mySocket', 'srvService', 'theaters'];
 
 	function configFunction($stateProvider) {
 		$stateProvider

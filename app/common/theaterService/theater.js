@@ -12,7 +12,12 @@
 					.then(function (theaterData) {
 						_.set(tCtrl, 'theaters', _.get(theaterData, 'theaters'));
 						_.set(tCtrl, 'loaded', true);
-					});
+					})
+					.catch(function(err){
+						alertService.addAlert('danger', 'Theaters could not be queryed.');
+						console.log(err);
+					})
+				;
 			}
 			return tPromise;
 		});
