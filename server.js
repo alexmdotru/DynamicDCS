@@ -358,7 +358,7 @@ function setRoomSide(socket, roomObj) {
 				//console.log(userAccounts);
 				var curAccount = _.find(userAccounts, {authId: roomObj.authId}); // might have to decrypt authtoken...
 				if (curAccount) {
-					//console.log('curacct: ', curAccount);
+					console.log('curacct: ', curAccount);
 					dbMapServiceController.srvPlayerActions('read', roomObj.server)
 						.then(function (srvPlayers) {
 							//console.log('srvPlayers: ',srvPlayers);
