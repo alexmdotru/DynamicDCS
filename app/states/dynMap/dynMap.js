@@ -69,97 +69,96 @@
 		//socket.io connectors
 		mySocket.on('srvUpd', function (data) {
 			// only listen to packets I need
-			if(_.get(data, 'name') !== _.get($stateParams, 'name')){
-				return false;
-			}
-			// console.log(data);
-			_.forEach(data.que, function (que) {
-				if (que.action === 'INIT' || que.action === 'C' ||
-					que.action === 'U' || que.action === 'D') {
-					if (que.action === 'C' || que.action === 'INIT') {
-						if (typeof _.find(_.get(dmCtrl, 'mObj.units'),
-								{'unitID': _.get(que, 'data.unitID')}) !== "undefined") {
-							_.find(_.get(dmCtrl, 'mObj.units'),
-								{'unitID': _.get(que, 'data.unitID')}).action = 'U';
-						}
-					}
-					if (que.action === 'U') {
-						if (!_.find(_.get(dmCtrl, 'mObj.units'), {'unitID': _.get(que, 'data.unitID')})) {
-							// console.log('nextResync: ', expireTime);
-							// data is out of sync, request full payload
-							if ( expireTime < curTime) {
-								mySocket.emit('clientUpd', {
-									name: $stateParams.name,
-									action: 'unitINIT',
-									authId: _.get(userAccountService, ['localAccount', 'authId'])
-								});
-								// console.log('RESYNCING, nexttResyncTime:', curTime + expireSecs);
-								_.set(dmCtrl, 'nextResyncTime', curTime + expireRetrySecs);
-							} else {
-								// console.log('unit resync sent waiting '+(expireTime - curTime)+ ' more seconds.');
+			if(_.get(data, 'name') === _.get($stateParams, 'name')){
+				console.log(data);
+				_.forEach(data.que, function (que) {
+					if (que.action === 'INIT' || que.action === 'C' ||
+						que.action === 'U' || que.action === 'D') {
+						if (que.action === 'C' || que.action === 'INIT') {
+							if (typeof _.find(_.get(dmCtrl, 'mObj.units'),
+									{'unitID': _.get(que, 'data.unitID')}) !== "undefined") {
+								_.find(_.get(dmCtrl, 'mObj.units'),
+									{'unitID': _.get(que, 'data.unitID')}).action = 'U';
 							}
+						}
+						if (que.action === 'U') {
+							if (!_.find(_.get(dmCtrl, 'mObj.units'), {'unitID': _.get(que, 'data.unitID')})) {
+								// console.log('nextResync: ', expireTime);
+								// data is out of sync, request full payload
+								if ( expireTime < curTime) {
+									mySocket.emit('clientUpd', {
+										name: $stateParams.name,
+										action: 'unitINIT',
+										authId: _.get(userAccountService, ['localAccount', 'authId'])
+									});
+									// console.log('RESYNCING, nexttResyncTime:', curTime + expireSecs);
+									_.set(dmCtrl, 'nextResyncTime', curTime + expireRetrySecs);
+								} else {
+									// console.log('unit resync sent waiting '+(expireTime - curTime)+ ' more seconds.');
+								}
 
-							_.set(dmCtrl, 'lastResyncTime', new Date().getTime());
-							return false; // stops the rest of the updates since where doing a resync
+								_.set(dmCtrl, 'lastResyncTime', new Date().getTime());
+								return false; // stops the rest of the updates since where doing a resync
+							} else {
+								_.find(_.get(dmCtrl, 'mObj.units'),
+									{'unitID': _.get(que, 'data.unitID')}).lat = _.get(que, 'data.lat');
+								_.find(_.get(dmCtrl, 'mObj.units'),
+									{'unitID': _.get(que, 'data.unitID')}).lon = _.get(que, 'data.lon');
+								gmapService.processUnitStream(que);
+							}
 						} else {
-							_.find(_.get(dmCtrl, 'mObj.units'),
-								{'unitID': _.get(que, 'data.unitID')}).lat = _.get(que, 'data.lat');
-							_.find(_.get(dmCtrl, 'mObj.units'),
-								{'unitID': _.get(que, 'data.unitID')}).lon = _.get(que, 'data.lon');
+							//send map updates
+							dmCtrl.mObj.units.push(_.get(que, 'data'));
 							gmapService.processUnitStream(que);
 						}
-					} else {
-						//send map updates
-						dmCtrl.mObj.units.push(_.get(que, 'data'));
-						gmapService.processUnitStream(que);
-					}
-				} else if (que.action === 'reset') { //spectator
-					_.set(dmCtrl, 'mObj.units', []);
-					gmapService.resetMarkers();
-				} else if (que.action === 'players') { //player
-					var curPObj = [];
-					_.forEach(que.data, function (player) {
-						if (typeof player !== "undefined") {
-							curPObj.push(player);
-						}
-					});
-					_.set(dmCtrl, 'mObj.players', curPObj);
-				} else if (que.action === 'MESG') { //send mesg
-					_.set(que, 'data.name',
-						_.find(_.get(dmCtrl, 'mObj.players'), {id: que.data.playerID}).name);
-					_.set(que, 'data.side',
-						_.find(_.get(dmCtrl, 'mObj.players'), {id: que.data.playerID}).side);
-					console.log('MESG: ', que.action, que.data);
-					_.get(dmCtrl, 'mObj.chatMsgs').push(que.data);
-				} else if (que.action === 'baseInfo') { //send command responses
-					_.forEach(que.data, function (value, key) {
-						if (typeof gmapService.circleOverlay[key] !== "undefined") {
-
-							if (_.get(dmCtrl, ['mObj', 'bases', key]) !== value) {
-								console.log('base captured, updating overlay');
-								gmapService.updateOverlay(key, value);
+					} else if (que.action === 'reset') { //spectator
+						_.set(dmCtrl, 'mObj.units', []);
+						gmapService.resetMarkers();
+					} else if (que.action === 'players') { //player
+						var curPObj = [];
+						_.forEach(que.data, function (player) {
+							if (typeof player !== "undefined") {
+								curPObj.push(player);
 							}
-						} else {
-							//console.log('add baseInfo: ',que.data, dmCtrl.mObj.bases);
-							gmapService.addOverlay(key, value);
-						}
-					});
-					_.set(dmCtrl, 'mObj.bases', que.data);
-				} else if (que.action === 'CMD') { //send command responses
-					//console.log('CMD: ', que.action, que.data);
-					_.get(dmCtrl, 'mObj.cmds').push(que.data);
-				} else if (que.action === 'socketInfo') { //send client info
-					//console.log('CLIENT: ', que.action, que.data);
-					_.set(dmCtrl, 'mObj.client', que.data);
-				} else {
-					//console.log('EVENT', que.action, que.data);
-					_.get(dmCtrl, 'mObj.events').push(que.data);
-					_.get(dmCtrl, 'mObj.eventMsgs').push({message: JSON.stringify(que.data)});
-				}
-				_.set(dmCtrl, 'mObj.client.player',
-					_.find(_.get(dmCtrl, 'mObj.players'),
-						{socketID: _.get(dmCtrl, 'mObj.client.id', '')}));
-			});
+						});
+						_.set(dmCtrl, 'mObj.players', curPObj);
+					} else if (que.action === 'MESG') { //send mesg
+						_.set(que, 'data.name',
+							_.find(_.get(dmCtrl, 'mObj.players'), {id: que.data.playerID}).name);
+						_.set(que, 'data.side',
+							_.find(_.get(dmCtrl, 'mObj.players'), {id: que.data.playerID}).side);
+						console.log('MESG: ', que.action, que.data);
+						_.get(dmCtrl, 'mObj.chatMsgs').push(que.data);
+					} else if (que.action === 'baseInfo') { //send command responses
+						_.forEach(que.data, function (value, key) {
+							if (typeof gmapService.circleOverlay[key] !== "undefined") {
+
+								if (_.get(dmCtrl, ['mObj', 'bases', key]) !== value) {
+									console.log('base captured, updating overlay');
+									gmapService.updateOverlay(key, value);
+								}
+							} else {
+								//console.log('add baseInfo: ',que.data, dmCtrl.mObj.bases);
+								gmapService.addOverlay(key, value);
+							}
+						});
+						_.set(dmCtrl, 'mObj.bases', que.data);
+					} else if (que.action === 'CMD') { //send command responses
+						//console.log('CMD: ', que.action, que.data);
+						_.get(dmCtrl, 'mObj.cmds').push(que.data);
+					} else if (que.action === 'socketInfo') { //send client info
+						//console.log('CLIENT: ', que.action, que.data);
+						_.set(dmCtrl, 'mObj.client', que.data);
+					} else {
+						//console.log('EVENT', que.action, que.data);
+						_.get(dmCtrl, 'mObj.events').push(que.data);
+						_.get(dmCtrl, 'mObj.eventMsgs').push({message: JSON.stringify(que.data)});
+					}
+					_.set(dmCtrl, 'mObj.client.player',
+						_.find(_.get(dmCtrl, 'mObj.players'),
+							{socketID: _.get(dmCtrl, 'mObj.client.id', '')}));
+				});
+			}
 		});
 		mySocket.on('error', function () {
 			//console.log(ev, data);
