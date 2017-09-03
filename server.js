@@ -653,7 +653,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 							data.ipaddr = '127.0.0.1';
 						}
 						//update user based table (based on ucid)
-						//console.log('playerstime: ', data);
 						//console.log('playerinc: ', data);
 						var curActUpdate = {
 							playerId: _.get(data, 'id', ''),
@@ -663,9 +662,12 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 							side: _.get(data, 'side', '')
 						};
 
+						console.log('line 656 player, wrongful player ucid update: ', data, curActUpdate);
+						/*
 						if (curActUpdate.ucid !== '') {
 							dbSystemServiceController.userAccountActions('update', curActUpdate);
 						}
+						*/
 					}
 				}
 			});
