@@ -92,19 +92,13 @@ exports.userAccountActions = function (action, obj){
 	}
 	if(action === 'updateSocket') {
 		console.log('UA update socket line42: ', obj);
-		//console.log('updatesocket: ', obj);
-			// authId: socket.handshake.query.authId,
-			// curSocket: socket.id,
-			// lastIp: curIP
 		return new Promise(function(resolve, reject) {
 			UserAccount.find({authId: obj.authId}, function (err, authIdUser) {
 				if (err) {
 					reject(err);
 				}
 				if (authIdUser.length !== 0) {
-					//console.log('ucid user', obj);
 					authIdUser = authIdUser[0];
-					_.set(authIdUser, 'gameName', _.get(authIdUser, 'gameName', _.get(obj, 'gameName', '')));
 					_.set(authIdUser, 'lastIp', _.get(obj, 'lastIp'));
 					_.set(authIdUser, 'curSocket', _.get(obj, 'curSocket'));
 					authIdUser.save(function (err) {
