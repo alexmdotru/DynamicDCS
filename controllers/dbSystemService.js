@@ -122,25 +122,26 @@ exports.userAccountActions = function (action, obj){
 		});
 	}
 	if(action === 'checkAccount') {
-		console.log('UA check account socket line131: ', obj);
+		// console.log('UA check account socket line131: ', _.get(obj, 'body'));
+		var curBody = _.get(obj, 'body');
 		return new Promise(function(resolve, reject) {
-			console.log('check account: ', obj.user.sub);
-			UserAccount.find({authId: obj.user.sub}, function (err, userAccount) {
+			// console.log('check account: ', curBody.sub);
+			UserAccount.find({authId: curBody.sub}, function (err, userAccount) {
 				if (err) {
 					reject(err);
 				}
 				if (userAccount.length === 0) {
 
 					const useraccount = new UserAccount({
-						authId: obj.user.sub,
+						authId: curBody.sub,
 						lastIp: curIP,
-						realName: _.get(obj, 'body.name'),
-						firstName: _.get(obj, 'body.given_name'),
-						lastName: _.get(obj, 'body.family_name'),
-						nickName: _.get(obj, 'body.nickname'),
-						picture: _.get(obj, 'body.picture'),
-						gender: _.get(obj, 'body.gender'),
-						locale: _.get(obj, 'body.locale')
+						realName: _.get(curBody, 'name'),
+						firstName: _.get(curBody, 'given_name'),
+						lastName: _.get(curBody, 'family_name'),
+						nickName: _.get(curBody, 'nickname'),
+						picture: _.get(curBody, 'picture'),
+						gender: _.get(curBody, 'gender'),
+						locale: _.get(curBody, 'locale')
 					});
 					useraccount.save(function (err, useraccount) {
 						if (err) { reject(err) }
