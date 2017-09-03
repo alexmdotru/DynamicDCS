@@ -336,7 +336,7 @@ function setSocketRoom(socket, room) {
 function setRoomSide(socket, roomObj) {
 	var srvPlayer;
 	var pSide;
-	console.log('setroom: ', roomObj, socket);
+	console.log('setroom: ', roomObj, socket.id);
 	var curIP = socket.conn.remoteAddress.replace("::ffff:", "");
 	if (curIP === ':10308') {
 		curIP = '127.0.0.1';
