@@ -336,7 +336,7 @@ function setSocketRoom(socket, room) {
 function setRoomSide(socket, roomObj) {
 	var srvPlayer;
 	var pSide;
-	//console.log('setroom: ', roomObj);
+	console.log('setroom: ', roomObj, socket);
 	var curIP = socket.conn.remoteAddress.replace("::ffff:", "");
 	if (curIP === ':10308') {
 		curIP = '127.0.0.1';
@@ -358,7 +358,7 @@ function setRoomSide(socket, roomObj) {
 								if(typeof srvPlayer.side !== 'undefined') {
 									pSide = srvPlayer.side;
 								} else {
-									console.log('srvPlayer doesnt have a side');
+									//console.log('srvPlayer doesnt have a side');
 								}
 							} else {
 								srvPlayer = _.find(srvPlayers, function (player) { //{ipaddr: curIP}
@@ -371,10 +371,10 @@ function setRoomSide(socket, roomObj) {
 								if(typeof srvPlayer.side !== 'undefined') {
 									pSide = srvPlayer.side;
 								} else {
-									console.log('srvPlayer doesnt have a side.2');
+									//console.log('srvPlayer doesnt have a side.2');
 								}
 							}
-							console.log('setroomPSide: ', pSide);
+							//console.log('setroomPSide: ', pSide);
 							if (curAccount.permLvl < 20) {
 								setSocketRoom(socket, roomObj.server + '_qadmin');
 							} else if (pSide === 1 || pSide === 2) {
@@ -383,7 +383,7 @@ function setRoomSide(socket, roomObj) {
 						})
 					;
 				} else {
-					console.log('no account detected, match with ip now');
+					console.log('no account detected, match with ip now', roomObj.server);
 					dbMapServiceController.srvPlayerActions('read', roomObj.server)
 						.then(function (srvPlayers) {
 							var curPlayer = _.find(srvPlayers, function (player) { //{ipaddr: curIP}
@@ -400,6 +400,9 @@ function setRoomSide(socket, roomObj) {
 								};
 							}
 						})
+						.catch(function (err) {
+							console.log('error no account detected, line404');
+						});
 					;
 				}
 			})
