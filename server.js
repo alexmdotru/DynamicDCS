@@ -662,7 +662,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 							side: _.get(data, 'side', '')
 						};
 
-						console.log('line 656 player, wrongful player ucid update: ', data, curActUpdate);
+						// console.log('line 656 player, wrongful player ucid update: ', data, curActUpdate);
 						/*
 						if (curActUpdate.ucid !== '') {
 							dbSystemServiceController.userAccountActions('update', curActUpdate);
