@@ -212,7 +212,7 @@ function initUnits(serverName, socketID, authId) {
 		.then(function (userAccounts) {
 			var curAccount;
 			//console.log('user1');
-			if (typeof authId !== 'undefined') {
+			if (authId) {
 				curAccount = _.find(userAccounts, {authId: authId});
 				//console.log('user2', curAccount);
 			}
@@ -223,9 +223,9 @@ function initUnits(serverName, socketID, authId) {
 					var pSide;
 					var curSrvPlayer;
 					var curActUpdate;
-					if (typeof curAccount !== 'undefined') {
+					if (curAccount) {
 						//console.log('cur account not undefined');
-						if ( typeof curAccount.ucid !== 'undefined' ) {
+						if (curAccount.ucid) {
 							curSrvPlayer = _.find(srvPlayers, {ucid: curAccount.ucid});
 						} else {
 							curSrvPlayer = _.find(srvPlayers, function (player) {
@@ -357,14 +357,14 @@ function setRoomSide(socket, roomObj) {
 			.then(function (userAccounts) {
 				//console.log(userAccounts);
 				var curAccount = _.find(userAccounts, {authId: roomObj.authId}); // might have to decrypt authtoken...
-				if (typeof curAccount !== 'undefined') {
+				if (curAccount) {
 					//console.log('curacct: ', curAccount);
 					dbMapServiceController.srvPlayerActions('read', roomObj.server)
 						.then(function (srvPlayers) {
 							//console.log('srvPlayers: ',srvPlayers);
-							if(typeof curAccount.ucid !== 'undefined') {
+							if(curAccount.ucid) {
 								srvPlayer = _.find(srvPlayers, {ucid: curAccount.ucid});
-								if(typeof srvPlayer.side !== 'undefined') {
+								if(srvPlayer.side) {
 									pSide = srvPlayer.side;
 								} else {
 									console.log('srvPlayer doesnt have a side line370');
@@ -377,10 +377,10 @@ function setRoomSide(socket, roomObj) {
 									}
 									return false;
 								});
-								if(typeof srvPlayer.side !== 'undefined') {
+								if(srvPlayer.side) {
 									pSide = srvPlayer.side;
 								} else {
-									//console.log('srvPlayer doesnt have a side.2');
+									console.log('srvPlayer doesnt have a side line 383');
 								}
 							}
 							//console.log('setroomPSide: ', pSide);
@@ -502,7 +502,7 @@ io.on('connection', function (socket) {
 
 _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 	//console.log('process que: ', serverName, update);
-	if (typeof update.unitCount !== 'undefined') {
+	if (update.unitCount) {
 		if (update.unitCount !== curServers[serverName].serverObject.units.length) {
 			console.log('out of sync for ' + serverName + ' units: '+ update.unitCount + ' verse ' + curServers[serverName].serverObject.units.length);
 			if (outOfSyncUnitCnt > config.outOfSyncUnitThreshold) {
@@ -529,7 +529,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		var curUnit = _.find(curServers[serverName].serverObject.units, {'unitID': _.get(queObj, 'data.unitID')});
 
 		if (_.get(queObj, 'action') === 'C') {
-			if (typeof curUnit !== "undefined") {
+			if (curUnit) {
 				curUnit.action = 'U';
 			} else {
 				curObj = {
@@ -557,7 +557,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			}
 		}
 		if (_.get(queObj, 'action') === 'U') {
-			if (typeof curUnit !== "undefined") {
+			if (curUnit) {
 				curUnit.lat = parseFloat(_.get(queObj, 'data.lat'));
 				curUnit.lon = parseFloat(_.get(queObj, 'data.lon'));
 				curUnit.alt = parseFloat(_.get(queObj, 'data.alt'));
@@ -608,15 +608,15 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			_.forEach(queObj.data, function (player) {
 				if (player !== null) {
 					var matchPlayer = _.find(curServers[serverName].serverObject.players, {ucid: player.ucid});
-					if(typeof matchPlayer !== 'undefined') {
+					if(matchPlayer) {
 						if ((matchPlayer.side !== player.side) && player.side !== 0) {
 							dbSystemServiceController.userAccountActions('read')
 								.then(function (resp) {
 									switchedPlayer = nonaccountUsers[player.ucid];
-									if(typeof switchedPlayer === 'undefined') {
+									if(switchedPlayer) {
 										switchedPlayer = _.find(resp, {ucid: player.ucid});
 									}
-									if (typeof switchedPlayer !== 'undefined' &&switchedPlayer.permLvl < 20) {
+									if (switchedPlayer &&switchedPlayer.permLvl < 20) {
 										setSocketRoom(io.sockets.connected[switchedPlayer.curSocket], serverName + '_padmin');
 									} else if (player.side === 1 || player.side === 2) {
 										setSocketRoom(io.sockets.connected[switchedPlayer.curSocket], serverName + '_q' + player.side);
@@ -1614,7 +1614,7 @@ setInterval(function () { //sending FULL SPEED AHEAD, 1 per milsec (watch for we
 			_.forEach(resp, function (server) {
 				if (server.enabled) {
 					_.forEach(socketQues, function (que) {
-						if (typeof curServers[server.name] !== 'undefined') {
+						if (curServers[server.name]) {
 							var sendAmt = 0;
 							if (curServers[server.name].updateQue[que].length < config.perSendMax) {
 								sendAmt = curServers[server.name].updateQue[que].length;
