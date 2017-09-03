@@ -109,13 +109,6 @@ exports.userAccountActions = function (action, obj){
 					});
 				} else {
 					console.log('User '+obj.authId+' does not exist in user database');
-					const useraccount = new UserAccount(obj);
-					console.log('useracct: ', obj, useraccount);
-					useraccount.save(function (err, useraccount) {
-						if (err) { reject(err) }
-						resolve(useraccount);
-					});
-
 					// reject('User '+obj.authId+' does not exist in user database');
 				}
 			});
