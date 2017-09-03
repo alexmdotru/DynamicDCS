@@ -11,9 +11,14 @@
 		var pSide;
 		var curTheater = _.get(_.find(_.get(srvService, 'servers'), {name: _.get($stateParams, 'name')}), 'theater');
 		var theaterObj = _.find(theaters, {name: curTheater});
+		var expireRetrySecs = 1000;
+		var expireInitSecs = 5000;
+		var curTime = new Date().getTime();
+		var expireTime = _.get(dmCtrl, 'nextResyncTime', 0);
 
 		_.set(dmCtrl, 'resetMap', function () {
 			//init vars on connect
+			_.set(dmCtrl, 'nextResyncTime', curTime + expireInitSecs);
 			gmapService.init(theaterObj);
 			_.set(dmCtrl, 'mObj', {
 				client: {},
@@ -63,6 +68,10 @@
 
 		//socket.io connectors
 		mySocket.on('srvUpd', function (data) {
+			// only listen to packets I need
+			if(_.get(data, 'name') !== _.get($stateParams, 'name')){
+				return false;
+			}
 			// console.log(data);
 			_.forEach(data.que, function (que) {
 				if (que.action === 'INIT' || que.action === 'C' ||
@@ -76,12 +85,21 @@
 					}
 					if (que.action === 'U') {
 						if (!_.find(_.get(dmCtrl, 'mObj.units'), {'unitID': _.get(que, 'data.unitID')})) {
+							// console.log('nextResync: ', expireTime);
 							// data is out of sync, request full payload
-							mySocket.emit('clientUpd', {
-								name: $stateParams.name,
-								action: 'unitINIT',
-								authId: _.get(userAccountService, ['localAccount', 'authId'])
-							});
+							if ( expireTime < curTime) {
+								mySocket.emit('clientUpd', {
+									name: $stateParams.name,
+									action: 'unitINIT',
+									authId: _.get(userAccountService, ['localAccount', 'authId'])
+								});
+								// console.log('RESYNCING, nexttResyncTime:', curTime + expireSecs);
+								_.set(dmCtrl, 'nextResyncTime', curTime + expireRetrySecs);
+							} else {
+								// console.log('unit resync sent waiting '+(expireTime - curTime)+ ' more seconds.');
+							}
+
+							_.set(dmCtrl, 'lastResyncTime', new Date().getTime());
 							return false; // stops the rest of the updates since where doing a resync
 						} else {
 							_.find(_.get(dmCtrl, 'mObj.units'),

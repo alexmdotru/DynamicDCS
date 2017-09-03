@@ -298,6 +298,7 @@ function initUnits(serverName, socketID, authId) {
 							initQue.que.shift();
 						}
 						//console.log('que: ',chkPayload);
+						_.set(chkPayload, 'name', serverName);
 						io.to(socketID).emit('srvUpd', chkPayload);
 						chkPayload = {que: []};
 					}
@@ -424,7 +425,7 @@ io.on('connection', function (socket) {
 
 		socket.on('clientUpd', function (data) {
 			if (data.action === 'unitINIT') {
-				console.log('DERPDERPsocket on clientUpdate unitINIT');
+				console.log('socket on clientUpdate unitINIT');
 				if (curServers[data.name]) {
 					sendInit(data.name, socket.id, data.authId);
 				}
@@ -454,6 +455,7 @@ io.on('connection', function (socket) {
 				});
 
 				socket.on('clientUpd', function (data) {
+					console.log('data: ', data);
 					if (data.action === 'unitINIT') {
 						if (curServers[data.name]) {
 							sendInit(data.name, socket.id, data.authId);
@@ -480,9 +482,9 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 	//console.log('process que: ', serverName, update);
 	if (typeof update.unitCount !== 'undefined') {
 		if (update.unitCount !== curServers[serverName].serverObject.units.length) {
-			console.log('out of sync for ' + outOfSyncUnitCnt + ' units: '+ update.unitCount + ' verse ' + curServers[serverName].serverObject.units.length);
-			if (outOfSyncUnitCnt > config.outOfSyncUnitThreshold) {
-				outOfSyncUnitCnt = 0;
+			console.log('out of sync for ' + _.get(curServers[serverName], 'outOfSyncUnitCnt') + ' units: '+ update.unitCount + ' verse ' + curServers[serverName].serverObject.units.length);
+			if (_.get(curServers[serverName], 'outOfSyncUnitCnt') > config.outOfSyncUnitThreshold) {
+				_.set(curServers[serverName], 'outOfSyncUnitCnt', 0);
 				console.log('reset server units');
 				initClear(serverName, 'client');
 				dbMapServiceController.cmdQueActions('save', serverName, {queName: 'clientArray', actionObj: {action: "INIT"}});
@@ -1598,6 +1600,7 @@ setInterval(function () { //sending FULL SPEED AHEAD, 1 per milsec (watch for we
 							var chkPayload = {que: []};
 							for (x = 0; x < sendAmt; x++) {
 								chkPayload.que.push(curServers[server.name].updateQue[que][0]);
+								_.set(chkPayload, 'name', server.name);
 								curServers[server.name].updateQue[que].shift();
 							}
 							if (chkPayload.que.length) {
