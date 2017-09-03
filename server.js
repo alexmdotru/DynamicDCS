@@ -389,6 +389,7 @@ function setRoomSide(socket, roomObj) {
 							var curPlayer = _.find(srvPlayers, function (player) { //{ipaddr: curIP}
 								//console.log('ipcomp: ', player.ipaddr, curIP );
 								if (_.includes(player.ipaddr, curIP)) {
+									console.log('player l392: ', player);
 									return true;
 								}
 								return false;
