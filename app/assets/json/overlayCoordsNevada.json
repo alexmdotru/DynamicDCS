@@ -1,0 +1,91 @@
+{
+  "EchoBay": {
+    "latc": 36.313207074458,
+    "lngc": -114.46770300664
+  },
+  "NorthLasVegas": {
+    "latc": 36.212499896457,
+    "lngc": -115.18566877821
+  },
+  "HendersonExecutiveAirport": {
+  "latc": 35.97322469365,
+  "lngc": -115.13136389911
+  },
+  "TonopahTestRangeAirfield": {
+    "latc": 37.797183759725,
+    "lngc": -116.78713394797
+  },
+  "BeattyAirport": {
+    "latc": 36.86417445114,
+    "lngc": -116.7833497375
+  },
+  "JeanAirport": {
+    "latc": 35.769002429086,
+    "lngc": -115.3313925798
+  },
+  "McCarranInternationalAirport": {
+    "latc": 36.078355002894,
+    "lngc": -115.14184957239
+  },
+  "PahuteMesaAirstrip": {
+    "latc": 37.103816707074,
+    "lngc": -116.30932650553
+  },
+  "GroomLakeAFB": {
+    "latc": 37.235215681419,
+    "lngc": -115.79230233386
+  },
+  "LincolnCounty": {
+    "latc": 37.784285218872,
+    "lngc": -114.41713946323
+  },
+  "NellisAFB": {
+    "latc": 36.233081514167,
+    "lngc": -115.03273835309
+  },
+  "BoulderCityAirport": {
+    "latc": 35.948891870109,
+    "lngc": -114.86379815102
+  },
+  "CreechAFB": {
+    "latc": 36.587644724881,
+    "lngc": -115.67998600138
+  },
+  "LaughlinAirport": {
+    "latc": 35.155379538264,
+    "lngc": -114.55327629836
+  },
+  "Mesquite": {
+    "latc": 36.836906615658,
+    "lngc": -114.05681265893
+  },
+  "TonopahAirport": {
+    "latc": 38.056351396913,
+    "lngc": -117.08405594007
+  },
+  "Alamo_FARP": {
+    "latc": 37.277585043856,
+    "lngc": -115.12310901286
+  },
+  "Lincoln_FARP": {
+    "latc": 37.348003011146,
+    "lngc": -114.53604821574
+  },
+  "Laughlin_FARP": {
+    "latc": 35.44737243583,
+    "lngc": -114.91060167063
+  },
+  "Mesquite_FARP": {
+    "latc": 36.666430103855,
+    "lngc": -114.58911360126
+  },
+  "Tonopah_FARP": {
+    "latc": 37.525106987145,
+    "lngc": -116.25534407898
+  },
+  "Creech_FARP": {
+    "latc": 36.854220618641,
+    "lngc": -115.97468382752
+  }
+}
+

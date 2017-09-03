@@ -16,7 +16,7 @@
 			_.set(gSrv, 'baseOverlay', {});
 			_.set(gSrv, 'circleOverlay', {});
 
-			$http.get('json/overlayCoords.json').then(function(overlayCoordsJSON) {
+			$http.get(_.get(theaterObj, 'overlayFile')).then(function(overlayCoordsJSON) {
 				_.set(gSrv, 'overlayCoords', overlayCoordsJSON.data);
 			});
 
