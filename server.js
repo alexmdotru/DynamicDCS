@@ -115,10 +115,7 @@ router.route('/userAccounts/:_id')
 				res.json(resp);
 			});
 	});
-
-//start of protected endpoints, must have auth token
-protectedRouter.use(checkJwt);
-protectedRouter.route('/checkUserAccount')
+router.route('/checkUserAccount')
 	.post(function (req, res) {
 		dbSystemServiceController.userAccountActions('checkAccount', req)
 			.then(function (resp) {
@@ -126,6 +123,8 @@ protectedRouter.route('/checkUserAccount')
 			});
 	});
 
+//start of protected endpoints, must have auth token
+protectedRouter.use(checkJwt);
 //past this point must have permission value less than 10
 protectedRouter.use(function (req, res, next) {
 	dbSystemServiceController.userAccountActions('getPerm', req.user.sub)

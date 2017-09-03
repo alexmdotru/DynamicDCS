@@ -49,7 +49,6 @@
 		});
 		*/
 		_.set(uASrv, 'checkUserAccount', function (profile) {
-			console.log('check user account: ', profile);
 			var dsave = DCSUserAccountsAPI.checkUserAccount(profile);
 			dsave.$promise
 				.then(function(data) {

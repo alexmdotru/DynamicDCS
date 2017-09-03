@@ -26,7 +26,7 @@
 				},
 				checkUserAccount: {
 					method: 'POST',
-					url: resourceUrl + '/protected/checkUserAccount'
+					url: resourceUrl + '/checkUserAccount'
 				}
 			}
 		);
