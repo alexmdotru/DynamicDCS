@@ -367,7 +367,7 @@ function setRoomSide(socket, roomObj) {
 								if(typeof srvPlayer.side !== 'undefined') {
 									pSide = srvPlayer.side;
 								} else {
-									//console.log('srvPlayer doesnt have a side');
+									console.log('srvPlayer doesnt have a side line370');
 								}
 							} else {
 								srvPlayer = _.find(srvPlayers, function (player) { //{ipaddr: curIP}
