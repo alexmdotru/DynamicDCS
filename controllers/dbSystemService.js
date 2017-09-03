@@ -39,7 +39,7 @@ exports.userAccountActions = function (action, obj){
 		});
 	}
 	if(action === 'update') {
-		console.log('reg updateobj line42: ', obj);
+		console.log('UA reg updateobj line42: ', obj);
 		return new Promise(function(resolve, reject) {
 			//console.log('userAccountActionsUCID: ', obj.ucid);
 			UserAccount.find({ucid: obj.ucid}, function (err, ucidUser) {
@@ -91,6 +91,7 @@ exports.userAccountActions = function (action, obj){
 		});
 	}
 	if(action === 'updateSocket') {
+		console.log('UA update socket line42: ', obj);
 		//console.log('updatesocket: ', obj);
 			// authId: socket.handshake.query.authId,
 			// curSocket: socket.id,
@@ -127,6 +128,7 @@ exports.userAccountActions = function (action, obj){
 		});
 	}
 	if(action === 'checkAccount') {
+		console.log('UA check account socket line131: ', obj);
 		return new Promise(function(resolve, reject) {
 			console.log('check account: ', obj.user.sub);
 			UserAccount.find({authId: obj.user.sub}, function (err, userAccount) {
