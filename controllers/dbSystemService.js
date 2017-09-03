@@ -104,7 +104,7 @@ exports.userAccountActions = function (action, obj){
 				if (authIdUser.length !== 0) {
 					//console.log('ucid user', obj);
 					authIdUser = authIdUser[0];
-					_.set(authIdUser, 'gameName', _.get(obj, 'gameName'));
+					_.set(authIdUser, 'gameName', _.get(authIdUser, 'gameName', _.get(obj, 'gameName', '')));
 					_.set(authIdUser, 'lastIp', _.get(obj, 'lastIp'));
 					_.set(authIdUser, 'curSocket', _.get(obj, 'curSocket'));
 					authIdUser.save(function (err) {
