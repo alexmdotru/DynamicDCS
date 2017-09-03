@@ -482,9 +482,9 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 	//console.log('process que: ', serverName, update);
 	if (typeof update.unitCount !== 'undefined') {
 		if (update.unitCount !== curServers[serverName].serverObject.units.length) {
-			console.log('out of sync for ' + _.get(curServers[serverName], 'outOfSyncUnitCnt') + ' units: '+ update.unitCount + ' verse ' + curServers[serverName].serverObject.units.length);
-			if (_.get(curServers[serverName], 'outOfSyncUnitCnt') > config.outOfSyncUnitThreshold) {
-				_.set(curServers[serverName], 'outOfSyncUnitCnt', 0);
+			console.log('out of sync for ' + serverName + ' units: '+ update.unitCount + ' verse ' + curServers[serverName].serverObject.units.length);
+			if (outOfSyncUnitCnt > config.outOfSyncUnitThreshold) {
+				outOfSyncUnitCnt = 0;
 				console.log('reset server units');
 				initClear(serverName, 'client');
 				dbMapServiceController.cmdQueActions('save', serverName, {queName: 'clientArray', actionObj: {action: "INIT"}});
