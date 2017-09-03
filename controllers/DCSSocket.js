@@ -45,15 +45,25 @@ exports.createSocket = function (serverName, serverAddress, clientPort, gameGuiP
 				var data = JSON.parse(dsock.clientBuffer.substring(0, i));
 				dsock.callback(serverName, dsock.sessionName, data);
 				dsock.clientBuffer = dsock.clientBuffer.substring(i + 1);
-				//dsock.client.write(JSON.stringify({action: 'NONE'}) + "\n")
+				dsock.client.write(JSON.stringify({action: 'NONE'}) + "\n");
 				dbMapServiceController.cmdQueActions('grabNextQue', serverName, {queName: 'clientArray'})
 					.then(function (resp) {
 						if (resp) {
-							dsock.reqClientArray = {
-								action: resp.actionObj.action,
-								cmd: resp.actionObj.cmd,
-								reqID: resp._id
-							};
+							if (resp.actionObj.action === 'CMD') {
+								if (resp.actionObj.cmd) {
+									dsock.reqClientArray = {
+										action: resp.actionObj.action,
+										cmd: resp.actionObj.cmd,
+										reqID: resp._id
+									};
+								}
+							} else {
+								dsock.reqClientArray = {
+									action: resp.actionObj.action,
+									cmd: '',
+									reqID: resp._id
+								};
+							}
 						} else {
 							dsock.reqClientArray = {action: 'NONE'};
 						}
@@ -92,6 +102,7 @@ exports.createSocket = function (serverName, serverAddress, clientPort, gameGuiP
 			dsock.gameGUI.write('{"action":"NONE"}' + "\n");
 		});
 		dsock.gameGUI.on('data', (data) => {
+			var curGameGuiCmd = {};
 			dsock.gameGUIBuffer += data;
 			while ((i = dsock.gameGUIBuffer.indexOf("\n")) >= 0) {
 				var data = JSON.parse(dsock.gameGUIBuffer.substring(0, i));
@@ -121,12 +132,9 @@ exports.createSocket = function (serverName, serverAddress, clientPort, gameGuiP
 						}
 					})
 				;
-				var curGameGuiCmd = _.get(dsock, 'reqGameGuiArray', {action: 'NONE'});
+				curGameGuiCmd = _.get(dsock, 'reqGameGuiArray', {action: 'NONE'});
 				// console.log('curgamegui: '+ curGameGuiCmd.action);
 				dsock.gameGUI.write(JSON.stringify(curGameGuiCmd) + "\n"); // dont ever let this line wait, it will stop the entire server waiting......
-				if (curGameGuiCmd.action !== 'NONE') {
-					dbMapServiceController.cmdQueActions('delete', serverName, {_id: curGameGuiCmd.reqID});
-				}
 			}
 		});
 		dsock.gameGUI.on('close', () => {
