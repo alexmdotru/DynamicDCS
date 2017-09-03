@@ -25,8 +25,7 @@ const UserAccountSchema = new Schema({
 			type: String
 		},
 		ucid: {
-			type: String,
-			index: { unique: true }
+			type: String
 		},
 		firstName: {
 			type: String
