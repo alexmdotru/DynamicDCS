@@ -56,7 +56,7 @@ exports.userAccountActions = function (action, obj){
 						if (ipUser.length !== 0) {
 							ipUser = ipUser[0];
 							_.set(ipUser, 'gameName', _.get(obj, 'gameName'));
-							_.set(ipUser, 'ucid', _.get(obj, 'ucid'));
+							// _.set(ipUser, 'ucid', _.get(obj, 'ucid'));
 							if(typeof obj.curSocket !== 'undefined'){
 								_.set(ipUser, 'curSocket', _.get(obj, 'curSocket'));
 							}
@@ -114,7 +114,13 @@ exports.userAccountActions = function (action, obj){
 					});
 				} else {
 					console.log('User '+obj.authId+' does not exist in user database');
-					reject('User '+obj.authId+' does not exist in user database');
+					const useraccount = new UserAccount(obj);
+					useraccount.save(function (err, useraccount) {
+						if (err) { reject(err) }
+						resolve(useraccount);
+					});
+
+					// reject('User '+obj.authId+' does not exist in user database');
 				}
 			});
 		});
