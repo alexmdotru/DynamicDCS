@@ -101,11 +101,23 @@ exports.createSocket = function (serverName, serverAddress, clientPort, gameGuiP
 				dbMapServiceController.cmdQueActions('grabNextQue', serverName, {queName: 'GameGuiArray'})
 					.then(function (resp) {
 						if (resp) {
-							dsock.reqGameGuiArray = {
-								action: resp.action,
-								cmd: resp.cmd,
-								reqID: resp._id
-							};
+							if( resp.action === 'CMD' ) {
+								if (resp.cmd) {
+									dsock.reqGameGuiArray = {
+										action: resp.action,
+										cmd: resp.cmd,
+										reqID: resp._id
+									};
+								}
+							} else {
+								dsock.reqGameGuiArray = {
+									action: resp.action,
+									cmd: '',
+									reqID: resp._id
+								};
+							}
+						} else {
+							dsock.reqGameGuiArray = {action: 'NONE'};
 						}
 					})
 				;
