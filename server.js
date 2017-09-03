@@ -246,8 +246,9 @@ function initUnits(serverName, socketID, authId) {
 
 								})
 								.catch(function (err) {
-									console.log(err);
-								});
+									console.log('line249', err);
+								})
+							;
 						}
 						if (curAccount.permLvl < 20) {
 							pSide = 'admin';
@@ -303,8 +304,14 @@ function initUnits(serverName, socketID, authId) {
 						chkPayload = {que: []};
 					}
 				})
+				.catch(function (err) {
+					console.log('line307', err);
+				});
 			;
 		})
+		.catch(function (err) {
+			console.log('line309', err);
+		});
 	;
 }
 
@@ -381,6 +388,9 @@ function setRoomSide(socket, roomObj) {
 								setSocketRoom(socket, roomObj.server + '_q' + pSide);
 							}
 						})
+						.catch(function (err) {
+							console.log('line392', err);
+						});
 					;
 				} else {
 					console.log('no account detected, match with ip now', roomObj.server);
@@ -407,6 +417,9 @@ function setRoomSide(socket, roomObj) {
 					;
 				}
 			})
+			.catch(function (err) {
+				console.log('line418', err);
+			});
 		;
 	}
 }
@@ -478,6 +491,9 @@ io.on('connection', function (socket) {
 					}
 				});
 			})
+			.catch(function (err) {
+				console.log('line495', err);
+			});
 		;
 	}
 });
@@ -606,6 +622,9 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 										//setSocketRoom (io.sockets.connected[switchedPlayer.curSocket], serverName+'_q0');
 									}
 								})
+								.catch(function (err) {
+									console.log('line626', err);
+								});
 							;
 						}
 					} else {
@@ -1615,6 +1634,9 @@ setInterval(function () { //sending FULL SPEED AHEAD, 1 per milsec (watch for we
 				}
 			});
 		})
+		.catch(function (err) {
+			console.log('line1638', err);
+		});
 	;
 }, 500);
 
@@ -1650,7 +1672,11 @@ setInterval(function () {
 					}
 				}
 			});
-		});
+		})
+		.catch(function (err) {
+			console.log('line1677', err);
+		})
+		;
 }, 1 * 1 * 5000);
 
 function syncDCSData(serverName, sessionName, DCSData) {
