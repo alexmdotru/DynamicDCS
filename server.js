@@ -364,6 +364,7 @@ function setRoomSide(socket, roomObj) {
 							//console.log('srvPlayers: ',srvPlayers);
 							if(curAccount.ucid) {
 								srvPlayer = _.find(srvPlayers, {ucid: curAccount.ucid});
+								console.log('srvP line367: ', srvPlayer);
 								if(srvPlayer.side) {
 									pSide = srvPlayer.side;
 								} else {
