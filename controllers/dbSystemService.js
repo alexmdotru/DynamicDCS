@@ -142,11 +142,7 @@ exports.userAccountActions = function (action, obj){
 					});
 				} else {
 					useraccount = userAccount[0];
-					_.set(useraccount, 'lastIp', curIP);
-					useraccount.save(function (err, useraccount) {
-						if (err) { reject(err) }
-						resolve(useraccount);
-					});
+					resolve(useraccount);
 				}
 			});
 		});

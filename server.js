@@ -411,6 +411,8 @@ function setRoomSide(socket, roomObj) {
 								nonaccountUsers[curPlayer.ucid] = {
 									curSocket: socket.id
 								};
+							} else {
+								setSocketRoom(socket, roomObj.server + '_q0' );
 							}
 						})
 						.catch(function (err) {
