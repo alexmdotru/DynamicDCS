@@ -1538,6 +1538,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				curName = _.get(curObj, 'iPlayerUnitType', '""');
 			}
 
+			console.log('line1541 unit type: ', _.get(curObj, 'iPlayerUnitType'));
+
 			DCSLuaCommands.sendMesgToCoalition(
 				_.get(curObj, 'iPlayerSide'),
 				serverName,
