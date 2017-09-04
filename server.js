@@ -586,7 +586,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 							if (_.get(matchPlayer, 'side')) {
 								DCSLuaCommands.sendMesgToAll(
 									serverName,
-									'A: '+getSide(_.get(matchPlayer, 'side'))+' '+_.get(player, 'name')+' has commited Treason and switched to '+getSide(_.get(player, 'side'))+'. Shoot on sight! -1000pts'
+									'A: '+getSide(_.get(matchPlayer, 'side'))+' '+_.get(player, 'name')+' has commited Treason and switched to '+getSide(_.get(player, 'side'))+'. Shoot on sight! -1000pts',
+									15
 								);
 							}
 							dbSystemServiceController.userAccountActions('read')
@@ -718,7 +719,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 
 			DCSLuaCommands.sendMesgToAll(
 				serverName,
-				'A: '+getSide(_.get(iPlayer, 'side'))+' '+_.get(iPlayer, 'name')+' has accidentally killed '+_.get(tPlayer, 'name')+' with a '+_.get(curObj, 'weaponName')+' - 100pts'
+				'A: '+getSide(_.get(iPlayer, 'side'))+' '+_.get(iPlayer, 'name')+' has accidentally killed '+_.get(tPlayer, 'name')+' with a '+_.get(curObj, 'weaponName')+' - 100pts',
+				15
 			);
 		}
 
@@ -767,7 +769,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 
 			DCSLuaCommands.sendMesgToAll(
 				serverName,
-				'A: '+getSide(_.get(iPlayer, 'side'))+' '+_.get(iPlayer, 'name')+' has killed himself'
+				'A: '+getSide(_.get(iPlayer, 'side'))+' '+_.get(iPlayer, 'name')+' has killed himself',
+				15
 			);
 		}
 
@@ -802,7 +805,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 
 			DCSLuaCommands.sendMesgToAll(
 				serverName,
-				'A: '+_.get(curObj, 'iPlayerName')+' has connected'
+				'A: '+_.get(curObj, 'iPlayerName')+' has connected',
+				5
 			);
 		}
 		if (_.get(queObj, 'action') === 'disconnect') {
@@ -821,7 +825,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 
 			DCSLuaCommands.sendMesgToAll(
 				serverName,
-				'A: '+_.get(iPlayer, 'name')+' has disconnected - Ping:'+_.get(iPlayer, 'ping')+' Lang:'+_.get(iPlayer, 'lang')
+				'A: '+_.get(iPlayer, 'name')+' has disconnected - Ping:'+_.get(iPlayer, 'ping')+' Lang:'+_.get(iPlayer, 'lang'),
+				5
 			);
 		}
 		/*
@@ -1004,7 +1009,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						if(_.get(shootingUsers, [iPlayer.ucid, 'startTime']) + 5000 > new Date().getTime()){
 							DCSLuaCommands.sendMesgToAll(
 								serverName,
-								'A: '+ getSide(_.get(curObj, 'iPlayerSide'))+' '+ iPlayer +' has hit '+getSide(_.get(curObj, 'tPlayerSide'))+' ' + tPlayer + ' '+_.get(shootingUsers, [iPlayer.ucid, 'count'], 0)+' times with ' + _.set(curObj, 'weaponDisplayName') + ' - +'+_.get(curObj, 'score')
+								'A: '+ getSide(_.get(curObj, 'iPlayerSide'))+' '+ iPlayer +' has hit '+getSide(_.get(curObj, 'tPlayerSide'))+' ' + tPlayer + ' '+_.get(shootingUsers, [iPlayer.ucid, 'count'], 0)+' times with ' + _.set(curObj, 'weaponDisplayName') + ' - +'+_.get(curObj, 'score'),
+								20
 							);
 							_.set(shootingUsers, [iPlayer.ucid, 'count'], 0);
 						};
@@ -1012,7 +1018,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						console.log('other weapons');
 						DCSLuaCommands.sendMesgToAll(
 							serverName,
-							'A: '+ getSide(_.get(curObj, 'iPlayerSide'))+' '+ iPlayer +' has hit '+getSide(_.get(curObj, 'tPlayerSide'))+' '+tPlayer + ' with ' + _.set(curObj, 'weaponDisplayName') + ' - +'+_.get(curObj, 'score')
+							'A: '+ getSide(_.get(curObj, 'iPlayerSide'))+' '+ iPlayer +' has hit '+getSide(_.get(curObj, 'tPlayerSide'))+' '+tPlayer + ' with ' + _.set(curObj, 'weaponDisplayName') + ' - +'+_.get(curObj, 'score'),
+							20
 						);
 					}
 
@@ -1066,7 +1073,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			DCSLuaCommands.sendMesgToCoalition(
 				_.get(curObj, 'iPlayerSide'),
 				serverName,
-				'C: '+ curName +' has taken off' + place
+				'C: '+ curName +' has taken off' + place,
+				5
 			);
 
 			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
@@ -1111,7 +1119,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			DCSLuaCommands.sendMesgToCoalition(
 				_.get(curObj, 'iPlayerSide'),
 				serverName,
-				'C: '+ curName +' has landed' + place
+				'C: '+ curName +' has landed' + place,
+				5
 			);
 
 			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
@@ -1145,7 +1154,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 
 			DCSLuaCommands.sendMesgToAll(
 				serverName,
-				'A: '+ getSide(_.get(curObj, 'iPlayerSide'))+' '+ curName +' has crashed'
+				'A: '+ getSide(_.get(curObj, 'iPlayerSide'))+' '+ curName +' has crashed',
+				5
 			);
 
 			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
@@ -1179,7 +1189,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 
 			DCSLuaCommands.sendMesgToAll(
 				serverName,
-				'A: '+getSide( _.get(curObj, 'iPlayerSide'))+' '+ curName +' ejected'
+				'A: '+getSide( _.get(curObj, 'iPlayerSide'))+' '+ curName +' ejected',
+				5
 			);
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_REFUELING') {
@@ -1211,7 +1222,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			DCSLuaCommands.sendMesgToCoalition(
 				_.get(curObj, 'iPlayerSide'),
 				serverName,
-				'C: '+ curName +' began refueling'
+				'C: '+ curName +' began refueling',
+				5
 			);
 
 			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
@@ -1244,7 +1256,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 
 			DCSLuaCommands.sendMesgToAll(
 				serverName,
-				'A: '+getSide(_.get(curObj, 'iPlayerSide'))+' '+ curName +' pilot is dead'
+				'A: '+getSide(_.get(curObj, 'iPlayerSide'))+' '+ curName +' pilot is dead',
+				5
 			);
 
 			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
@@ -1279,7 +1292,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 
 			DCSLuaCommands.sendMesgToAll(
 				serverName,
-				'A: '+getSide(_.get(curObj, 'iPlayerSide'))+' '+ curName +' is dead'
+				'A: '+getSide(_.get(curObj, 'iPlayerSide'))+' '+ curName +' is dead',
+				5
 			);
 
 			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
@@ -1336,7 +1350,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			DCSLuaCommands.sendMesgToCoalition(
 				_.get(curObj, 'iPlayerSide'),
 				serverName,
-				'C: '+ curName +' ended refueling'
+				'C: '+ curName +' ended refueling',
+				5
 			);
 
 			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
@@ -1407,7 +1422,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			DCSLuaCommands.sendMesgToCoalition(
 				_.get(curObj, 'iPlayerSide'),
 				serverName,
-				'C: '+ curName +' is having trouble with his aircraft'
+				'C: '+ curName +' is having trouble with his aircraft',
+				5
 			);
 
 			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
@@ -1441,7 +1457,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			DCSLuaCommands.sendMesgToCoalition(
 				_.get(curObj, 'iPlayerSide'),
 				serverName,
-				'C: '+ curName +' has started his engine'
+				'C: '+ curName +' has started his engine',
+				5
 			);
 
 			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
@@ -1475,7 +1492,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			DCSLuaCommands.sendMesgToCoalition(
 				_.get(curObj, 'iPlayerSide'),
 				serverName,
-				'C: '+ curName +' has shutdown his engine'
+				'C: '+ curName +' has shutdown his engine',
+				5
 			);
 
 			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
@@ -1509,7 +1527,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			DCSLuaCommands.sendMesgToCoalition(
 				_.get(curObj, 'iPlayerSide'),
 				serverName,
-				'C: '+ curName +' enters a brand new ' + _.set(curObj, 'iPlayerUnitType')
+				'C: '+ curName +' enters a brand new ' + _.set(curObj, 'iPlayerUnitType'),
+				5
 			);
 
 			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
@@ -1545,7 +1564,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			DCSLuaCommands.sendMesgToCoalition(
 				_.get(curObj, 'iPlayerSide'),
 				serverName,
-				'C: '+ curName +' leaves his ' + _.set(curObj, 'iPlayerUnitType')
+				'C: '+ curName +' leaves his ' + _.set(curObj, 'iPlayerUnitType'),
+				5
 			);
 
 			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
