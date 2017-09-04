@@ -998,7 +998,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					if (_.startsWith(_.get(curObj, 'weaponName'), 'weapons.shells')){
 						_.set(shootingUsers, [iPlayer.ucid, count], _.get(shootingUsers, [iPlayer.ucid, count], 0)+1);
 						//display msg once every 5 secs
-						if(_.get(shootingUsers, [iPlayer.ucid, startTime]) + 5000 > new Date().getTime()){
+						if(_.get(shootingUsers, [iPlayer.ucid, 'startTime']) + 5000 > new Date().getTime()){
 							DCSLuaCommands.sendMesgToAll(
 								serverName,
 								'A: '+ getSide(_.get(curObj, 'iPlayerSide'))+' '+ iPlayer +' has hit '+getSide(_.get(curObj, 'tPlayerSide'))+' ' + tPlayer + ' '+_.get(shootingUsers, [iPlayer.ucid, count])+' times with ' + _.set(curObj, 'weaponDisplayName') + ' - +'+_.get(curObj, 'score')
@@ -1572,7 +1572,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				if (iUnit.playername !== '') {
 					iPlayer = _.find(curServers[serverName].serverObject.players, {name: iUnit.playername});
 					if (iPlayer) {
-						_.set(shootingUsers, [iPlayer.ucid, startTime], new Date().getTime());
+						_.set(shootingUsers, [iPlayer.ucid, 'startTime'], new Date().getTime());
 						_.set(curObj, 'iPlayerUcid', iPlayer.ucid);
 					}
 				}
