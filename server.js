@@ -995,6 +995,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						tPlayer = _.get(curObj, 'tPlayerUnitType', '""');
 					}
 
+					console.log(serverName, 'HITHIT', getSide(_.get(curObj, 'iPlayerSide')), iPlayer, getSide(_.get(curObj, 'tPlayerSide')), tPlayer, _.get(shootingUsers, [iPlayer.ucid, count]), _.set(curObj, 'weaponDisplayName'), _.get(curObj, 'score'));
 					if (_.startsWith(_.get(curObj, 'weaponName'), 'weapons.shells')){
 						console.log('shooting shells');
 						_.set(shootingUsers, [iPlayer.ucid, count], _.get(shootingUsers, [iPlayer.ucid, count], 0)+1);
