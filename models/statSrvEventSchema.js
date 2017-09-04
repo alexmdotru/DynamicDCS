@@ -17,6 +17,9 @@ const StatSrvEventSchema = new Schema({
 		weaponName: {
 			type: String
 		},
+		weaponDisplayName: {
+			type: String
+		},
 		winner: {
 			type: String
 		},
