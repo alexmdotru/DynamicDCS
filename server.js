@@ -1021,7 +1021,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 
 				})
 				.catch(function (err) {
-					console.log('Eevent: ', curObj);
+					console.log('Eevent: ', curObj, err);
 					dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 				});
 			;
