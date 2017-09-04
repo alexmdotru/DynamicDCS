@@ -211,7 +211,6 @@ const WeaponScore = systemdb.model('weaponScore', weaponScoreSchema);
 exports.weaponScoreActions = function (action, obj){
 	if(action === 'read') {
 		return new Promise(function(resolve, reject) {
-			console.log('weapon...: ', obj);
 			WeaponScore.find({_id: obj.typeName}, function (err, weaponscore) {
 				if (err) { reject(err) }
 				if (weaponscore.length === 0) {
@@ -229,6 +228,7 @@ exports.weaponScoreActions = function (action, obj){
 						resolve(saveweaponscore);
 					});
 				} else {
+					console.log('curweaponscore: ', curWeaponScore);
 					var curWeaponScore = weaponscore[0];
 					resolve(curWeaponScore);
 				}
