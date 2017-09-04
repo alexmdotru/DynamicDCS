@@ -51,7 +51,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 				update = {$set: obj},
 				options = {upsert: true, new: true, setDefaultsOnInsert: true};
 			SrvPlayer.findOneAndUpdate(query, update, options, function (err, srvPlayers) {
-				if (err) { reject('DERPY: '+err) }
+				if (err) { reject(err) }
 				resolve(srvPlayers);
 			});
 		});

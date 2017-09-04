@@ -18,14 +18,9 @@ const srvPlayerSchema = new Schema({
 		},
 		side: {
 			type: Number,
-			min: 1,
-			max: 2
-		},
-		slot: {
-			type: String
-		},
-		playerId: {
-			type: Number
+			min: 0,
+			max: 2,
+			default: 0
 		},
 		socketID: {
 			type: String

@@ -615,13 +615,14 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 									switchedPlayer = nonaccountUsers[player.ucid];
 									if(switchedPlayer) {
 										switchedPlayer = _.find(resp, {ucid: player.ucid});
-									}
-									if (switchedPlayer &&switchedPlayer.permLvl < 20) {
-										setSocketRoom(io.sockets.connected[switchedPlayer.curSocket], serverName + '_padmin');
-									} else if (player.side === 1 || player.side === 2) {
-										setSocketRoom(io.sockets.connected[switchedPlayer.curSocket], serverName + '_q' + player.side);
-									} else {
-										//setSocketRoom (io.sockets.connected[switchedPlayer.curSocket], serverName+'_q0');
+
+										if (switchedPlayer.permLvl < 20) {
+											setSocketRoom(io.sockets.connected[switchedPlayer.curSocket], serverName + '_padmin');
+										} else if (player.side && (player.side === 1 || player.side === 2)) {
+											setSocketRoom(io.sockets.connected[switchedPlayer.curSocket], serverName + '_q' + player.side);
+										} else {
+											setSocketRoom (io.sockets.connected[switchedPlayer.curSocket], serverName+'_q0');
+										}
 									}
 								})
 								.catch(function (err) {
@@ -654,7 +655,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						//update user based table (based on ucid)
 						//console.log('playerinc: ', data);
 						var curActUpdate = {
-							playerId: _.get(data, 'id', ''),
 							ucid: _.get(data, 'ucid', ''),
 							gameName: _.get(data, 'name', ''),
 							lastIp: _.get(data, 'ipaddr', ''),
