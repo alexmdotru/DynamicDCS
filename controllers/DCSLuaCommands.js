@@ -4,15 +4,15 @@ const net = require('net'),
 const dbSystemServiceController = require('./dbSystemService');
 const dbMapServiceController = require('./dbMapService');
 
-_.set(exports, 'sendMesgToAll', function (serverName, mesg) {
-	var curCMD = 'trigger.action.outText("'+mesg+'", 5)';
+_.set(exports, 'sendMesgToAll', function (serverName, mesg, time) {
+	var curCMD = 'trigger.action.outText("'+mesg+'", '+time+')';
 	var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
 	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
 	dbMapServiceController.cmdQueActions('save', serverName, actionObj);
 });
 
-_.set(exports, 'sendMesgToCoalition', function (coalition, serverName, mesg) {
-	var curCMD = 'trigger.action.outTextForCoalition('+coalition+', "'+mesg+'", 5)';
+_.set(exports, 'sendMesgToCoalition', function (coalition, serverName, mesg, time) {
+	var curCMD = 'trigger.action.outTextForCoalition('+coalition+', "'+mesg+'", '+time+')';
 	var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
 	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
 	dbMapServiceController.cmdQueActions('save', serverName, actionObj);
