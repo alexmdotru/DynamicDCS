@@ -996,17 +996,17 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						tPlayer = _.get(curObj, 'tPlayerUnitType', '""');
 					}
 
-					console.log(serverName, 'HITHIT', getSide(_.get(curObj, 'iPlayerSide')), iPlayer, getSide(_.get(curObj, 'tPlayerSide')), tPlayer, _.get(shootingUsers, [iPlayer.ucid, count], 0), _.set(curObj, 'weaponDisplayName'), _.get(curObj, 'score'));
+					console.log(serverName, 'HITHIT', getSide(_.get(curObj, 'iPlayerSide')), iPlayer, getSide(_.get(curObj, 'tPlayerSide')), tPlayer, _.get(shootingUsers, [iPlayer.ucid, 'count'], 0), _.set(curObj, 'weaponDisplayName'), _.get(curObj, 'score'));
 					if (_.startsWith(_.get(curObj, 'weaponName'), 'weapons.shells')){
 						console.log('shooting shells');
-						_.set(shootingUsers, [iPlayer.ucid, count], _.get(shootingUsers, [iPlayer.ucid, count], 0)+1);
+						_.set(shootingUsers, [iPlayer.ucid, 'count'], _.get(shootingUsers, [iPlayer.ucid, 'count'], 0)+1);
 						//display msg once every 5 secs
 						if(_.get(shootingUsers, [iPlayer.ucid, 'startTime']) + 5000 > new Date().getTime()){
 							DCSLuaCommands.sendMesgToAll(
 								serverName,
-								'A: '+ getSide(_.get(curObj, 'iPlayerSide'))+' '+ iPlayer +' has hit '+getSide(_.get(curObj, 'tPlayerSide'))+' ' + tPlayer + ' '+_.get(shootingUsers, [iPlayer.ucid, count], 0)+' times with ' + _.set(curObj, 'weaponDisplayName') + ' - +'+_.get(curObj, 'score')
+								'A: '+ getSide(_.get(curObj, 'iPlayerSide'))+' '+ iPlayer +' has hit '+getSide(_.get(curObj, 'tPlayerSide'))+' ' + tPlayer + ' '+_.get(shootingUsers, [iPlayer.ucid, 'count'], 0)+' times with ' + _.set(curObj, 'weaponDisplayName') + ' - +'+_.get(curObj, 'score')
 							);
-							_.set(shootingUsers, [iPlayer.ucid, count], 0);
+							_.set(shootingUsers, [iPlayer.ucid, 'count'], 0);
 						};
 					} else {
 						console.log('other weapons');
