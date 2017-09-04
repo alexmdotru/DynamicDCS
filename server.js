@@ -583,10 +583,12 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					var matchPlayer = _.find(curServers[serverName].serverObject.players, {ucid: player.ucid});
 					if(matchPlayer) {
 						if ((matchPlayer.side !== player.side) && player.side !== 0) {
-							DCSLuaCommands.sendMesgToAll(
-								serverName,
-								'A: '+getSide(_.get(matchPlayer, 'side'))+' '+_.get(player, 'name')+' has commited Treason and switched to '+getSide(_.get(player, 'side'))+'. Shoot on sight! -1000pts'
-							);
+							if (_.get(matchPlayer, 'side')) {
+								DCSLuaCommands.sendMesgToAll(
+									serverName,
+									'A: '+getSide(_.get(matchPlayer, 'side'))+' '+_.get(player, 'name')+' has commited Treason and switched to '+getSide(_.get(player, 'side'))+'. Shoot on sight! -1000pts'
+								);
+							}
 							dbSystemServiceController.userAccountActions('read')
 								.then(function (resp) {
 									switchedPlayer = nonaccountUsers[player.ucid];
