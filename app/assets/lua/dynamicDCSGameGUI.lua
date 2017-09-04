@@ -15,7 +15,7 @@ local socket = require("socket")
 local JSON = loadfile("Scripts\\JSON.lua")()
 
 local function log(msg)
-	net.log("DynamicDCSGameGUI: " .. msg)
+	--net.log("DynamicDCSGameGUI: " .. msg)
 end
 
 local function clearVar()
@@ -160,7 +160,7 @@ dynDCS.onSimulationFrame = function()
 			log("Error: " .. error)
 		end
 		if updateQue.que ~= nil then
-			log('LogBuffer: '..table.getn(updateQue.que))
+			--log('LogBuffer: '..table.getn(updateQue.que))
 		end
 	end
 end
