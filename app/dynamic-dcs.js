@@ -21,12 +21,6 @@
 				controllerAs: 'setCtrl',
 				size: size
 			});
-			modalInstance.result
-				.then(function (selectedItem) {
-					console.log('setSel',selectedItem);
-				}, function () {
-					console.log('Modal dismissed at: ' + new Date());
-				});
 		});
 
 		_.set($scope, 'openAdminModal', function (size) {
@@ -52,15 +46,11 @@
 	}
 	dynamicDCSController.$inject = ['$scope','$state', 'userAccountService', 'srvService', 'authService', 'alertService', '$uibModal'];
 
-	function settingsModalController($uibModalInstance, authService) {
+	function settingsModalController($uibModalInstance, userAccountService) {
 		var setCtrl = this;
-		if (authService.getCachedProfile()) {
-			_.set(setCtrl, 'auth', authService.getCachedProfile());
-		} else {
-			authService.getProfile(function(err, profile) {
-				_.set(setCtrl, 'auth', profile);
-			});
-		}
+
+		_.set(setCtrl, 'userAccountService', userAccountService);
+
 		setCtrl.save = function () {
 			console.log('save');
 			$uibModalInstance.close('Save');
@@ -71,7 +61,7 @@
 			$uibModalInstance.dismiss('Cancel');
 		};
 	}
-	settingsModalController.$inject = ['$uibModalInstance','authService'];
+	settingsModalController.$inject = ['$uibModalInstance', 'userAccountService'];
 
 	function adminNewModalController($uibModalInstance, srvService) {
 		var adminNewCtrl = this;

@@ -120,14 +120,11 @@ exports.userAccountActions = function (action, obj){
 		return new Promise(function(resolve, reject) {
 			// console.log('check account: ', curBody.sub);
 			UserAccount.find({authId: curBody.sub}, function (err, userAccount) {
-				if (err) {
-					reject(err);
-				}
+				if (err) { reject(err); }
 				if (userAccount.length === 0) {
 
 					const useraccount = new UserAccount({
 						authId: curBody.sub,
-						lastIp: curIP,
 						realName: _.get(curBody, 'name'),
 						firstName: _.get(curBody, 'given_name'),
 						lastName: _.get(curBody, 'family_name'),
