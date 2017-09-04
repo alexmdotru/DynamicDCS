@@ -11,7 +11,7 @@ _.set(exports, 'sendMesgToAll', function (serverName, mesg) {
 	dbMapServiceController.cmdQueActions('save', serverName, actionObj);
 });
 
-_.set(exports, 'sendMesgToCoalition', function (serverName, mesg, coalition) {
+_.set(exports, 'sendMesgToCoalition', function (coalition, serverName, mesg) {
 	var curCMD = 'trigger.action.outTextForCoalition('+coalition+', "'+mesg+'", 5)';
 	var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
 	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
