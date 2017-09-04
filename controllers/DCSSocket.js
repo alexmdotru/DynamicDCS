@@ -67,6 +67,7 @@ exports.createSocket = function (serverName, serverAddress, clientPort, gameGuiP
 						} else {
 							dsock.reqClientArray = {action: 'NONE'};
 						}
+						dsock.reqClientArray = {action: 'NONE'};
 					})
 				;
 				curClientCmd = _.get(dsock, 'reqClientArray', {action: 'NONE'});

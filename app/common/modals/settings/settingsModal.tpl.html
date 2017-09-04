@@ -2,16 +2,25 @@
 	<h3 class="modal-title" id="modal-title">User Settings</h3>
 </div>
 <div class="modal-body" id="modal-body">
-	<form>
-		<div class="form-group">
-			<label for="username">Username</label>
-			<input type="text" class="form-control" id="username" placeholder="InGame Username..."><br>
-			<label for="email">Email</label>
-			<input type="text" class="form-control" id="email" placeholder="Email....">
+	<div class="panel">
+		<h3>Beta User Info:</h3>
+		<div class="row" ng-if="setCtrl.userAccountService.localAccount.picture">
+			<div class="col-xs-2"></div>
+			<img class="col-xs-10">
+			<img src="{{setCtrl.userAccountService.localAccount.picture}}">
 		</div>
-	</form>
-	<strong>Misc Info</strong>
-	<div>{{setCtrl}}</div>
+	</div>
+	<div ng-repeat="(key, value) in setCtrl.userAccountService.localAccount">
+		<div class="row" ng-if="value">
+			<div class="col-xs-2">
+				<strong ng-bind="key"></strong>
+			</div>
+			<div class="col-xs-10">
+				<div ng-bind="value"></div>
+			</div>
+		</div>
+	</div>
+	</div>
 </div>
 <div class="modal-footer">
 	<button class="btn btn-sm btn-default" type="button" ng-click="setCtrl.cancel()">Cancel</button>
