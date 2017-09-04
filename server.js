@@ -961,7 +961,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				}
 				_.set(queObj, ['data', 'arg7', 'unitType'], _.get(iUnit, 'type', ''));
 			}
-			console.log('read weapon type: ', data);
+			console.log('read weapon type: ', _.get(queObj, 'data'));
 			dbSystemServiceController.weaponScoreActions('read', _.get(queObj, 'data.arg7'))
 				.then(function (weaponResp) {
 					_.set(curObj, 'weaponName', _.get(weaponResp, 'name'));
