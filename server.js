@@ -984,18 +984,19 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					// obj cmd for sending mesg to clients
 					var iPlayer;
 					if (_.get(curObj, 'iPlayerName')){
-						iPlayer = _.get(curObj, 'iPlayerName')+' in '+_.get(curObj, 'iPlayerUnitType', '""');
+						iPlayer = _.get(curObj, 'iPlayerName')+' in '+_.get(curObj, 'iPlayerUnitType');
 					} else {
 						iPlayer = _.get(curObj, 'iPlayerUnitType', '""');
 					}
 					var tPlayer;
 					if (_.get(curObj, 'tPlayerName')){
-						tPlayer = _.get(curObj, 'tPlayerName')+' in '+_.get(curObj, 'tPlayerUnitType', '""');
+						tPlayer = _.get(curObj, 'tPlayerName')+' in '+_.get(curObj, 'tPlayerUnitType');
 					} else {
 						tPlayer = _.get(curObj, 'tPlayerUnitType', '""');
 					}
 
 					if (_.startsWith(_.get(curObj, 'weaponName'), 'weapons.shells')){
+						console.log('shooting shells');
 						_.set(shootingUsers, [iPlayer.ucid, count], _.get(shootingUsers, [iPlayer.ucid, count], 0)+1);
 						//display msg once every 5 secs
 						if(_.get(shootingUsers, [iPlayer.ucid, 'startTime']) + 5000 > new Date().getTime()){
@@ -1006,9 +1007,10 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 							_.set(shootingUsers, [iPlayer.ucid, count], 0);
 						};
 					} else {
+						console.log('other weapons');
 						DCSLuaCommands.sendMesgToAll(
 							serverName,
-							'A: '+ getSide(_.get(curObj, 'iPlayerSide'))+' '+ iPlayer +' has hit '+getSide(_.get(curObj, 'tPlayerSide'))+' ' + tPlayer + ' '+_.get(shootingUsers, [iPlayer.ucid, count])+' times with ' + _.set(curObj, 'weaponDisplayName') + ' - +'+_.get(curObj, 'score')
+							'A: '+ getSide(_.get(curObj, 'iPlayerSide'))+' '+ iPlayer +' has hit '+getSide(_.get(curObj, 'tPlayerSide'))+' '+tPlayer + ' with ' + _.set(curObj, 'weaponDisplayName') + ' - +'+_.get(curObj, 'score')
 						);
 					}
 
