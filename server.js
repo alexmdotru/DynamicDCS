@@ -674,7 +674,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		//mesg
 		if (_.get(queObj, 'action') === 'MESG') {
 			_.set(queObj, 'sessionName', sessionName);
-			console.log('mesg: ', queObj);
+			// console.log('mesg: ', queObj);
 			if (_.get(queObj, 'data.playerID')) {
 				if (_.isNumber(_.get(_.find(curServers[serverName].serverObject.players, {'id': _.get(queObj, 'data.playerID')}), 'side', 0))) {
 					curServers[serverName].updateQue['q' + _.get(_.find(curServers[serverName].serverObject.players, {'id': _.get(queObj, 'data.playerID')}), 'side', 0)]
@@ -713,7 +713,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			if (tPlayer) {
 				_.set(curObj, 'tPlayerUcid', _.get(tPlayer, 'ucid', queObj.data.arg3));
 			}
-			console.log('event: ', curObj);
+			// console.log('event: ', curObj);
 			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 
 			DCSLuaCommands.sendMesgToAll(
@@ -762,7 +762,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			if (iPlayer) {
 				_.set(curObj, 'iPlayerUcid', _.get(iPlayer, 'ucid', queObj.data.arg1));
 			}
-			console.log('event: ', curObj);
+			// console.log('event: ', curObj);
 			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 
 			DCSLuaCommands.sendMesgToAll(
@@ -785,7 +785,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				_.set(curObj, 'iPlayerSlotType', _.get(iUnit, 'type', queObj.data.arg2));
 			}
 			_.set(curObj, 'prevSide', _.get(queObj, 'data.arg3'));
-			console.log('event: ', curObj);
+			// console.log('event: ', curObj);
 			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 		}
 		if (_.get(queObj, 'action') === 'connect') {
@@ -797,7 +797,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				_.set(queObj, 'iPlayerUcid', _.get(iPlayer, 'ucid', queObj.data.arg1));
 			}
 			_.set(curObj, 'iPlayerName', _.get(queObj, 'data.arg2'));
-			console.log('event: ', curObj);
+			// console.log('event: ', curObj);
 			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 
 			DCSLuaCommands.sendMesgToAll(
@@ -816,7 +816,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			_.set(curObj, 'iPlayerName', _.get(queObj, 'data.arg2'));
 			_.set(curObj, 'iPlayerSide', _.get(queObj, 'data.arg3'));
 			_.set(curObj, 'reasonCode', _.get(queObj, 'data.arg4'));
-			console.log('event: ', curObj);
+			// console.log('event: ', curObj);
 			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 
 			DCSLuaCommands.sendMesgToAll(
@@ -926,17 +926,17 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				.then(function (weaponResp) {
 					_.set(curObj, 'weaponName', _.get(weaponResp, 'name'));
 					// _.set(curObj, 'score', _.get(weaponResp, 'score')); // no score for weapon just shot
-					console.log('Tevent: ', curObj);
+					// console.log('Tevent: ', curObj);
 					dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 				})
 				.catch(function (err) {
-					console.log('Eevent: ', curObj);
+					// console.log('Eevent: ', curObj);
 					dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 				})
 			;
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_HIT') {
-			console.log('eventhit');
+			// console.log('eventhit');
 			// Occurs whenever an object is hit by a weapon.
 			// arg1 = id
 			// arg2 = time
@@ -978,7 +978,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 							}
 						}
 					}
-					console.log('Tevent: ', curObj);
+					// console.log('Tevent: ', curObj);
 					dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 
 					// obj cmd for sending mesg to clients
@@ -1043,7 +1043,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			}
 			_.set(curObj, 'place', _.get(queObj, 'data.arg5'));
 			_.set(curObj, 'subPlace', _.get(queObj, 'data.arg6'));
-			console.log('event: ', curObj);
+			// console.log('event: ', curObj);
 
 			// obj cmd for sending mesg to clients
 			var curName;
@@ -1088,7 +1088,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			}
 			_.set(curObj, 'place', _.get(queObj, 'data.arg5'));
 			_.set(curObj, 'subPlace', _.get(queObj, 'data.arg6'));
-			console.log('event: ', curObj);
+			// console.log('event: ', curObj);
 
 			// obj cmd for sending mesg to clients
 			var curName;
@@ -1131,7 +1131,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					}
 				}
 			}
-			console.log('event: ', curObj);
+			// console.log('event: ', curObj);
 
 			var curName;
 			if (_.get(curObj, 'iPlayerName')){
@@ -1141,12 +1141,10 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			}
 
 
-			var curTxt = 'A: '+ getSide(_.get(curObj, 'iPlayerSide'))+' '+ curName +' has crashed';
-			// var curCMD = 'trigger.action.outTextForCoalition('+_.get(curObj, 'iPlayerSide')+', "'+curTxt+'", 5)';
-			var curCMD = 'trigger.action.outText("'+curTxt+'", 5)';
-			var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
-			var actionObj = {actionObj: sendClient, queName: 'clientArray'};
-			dbMapServiceController.cmdQueActions('save', serverName, actionObj);
+			DCSLuaCommands.sendMesgToAll(
+				serverName,
+				'A: '+ getSide(_.get(curObj, 'iPlayerSide'))+' '+ curName +' has crashed'
+			);
 
 			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 		}
@@ -1199,7 +1197,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					}
 				}
 			}
-			console.log('event: ', curObj);
+			// console.log('event: ', curObj);
 
 			var curName;
 			if (_.get(curObj, 'iPlayerName')){
@@ -1233,7 +1231,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					}
 				}
 			}
-			console.log('event: ', curObj);
+			// console.log('event: ', curObj);
 
 			var curName;
 			if (_.get(curObj, 'iPlayerName')){
@@ -1242,11 +1240,10 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				curName = _.get(curObj, 'iPlayerUnitType', '""');
 			}
 
-			var curTxt = 'A: '+getSide(_.get(curObj, 'iPlayerSide'))+' '+ curName +' is dead';
-			var curCMD = 'trigger.action.outText("'+curTxt+'", 5)';
-			var sendClient = {action: 'CMD', cmd: curCMD, reqID: 0};  // cmd:'trigger.action.outText("IT WORKS MOFO!", 2)'
-			var actionObj = {actionObj: sendClient, queName: 'clientArray'};
-			dbMapServiceController.cmdQueActions('save', serverName, actionObj);
+			DCSLuaCommands.sendMesgToAll(
+				serverName,
+				'A: '+getSide(_.get(curObj, 'iPlayerSide'))+' '+ curName +' pilot is dead'
+			);
 
 			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 		}
@@ -1269,7 +1266,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					}
 				}
 			}
-			console.log('event: ', curObj);
+			// console.log('event: ', curObj);
 
 			var curName;
 			if (_.get(curObj, 'iPlayerName')){
@@ -1278,11 +1275,10 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				curName = _.get(curObj, 'iPlayerUnitType', '""');
 			}
 
-			var curTxt = 'A: '+getSide(_.get(curObj, 'iPlayerSide'))+' '+ curName +' pilot is dead';
-			var curCMD = 'trigger.action.outText("'+curTxt+'", 5)';
-			var sendClient = {action: 'CMD', cmd: curCMD, reqID: 0};  // cmd:'trigger.action.outText("IT WORKS MOFO!", 2)'
-			var actionObj = {actionObj: sendClient, queName: 'clientArray'};
-			dbMapServiceController.cmdQueActions('save', serverName, actionObj);
+			DCSLuaCommands.sendMesgToAll(
+				serverName,
+				'A: '+getSide(_.get(curObj, 'iPlayerSide'))+' '+ curName +' is dead'
+			);
 
 			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 		}
@@ -1445,12 +1441,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				serverName,
 				'C: '+ curName +' has started his engine'
 			);
-
-			var curTxt = 'C: '+ curName +' has started his engine';
-			var curCMD = 'trigger.action.outTextForCoalition('+_.get(curObj, 'iPlayerSide')+', "'+curTxt+'", 5)';
-			var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
-			var actionObj = {actionObj: sendClient, queName: 'clientArray'};
-			dbMapServiceController.cmdQueActions('save', serverName, actionObj);
 
 			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 		}
