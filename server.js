@@ -1527,7 +1527,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			DCSLuaCommands.sendMesgToCoalition(
 				_.get(curObj, 'iPlayerSide'),
 				serverName,
-				'C: '+ curName +' enters a brand new ' + _.set(curObj, 'iPlayerUnitType'),
+				'C: '+ curName +' enters a brand new ' + _.get(curObj, 'iPlayerUnitType'),
 				5
 			);
 
