@@ -163,7 +163,6 @@ protectedRouter.route('/servers/:server_name')
 
 protectedRouter.route('/userAccounts')
 	.post(function (req, res) {
-		//console.log(req.user.sub);
 		dbSystemServiceController.userAccountActions('create', req.body)
 			.then(function (resp) {
 				res.json(resp);
@@ -200,7 +199,6 @@ function isNumeric(x) {
 }
 
 function initUnits(serverName, socketID, authId) {
-	console.log('sendInitUNITS for ', serverName, ' for socket ', socketID);
 	var curIP = io.sockets.connected[socketID].conn.remoteAddress.replace("::ffff:", "");
 	var initQue = {que: []};
 	if (curIP === ':10308') {
@@ -210,20 +208,15 @@ function initUnits(serverName, socketID, authId) {
 	dbSystemServiceController.userAccountActions('read')
 		.then(function (userAccounts) {
 			var curAccount;
-			//console.log('user1');
 			if (authId) {
 				curAccount = _.find(userAccounts, {authId: authId});
-				//console.log('user2', curAccount);
 			}
-			//console.log('user3');
-			//console.log('curAccountucid1: ', curAccount.ucid);
 			dbMapServiceController.srvPlayerActions('read', serverName)
 				.then(function (srvPlayers) {
 					var pSide;
 					var curSrvPlayer;
 					var curActUpdate;
 					if (curAccount) {
-						//console.log('cur account not undefined');
 						if (curAccount.ucid) {
 							curSrvPlayer = _.find(srvPlayers, {ucid: curAccount.ucid});
 						} else {
@@ -233,13 +226,11 @@ function initUnits(serverName, socketID, authId) {
 								}
 								return false
 							});
-							//console.log('curSrvPlayer: ', curSrvPlayer);
 							curActUpdate = {
 								ucid: _.get(curSrvPlayer, 'ucid', ''),
 								gameName: _.get(curSrvPlayer, 'name', ''),
 								lastIp: _.get(curSrvPlayer, 'ipaddr', '')
 							};
-							//console.log('curActUpdate: ', curActUpdate);
 							dbSystemServiceController.userAccountActions('update', curActUpdate)
 								.then(function (data) {
 
@@ -255,7 +246,6 @@ function initUnits(serverName, socketID, authId) {
 							pSide = _.get(curSrvPlayer, 'side', 0);
 						}
 					} else {
-						console.log('cur account IS undefined');
 						pSide = _.find(srvPlayers, function (player) {
 							if (_.includes(player.ipaddr, curIP)) {
 								return true;
@@ -297,7 +287,6 @@ function initUnits(serverName, socketID, authId) {
 							chkPayload.que.push(initQue.que[0]);
 							initQue.que.shift();
 						}
-						//console.log('que: ',chkPayload);
 						_.set(chkPayload, 'name', serverName);
 						io.to(socketID).emit('srvUpd', chkPayload);
 						chkPayload = {que: []};
@@ -320,7 +309,6 @@ function sendInit(serverName, socketID, authId) {
 	if (socketID === 'all') {
 		//problem, find out what sockets are on what server.....
 		_.forEach(io.sockets.sockets, function (socket) {
-			console.log('send init to all clients', socket.id);
 			initUnits(serverName, socket.id, authId);
 		});
 	} else {
@@ -331,39 +319,31 @@ function sendInit(serverName, socketID, authId) {
 
 function setSocketRoom(socket, room) {
 	if (socket.room) {
-		console.log('leaving room: ', socket.room);
 		socket.leave(socket.room);
 	}
 	socket.room = room;
 	socket.join(room);
-	console.log('socket.room: ', room);
 }
 
 function setRoomSide(socket, roomObj) {
 	var srvPlayer;
 	var pSide;
-	console.log('setroom: ', roomObj, socket.id);
 	var curIP = socket.conn.remoteAddress.replace("::ffff:", "");
 	if (curIP === ':10308') {
 		curIP = '127.0.0.1';
 	}
-	console.log('Set Room IP: ', curIP);
 
 	if (roomObj.server === 'leaderboard') {
 		setSocketRoom(socket, 'leaderboard');
 	} else {
 		dbSystemServiceController.userAccountActions('read')
 			.then(function (userAccounts) {
-				//console.log(userAccounts);
 				var curAccount = _.find(userAccounts, {authId: roomObj.authId}); // might have to decrypt authtoken...
 				if (curAccount) {
-					console.log('curacct: ', curAccount);
 					dbMapServiceController.srvPlayerActions('read', roomObj.server)
 						.then(function (srvPlayers) {
-							//console.log('srvPlayers: ',srvPlayers);
 							if(curAccount.ucid) {
 								srvPlayer = _.find(srvPlayers, {ucid: curAccount.ucid});
-								console.log('srvP line367: ', srvPlayer, {ucid: curAccount.ucid}, srvPlayers);
 								if(srvPlayer.side) {
 									pSide = srvPlayer.side;
 								} else {
@@ -371,7 +351,6 @@ function setRoomSide(socket, roomObj) {
 								}
 							} else {
 								srvPlayer = _.find(srvPlayers, function (player) { //{ipaddr: curIP}
-									//console.log('ipcomp: ', player.ipaddr, curIP );
 									if (_.includes(player.ipaddr, curIP)) {
 										return true;
 									}
@@ -383,7 +362,6 @@ function setRoomSide(socket, roomObj) {
 									console.log('srvPlayer doesnt have a side line 383');
 								}
 							}
-							//console.log('setroomPSide: ', pSide);
 							if (curAccount.permLvl < 20) {
 								setSocketRoom(socket, roomObj.server + '_qadmin');
 							} else if (pSide === 1 || pSide === 2) {
@@ -395,11 +373,9 @@ function setRoomSide(socket, roomObj) {
 						});
 					;
 				} else {
-					console.log('no account detected, match with ip now', roomObj.server);
 					dbMapServiceController.srvPlayerActions('read', roomObj.server)
 						.then(function (srvPlayers) {
 							var curPlayer = _.find(srvPlayers, function (player) { //{ipaddr: curIP}
-								//console.log('ipcomp: ', player.ipaddr, curIP );
 								if (_.includes(player.ipaddr, curIP)) {
 									console.log('player l392: ', player);
 									return true;
@@ -435,8 +411,6 @@ io.on('connection', function (socket) {
 		curIP = '127.0.0.1';
 	}
 
-	console.log('curIP: ', curIP);
-
 	console.log(socket.id + ' connected on ' + curIP + ' with ID: ' + socket.handshake.query.authId);
 	if (socket.handshake.query.authId === 'null') {
 		console.log('NOT LOGGED IN', socket.handshake.query.authId);
@@ -446,7 +420,6 @@ io.on('connection', function (socket) {
 
 		socket.on('clientUpd', function (data) {
 			if (data.action === 'unitINIT') {
-				console.log('socket on clientUpdate unitINIT');
 				if (curServers[data.name]) {
 					sendInit(data.name, socket.id, data.authId);
 				}
@@ -476,7 +449,6 @@ io.on('connection', function (socket) {
 				});
 
 				socket.on('clientUpd', function (data) {
-					console.log('data: ', data);
 					if (data.action === 'unitINIT') {
 						if (curServers[data.name]) {
 							sendInit(data.name, socket.id, data.authId);
@@ -503,7 +475,6 @@ io.on('connection', function (socket) {
 });
 
 _.set(curServers, 'processQue', function (serverName, sessionName, update) {
-	//console.log('process que: ', serverName, update);
 	if (update.unitCount) {
 		if (update.unitCount !== curServers[serverName].serverObject.units.length) {
 			console.log('out of sync for ' + serverName + ' units: '+ update.unitCount + ' verse ' + curServers[serverName].serverObject.units.length);
@@ -585,7 +556,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			}
 		}
 		if (_.get(queObj, 'action') === 'D') {
-			// console.log('delete: ',queObj);
 			curObj = {
 				action: 'D',
 				sessionName: sessionName,
@@ -612,6 +582,10 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					var matchPlayer = _.find(curServers[serverName].serverObject.players, {ucid: player.ucid});
 					if(matchPlayer) {
 						if ((matchPlayer.side !== player.side) && player.side !== 0) {
+							DCSLuaCommands.sendMesgToAll(
+								serverName,
+								'A: '+getSide(_.get(matchPlayer, 'side'))+' '+_.get(player, 'name')+' has commited Treason and switched to '+getSide(_.get(player, 'side'))+'. Shoot on sight! -1000pts'
+							);
 							dbSystemServiceController.userAccountActions('read')
 								.then(function (resp) {
 									switchedPlayer = nonaccountUsers[player.ucid];
@@ -622,8 +596,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 											setSocketRoom(io.sockets.connected[switchedPlayer.curSocket], serverName + '_padmin');
 										} else if (player.side && (player.side === 1 || player.side === 2)) {
 											setSocketRoom(io.sockets.connected[switchedPlayer.curSocket], serverName + '_q' + player.side);
-										} else {
-											setSocketRoom (io.sockets.connected[switchedPlayer.curSocket], serverName+'_q0');
 										}
 									}
 								})
@@ -639,7 +611,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 
 			});
 			//
-			//console.log(curServers[serverName].serverObject.players);
 			curServers[serverName].serverObject.players = queObj.data;
 			//apply local information object
 
@@ -654,21 +625,12 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						if (data.ipaddr === ':10308') {
 							data.ipaddr = '127.0.0.1';
 						}
-						//update user based table (based on ucid)
-						//console.log('playerinc: ', data);
 						var curActUpdate = {
 							ucid: _.get(data, 'ucid', ''),
 							gameName: _.get(data, 'name', ''),
 							lastIp: _.get(data, 'ipaddr', ''),
 							side: _.get(data, 'side', '')
 						};
-
-						// console.log('line 656 player, wrongful player ucid update: ', data, curActUpdate);
-						/*
-						if (curActUpdate.ucid !== '') {
-							dbSystemServiceController.userAccountActions('update', curActUpdate);
-						}
-						*/
 					}
 				}
 			});
@@ -683,9 +645,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		//Base Info
 		if (_.get(queObj, 'action') === 'baseInfo') {
 			_.set(queObj, 'sessionName', sessionName);
-			//var blah = 'Vaziani-West_FARP';
-			//console.log('baseinfo: ', queObj, queObj.data[blah]);
-			//send response straight to client id
 			_.forEach(queObj.data, function (value, key) {
 				curObj = {
 					_id: key,
@@ -713,7 +672,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		if (_.get(queObj, 'action') === 'MESG') {
 			_.set(queObj, 'sessionName', sessionName);
 			console.log('mesg: ', queObj);
-			//console.log(serverObject.players);
 			if (_.get(queObj, 'data.playerID')) {
 				if (_.isNumber(_.get(_.find(curServers[serverName].serverObject.players, {'id': _.get(queObj, 'data.playerID')}), 'side', 0))) {
 					curServers[serverName].updateQue['q' + _.get(_.find(curServers[serverName].serverObject.players, {'id': _.get(queObj, 'data.playerID')}), 'side', 0)]
@@ -724,7 +682,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		}
 
 		_.set(queObj, 'data.sessionName', sessionName);
-		//console.log('players: ', _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg1}));
 
 		function getSide (side) {
 			if(side === 0){
@@ -755,7 +712,14 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			}
 			console.log('event: ', curObj);
 			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+
+			DCSLuaCommands.sendMesgToAll(
+				serverName,
+				'A: '+getSide(_.get(iPlayer, 'side'))+' '+_.get(iPlayer, 'name')+' has accidentally killed '+_.get(tPlayer, 'name')+' with a '+_.get(curObj, 'weaponName')+' - 100pts'
+			);
 		}
+
+		/*
 		if (_.get(queObj, 'action') === 'mission_end') {
 			// "mission_end", winner, msg
 			curObj = {sessionName: sessionName, name: queObj.data.name};
@@ -785,6 +749,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			console.log('event: ', curObj);
 			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 		}
+		*/
+
 		if (_.get(queObj, 'action') === 'self_kill') {
 			// "self_kill", playerID
 			curObj = {sessionName: sessionName, name: queObj.data.name};
@@ -795,7 +761,13 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			}
 			console.log('event: ', curObj);
 			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+
+			DCSLuaCommands.sendMesgToAll(
+				serverName,
+				'A: '+getSide(_.get(iPlayer, 'side'))+' '+_.get(iPlayer, 'name')+' has killed himself'
+			);
 		}
+
 		if (_.get(queObj, 'action') === 'change_slot') {
 			// "change_slot", playerID, slotID, prevSide
 			curObj = {sessionName: sessionName, name: queObj.data.name};
@@ -824,6 +796,11 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			_.set(curObj, 'iPlayerName', _.get(queObj, 'data.arg2'));
 			console.log('event: ', curObj);
 			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+
+			DCSLuaCommands.sendMesgToAll(
+				serverName,
+				'A: '+_.get(iPlayer, 'name')+' has connected - Ping:'+_.get(iPlayer, 'ping')+' Lang:'+_.get(iPlayer, 'lang')
+			);
 		}
 		if (_.get(queObj, 'action') === 'disconnect') {
 			// "disconnect", playerID, name, playerSide, reason_code
@@ -838,7 +815,13 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			_.set(curObj, 'reasonCode', _.get(queObj, 'data.arg4'));
 			console.log('event: ', curObj);
 			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+
+			DCSLuaCommands.sendMesgToAll(
+				serverName,
+				'A: '+_.get(iPlayer, 'name')+' has disconnected - Ping:'+_.get(iPlayer, 'ping')+' Lang:'+_.get(iPlayer, 'lang')
+			);
 		}
+		/*
 		if (_.get(queObj, 'action') === 'crash') {
 			// "crash", playerID, unit_missionID
 			curObj = {sessionName: sessionName, name: queObj.data.name};
@@ -901,7 +884,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			console.log('event: ', curObj);
 			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 		}
-
+		*/
 		// Client Side Events
 		// name = eventType
 		// arg1 = eventTypeID
@@ -1010,12 +993,10 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 
 
 
-					var curTxt = 'A: '+ getSide(_.get(curObj, 'iPlayerSide'))+' '+ iPlayer +' has hit '+getSide(_.get(curObj, 'tPlayerSide'))+' ' + tPlayer + ' with ' + _.get(curObj, 'weaponName') + ' - +'+_.get(curObj, 'score');
-					// var curCMD = 'trigger.action.outTextForCoalition('+_.get(curObj, 'iPlayerSide')+', "'+curTxt+'", 5)';
-					var curCMD = 'trigger.action.outText("'+curTxt+'", 5)';
-					var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
-					var actionObj = {actionObj: sendClient, queName: 'clientArray'};
-					dbMapServiceController.cmdQueActions('save', serverName, actionObj);
+					// var curTxt = 'A: '+ getSide(_.get(curObj, 'iPlayerSide'))+' '+ iPlayer +' has hit '+getSide(_.get(curObj, 'tPlayerSide'))+' ' + tPlayer + ' with ' + _.get(curObj, 'weaponName') + ' - +'+_.get(curObj, 'score');
+					// DCSLuaCommands
+
+
 				})
 				.catch(function (err) {
 					console.log('Eevent: ', curObj);
@@ -1169,6 +1150,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				}
 			}
 
+			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+
 			var curName;
 			if (_.get(curObj, 'iPlayerName')){
 				curName = _.get(curObj, 'iPlayerName');
@@ -1176,14 +1159,10 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				curName = _.get(curObj, 'iPlayerUnitType', '""');
 			}
 
-			var curTxt = 'A: '+getSide( _.get(curObj, 'iPlayerSide'))+' '+ curName +' ejected';
-			var curCMD = 'trigger.action.outText("'+curTxt+'", 5)';
-			var sendClient = {action: 'CMD', cmd: curCMD, reqID: 0};  // cmd:'trigger.action.outText("IT WORKS MOFO!", 2)'
-			var actionObj = {actionObj: sendClient, queName: 'clientArray'};
-			dbMapServiceController.cmdQueActions('save', serverName, actionObj);
-
-			console.log('event: ', curObj);
-			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+			DCSLuaCommands.sendMesgToAll(
+				serverName,
+				'A: '+getSide( _.get(curObj, 'iPlayerSide'))+' '+ curName +' ejected'
+			);
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_REFUELING') {
 			// Occurs when an aircraft connects with a tanker and begins taking on fuel.

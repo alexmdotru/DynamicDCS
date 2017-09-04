@@ -5,21 +5,48 @@ const dbMapServiceController = require('./dbMapService'); // reqClientArray, reg
 
 exports.createSocket = function (serverName, serverAddress, clientPort, gameGuiPort, callback, io, initClear) {
 	var dsock = this;
-	dsock.serverName = serverName;
-	dsock.serverAddress = serverAddress;
-	dsock.clientPort = clientPort;
-	dsock.GameGuiPort = gameGuiPort;
-	dsock.callback = callback;
-	dsock.io = io;
-	dsock.initClear = initClear;
-	dsock.clientConnOpen = true;
-	dsock.gameGUIConnOpen = true;
-	dsock.client = {};
-	dsock.gameGUI = {};
-	dsock.clientBuffer = {};
-	dsock.gameGUIBuffer = {};
-	dsock.startTime = new Date().valueOf() ;
-	dsock.sessionName = serverName+'_'+dsock.startTime;
+	_.set(dsock, 'serverName', serverName);
+	_.set(dsock, 'serverAddress', serverAddress);
+	_.set(dsock, 'clientPort', clientPort);
+	_.set(dsock, 'GameGuiPort', gameGuiPort);
+	_.set(dsock, 'callback', callback);
+	_.set(dsock, 'io', io);
+	_.set(dsock, 'initClear', initClear);
+	_.set(dsock, 'clientConnOpen', true);
+	_.set(dsock, 'gameGUIConnOpen', true);
+	_.set(dsock, 'client', {});
+	_.set(dsock, 'gameGUI', {});
+	_.set(dsock, 'clientBuffer', {});
+	_.set(dsock, 'gameGUIBuffer', {});
+	_.set(dsock, 'startTime', new Date().valueOf() );
+	_.set(dsock, 'sessionName', serverName+'_'+dsock.startTime);
+	_.set(dsock, 'writeQue.client', []);
+	_.set(dsock, 'writeQue.gameGUI', []);
+
+	setInterval(function () { //sending FULL SPEED AHEAD, 1 per milsec (watch for weird errors, etc)
+		dbMapServiceController.cmdQueActions('grabNextQue', serverName, {queName: 'clientArray'})
+			.then(function (resp) {
+				if (resp) {
+					_.get(dsock, 'writeQue.client').push({
+						action: resp.actionObj.action,
+						cmd: resp.actionObj.cmd,
+						reqID: resp._id
+					});
+				}
+			})
+		;
+		dbMapServiceController.cmdQueActions('grabNextQue', serverName, {queName: 'GameGuiArray'})
+			.then(function (resp) {
+				if (resp) {
+					_.get(dsock, 'writeQue.gameGUI').push({
+						action: resp.actionObj.action,
+						cmd: resp.actionObj.cmd,
+						reqID: resp._id
+					});
+				}
+			})
+		;
+	}, 200);
 
 	dsock.connectClient = function () {
 		dsock.client = net.createConnection({
@@ -38,41 +65,15 @@ exports.createSocket = function (serverName, serverAddress, clientPort, gameGuiP
 			dsock.initClear(serverName, 'client');
 			dsock.client.write('{"action":"NONE"}' + "\n");
 		});
+
 		dsock.client.on('data', (data) => {
-			var curClientCmd = {};
 			dsock.clientBuffer += data;
 			while ((i = dsock.clientBuffer.indexOf("\n")) >= 0) {
 				var data = JSON.parse(dsock.clientBuffer.substring(0, i));
 				dsock.callback(serverName, dsock.sessionName, data);
 				dsock.clientBuffer = dsock.clientBuffer.substring(i + 1);
-				dsock.client.write(JSON.stringify({action: 'NONE'}) + "\n");
-				dbMapServiceController.cmdQueActions('grabNextQue', serverName, {queName: 'clientArray'})
-					.then(function (resp) {
-						if (resp) {
-							if (resp.actionObj.action === 'CMD') {
-								if (resp.actionObj.cmd) {
-									dsock.reqClientArray = {
-										action: resp.actionObj.action,
-										cmd: resp.actionObj.cmd,
-										reqID: resp._id
-									};
-								}
-							} else {
-								dsock.reqClientArray = {
-									action: resp.actionObj.action,
-									cmd: '',
-									reqID: resp._id
-								};
-							}
-						} else {
-							dsock.reqClientArray = {action: 'NONE'};
-						}
-						dsock.reqClientArray = {action: 'NONE'};
-					})
-				;
-				curClientCmd = _.get(dsock, 'reqClientArray', {action: 'NONE'});
-				dsock.client.write(JSON.stringify(curClientCmd) + "\n"); // dont ever let this line wait, it will stop the entire server waiting......
-				// console.log('cmdclient: ', curClientCmd);
+				dsock.client.write(JSON.stringify(_.get(dsock, ['writeQue', 'client', 0], '{"action":"NONE"}')) + "\n");
+				_.get(dsock, ['writeQue', 'client']).shift();
 			}
 		});
 
@@ -103,39 +104,13 @@ exports.createSocket = function (serverName, serverAddress, clientPort, gameGuiP
 			dsock.gameGUI.write('{"action":"NONE"}' + "\n");
 		});
 		dsock.gameGUI.on('data', (data) => {
-			var curGameGuiCmd = {};
 			dsock.gameGUIBuffer += data;
 			while ((i = dsock.gameGUIBuffer.indexOf("\n")) >= 0) {
 				var data = JSON.parse(dsock.gameGUIBuffer.substring(0, i));
 				dsock.callback(serverName, dsock.sessionName, data);
 				dsock.gameGUIBuffer = dsock.gameGUIBuffer.substring(i + 1);
-				dsock.gameGUI.write(JSON.stringify({action: 'NONE'}) + "\n"); // dont ever let this line wait, it will stop the entire server waiting......
-				dbMapServiceController.cmdQueActions('grabNextQue', serverName, {queName: 'GameGuiArray'})
-					.then(function (resp) {
-						if (resp) {
-							if( resp.action === 'CMD' ) {
-								if (resp.cmd) {
-									dsock.reqGameGuiArray = {
-										action: resp.action,
-										cmd: resp.cmd,
-										reqID: resp._id
-									};
-								}
-							} else {
-								dsock.reqGameGuiArray = {
-									action: resp.action,
-									cmd: '',
-									reqID: resp._id
-								};
-							}
-						} else {
-							dsock.reqGameGuiArray = {action: 'NONE'};
-						}
-					})
-				;
-				curGameGuiCmd = _.get(dsock, 'reqGameGuiArray', {action: 'NONE'});
-				// console.log('curgamegui: '+ curGameGuiCmd.action);
-				dsock.gameGUI.write(JSON.stringify(curGameGuiCmd) + "\n"); // dont ever let this line wait, it will stop the entire server waiting......
+				dsock.gameGUI.write(JSON.stringify(_.get(dsock, ['writeQue', 'gameGUI', 0], '{"action":"NONE"}')) + "\n");
+				_.get(dsock, ['writeQue', 'gameGUI']).shift();
 			}
 		});
 		dsock.gameGUI.on('close', () => {
