@@ -802,7 +802,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 
 			DCSLuaCommands.sendMesgToAll(
 				serverName,
-				'A: '+_.get(iPlayer, 'name')+' has connected - Ping:'+_.get(iPlayer, 'ping')+' Lang:'+_.get(iPlayer, 'lang')
+				'A: '+_.get(curObj, 'iPlayerName')+' has connected'
 			);
 		}
 		if (_.get(queObj, 'action') === 'disconnect') {
