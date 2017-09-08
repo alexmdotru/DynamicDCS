@@ -954,7 +954,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						20
 					);
 					console.log('user1: ', user);
-					delete user;
+					delete shootingUsers[key];
 					console.log('user2: ', user);
 				};
 
