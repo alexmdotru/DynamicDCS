@@ -957,7 +957,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				console.log('key2: ', key);
 			};
 		});
-		_.set(shootingUsers, [iPlayer.ucid, 'startTime'], new Date().getTime());
 
 		if (_.get(queObj, 'action') === 'S_EVENT_HIT') {
 			// console.log('eventhit');
