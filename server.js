@@ -953,8 +953,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						_.get(user, ['mesg']),
 						20
 					);
-					console.log('FIRE COMMANDS');
-					user.remove();
+					delete user;
 				};
 
 			});
