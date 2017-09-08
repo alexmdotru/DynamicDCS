@@ -1039,27 +1039,17 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				_.set(curObj, 'weaponName', _.get(queObj, ['data', 'arg7', 'unitType']));
 				_.set(curObj, 'weaponDisplayName', _.get(queObj, ['data', 'arg7', 'unitType']));
 				_.set(curObj, 'score', 1);
-
-				if (_.startsWith(_.get(curObj, 'weaponName'), 'weapons.shells')){
-					console.log('shooting shells2', _.get(shootingUsers, [iPlayer.ucid, 'startTime']) + 1000, new Date().getTime());
-					_.set(shootingUsers, [iPlayer.ucid, 'count'], _.get(shootingUsers, [iPlayer.ucid, 'count'], 0)+1);
-					// display msg once every 5 secs
-					if(_.get(shootingUsers, [iPlayer.ucid, 'startTime']) + 1000 < new Date().getTime()){
-						DCSLuaCommands.sendMesgToAll(
-							serverName,
-							'A: '+ getSide(_.get(curObj, 'iPlayerSide'))+' '+ iPlayer +' has hit '+getSide(_.get(curObj, 'tPlayerSide'))+' ' + tPlayer + ' '+_.get(shootingUsers, [iPlayer.ucid, 'count'], 0)+' times with ' + _.get(curObj, 'weaponDisplayName') + ' - +'+_.get(curObj, 'score'),
-							20
-						);
-						_.set(shootingUsers, [iPlayer.ucid, 'count'], 0);
-					};
-				} else {
-					console.log('other weapons2');
+				console.log('shooting shells2', _.get(shootingUsers, [iPlayer.ucid, 'startTime']) + 1000, new Date().getTime());
+				_.set(shootingUsers, [iPlayer.ucid, 'count'], _.get(shootingUsers, [iPlayer.ucid, 'count'], 0)+1);
+				// display msg once every 5 secs
+				if(_.get(shootingUsers, [iPlayer.ucid, 'startTime']) + 1000 < new Date().getTime()){
 					DCSLuaCommands.sendMesgToAll(
 						serverName,
-						'A: '+ getSide(_.get(curObj, 'iPlayerSide'))+' '+ iPlayer +' has hit '+getSide(_.get(curObj, 'tPlayerSide'))+' '+tPlayer + ' with ' + _.get(curObj, 'weaponDisplayName') + ' - +'+_.get(curObj, 'score'),
+						'A: '+ getSide(_.get(curObj, 'iPlayerSide'))+' '+ iPlayer +' has hit '+getSide(_.get(curObj, 'tPlayerSide'))+' ' + tPlayer + ' '+_.get(shootingUsers, [iPlayer.ucid, 'count'], 0)+' times with ' + _.get(curObj, 'weaponDisplayName') + ' - +'+_.get(curObj, 'score'),
 						20
 					);
-				}
+					_.set(shootingUsers, [iPlayer.ucid, 'count'], 0);
+				};
 				console.log('HitNoWeaponNameevent: ', curObj);
 				dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 			}
