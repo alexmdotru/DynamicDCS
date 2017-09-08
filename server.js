@@ -378,7 +378,7 @@ function setRoomSide(socket, roomObj) {
 						.then(function (srvPlayers) {
 							var curPlayer = _.find(srvPlayers, function (player) { //{ipaddr: curIP}
 								if (_.includes(player.ipaddr, curIP)) {
-									console.log('player l392: ', player);
+									console.log('player line392: ', player);
 									return true;
 								}
 								return false;
