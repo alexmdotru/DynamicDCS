@@ -948,6 +948,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			// arg3 = initiatorId
 			// arg4 = targetId
 			// arg7 = WeaponId
+			console.log('weaponId: ', _.get(queObj, 'data.arg7'));
 			curObj = {sessionName: sessionName, name: queObj.data.name};
 			_.set(curObj, 'eventId', _.get(queObj, 'data.arg1'));
 			_.set(curObj, 'time', _.get(queObj, 'data.arg2'));
