@@ -9,7 +9,7 @@ _.set(exports, 'sendMesgToAll', function (serverName, mesg, time) {
 	var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
 	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
 	console.log('STA: ', serverName, actionObj);
-	// dbMapServiceController.cmdQueActions('save', serverName, actionObj);
+	dbMapServiceController.cmdQueActions('save', serverName, actionObj);
 });
 
 _.set(exports, 'sendMesgToCoalition', function (coalition, serverName, mesg, time) {
@@ -17,5 +17,5 @@ _.set(exports, 'sendMesgToCoalition', function (coalition, serverName, mesg, tim
 	var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
 	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
 	console.log('SMTC: ', serverName, actionObj);
-	// dbMapServiceController.cmdQueActions('save', serverName, actionObj);
+	dbMapServiceController.cmdQueActions('save', serverName, actionObj);
 });
