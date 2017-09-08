@@ -1039,7 +1039,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				_.set(curObj, 'weaponName', _.get(queObj, ['data', 'arg7', 'unitType']));
 				_.set(curObj, 'weaponDisplayName', _.get(queObj, ['data', 'arg7', 'unitType']));
 				_.set(curObj, 'score', 1);
-				console.log('shooting shells2', _.get(shootingUsers, [iPlayer.ucid, 'startTime']) + 1000, new Date().getTime());
+				console.log('shooting shells2', _.get(shootingUsers, [iPlayer.ucid, 'startTime']) + 2000, new Date().getTime());
 				_.set(shootingUsers, [iPlayer.ucid, 'count'], _.get(shootingUsers, [iPlayer.ucid, 'count'], 0)+1);
 				// display msg once every 5 secs
 				if(_.get(shootingUsers, [iPlayer.ucid, 'startTime']) + 1000 < new Date().getTime()){
