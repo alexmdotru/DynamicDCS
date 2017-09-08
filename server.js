@@ -708,6 +708,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			if (iPlayer) {
 				_.set(curObj, 'iPlayerUcid', _.get(iPlayer, 'ucid', queObj.data.arg1));
 			}
+			console.log('WEAPONSSSSS: ', _.get(queObj, 'data.arg2'));
 			_.set(curObj, 'weaponName', _.get(queObj, 'data.arg2'));
 			_.set(curObj, 'tPlayerId', _.get(queObj, 'data.arg3'));
 			tPlayer = _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg3});
@@ -1037,7 +1038,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				console.log('NONDBLOOKUP: ', _.get(queObj, ['data', 'arg7', 'unitType']));
 				_.set(curObj, 'weaponName', _.get(queObj, ['data', 'arg7', 'unitType']));
 				_.set(curObj, 'weaponDisplayName', _.get(queObj, ['data', 'arg7', 'unitType']));
-				_.set(curObj, 'score', 10);
+				_.set(curObj, 'score', 1);
 
 				if (_.startsWith(_.get(curObj, 'weaponName'), 'weapons.shells')){
 					console.log('shooting shells2', _.get(shootingUsers, [iPlayer.ucid, 'startTime']) + 1000, new Date().getTime());
