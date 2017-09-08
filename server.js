@@ -948,7 +948,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			// arg3 = initiatorId
 			// arg4 = targetId
 			// arg7 = WeaponId
-			console.log('weaponId: ', _.get(queObj, 'data.arg7'));
 			curObj = {sessionName: sessionName, name: queObj.data.name};
 			_.set(curObj, 'eventId', _.get(queObj, 'data.arg1'));
 			_.set(curObj, 'time', _.get(queObj, 'data.arg2'));
@@ -967,72 +966,99 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				}
 				_.set(queObj, ['data', 'arg7', 'unitType'], _.get(iUnit, 'type', ''));
 			}
-			console.log('read weapon type: ', _.get(queObj, 'data.arg7'));
-			dbSystemServiceController.weaponScoreActions('read', _.get(queObj, 'data.arg7'))
-				.then(function (weaponResp) {
-					_.set(curObj, 'weaponName', _.get(weaponResp, 'name'));
-					_.set(curObj, 'weaponDisplayName', _.get(weaponResp, 'displayName'));
-					_.set(curObj, 'score', _.get(weaponResp, 'score'));
-					tUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg4});
-					if (tUnit) {
-						_.set(curObj, 'tPlayerUnitType', _.get(tUnit, 'type', ''));
-						_.set(curObj, 'tPlayerSide', _.get(tUnit, 'coalition', 0));
-						_.set(curObj, 'tPlayerName', _.get(tUnit, 'playername', ''));
-						if (tUnit.playername !== '') {
-							tPlayer = _.find(curServers[serverName].serverObject.players, {name: tUnit.playername});
-							if (tPlayer) {
-								_.set(curObj, 'tPlayerUcid', tPlayer.ucid);
-							}
-						}
-					}
-					// console.log('Tevent: ', curObj);
-					dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 
-					// obj cmd for sending mesg to clients
-					var iPlayer;
-					if (_.get(curObj, 'iPlayerName')){
-						iPlayer = _.get(curObj, 'iPlayerName')+' in '+_.get(curObj, 'iPlayerUnitType');
-					} else {
-						iPlayer = _.get(curObj, 'iPlayerUnitType', '""');
+			tUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg4});
+			if (tUnit) {
+				_.set(curObj, 'tPlayerUnitType', _.get(tUnit, 'type', ''));
+				_.set(curObj, 'tPlayerSide', _.get(tUnit, 'coalition', 0));
+				_.set(curObj, 'tPlayerName', _.get(tUnit, 'playername', ''));
+				if (tUnit.playername !== '') {
+					tPlayer = _.find(curServers[serverName].serverObject.players, {name: tUnit.playername});
+					if (tPlayer) {
+						_.set(curObj, 'tPlayerUcid', tPlayer.ucid);
 					}
-					var tPlayer;
-					if (_.get(curObj, 'tPlayerName')){
-						tPlayer = _.get(curObj, 'tPlayerName')+' in '+_.get(curObj, 'tPlayerUnitType');
-					} else {
-						tPlayer = _.get(curObj, 'tPlayerUnitType', '""');
-					}
+				}
+			}
 
-					// console.log(serverName, 'HITHIT', getSide(_.get(curObj, 'iPlayerSide')), iPlayer, getSide(_.get(curObj, 'tPlayerSide')), tPlayer, _.get(shootingUsers, [iPlayer.ucid, 'count'], 0), _.get(curObj, 'weaponDisplayName'), _.get(curObj, 'score'));
-					if (_.startsWith(_.get(curObj, 'weaponName'), 'weapons.shells')){
-						console.log('shooting shells', _.get(shootingUsers, [iPlayer.ucid, 'startTime']) + 1000, new Date().getTime());
-						_.set(shootingUsers, [iPlayer.ucid, 'count'], _.get(shootingUsers, [iPlayer.ucid, 'count'], 0)+1);
-						// display msg once every 5 secs
-						if(_.get(shootingUsers, [iPlayer.ucid, 'startTime']) + 1000 < new Date().getTime()){
+			// obj cmd for sending mesg to clients
+			var iPlayer;
+			if (_.get(curObj, 'iPlayerName')){
+				iPlayer = _.get(curObj, 'iPlayerName')+' in '+_.get(curObj, 'iPlayerUnitType');
+			} else {
+				iPlayer = _.get(curObj, 'iPlayerUnitType', '""');
+			}
+			var tPlayer;
+			if (_.get(curObj, 'tPlayerName')){
+				tPlayer = _.get(curObj, 'tPlayerName')+' in '+_.get(curObj, 'tPlayerUnitType');
+			} else {
+				tPlayer = _.get(curObj, 'tPlayerUnitType', '""');
+			}
+
+			// console.log('Tevent: ', curObj);
+			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+
+			if( _.get(queObj, ['data', 'arg7'])){
+				dbSystemServiceController.weaponScoreActions('read', _.get(queObj, 'data.arg7'))
+					.then(function (weaponResp) {
+						_.set(curObj, 'weaponName', _.get(weaponResp, 'name'));
+						_.set(curObj, 'weaponDisplayName', _.get(weaponResp, 'displayName'));
+						_.set(curObj, 'score', _.get(weaponResp, 'score'));
+
+						// console.log(serverName, 'HITHIT', getSide(_.get(curObj, 'iPlayerSide')), iPlayer, getSide(_.get(curObj, 'tPlayerSide')), tPlayer, _.get(shootingUsers, [iPlayer.ucid, 'count'], 0), _.get(curObj, 'weaponDisplayName'), _.get(curObj, 'score'));
+						if (_.startsWith(_.get(curObj, 'weaponName'), 'weapons.shells')){
+							console.log('shooting shells1', _.get(shootingUsers, [iPlayer.ucid, 'startTime']) + 1000, new Date().getTime());
+							_.set(shootingUsers, [iPlayer.ucid, 'count'], _.get(shootingUsers, [iPlayer.ucid, 'count'], 0)+1);
+							// display msg once every 5 secs
+							if(_.get(shootingUsers, [iPlayer.ucid, 'startTime']) + 1000 < new Date().getTime()){
+								DCSLuaCommands.sendMesgToAll(
+									serverName,
+									'A: '+ getSide(_.get(curObj, 'iPlayerSide'))+' '+ iPlayer +' has hit '+getSide(_.get(curObj, 'tPlayerSide'))+' ' + tPlayer + ' '+_.get(shootingUsers, [iPlayer.ucid, 'count'], 0)+' times with ' + _.get(curObj, 'weaponDisplayName') + ' - +'+_.get(curObj, 'score'),
+									20
+								);
+								_.set(shootingUsers, [iPlayer.ucid, 'count'], 0);
+							};
+						} else {
+							console.log('other weapons1');
 							DCSLuaCommands.sendMesgToAll(
 								serverName,
-								'A: '+ getSide(_.get(curObj, 'iPlayerSide'))+' '+ iPlayer +' has hit '+getSide(_.get(curObj, 'tPlayerSide'))+' ' + tPlayer + ' '+_.get(shootingUsers, [iPlayer.ucid, 'count'], 0)+' times with ' + _.get(curObj, 'weaponDisplayName') + ' - +'+_.get(curObj, 'score'),
+								'A: '+ getSide(_.get(curObj, 'iPlayerSide'))+' '+ iPlayer +' has hit '+getSide(_.get(curObj, 'tPlayerSide'))+' '+tPlayer + ' with ' + _.get(curObj, 'weaponDisplayName') + ' - +'+_.get(curObj, 'score'),
 								20
 							);
-							_.set(shootingUsers, [iPlayer.ucid, 'count'], 0);
-						};
-					} else {
-						console.log('other weapons');
+						}
+					})
+					.catch(function (err) {
+						console.log('Eevent: ', curObj, err);
+						dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+					});
+				;
+			} else {
+				_.set(curObj, 'weaponName', _.get(queObj, ['data', 'arg7', 'unitType']));
+				_.set(curObj, 'weaponDisplayName', _.get(queObj, ['data', 'arg7', 'unitType']));
+				_.set(curObj, 'score', 10);
+
+				if (_.startsWith(_.get(curObj, 'weaponName'), 'weapons.shells')){
+					console.log('shooting shells2', _.get(shootingUsers, [iPlayer.ucid, 'startTime']) + 1000, new Date().getTime());
+					_.set(shootingUsers, [iPlayer.ucid, 'count'], _.get(shootingUsers, [iPlayer.ucid, 'count'], 0)+1);
+					// display msg once every 5 secs
+					if(_.get(shootingUsers, [iPlayer.ucid, 'startTime']) + 1000 < new Date().getTime()){
 						DCSLuaCommands.sendMesgToAll(
 							serverName,
-							'A: '+ getSide(_.get(curObj, 'iPlayerSide'))+' '+ iPlayer +' has hit '+getSide(_.get(curObj, 'tPlayerSide'))+' '+tPlayer + ' with ' + _.get(curObj, 'weaponDisplayName') + ' - +'+_.get(curObj, 'score'),
+							'A: '+ getSide(_.get(curObj, 'iPlayerSide'))+' '+ iPlayer +' has hit '+getSide(_.get(curObj, 'tPlayerSide'))+' ' + tPlayer + ' '+_.get(shootingUsers, [iPlayer.ucid, 'count'], 0)+' times with ' + _.get(curObj, 'weaponDisplayName') + ' - +'+_.get(curObj, 'score'),
 							20
 						);
-					}
-
-					dbMapServiceController.statSrvEventActions('save', serverName, curObj);
-
-
-				})
-				.catch(function (err) {
-					console.log('Eevent: ', curObj, err);
-					dbMapServiceController.statSrvEventActions('save', serverName, curObj);
-				});
-			;
+						_.set(shootingUsers, [iPlayer.ucid, 'count'], 0);
+					};
+				} else {
+					console.log('other weapons2');
+					DCSLuaCommands.sendMesgToAll(
+						serverName,
+						'A: '+ getSide(_.get(curObj, 'iPlayerSide'))+' '+ iPlayer +' has hit '+getSide(_.get(curObj, 'tPlayerSide'))+' '+tPlayer + ' with ' + _.get(curObj, 'weaponDisplayName') + ' - +'+_.get(curObj, 'score'),
+						20
+					);
+				}
+				console.log('HitNoWeaponNameevent: ', curObj);
+				dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+			}
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_TAKEOFF') {
 			// Occurs when an aircraft takes off from an airbase, farp, or ship.
