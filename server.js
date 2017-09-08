@@ -941,6 +941,22 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				})
 			;
 		}
+
+
+		//run each tick to see if we need to write gun event
+		console.log('set obj: ', shootingUsers);
+		_.forEach(shootingUsers, function (user, key) {
+			if(_.get(user, ['startTime']) + 1500 < new Date().getTime()){
+				DCSLuaCommands.sendMesgToAll(
+					serverName,
+					_.get(user, ['mesg']),
+					20
+				);
+				_.remove(shootingUsers, key);
+			};
+		});
+		_.set(shootingUsers, [iPlayer.ucid, 'startTime'], new Date().getTime());
+
 		if (_.get(queObj, 'action') === 'S_EVENT_HIT') {
 			// console.log('eventhit');
 			// Occurs whenever an object is hit by a weapon.
@@ -999,8 +1015,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 
 			if( _.get(queObj, ['data', 'arg7', 'typeName'])){
-				console.log('DBLOOKUP1: ', _.get(queObj, ['data', 'arg7']));
-
 				dbSystemServiceController.weaponScoreActions('read', _.get(queObj, 'data.arg7'))
 					.then(function (weaponResp) {
 						_.set(curObj, 'weaponName', _.get(weaponResp, 'name'));
@@ -1009,17 +1023,13 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 
 						// console.log(serverName, 'HITHIT', getSide(_.get(curObj, 'iPlayerSide')), iPlayer, getSide(_.get(curObj, 'tPlayerSide')), tPlayer, _.get(shootingUsers, [iPlayer.ucid, 'count'], 0), _.get(curObj, 'weaponDisplayName'), _.get(curObj, 'score'));
 						if (_.startsWith(_.get(curObj, 'weaponName'), 'weapons.shells')){
-							console.log('shooting shells1', _.get(shootingUsers, [iPlayer.ucid, 'startTime']) + 1000, new Date().getTime());
 							_.set(shootingUsers, [iPlayer.ucid, 'count'], _.get(shootingUsers, [iPlayer.ucid, 'count'], 0)+1);
-							// display msg once every 5 secs
-							if(_.get(shootingUsers, [iPlayer.ucid, 'startTime']) + 1000 < new Date().getTime()){
-								DCSLuaCommands.sendMesgToAll(
-									serverName,
-									'A: '+ getSide(_.get(curObj, 'iPlayerSide'))+' '+ iPlayer +' has hit '+getSide(_.get(curObj, 'tPlayerSide'))+' ' + tPlayer + ' '+_.get(shootingUsers, [iPlayer.ucid, 'count'], 0)+' times with ' + _.get(curObj, 'weaponDisplayName') + ' - +'+_.get(curObj, 'score'),
-									20
-								);
-								_.set(shootingUsers, [iPlayer.ucid, 'count'], 0);
-							};
+							_.get(shootingUsers, [iPlayer.ucid, new Date().getTime()]);
+							_.set(
+								shootingUsers,
+								[iPlayer.ucid, 'mesg'],
+								'A: '+ getSide(_.get(curObj, 'iPlayerSide'))+' '+ iPlayer +' has hit '+getSide(_.get(curObj, 'tPlayerSide'))+' '+tPlayer + ' with ' + _.get(curObj, 'weaponDisplayName') + ' - +'+_.get(curObj, 'score')
+							);
 						} else {
 							console.log('other weapons1');
 							DCSLuaCommands.sendMesgToAll(
@@ -1035,22 +1045,17 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					});
 				;
 			} else {
-				console.log('NONDBLOOKUP: ', _.get(queObj, ['data', 'arg7', 'unitType']));
 				_.set(curObj, 'weaponName', _.get(queObj, ['data', 'arg7', 'unitType']));
 				_.set(curObj, 'weaponDisplayName', _.get(queObj, ['data', 'arg7', 'unitType']));
 				_.set(curObj, 'score', 1);
-				console.log('shooting shells2', _.get(shootingUsers, [iPlayer.ucid, 'startTime']) + 2000, new Date().getTime());
 				_.set(shootingUsers, [iPlayer.ucid, 'count'], _.get(shootingUsers, [iPlayer.ucid, 'count'], 0)+1);
-				// display msg once every 5 secs
-				if(_.get(shootingUsers, [iPlayer.ucid, 'startTime']) + 1000 < new Date().getTime()){
-					DCSLuaCommands.sendMesgToAll(
-						serverName,
-						'A: '+ getSide(_.get(curObj, 'iPlayerSide'))+' '+ iPlayer +' has hit '+getSide(_.get(curObj, 'tPlayerSide'))+' ' + tPlayer + ' '+_.get(shootingUsers, [iPlayer.ucid, 'count'], 0)+' times with ' + _.get(curObj, 'weaponDisplayName') + ' - +'+_.get(curObj, 'score'),
-						20
-					);
-					_.set(shootingUsers, [iPlayer.ucid, 'count'], 0);
-				};
-				console.log('HitNoWeaponNameevent: ', curObj);
+				_.get(shootingUsers, [iPlayer.ucid, new Date().getTime()]);
+				_.set(
+					shootingUsers,
+					[iPlayer.ucid, 'mesg'],
+					'A: '+ getSide(_.get(curObj, 'iPlayerSide'))+' '+ iPlayer +' has hit '+getSide(_.get(curObj, 'tPlayerSide'))+' '+tPlayer + ' with ' + _.get(curObj, 'weaponDisplayName') + ' - +'+_.get(curObj, 'score')
+				);
+
 				dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 			}
 		}
@@ -1599,7 +1604,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			// Occurs when any unit begins firing a weapon that has a high rate of fire.
 			// Most common with aircraft cannons (GAU-8), autocannons, and machine guns.
 			curObj = {sessionName: sessionName, name: queObj.data.name};
-			_.set(shootingUsers, [iPlayer.ucid, 'startTime'], new Date().getTime());
 			_.set(curObj, 'time', _.get(queObj, 'data.arg2'));
 			_.set(curObj, 'iPlayerUnitId', _.get(queObj, 'data.arg3'));
 			iUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg3});
