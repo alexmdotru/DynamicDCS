@@ -942,8 +942,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			;
 		}
 
-
-		/*
 		//run each tick to see if we need to write gun event
 		if(shootingUsers > 0) {
 			console.log('set obj: ', shootingUsers);
@@ -961,7 +959,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				};
 			});
 		}
-		*/
 
 		if (_.get(queObj, 'action') === 'S_EVENT_HIT') {
 			// console.log('eventhit');
