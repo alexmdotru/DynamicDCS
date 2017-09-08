@@ -950,6 +950,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				console.log('KD: ', user, key);
 				if(_.get(user, ['startTime']) + 1500 < new Date().getTime()){
 
+					/*
 					DCSLuaCommands.sendMesgToAll(
 						serverName,
 						_.get(user, ['mesg']),
@@ -958,6 +959,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					console.log('key1: ', key);
 					_.remove(shootingUsers, key);
 					console.log('key2: ', key);
+					*/
 				};
 			});
 		}
