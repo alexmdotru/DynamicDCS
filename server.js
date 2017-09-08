@@ -953,7 +953,9 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						_.get(user, ['mesg']),
 						20
 					);
+					console.log('user1: ', user);
 					delete user;
+					console.log('user2: ', user);
 				};
 
 			});
