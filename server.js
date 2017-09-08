@@ -1039,11 +1039,13 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 							);
 						} else {
 							console.log('other weapons1');
+							/*
 							DCSLuaCommands.sendMesgToAll(
 								serverName,
 								'A: '+ getSide(_.get(curObj, 'iPlayerSide'))+' '+ iPlayer +' has hit '+getSide(_.get(curObj, 'tPlayerSide'))+' '+tPlayer + ' with ' + _.get(curObj, 'weaponDisplayName') + ' - +'+_.get(curObj, 'score'),
 								20
 							);
+							*/
 						}
 					})
 					.catch(function (err) {
