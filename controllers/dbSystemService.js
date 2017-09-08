@@ -91,7 +91,7 @@ exports.userAccountActions = function (action, obj){
 		});
 	}
 	if(action === 'updateSocket') {
-		console.log('UA update socket line42: ', obj);
+		// console.log('UA update socket line42: ', obj);
 		return new Promise(function(resolve, reject) {
 			UserAccount.find({authId: obj.authId}, function (err, authIdUser) {
 				if (err) {
@@ -108,7 +108,7 @@ exports.userAccountActions = function (action, obj){
 						resolve(authIdUser);
 					});
 				} else {
-					console.log('User '+obj.authId+' does not exist in user database');
+					console.log('User '+obj.authId+' does not exist in user database line111');
 					// reject('User '+obj.authId+' does not exist in user database');
 				}
 			});
