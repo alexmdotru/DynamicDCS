@@ -1031,7 +1031,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 							_.set(
 								shootingUsers,
 								[_.get(curObj, 'iPlayerUnitId'), 'mesg'],
-								'A: '+ getSide(_.get(curObj, 'iPlayerSide'))+' '+ iPlayer +' has hit '+getSide(_.get(curObj, 'tPlayerSide'))+' ' + tPlayer + ' '+_.get(shootingUsers, [iPlayer.ucid, 'count'], 0)+' times with ' + _.get(curObj, 'weaponDisplayName') + ' - +'+_.get(curObj, 'score')
+								'A: '+ getSide(_.get(curObj, 'iPlayerSide'))+' '+ iPlayer +' has hit '+getSide(_.get(curObj, 'tPlayerSide'))+' ' + tPlayer + ' '+_.get(shootingUsers, [_.get(curObj, 'iPlayerUnitId'), 'count'], 0)+' times with ' + _.get(curObj, 'weaponDisplayName') + ' - +'+_.get(curObj, 'score')
 							);
 						} else {
 							console.log('other weapons1');
@@ -1059,7 +1059,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				_.set(
 					shootingUsers,
 					[_.get(curObj, 'iPlayerUnitId'), 'mesg'],
-					'A: '+ getSide(_.get(curObj, 'iPlayerSide'))+' '+ iPlayer +' has hit '+getSide(_.get(curObj, 'tPlayerSide'))+' ' + tPlayer + ' '+_.get(shootingUsers, [iPlayer.ucid, 'count'], 0)+' times with ' + _.get(curObj, 'weaponDisplayName') + ' - +'+_.get(curObj, 'score')
+					'A: '+ getSide(_.get(curObj, 'iPlayerSide'))+' '+ iPlayer +' has hit '+getSide(_.get(curObj, 'tPlayerSide'))+' ' + tPlayer + ' '+_.get(shootingUsers, [_.get(curObj, 'iPlayerUnitId'), 'count'], 0)+' times with ' + _.get(curObj, 'weaponDisplayName') + ' - +'+_.get(curObj, 'score')
 				);
 
 				dbMapServiceController.statSrvEventActions('save', serverName, curObj);
