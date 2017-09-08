@@ -228,8 +228,8 @@ exports.weaponScoreActions = function (action, obj){
 						resolve(saveweaponscore);
 					});
 				} else {
-					console.log('curweaponscore: ', curWeaponScore);
 					var curWeaponScore = weaponscore[0];
+					console.log('curweaponscore: ', curWeaponScore);
 					resolve(curWeaponScore);
 				}
 			});
