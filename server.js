@@ -997,7 +997,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			// console.log('Tevent: ', curObj);
 			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 
-			if( _.get(queObj, ['data', 'arg7'])){
+			if( _.get(queObj, ['data', 'arg7', 'name'])){
+
 				dbSystemServiceController.weaponScoreActions('read', _.get(queObj, 'data.arg7'))
 					.then(function (weaponResp) {
 						_.set(curObj, 'weaponName', _.get(weaponResp, 'name'));
