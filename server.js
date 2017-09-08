@@ -943,10 +943,10 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		}
 
 
+		/*
 		//run each tick to see if we need to write gun event
 		if(shootingUsers > 0) {
 			console.log('set obj: ', shootingUsers);
-			/*
 			_.forEach(shootingUsers, function (user, key) {
 				console.log('KD: ', user, key);
 				if(_.get(user, ['startTime']) + 1500 < new Date().getTime()){
@@ -960,8 +960,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					console.log('key2: ', key);
 				};
 			});
-			*/
 		}
+		*/
 
 		if (_.get(queObj, 'action') === 'S_EVENT_HIT') {
 			// console.log('eventhit');
