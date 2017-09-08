@@ -952,7 +952,9 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					_.get(user, ['mesg']),
 					20
 				);
+				console.log('key1: ', key);
 				_.remove(shootingUsers, key);
+				console.log('key2: ', key);
 			};
 		});
 		_.set(shootingUsers, [iPlayer.ucid, 'startTime'], new Date().getTime());
@@ -1024,7 +1026,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						// console.log(serverName, 'HITHIT', getSide(_.get(curObj, 'iPlayerSide')), iPlayer, getSide(_.get(curObj, 'tPlayerSide')), tPlayer, _.get(shootingUsers, [iPlayer.ucid, 'count'], 0), _.get(curObj, 'weaponDisplayName'), _.get(curObj, 'score'));
 						if (_.startsWith(_.get(curObj, 'weaponName'), 'weapons.shells')){
 							_.set(shootingUsers, [_.get(curObj, 'iPlayerUnitId'), 'count'], _.get(shootingUsers, [iPlayer.ucid, 'count'], 0)+1);
-							_.get(shootingUsers, [_.get(curObj, 'iPlayerUnitId'), new Date().getTime()]);
+							_.set(shootingUsers, [_.get(curObj, 'iPlayerUnitId'), new Date().getTime()]);
 							_.set(
 								shootingUsers,
 								[_.get(curObj, 'iPlayerUnitId'), 'mesg'],
@@ -1049,7 +1051,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				_.set(curObj, 'weaponDisplayName', _.get(queObj, ['data', 'arg7', 'unitType']));
 				_.set(curObj, 'score', 1);
 				_.set(shootingUsers, [_.get(curObj, 'iPlayerUnitId'), 'count'], _.get(shootingUsers, [iPlayer.ucid, 'count'], 0)+1);
-				_.get(shootingUsers, [_.get(curObj, 'iPlayerUnitId'), new Date().getTime()]);
+				_.set(shootingUsers, [_.get(curObj, 'iPlayerUnitId'), new Date().getTime()]);
 				_.set(
 					shootingUsers,
 					[_.get(curObj, 'iPlayerUnitId'), 'mesg'],
