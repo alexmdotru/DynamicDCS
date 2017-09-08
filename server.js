@@ -1599,6 +1599,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			// Occurs when any unit begins firing a weapon that has a high rate of fire.
 			// Most common with aircraft cannons (GAU-8), autocannons, and machine guns.
 			curObj = {sessionName: sessionName, name: queObj.data.name};
+			_.set(shootingUsers, [iPlayer.ucid, 'startTime'], new Date().getTime());
 			_.set(curObj, 'time', _.get(queObj, 'data.arg2'));
 			_.set(curObj, 'iPlayerUnitId', _.get(queObj, 'data.arg3'));
 			iUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg3});
@@ -1609,7 +1610,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				if (iUnit.playername !== '') {
 					iPlayer = _.find(curServers[serverName].serverObject.players, {name: iUnit.playername});
 					if (iPlayer) {
-						_.set(shootingUsers, [iPlayer.ucid, 'startTime'], new Date().getTime());
 						_.set(curObj, 'iPlayerUcid', iPlayer.ucid);
 					}
 				}
