@@ -944,20 +944,15 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 
 		//run each tick to see if we need to write gun event
 		if(_.keys(shootingUsers).length > 0) {
-			console.log('length: ', _.keys(shootingUsers).length);
 			_.forEach(shootingUsers, function (user, key) {
-				console.log('KD: ', user, key);
 				if(_.get(user, ['startTime']) + 1500 < new Date().getTime()){
 					DCSLuaCommands.sendMesgToAll(
 						serverName,
 						_.get(user, ['mesg']),
 						20
 					);
-					console.log('user1: ', user);
 					delete shootingUsers[key];
-					console.log('user2: ', user);
 				};
-
 			});
 		}
 
@@ -1037,13 +1032,11 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 							);
 						} else {
 							console.log('other weapons1');
-							/*
 							DCSLuaCommands.sendMesgToAll(
 								serverName,
 								'A: '+ getSide(_.get(curObj, 'iPlayerSide'))+' '+ iPlayer +' has hit '+getSide(_.get(curObj, 'tPlayerSide'))+' '+tPlayer + ' with ' + _.get(curObj, 'weaponDisplayName') + ' - +'+_.get(curObj, 'score'),
 								20
 							);
-							*/
 						}
 					})
 					.catch(function (err) {
