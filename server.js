@@ -998,6 +998,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 
 			if( _.get(queObj, ['data', 'arg7', 'name'])){
+				console.log('DBLOOKUP: ', _.get(queObj, ['data', 'arg7']));
 
 				dbSystemServiceController.weaponScoreActions('read', _.get(queObj, 'data.arg7'))
 					.then(function (weaponResp) {
@@ -1033,6 +1034,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					});
 				;
 			} else {
+				console.log('NONDBLOOKUP: ', _.get(queObj, ['data', 'arg7', 'unitType']));
 				_.set(curObj, 'weaponName', _.get(queObj, ['data', 'arg7', 'unitType']));
 				_.set(curObj, 'weaponDisplayName', _.get(queObj, ['data', 'arg7', 'unitType']));
 				_.set(curObj, 'score', 10);
