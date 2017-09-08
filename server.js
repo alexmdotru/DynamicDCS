@@ -944,6 +944,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 
 		//run each tick to see if we need to write gun event
 		if(_.keys(shootingUsers).length > 0) {
+			console.log('length: ', _.keys(shootingUsers).length);
 			_.forEach(shootingUsers, function (user, key) {
 				console.log('KD: ', user, key);
 				if(_.get(user, ['startTime']) + 1500 < new Date().getTime()){
