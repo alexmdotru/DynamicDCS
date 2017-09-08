@@ -946,7 +946,9 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		//run each tick to see if we need to write gun event
 		console.log('set obj: ', shootingUsers);
 		_.forEach(shootingUsers, function (user, key) {
+			console.log('KD: ', user, key);
 			if(_.get(user, ['startTime']) + 1500 < new Date().getTime()){
+
 				DCSLuaCommands.sendMesgToAll(
 					serverName,
 					_.get(user, ['mesg']),
@@ -1024,8 +1026,9 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 
 						// console.log(serverName, 'HITHIT', getSide(_.get(curObj, 'iPlayerSide')), iPlayer, getSide(_.get(curObj, 'tPlayerSide')), tPlayer, _.get(shootingUsers, [iPlayer.ucid, 'count'], 0), _.get(curObj, 'weaponDisplayName'), _.get(curObj, 'score'));
 						if (_.startsWith(_.get(curObj, 'weaponName'), 'weapons.shells')){
-							_.set(shootingUsers, [_.get(curObj, 'iPlayerUnitId'), 'count'], _.get(shootingUsers, [iPlayer.ucid, 'count'], 0)+1);
-							_.set(shootingUsers, [_.get(curObj, 'iPlayerUnitId'), new Date().getTime()]);
+							_.set(shootingUsers, [_.get(curObj, 'iPlayerUnitId'), 'count'], _.get(shootingUsers, [_.get(curObj, 'iPlayerUnitId'), 'count'], 0)+1);
+							_.set(shootingUsers, [_.get(curObj, 'iPlayerUnitId'), 'startTime'], new Date().getTime());
+							_.set(shootingUsers, [_.get(curObj, 'iPlayerUnitId'), 'serverName'], serverName);
 							_.set(
 								shootingUsers,
 								[_.get(curObj, 'iPlayerUnitId'), 'mesg'],
@@ -1049,8 +1052,9 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				_.set(curObj, 'weaponName', _.get(queObj, ['data', 'arg7', 'unitType']));
 				_.set(curObj, 'weaponDisplayName', _.get(queObj, ['data', 'arg7', 'unitType']));
 				_.set(curObj, 'score', 1);
-				_.set(shootingUsers, [_.get(curObj, 'iPlayerUnitId'), 'count'], _.get(shootingUsers, [iPlayer.ucid, 'count'], 0)+1);
-				_.set(shootingUsers, [_.get(curObj, 'iPlayerUnitId'), new Date().getTime()]);
+				_.set(shootingUsers, [_.get(curObj, 'iPlayerUnitId'), 'count'], _.get(shootingUsers, [_.get(curObj, 'iPlayerUnitId'), 'count'], 0)+1);
+				_.set(shootingUsers, [_.get(curObj, 'iPlayerUnitId'), 'startTime'], new Date().getTime());
+				_.set(shootingUsers, [_.get(curObj, 'iPlayerUnitId'), 'serverName'], serverName);
 				_.set(
 					shootingUsers,
 					[_.get(curObj, 'iPlayerUnitId'), 'mesg'],
