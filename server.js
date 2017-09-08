@@ -998,8 +998,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			// console.log('Tevent: ', curObj);
 			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 
-			if( _.get(queObj, ['data', 'arg7', 'name'])){
-				console.log('DBLOOKUP: ', _.get(queObj, ['data', 'arg7']));
+			if( _.get(queObj, ['data', 'arg7', 'typeName'])){
+				console.log('DBLOOKUP1: ', _.get(queObj, ['data', 'arg7']));
 
 				dbSystemServiceController.weaponScoreActions('read', _.get(queObj, 'data.arg7'))
 					.then(function (weaponResp) {
