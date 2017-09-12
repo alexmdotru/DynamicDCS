@@ -5,9 +5,11 @@
 	<title>Welcome to Dynamic DCS Engine</title>
 	<% if (useMin) {%>
 	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link href="libs/highcharts-ng/dist/highcharts-ng.css" rel="stylesheet">
 	<link href="<%= grunt.template.path.basename(process(cssmin.app.dest)) %>" rel="stylesheet"/>
 	<% } else { %>
 	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link href="libs/highcharts-ng/dist/highcharts-ng.css" rel="stylesheet">
 	<link href="<%= grunt.template.path.basename(process(cssmin.app.dest)) %>" rel="stylesheet"/>
 	<link href="<%= grunt.template.path.basename(less.app.dest) %>" rel="stylesheet"/>
 	<% } %>
@@ -105,7 +107,7 @@
 		</div>
 	</uib-accordion>
 </div>
-
+<script src="http://code.highcharts.com/stock/highstock.src.js"></script>
 <script src="<%= grunt.template.path.basename(concat.vendor.dest) %>"></script>
 <script src="<%= grunt.template.path.basename(concat.app.dest) %>"></script>
 <script src="/socket.io/socket.io.js"></script>
