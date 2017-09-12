@@ -146,6 +146,7 @@
 			'dynamic-dcs.chat-box',
 			'dynamic-dcs.api.server',
 			'dynamic-dcs.theaterService',
+			'dynamic-dcs.eventService',
 			'dynamic-dcs.alertService',
 			'dynamic-dcs.srvService',
 			'dynamic-dcs.userAccountService',
