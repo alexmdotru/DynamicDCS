@@ -9,8 +9,6 @@
 		_.set($scope, 'alertService', alertService);
 		_.set($scope, 'srvService', srvService);
 
-		console.log('useracct: ', userAccountService);
-
 		_.set($scope, 'openSettingsModal', function (size) {
 			var modalInstance = $uibModal.open({
 				animation: $scope.animationsEnabled,

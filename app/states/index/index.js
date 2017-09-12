@@ -1,13 +1,51 @@
 (function (angular) {
 	'use strict';
 
-	function indexController (userAccountService, DCSUserAccountsAPI, socket, eventsAPI) {
+	function getEvents (eventService) {
+		return eventService.getEvents();
+	}
+	getEvents.$inject=['eventService'];
+
+	function indexController (userAccountService, DCSUserAccountsAPI, socket, events) {
 		var indxCtrl = this;
-		var curData = [
+		var curData = [];
+		var curScore = 0;
+		var oneSec = 1000;
+
+		/*
+		= [
 			[Date.UTC(2013,5,2),0.7695],
 			[Date.UTC(2013,5,3),0.7648],
 			[Date.UTC(2013,5,4),0.7645]
 		];
+		*/
+
+		_.set(indxCtrl, 'events', events);
+
+		_.forEach(events, function (event) {
+			curScore += _.get(event, 'score', 0);
+			_.set(event, 'y', curScore);
+			_.set(event, 'x', new Date(_.get(event, 'createdAt')).getTime());
+			// _.set(event, 'x', Math.floor(new Date(_.get(event, 'createdAt')).getTime()/oneSec)*oneSec );
+			/*
+			curScore += _.get(event, 'score', 0);
+			curData.push([
+				new Date(_.get(event, 'createdAt')).getTime(),
+				curScore
+			])
+			*/
+		});
+
+		var events = angular.copy(events);
+		events = _.sortBy(events, ['x']);
+
+		console.log('ev: ', events);
+		/*
+		curData.sort(function(a, b) {
+			return a[0] - b[0];
+		});
+		console.log('cd: ', curData);
+		*/
 
 		_.set(indxCtrl, 'hChart', {
 			chartType: 'stock',
@@ -16,30 +54,31 @@
 			},
 
 			title: {
-				text: 'USD to EUR exchange rate'
+				text: 'Player Score'
 			},
 
 			tooltip: {
-				style: {
-					width: '200px'
-				},
-				valueDecimals: 4,
-				shared: true
+				formatter: function () {
+					return 'Extra data: <b>' + this.points[0].point.name + '<br>'+this.points[0].point.createdAt+'</b>';
+				}
 			},
 
 			yAxis: {
 				title: {
-					text: 'Exchange rate'
+					text: 'Score'
 				}
 			},
 
 			series: [{
-				name: 'USD to EUR',
-				data: curData,
+				name: 'Score',
+				data: events,
 				id: 'dataseries'
 
 				// the event marker flags
-			}, {
+			}
+
+			/*
+			{
 				type: 'flags',
 				data: [{
 					x: Date.UTC(2015, 5, 8),
@@ -69,7 +108,9 @@
 				onSeries: 'dataseries',
 				shape: 'circlepin',
 				width: 16
-			}]
+			}
+			*/
+			]
 		});
 
 		var dread = DCSUserAccountsAPI.query();
@@ -83,10 +124,8 @@
 				});
 			})
 		;
-		eventsAPI.getEvents();
-		console.log('ev: ', eventsAPI);
 	}
-	indexController.$inject = ['userAccountService', 'dynamic-dcs.api.userAccounts', 'mySocket', 'eventService'];
+	indexController.$inject = ['userAccountService', 'dynamic-dcs.api.userAccounts', 'mySocket', 'events'];
 
 	function configFunction($stateProvider) {
 		$stateProvider
@@ -94,7 +133,10 @@
 				controller: 'indexController',
 				controllerAs: 'indxCtrl',
 				templateUrl: '/apps/dynamic-dcs/states/index/index.tpl.html',
-				url: '/'
+				url: '/',
+				resolve: {
+					events: getEvents
+				}
 			})
 		;
 	}
