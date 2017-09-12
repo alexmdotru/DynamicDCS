@@ -122,6 +122,32 @@ router.route('/checkUserAccount')
 				res.json(resp);
 			});
 	});
+router.route('/srvEvents/:serverName')
+	.get(function (req, res) {
+		_.set(req, 'body.serverName', req.params.serverName);
+		dbMapServiceController.statSessionActions('readLatest', req.body.serverName, req.body)
+			.then(function(sesResp) {
+				_.set(req, 'body.sessionName', _.get(sesResp, 'name'));
+				dbMapServiceController.statSrvEventActions('read', req.body.serverName, req.body)
+					.then(function (resp) {
+						res.json(resp);
+					})
+				;
+			})
+			.catch(function (err) {
+				console.log('line 133 err: ', err);
+			})
+		;
+	});
+router.route('/srvEvents/:serverName/:sessionName')
+	.get(function (req, res) {
+		_.set(req, 'body.serverName', req.params.serverName);
+		_.set(req, 'body.sessionName', req.params.sessionName);
+		dbMapServiceController.statSrvEventActions('read', req.body.serverName, req.body)
+			.then(function (resp) {
+				res.json(resp);
+			});
+	});
 
 //start of protected endpoints, must have auth token
 protectedRouter.use(checkJwt);

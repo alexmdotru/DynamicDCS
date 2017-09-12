@@ -104,6 +104,15 @@ exports.statSessionActions = function (action, serverName, obj){
 			});
 		});
 	}
+
+	if (action === 'readLatest') {
+		return new Promise(function(resolve, reject) {
+			StatSession.findOne().sort({ field: 'asc', createdAt: -1 }).limit(1).exec(function (err, statSession) {
+				if (err) { reject(err) }
+				resolve(statSession);
+			});
+		});
+	}
 	if(action === 'update') {
 		return new Promise(function(resolve, reject) {
 			StatSession.update(
@@ -129,11 +138,11 @@ exports.statSessionActions = function (action, serverName, obj){
 };
 
 exports.statSrvEventActions = function (action, serverName, obj){
+	var newObjArray = [];
 	const StatSrvEvent = mapdb.model(serverName+'_statSrvEvent', statSrvEventSchema);
-	// console.log(obj);
 	if (action === 'read') {
 		return new Promise(function(resolve, reject) {
-			StatSrvEvent.find({sessionName: obj}, function (err, statSrvEvent) {
+			StatSrvEvent.find({sessionName: _.get(obj, 'sessionName')}, function (err, statSrvEvent) {
 				if (err) { reject(err) }
 				resolve(statSrvEvent);
 			});
