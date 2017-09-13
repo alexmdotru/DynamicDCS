@@ -12,28 +12,12 @@
 		var curScore = 0;
 		var oneSec = 1000;
 
-		/*
-		= [
-			[Date.UTC(2013,5,2),0.7695],
-			[Date.UTC(2013,5,3),0.7648],
-			[Date.UTC(2013,5,4),0.7645]
-		];
-		*/
-
 		_.set(indxCtrl, 'events', events);
 
 		_.forEach(events, function (event) {
 			curScore += _.get(event, 'score', 0);
 			_.set(event, 'y', curScore);
 			_.set(event, 'x', new Date(_.get(event, 'createdAt')).getTime());
-			// _.set(event, 'x', Math.floor(new Date(_.get(event, 'createdAt')).getTime()/oneSec)*oneSec );
-			/*
-			curScore += _.get(event, 'score', 0);
-			curData.push([
-				new Date(_.get(event, 'createdAt')).getTime(),
-				curScore
-			])
-			*/
 		});
 
 		var events = angular.copy(events);
