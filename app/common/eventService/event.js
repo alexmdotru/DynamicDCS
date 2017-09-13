@@ -3,14 +3,56 @@
 
 	function eventService(eventAPI, alertService) {
 		var eCtrl = this;
+		var curScore = {};
 		var ePromise;
 		_.set(eCtrl, 'loaded', false);
+
+		_.set(eCtrl, 'byUcid', function (events1) {
+			var returnObj = {};
+			var curPlayerId;
+			var scoreMath;
+			var events = _.cloneDeep(events1);
+			events = _.sortBy(events, ['createdAt']);
+			_.forEach(events, function (event) {
+				if (_.get(event, 'iPlayerUcid') || _.get(event, 'tPlayerUcid')) {
+					if (_.get(event, 'iPlayerUcid')) {
+						curPlayerId = _.get(event, 'iPlayerUcid');
+						scoreMath = _.get(curScore, [curPlayerId], 0) + _.get(event, 'score', 0)
+						if(scoreMath < 0) {
+							scoreMath = 0;
+						}
+						_.set(event, 'curScore', scoreMath);
+						_.set(curScore, [curPlayerId], _.get(event, 'curScore', 0));
+						_.set(event, 'role', 'initiator');
+						_.set(event, 'priName', _.get(event, 'iPlayerName'));
+					} else {
+						curPlayerId = _.get(event, 'tPlayerUcid');
+						// _.set(event, 'curScore', _.get(curScore, [curPlayerId], 0) + _.get(event, 'score', 0));
+						// _.set(curScore, [curPlayerId], _.get(event, 'curScore', 0));
+						_.set(event, 'curScore', _.get(curScore, [curPlayerId], 0));
+						_.set(event, 'role', 'target');
+						_.set(event, 'priName', _.get(event, 'tPlayerName'));
+					}
+					_.set(event, 'y', _.get(event, 'curScore'));
+					_.set(event, 'x', new Date(_.get(event, 'createdAt')).getTime());
+					_.set(returnObj, [curPlayerId, 'name'], _.get(event, 'priName'));
+					_.set(returnObj, [curPlayerId, 'marker'], {
+						enabled: true,
+						radius: 3
+					});
+					_.set(returnObj, [curPlayerId, 'data'], _.get(returnObj, [curPlayerId, 'data'], []));
+					returnObj[curPlayerId].data.push(event);
+				}
+			});
+			return returnObj;
+		});
+
 		_.set(eCtrl, 'firstLoad', function () {
 			if(_.get(ePromise, '$resolved') === undefined) {
 				ePromise = eventAPI.query({serverName: 'dynamiccaucasus'});
 				ePromise.$promise
 					.then(function (eventData) {
-						_.set(eCtrl, 'events', eventData);
+						_.set(eCtrl, 'events', eCtrl.byUcid(eventData));
 						_.set(eCtrl, 'loaded', true);
 					})
 					.catch(function(err){

@@ -13,88 +13,92 @@
 		var oneSec = 1000;
 
 		_.set(indxCtrl, 'events', events);
-
-		_.forEach(events, function (event) {
-			curScore += _.get(event, 'score', 0);
-			_.set(event, 'y', curScore);
-			_.set(event, 'x', new Date(_.get(event, 'createdAt')).getTime());
-		});
-
 		var events = angular.copy(events);
-		events = _.sortBy(events, ['x']);
-
-		console.log('ev: ', events);
-		/*
-		curData.sort(function(a, b) {
-			return a[0] - b[0];
-		});
-		console.log('cd: ', curData);
-		*/
 
 		_.set(indxCtrl, 'hChart', {
+			chart: {
+				height: 500
+			},
 			chartType: 'stock',
+			legend: {
+				enabled: true,
+				layout: 'horizontal',
+				verticalAlign: 'bottom',
+				floating: true,
+				y: -65
+			},
+			navigator: {
+				margin: 50
+			},
 			rangeSelector: {
-				selected: 0
-			},
-
-			title: {
-				text: 'Player Score'
-			},
-
-			tooltip: {
-				formatter: function () {
-					return 'Extra data: <b>' + this.points[0].point.name + '<br>'+this.points[0].point.createdAt+'</b>';
+				selected: 3,
+				buttons: [{
+					type: 'minute',
+					text: '1min'
+				}, {
+					type: 'minute',
+					count: 15,
+					text: '15min'
+				}, {
+					type: 'minute',
+					count: 30,
+					text: '30min'
+				}, {
+					type: 'hour',
+					text: '1hr'
+				}, {
+					type: 'hour',
+					count: 4,
+					text: '4hr'
+				}, {
+					type: 'all',
+					text: 'All'
+				}],
+				buttonTheme: {
+					width: 60
 				}
 			},
+			tooltip: {
+				formatter: function() {
+					var curToolTip = 'Time: '+ Highcharts.dateFormat('%k:%M:%S', this.x)+'<br>';
+					var curIName;
+					var curTName;
+					var curWeapon;
+					_.forEach(_.get(this, 'points'), function (point) {
+						var p = point.point;
+						curToolTip += p.curTxt+'<br>';
+					});
+					return curToolTip;
+				}
+			},
+			xAxis: {
+				ordinal: false,
+				title: {
+					enabled: true,
+					text: 'Zulu Military Time'
+				},
+				type: 'datetime',
 
+				dateTimeLabelFormats : {
+					hour: '%k',
+					minute: '%k:%M',
+					second: '%k:%M:%S',
+					millisecond: '%k:%M:%S.%L',
+				},
+				labels: {
+					style: {
+						fontFamily: 'Tahoma'
+					},
+					rotation: -45
+				}
+			},
 			yAxis: {
 				title: {
-					text: 'Score'
-				}
+					text: 'Points'
+				},
+				min: 0
 			},
-
-			series: [{
-				name: 'Score',
-				data: events,
-				id: 'dataseries'
-
-				// the event marker flags
-			}
-
-			/*
-			{
-				type: 'flags',
-				data: [{
-					x: Date.UTC(2015, 5, 8),
-					title: 'C',
-					text: 'Stocks fall on Greece, rate concerns; US dollar dips'
-				}, {
-					x: Date.UTC(2015, 5, 12),
-					title: 'D',
-					text: 'Zimbabwe ditches \'worthless\' currency for the US dollar '
-				}, {
-					x: Date.UTC(2015, 5, 19),
-					title: 'E',
-					text: 'US Dollar Declines Over the Week on Rate Timeline'
-				}, {
-					x: Date.UTC(2015, 5, 26),
-					title: 'F',
-					text: 'Greek Negotiations Take Sharp Turn for Worse, US Dollar set to Rally '
-				}, {
-					x: Date.UTC(2015, 5, 29),
-					title: 'G',
-					text: 'Euro records stunning reversal against dollar'
-				}, {
-					x: Date.UTC(2015, 5, 30),
-					title: 'H',
-					text: 'Surging US dollar curbs global IT spend'
-				}],
-				onSeries: 'dataseries',
-				shape: 'circlepin',
-				width: 16
-			}
-			*/
-			]
+			series: events
 		});
 
 		var dread = DCSUserAccountsAPI.query();

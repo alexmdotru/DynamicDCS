@@ -91,6 +91,9 @@ const StatSrvEventSchema = new Schema({
 		},
 		subPlace: {
 			type: String
+		},
+		curTxt: {
+			type: String
 		}
 	},
 	{

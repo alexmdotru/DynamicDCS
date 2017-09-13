@@ -604,15 +604,29 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		if (_.get(queObj, 'action') === 'players') {
 			_.set(queObj, 'sessionName', sessionName);
 			var switchedPlayer;
+			var curObj;
 			_.forEach(queObj.data, function (player) {
 				if (player !== null) {
 					var matchPlayer = _.find(curServers[serverName].serverObject.players, {ucid: player.ucid});
 					if(matchPlayer) {
 						if ((matchPlayer.side !== player.side) && player.side !== 0) {
 							if (_.get(matchPlayer, 'side')) {
+
+								_.set(curObj, 'curTxt', 'A: '+getSide(_.get(matchPlayer, 'side'))+' '+_.get(player, 'name')+' has commited Treason and switched to '+getSide(_.get(player, 'side'))+'. Shoot on sight! -1000pts');
+								_.set(curObj, 'score', -1000);
+								_.set(curObj, 'sessionName', sessionName);
+								_.set(curObj, 'name', 'S_EVENT_PILOT_TREASON');
+								_.set(curObj, 'iPlayerUcid', _.get(player, 'ucid'));
+								_.set(curObj, 'iPlayerName', _.get(player, 'name'));
+								_.set(curObj, 'iPlayerSide', _.get(player, 'side'));
+
+								if(_.get(curObj, 'iPlayerUcid') || _.get(curObj, 'tPlayerUcid')) {
+									dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+								}
+
 								DCSLuaCommands.sendMesgToAll(
 									serverName,
-									'A: '+getSide(_.get(matchPlayer, 'side'))+' '+_.get(player, 'name')+' has commited Treason and switched to '+getSide(_.get(player, 'side'))+'. Shoot on sight! -1000pts',
+									_.get(curObj, 'curTxt'),
 									15
 								);
 							}
@@ -733,24 +747,28 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			iPlayer = _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg1});
 			if (iPlayer) {
 				_.set(curObj, 'iPlayerUcid', _.get(iPlayer, 'ucid', queObj.data.arg1));
-			}
-			console.log('WEAPONSSSSS: ', _.get(queObj, 'data.arg2'));
-			_.set(curObj, 'weaponName', _.get(queObj, 'data.arg2'));
-			_.set(curObj, 'tPlayerId', _.get(queObj, 'data.arg3'));
-			tPlayer = _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg3});
-			if (tPlayer) {
-				_.set(curObj, 'tPlayerUcid', _.get(tPlayer, 'ucid', queObj.data.arg3));
-			}
-			// console.log('event: ', curObj);
-			if(_.get(curObj, 'iPlayerUcid') || _.get(curObj, 'tPlayerUcid')) {
-				dbMapServiceController.statSrvEventActions('save', serverName, curObj);
-			}
 
-			DCSLuaCommands.sendMesgToAll(
-				serverName,
-				'A: '+getSide(_.get(iPlayer, 'side'))+' '+_.get(iPlayer, 'name')+' has accidentally killed '+_.get(tPlayer, 'name')+' with a '+_.get(curObj, 'weaponName')+' - 100pts',
-				15
-			);
+				console.log('WEAPONSSSSS: ', _.get(queObj, 'data.arg2'));
+				_.set(curObj, 'weaponName', _.get(queObj, 'data.arg2'));
+				_.set(curObj, 'tPlayerId', _.get(queObj, 'data.arg3'));
+				tPlayer = _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg3});
+				if (tPlayer) {
+					_.set(curObj, 'tPlayerUcid', _.get(tPlayer, 'ucid', queObj.data.arg3));
+				}
+				// console.log('event: ', curObj);
+
+				_.set(curObj, 'curTxt', 'A: '+getSide(_.get(iPlayer, 'side'))+' '+_.get(iPlayer, 'name')+' has accidentally killed '+_.get(tPlayer, 'name')+' with a '+_.get(curObj, 'weaponName')+' - 100pts');
+				_.set(curObj, 'score', -100);
+				if(_.get(curObj, 'iPlayerUcid') || _.get(curObj, 'tPlayerUcid')) {
+					dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+				}
+
+				DCSLuaCommands.sendMesgToAll(
+					serverName,
+					_.get(curObj, 'curTxt'),
+					15
+				);
+			}
 		}
 
 		/*
@@ -792,17 +810,18 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			iPlayer = _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg1});
 			if (iPlayer) {
 				_.set(curObj, 'iPlayerUcid', _.get(iPlayer, 'ucid', queObj.data.arg1));
-			}
-			// console.log('event: ', curObj);
-			if(_.get(curObj, 'iPlayerUcid') || _.get(curObj, 'tPlayerUcid')) {
-				dbMapServiceController.statSrvEventActions('save', serverName, curObj);
-			}
 
-			DCSLuaCommands.sendMesgToAll(
-				serverName,
-				'A: '+getSide(_.get(iPlayer, 'side'))+' '+_.get(iPlayer, 'name')+' has killed himself',
-				15
-			);
+				_.set(curObj, 'curTxt', 'A: '+getSide(_.get(iPlayer, 'side'))+' '+_.get(iPlayer, 'name')+' has killed himself');
+				if(_.get(curObj, 'iPlayerUcid') || _.get(curObj, 'tPlayerUcid')) {
+					dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+				}
+
+				DCSLuaCommands.sendMesgToAll(
+					serverName,
+					_.get(curObj, 'curTxt'),
+					15
+				);
+			}
 		}
 
 		/*
@@ -835,13 +854,14 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			}
 			_.set(curObj, 'iPlayerName', _.get(queObj, 'data.arg2'));
 			// console.log('event: ', curObj);
+
+			_.set(curObj, 'curTxt', 'A: '+_.get(curObj, 'iPlayerName')+' has connected');
 			if(_.get(curObj, 'iPlayerUcid') || _.get(curObj, 'tPlayerUcid')) {
 				dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 			}
-
 			DCSLuaCommands.sendMesgToAll(
 				serverName,
-				'A: '+_.get(curObj, 'iPlayerName')+' has connected',
+				_.get(curObj, 'curTxt'),
 				5
 			);
 		}
@@ -857,13 +877,15 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			_.set(curObj, 'iPlayerSide', _.get(queObj, 'data.arg3'));
 			_.set(curObj, 'reasonCode', _.get(queObj, 'data.arg4'));
 			// console.log('event: ', curObj);
+
+			_.set(curObj, 'curTxt', 'A: '+_.get(iPlayer, 'name')+' has disconnected - Ping:'+_.get(iPlayer, 'ping')+' Lang:'+_.get(iPlayer, 'lang'));
 			if(_.get(curObj, 'iPlayerUcid') || _.get(curObj, 'tPlayerUcid')) {
 				dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 			}
 
 			DCSLuaCommands.sendMesgToAll(
 				serverName,
-				'A: '+_.get(iPlayer, 'name')+' has disconnected - Ping:'+_.get(iPlayer, 'ping')+' Lang:'+_.get(iPlayer, 'lang'),
+				_.get(curObj, 'curTxt'),
 				5
 			);
 		}
@@ -987,8 +1009,14 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		if(_.keys(shootingUsers).length > 0) {
 			_.forEach(shootingUsers, function (user, key) {
 				if(_.get(user, ['startTime']) + 1500 < new Date().getTime()){
+					var curObj = _.get(user, ['curObj']);
+					_.set(curObj, 'curTxt', _.get(user, ['mesg']));
+					if(_.get(curObj, 'iPlayerUcid') || _.get(curObj, 'tPlayerUcid')) {
+						dbMapServiceController.statSrvEventActions('save', _.get(user, ['serverName']), curObj);
+					}
+					console.log('chkcur: ', curObj, _.get(user, ['serverName']));
 					DCSLuaCommands.sendMesgToAll(
-						serverName,
+						_.get(user, ['serverName']),
 						_.get(user, ['mesg']),
 						20
 					);
@@ -1060,25 +1088,31 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						_.set(curObj, 'weaponDisplayName', _.get(weaponResp, 'displayName'));
 						_.set(curObj, 'score', _.get(weaponResp, 'score'));
 
+						/*
 						if(_.get(curObj, 'iPlayerUcid') || _.get(curObj, 'tPlayerUcid')) {
 							dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 						}
-
+						*/
 
 						// console.log(serverName, 'HITHIT', getSide(_.get(curObj, 'iPlayerSide')), iPlayer, getSide(_.get(curObj, 'tPlayerSide')), tPlayer, _.get(shootingUsers, [iPlayer.ucid, 'count'], 0), _.get(curObj, 'weaponDisplayName'), _.get(curObj, 'score'));
 						if (_.startsWith(_.get(curObj, 'weaponName'), 'weapons.shells')){
 							_.set(shootingUsers, [_.get(curObj, 'iPlayerUnitId'), 'count'], _.get(shootingUsers, [_.get(curObj, 'iPlayerUnitId'), 'count'], 0)+1);
 							_.set(shootingUsers, [_.get(curObj, 'iPlayerUnitId'), 'startTime'], new Date().getTime());
 							_.set(shootingUsers, [_.get(curObj, 'iPlayerUnitId'), 'serverName'], serverName);
+							_.set(shootingUsers, [_.get(curObj, 'iPlayerUnitId'), 'curObj'], _.cloneDeep(curObj));
 							_.set(
 								shootingUsers,
 								[_.get(curObj, 'iPlayerUnitId'), 'mesg'],
 								'A: '+ getSide(_.get(curObj, 'iPlayerSide'))+' '+ iPlayer +' has hit '+getSide(_.get(curObj, 'tPlayerSide'))+' ' + tPlayer + ' '+_.get(shootingUsers, [_.get(curObj, 'iPlayerUnitId'), 'count'], 0)+' times with ' + _.get(curObj, 'weaponDisplayName') + ' - +'+_.get(curObj, 'score')+' each.'
 							);
 						} else {
+							_.set(curObj, 'curTxt', 'A: '+ getSide(_.get(curObj, 'iPlayerSide'))+' '+ iPlayer +' has hit '+getSide(_.get(curObj, 'tPlayerSide'))+' '+tPlayer + ' with ' + _.get(curObj, 'weaponDisplayName') + ' - +'+_.get(curObj, 'score'));
+							if(_.get(curObj, 'iPlayerUcid') || _.get(curObj, 'tPlayerUcid')) {
+								dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+							}
 							DCSLuaCommands.sendMesgToAll(
 								serverName,
-								'A: '+ getSide(_.get(curObj, 'iPlayerSide'))+' '+ iPlayer +' has hit '+getSide(_.get(curObj, 'tPlayerSide'))+' '+tPlayer + ' with ' + _.get(curObj, 'weaponDisplayName') + ' - +'+_.get(curObj, 'score'),
+								_.get(curObj, 'curTxt'),
 								20
 							);
 						}
@@ -1094,13 +1128,15 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				_.set(curObj, 'weaponName', _.get(queObj, ['data', 'arg7', 'unitType']));
 				_.set(curObj, 'weaponDisplayName', _.get(queObj, ['data', 'arg7', 'unitType']));
 				_.set(curObj, 'score', 1);
+				/*
 				if(_.get(curObj, 'iPlayerUcid') || _.get(curObj, 'tPlayerUcid')) {
 					dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 				}
-
+				*/
 				_.set(shootingUsers, [_.get(curObj, 'iPlayerUnitId'), 'count'], _.get(shootingUsers, [_.get(curObj, 'iPlayerUnitId'), 'count'], 0)+1);
 				_.set(shootingUsers, [_.get(curObj, 'iPlayerUnitId'), 'startTime'], new Date().getTime());
 				_.set(shootingUsers, [_.get(curObj, 'iPlayerUnitId'), 'serverName'], serverName);
+				_.set(shootingUsers, [_.get(curObj, 'iPlayerUnitId'), 'curObj'], _.cloneDeep(curObj));
 				_.set(
 					shootingUsers,
 					[_.get(curObj, 'iPlayerUnitId'), 'mesg'],
@@ -1145,15 +1181,17 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			} else {
 				place = '';
 			}
-			DCSLuaCommands.sendMesgToCoalition(
-				_.get(curObj, 'iPlayerSide'),
-				serverName,
-				'C: '+ curName +' has taken off' + place,
-				5
-			);
+			_.set(curObj, 'curTxt', 'C: '+ curName +' has taken off' + place);
 			if(_.get(curObj, 'iPlayerUcid') || _.get(curObj, 'tPlayerUcid')) {
 				dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 			}
+
+			DCSLuaCommands.sendMesgToCoalition(
+				_.get(curObj, 'iPlayerSide'),
+				serverName,
+				_.get(curObj, 'curTxt'),
+				5
+			);
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_LAND') {
 			// Occurs when an aircraft lands at an airbase, farp or ship
@@ -1192,15 +1230,18 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			} else {
 				place = '';
 			}
-			DCSLuaCommands.sendMesgToCoalition(
-				_.get(curObj, 'iPlayerSide'),
-				serverName,
-				'C: '+ curName +' has landed' + place,
-				5
-			);
+
+			_.set(curObj, 'curTxt', 'C: '+ curName +' has landed' + place);
 			if(_.get(curObj, 'iPlayerUcid') || _.get(curObj, 'tPlayerUcid')) {
 				dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 			}
+
+			DCSLuaCommands.sendMesgToCoalition(
+				_.get(curObj, 'iPlayerSide'),
+				serverName,
+				_.get(curObj, 'curTxt'),
+				5
+			);
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_CRASH') {
 			// Occurs when any aircraft crashes into the ground and is completely destroyed.
@@ -1228,15 +1269,16 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				curName = _.get(curObj, 'iPlayerUnitType', '""');
 			}
 
-
-			DCSLuaCommands.sendMesgToAll(
-				serverName,
-				'A: '+ getSide(_.get(curObj, 'iPlayerSide'))+' '+ curName +' has crashed',
-				5
-			);
+			_.set(curObj, 'curTxt', 'A: '+ getSide(_.get(curObj, 'iPlayerSide'))+' '+ curName +' has crashed');
 			if(_.get(curObj, 'iPlayerUcid') || _.get(curObj, 'tPlayerUcid')) {
 				dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 			}
+
+			DCSLuaCommands.sendMesgToAll(
+				serverName,
+				_.get(curObj, 'curTxt'),
+				5
+			);
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_EJECTION') {
 			// Occurs when a pilot ejects from an aircraft
@@ -1255,9 +1297,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					}
 				}
 			}
-			if(_.get(curObj, 'iPlayerUcid') || _.get(curObj, 'tPlayerUcid')) {
-				dbMapServiceController.statSrvEventActions('save', serverName, curObj);
-			}
 
 			var curName;
 			if (_.get(curObj, 'iPlayerName')){
@@ -1266,9 +1305,14 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				curName = _.get(curObj, 'iPlayerUnitType', '""');
 			}
 
+			_.set(curObj, 'curTxt', 'A: '+getSide( _.get(curObj, 'iPlayerSide'))+' '+ curName +' ejected');
+			if(_.get(curObj, 'iPlayerUcid') || _.get(curObj, 'tPlayerUcid')) {
+				dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+			}
+
 			DCSLuaCommands.sendMesgToAll(
 				serverName,
-				'A: '+getSide( _.get(curObj, 'iPlayerSide'))+' '+ curName +' ejected',
+				_.get(curObj, 'curTxt'),
 				5
 			);
 		}
@@ -1298,15 +1342,17 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				curName = _.get(curObj, 'iPlayerUnitType', '""');
 			}
 
-			DCSLuaCommands.sendMesgToCoalition(
-				_.get(curObj, 'iPlayerSide'),
-				serverName,
-				'C: '+ curName +' began refueling',
-				5
-			);
+			_.set(curObj, 'curTxt', 'C: '+ curName +' began refueling');
 			if(_.get(curObj, 'iPlayerUcid') || _.get(curObj, 'tPlayerUcid')) {
 				dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 			}
+
+			DCSLuaCommands.sendMesgToCoalition(
+				_.get(curObj, 'iPlayerSide'),
+				serverName,
+				_.get(curObj, 'curTxt'),
+				5
+			);
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_DEAD') {
 			// Occurs when an object is completely destroyed.
@@ -1334,15 +1380,18 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				curName = _.get(curObj, 'iPlayerUnitType', '""');
 			}
 
-			DCSLuaCommands.sendMesgToAll(
-				serverName,
-				'A: '+getSide(_.get(curObj, 'iPlayerSide'))+' '+ curName +' pilot is dead',
-				5
-			);
-
+			_.set(curObj, 'curTxt', 'A: '+getSide(_.get(curObj, 'iPlayerSide'))+' '+ curName +' pilot is dead');
 			if(_.get(curObj, 'iPlayerUcid') || _.get(curObj, 'tPlayerUcid')) {
 				dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 			}
+
+			DCSLuaCommands.sendMesgToAll(
+				serverName,
+				_.get(curObj, 'curTxt'),
+				5
+			);
+
+
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_PILOT_DEAD') {
 			// Occurs when the pilot of an aircraft is killed.
@@ -1362,24 +1411,25 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						_.set(curObj, 'iPlayerUcid', iPlayer.ucid);
 					}
 				}
-			}
-			// console.log('event: ', curObj);
 
-			var curName;
-			if (_.get(curObj, 'iPlayerName')){
-				curName = _.get(curObj, 'iPlayerName');
-			} else {
-				curName = _.get(curObj, 'iPlayerUnitType', '""');
-			}
+				var curName;
+				if (_.get(curObj, 'iPlayerName')){
+					curName = _.get(curObj, 'iPlayerName');
+				} else {
+					curName = _.get(curObj, 'iPlayerUnitType', '""');
+				}
 
-			DCSLuaCommands.sendMesgToAll(
-				serverName,
-				'A: '+getSide(_.get(curObj, 'iPlayerSide'))+' '+ curName +' is dead',
-				5
-			);
+				console.log('troublecurObj line1410: ', curObj, curName, iUnit);
+				_.set(curObj, 'curTxt', 'A: '+getSide(_.get(curObj, 'iPlayerSide'))+' '+ curName +' is dead');
+				if(_.get(curObj, 'iPlayerUcid') || _.get(curObj, 'tPlayerUcid')) {
+					dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+				}
 
-			if(_.get(curObj, 'iPlayerUcid') || _.get(curObj, 'tPlayerUcid')) {
-				dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+				DCSLuaCommands.sendMesgToAll(
+					serverName,
+					_.get(curObj, 'curTxt'),
+					5
+				);
 			}
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_BASE_CAPTURED') {
@@ -1431,15 +1481,17 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				curName = _.get(curObj, 'iPlayerUnitType', '""');
 			}
 
-			DCSLuaCommands.sendMesgToCoalition(
-				_.get(curObj, 'iPlayerSide'),
-				serverName,
-				'C: '+ curName +' ended refueling',
-				5
-			);
+			_.set(curObj, 'curTxt', 'C: '+ curName +' ended refueling');
 			if(_.get(curObj, 'iPlayerUcid') || _.get(curObj, 'tPlayerUcid')) {
 				dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 			}
+
+			DCSLuaCommands.sendMesgToCoalition(
+				_.get(curObj, 'iPlayerSide'),
+				serverName,
+				_.get(curObj, 'curTxt'),
+				5
+			);
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_BIRTH') {
 			// Occurs when any object is spawned into the mission.
@@ -1474,12 +1526,14 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				serverName,
 				'C: '+ curName +' has spawned'
 			);
-			*/
+
 			if(_.get(curObj, 'iPlayerUcid') || _.get(curObj, 'tPlayerUcid')) {
 				dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 			}
+			*/
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_HUMAN_FAILURE') {
+			/*
 			// Occurs when any system fails on a human controlled aircraft.
 			curObj = {sessionName: sessionName, name: queObj.data.name};
 			_.set(curObj, 'time', _.get(queObj, 'data.arg2'));
@@ -1513,8 +1567,10 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			);
 
 			// dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+			*/
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_ENGINE_STARTUP') {
+			/*
 			// Occurs when any aircraft starts its engines.
 			curObj = {sessionName: sessionName, name: queObj.data.name};
 			_.set(curObj, 'time', _.get(queObj, 'data.arg2'));
@@ -1548,8 +1604,10 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			);
 
 			// dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+			*/
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_ENGINE_SHUTDOWN') {
+			/*
 			// Occurs when any aircraft shuts down its engines.
 			curObj = {sessionName: sessionName, name: queObj.data.name};
 			_.set(curObj, 'time', _.get(queObj, 'data.arg2'));
@@ -1583,6 +1641,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			);
 
 			// dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+			*/
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_PLAYER_ENTER_UNIT') {
 			// Occurs when any player assumes direct control of a unit.
@@ -1610,15 +1669,18 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				curName = _.get(curObj, 'iPlayerUnitType', '""');
 			}
 
-			DCSLuaCommands.sendMesgToCoalition(
-				_.get(curObj, 'iPlayerSide'),
-				serverName,
-				'C: '+ curName +' enters a brand new ' + _.get(curObj, 'iPlayerUnitType'),
-				5
-			);
+			console.log('troublecurObj line1659: ', curObj, curName);
+			_.set(curObj, 'curTxt', 'C: '+ curName +' enters a brand new ' + _.get(curObj, 'iPlayerUnitType'));
 			if(_.get(curObj, 'iPlayerUcid') || _.get(curObj, 'tPlayerUcid')) {
 				dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 			}
+
+			DCSLuaCommands.sendMesgToCoalition(
+				_.get(curObj, 'iPlayerSide'),
+				serverName,
+				_.get(curObj, 'curTxt'),
+				5
+			);
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_PLAYER_LEAVE_UNIT') {
 			// Occurs when any player relieves control of a unit to the AI.
@@ -1648,21 +1710,24 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 
 			console.log('line1541 unit type: ', _.get(curObj, 'iPlayerUnitType'));
 
-			DCSLuaCommands.sendMesgToCoalition(
-				_.get(curObj, 'iPlayerSide'),
-				serverName,
-				'C: '+ curName +' leaves his ' + _.get(curObj, 'iPlayerUnitType'),
-				5
-			);
+			_.set(curObj, 'curTxt', 'C: '+ curName +' leaves his ' + _.get(curObj, 'iPlayerUnitType'));
 			if(_.get(curObj, 'iPlayerUcid') || _.get(curObj, 'tPlayerUcid')) {
 				dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 			}
+
+			DCSLuaCommands.sendMesgToCoalition(
+				_.get(curObj, 'iPlayerSide'),
+				serverName,
+				_.get(curObj, 'curTxt'),
+				5
+			);
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_PLAYER_COMMENT') {
 			// ?
 			console.log('event: ', queObj);
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_SHOOTING_START') {
+			/*
 			// Occurs when any unit begins firing a weapon that has a high rate of fire.
 			// Most common with aircraft cannons (GAU-8), autocannons, and machine guns.
 			curObj = {sessionName: sessionName, name: queObj.data.name};
@@ -1695,8 +1760,10 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			}
 			console.log('event: ', curObj);
 			// dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+			*/
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_SHOOTING_END') {
+			/*
 			// Occurs when any unit stops firing its weapon.
 			// Event will always correspond with a shooting start event.
 			curObj = {sessionName: sessionName, name: queObj.data.name};
@@ -1714,6 +1781,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					}
 				}
 			}
+			*/
 		}
 		return true;
 	});
