@@ -1037,7 +1037,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			}
 
 			// console.log('Tevent: ', curObj);
-			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 
 			if( _.get(queObj, ['data', 'arg7', 'typeName'])){
 				dbSystemServiceController.weaponScoreActions('read', _.get(queObj, 'data.arg7'))
@@ -1045,6 +1044,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						_.set(curObj, 'weaponName', _.get(weaponResp, 'name'));
 						_.set(curObj, 'weaponDisplayName', _.get(weaponResp, 'displayName'));
 						_.set(curObj, 'score', _.get(weaponResp, 'score'));
+						dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 
 						// console.log(serverName, 'HITHIT', getSide(_.get(curObj, 'iPlayerSide')), iPlayer, getSide(_.get(curObj, 'tPlayerSide')), tPlayer, _.get(shootingUsers, [iPlayer.ucid, 'count'], 0), _.get(curObj, 'weaponDisplayName'), _.get(curObj, 'score'));
 						if (_.startsWith(_.get(curObj, 'weaponName'), 'weapons.shells')){
@@ -1073,6 +1073,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				_.set(curObj, 'weaponName', _.get(queObj, ['data', 'arg7', 'unitType']));
 				_.set(curObj, 'weaponDisplayName', _.get(queObj, ['data', 'arg7', 'unitType']));
 				_.set(curObj, 'score', 1);
+				dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+
 				_.set(shootingUsers, [_.get(curObj, 'iPlayerUnitId'), 'count'], _.get(shootingUsers, [_.get(curObj, 'iPlayerUnitId'), 'count'], 0)+1);
 				_.set(shootingUsers, [_.get(curObj, 'iPlayerUnitId'), 'startTime'], new Date().getTime());
 				_.set(shootingUsers, [_.get(curObj, 'iPlayerUnitId'), 'serverName'], serverName);
