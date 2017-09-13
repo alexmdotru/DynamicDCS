@@ -742,7 +742,9 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				_.set(curObj, 'tPlayerUcid', _.get(tPlayer, 'ucid', queObj.data.arg3));
 			}
 			// console.log('event: ', curObj);
-			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+			if(_.get(curObj, 'iPlayerUcid') || _.get(curObj, 'tPlayerUcid')) {
+				dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+			}
 
 			DCSLuaCommands.sendMesgToAll(
 				serverName,
@@ -792,7 +794,9 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				_.set(curObj, 'iPlayerUcid', _.get(iPlayer, 'ucid', queObj.data.arg1));
 			}
 			// console.log('event: ', curObj);
-			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+			if(_.get(curObj, 'iPlayerUcid') || _.get(curObj, 'tPlayerUcid')) {
+				dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+			}
 
 			DCSLuaCommands.sendMesgToAll(
 				serverName,
@@ -801,6 +805,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			);
 		}
 
+		/*
 		if (_.get(queObj, 'action') === 'change_slot') {
 			// "change_slot", playerID, slotID, prevSide
 			curObj = {sessionName: sessionName, name: queObj.data.name};
@@ -818,6 +823,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			// console.log('event: ', curObj);
 			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 		}
+		*/
+
 		if (_.get(queObj, 'action') === 'connect') {
 			// "connect", playerID, name
 			curObj = {sessionName: sessionName, name: queObj.data.name};
@@ -828,7 +835,9 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			}
 			_.set(curObj, 'iPlayerName', _.get(queObj, 'data.arg2'));
 			// console.log('event: ', curObj);
-			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+			if(_.get(curObj, 'iPlayerUcid') || _.get(curObj, 'tPlayerUcid')) {
+				dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+			}
 
 			DCSLuaCommands.sendMesgToAll(
 				serverName,
@@ -848,7 +857,9 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			_.set(curObj, 'iPlayerSide', _.get(queObj, 'data.arg3'));
 			_.set(curObj, 'reasonCode', _.get(queObj, 'data.arg4'));
 			// console.log('event: ', curObj);
-			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+			if(_.get(curObj, 'iPlayerUcid') || _.get(curObj, 'tPlayerUcid')) {
+				dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+			}
 
 			DCSLuaCommands.sendMesgToAll(
 				serverName,
@@ -959,11 +970,15 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					_.set(curObj, 'weaponName', _.get(weaponResp, 'name'));
 					// _.set(curObj, 'score', _.get(weaponResp, 'score')); // no score for weapon just shot
 					// console.log('Tevent: ', curObj);
-					dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+					if(_.get(curObj, 'iPlayerUcid') || _.get(curObj, 'tPlayerUcid')) {
+						dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+					}
 				})
 				.catch(function (err) {
 					// console.log('Eevent: ', curObj);
-					dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+					if(_.get(curObj, 'iPlayerUcid') || _.get(curObj, 'tPlayerUcid')) {
+						dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+					}
 				})
 			;
 		}
@@ -1044,7 +1059,11 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						_.set(curObj, 'weaponName', _.get(weaponResp, 'name'));
 						_.set(curObj, 'weaponDisplayName', _.get(weaponResp, 'displayName'));
 						_.set(curObj, 'score', _.get(weaponResp, 'score'));
-						dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+
+						if(_.get(curObj, 'iPlayerUcid') || _.get(curObj, 'tPlayerUcid')) {
+							dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+						}
+
 
 						// console.log(serverName, 'HITHIT', getSide(_.get(curObj, 'iPlayerSide')), iPlayer, getSide(_.get(curObj, 'tPlayerSide')), tPlayer, _.get(shootingUsers, [iPlayer.ucid, 'count'], 0), _.get(curObj, 'weaponDisplayName'), _.get(curObj, 'score'));
 						if (_.startsWith(_.get(curObj, 'weaponName'), 'weapons.shells')){
@@ -1066,14 +1085,18 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					})
 					.catch(function (err) {
 						console.log('Eevent: ', curObj, err);
-						dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+						if(_.get(curObj, 'iPlayerUcid') || _.get(curObj, 'tPlayerUcid')) {
+							dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+						}
 					});
 				;
 			} else {
 				_.set(curObj, 'weaponName', _.get(queObj, ['data', 'arg7', 'unitType']));
 				_.set(curObj, 'weaponDisplayName', _.get(queObj, ['data', 'arg7', 'unitType']));
 				_.set(curObj, 'score', 1);
-				dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+				if(_.get(curObj, 'iPlayerUcid') || _.get(curObj, 'tPlayerUcid')) {
+					dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+				}
 
 				_.set(shootingUsers, [_.get(curObj, 'iPlayerUnitId'), 'count'], _.get(shootingUsers, [_.get(curObj, 'iPlayerUnitId'), 'count'], 0)+1);
 				_.set(shootingUsers, [_.get(curObj, 'iPlayerUnitId'), 'startTime'], new Date().getTime());
@@ -1083,8 +1106,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					[_.get(curObj, 'iPlayerUnitId'), 'mesg'],
 					'A: '+ getSide(_.get(curObj, 'iPlayerSide'))+' '+ iPlayer +' has hit '+getSide(_.get(curObj, 'tPlayerSide'))+' ' + tPlayer + ' '+_.get(shootingUsers, [_.get(curObj, 'iPlayerUnitId'), 'count'], 0)+' times with ' + _.get(curObj, 'weaponDisplayName') + ' - +'+_.get(curObj, 'score')+' each.'
 				);
-
-				dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 			}
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_TAKEOFF') {
@@ -1130,8 +1151,9 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				'C: '+ curName +' has taken off' + place,
 				5
 			);
-
-			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+			if(_.get(curObj, 'iPlayerUcid') || _.get(curObj, 'tPlayerUcid')) {
+				dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+			}
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_LAND') {
 			// Occurs when an aircraft lands at an airbase, farp or ship
@@ -1176,8 +1198,9 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				'C: '+ curName +' has landed' + place,
 				5
 			);
-
-			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+			if(_.get(curObj, 'iPlayerUcid') || _.get(curObj, 'tPlayerUcid')) {
+				dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+			}
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_CRASH') {
 			// Occurs when any aircraft crashes into the ground and is completely destroyed.
@@ -1211,8 +1234,9 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				'A: '+ getSide(_.get(curObj, 'iPlayerSide'))+' '+ curName +' has crashed',
 				5
 			);
-
-			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+			if(_.get(curObj, 'iPlayerUcid') || _.get(curObj, 'tPlayerUcid')) {
+				dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+			}
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_EJECTION') {
 			// Occurs when a pilot ejects from an aircraft
@@ -1231,8 +1255,9 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					}
 				}
 			}
-
-			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+			if(_.get(curObj, 'iPlayerUcid') || _.get(curObj, 'tPlayerUcid')) {
+				dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+			}
 
 			var curName;
 			if (_.get(curObj, 'iPlayerName')){
@@ -1279,8 +1304,9 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				'C: '+ curName +' began refueling',
 				5
 			);
-
-			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+			if(_.get(curObj, 'iPlayerUcid') || _.get(curObj, 'tPlayerUcid')) {
+				dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+			}
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_DEAD') {
 			// Occurs when an object is completely destroyed.
@@ -1314,7 +1340,9 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				5
 			);
 
-			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+			if(_.get(curObj, 'iPlayerUcid') || _.get(curObj, 'tPlayerUcid')) {
+				dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+			}
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_PILOT_DEAD') {
 			// Occurs when the pilot of an aircraft is killed.
@@ -1350,7 +1378,9 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				5
 			);
 
-			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+			if(_.get(curObj, 'iPlayerUcid') || _.get(curObj, 'tPlayerUcid')) {
+				dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+			}
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_BASE_CAPTURED') {
 			// Occurs when a ground unit captures either an airbase or a farp.
@@ -1407,8 +1437,9 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				'C: '+ curName +' ended refueling',
 				5
 			);
-
-			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+			if(_.get(curObj, 'iPlayerUcid') || _.get(curObj, 'tPlayerUcid')) {
+				dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+			}
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_BIRTH') {
 			// Occurs when any object is spawned into the mission.
@@ -1444,8 +1475,9 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				'C: '+ curName +' has spawned'
 			);
 			*/
-
-			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+			if(_.get(curObj, 'iPlayerUcid') || _.get(curObj, 'tPlayerUcid')) {
+				dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+			}
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_HUMAN_FAILURE') {
 			// Occurs when any system fails on a human controlled aircraft.
@@ -1480,7 +1512,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				5
 			);
 
-			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+			// dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_ENGINE_STARTUP') {
 			// Occurs when any aircraft starts its engines.
@@ -1515,7 +1547,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				5
 			);
 
-			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+			// dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_ENGINE_SHUTDOWN') {
 			// Occurs when any aircraft shuts down its engines.
@@ -1550,7 +1582,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				5
 			);
 
-			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+			// dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_PLAYER_ENTER_UNIT') {
 			// Occurs when any player assumes direct control of a unit.
@@ -1584,8 +1616,9 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				'C: '+ curName +' enters a brand new ' + _.get(curObj, 'iPlayerUnitType'),
 				5
 			);
-
-			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+			if(_.get(curObj, 'iPlayerUcid') || _.get(curObj, 'tPlayerUcid')) {
+				dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+			}
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_PLAYER_LEAVE_UNIT') {
 			// Occurs when any player relieves control of a unit to the AI.
@@ -1621,8 +1654,9 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				'C: '+ curName +' leaves his ' + _.get(curObj, 'iPlayerUnitType'),
 				5
 			);
-
-			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+			if(_.get(curObj, 'iPlayerUcid') || _.get(curObj, 'tPlayerUcid')) {
+				dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+			}
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_PLAYER_COMMENT') {
 			// ?
@@ -1660,7 +1694,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				}
 			}
 			console.log('event: ', curObj);
-			dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+			// dbMapServiceController.statSrvEventActions('save', serverName, curObj);
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_SHOOTING_END') {
 			// Occurs when any unit stops firing its weapon.
