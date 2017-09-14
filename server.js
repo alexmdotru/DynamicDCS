@@ -128,7 +128,7 @@ router.route('/srvEvents/:serverName')
 		dbMapServiceController.statSessionActions('readLatest', req.body.serverName, req.body)
 			.then(function(sesResp) {
 				_.set(req, 'body.sessionName', _.get(sesResp, 'name'));
-				dbMapServiceController.statSrvEventActions('read', req.body.serverName, req.body)
+				dbMapServiceController.simpleStatEventActions('read', req.body.serverName, req.body)
 					.then(function (resp) {
 						res.json(resp);
 					})
@@ -143,7 +143,7 @@ router.route('/srvEvents/:serverName/:sessionName')
 	.get(function (req, res) {
 		_.set(req, 'body.serverName', req.params.serverName);
 		_.set(req, 'body.sessionName', req.params.sessionName);
-		dbMapServiceController.statSrvEventActions('read', req.body.serverName, req.body)
+		dbMapServiceController.simpleStatEventActions('read', req.body.serverName, req.body)
 			.then(function (resp) {
 				res.json(resp);
 			});
