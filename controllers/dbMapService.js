@@ -13,6 +13,7 @@ var srvPlayerSchema = require('../models/srvPlayerSchema');
 var unitSchema = require('../models/unitSchema');
 var statSessionSchema = require('../models/statSessionSchema');
 var statSrvEventSchema = require('../models/statSrvEventSchema');
+var simpleStatEventSchema = require('../models/simpleStatEventSchema');
 var cmdQueSchema = require('../models/cmdQueSchema');
 
 exports.baseActions = function (action, serverName, obj){
@@ -162,6 +163,36 @@ exports.statSrvEventActions = function (action, serverName, obj){
 			statsrvevent.save(function (err, statSrvEvent) {
 				if (err) { reject(err) }
 				resolve(statSrvEvent);
+			});
+		});
+	}
+};
+
+exports.simpleStatEventActions = function (action, serverName, obj){
+	var newObjArray = [];
+	const SimpleStatEvent = mapdb.model(serverName+'_statSrvEvent', simpleStatEventSchema);
+	if (action === 'read') {
+		return new Promise(function(resolve, reject) {
+			SimpleStatEvent.find({sessionName: _.get(obj, 'sessionName')}, function (err, simpleStatEvent) {
+				if (err) { reject(err) }
+				resolve(simpleStatEvent);
+			});
+		});
+	}
+	if (action === 'readAll') {
+		return new Promise(function(resolve, reject) {
+			SimpleStatEvent.find(function (err, simpleStatEvent) {
+				if (err) { reject(err) }
+				resolve(simpleStatEvent);
+			});
+		});
+	}
+	if(action === 'save') {
+		return new Promise(function(resolve, reject) {
+			const simplestatevent = new SimpleStatEvent(obj);
+			simplestatevent.save(function (err, simpleStatEvent) {
+				if (err) { reject(err) }
+				resolve(simpleStatEvent);
 			});
 		});
 	}
