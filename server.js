@@ -906,12 +906,12 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			_.forEach(shootingUsers, function (user, key) {
 				if(_.get(user, ['startTime']) + 1500 < new Date().getTime()){
 					var shootObj = _.get(user, ['iCurObj']);
-					if(_.get(shootObj, 'iPlayerUcid') || _.get(shootObj, 'tPlayerUcid')) {
-						dbMapServiceController.statSrvEventActions('save', _.get(user, ['serverName']), shootObj);
+					if(_.get(shootObj, 'iucid') || _.get(shootObj, 'tucid')) {
+						dbMapServiceController.simpleStatEventActions('save', _.get(user, ['serverName']), shootObj);
 					}
 					DCSLuaCommands.sendMesgToAll(
-						_.get(shootObj, ['serverName']),
-						_.get(shootObj, ['msg']),
+						_.get(user, ['serverName']),
+						_.get(iCurObj, 'msg'),
 						20
 					);
 					delete shootingUsers[key];
