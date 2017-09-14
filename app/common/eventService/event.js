@@ -36,6 +36,7 @@
 						radius: 3
 					});
 					_.set(returnObj, [curPlayerId, 'data'], _.get(returnObj, [curPlayerId, 'data'], []));
+					console.log('rtnObj: ', _.get(returnObj, [curPlayerId, 'name']));
 					if (_.get(returnObj, [curPlayerId, 'name'])) {
 						if (iName) {
 							_.set(returnObj, [curPlayerId, 'name'], iName);
@@ -43,7 +44,6 @@
 						if (tName) {
 							_.set(returnObj, [curPlayerId, 'name'], tName);
 						}
-						console.log('rtnObj: ', _.get(returnObj, [curPlayerId, 'name']));
 					}
 					returnObj[curPlayerId].data.push(event);
 				}
