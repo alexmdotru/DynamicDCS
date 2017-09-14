@@ -101,6 +101,7 @@
 			series: events
 		});
 
+		/*
 		var dread = DCSUserAccountsAPI.query();
 		dread.$promise
 			.then(function (data) {
@@ -112,6 +113,7 @@
 				});
 			})
 		;
+		*/
 	}
 	indexController.$inject = ['userAccountService', 'dynamic-dcs.api.userAccounts', 'mySocket', 'events'];
 
