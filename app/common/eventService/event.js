@@ -14,6 +14,8 @@
 			var events = _.cloneDeep(events1);
 			events = _.sortBy(events, ['createdAt']);
 			_.forEach(events, function (event) {
+				var iName = _.get(event, 'iName');
+				var tName = _.get(event, 'tName');
 				if (_.get(event, 'iucid') || _.get(event, 'tucid')) {
 					if (_.get(event, 'iucid')) {
 						curPlayerId = _.get(event, 'iucid');
@@ -35,9 +37,13 @@
 					});
 					_.set(returnObj, [curPlayerId, 'data'], _.get(returnObj, [curPlayerId, 'data'], []));
 					if (_.get(returnObj, [curPlayerId, 'name'])) {
-						_.set(returnObj, [curPlayerId, 'name'], _.get(event, 'iName', _.get(event, 'tName')));
+						if (iName) {
+							_.set(returnObj, [curPlayerId, 'name'], iName);
+						}
+						if (tName) {
+							_.set(returnObj, [curPlayerId, 'name'], tName);
+						}
 					}
-					_.set(returnObj, [curPlayerId, 'name'], _.get(returnObj, [curPlayerId, 'data'], []));
 					returnObj[curPlayerId].data.push(event);
 				}
 			});
