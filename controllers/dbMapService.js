@@ -170,7 +170,7 @@ exports.statSrvEventActions = function (action, serverName, obj){
 
 exports.simpleStatEventActions = function (action, serverName, obj){
 	var newObjArray = [];
-	const SimpleStatEvent = mapdb.model(serverName+'_statSrvEvent', simpleStatEventSchema);
+	const SimpleStatEvent = mapdb.model(serverName+'_simpleStatEvent', simpleStatEventSchema);
 	if (action === 'read') {
 		return new Promise(function(resolve, reject) {
 			SimpleStatEvent.find({sessionName: _.get(obj, 'sessionName')}, function (err, simpleStatEvent) {
