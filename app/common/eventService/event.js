@@ -14,21 +14,18 @@
 			var events = _.cloneDeep(events1);
 			events = _.sortBy(events, ['createdAt']);
 			_.forEach(events, function (event) {
-				if (_.get(event, 'iPlayerUcid') || _.get(event, 'tPlayerUcid')) {
-					if (_.get(event, 'iPlayerUcid')) {
-						curPlayerId = _.get(event, 'iPlayerUcid');
-						scoreMath = _.get(curScore, [curPlayerId], 0) + _.get(event, 'score', 0)
+				if (_.get(event, 'iucid') || _.get(event, 'tucid')) {
+					if (_.get(event, 'iucid')) {
+						curPlayerId = _.get(event, 'iucid');
+						scoreMath = _.get(curScore, [curPlayerId], 0) + _.get(event, 'score', 0);
 						if(scoreMath < 0) {
 							scoreMath = 0;
 						}
 						_.set(event, 'curScore', scoreMath);
 						_.set(curScore, [curPlayerId], _.get(event, 'curScore', 0));
-						_.set(event, 'role', 'initiator');
 						_.set(event, 'priName', _.get(event, 'iPlayerName'));
 					} else {
-						curPlayerId = _.get(event, 'tPlayerUcid');
-						// _.set(event, 'curScore', _.get(curScore, [curPlayerId], 0) + _.get(event, 'score', 0));
-						// _.set(curScore, [curPlayerId], _.get(event, 'curScore', 0));
+						curPlayerId = _.get(event, 'tucid');
 						_.set(event, 'curScore', _.get(curScore, [curPlayerId], 0));
 						_.set(event, 'role', 'target');
 						_.set(event, 'priName', _.get(event, 'tPlayerName'));

@@ -66,7 +66,7 @@
 					var curWeapon;
 					_.forEach(_.get(this, 'points'), function (point) {
 						var p = point.point;
-						curToolTip += p.curTxt+'<br>';
+						curToolTip += p.msg+'<br>';
 					});
 					return curToolTip;
 				}
