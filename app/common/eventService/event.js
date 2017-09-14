@@ -38,10 +38,13 @@
 					_.set(returnObj, [curPlayerId, 'data'], _.get(returnObj, [curPlayerId, 'data'], []));
 					console.log('rtnObj: ', _.get(returnObj, [curPlayerId, 'name']));
 					if (_.get(returnObj, [curPlayerId, 'name'])) {
+						console.log('FIRE1');
 						if (iName) {
+							console.log('FIRE2');
 							_.set(returnObj, [curPlayerId, 'name'], iName);
 						}
 						if (tName) {
+							console.log('FIRE3');
 							_.set(returnObj, [curPlayerId, 'name'], tName);
 						}
 					}
