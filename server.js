@@ -642,6 +642,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 									sessionName: sessionName,
 									eventCode: abrLookup(_.get(queObj, 'action')),
 									iucid: _.get(player, 'ucid'),
+									iName: _.get(player, 'name'),
 									displaySide: 'A',
 									roleCode: 'I',
 									msg: 'A: '+getSide(_.get(matchPlayer, 'side'))+' '+_.get(player, 'name')+' has commited Treason and switched to '+getSide(_.get(player, 'side'))+'. Shoot on sight! -1000pts',
@@ -769,45 +770,27 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		// server side events
 		if (_.get(queObj, 'action') === 'friendly_fire') {
 			// "friendly_fire", playerID, weaponName, victimPlayerID
-			iCurObj = {sessionName: sessionName, name: queObj.data.name};
-			_.set(iCurObj, 'iPlayerId', _.get(queObj, 'data.arg1'));
+			iCurObj = {
+				sessionName: sessionName,
+				eventCode: abrLookup(_.get(queObj, 'action')),
+				displaySide: 'A',
+				roleCode: 'I'
+			};
 			iPlayer = _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg1});
 			if (iPlayer) {
-				tPlayer = _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg3});
-				if (tPlayer) {
-					iCurObj = {
-						sessionName: sessionName,
-						eventCode: abrLookup(_.get(queObj, 'action')),
-						iucid: _.get(tPlayer, 'ucid'),
-						displaySide: 'A',
-						roleCode: 'I',
-						msg: 'A: '+getSide(_.get(iPlayer, 'side'))+' '+_.get(iPlayer, 'name')+' has accidentally killed '+_.get(tPlayer, 'name')+' with a '+_.get(iCurObj, 'weaponName')+' - 100pts',
-						score: -100
-					};
-					if(_.get(iCurObj, 'iucid')) {
-						dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
-					}
-				}
-				iCurObj = {
-					sessionName: sessionName,
-					eventCode: abrLookup(_.get(queObj, 'action')),
-					iucid: _.get(iPlayer, 'ucid'),
-					displaySide: 'A',
-					roleCode: 'I',
-					msg: 'A: '+getSide(_.get(iPlayer, 'side'))+' '+_.get(iPlayer, 'name')+' has accidentally killed '+_.get(tPlayer, 'name')+' with a '+_.get(iCurObj, 'weaponName')+' - 100pts'
-				};
-				if(_.get(iCurObj, 'iucid')) {
-					dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
-				}
-
-
-				if(_.get(iCurObj, 'iPlayerUcid') || _.get(iCurObj, 'tPlayerUcid')) {
-					dbMapServiceController.statSrvEventActions('save', serverName, iCurObj);
-				}
-
+				_.set(iCurObj, 'iucid', _.get(iPlayer, 'ucid'));
+				_.set(iCurObj, 'iName', _.get(iPlayer, 'name'));
+			}
+			tPlayer = _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg3});
+			if (tPlayer) {
+				_.set(iCurObj, 'tucid', _.get(tPlayer, 'ucid'));
+				_.set(iCurObj, 'tName', _.get(tPlayer, 'name'));
+			}
+			if(_.get(iCurObj, 'iucid') || _.get(iCurObj, 'tucid')) {
+				dbMapServiceController.statSrvEventActions('save', serverName, iCurObj);
 				DCSLuaCommands.sendMesgToAll(
 					serverName,
-					_.get(iCurObj, 'msg'),
+					'A: '+getSide(_.get(iPlayer, 'side'))+' '+_.get(iPlayer, 'name')+' has accidentally killed '+_.get(tPlayer, 'name')+' with a '+_.get(queObj, 'data.arg2')+' - 100pts',
 					15
 				);
 			}
@@ -823,6 +806,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					sessionName: sessionName,
 					eventCode: abrLookup(_.get(queObj, 'action')),
 					iucid: _.get(iPlayer, 'ucid'),
+					iName: _.get(iPlayer, 'name'),
 					displaySide: 'A',
 					roleCode: 'I',
 					msg: 'A: '+getSide(_.get(iPlayer, 'side'))+' '+_.get(iPlayer, 'name')+' has killed himself'
@@ -855,6 +839,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					sessionName: sessionName,
 					eventCode: abrLookup(_.get(queObj, 'action')),
 					iucid: _.get(iPlayer, 'ucid'),
+					iName: _.get(iPlayer, 'name'),
 					displaySide: 'A',
 					roleCode: 'I',
 					msg: 'A: '+_.get(iPlayer, 'name')+' has disconnected - Ping:'+_.get(iPlayer, 'ping')+' Lang:'+_.get(iPlayer, 'lang')
@@ -888,6 +873,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 								sessionName: sessionName,
 								eventCode: abrLookup(_.get(queObj, 'action')),
 								iucid: _.get(iPlayer, 'ucid'),
+								iName: _.get(iUnit, 'playername'),
 								displaySide: _.get(iUnit, 'coalition'),
 								roleCode: 'I',
 								msg: 'C: '+ getSide(_.get(iUnit, 'coalition'))+' '+ _.get(iUnit, 'playername') +' released a ' + _.get(weaponResp, 'displayName')
@@ -972,7 +958,9 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				sessionName: sessionName,
 				eventCode: abrLookup(_.get(queObj, 'action')),
 				iucid: iPucid,
+				iName: _.get(iUnit, 'playername'),
 				tucid: tPucid,
+				tName: _.get(tUnit, 'playername'),
 				displaySide: 'A',
 				roleCode: 'I'
 			};
@@ -1036,6 +1024,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						sessionName: sessionName,
 						eventCode: abrLookup(_.get(queObj, 'action')),
 						iucid: _.get(iPlayer, 'ucid'),
+						iName: _.get(iUnit, 'playername'),
 						displaySide: _.get(iUnit, 'coalition'),
 						roleCode: 'I',
 						msg: 'C: '+ _.get(iUnit, 'playername') +' has taken off' + place
@@ -1069,6 +1058,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						sessionName: sessionName,
 						eventCode: abrLookup(_.get(queObj, 'action')),
 						iucid: _.get(iPlayer, 'ucid'),
+						iName: _.get(iUnit, 'playername'),
 						displaySide: _.get(iUnit, 'coalition'),
 						roleCode: 'I',
 						msg: 'C: '+ _.get(iUnit, 'playername') +' has taken off' + place
@@ -1095,6 +1085,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						sessionName: sessionName,
 						eventCode: abrLookup(_.get(queObj, 'action')),
 						iucid: _.get(iPlayer, 'ucid'),
+						iName: _.get(iUnit, 'playername'),
 						displaySide: 'A',
 						roleCode: 'I',
 						msg: 'A: '+ getSide(_.get(iUnit, 'coalition'))+' '+ _.get(iUnit, 'playername') +' has crashed'
@@ -1120,6 +1111,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						sessionName: sessionName,
 						eventCode: abrLookup(_.get(queObj, 'action')),
 						iucid: _.get(iPlayer, 'ucid'),
+						iName: _.get(iUnit, 'playername'),
 						displaySide: 'A',
 						roleCode: 'I',
 						msg: 'A: '+getSide(_.get(iUnit, 'coalition'))+' '+ _.get(iUnit, 'playername') +' ejected'
@@ -1145,6 +1137,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						sessionName: sessionName,
 						eventCode: abrLookup(_.get(queObj, 'action')),
 						iucid: _.get(iPlayer, 'ucid'),
+						iName: _.get(iUnit, 'playername'),
 						displaySide: _.get(iUnit, 'coalition'),
 						roleCode: 'I',
 						msg: 'C: ' + _.get(iUnit, 'playername') + ' began refueling'
@@ -1171,6 +1164,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						sessionName: sessionName,
 						eventCode: abrLookup(_.get(queObj, 'action')),
 						iucid: _.get(iPlayer, 'ucid'),
+						iName: _.get(iUnit, 'playername'),
 						displaySide: 'A',
 						roleCode: 'I',
 						msg: 'A: '+getSide(_.get(iUnit, 'playername'))+' '+ _.get(iUnit, 'playername') +' is dead'
@@ -1198,6 +1192,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						sessionName: sessionName,
 						eventCode: abrLookup(_.get(queObj, 'action')),
 						iucid: _.get(iPlayer, 'ucid'),
+						iName: _.get(iUnit, 'playername'),
 						displaySide: 'A',
 						roleCode: 'I',
 						msg: 'A: '+getSide(_.get(iUnit, 'coalition'))+' '+ _.get(iUnit, 'playername') +' pilot is dead'
@@ -1223,6 +1218,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						sessionName: sessionName,
 						eventCode: abrLookup(_.get(queObj, 'action')),
 						iucid: _.get(iPlayer, 'ucid'),
+						iName: _.get(iUnit, 'playername'),
 						displaySide: _.get(iUnit, 'coalition'),
 						roleCode: 'I',
 						msg: 'C: '+ _.get(iUnit, 'playername') +' ended refueling'
@@ -1250,6 +1246,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						sessionName: sessionName,
 						eventCode: abrLookup(_.get(queObj, 'action')),
 						iucid: _.get(iPlayer, 'ucid'),
+						iName: _.get(iUnit, 'playername'),
 						displaySide: _.get(iUnit, 'coalition'),
 						roleCode: 'I',
 						msg: 'C: '+ _.get(iUnit, 'playername') +' enters a brand new ' + _.get(iUnit, 'type')
@@ -1279,6 +1276,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						sessionName: sessionName,
 						eventCode: abrLookup(_.get(queObj, 'action')),
 						iucid: _.get(iPlayer, 'ucid'),
+						iName: _.get(iUnit, 'playername'),
 						displaySide: _.get(iUnit, 'coalition'),
 						roleCode: 'I',
 						msg: 'C: '+ _.get(iUnit, 'playername') +' leaves his ' + _.get(iUnit, 'type')

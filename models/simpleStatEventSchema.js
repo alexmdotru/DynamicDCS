@@ -14,7 +14,13 @@ const SimpleStatEventSchema = new Schema({
 		iucid: {
 			type: String
 		},
+		iName: {
+			type: String
+		},
 		tucid: {
+			type: String
+		},
+		tName: {
 			type: String
 		},
 		displaySide: {
