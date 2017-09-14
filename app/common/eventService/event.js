@@ -11,6 +11,7 @@
 			var returnObj = {};
 			var curPlayerId;
 			var scoreMath;
+			var name;
 			var events = _.cloneDeep(events1);
 			events = _.sortBy(events, ['createdAt']);
 			_.forEach(events, function (event) {
@@ -34,17 +35,14 @@
 						radius: 3
 					});
 					_.set(returnObj, [curPlayerId, 'data'], _.get(returnObj, [curPlayerId, 'data'], []));
-					console.log('rtnObj: ', _.get(returnObj, [curPlayerId, 'name']));
-					if (_.get(returnObj, [curPlayerId, 'name'])) {
-						console.log('FIRE1');
+					if (name) {
 						if (_.get(event, 'iName')) {
-							console.log('FIRE2');
 							_.set(returnObj, [curPlayerId, 'name'], _.get(event, 'iName'));
 						}
 						if (_.get(event, 'tName')) {
-							console.log('FIRE3');
 							_.set(returnObj, [curPlayerId, 'name'], _.get(event, 'tName'));
 						}
+
 					}
 					returnObj[curPlayerId].data.push(event);
 				}
