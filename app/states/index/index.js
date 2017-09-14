@@ -101,6 +101,10 @@
 			series: events
 		});
 
+		socket.emit('room', {
+			server: 'leaderboard'
+		});
+
 		/*
 		var dread = DCSUserAccountsAPI.query();
 		dread.$promise
