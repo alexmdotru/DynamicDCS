@@ -210,6 +210,7 @@ var socketQues = ['q0', 'q1', 'q2', 'qadmin'];
 var curServers = {};
 var nonaccountUsers = {};
 var shootingUsers = {};
+var place;
 
 function abrLookup (fullName) {
  var shortNames =	{
@@ -250,7 +251,7 @@ function isNumeric(x) {
 }
 
 function initUnits(serverName, socketID, authId) {
-	var iCurObj
+	var iCurObj;
 	var curIP = io.sockets.connected[socketID].conn.remoteAddress.replace("::ffff:", "");
 	var initQue = {que: []};
 	if (curIP === ':10308') {
@@ -380,6 +381,8 @@ function setSocketRoom(socket, room) {
 function setRoomSide(socket, roomObj) {
 	var srvPlayer;
 	var pSide;
+	var iUnit;
+	var iPlayer;
 	var curIP = socket.conn.remoteAddress.replace("::ffff:", "");
 	if (curIP === ':10308') {
 		curIP = '127.0.0.1';
@@ -935,6 +938,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			var tPucid;
 			var iUnitId = queObj.data.arg3;
 			var tUnitId = queObj.data.arg4;
+			var iPName;
+			var tPName;
 			// console.log('eventhit');
 			// Occurs whenever an object is hit by a weapon.
 			// arg1 = id
@@ -947,6 +952,9 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				iPlayer = _.find(curServers[serverName].serverObject.players, {name: iUnit.playername});
 				if (iPlayer) {
 					iPucid = _.get(iPlayer, 'ucid');
+					iPName = _.get(iUnit, 'playername')
+				} else {
+					iPName = _.get(iUnit, 'type')
 				}
 			}
 			tUnit = _.find(curServers[serverName].serverObject.units, {unitID: tUnitId});
@@ -954,6 +962,9 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				tPlayer = _.find(curServers[serverName].serverObject.players, {name: tUnit.playername});
 				if (tPlayer) {
 					tPucid = _.get(tPlayer, 'ucid');
+					tPName = _.get(tUnit, 'playername')
+				} else {
+					tPName = _.get(tUnit, 'type')
 				}
 			}
 
@@ -975,11 +986,11 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 								_.set(shootingUsers, [iUnitId, 'startTime'], new Date().getTime());
 								_.set(shootingUsers, [iUnitId, 'serverName'], serverName);
 								_.set(iCurObj, 'msg',
-									'A: '+ getSide(_.get(iUnit, 'coalition'))+' '+ _.get(iUnit, 'playername') +' has hit '+getSide(_.get(tUnit, 'coalition'))+' ' + _.get(tUnit, 'playername') + ' '+_.get(shootingUsers, [iUnitId, 'count'], 0)+' times with ' + _.get(weaponResp, 'displayName') + ' - +'+_.get(weaponResp, 'score')+' each.'
+									'A: '+ getSide(_.get(iUnit, 'coalition'))+' '+ iPName +' has hit '+getSide(_.get(tUnit, 'coalition'))+' ' + tPName + ' '+_.get(shootingUsers, [iUnitId, 'count'], 0)+' times with ' + _.get(weaponResp, 'displayName') + ' - +'+_.get(weaponResp, 'score')+' each.'
 								);
 								_.set(shootingUsers, [iUnitId, 'iCurObj'], _.cloneDeep(iCurObj));
 							} else {
-								_.set(iCurObj, 'msg', 'A: '+ getSide(_.get(iUnit, 'coalition'))+' '+ _.get(iUnit, 'playername') +' has hit '+getSide(_.get(tUnit, 'coalition'))+' '+_.get(tUnit, 'playername') + ' with ' + _.get(weaponResp, 'displayName') + ' - +'+_.get(weaponResp, 'score'));
+								_.set(iCurObj, 'msg', 'A: '+ getSide(_.get(iUnit, 'coalition'))+' '+ iPName +' has hit '+getSide(_.get(tUnit, 'coalition'))+' '+tPName + ' with ' + _.get(weaponResp, 'displayName') + ' - +'+_.get(weaponResp, 'score'));
 								if(_.get(iCurObj, 'iucid') || _.get(iCurObj, 'tucid')) {
 									dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 								}
@@ -1003,14 +1014,13 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				_.set(shootingUsers, [iUnitId, 'startTime'], new Date().getTime());
 				_.set(shootingUsers, [iUnitId, 'serverName'], serverName);
 				_.set(iCurObj, 'msg',
-					'A: '+ getSide(_.get(iUnit, 'coalition'))+' '+ _.get(iUnit, 'playername') +' has hit '+getSide(_.get(tUnit, 'coalition'))+' ' + _.get(tUnit, 'playername') + ' '+_.get(shootingUsers, [iUnitId, 'count'], 0)+' times with ' + _.get(weaponResp, 'displayName') + ' - +'+_.get(weaponResp, 'score')+' each.'
+					'A: '+ getSide(_.get(iUnit, 'coalition'))+' '+ iPName +' has hit '+getSide(_.get(tUnit, 'coalition'))+' ' + tPName + ' '+_.get(shootingUsers, [iUnitId, 'count'], 0)+' times with ' + _.get(weaponResp, 'displayName') + ' - +'+_.get(weaponResp, 'score')+' each.'
 				);
 				_.set(shootingUsers, [iUnitId, 'iCurObj'], _.cloneDeep(iCurObj));
 			}
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_TAKEOFF') {
 			// Occurs when an aircraft takes off from an airbase, farp, or ship.
-			var place;
 			if (_.get(queObj, 'data.arg6')){
 				place = ' from '+_.get(queObj, 'data.arg6');
 			} else if (__.get(queObj, 'data.arg5')) {
@@ -1044,7 +1054,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_LAND') {
 			// Occurs when an aircraft lands at an airbase, farp or ship
-			var place;
 			if (_.get(queObj, 'data.arg6')){
 				place = ' from '+_.get(queObj, 'data.arg6');
 			} else if (__.get(queObj, 'data.arg5')) {
@@ -1321,7 +1330,7 @@ setInterval(function () { //sending FULL SPEED AHEAD, 1 per milsec (watch for we
 		})
 		.catch(function (err) {
 			console.log('line1638', err);
-		});
+		})
 	;
 }, 500);
 
