@@ -1023,7 +1023,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			// Occurs when an aircraft takes off from an airbase, farp, or ship.
 			if (_.get(queObj, 'data.arg6')){
 				place = ' from '+_.get(queObj, 'data.arg6');
-			} else if (__.get(queObj, 'data.arg5')) {
+			} else if (_.get(queObj, 'data.arg5')) {
 				place = ' from '+_.get(queObj, 'data.arg5');
 			} else {
 				place = '';
@@ -1056,7 +1056,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			// Occurs when an aircraft lands at an airbase, farp or ship
 			if (_.get(queObj, 'data.arg6')){
 				place = ' from '+_.get(queObj, 'data.arg6');
-			} else if (__.get(queObj, 'data.arg5')) {
+			} else if (_.get(queObj, 'data.arg5')) {
 				place = ' from '+_.get(queObj, 'data.arg5');
 			} else {
 				place = '';
