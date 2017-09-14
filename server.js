@@ -1264,14 +1264,11 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			}
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_BIRTH') {
-			console.log('event birth: ', queObj);
 			// Occurs when any object is spawned into the mission.
 			iUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg3});
-			console.log('event birth2: ', iUnit);
 			if (iUnit) {
 				iPlayer = _.find(curServers[serverName].serverObject.players, {name: iUnit.playername});
 				if (iPlayer) {
-					console.log('event birth3: ', iPlayer);
 					iCurObj = {
 						sessionName: sessionName,
 						eventCode: abrLookup(_.get(queObj, 'action')),
