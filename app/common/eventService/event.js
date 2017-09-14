@@ -23,16 +23,12 @@
 						}
 						_.set(event, 'curScore', scoreMath);
 						_.set(curScore, [curPlayerId], _.get(event, 'curScore', 0));
-						_.set(event, 'priName', _.get(event, 'iPlayerName'));
 					} else {
 						curPlayerId = _.get(event, 'tucid');
 						_.set(event, 'curScore', _.get(curScore, [curPlayerId], 0));
-						_.set(event, 'role', 'target');
-						_.set(event, 'priName', _.get(event, 'tPlayerName'));
 					}
 					_.set(event, 'y', _.get(event, 'curScore'));
 					_.set(event, 'x', new Date(_.get(event, 'createdAt')).getTime());
-					_.set(returnObj, [curPlayerId, 'name'], _.get(event, 'priName'));
 					_.set(returnObj, [curPlayerId, 'marker'], {
 						enabled: true,
 						radius: 3
