@@ -38,7 +38,7 @@
 						radius: 3
 					});
 					_.set(returnObj, [curPlayerId, 'data'], _.get(returnObj, [curPlayerId, 'data'], []));
-					if (_.get(returnObj, [curPlayerId, 'name'])) {
+					if (!_.get(returnObj, [curPlayerId, 'name'])) {
 						_.set(returnObj, [curPlayerId, 'name'],  curPlayerName);
 					}
 					returnObj[curPlayerId].data.push(event);
