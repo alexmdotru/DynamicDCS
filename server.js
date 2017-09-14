@@ -1173,7 +1173,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						iucid: _.get(iPlayer, 'ucid'),
 						displaySide: 'A',
 						roleCode: 'I',
-						msg: 'A: '+getSide(_.get(iCurObj, 'iPlayerSide'))+' '+ _.get(iUnit, 'playername') +' is dead'
+						msg: 'A: '+getSide(_.get(iUnit, 'playername'))+' '+ _.get(iUnit, 'playername') +' is dead'
 					};
 					if (_.get(iCurObj, 'iucid')) {
 						dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
@@ -1200,7 +1200,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						iucid: _.get(iPlayer, 'ucid'),
 						displaySide: 'A',
 						roleCode: 'I',
-						msg: 'A: '+getSide(_.get(iCurObj, 'iPlayerSide'))+' '+ _.get(iUnit, 'playername') +' pilot is dead'
+						msg: 'A: '+getSide(_.get(iUnit, 'coalition'))+' '+ _.get(iUnit, 'playername') +' pilot is dead'
 					};
 					if (_.get(iCurObj, 'iucid')) {
 						dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
