@@ -32,7 +32,6 @@ exports.createSocket = function (serverName, serverAddress, clientPort, gameGuiP
 						cmd: resp.actionObj.cmd,
 						reqID: resp._id
 					});
-					console.log('cmd client: ', _.get(dsock, 'writeQue.client'));
 				}
 			})
 		;
