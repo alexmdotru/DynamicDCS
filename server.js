@@ -638,7 +638,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 								curObj = {
 									sessionName: sessionName,
 									eventCode: abrLookup(_.get(queObj, 'action')),
-									ucid: _.get(player, 'ucid'),
+									iucid: _.get(player, 'ucid'),
 									displaySide: 'A',
 									roleCode: 'I',
 									msg: 'A: '+getSide(_.get(matchPlayer, 'side'))+' '+_.get(player, 'name')+' has commited Treason and switched to '+getSide(_.get(player, 'side'))+'. Shoot on sight! -1000pts',
@@ -775,7 +775,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					curObj = {
 						sessionName: sessionName,
 						eventCode: abrLookup(_.get(queObj, 'action')),
-						ucid: _.get(tPlayer, 'ucid'),
+						iucid: _.get(tPlayer, 'ucid'),
 						displaySide: 'A',
 						roleCode: 'I',
 						msg: 'A: '+getSide(_.get(iPlayer, 'side'))+' '+_.get(iPlayer, 'name')+' has accidentally killed '+_.get(tPlayer, 'name')+' with a '+_.get(curObj, 'weaponName')+' - 100pts',
@@ -788,7 +788,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				curObj = {
 					sessionName: sessionName,
 					eventCode: abrLookup(_.get(queObj, 'action')),
-					ucid: _.get(iPlayer, 'ucid'),
+					iucid: _.get(iPlayer, 'ucid'),
 					displaySide: 'A',
 					roleCode: 'I',
 					msg: 'A: '+getSide(_.get(iPlayer, 'side'))+' '+_.get(iPlayer, 'name')+' has accidentally killed '+_.get(tPlayer, 'name')+' with a '+_.get(curObj, 'weaponName')+' - 100pts'
@@ -819,7 +819,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				curObj = {
 					sessionName: sessionName,
 					eventCode: abrLookup(_.get(queObj, 'action')),
-					ucid: _.get(iPlayer, 'ucid'),
+					iucid: _.get(iPlayer, 'ucid'),
 					displaySide: 'A',
 					roleCode: 'I',
 					msg: 'A: '+getSide(_.get(iPlayer, 'side'))+' '+_.get(iPlayer, 'name')+' has killed himself'
@@ -851,7 +851,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				curObj = {
 					sessionName: sessionName,
 					eventCode: abrLookup(_.get(queObj, 'action')),
-					ucid: _.get(iPlayer, 'ucid'),
+					iucid: _.get(iPlayer, 'ucid'),
 					displaySide: 'A',
 					roleCode: 'I',
 					msg: 'A: '+_.get(iPlayer, 'name')+' has disconnected - Ping:'+_.get(iPlayer, 'ping')+' Lang:'+_.get(iPlayer, 'lang')
@@ -884,7 +884,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 							curObj = {
 								sessionName: sessionName,
 								eventCode: abrLookup(_.get(queObj, 'action')),
-								ucid: _.get(iPlayer, 'ucid'),
+								iucid: _.get(iPlayer, 'ucid'),
 								displaySide: _.get(iUnit, 'coalition'),
 								roleCode: 'I',
 								msg: 'C: '+ getSide(_.get(iUnit, 'coalition'))+' '+ _.get(iUnit, 'playername') +' released a ' + _.get(weaponResp, 'displayName')
@@ -895,8 +895,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						}
 					})
 					.catch(function (err) {
-						// console.log('Eevent: ', curObj);
-						dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+						console.log('erroring line898');
 					})
 				;
 			}
@@ -907,14 +906,12 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			_.forEach(shootingUsers, function (user, key) {
 				if(_.get(user, ['startTime']) + 1500 < new Date().getTime()){
 					var curObj = _.get(user, ['curObj']);
-					_.set(curObj, 'curTxt', _.get(user, ['mesg']));
 					if(_.get(curObj, 'iPlayerUcid') || _.get(curObj, 'tPlayerUcid')) {
 						dbMapServiceController.statSrvEventActions('save', _.get(user, ['serverName']), curObj);
 					}
-					console.log('chkcur: ', curObj, _.get(user, ['serverName']));
 					DCSLuaCommands.sendMesgToAll(
-						_.get(user, ['serverName']),
-						_.get(user, ['mesg']),
+						_.get(curObj, ['serverName']),
+						_.get(curObj, ['msg']),
 						20
 					);
 					delete shootingUsers[key];
@@ -1058,7 +1055,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					curObj = {
 						sessionName: sessionName,
 						eventCode: abrLookup(_.get(queObj, 'action')),
-						ucid: _.get(iPlayer, 'ucid'),
+						iucid: _.get(iPlayer, 'ucid'),
 						displaySide: _.get(iUnit, 'coalition'),
 						roleCode: 'I',
 						msg: 'C: '+ _.get(iUnit, 'playername') +' has taken off' + place
@@ -1092,7 +1089,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					curObj = {
 						sessionName: sessionName,
 						eventCode: abrLookup(_.get(queObj, 'action')),
-						ucid: _.get(iPlayer, 'ucid'),
+						iucid: _.get(iPlayer, 'ucid'),
 						displaySide: _.get(iUnit, 'coalition'),
 						roleCode: 'I',
 						msg: 'C: '+ _.get(iUnit, 'playername') +' has taken off' + place
@@ -1118,7 +1115,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					curObj = {
 						sessionName: sessionName,
 						eventCode: abrLookup(_.get(queObj, 'action')),
-						ucid: _.get(iPlayer, 'ucid'),
+						iucid: _.get(iPlayer, 'ucid'),
 						displaySide: 'A',
 						roleCode: 'I',
 						msg: 'A: '+ getSide(_.get(iUnit, 'coalition'))+' '+ _.get(iUnit, 'playername') +' has crashed'
@@ -1143,7 +1140,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					curObj = {
 						sessionName: sessionName,
 						eventCode: abrLookup(_.get(queObj, 'action')),
-						ucid: _.get(iPlayer, 'ucid'),
+						iucid: _.get(iPlayer, 'ucid'),
 						displaySide: _.get(iUnit, 'coalition'),
 						roleCode: 'I',
 						msg: 'A: '+getSide(_.get(iUnit, 'coalition'))+' '+ _.get(iUnit, 'playername') +' ejected'
@@ -1168,7 +1165,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					curObj = {
 						sessionName: sessionName,
 						eventCode: abrLookup(_.get(queObj, 'action')),
-						ucid: _.get(iPlayer, 'ucid'),
+						iucid: _.get(iPlayer, 'ucid'),
 						displaySide: _.get(iUnit, 'coalition'),
 						roleCode: 'I',
 						msg: 'C: ' + _.get(iUnit, 'playername') + ' began refueling'
@@ -1194,7 +1191,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					curObj = {
 						sessionName: sessionName,
 						eventCode: abrLookup(_.get(queObj, 'action')),
-						ucid: _.get(iPlayer, 'ucid'),
+						iucid: _.get(iPlayer, 'ucid'),
 						displaySide: 'A',
 						roleCode: 'I',
 						msg: 'A: '+getSide(_.get(curObj, 'iPlayerSide'))+' '+ _.get(iUnit, 'playername') +' is dead'
@@ -1221,7 +1218,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					curObj = {
 						sessionName: sessionName,
 						eventCode: abrLookup(_.get(queObj, 'action')),
-						ucid: _.get(iPlayer, 'ucid'),
+						iucid: _.get(iPlayer, 'ucid'),
 						displaySide: 'A',
 						roleCode: 'I',
 						msg: 'A: '+getSide(_.get(curObj, 'iPlayerSide'))+' '+ _.get(iUnit, 'playername') +' pilot is dead'
@@ -1246,7 +1243,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					curObj = {
 						sessionName: sessionName,
 						eventCode: abrLookup(_.get(queObj, 'action')),
-						ucid: _.get(iPlayer, 'ucid'),
+						iucid: _.get(iPlayer, 'ucid'),
 						displaySide: _.get(iUnit, 'coalition'),
 						roleCode: 'I',
 						msg: 'C: '+ _.get(iUnit, 'playername') +' ended refueling'
@@ -1273,7 +1270,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					curObj = {
 						sessionName: sessionName,
 						eventCode: abrLookup(_.get(queObj, 'action')),
-						ucid: _.get(iPlayer, 'ucid'),
+						iucid: _.get(iPlayer, 'ucid'),
 						displaySide: _.get(iUnit, 'coalition'),
 						roleCode: 'I',
 						msg: 'C: '+ _.get(iUnit, 'playername') +' enters a brand new ' + _.get(iUnit, 'type')
@@ -1302,7 +1299,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					curObj = {
 						sessionName: sessionName,
 						eventCode: abrLookup(_.get(queObj, 'action')),
-						ucid: _.get(iPlayer, 'ucid'),
+						iucid: _.get(iPlayer, 'ucid'),
 						displaySide: _.get(iUnit, 'coalition'),
 						roleCode: 'I',
 						msg: 'C: '+ _.get(iUnit, 'playername') +' leaves his ' + _.get(iUnit, 'type')

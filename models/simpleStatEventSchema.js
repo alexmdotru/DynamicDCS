@@ -11,9 +11,11 @@ const SimpleStatEventSchema = new Schema({
 			type: String,
 			required: true
 		},
-		ucid: {
-			type: String,
-			required: true
+		iucid: {
+			type: String
+		},
+		tucid: {
+			type: String
 		},
 		displaySide: {
 			type: String,
