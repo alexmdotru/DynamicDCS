@@ -6,7 +6,7 @@
 	}
 	getEvents.$inject=['eventService'];
 
-	function indexController (userAccountService, DCSUserAccountsAPI, socket, events) {
+	function indexController (socket, events) {
 		var indxCtrl = this;
 		var curData = [];
 		var curScore = 0;
@@ -61,9 +61,6 @@
 			tooltip: {
 				formatter: function() {
 					var curToolTip = 'Time: '+ Highcharts.dateFormat('%k:%M:%S', this.x)+'<br>';
-					var curIName;
-					var curTName;
-					var curWeapon;
 					_.forEach(_.get(this, 'points'), function (point) {
 						var p = point.point;
 						curToolTip += p.msg+'<br>';
@@ -104,22 +101,8 @@
 		socket.emit('room', {
 			server: 'leaderboard'
 		});
-
-		/*
-		var dread = DCSUserAccountsAPI.query();
-		dread.$promise
-			.then(function (data) {
-				_.set(userAccountService, 'userAccounts', data);
-				_.set(userAccountService, 'localAccount', _.find(data, {authId: localStorage.getItem('sub')}));
-				socket.emit('room', {
-					server: 'leaderboard',
-					authId: _.get(userAccountService, ['localAccount', 'authId'])
-				});
-			})
-		;
-		*/
 	}
-	indexController.$inject = ['userAccountService', 'dynamic-dcs.api.userAccounts', 'mySocket', 'events'];
+	indexController.$inject = ['mySocket', 'events'];
 
 	function configFunction($stateProvider) {
 		$stateProvider
