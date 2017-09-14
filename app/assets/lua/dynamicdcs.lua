@@ -31,10 +31,13 @@ do
     local socket = require("socket")
     local JSON = loadfile("Scripts\\JSON.lua")()
     require = nil
+	local missionStartTime = os.time()
 
     local function log(msg)
         env.info("DynamicDCS (t=" .. timer.getTime() .. "): " .. msg)
-    end
+	end
+
+	log('REALTIME '..missionStartTime)
 
 	local function clearVar()
 		cacheDB = {}
@@ -154,6 +157,7 @@ do
         payload.unitCount = unitCnt
 		payload.startAbsTime = timer.getTime0()
 		payload.curAbsTime = timer.getAbsTime()
+		payload.epoc = missionStartTime
         return payload
     end
 
