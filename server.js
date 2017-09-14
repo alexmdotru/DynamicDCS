@@ -1111,7 +1111,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						sessionName: sessionName,
 						eventCode: abrLookup(_.get(queObj, 'action')),
 						iucid: _.get(iPlayer, 'ucid'),
-						displaySide: _.get(iUnit, 'coalition'),
+						displaySide: 'A',
 						roleCode: 'I',
 						msg: 'A: '+getSide(_.get(iUnit, 'coalition'))+' '+ _.get(iUnit, 'playername') +' ejected'
 					};
