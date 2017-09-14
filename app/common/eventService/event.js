@@ -10,6 +10,7 @@
 		_.set(eCtrl, 'byUcid', function (events1) {
 			var returnObj = {};
 			var curPlayerId;
+			var curPlayerName;
 			var scoreMath;
 			var name;
 			var events = _.cloneDeep(events1);
@@ -18,6 +19,7 @@
 				if (_.get(event, 'iucid') || _.get(event, 'tucid')) {
 					if (_.get(event, 'iucid')) {
 						curPlayerId = _.get(event, 'iucid');
+						curPlayerName = _.get(event, 'iName');
 						scoreMath = _.get(curScore, [curPlayerId], 0) + _.get(event, 'score', 0);
 						if(scoreMath < 0) {
 							scoreMath = 0;
@@ -26,6 +28,7 @@
 						_.set(curScore, [curPlayerId], _.get(event, 'curScore', 0));
 					} else {
 						curPlayerId = _.get(event, 'tucid');
+						curPlayerName = _.get(event, 'tName');
 						_.set(event, 'curScore', _.get(curScore, [curPlayerId], 0));
 					}
 					_.set(event, 'y', _.get(event, 'curScore'));
@@ -35,14 +38,8 @@
 						radius: 3
 					});
 					_.set(returnObj, [curPlayerId, 'data'], _.get(returnObj, [curPlayerId, 'data'], []));
-					if (name) {
-						if (_.get(event, 'iName')) {
-							_.set(returnObj, [curPlayerId, 'name'], _.get(event, 'iName'));
-						}
-						if (_.get(event, 'tName')) {
-							_.set(returnObj, [curPlayerId, 'name'], _.get(event, 'tName'));
-						}
-
+					if (_.get(returnObj, [curPlayerId, 'name'])) {
+						_.set(returnObj, [curPlayerId, 'name'],  curPlayerName);
 					}
 					returnObj[curPlayerId].data.push(event);
 				}
