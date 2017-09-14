@@ -14,7 +14,6 @@
 
 		_.set(indxCtrl, 'events', events);
 		var events = angular.copy(events);
-		console.log('test: ', events);
 
 		_.set(indxCtrl, 'hChart', {
 			chart: {

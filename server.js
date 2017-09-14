@@ -1237,6 +1237,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		}
 
 		if (_.get(queObj, 'action') === 'S_EVENT_PLAYER_ENTER_UNIT') {
+			console.log('PLAYER ENTER: ');
 			// Occurs when any player assumes direct control of a unit.
 			iUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg3});
 			if (iUnit) {
@@ -1251,6 +1252,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						roleCode: 'I',
 						msg: 'C: '+ _.get(iUnit, 'playername') +' enters a brand new ' + _.get(iUnit, 'type')
 					};
+					console.log('PLAYER ENTER2: ', iCurObj);
 					if (_.get(iCurObj, 'iucid')) {
 						dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 					}
@@ -1265,9 +1267,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_PLAYER_LEAVE_UNIT') {
 			// Occurs when any player relieves control of a unit to the AI.
-			iCurObj = {sessionName: sessionName, name: queObj.data.name};
-			_.set(iCurObj, 'time', _.get(queObj, 'data.arg2'));
-			_.set(iCurObj, 'iPlayerUnitId', _.get(queObj, 'data.arg3'));
 			iUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg3});
 			if (iUnit) {
 				iPlayer = _.find(curServers[serverName].serverObject.players, {name: iUnit.playername});
