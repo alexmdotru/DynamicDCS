@@ -34,6 +34,10 @@
 						radius: 3
 					});
 					_.set(returnObj, [curPlayerId, 'data'], _.get(returnObj, [curPlayerId, 'data'], []));
+					if (_.get(returnObj, [curPlayerId, 'name'])) {
+						_.set(returnObj, [curPlayerId, 'name'], _.get(event, 'iName', _.get(event, 'tName')));
+					}
+					_.set(returnObj, [curPlayerId, 'name'], _.get(returnObj, [curPlayerId, 'data'], []));
 					returnObj[curPlayerId].data.push(event);
 				}
 			});
