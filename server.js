@@ -875,39 +875,31 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			// arg2 = time
 			// arg3 = initiatorId
 			// arg7 = weapon
-			curObj = {sessionName: sessionName, name: queObj.data.name};
-			_.set(curObj, 'eventId', _.get(queObj, 'data.arg1'));
-			_.set(curObj, 'time', _.get(queObj, 'data.arg2'));
-			_.set(curObj, 'iPlayerUnitId', _.get(queObj, 'data.arg3'));
 			iUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg3});
 			if (iUnit) {
-				_.set(curObj, 'iPlayerUnitType', _.get(iUnit, 'type', ''));
-				_.set(curObj, 'iPlayerSide', _.get(iUnit, 'coalition', 0));
-				_.set(curObj, 'iPlayerName', _.get(iUnit, 'playername', ''));
-				if (iUnit.playername !== '') {
-					iPlayer = _.find(curServers[serverName].serverObject.players, {name: iUnit.playername});
-					if (iPlayer) {
-						_.set(curObj, 'iPlayerUcid', iPlayer.ucid);
-					}
-				}
+				dbSystemServiceController.weaponScoreActions('read', _.get(queObj, 'data.arg7'))
+					.then(function (weaponResp) {
+						iPlayer = _.find(curServers[serverName].serverObject.players, {name: iUnit.playername});
+						if (iPlayer) {
+							curObj = {
+								sessionName: sessionName,
+								eventCode: abrLookup(_.get(queObj, 'action')),
+								ucid: _.get(iPlayer, 'ucid'),
+								displaySide: _.get(iUnit, 'coalition'),
+								roleCode: 'I',
+								msg: 'C: '+ getSide(_.get(iUnit, 'coalition'))+' '+ _.get(iUnit, 'playername') +' released a ' + _.get(weaponResp, 'displayName')
+							};
+							if(_.get(curObj, 'ucid')) {
+								dbMapServiceController.simpleStatEventActions('save', serverName, curObj);
+							}
+						}
+					})
+					.catch(function (err) {
+						// console.log('Eevent: ', curObj);
+						dbMapServiceController.statSrvEventActions('save', serverName, curObj);
+					})
+				;
 			}
-			_.set(queObj, ['data', 'arg7', 'unitType'], _.get(iUnit, 'type', ''));
-			dbSystemServiceController.weaponScoreActions('read', _.get(queObj, 'data.arg7'))
-				.then(function (weaponResp) {
-					_.set(curObj, 'weaponName', _.get(weaponResp, 'name'));
-					// _.set(curObj, 'score', _.get(weaponResp, 'score')); // no score for weapon just shot
-					// console.log('Tevent: ', curObj);
-					if(_.get(curObj, 'iPlayerUcid') || _.get(curObj, 'tPlayerUcid')) {
-						dbMapServiceController.statSrvEventActions('save', serverName, curObj);
-					}
-				})
-				.catch(function (err) {
-					// console.log('Eevent: ', curObj);
-					if(_.get(curObj, 'iPlayerUcid') || _.get(curObj, 'tPlayerUcid')) {
-						dbMapServiceController.statSrvEventActions('save', serverName, curObj);
-					}
-				})
-			;
 		}
 
 		//run each tick to see if we need to write gun event
