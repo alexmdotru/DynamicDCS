@@ -14,8 +14,6 @@
 			var events = _.cloneDeep(events1);
 			events = _.sortBy(events, ['createdAt']);
 			_.forEach(events, function (event) {
-				var iName = _.get(event, 'iName');
-				var tName = _.get(event, 'tName');
 				if (_.get(event, 'iucid') || _.get(event, 'tucid')) {
 					if (_.get(event, 'iucid')) {
 						curPlayerId = _.get(event, 'iucid');
@@ -39,13 +37,13 @@
 					console.log('rtnObj: ', _.get(returnObj, [curPlayerId, 'name']));
 					if (_.get(returnObj, [curPlayerId, 'name'])) {
 						console.log('FIRE1');
-						if (iName) {
+						if (_.get(event, 'iName')) {
 							console.log('FIRE2');
-							_.set(returnObj, [curPlayerId, 'name'], iName);
+							_.set(returnObj, [curPlayerId, 'name'], _.get(event, 'iName'));
 						}
-						if (tName) {
+						if (_.get(event, 'tName')) {
 							console.log('FIRE3');
-							_.set(returnObj, [curPlayerId, 'name'], tName);
+							_.set(returnObj, [curPlayerId, 'name'], _.get(event, 'tName'));
 						}
 					}
 					returnObj[curPlayerId].data.push(event);
