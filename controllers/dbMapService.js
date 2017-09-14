@@ -169,6 +169,7 @@ exports.statSrvEventActions = function (action, serverName, obj){
 };
 
 exports.simpleStatEventActions = function (action, serverName, obj){
+	console.log('ASO: ', action, serverName, obj);
 	var newObjArray = [];
 	const SimpleStatEvent = mapdb.model(serverName+'_statSrvEvent', simpleStatEventSchema);
 	if (action === 'read') {
