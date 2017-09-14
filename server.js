@@ -1264,6 +1264,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			}
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_BIRTH') {
+			console.log('event birth: ', queObj);
 			// Occurs when any object is spawned into the mission.
 			iUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg3});
 			if (iUnit) {
