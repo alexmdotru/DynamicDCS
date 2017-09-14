@@ -914,7 +914,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					}
 					DCSLuaCommands.sendMesgToAll(
 						_.get(user, ['serverName']),
-						_.get(iCurObj, 'msg'),
+						_.get(shootObj, 'msg'),
 						20
 					);
 
