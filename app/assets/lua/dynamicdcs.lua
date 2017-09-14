@@ -157,7 +157,7 @@ do
         payload.unitCount = unitCnt
 		payload.startAbsTime = timer.getTime0()
 		payload.curAbsTime = timer.getAbsTime()
-		payload.epoc = missionStartTime
+		payload.epoc = missionStartTime * 1000
         return payload
     end
 
