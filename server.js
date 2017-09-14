@@ -1237,7 +1237,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		}
 
 		if (_.get(queObj, 'action') === 'S_EVENT_PLAYER_ENTER_UNIT') {
-			console.log('PLAYER ENTER: ');
 			// Occurs when any player assumes direct control of a unit.
 			iUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg3});
 			if (iUnit) {
@@ -1252,7 +1251,33 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						roleCode: 'I',
 						msg: 'C: '+ _.get(iUnit, 'playername') +' enters a brand new ' + _.get(iUnit, 'type')
 					};
-					console.log('PLAYER ENTER2: ', iCurObj);
+					if (_.get(iCurObj, 'iucid')) {
+						dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
+					}
+					DCSLuaCommands.sendMesgToCoalition(
+						_.get(iCurObj, 'displaySide'),
+						serverName,
+						_.get(iCurObj, 'msg'),
+						5
+					);
+				}
+			}
+		}
+		if (_.get(queObj, 'action') === 'S_EVENT_BIRTH') {
+			// Occurs when any object is spawned into the mission.
+			iUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg3});
+			if (iUnit) {
+				iPlayer = _.find(curServers[serverName].serverObject.players, {name: iUnit.playername});
+				if (iPlayer) {
+					iCurObj = {
+						sessionName: sessionName,
+						eventCode: abrLookup(_.get(queObj, 'action')),
+						iucid: _.get(iPlayer, 'ucid'),
+						iName: _.get(iUnit, 'playername'),
+						displaySide: _.get(iUnit, 'coalition'),
+						roleCode: 'I',
+						msg: 'C: '+ _.get(iUnit, 'playername') +' enters a brand new ' + _.get(iUnit, 'type')
+					};
 					if (_.get(iCurObj, 'iucid')) {
 						dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 					}
