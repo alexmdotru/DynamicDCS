@@ -43,6 +43,7 @@
 						if (tName) {
 							_.set(returnObj, [curPlayerId, 'name'], tName);
 						}
+						console.log('rtnObj: ', _.get(returnObj, [curPlayerId, 'name']));
 					}
 					returnObj[curPlayerId].data.push(event);
 				}
