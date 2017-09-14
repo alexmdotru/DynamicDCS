@@ -895,6 +895,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			_.forEach(shootingUsers, function (user, key) {
 				if(_.get(user, ['startTime']) + 1500 < new Date().getTime()){
 					var shootObj = _.get(user, ['iCurObj']);
+					_.set(shootObj, 'score', _.get(shootingUsers, [iUnitId, 'count']));
 					if(_.get(shootObj, 'iucid') || _.get(shootObj, 'tucid')) {
 						dbMapServiceController.simpleStatEventActions('save', _.get(user, ['serverName']), shootObj);
 					}
@@ -903,19 +904,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						_.get(shootObj, 'msg'),
 						20
 					);
-
-
-
-					if(_.get(shootObj, 'iPlayerUcid') || _.get(shootObj, 'tPlayerUcid')) {
-						dbMapServiceController.statSrvEventActions('save', _.get(user, ['serverName']), shootObj);
-					}
-					DCSLuaCommands.sendMesgToAll(
-						_.get(shootObj, ['serverName']),
-						_.get(shootObj, ['msg']),
-						20
-					);
 					delete shootingUsers[key];
-				};
+				}
 			});
 		}
 
@@ -978,6 +968,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 								);
 								_.set(shootingUsers, [iUnitId, 'iCurObj'], _.cloneDeep(iCurObj));
 							} else {
+								_.set(iCurObj, 'score', _.get(weaponResp, 'score'));
 								_.set(iCurObj, 'msg', 'A: '+ getSide(_.get(iUnit, 'coalition'))+' '+ iPName +' has hit '+getSide(_.get(tUnit, 'coalition'))+' '+tPName + ' with ' + _.get(weaponResp, 'displayName') + ' - +'+_.get(weaponResp, 'score'));
 								if(_.get(iCurObj, 'iucid') || _.get(iCurObj, 'tucid')) {
 									dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
@@ -1002,7 +993,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				_.set(shootingUsers, [iUnitId, 'startTime'], new Date().getTime());
 				_.set(shootingUsers, [iUnitId, 'serverName'], serverName);
 				_.set(iCurObj, 'msg',
-					'A: '+ getSide(_.get(iUnit, 'coalition'))+' '+ iPName +' has hit '+getSide(_.get(tUnit, 'coalition'))+' ' + tPName + ' '+_.get(shootingUsers, [iUnitId, 'count'], 0)+' times with ' + _.get(weaponResp, 'displayName') + ' - +'+_.get(weaponResp, 'score')+' each.'
+					'A: '+ getSide(_.get(iUnit, 'coalition'))+' '+ iPName +' has hit '+getSide(_.get(tUnit, 'coalition'))+' ' + tPName + ' '+_.get(shootingUsers, [iUnitId, 'count'], 0)+' times with ' + _.get(iUnit, 'type') + ' - +1 each.'
 				);
 				_.set(shootingUsers, [iUnitId, 'iCurObj'], _.cloneDeep(iCurObj));
 			}
