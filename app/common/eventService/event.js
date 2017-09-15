@@ -43,7 +43,7 @@
 					_.set(event, 'y', _.get(event, 'curScore'));
 					_.set(event, 'x', new Date(_.get(event, 'createdAt')).getTime());
 					_.set(eCtrl, ['events', curiPlayer, 'data'], _.get(eCtrl, ['events', curiPlayer, 'data'], []));
-					eCtrl.events[curiPlayer].data.push({derp: 'derpy'});
+					eCtrl.events[curiPlayer].data.push(event);
 				}
 			});
 		});
