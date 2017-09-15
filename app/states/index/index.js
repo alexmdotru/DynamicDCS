@@ -6,28 +6,16 @@
 	}
 	getEvents.$inject=['eventService'];
 
-	function indexController (userAccountService, mySocket, events) {
+	function indexController (mySocket, events) {
 		var indxCtrl = this;
 		var curData = [];
 		var curScore = 0;
 		var oneSec = 1000;
 		var authId;
 
-		console.log('userAS: ', userAccountService);
-
-/*
-		var dread = DCSUserAccountsAPI.query();
-		dread.$promise
-			.then(function (data) {
-				_.set(userAccountService, 'userAccounts', data);
-				_.set(userAccountService, 'localAccount', _.find(data, {authId: localStorage.getItem('sub')}));
-				authId = _.get(userAccountService, ['localAccount', 'authId']);
-				socket.emit('room', {
-					server: 'leaderboard',
-					authId: authId
-				});
-			})
-		;
+		socket.emit('room', {
+			server: 'leaderboard'
+		});
 
 		mySocket.on('srvUpd', function (data) {
 			console.log('LBEvent: ', data);
@@ -39,12 +27,10 @@
 
 		mySocket.on('reconnect', function () {
 			socket.emit('room', {
-				server: 'leaderboard',
-				authId: authId
+				server: 'leaderboard'
 			});
 		});
 
-*/
 		_.set(indxCtrl, 'events', events);
 		var events = angular.copy(events);
 
@@ -132,7 +118,7 @@
 			series: events
 		});
 	}
-	indexController.$inject = ['userAccountService', 'mySocket', 'events'];
+	indexController.$inject = ['mySocket', 'events'];
 
 	function configFunction($stateProvider) {
 		$stateProvider
