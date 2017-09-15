@@ -13,6 +13,8 @@
 		var oneSec = 1000;
 		var authId;
 
+		console.log('ev: ', events);
+
 		_.set(indxCtrl, 'events', events);
 
 		mySocket.emit('room', {
