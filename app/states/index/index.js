@@ -1,19 +1,19 @@
 (function (angular) {
 	'use strict';
 
-	function indexController (eventService) {
+	function indexController (mySocket, eventService) {
 		var indxCtrl = this;
 
-		/*
+
 		mySocket.emit('room', {
 			server: 'DynamicCaucasus_leaderboard'
 		});
 
 		mySocket.on('srvUpd', function (data) {
 			console.log('LBEvent: ', data, eventService);
-			// eventService.byUcid(data);
+			eventService.byUcid(data);
 		});
-		*/
+
 		eventService.getInitEvents();
 
 		_.set(indxCtrl, 'hChart', {
@@ -103,7 +103,7 @@
 			series: eventService.events
 		});
 	}
-	indexController.$inject = ['eventService'];
+	indexController.$inject = ['mySocket', 'eventService'];
 
 	function configFunction($stateProvider) {
 		$stateProvider
