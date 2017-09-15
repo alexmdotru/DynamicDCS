@@ -389,9 +389,8 @@ function setRoomSide(socket, roomObj) {
 		curIP = '127.0.0.1';
 	}
 
-	console.log('LBSER: ', roomObj.server);
-	if (roomObj.server === 'leaderboard') {
-		setSocketRoom(socket, roomObj.server+'_leaderboard');
+	if (_.includes(roomObj.server, 'leaderboard')) {
+		setSocketRoom(socket, roomObj.server);
 	} else {
 		dbSystemServiceController.userAccountActions('read')
 			.then(function (userAccounts) {
