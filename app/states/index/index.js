@@ -14,7 +14,7 @@
 		var authId;
 
 		mySocket.emit('room', {
-			server: 'leaderboard'
+			server: 'DynamicCaucasus_leaderboard'
 		});
 
 		mySocket.on('srvUpd', function (data) {
@@ -27,7 +27,7 @@
 
 		mySocket.on('reconnect', function () {
 			mySocket.emit('room', {
-				server: 'leaderboard'
+				server: 'DynamicCaucasus_leaderboard'
 			});
 		});
 
