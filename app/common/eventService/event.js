@@ -13,7 +13,9 @@
 			var scoreMath;
 			var curScore = {};
 			var name;
-			// var sortedEvents = _.sortBy(newEvents, ['createdAt']);
+			var sortedEvents = _.sortBy(newEvents, ['createdAt']);
+			console.log(sortedEvents);
+			/*
 			_.forEach(newEvents, function (event) {
 				curiPlayer = _.get(event, 'iucid');
 				curtPlayer = _.get(event, 'tucid');
@@ -49,6 +51,7 @@
 					}
 				}
 			});
+			*/
 		});
 
 		_.set(eCtrl, 'getInitEvents', function () {
