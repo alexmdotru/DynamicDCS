@@ -7,6 +7,8 @@
 		_.set(eCtrl, 'events', {});
 
 		_.set(eCtrl, 'byUcid', function (newEvents) {
+			console.log(newEvents);
+			/*
 			var curiPlayer;
 			var curtPlayer;
 			var scoreMath;
@@ -48,6 +50,7 @@
 					}
 				}
 			});
+			 */
 		});
 
 		_.set(eCtrl, 'getInitEvents', function () {
@@ -62,7 +65,7 @@
 				})
 			;
 		});
-	}
+	};
 	eventService.$inject = ['dynamic-dcs.api.srvEvent', 'alertService'];
 
 	function initializeEventService (eventService) {
