@@ -6,7 +6,7 @@
 	}
 	getEvents.$inject=['eventService'];
 
-	function indexController (mySocket, eventService) {
+	function indexController (eventService) {
 		var indxCtrl = this;
 		var curData = [];
 		var curScore = 0;
@@ -110,7 +110,7 @@
 			series: eventService.events
 		});
 	}
-	indexController.$inject = ['mySocket', 'eventService'];
+	indexController.$inject = ['eventService'];
 
 	function configFunction($stateProvider) {
 		$stateProvider
