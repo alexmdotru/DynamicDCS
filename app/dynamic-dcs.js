@@ -3,7 +3,7 @@
 
 	function dynamicDCSController($scope, $state, userAccountService, srvService, authService, alertService, $uibModal) {
 		_.set(this, 'startPage', '/dynamic-dcs.tpl.html');
-		_.set($scope, 'auth', authService);
+		//_.set($scope, 'auth', authService);
 		_.set($scope, 'animationsEnabled', true);
 		_.set($scope, 'userAccountService', userAccountService);
 		_.set($scope, 'alertService', alertService);
