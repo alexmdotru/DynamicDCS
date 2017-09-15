@@ -6,14 +6,16 @@
 	}
 	getEvents.$inject=['eventService'];
 
-	function indexController (mySocket, events) {
+	function indexController (userAccountService, mySocket, events) {
 		var indxCtrl = this;
 		var curData = [];
 		var curScore = 0;
 		var oneSec = 1000;
 		var authId;
 
+		console.log('userAS: ', userAccountService);
 
+/*
 		var dread = DCSUserAccountsAPI.query();
 		dread.$promise
 			.then(function (data) {
@@ -42,7 +44,7 @@
 			});
 		});
 
-
+*/
 		_.set(indxCtrl, 'events', events);
 		var events = angular.copy(events);
 
@@ -130,7 +132,7 @@
 			series: events
 		});
 	}
-	indexController.$inject = ['mySocket', 'events'];
+	indexController.$inject = ['userAccountService', 'mySocket', 'events'];
 
 	function configFunction($stateProvider) {
 		$stateProvider
