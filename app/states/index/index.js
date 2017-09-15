@@ -16,6 +16,7 @@
 			}
 		});
 
+		_.set(eventService, 'events', {});
 		eventService.getInitEvents();
 
 		_.set(indxCtrl, 'hChart', {
