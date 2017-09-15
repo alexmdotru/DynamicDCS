@@ -28,7 +28,7 @@
 						if (scoreMath < 0) {
 							scoreMath = 0;
 						}
-						_.set(curPlayer, 'curScore', scoreMath);
+						_.set(eCtrl, ['events', curiPlayer, 'curScore'], scoreMath);
 						_.set(curScore, [curiPlayer], _.get(event, 'curScore', 0));
 					} else {
 						if (!_.get(eCtrl, ['events', curtPlayer], 'name')) {
