@@ -142,7 +142,6 @@
 		.module('dynamic-dcs', [
 			'dynamic-dcs.templates',
 			'dynamic-dcs.authService',
-			'dynamic-dcs.socketFactory',
 			'dynamic-dcs.chat-box',
 			'dynamic-dcs.api.server',
 			'dynamic-dcs.theaterService',
