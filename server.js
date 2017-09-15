@@ -1036,9 +1036,9 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		if (_.get(queObj, 'action') === 'S_EVENT_LAND') {
 			// Occurs when an aircraft lands at an airbase, farp or ship
 			if (_.get(queObj, 'data.arg6')){
-				place = ' from '+_.get(queObj, 'data.arg6');
+				place = ' at '+_.get(queObj, 'data.arg6');
 			} else if (_.get(queObj, 'data.arg5')) {
-				place = ' from '+_.get(queObj, 'data.arg5');
+				place = ' at '+_.get(queObj, 'data.arg5');
 			} else {
 				place = '';
 			}
@@ -1053,7 +1053,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						iName: _.get(iUnit, 'playername'),
 						displaySide: _.get(iUnit, 'coalition'),
 						roleCode: 'I',
-						msg: 'C: '+ _.get(iUnit, 'playername') +' has taken off' + place
+						msg: 'C: '+ _.get(iUnit, 'playername') +' has landed' + place
 					};
 					if(_.get(iCurObj, 'iucid')) {
 						dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
