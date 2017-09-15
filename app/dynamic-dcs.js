@@ -1,7 +1,7 @@
 (function (angular) {
 	'use strict';
 
-	function dynamicDCSController($scope, $state, userAccountService, srvService, authService, alertService, $uibModal) {
+	function dynamicDCSController($scope, $state, userAccountService, srvService, alertService, $uibModal) {
 		_.set(this, 'startPage', '/dynamic-dcs.tpl.html');
 		//_.set($scope, 'auth', authService);
 		_.set($scope, 'animationsEnabled', true);
@@ -42,7 +42,7 @@
 
 		$scope.initialise();
 	}
-	dynamicDCSController.$inject = ['$scope','$state', 'userAccountService', 'srvService', 'authService', 'alertService', '$uibModal'];
+	dynamicDCSController.$inject = ['$scope','$state', 'userAccountService', 'srvService', 'alertService', '$uibModal'];
 
 	function settingsModalController($uibModalInstance, userAccountService) {
 		var setCtrl = this;
