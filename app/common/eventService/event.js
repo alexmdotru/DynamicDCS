@@ -5,46 +5,44 @@
 		var eCtrl = this;
 		var curScore = {};
 		var ePromise;
+		var events = {};
 		_.set(eCtrl, 'loaded', false);
 
-		_.set(eCtrl, 'byUcid', function (events1) {
-			var returnObj = {};
-			var curPlayerId;
-			var curPlayerName;
+		_.set(eCtrl, 'byUcid', function (newEvents) {
+			var curPlayer;
 			var scoreMath;
 			var name;
-			var events = _.cloneDeep(events1);
-			events = _.sortBy(events, ['createdAt']);
-			_.forEach(events, function (event) {
+			var sortedEvents = _.sortBy(newEvents, ['createdAt']);
+			_.forEach(sortedEvents, function (event) {
 				if (_.get(event, 'iucid') || _.get(event, 'tucid')) {
 					if (_.get(event, 'iucid')) {
-						curPlayerId = _.get(event, 'iucid');
-						curPlayerName = _.get(event, 'iName');
+						curPlayer = _.get(events, [_.get(event, 'iucid')], {});
+						if (!_.get(curPlayer, 'name')) {
+							_.set(curPlayer, 'name', _.get(event, 'iName'));
+							_.set(curPlayer, 'id', _.get(event, 'iName'));
+						}
 						scoreMath = _.get(curScore, [curPlayerId], 0) + _.get(event, 'score', 0);
-						if(scoreMath < 0) {
+						if (scoreMath < 0) {
 							scoreMath = 0;
 						}
-						_.set(event, 'curScore', scoreMath);
-						_.set(curScore, [curPlayerId], _.get(event, 'curScore', 0));
+						_.set(curPlayer, 'curScore', scoreMath);
 					} else {
-						curPlayerId = _.get(event, 'tucid');
-						curPlayerName = _.get(event, 'tName');
-						_.set(event, 'curScore', _.get(curScore, [curPlayerId], 0));
+						curPlayer = _.get(events, [_.get(event, 'tucid')], {});
+						if (!_.get(curPlayer, 'name')) {
+							_.set(curPlayer, 'name', _.get(event, 'tName'));
+							_.set(curPlayer, 'id', _.get(event, 'tName'));
+						}
 					}
-					_.set(event, 'y', _.get(event, 'curScore'));
-					_.set(event, 'x', new Date(_.get(event, 'createdAt')).getTime());
-					_.set(returnObj, [curPlayerId, 'marker'], {
+					_.set(curplayer, 'marker', {
 						enabled: true,
 						radius: 3
 					});
-					_.set(returnObj, [curPlayerId, 'data'], _.get(returnObj, [curPlayerId, 'data'], []));
-					if (!_.get(returnObj, [curPlayerId, 'name'])) {
-						_.set(returnObj, [curPlayerId, 'name'],  curPlayerName);
-					}
-					returnObj[curPlayerId].data.push(event);
+					_.set(event, 'y', _.get(event, 'curScore'));
+					_.set(event, 'x', new Date(_.get(event, 'createdAt')).getTime());
+					_.set(curPlayer, 'data', _.get(curPlayer, 'data', []));
+					curPlayer.data.push(event);
 				}
 			});
-			return returnObj;
 		});
 
 		_.set(eCtrl, 'firstLoad', function () {
@@ -52,7 +50,7 @@
 				ePromise = eventAPI.query({serverName: 'dynamiccaucasus'});
 				ePromise.$promise
 					.then(function (eventData) {
-						_.set(eCtrl, 'events', eCtrl.byUcid(eventData));
+						eCtrl.byUcid(eventData);
 						_.set(eCtrl, 'loaded', true);
 					})
 					.catch(function(err){
