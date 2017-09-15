@@ -1407,6 +1407,8 @@ function syncDCSData(serverName, DCSData) {
 				dbMapServiceController.statSessionActions('update', serverName, newSession);
 			}
 		}
-		curServers.processQue(serverName, sessionName, DCSData);
+		if (sessionName) {
+			curServers.processQue(serverName, sessionName, DCSData);
+		}
 	}
 }
