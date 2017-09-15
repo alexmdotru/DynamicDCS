@@ -66,14 +66,8 @@
 	};
 	eventService.$inject = ['dynamic-dcs.api.srvEvent', 'alertService'];
 
-	function initializeEventService (eventService) {
-		eventService.getInitEvents();
-	}
-	initializeEventService.$inject = ['eventService'];
-
 	angular
 		.module('dynamic-dcs.eventService',['dynamic-dcs.api.srvEvent', 'dynamic-dcs.alertService'])
 		.service('eventService', eventService)
-		.run(initializeEventService)
 	;
 })(angular);

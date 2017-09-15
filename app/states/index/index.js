@@ -14,6 +14,7 @@
 			// eventService.byUcid(data);
 		});
 		*/
+		eventService.getInitEvents();
 
 		_.set(indxCtrl, 'hChart', {
 			chart: {
