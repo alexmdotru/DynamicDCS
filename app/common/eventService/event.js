@@ -11,6 +11,7 @@
 		_.set(eCtrl, 'byUcid', function (newEvents) {
 			var curPlayer;
 			var scoreMath;
+			var curScore = {};
 			var name;
 			var sortedEvents = _.sortBy(newEvents, ['createdAt']);
 			_.forEach(sortedEvents, function (event) {
@@ -21,11 +22,12 @@
 							_.set(curPlayer, 'name', _.get(event, 'iName'));
 							_.set(curPlayer, 'id', _.get(event, 'iName'));
 						}
-						scoreMath = _.get(curScore, [curPlayerId], 0) + _.get(event, 'score', 0);
+						scoreMath = _.get(curScore, [_.get(event, 'iucid')], 0) + _.get(event, 'score', 0);
 						if (scoreMath < 0) {
 							scoreMath = 0;
 						}
 						_.set(curPlayer, 'curScore', scoreMath);
+						_.set(curScore, [_.get(event, 'iucid')], _.get(event, 'curScore', 0));
 					} else {
 						curPlayer = _.get(events, [_.get(event, 'tucid')], {});
 						if (!_.get(curPlayer, 'name')) {
