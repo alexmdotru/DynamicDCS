@@ -10,8 +10,8 @@
 		});
 
 		mySocket.on('srvUpd', function (data) {
-			console.log('LBEvent: ', data, eventService);
-			eventService.byUcid(data);
+			console.log('LBEvent: ', data.que, eventService);
+			eventService.byUcid(data.que);
 		});
 
 		eventService.getInitEvents();

@@ -15,10 +15,9 @@
 			var name;
 			var sortedEvents = _.sortBy(newEvents, ['createdAt']);
 			_.forEach(sortedEvents, function (event) {
-				if (_.get(event, 'createdAt') || _.get(event, 'x')) {
+				if (!_.get(event, 'createdAt') || !_.get(event, 'x')) {
 					_.set(event, 'createdAt', new Date().toISOString());
 				}
-
 				curiPlayer = _.get(event, 'iucid');
 				curtPlayer = _.get(event, 'tucid');
 				if (curiPlayer || curtPlayer) {
