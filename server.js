@@ -432,6 +432,7 @@ function setRoomSide(socket, roomObj) {
 				} else {
 					dbMapServiceController.srvPlayerActions('read', roomObj.server)
 						.then(function (srvPlayers) {
+							console.log('srvP: ', srvPlayers);
 							var curPlayer = _.find(srvPlayers, function (player) { //{ipaddr: curIP}
 								if (_.includes(player.ipaddr, curIP)) {
 									console.log('player line392: ', player);
