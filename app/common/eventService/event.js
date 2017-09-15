@@ -64,7 +64,6 @@
 			ePromise = eventAPI.query({serverName: 'dynamiccaucasus'});
 			ePromise.$promise
 				.then(function (eventData) {
-					_.set(eCtrl, 'events', {});
 					eCtrl.byUcid(eventData);
 				})
 				.catch(function(err){
