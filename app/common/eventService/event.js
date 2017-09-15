@@ -57,9 +57,8 @@
 					}
 				}
 			});
-			_.forEach(_.get(eCtrl, 'events'), function (player) {
-				player = _.sortBy(player, 'x');
-				return player;
+			_.forEach(_.get(eCtrl, 'events'), function (val, key) {
+				_.set(eCtrl, ['events', key], _.sortBy(val, 'x'));
 			});
 
 			_.set(eCtrl, 'topScore', _.sortBy(_.values(_.get(eCtrl, 'curScore')), 'score').reverse());
