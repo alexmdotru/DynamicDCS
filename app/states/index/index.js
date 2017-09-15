@@ -13,7 +13,7 @@
 		var oneSec = 1000;
 		var authId;
 
-		socket.emit('room', {
+		mySocket.emit('room', {
 			server: 'leaderboard'
 		});
 
@@ -26,7 +26,7 @@
 		});
 
 		mySocket.on('reconnect', function () {
-			socket.emit('room', {
+			mySocket.emit('room', {
 				server: 'leaderboard'
 			});
 		});
