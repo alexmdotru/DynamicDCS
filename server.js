@@ -372,6 +372,7 @@ function sendInit(serverName, socketID, authId) {
 
 
 function setSocketRoom(socket, room) {
+	console.log('sockJoin: ', socket, room);
 	if (socket.room) {
 		socket.leave(socket.room);
 	}
@@ -389,7 +390,6 @@ function setRoomSide(socket, roomObj) {
 		curIP = '127.0.0.1';
 	}
 
-	console.log('roomobj: ', roomObj);
 	if (_.includes(roomObj.server, 'leaderboard')) {
 		setSocketRoom(socket, roomObj.server);
 	} else {
