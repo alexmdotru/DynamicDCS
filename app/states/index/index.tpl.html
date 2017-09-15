@@ -11,9 +11,9 @@
 						<th>Score</th>
 					</thead>
 					<tr ng-repeat="ts in indxCtrl.eventService.topScore track by $index">
-						<td>$index</td>
-						<td>ts.name</td>
-						<td>ts.score</td>
+						<td data-ng-bind="$index"></td>
+						<td data-ng-bind="ts.name"></td>
+						<td data-ng-bind="ts.score"></td>
 					</tr>
 				</table>
 				<div class="col-xs-6 pull-right">{{ts.name}}</div>
