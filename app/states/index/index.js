@@ -3,6 +3,7 @@
 
 	function indexController (mySocket, eventService) {
 		var indxCtrl = this;
+		_.set(indxCtrl, 'eventService', eventService);
 
 
 		mySocket.emit('room', {
