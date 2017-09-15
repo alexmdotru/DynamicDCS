@@ -372,7 +372,7 @@ function sendInit(serverName, socketID, authId) {
 
 
 function setSocketRoom(socket, room) {
-	console.log('sockJoin: ', socket, room);
+	console.log('sockJoin: ', room);
 	if (socket.room) {
 		socket.leave(socket.room);
 	}
