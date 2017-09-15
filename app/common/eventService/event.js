@@ -7,7 +7,7 @@
 		_.set(eCtrl, 'events', {});
 
 		_.set(eCtrl, 'byUcid', function (newEvents) {
-			console.log(newEvents);
+			console.log('NE', newEvents);
 			var curiPlayer;
 			var curtPlayer;
 			var scoreMath;
