@@ -115,7 +115,7 @@
 				},
 				min: 0
 			},
-			series: events
+			series: eventService.events
 		});
 	}
 	indexController.$inject = ['mySocket', 'events', 'eventService'];
