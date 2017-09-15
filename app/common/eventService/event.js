@@ -9,40 +9,41 @@
 		_.set(eCtrl, 'loaded', false);
 
 		_.set(eCtrl, 'byUcid', function (newEvents) {
-			var curPlayer;
+			var curiPlayer;
+			var curtPlayer;
 			var scoreMath;
 			var curScore = {};
 			var name;
 			var sortedEvents = _.sortBy(newEvents, ['createdAt']);
 			_.forEach(sortedEvents, function (event) {
-				if (_.get(event, 'iucid') || _.get(event, 'tucid')) {
-					if (_.get(event, 'iucid')) {
-						curPlayer = _.get(eCtrl, ['events', _.get(event, 'iucid')], {});
-						if (!_.get(curPlayer, 'name')) {
-							_.set(curPlayer, 'name', _.get(event, 'iName'));
-							_.set(curPlayer, 'id', _.get(event, 'iName'));
+				curiPlayer = _.get(event, 'iucid');
+				curtPlayer = _.get(event, 'tucid');
+				if (curiPlayer || curtPlayer) {
+					if (curiPlayer) {
+						if (!_.get(eCtrl, ['events', curiPlayer], 'name')) {
+							_.set(eCtrl, ['events', curiPlayer, 'name'], _.get(event, 'iName'));
+							_.set(eCtrl, ['events', curiPlayer, 'id'], _.get(event, 'iName'));
 						}
-						scoreMath = _.get(curScore, [_.get(event, 'iucid')], 0) + _.get(event, 'score', 0);
+						scoreMath = _.get(curScore, [curiPlayer], 0) + _.get(event, 'score', 0);
 						if (scoreMath < 0) {
 							scoreMath = 0;
 						}
 						_.set(curPlayer, 'curScore', scoreMath);
-						_.set(curScore, [_.get(event, 'iucid')], _.get(event, 'curScore', 0));
+						_.set(curScore, [curiPlayer], _.get(event, 'curScore', 0));
 					} else {
-						curPlayer = _.get(eCtrl, ['events', _.get(event, 'tucid')], {});
-						if (!_.get(curPlayer, 'name')) {
-							_.set(curPlayer, 'name', _.get(event, 'tName'));
-							_.set(curPlayer, 'id', _.get(event, 'tName'));
+						if (!_.get(eCtrl, ['events', curtPlayer], 'name')) {
+							_.set(eCtrl, ['events', curtPlayer, 'name'], _.get(event, 'tName'));
+							_.set(eCtrl, ['events', curtPlayer, 'id'], _.get(event, 'tName'));
 						}
 					}
-					_.set(curPlayer, 'marker', {
+					_.set(eCtrl, ['events', curiPlayer, 'marker'], {
 						enabled: true,
 						radius: 3
 					});
 					_.set(event, 'y', _.get(event, 'curScore'));
 					_.set(event, 'x', new Date(_.get(event, 'createdAt')).getTime());
-					_.set(curPlayer, 'data', _.get(curPlayer, 'data', []));
-					curPlayer.data.push({derp: 'derpy'});
+					_.set(eCtrl, ['events', curiPlayer, 'data'], _.get(eCtrl, ['events', curiPlayer, 'data'], []));
+					eCtrl.events[curiPlayer].data.push({derp: 'derpy'});
 				}
 			});
 		});
