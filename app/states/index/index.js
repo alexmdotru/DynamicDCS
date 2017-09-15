@@ -11,10 +11,21 @@
 		var curData = [];
 		var curScore = 0;
 		var oneSec = 1000;
+		var authId;
 
-		socket.emit('room', {
-			server: 'leaderboard'
-		});
+
+		var dread = DCSUserAccountsAPI.query();
+		dread.$promise
+			.then(function (data) {
+				_.set(userAccountService, 'userAccounts', data);
+				_.set(userAccountService, 'localAccount', _.find(data, {authId: localStorage.getItem('sub')}));
+				authId = _.get(userAccountService, ['localAccount', 'authId']);
+				socket.emit('room', {
+					server: 'leaderboard',
+					authId: authId
+				});
+			})
+		;
 
 		mySocket.on('srvUpd', function (data) {
 			console.log('LBEvent: ', data);
@@ -25,9 +36,9 @@
 		});
 
 		mySocket.on('reconnect', function () {
-			console.log('Joining Leaderboard Room');
 			socket.emit('room', {
-				server: 'leaderboard'
+				server: 'leaderboard',
+				authId: authId
 			});
 		});
 
