@@ -42,7 +42,7 @@
 					_.set(event, 'y', _.get(event, 'curScore'));
 					_.set(event, 'x', new Date(_.get(event, 'createdAt')).getTime());
 					_.set(curPlayer, 'data', _.get(curPlayer, 'data', []));
-					curPlayer.data.push(event);
+					curPlayer.data.push({derp: 'derpy'});
 				}
 			});
 		});
