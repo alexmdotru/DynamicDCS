@@ -135,7 +135,6 @@
 	angular
 		.module('state.index', [
 			'ui.router',
-			'dynamic-dcs.socketFactory',
 			'uiGmapgoogle-maps',
 			'dynamic-dcs.gmapService',
 			'highcharts-ng'
