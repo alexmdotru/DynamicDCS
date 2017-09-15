@@ -12,6 +12,13 @@
 		var curScore = 0;
 		var oneSec = 1000;
 
+		mySocket.on('reconnect', function () {
+			console.log('Joining Leaderboard Room');
+			socket.emit('room', {
+				server: 'leaderboard'
+			});
+		});
+
 		mySocket.on('srvUpd', function (data) {
 			console.log('LBEvent: ', data);
 		});
@@ -21,7 +28,7 @@
 		});
 
 		mySocket.on('reconnect', function () {
-			console.log('Join Leaderboard Room');
+			console.log('Joining Leaderboard Room');
 			socket.emit('room', {
 				server: 'leaderboard'
 			});
