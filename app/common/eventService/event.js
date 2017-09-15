@@ -15,8 +15,10 @@
 			var name;
 			var sortedEvents = _.sortBy(newEvents, ['createdAt']);
 			console.log(sortedEvents);
-			/*
+			var count = 0;
 			_.forEach(newEvents, function (event) {
+				console.log('count1: ', count);
+				count += 1;
 				curiPlayer = _.get(event, 'iucid');
 				curtPlayer = _.get(event, 'tucid');
 				if (curiPlayer || curtPlayer) {
@@ -51,7 +53,6 @@
 					}
 				}
 			});
-			*/
 		});
 
 		_.set(eCtrl, 'getInitEvents', function () {
