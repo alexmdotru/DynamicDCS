@@ -32,7 +32,6 @@
 		});
 
 		_.set(indxCtrl, 'events', events);
-		var events = angular.copy(events);
 
 		_.set(indxCtrl, 'hChart', {
 			chart: {
@@ -115,7 +114,7 @@
 				},
 				min: 0
 			},
-			series: events
+			series: indxCtrl.events.getEvents()
 		});
 	}
 	indexController.$inject = ['mySocket', 'events'];
