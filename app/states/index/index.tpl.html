@@ -4,8 +4,10 @@
 			<strong>High Score</strong>
 		</div>
 		<div class="panel-body text-center">
-			{{indxCtrl.eventService.topScore}}
-			{{indxCtrl.eventService.curScore}}
+			<div ng-repeat="ts in indxCtrl.eventService.topScore" class="row">
+				<div class="col-xs-6 pull-right">{{ts.name}}</div>
+				<div class="col-xs-6">{{ts.score}}</div>
+			</div>
 		</div>
 	</div>
 </div>
