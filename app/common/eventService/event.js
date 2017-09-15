@@ -3,7 +3,6 @@
 
 	function eventService(eventAPI, alertService) {
 		var eCtrl = this;
-		var curScore = {};
 		var ePromise;
 		_.set(eCtrl, 'events', {});
 		_.set(eCtrl, 'loaded', false);
