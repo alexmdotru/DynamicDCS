@@ -372,7 +372,7 @@ function sendInit(serverName, socketID, authId) {
 
 
 function setSocketRoom(socket, room) {
-	console.log('sockJoin: ', room);
+	console.log('sockJoin: ', socket.id, room);
 	if (socket.room) {
 		socket.leave(socket.room);
 	}
@@ -432,7 +432,6 @@ function setRoomSide(socket, roomObj) {
 				} else {
 					dbMapServiceController.srvPlayerActions('read', roomObj.server)
 						.then(function (srvPlayers) {
-							console.log('srvP: ', srvPlayers);
 							var curPlayer = _.find(srvPlayers, function (player) { //{ipaddr: curIP}
 								if (_.includes(player.ipaddr, curIP)) {
 									console.log('player line392: ', player);
@@ -446,6 +445,7 @@ function setRoomSide(socket, roomObj) {
 									curSocket: socket.id
 								};
 							} else {
+								console.log('no side found, joining q0');
 								setSocketRoom(socket, roomObj.server + '_q0' );
 							}
 						})
