@@ -42,7 +42,7 @@
 
 		$scope.initialise();
 	}
-	dynamicDCSController.$inject = ['$scope','$state', 'userAccountService', 'srvService', 'alertService', '$uibModal'];
+	dynamicDCSController.$inject = ['$scope','$state', 'userAccountService', 'srvService', 'authService', 'alertService', '$uibModal'];
 
 	function settingsModalController($uibModalInstance, userAccountService) {
 		var setCtrl = this;
@@ -136,7 +136,7 @@
 			});
 		});
 	}
-	adminModalController.$inject = ['$scope', '$uibModal', '$uibModalInstance', 'authService', 'srvService', 'theaterService'];
+	adminModalController.$inject = ['$scope', '$uibModal', '$uibModalInstance', 'srvService', 'theaterService'];
 
 	angular
 		.module('dynamic-dcs', [
