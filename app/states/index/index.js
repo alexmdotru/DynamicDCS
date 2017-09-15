@@ -38,6 +38,9 @@
 			chart: {
 				height: 500
 			},
+			exporting: {
+				enabled: false
+			},
 			chartType: 'stock',
 			legend: {
 				enabled: true,
