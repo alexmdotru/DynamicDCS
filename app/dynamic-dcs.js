@@ -150,7 +150,6 @@
 			'dynamic-dcs.userAccountService',
 			'states',
 			'ui.bootstrap',
-			'dynamic-dcs.authService',
 			'ngAnimate',
 			'ngSanitize'
 		])
