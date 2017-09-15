@@ -68,7 +68,7 @@
 	function initializeEventService (eventService) {
 		eventService.getInitEvents();
 	}
-	initializeSrvService.$inject = ['eventService'];
+	initializeEventService.$inject = ['eventService'];
 
 	angular
 		.module('dynamic-dcs.eventService',['dynamic-dcs.api.srvEvent', 'dynamic-dcs.alertService'])
