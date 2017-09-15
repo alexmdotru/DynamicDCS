@@ -1,7 +1,7 @@
 (function (angular) {
 	'use strict';
 
-	function eventService($scope, eventAPI, alertService) {
+	function eventService(eventAPI, alertService) {
 		var eCtrl = this;
 		var ePromise;
 		_.set(eCtrl, 'events', {});
@@ -56,7 +56,6 @@
 			ePromise.$promise
 				.then(function (eventData) {
 					eCtrl.byUcid(eventData);
-					$scope.apply();
 				})
 				.catch(function(err){
 					alertService.addAlert('danger', 'Events could not be queryed.');
@@ -65,7 +64,7 @@
 			;
 		});
 	};
-	eventService.$inject = ['$scope', 'dynamic-dcs.api.srvEvent', 'alertService'];
+	eventService.$inject = ['dynamic-dcs.api.srvEvent', 'alertService'];
 
 	function initializeEventService (eventService) {
 		eventService.getInitEvents();
