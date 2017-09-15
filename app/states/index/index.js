@@ -20,7 +20,7 @@
 		});
 
 		mySocket.on('srvUpd', function (data) {
-			console.log('LBEvent: ', data);
+			console.log('LBEvent: ', data, eventService);
 			eventService.byUcid(data);
 		});
 
