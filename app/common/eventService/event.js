@@ -8,14 +8,13 @@
 
 		_.set(eCtrl, 'byUcid', function (newEvents) {
 			console.log(newEvents);
-			/*
 			var curiPlayer;
 			var curtPlayer;
 			var scoreMath;
 			var curScore = {};
 			var name;
-			var sortedEvents = _.sortBy(newEvents, ['createdAt']);
-			_.forEach(sortedEvents, function (event) {
+			// var sortedEvents = _.sortBy(newEvents, ['createdAt']);
+			_.forEach(newEvents, function (event) {
 				curiPlayer = _.get(event, 'iucid');
 				curtPlayer = _.get(event, 'tucid');
 				if (curiPlayer || curtPlayer) {
@@ -50,7 +49,6 @@
 					}
 				}
 			});
-			 */
 		});
 
 		_.set(eCtrl, 'getInitEvents', function () {
