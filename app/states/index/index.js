@@ -101,7 +101,7 @@
 			},
 			series: eventService.events
 		});
-		$scope.apply();
+		$scope.$apply();
 	}
 	indexController.$inject = ['$scope', 'eventService'];
 
