@@ -1,7 +1,7 @@
 (function (angular) {
 	'use strict';
 
-	function eventService(eventAPI, alertService) {
+	function eventService($scope, eventAPI, alertService) {
 		var eCtrl = this;
 		var ePromise;
 		_.set(eCtrl, 'events', {});
@@ -14,11 +14,7 @@
 			var curScore = {};
 			var name;
 			var sortedEvents = _.sortBy(newEvents, ['createdAt']);
-			console.log(sortedEvents);
-			var count = 0;
-			_.forEach(newEvents, function (event) {
-				console.log('count1: ', count);
-				count += 1;
+			_.forEach(sortedEvents, function (event) {
 				curiPlayer = _.get(event, 'iucid');
 				curtPlayer = _.get(event, 'tucid');
 				if (curiPlayer || curtPlayer) {
@@ -53,6 +49,7 @@
 					}
 				}
 			});
+			$scope.$digest();
 		});
 
 		_.set(eCtrl, 'getInitEvents', function () {
