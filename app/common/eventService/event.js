@@ -49,7 +49,6 @@
 					}
 				}
 			});
-			$scope.$digest();
 		});
 
 		_.set(eCtrl, 'getInitEvents', function () {
@@ -57,6 +56,7 @@
 			ePromise.$promise
 				.then(function (eventData) {
 					eCtrl.byUcid(eventData);
+					$scope.apply();
 				})
 				.catch(function(err){
 					alertService.addAlert('danger', 'Events could not be queryed.');
