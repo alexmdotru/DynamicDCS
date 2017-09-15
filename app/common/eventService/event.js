@@ -5,7 +5,7 @@
 		var eCtrl = this;
 		var curScore = {};
 		var ePromise;
-		var events = {};
+		_.set(eCtrl, 'events', {});
 		_.set(eCtrl, 'loaded', false);
 
 		_.set(eCtrl, 'byUcid', function (newEvents) {
@@ -17,7 +17,7 @@
 			_.forEach(sortedEvents, function (event) {
 				if (_.get(event, 'iucid') || _.get(event, 'tucid')) {
 					if (_.get(event, 'iucid')) {
-						curPlayer = _.get(events, [_.get(event, 'iucid')], {});
+						curPlayer = _.get(eCtrl, ['events', _.get(event, 'iucid')], {});
 						if (!_.get(curPlayer, 'name')) {
 							_.set(curPlayer, 'name', _.get(event, 'iName'));
 							_.set(curPlayer, 'id', _.get(event, 'iName'));
@@ -29,7 +29,7 @@
 						_.set(curPlayer, 'curScore', scoreMath);
 						_.set(curScore, [_.get(event, 'iucid')], _.get(event, 'curScore', 0));
 					} else {
-						curPlayer = _.get(events, [_.get(event, 'tucid')], {});
+						curPlayer = _.get(eCtrl, ['events', _.get(event, 'tucid')], {});
 						if (!_.get(curPlayer, 'name')) {
 							_.set(curPlayer, 'name', _.get(event, 'tName'));
 							_.set(curPlayer, 'id', _.get(event, 'tName'));
