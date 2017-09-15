@@ -12,7 +12,7 @@
 
 		mySocket.on('srvUpd', function (data) {
 			console.log('RUNNING');
-			if (_.get(data, eventCode)) {
+			if (_.get(data, ['que', 0, eventCode])) {
 				eventService.byUcid(data.que);
 			}
 		});
