@@ -12,11 +12,8 @@
 		var curScore = 0;
 		var oneSec = 1000;
 
-		mySocket.on('reconnect', function () {
-			console.log('Joining Leaderboard Room');
-			socket.emit('room', {
-				server: 'leaderboard'
-			});
+		socket.emit('room', {
+			server: 'leaderboard'
 		});
 
 		mySocket.on('srvUpd', function (data) {
