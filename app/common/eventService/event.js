@@ -57,7 +57,7 @@
 					}
 				}
 			});
-			_.set(eCtrl, 'topScore', _.sortBy(_.values(_.get(eCtrl, 'curScore')), 'score'));
+			_.set(eCtrl, 'topScore', _.sortBy(_.values(_.get(eCtrl, 'curScore')), 'score').reverse());
 		});
 
 		_.set(eCtrl, 'getInitEvents', function () {
