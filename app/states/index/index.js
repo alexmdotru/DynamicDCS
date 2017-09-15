@@ -21,17 +21,7 @@
 
 		mySocket.on('srvUpd', function (data) {
 			console.log('LBEvent: ', data, eventService);
-			eventService.byUcid(data);
-		});
-
-		mySocket.on('error', function (err) {
-			console.log('Socket Reconnect: ', err);
-		});
-
-		mySocket.on('reconnect', function () {
-			mySocket.emit('room', {
-				server: 'DynamicCaucasus_leaderboard'
-			});
+			// eventService.byUcid(data);
 		});
 
 		_.set(indxCtrl, 'hChart', {
