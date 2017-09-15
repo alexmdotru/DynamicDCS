@@ -6,14 +6,14 @@
 		<div class="panel-body text-center">
 			<table class="table table-striped">
 				<tr>
-					<td class="pull-left">#</td>
-					<td class="pull-left">Name</td>
-					<td class="pull-left">Score</td>
+					<td><span class="pull-left">#</span></td>
+					<td><span class="pull-left">Name</span></td>
+					<td><span class="pull-left">Score</span></td>
 				</tr>
 				<tr ng-repeat="ts in indxCtrl.eventService.topScore track by $index">
-					<td data-ng-bind="$index + 1"></td>
-					<td data-ng-bind="ts.name"></td>
-					<td data-ng-bind="ts.score"></td>
+					<td><span class="pull-left" data-ng-bind="$index + 1"></span></td>
+					<td><span class="pull-left" data-ng-bind="ts.name"></span></td>
+					<td><span class="pull-left" data-ng-bind="ts.score"></span></td>
 				</tr>
 			</table>
 		</div>
