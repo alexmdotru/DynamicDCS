@@ -1,7 +1,7 @@
 (function (angular) {
 	'use strict';
 
-	function indexController ($scope, eventService) {
+	function indexController (eventService) {
 		var indxCtrl = this;
 
 		/*
@@ -101,9 +101,8 @@
 			},
 			series: eventService.events
 		});
-		$scope.$apply();
 	}
-	indexController.$inject = ['$scope', 'eventService'];
+	indexController.$inject = ['eventService'];
 
 	function configFunction($stateProvider) {
 		$stateProvider
