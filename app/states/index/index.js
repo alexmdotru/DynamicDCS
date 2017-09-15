@@ -1,17 +1,8 @@
 (function (angular) {
 	'use strict';
 
-	function getEvents (eventService) {
-		return eventService.getEvents();
-	}
-	getEvents.$inject=['eventService'];
-
 	function indexController (eventService) {
 		var indxCtrl = this;
-		var curData = [];
-		var curScore = 0;
-		var oneSec = 1000;
-		var authId;
 
 		/*
 		mySocket.emit('room', {
@@ -119,10 +110,7 @@
 				controller: 'indexController',
 				controllerAs: 'indxCtrl',
 				templateUrl: '/apps/dynamic-dcs/states/index/index.tpl.html',
-				url: '/',
-				resolve: {
-					events: getEvents
-				}
+				url: '/'
 			})
 		;
 	}
@@ -135,8 +123,6 @@
 	angular
 		.module('state.index', [
 			'ui.router',
-			'uiGmapgoogle-maps',
-			'dynamic-dcs.gmapService',
 			'highcharts-ng'
 		])
 		.config(['$stateProvider', '$urlRouterProvider', configFunction])
