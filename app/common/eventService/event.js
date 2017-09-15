@@ -65,7 +65,7 @@
 			;
 		});
 	};
-	eventService.$inject = ['dynamic-dcs.api.srvEvent', 'alertService'];
+	eventService.$inject = ['$scope', 'dynamic-dcs.api.srvEvent', 'alertService'];
 
 	function initializeEventService (eventService) {
 		eventService.getInitEvents();
