@@ -57,6 +57,11 @@
 					}
 				}
 			});
+			_.forEach(_.get(eCtrl, 'events'), function (player) {
+				player = _.sortBy(player, 'x');
+				return player;
+			});
+
 			_.set(eCtrl, 'topScore', _.sortBy(_.values(_.get(eCtrl, 'curScore')), 'score').reverse());
 		});
 
