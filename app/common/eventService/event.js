@@ -21,7 +21,7 @@
 				if (curiPlayer || curtPlayer) {
 					if (curiPlayer) {
 						_.set(eCtrl, ['events', curiPlayer, 'data'], _.get(eCtrl, ['events', curiPlayer, 'data'], []));
-						if (!_.get(eCtrl, ['events', curiPlayer], 'name')) {
+						if (!_.get(eCtrl, ['events', curiPlayer, 'name'])) {
 							_.set(eCtrl, ['events', curiPlayer, 'name'], _.get(event, 'iName'));
 							_.set(eCtrl, ['events', curiPlayer, 'id'], _.get(event, 'iName'));
 						}
