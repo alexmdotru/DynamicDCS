@@ -13,7 +13,7 @@
 		var oneSec = 1000;
 		var authId;
 
-		/*
+
 		mySocket.emit('room', {
 			server: 'DynamicCaucasus_leaderboard'
 		});
@@ -22,7 +22,6 @@
 			console.log('LBEvent: ', data, eventService);
 			// eventService.byUcid(data);
 		});
-		*/
 
 		_.set(indxCtrl, 'hChart', {
 			chart: {

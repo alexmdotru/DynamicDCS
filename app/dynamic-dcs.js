@@ -140,6 +140,7 @@
 
 	angular
 		.module('dynamic-dcs', [
+			'dynamic-dcs.socketFactory',
 			'dynamic-dcs.templates',
 			'dynamic-dcs.chat-box',
 			'dynamic-dcs.api.server',
