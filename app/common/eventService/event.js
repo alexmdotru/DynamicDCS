@@ -35,7 +35,7 @@
 							_.set(curPlayer, 'id', _.get(event, 'tName'));
 						}
 					}
-					_.set(curplayer, 'marker', {
+					_.set(curPlayer, 'marker', {
 						enabled: true,
 						radius: 3
 					});
