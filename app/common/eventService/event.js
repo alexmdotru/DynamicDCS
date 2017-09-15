@@ -42,7 +42,7 @@
 						enabled: true,
 						radius: 3
 					});
-					_.set(event, 'y', _.get(event, 'curScore'));
+					_.set(event, 'y',_.set(curScore, [curiPlayer]));
 					_.set(event, 'x', new Date(_.get(event, 'createdAt')).getTime());
 					if (curiPlayer) {
 						eCtrl.events[curiPlayer].data.push(event);
