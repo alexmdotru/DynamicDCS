@@ -5,20 +5,16 @@
 		</div>
 		<div class="panel-body text-center">
 			<table class="table table-striped">
-				<thead>
-					<tr>
-						<th class="pull-left">#</th>
-						<th class="pull-left">Name</th>
-						<th class="pull-left">Score</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr ng-repeat="ts in indxCtrl.eventService.topScore track by $index">
-						<td data-ng-bind="$index + 1"></td>
-						<td data-ng-bind="ts.name"></td>
-						<td data-ng-bind="ts.score"></td>
-					</tr>
-				</tbody>
+				<tr>
+					<td class="pull-left">#</td>
+					<td class="pull-left">Name</td>
+					<td class="pull-left">Score</td>
+				</tr>
+				<tr ng-repeat="ts in indxCtrl.eventService.topScore track by $index">
+					<td data-ng-bind="$index + 1"></td>
+					<td data-ng-bind="ts.name"></td>
+					<td data-ng-bind="ts.score"></td>
+				</tr>
 			</table>
 		</div>
 	</div>
