@@ -139,7 +139,7 @@
 			'highcharts-ng'
 		])
 		.config(['$stateProvider', '$urlRouterProvider', configFunction])
-		// .run(authHandler)
+		.run(authHandler)
 		.controller('indexController', indexController)
 	;
 }(angular));
