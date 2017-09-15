@@ -13,12 +13,15 @@
 		var oneSec = 1000;
 		var authId;
 
+		_.set(indxCtrl, 'events', events);
+
 		mySocket.emit('room', {
 			server: 'DynamicCaucasus_leaderboard'
 		});
 
 		mySocket.on('srvUpd', function (data) {
 			console.log('LBEvent: ', data);
+			indxCtrl.events.byUcid(data);
 		});
 
 		mySocket.on('error', function (err) {
@@ -30,8 +33,6 @@
 				server: 'DynamicCaucasus_leaderboard'
 			});
 		});
-
-		_.set(indxCtrl, 'events', events);
 
 		_.set(indxCtrl, 'hChart', {
 			chart: {
