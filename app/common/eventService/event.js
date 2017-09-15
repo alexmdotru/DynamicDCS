@@ -1,7 +1,7 @@
 (function (angular) {
 	'use strict';
 
-	function eventService($rootScope, eventAPI, alertService) {
+	function eventService(eventAPI, alertService) {
 		var eCtrl = this;
 		var ePromise;
 		_.set(eCtrl, 'events', {});
@@ -49,7 +49,6 @@
 					}
 				}
 			});
-			$rootScope.$apply();
 		});
 
 		_.set(eCtrl, 'getInitEvents', function () {
@@ -65,7 +64,7 @@
 			;
 		});
 	};
-	eventService.$inject = ['$rootScope', 'dynamic-dcs.api.srvEvent', 'alertService'];
+	eventService.$inject = ['dynamic-dcs.api.srvEvent', 'alertService'];
 
 	function initializeEventService (eventService) {
 		eventService.getInitEvents();
