@@ -6,15 +6,19 @@
 		<div class="panel-body text-center">
 			<table class="table table-striped">
 				<thead>
-					<th>#</th>
-					<th>Name</th>
-					<th>Score</th>
+					<tr>
+						<th>#</th>
+						<th>Name</th>
+						<th>Score</th>
+					</tr>
 				</thead>
-				<tr ng-repeat="ts in indxCtrl.eventService.topScore track by $index">
-					<td data-ng-bind="$index + 1"></td>
-					<td data-ng-bind="ts.name"></td>
-					<td data-ng-bind="ts.score"></td>
-				</tr>
+				<tbody>
+					<tr ng-repeat="ts in indxCtrl.eventService.topScore track by $index">
+						<td data-ng-bind="$index + 1"></td>
+						<td data-ng-bind="ts.name"></td>
+						<td data-ng-bind="ts.score"></td>
+					</tr>
+				</tbody>
 			</table>
 		</div>
 	</div>
