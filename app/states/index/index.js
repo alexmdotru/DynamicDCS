@@ -6,15 +6,14 @@
 	}
 	getEvents.$inject=['eventService'];
 
-	function indexController (mySocket, events, eventService) {
+	function indexController (mySocket, eventService) {
 		var indxCtrl = this;
 		var curData = [];
 		var curScore = 0;
 		var oneSec = 1000;
 		var authId;
 
-		_.set(indxCtrl, 'events', events);
-
+		/*
 		mySocket.emit('room', {
 			server: 'DynamicCaucasus_leaderboard'
 		});
@@ -23,6 +22,7 @@
 			console.log('LBEvent: ', data, eventService);
 			// eventService.byUcid(data);
 		});
+		*/
 
 		_.set(indxCtrl, 'hChart', {
 			chart: {
@@ -111,7 +111,7 @@
 			series: eventService.events
 		});
 	}
-	indexController.$inject = ['mySocket', 'events', 'eventService'];
+	indexController.$inject = ['mySocket', 'eventService'];
 
 	function configFunction($stateProvider) {
 		$stateProvider

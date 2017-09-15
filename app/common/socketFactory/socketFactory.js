@@ -3,7 +3,7 @@
 
 	function SocketFactoryController (socketFactory) {
 		var qObj;
-		var myIoSocket
+		var myIoSocket;
 		if (localStorage.getItem('access_token')) {
 			qObj = {
 				query: 'token=Bearer ' + localStorage.getItem('access_token') + '&authId=' + localStorage.getItem('sub')
