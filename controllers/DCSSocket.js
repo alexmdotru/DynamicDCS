@@ -19,7 +19,7 @@ exports.createSocket = function (serverName, serverAddress, clientPort, gameGuiP
 	_.set(dsock, 'clientBuffer', {});
 	_.set(dsock, 'gameGUIBuffer', {});
 	_.set(dsock, 'startTime', new Date().valueOf() );
-	_.set(dsock, 'sessionName', serverName+'_'+dsock.startTime);
+	_.set(dsock, 'sessionName', serverName+'_'+dsock.startTime+' Node Server Starttime');
 	_.set(dsock, 'writeQue.client', []);
 	_.set(dsock, 'writeQue.gameGUI', []);
 
@@ -70,7 +70,7 @@ exports.createSocket = function (serverName, serverAddress, clientPort, gameGuiP
 			dsock.clientBuffer += data;
 			while ((i = dsock.clientBuffer.indexOf("\n")) >= 0) {
 				var data = JSON.parse(dsock.clientBuffer.substring(0, i));
-				dsock.callback(serverName, dsock.sessionName, data);
+				dsock.callback(serverName, data);
 				dsock.clientBuffer = dsock.clientBuffer.substring(i + 1);
 				dsock.client.write(JSON.stringify(_.get(dsock, ['writeQue', 'client', 0], '')) + "\n");
 				_.get(dsock, ['writeQue', 'client']).shift();
@@ -107,7 +107,7 @@ exports.createSocket = function (serverName, serverAddress, clientPort, gameGuiP
 			dsock.gameGUIBuffer += data;
 			while ((i = dsock.gameGUIBuffer.indexOf("\n")) >= 0) {
 				var data = JSON.parse(dsock.gameGUIBuffer.substring(0, i));
-				dsock.callback(serverName, dsock.sessionName, data);
+				dsock.callback(serverName, data);
 				dsock.gameGUIBuffer = dsock.gameGUIBuffer.substring(i + 1);
 				dsock.gameGUI.write(JSON.stringify(_.get(dsock, ['writeQue', 'gameGUI', 0], '')) + "\n");
 				_.get(dsock, ['writeQue', 'gameGUI']).shift();

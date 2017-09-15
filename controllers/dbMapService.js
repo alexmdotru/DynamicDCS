@@ -129,10 +129,19 @@ exports.statSessionActions = function (action, serverName, obj){
 	if(action === 'save') {
 		console.log('statsessionsave: ', obj);
 		return new Promise(function(resolve, reject) {
-			const statsession = new StatSession(obj);
-			statsession.save(function (err, statSession) {
-				if (err) { reject(err) }
-				resolve(statSession);
+			StatSession.find({_id: obj._id}, function (err, sessionObj) {
+				if (err) {
+					reject(err)
+				}
+				if (sessionObj.length === 0) {
+					const statsession = new StatSession(obj);
+					statsession.save(function (err, statSession) {
+						if (err) {
+							reject(err)
+						}
+						resolve(statSession);
+					});
+				}
 			});
 		});
 	}

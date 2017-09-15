@@ -211,6 +211,7 @@ var curServers = {};
 var nonaccountUsers = {};
 var shootingUsers = {};
 var place;
+var sessionName;
 
 function abrLookup (fullName) {
  var shortNames =	{
@@ -1386,28 +1387,25 @@ setInterval(function () {
 		;
 }, 1 * 1 * 5000);
 
-function syncDCSData(serverName, sessionName, DCSData) {
-	//console.log('incoming data: ', DCSData);
-	//var timetest = new Date();
-	//_.set(serverObject, 'ClientRequestArray[0]', {action:'CMD',  reqID: _.random(1,9999)+'|'+timetest.getHours() + ':' + timetest.getMinutes() + ':' + timetest.getSeconds(), cmd:'trigger.action.outText("IT WORKS MOFO!", 2)'});
-	//accept updates
-
+function syncDCSData(serverName, DCSData) {
 	if (!_.isEmpty(DCSData.que)) {
-		var newSession = {
-			_id: sessionName,
-			name: sessionName
-		};
-		if (DCSData.curAbsTime) {
-			_.set(newSession, 'startAbsTime', DCSData.startAbsTime);
-			_.set(newSession, 'curAbsTime', DCSData.curAbsTime);
-		}
-		if (sessionName !== _.get(curServers, [serverName, 'sessionName'], '') || _.get(curServers, [serverName, 'curAbsTime'], 0) > DCSData.curAbsTime) {
-			_.set(curServers, [serverName, 'sessionName'], sessionName);
-			_.set(curServers, [serverName, 'curAbsTime'], DCSData.curAbsTime);
-			dbMapServiceController.statSessionActions('save', serverName, newSession);
-		} else {
-
-			dbMapServiceController.statSessionActions('update', serverName, newSession);
+		if (DCSData.epoc) {
+			sessionName = serverName+'_'+DCSData.epoc;
+			var newSession = {
+				_id: sessionName,
+				name: sessionName
+			};
+			if (DCSData.curAbsTime) {
+				_.set(newSession, 'startAbsTime', DCSData.startAbsTime);
+				_.set(newSession, 'curAbsTime', DCSData.curAbsTime);
+			}
+			if (sessionName !== _.get(curServers, [serverName, 'sessionName'], '') || _.get(curServers, [serverName, 'curAbsTime'], 0) > DCSData.curAbsTime) {
+				_.set(curServers, [serverName, 'sessionName'], sessionName);
+				_.set(curServers, [serverName, 'curAbsTime'], DCSData.curAbsTime);
+				dbMapServiceController.statSessionActions('save', serverName, newSession);
+			} else {
+				dbMapServiceController.statSessionActions('update', serverName, newSession);
+			}
 		}
 		curServers.processQue(serverName, sessionName, DCSData);
 	}
