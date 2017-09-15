@@ -44,7 +44,11 @@
 					});
 					_.set(event, 'y', _.get(event, 'curScore'));
 					_.set(event, 'x', new Date(_.get(event, 'createdAt')).getTime());
-					eCtrl.events[curiPlayer].data.push(event);
+					if (curiPlayer) {
+						eCtrl.events[curiPlayer].data.push(event);
+					} else {
+						eCtrl.events[curtPlayer].data.push(event);
+					}
 				}
 			});
 		});
