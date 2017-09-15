@@ -6,11 +6,27 @@
 	}
 	getEvents.$inject=['eventService'];
 
-	function indexController (socket, events) {
+	function indexController (mySocket, events) {
 		var indxCtrl = this;
 		var curData = [];
 		var curScore = 0;
 		var oneSec = 1000;
+
+		mySocket.on('srvUpd', function (data) {
+			console.log('LBEvent: ', data);
+		});
+
+		mySocket.on('error', function (err) {
+			console.log('Socket Reconnect: ', err);
+		});
+
+		mySocket.on('reconnect', function () {
+			console.log('Join Leaderboard Room');
+			socket.emit('room', {
+				server: 'leaderboard'
+			});
+		});
+
 
 		_.set(indxCtrl, 'events', events);
 		var events = angular.copy(events);
@@ -97,10 +113,6 @@
 				min: 0
 			},
 			series: events
-		});
-
-		socket.emit('room', {
-			server: 'leaderboard'
 		});
 	}
 	indexController.$inject = ['mySocket', 'events'];
