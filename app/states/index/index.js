@@ -21,7 +21,7 @@
 
 		mySocket.on('srvUpd', function (data) {
 			console.log('LBEvent: ', data);
-			indxCtrl.events.byUcid(data);
+			events.byUcid(data);
 		});
 
 		mySocket.on('error', function (err) {
