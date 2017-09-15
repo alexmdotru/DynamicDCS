@@ -5,7 +5,6 @@
 		var eCtrl = this;
 		var ePromise;
 		_.set(eCtrl, 'events', {});
-		_.set(eCtrl, 'loaded', false);
 
 		_.set(eCtrl, 'byUcid', function (newEvents) {
 			var curiPlayer;
@@ -51,41 +50,29 @@
 			});
 		});
 
-		_.set(eCtrl, 'firstLoad', function () {
-			if(_.get(ePromise, '$resolved') === undefined) {
-				ePromise = eventAPI.query({serverName: 'dynamiccaucasus'});
-				ePromise.$promise
-					.then(function (eventData) {
-						eCtrl.byUcid(eventData);
-						_.set(eCtrl, 'loaded', true);
-					})
-					.catch(function(err){
-						alertService.addAlert('danger', 'Events could not be queryed.');
-						console.log(err);
-					})
-				;
-			}
-			return ePromise;
-		});
-
-		_.set(eCtrl, 'loadVarCheck', function (loadVar) {
-			if(!_.get(eCtrl, 'loaded', false)) {
-				return eCtrl.firstLoad().$promise
-					.then(function () {
-						return _.get(eCtrl, loadVar);
-					});
-			}
-			return _.get(eCtrl, loadVar)
-		});
-
-		_.set(eCtrl, 'getEvents', function () {
-			return eCtrl.loadVarCheck('events');
+		_.set(eCtrl, 'getInitEvents', function () {
+			ePromise = eventAPI.query({serverName: 'dynamiccaucasus'});
+			ePromise.$promise
+				.then(function (eventData) {
+					eCtrl.byUcid(eventData);
+				})
+				.catch(function(err){
+					alertService.addAlert('danger', 'Events could not be queryed.');
+					console.log(err);
+				})
+			;
 		});
 	}
 	eventService.$inject = ['dynamic-dcs.api.srvEvent', 'alertService'];
 
+	function initializeEventService (eventService) {
+		eventService.getInitEvents();
+	}
+	initializeSrvService.$inject = ['eventService'];
+
 	angular
 		.module('dynamic-dcs.eventService',['dynamic-dcs.api.srvEvent', 'dynamic-dcs.alertService'])
 		.service('eventService', eventService)
+		.run(initializeEventService)
 	;
 })(angular);
