@@ -20,6 +20,7 @@
 				curtPlayer = _.get(event, 'tucid');
 				if (curiPlayer || curtPlayer) {
 					if (curiPlayer) {
+						_.set(eCtrl, ['events', curiPlayer, 'data'], _.get(eCtrl, ['events', curiPlayer, 'data'], []));
 						if (!_.get(eCtrl, ['events', curiPlayer], 'name')) {
 							_.set(eCtrl, ['events', curiPlayer, 'name'], _.get(event, 'iName'));
 							_.set(eCtrl, ['events', curiPlayer, 'id'], _.get(event, 'iName'));
@@ -31,6 +32,7 @@
 						_.set(eCtrl, ['events', curiPlayer, 'curScore'], scoreMath);
 						_.set(curScore, [curiPlayer], _.get(event, 'curScore', 0));
 					} else {
+						_.set(eCtrl, ['events', curtPlayer, 'data'], _.get(eCtrl, ['events', curtPlayer, 'data'], []));
 						if (!_.get(eCtrl, ['events', curtPlayer], 'name')) {
 							_.set(eCtrl, ['events', curtPlayer, 'name'], _.get(event, 'tName'));
 							_.set(eCtrl, ['events', curtPlayer, 'id'], _.get(event, 'tName'));
@@ -42,7 +44,6 @@
 					});
 					_.set(event, 'y', _.get(event, 'curScore'));
 					_.set(event, 'x', new Date(_.get(event, 'createdAt')).getTime());
-					_.set(eCtrl, ['events', curiPlayer, 'data'], _.get(eCtrl, ['events', curiPlayer, 'data'], []));
 					eCtrl.events[curiPlayer].data.push(event);
 				}
 			});
