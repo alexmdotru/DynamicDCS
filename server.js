@@ -389,6 +389,7 @@ function setRoomSide(socket, roomObj) {
 		curIP = '127.0.0.1';
 	}
 
+	console.log('roomobj: ', roomObj);
 	if (_.includes(roomObj.server, 'leaderboard')) {
 		setSocketRoom(socket, roomObj.server);
 	} else {
