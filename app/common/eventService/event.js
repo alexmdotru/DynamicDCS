@@ -6,6 +6,7 @@
 		var ePromise;
 		_.set(eCtrl, 'events', {});
 		_.set(eCtrl, 'curScore', {});
+		_.set(eCtrl, 'topScore', _.sortBy(_.values(_.get(eCtrl, 'curScore')), 'score'));
 
 		_.set(eCtrl, 'byUcid', function (newEvents) {
 			var curiPlayer;
