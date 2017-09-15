@@ -2,17 +2,13 @@
 	'use strict';
 
 	function SocketFactoryController (socketFactory) {
-		var qObj;
-		var myIoSocket;
-		if (localStorage.getItem('access_token')) {
-			qObj = {
-				query: 'token=Bearer ' + localStorage.getItem('access_token') + '&authId=' + localStorage.getItem('sub')
-			};
-		}
-		myIoSocket = io.connect('/', qObj);
-		return socketFactory({
+		var myIoSocket = io.connect('/', {
+			query: 'token=Bearer '+localStorage.getItem('access_token')+'&authId='+localStorage.getItem('sub')
+		});
+		var mySocket = socketFactory({
 			ioSocket: myIoSocket
 		});
+		return mySocket;
 	}
 	SocketFactoryController.$inject = [
 		'socketFactory'
