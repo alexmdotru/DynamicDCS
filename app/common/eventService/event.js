@@ -8,14 +8,13 @@
 		_.set(eCtrl, 'curScore', {});
 
 		_.set(eCtrl, 'byUcid', function (newEvents) {
-			console.log('new events: ', newEvents);
-
-			/*
 			var curiPlayer;
 			var curtPlayer;
 			var scoreMath;
 			var name;
 			var sortedEvents = _.sortBy(newEvents, ['createdAt']);
+			console.log('new events: ', sortedEvents);
+			/*
 			_.forEach(sortedEvents, function (event) {
 				if (!_.get(event, 'createdAt')) {
 					_.set(event, 'createdAt', new Date().toISOString());
