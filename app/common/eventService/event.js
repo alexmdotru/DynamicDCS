@@ -8,6 +8,9 @@
 		_.set(eCtrl, 'curScore', {});
 
 		_.set(eCtrl, 'byUcid', function (newEvents) {
+			console.log('new events: ', newEvents);
+
+			/*
 			var curiPlayer;
 			var curtPlayer;
 			var scoreMath;
@@ -58,6 +61,7 @@
 				}
 			});
 			_.set(eCtrl, 'topScore', _.sortBy(_.values(_.get(eCtrl, 'curScore')), 'score').reverse());
+			*/
 		});
 
 		_.set(eCtrl, 'getInitEvents', function () {
