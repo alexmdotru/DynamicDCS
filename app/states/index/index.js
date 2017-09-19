@@ -32,7 +32,9 @@
 			tooltip: {
 				headerFormat: '<b>{series.name}</b><br>',
 				pointFormat: '{point.x:%e. %b}: {point.y:.2f} m',
-				split: true
+				split: true,
+				crosshairs: true,
+				shared: true
 			},
 			plotOptions: {
 				spline: {
