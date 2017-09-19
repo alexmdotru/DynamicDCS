@@ -25,9 +25,6 @@
 				height: 500
 			},
 			chartType: 'stock',
-			boost: {
-				seriesThreshold: 1
-			},
 			exporting: {
 				enabled: true
 			},
@@ -70,7 +67,6 @@
 				}
 			},
 			tooltip: {
-				animation : false,
 				formatter: function() {
 					var curToolTip = 'Time: '+ Highcharts.dateFormat('%k:%M:%S', this.x)+'<br>';
 					_.forEach(_.get(this, 'points'), function (point) {
