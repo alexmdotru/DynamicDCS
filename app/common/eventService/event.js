@@ -13,7 +13,7 @@
 			var curtPlayer;
 			var scoreMath;
 			var name;
-			var simpleArray = [];
+			var simpleArray = {};
 			var sortedEvents = _.sortBy(newEvents, ['createdAt']);
 
 			_.forEach(sortedEvents, function (event) {

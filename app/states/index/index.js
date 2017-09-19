@@ -104,7 +104,9 @@
 			yAxis: {
 				title: {
 					text: 'Points'
-				}
+				},
+				min: 0,
+				max: 110
 			},
 			series: eventService.events
 		});
