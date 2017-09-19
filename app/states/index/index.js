@@ -23,6 +23,7 @@
 			chart: {
 				height: 500
 			},
+			useHighStocks: true,
 			boost: {
 				// Force boost always
 				seriesThreshold: 1
