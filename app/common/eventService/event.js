@@ -13,6 +13,7 @@
 			var curtPlayer;
 			var scoreMath;
 			var name;
+			var lwArray = [];
 			var sortedEvents = _.sortBy(newEvents, ['createdAt']);
 
 			_.forEach(sortedEvents, function (event) {
@@ -21,9 +22,6 @@
 				}
 				curiPlayer = _.get(event, 'iucid');
 				curtPlayer = _.get(event, 'tucid');
-				console.log('event: ', event);
-
-				/*
 				if (curiPlayer || curtPlayer) {
 					if (curiPlayer) {
 						_.set(eCtrl, ['events', curiPlayer, 'data'], _.get(eCtrl, ['events', curiPlayer, 'data'], []));
@@ -53,18 +51,16 @@
 						enabled: true,
 						radius: 3
 					});
-					_.set(event, 'y',_.get(eCtrl, ['curScore', curiPlayer, 'score'], 0));
-					_.set(event, 'x', new Date(_.get(event, 'createdAt')).getTime());
+					_.set(lwArray, 'y',_.get(eCtrl, ['curScore', curiPlayer, 'score'], 0));
+					_.set(lwArray, 'x', new Date(_.get(event, 'createdAt')).getTime());
 					if (curiPlayer) {
-						eCtrl.events[curiPlayer].data.push(event);
+						eCtrl.events[curiPlayer].data.push(lwArray);
 					} else {
-						eCtrl.events[curtPlayer].data.push(event);
+						eCtrl.events[curtPlayer].data.push(lwArray);
 					}
 				}
-				 */
 			});
-
-			// _.set(eCtrl, 'topScore', _.sortBy(_.values(_.get(eCtrl, 'curScore')), 'score').reverse());
+			_.set(eCtrl, 'topScore', _.sortBy(_.values(_.get(eCtrl, 'curScore')), 'score').reverse());
 		});
 
 		_.set(eCtrl, 'getInitEvents', function () {
