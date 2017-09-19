@@ -109,7 +109,7 @@
 					text: 'Points'
 				},
 				min: 0,
-				max: 110
+				max: 500000
 			},
 			series: eventService.events
 		});
