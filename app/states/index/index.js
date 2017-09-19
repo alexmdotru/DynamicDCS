@@ -19,6 +19,7 @@
 		_.set(eventService, 'events', {});
 		eventService.getInitEvents();
 
+		console.log('con: ', eventService.events);
 		_.set(indxCtrl, 'hChart', {
 			chart:{
 				type:'line',
@@ -108,8 +109,7 @@
 				title: {
 					text: 'Points'
 				},
-				min: 0,
-				max: 500000
+				min: 0
 			},
 			series: eventService.events
 		});
