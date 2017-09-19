@@ -13,6 +13,7 @@
 			var curtPlayer;
 			var scoreMath;
 			var name;
+			var simpleArray = [];
 			var sortedEvents = _.sortBy(newEvents, ['createdAt']);
 
 			_.forEach(sortedEvents, function (event) {
@@ -47,8 +48,12 @@
 						}
 					}
 					_.set(eCtrl, ['events', curiPlayer, 'boostThreshold'], 500);
-					_.set(event, 'y',_.get(eCtrl, ['curScore', curiPlayer, 'score'], 0));
-					_.set(event, 'x', new Date(_.get(event, 'createdAt')).getTime());
+					// _.set(event, 'y',_.get(eCtrl, ['curScore', curiPlayer, 'score'], 0));
+					// _.set(event, 'x', new Date(_.get(event, 'createdAt')).getTime());
+
+					_.set(simpleArray, 'y',_.get(eCtrl, ['curScore', curiPlayer, 'score'], 0));
+					_.set(simpleArray, 'x', new Date(_.get(event, 'createdAt')).getTime());
+					_.set(simpleArray, 'msg', _.get(event, 'msg'));
 					if (curiPlayer) {
 						eCtrl.events[curiPlayer].data.push(event);
 					} else {
