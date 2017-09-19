@@ -54,12 +54,13 @@
 					});
 					_.set(eCtrl, ['events', curiPlayer, 'shadow'], false);
 					_.set(eCtrl, ['events', curiPlayer, 'boostThreshold'], 500);
-					_.set(event, 'y',_.get(eCtrl, ['curScore', curiPlayer, 'score'], 0));
-					_.set(event, 'x', new Date(_.get(event, 'createdAt')).getTime());
+					// _.set(event, 'y',_.get(eCtrl, ['curScore', curiPlayer, 'score'], 0));
+					// _.set(event, 'x', new Date(_.get(event, 'createdAt')).getTime());
 
 					_.set(simpleArray, 'y',_.get(eCtrl, ['curScore', curiPlayer, 'score'], 0));
 					_.set(simpleArray, 'x', new Date(_.get(event, 'createdAt')).getTime());
 					_.set(simpleArray, 'msg', _.get(event, 'msg'));
+					_.set(simpleArray, 'score', _.get(event, 'score'));
 					if (curiPlayer) {
 						eCtrl.events[curiPlayer].data.push(simpleArray);
 					} else {
