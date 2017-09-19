@@ -22,14 +22,9 @@
 		_.set(indxCtrl, 'hChart', {
 			chart:{
 				type:'line',
-				renderTo: 'container',
-				animation: false,
 				height: 500
 			},
-			chartType: 'stock',
-			useHighStock: true,
 			boost: {
-				// Force boost always
 				seriesThreshold: 1
 			},
 			exporting: {
