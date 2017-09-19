@@ -30,9 +30,15 @@
 				enabled: true
 			},
 			tooltip: {
-				pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ({point.change}%)<br/>',
-				valueDecimals: 2,
-				split: true
+				headerFormat: '<b>{series.name}</b><br>',
+				pointFormat: '{point.x:%e. %b}: {point.y:.2f} m'
+			},
+			plotOptions: {
+				spline: {
+					marker: {
+						enabled: true
+					}
+				}
 			},
 			legend: {
 				layout: 'vertical',
