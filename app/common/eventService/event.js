@@ -59,6 +59,7 @@
 					} else {
 						eCtrl.events[curtPlayer].data.push(simpleArray);
 					}
+					console.log('SA: ', simpleArray);
 				}
 			});
 			_.set(eCtrl, 'topScore', _.sortBy(_.values(_.get(eCtrl, 'curScore')), 'score').reverse());
