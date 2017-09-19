@@ -42,6 +42,7 @@
 				y: 65
 			},
 			navigator: {
+				enabled: false,
 				margin: 50
 			},
 			rangeSelector: {
