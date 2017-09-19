@@ -3,6 +3,7 @@
 
 	function eventService(eventAPI, alertService) {
 		var eCtrl = this;
+		var curDate = new Date().toISOString();
 		var ePromise;
 		_.set(eCtrl, 'events', {});
 		_.set(eCtrl, 'curScore', {});
@@ -15,13 +16,14 @@
 			var sortedEvents = _.sortBy(newEvents, ['createdAt']);
 
 			_.forEach(sortedEvents, function (event) {
-				console.log('event: ', event);
-				/*
 				if (!_.get(event, 'createdAt')) {
-					_.set(event, 'createdAt', new Date().toISOString());
+					_.set(event, 'createdAt', curDate);
 				}
 				curiPlayer = _.get(event, 'iucid');
 				curtPlayer = _.get(event, 'tucid');
+				console.log('event: ', event);
+
+				/*
 				if (curiPlayer || curtPlayer) {
 					if (curiPlayer) {
 						_.set(eCtrl, ['events', curiPlayer, 'data'], _.get(eCtrl, ['events', curiPlayer, 'data'], []));
