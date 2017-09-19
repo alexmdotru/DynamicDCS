@@ -26,9 +26,6 @@
 				height: 500
 			},
 			chartType: 'stock',
-			boost: {
-				seriesThreshold: 1
-			},
 			exporting: {
 				enabled: true
 			},
