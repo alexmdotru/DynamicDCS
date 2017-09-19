@@ -26,7 +26,6 @@
 			exporting: {
 				enabled: false
 			},
-			chartType: 'stock',
 			legend: {
 				enabled: true,
 				layout: 'horizontal',
