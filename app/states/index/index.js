@@ -30,11 +30,10 @@
 				enabled: true
 			},
 			tooltip: {
-				headerFormat: '<b>{series.name}</b><br>',
-				pointFormat: '{point.x:%e. %b}: {point.y:.2f} m',
+				headerFormat: '{point.x:%e. %b}: {point.y:.2f} m',
+				pointFormat: '<b>{series.name}</b><br>',
 				split: true,
-				crosshairs: true,
-				shared: true
+				crosshairs: true
 			},
 			plotOptions: {
 				spline: {
