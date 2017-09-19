@@ -26,8 +26,7 @@
 			},
 			chartType: 'stock',
 			boost: {
-				seriesThreshold: 1,
-				useGPUTranslations: true
+				seriesThreshold: 1
 			},
 			exporting: {
 				enabled: true
@@ -37,7 +36,7 @@
 				layout: 'horizontal',
 				verticalAlign: 'bottom',
 				floating: true,
-				y: -65
+				y: 65
 			},
 			navigator: {
 				margin: 50
