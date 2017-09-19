@@ -35,11 +35,9 @@
 				split: true
 			},
 			legend: {
-				enabled: true,
-				layout: 'horizontal',
-				verticalAlign: 'bottom',
-				floating: true,
-				y: 65
+				layout: 'vertical',
+				align: 'right',
+				verticalAlign: 'middle'
 			},
 			navigator: {
 				enabled: false,
