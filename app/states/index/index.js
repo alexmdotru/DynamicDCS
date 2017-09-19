@@ -20,7 +20,10 @@
 		eventService.getInitEvents();
 
 		_.set(indxCtrl, 'hChart', {
-			chart: {
+			chart:{
+				type:'line',
+				renderTo: 'container',
+				animation: false,
 				height: 500
 			},
 			chartType: 'stock',
@@ -71,6 +74,7 @@
 				}
 			},
 			tooltip: {
+				animation : false,
 				formatter: function() {
 					var curToolTip = 'Time: '+ Highcharts.dateFormat('%k:%M:%S', this.x)+'<br>';
 					console.log('this: ', this);
@@ -111,9 +115,18 @@
 			},
 			dataGrouping: {
 				approximation: "average",
-				enabled: true,
+				enabled: false,
 				forced: true,
 				units: [['hour', [1]]]
+			},
+			plotOptions: {
+				line: {
+					animation: false,
+					shadow: false,
+					marker:{
+						enabled: false
+					}
+				}
 			},
 			series: eventService.events
 		});

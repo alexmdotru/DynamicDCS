@@ -46,12 +46,7 @@
 							_.set(eCtrl, ['events', curtPlayer, 'id'], _.get(event, 'tName'));
 						}
 					}
-					/*
-					_.set(eCtrl, ['events', curiPlayer, 'marker'], {
-						enabled: true,
-						radius: 3
-					});
-					*/
+					_.set(eCtrl, ['events', curiPlayer, 'dataGrouping'], false);
 					_.set(event, 'y',_.get(eCtrl, ['curScore', curiPlayer, 'score'], 0));
 					_.set(event, 'x', new Date(_.get(event, 'createdAt')).getTime());
 					if (curiPlayer) {
