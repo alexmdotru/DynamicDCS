@@ -47,16 +47,18 @@
 							_.set(eCtrl, ['events', curtPlayer, 'id'], _.get(event, 'tName'));
 						}
 					}
+					/*
 					_.set(eCtrl, ['events', curiPlayer, 'marker'], {
 						enabled: true,
 						radius: 3
 					});
-					_.set(lwArray, 'y',_.get(eCtrl, ['curScore', curiPlayer, 'score'], 0));
-					_.set(lwArray, 'x', new Date(_.get(event, 'createdAt')).getTime());
+					*/
+					_.set(event, 'y',_.get(eCtrl, ['curScore', curiPlayer, 'score'], 0));
+					_.set(event, 'x', new Date(_.get(event, 'createdAt')).getTime());
 					if (curiPlayer) {
-						eCtrl.events[curiPlayer].data.push(lwArray);
+						eCtrl.events[curiPlayer].data.push(event);
 					} else {
-						eCtrl.events[curtPlayer].data.push(lwArray);
+						eCtrl.events[curtPlayer].data.push(event);
 					}
 				}
 			});
