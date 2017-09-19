@@ -54,7 +54,7 @@
 					*/
 					_.set(event, 'y',_.get(eCtrl, ['curScore', curiPlayer, 'score'], 0));
 					_.set(event, 'x', new Date(_.get(event, 'createdAt')).getTime());
-					console.log(y, _.get(event, 'y'));
+					console.log('y: ', _.get(event, 'y'));
 					if (curiPlayer) {
 						eCtrl.events[curiPlayer].data.push(event);
 					} else {
