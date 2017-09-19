@@ -30,7 +30,7 @@
 				enabled: true
 			},
 			tooltip: {
-				headerFormat: '{point.x:%e. %b}: {point.y:.2f} m',
+				headerFormat: '{point.x:%e. %b %k:%M:%S.%L}',
 				pointFormat: '<b>{point.msg}</b><br>{point.score} points | Score: {point.y}',
 				split: true,
 				crosshairs: true
@@ -43,6 +43,7 @@
 				}
 			},
 			legend: {
+				enabled: true,
 				layout: 'vertical',
 				align: 'right',
 				verticalAlign: 'middle'
