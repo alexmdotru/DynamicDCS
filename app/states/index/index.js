@@ -46,11 +46,10 @@
 				verticalAlign: 'middle'
 			},
 			navigator: {
-				enabled: false,
-				margin: 50
+				enabled: false
 			},
 			rangeSelector: {
-				selected: 3,
+				selected: 1,
 				buttons: [{
 					type: 'minute',
 					text: '1min'
