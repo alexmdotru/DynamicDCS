@@ -105,16 +105,6 @@
 			yAxis: {
 				title: {
 					text: 'Points'
-				},
-				min: 0
-			},
-			plotOptions: {
-				line: {
-					animation: false,
-					shadow: false,
-					marker:{
-						enabled: false
-					}
 				}
 			},
 			series: eventService.events
