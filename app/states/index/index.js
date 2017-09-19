@@ -24,6 +24,7 @@
 				type:'line',
 				height: 500
 			},
+			chartType: 'stock',
 			boost: {
 				seriesThreshold: 1
 			},
