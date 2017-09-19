@@ -55,9 +55,9 @@
 					_.set(simpleArray, 'x', new Date(_.get(event, 'createdAt')).getTime());
 					_.set(simpleArray, 'msg', _.get(event, 'msg'));
 					if (curiPlayer) {
-						eCtrl.events[curiPlayer].data.push(event);
+						eCtrl.events[curiPlayer].data.push(simpleArray);
 					} else {
-						eCtrl.events[curtPlayer].data.push(event);
+						eCtrl.events[curtPlayer].data.push(simpleArray);
 					}
 				}
 			});
