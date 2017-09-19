@@ -48,6 +48,9 @@
 				align: 'right',
 				verticalAlign: 'middle'
 			},
+			navigator: {
+				enabled: tr
+			},
 			rangeSelector: {
 				selected: 1,
 				buttons: [{
