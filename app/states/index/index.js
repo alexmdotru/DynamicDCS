@@ -31,7 +31,7 @@
 			},
 			tooltip: {
 				headerFormat: '{point.x:%e. %b}: {point.y:.2f} m',
-				pointFormat: '<b>{series.name}</b> | Points: {point.y}<br>{point.msg}}',
+				pointFormat: '{point.msg}<br>{series.name} | Points: {point.y}',
 				split: true,
 				crosshairs: true
 			},
