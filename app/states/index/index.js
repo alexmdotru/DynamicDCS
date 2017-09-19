@@ -23,8 +23,12 @@
 			chart: {
 				height: 500
 			},
+			boost: {
+				// Force boost always
+				seriesThreshold: 1
+			},
 			exporting: {
-				enabled: false
+				enabled: true
 			},
 			legend: {
 				enabled: true,
