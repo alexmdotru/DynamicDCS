@@ -113,12 +113,6 @@
 				},
 				min: 0
 			},
-			dataGrouping: {
-				approximation: "average",
-				enabled: false,
-				forced: true,
-				units: [['hour', [1]]]
-			},
 			plotOptions: {
 				line: {
 					animation: false,
