@@ -71,6 +71,7 @@
 			},
 			tooltip: {
 				formatter: function() {
+					console.log('this: ', this);
 					var curToolTip = 'Time: '+ Highcharts.dateFormat('%k:%M:%S', this.x)+'<br>';
 					_.forEach(_.get(this, 'points'), function (point) {
 						var p = point.point;
