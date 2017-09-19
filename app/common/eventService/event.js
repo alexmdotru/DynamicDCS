@@ -13,9 +13,10 @@
 			var scoreMath;
 			var name;
 			var sortedEvents = _.sortBy(newEvents, ['createdAt']);
-			console.log('new events: ', sortedEvents);
-			/*
+
 			_.forEach(sortedEvents, function (event) {
+				console.log('event: ', event);
+				/*
 				if (!_.get(event, 'createdAt')) {
 					_.set(event, 'createdAt', new Date().toISOString());
 				}
@@ -58,9 +59,10 @@
 						eCtrl.events[curtPlayer].data.push(event);
 					}
 				}
+				 */
 			});
-			_.set(eCtrl, 'topScore', _.sortBy(_.values(_.get(eCtrl, 'curScore')), 'score').reverse());
-			*/
+
+			// _.set(eCtrl, 'topScore', _.sortBy(_.values(_.get(eCtrl, 'curScore')), 'score').reverse());
 		});
 
 		_.set(eCtrl, 'getInitEvents', function () {
