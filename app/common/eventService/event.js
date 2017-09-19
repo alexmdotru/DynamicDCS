@@ -60,7 +60,7 @@
 					_.set(simpleArray, 'y',_.get(eCtrl, ['curScore', curiPlayer, 'score'], 0));
 					_.set(simpleArray, 'x', new Date(_.get(event, 'createdAt')).getTime());
 					_.set(simpleArray, 'msg', _.get(event, 'msg'));
-					_.set(simpleArray, 'score', _.get(event, 'score'));
+					_.set(simpleArray, 'score', _.get(event, 'score', 0));
 					if (curiPlayer) {
 						eCtrl.events[curiPlayer].data.push(simpleArray);
 					} else {
