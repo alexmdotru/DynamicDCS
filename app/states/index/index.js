@@ -25,6 +25,10 @@
 				height: 500
 			},
 			chartType: 'stock',
+			boost: {
+				seriesThreshold: 1,
+				useGPUTranslations: true
+			},
 			exporting: {
 				enabled: true
 			},
