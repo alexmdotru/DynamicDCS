@@ -49,7 +49,7 @@
 				verticalAlign: 'middle'
 			},
 			navigator: {
-				enabled: tr
+				enabled: false
 			},
 			rangeSelector: {
 				selected: 1,
