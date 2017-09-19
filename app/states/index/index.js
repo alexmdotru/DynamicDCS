@@ -103,6 +103,12 @@
 				},
 				min: 0
 			},
+			dataGrouping: {
+				approximation: "average",
+				enabled: true,
+				forced: true,
+				units: [['hour', [1]]]
+			},
 			series: eventService.events
 		});
 	}
