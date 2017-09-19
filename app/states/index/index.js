@@ -23,6 +23,7 @@
 			chart: {
 				height: 500
 			},
+			chartType: 'stock',
 			useHighStock: true,
 			boost: {
 				// Force boost always
