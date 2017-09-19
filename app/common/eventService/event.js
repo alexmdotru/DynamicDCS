@@ -48,8 +48,8 @@
 						}
 					}
 					_.set(eCtrl, ['events', curiPlayer, 'boostThreshold'], 500);
-					// _.set(event, 'y',_.get(eCtrl, ['curScore', curiPlayer, 'score'], 0));
-					// _.set(event, 'x', new Date(_.get(event, 'createdAt')).getTime());
+					_.set(event, 'y',_.get(eCtrl, ['curScore', curiPlayer, 'score'], 0));
+					_.set(event, 'x', new Date(_.get(event, 'createdAt')).getTime());
 
 					_.set(simpleArray, 'y',_.get(eCtrl, ['curScore', curiPlayer, 'score'], 0));
 					_.set(simpleArray, 'x', new Date(_.get(event, 'createdAt')).getTime());
@@ -59,7 +59,7 @@
 					} else {
 						eCtrl.events[curtPlayer].data.push(simpleArray);
 					}
-					console.log('SA: ', simpleArray, eCtrl.events);
+					console.log('SA: ', simpleArray, event);
 				}
 			});
 			_.set(eCtrl, 'topScore', _.sortBy(_.values(_.get(eCtrl, 'curScore')), 'score').reverse());
