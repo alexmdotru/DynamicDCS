@@ -13,10 +13,10 @@
 			var curtPlayer;
 			var scoreMath;
 			var name;
-			var simpleArray = {};
 			var sortedEvents = _.sortBy(newEvents, ['createdAt']);
 
 			_.forEach(sortedEvents, function (event) {
+				var simpleArray = {};
 				if (!_.get(event, 'createdAt')) {
 					_.set(event, 'createdAt', curDate);
 				}
