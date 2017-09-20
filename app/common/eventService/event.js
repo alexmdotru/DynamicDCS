@@ -16,11 +16,16 @@
 			var sortedEvents = _.sortBy(newEvents, ['createdAt']);
 
 			_.forEach(sortedEvents, function (event) {
-				var eventTime = new Date(_.get(event, 'createdAt')).getTime();
-				console.log('ET: ', eventTime);
+				var eventTime;
+				var cTime = _.get(event, 'createdAt');
 				var curPlayer;
 				var simpleArray = {};
 				var simpleFlags = {};
+				if (cTime) {
+					eventTime = new Date(_.get(event, 'createdAt')).getTime();
+				} else {
+					eventTime = new Date().getTime();
+				}
 				if (!_.get(event, 'createdAt')) {
 					_.set(event, 'createdAt', curDate);
 				}
