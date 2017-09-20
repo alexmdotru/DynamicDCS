@@ -106,8 +106,7 @@
 					text: 'Points'
 				},
 				min: 0
-			},
-			series: eventService.events
+			}
 		});
 	}
 	indexController.$inject = ['mySocket', 'eventService'];
