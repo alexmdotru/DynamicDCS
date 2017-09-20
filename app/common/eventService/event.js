@@ -24,14 +24,14 @@
 				if (_.get(event, 'iucid')) {
 					curPlayer = _.get(event, 'iucid');
 					scoreMath = _.get(eCtrl, ['curScore', curPlayer, 'score'], 0) + _.get(event, 'score', 0);
-					_.set(eCtrl, ['curScore', curPlayer, 'score'], scoreMath);
-					if (scoreMath < 0) {
-						scoreMath = 0;
-					}
 				} else {
 					curPlayer = _.get(event, 'tucid');
 					scoreMath = _.get(eCtrl, ['curScore', curPlayer, 'score'], 0);
 				}
+				if (scoreMath < 0) {
+					scoreMath = 0;
+				}
+				_.set(eCtrl, ['curScore', curPlayer, 'score'], scoreMath);
 
 				if (curPlayer) {
 					_.set(eCtrl, ['events', curPlayer, 'id'], curPlayer);
