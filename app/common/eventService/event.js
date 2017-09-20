@@ -63,12 +63,13 @@
 			_.set(eCtrl, 'topScore', _.sortBy(_.values(_.get(eCtrl, 'curScore')), 'score').reverse());
 
 			_.forEach(eCtrl.events, function (player) {
-				console.log('plr: ', player);
+				console.log('plr1: ', eCtrl.events[_.get(player, 'id')].data);
 				eCtrl.events[_.get(player, 'id')].data.push({
 					x: curTimeEpoc,
 					y: _.set(eCtrl, ['curScore', _.get(player, 'id'), 'score']),
 					msg: 'now'
 				});
+				console.log('plr2: ', eCtrl.events[_.get(player, 'id')].data);
 			});
 		});
 
