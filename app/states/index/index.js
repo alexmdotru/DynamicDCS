@@ -21,7 +21,7 @@
 		eventService.getInitEvents();
 
 		console.log('con: ', eventService.events);
-		_.set(indxCtrl, 'chartConfig', {
+		_.set($scope, 'chartConfig', {
 			chart:{
 				type:'line',
 				height: 400
