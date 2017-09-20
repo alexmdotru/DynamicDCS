@@ -5,11 +5,6 @@
 		</div>
 		<div class="panel-body text-center">
 			<table class="table table-striped">
-				<tr>
-					<td><strong class="pull-left">#</strong></td>
-					<td><strong class="pull-left">Name</strong></td>
-					<td><strong class="pull-left">Score</strong></td>
-				</tr>
 				<tr ng-repeat="ts in indxCtrl.eventService.topScore | limitTo:10 track by $index">
 					<td><span class="pull-left" data-ng-bind="$index + 1"></span></td>
 					<td><span class="pull-left" data-ng-bind="ts.name"></span></td>
