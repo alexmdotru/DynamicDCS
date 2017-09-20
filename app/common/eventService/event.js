@@ -13,9 +13,8 @@
 			console.log('ne1: ', newEvents);
 			var scoreMath;
 			var name;
-			var sortedEvents = _.sortBy(newEvents, ['createdAt']);
 
-			_.forEach(sortedEvents, function (event) {
+			_.forEach(newEvents, function (event) {
 				var eventTime = new Date(_.get(event, 'createdAt')).getTime();
 				var curPlayer;
 				var simpleArray = {};
@@ -60,6 +59,7 @@
 				_.set(simpleFlags, 'text', _.get(event, 'msg'));
 				console.log('ne2: ', simpleArray);
 				eCtrl.events[curPlayer].data.push(simpleArray);
+
 				// eCtrl.events[curPlayer+'F'].data.push(simpleFlags);
 			});
 			_.set(eCtrl, 'topScore', _.sortBy(_.values(_.get(eCtrl, 'curScore')), 'score').reverse());
