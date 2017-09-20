@@ -38,6 +38,7 @@
 					_.set(eCtrl, ['events', curPlayer, 'data'], _.get(eCtrl, ['events', curPlayer, 'data'], []));
 					// _.set(eCtrl, ['events', curPlayer, 'data'], _.get(eCtrl, ['events', curPlayer, 'data'], []));
 					if (!_.get(eCtrl, ['events', curPlayer, 'name'])) {
+						_.set(eCtrl, ['events', curPlayer, 'name'], _.get(event, 'iName'));
 						_.set(eCtrl, ['curScore', curPlayer, 'name'], _.get(event, 'iName'))
 					}
 				}
