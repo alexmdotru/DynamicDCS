@@ -1,7 +1,8 @@
 (function (angular) {
 	'use strict';
 
-	function eventService(eventAPI, alertService) {
+	function eventService(chartConfig, eventAPI, alertService) {
+		console.log('chart: ', chartConfig);
 		var eCtrl = this;
 		var curDate = new Date().toISOString();
 		var ePromise;
@@ -75,7 +76,7 @@
 			;
 		});
 	};
-	eventService.$inject = ['dynamic-dcs.api.srvEvent', 'alertService'];
+	eventService.$inject = ['chartConfig', 'dynamic-dcs.api.srvEvent', 'alertService'];
 
 	angular
 		.module('dynamic-dcs.eventService',['dynamic-dcs.api.srvEvent', 'dynamic-dcs.alertService'])
