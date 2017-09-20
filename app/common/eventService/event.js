@@ -76,8 +76,8 @@
 				_.set(simpleFlags, 'x', eventTime);
 				_.set(simpleFlags, 'title', _.get(event, 'eventCode'));
 				_.set(simpleFlags, 'text', _.get(event, 'msg'));
-				console.log('SA: ', simpleArray, simpleFlags);
 				eCtrl.events[curPlayer].data.push(simpleArray);
+				eCtrl.events[curPlayer+'F'].data.push(simpleArray);
 			});
 			_.set(eCtrl, 'topScore', _.sortBy(_.values(_.get(eCtrl, 'curScore')), 'score').reverse());
 		});
