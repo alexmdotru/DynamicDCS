@@ -1,11 +1,11 @@
 (function (angular) {
 	'use strict';
 
-	function indexController ($window, mySocket, eventService) {
+	function indexController (mySocket, eventService) {
 		var indxCtrl = this;
 		_.set(indxCtrl, 'eventService', eventService);
 
-		console.log('chart: ', Highcharts.Chart());
+		console.log('chart: ', this.chartConfig.getHighcharts());
 
 		mySocket.emit('room', {
 			server: 'DynamicCaucasus_leaderboard'
@@ -112,7 +112,7 @@
 			series: eventService.events
 		});
 	}
-	indexController.$inject = ['$window', 'mySocket', 'eventService'];
+	indexController.$inject = ['mySocket', 'eventService'];
 
 	function configFunction($stateProvider) {
 		$stateProvider
@@ -120,7 +120,8 @@
 				controller: 'indexController',
 				controllerAs: 'indxCtrl',
 				templateUrl: '/apps/dynamic-dcs/states/index/index.tpl.html',
-				url: '/'
+				url: '/',
+				bindToController: true
 			})
 		;
 	}
