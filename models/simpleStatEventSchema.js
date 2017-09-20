@@ -35,6 +35,10 @@ const SimpleStatEventSchema = new Schema({
 		},
 		score: {
 			type: Number
+		},
+		showChart: {
+			type: Boolean,
+			default: false
 		}
 	},
 	{
