@@ -4,8 +4,9 @@
 	function indexController ($scope, mySocket, eventService) {
 		var indxCtrl = this;
 		_.set(indxCtrl, 'eventService', eventService);
+		_.set(indxCtrl, 'chartObj', $scope.chartConfig.getChartObj());
 
-		console.log('IDX: ', $scope);
+		console.log('cObj: ', indxCtrl.chartObj);
 
 		mySocket.emit('room', {
 			server: 'DynamicCaucasus_leaderboard'
@@ -20,7 +21,6 @@
 		_.set(eventService, 'events', {});
 		eventService.getInitEvents();
 
-		console.log('con: ', eventService.events);
 		_.set($scope, 'chartConfig', {
 			chart:{
 				type:'line',
