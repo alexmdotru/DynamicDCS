@@ -15,6 +15,7 @@
 
 			_.forEach(sortedEvents, function (event) {
 				var eventTime = new Date(_.get(event, 'createdAt')).getTime();
+				console.log('time: ', eventTime);
 				var curPlayer;
 				var simpleArray = {};
 				var simpleFlags = {};
@@ -35,6 +36,7 @@
 				if (curPlayer) {
 					_.set(eCtrl, ['events', curPlayer, 'id'], curPlayer);
 					_.set(eCtrl, ['events', curPlayer, 'data'], _.get(eCtrl, ['events', curPlayer, 'data'], []));
+					// _.set(eCtrl, ['events', curPlayer, 'data'], _.get(eCtrl, ['events', curPlayer, 'data'], []));
 					if (!_.get(eCtrl, ['events', curPlayer, 'name'])) {
 						_.set(eCtrl, ['curScore', curPlayer, 'name'], _.get(event, 'iName'))
 					}
