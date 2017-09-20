@@ -15,7 +15,6 @@
 
 			_.forEach(sortedEvents, function (event) {
 				var eventTime = new Date(_.get(event, 'createdAt')).getTime();
-				console.log('time: ', eventTime);
 				var curPlayer;
 				var simpleArray = {};
 				var simpleFlags = {};
@@ -78,6 +77,7 @@
 				_.set(simpleFlags, 'x', eventTime);
 				_.set(simpleFlags, 'title', _.get(event, 'eventCode'));
 				_.set(simpleFlags, 'text', _.get(event, 'msg'));
+				console.log('simpA: ', simpleFlags);
 				eCtrl.events[curPlayer].data.push(simpleArray);
 				// eCtrl.events[curPlayer+'F'].data.push(simpleFlags);
 			});
