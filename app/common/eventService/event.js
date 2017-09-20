@@ -17,6 +17,7 @@
 
 			_.forEach(sortedEvents, function (event) {
 				var eventTime = new Date(_.get(event, 'createdAt')).getTime();
+				console.log('ET: ', eventTime);
 				var curPlayer;
 				var simpleArray = {};
 				var simpleFlags = {};
