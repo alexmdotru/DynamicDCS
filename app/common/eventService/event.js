@@ -4,6 +4,7 @@
 	function eventService(eventAPI, alertService) {
 		var eCtrl = this;
 		var curDate = new Date().toISOString();
+		var curTimeEpoc = new Date().getTime();
 		var ePromise;
 		_.set(eCtrl, 'events', {});
 		_.set(eCtrl, 'curScore', {});
@@ -16,7 +17,7 @@
 			_.forEach(sortedEvents, function (event) {
 				var eventTime = new Date(_.get(event, 'createdAt')).getTime();
 				var curPlayer;
-				var simpleArray = {};
+				var simpleArray = {x: curTimeEpoc, y};
 				var simpleFlags = {};
 				if (!_.get(event, 'createdAt')) {
 					_.set(event, 'createdAt', curDate);
@@ -60,6 +61,15 @@
 				// eCtrl.events[curPlayer+'F'].data.push(simpleFlags);
 			});
 			_.set(eCtrl, 'topScore', _.sortBy(_.values(_.get(eCtrl, 'curScore')), 'score').reverse());
+
+			_.forEach(eCtrl.events, function (player) {
+				console.log('plr: ', player);
+				eCtrl.events[curPlayer].data.push({
+					x: curTimeEpoc,
+					y: _.get(eCtrl, ['curScore', player.id]),
+					msg: 'now'
+				});
+			});
 		});
 
 		_.set(eCtrl, 'getInitEvents', function () {

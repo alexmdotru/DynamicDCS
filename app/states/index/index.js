@@ -53,8 +53,7 @@
 				verticalAlign: 'middle'
 			},
 			navigator: {
-				enabled: false,
-				adaptToUpdatedData: false
+				enabled: false
 			},
 			rangeSelector: {
 				selected: 1,
@@ -111,9 +110,6 @@
 					text: 'Points'
 				},
 				min: 0
-			},
-			scrollbar: {
-				liveRedraw: true
 			},
 			series: eventService.events
 		});
