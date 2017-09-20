@@ -16,26 +16,42 @@
 			var sortedEvents = _.sortBy(newEvents, ['createdAt']);
 
 			_.forEach(sortedEvents, function (event) {
+				var eventTime = new Date(_.get(event, 'createdAt')).getTime();
+				var curPlayer;
 				var simpleArray = {};
+				var simpleFlags = {};
 				if (!_.get(event, 'createdAt')) {
 					_.set(event, 'createdAt', curDate);
 				}
-				curiPlayer = _.get(event, 'iucid');
-				curtPlayer = _.get(event, 'tucid');
-				if (curiPlayer || curtPlayer) {
+				if (_.get(event, 'iucid')) {
+					curPlayer = _.get(event, 'iucid');
+					scoreMath = _.get(eCtrl, ['curScore', curPlayer, 'score'], 0) + _.get(event, 'score', 0);
+					if (scoreMath < 0) {
+						scoreMath = 0;
+					}
+				} else {
+					curPlayer = _.get(event, 'tucid');
+					scoreMath = _.get(eCtrl, ['curScore', curPlayer, 'score'], 0);
+				}
+
+				if (curPlayer) {
+					_.set(eCtrl, ['events', curPlayer, 'id'], curPlayer);
+					_.set(eCtrl, ['events', curPlayer, 'data'], _.get(eCtrl, ['events', curPlayer, 'data'], []));
+					if (!_.get(eCtrl, ['events', curPlayer, 'name'])) {
+						_.set(eCtrl, ['curScore', curPlayer, 'name'], _.get(event, 'iName'))
+					}
+				}
+
+
+/*
 					if (curiPlayer) {
 						_.set(eCtrl, ['events', curiPlayer, 'data'], _.get(eCtrl, ['events', curiPlayer, 'data'], []));
-						if (!_.get(eCtrl, ['events', curiPlayer, 'name'])) {
-							_.set(eCtrl, ['curScore', curiPlayer, 'name'], _.get(event, 'iName'))
-						}
+
 						if (!_.get(eCtrl, ['events', curiPlayer, 'name'])) {
 							_.set(eCtrl, ['events', curiPlayer, 'name'], _.get(event, 'iName'));
 							_.set(eCtrl, ['events', curiPlayer, 'id'], _.get(event, 'iName'));
 						}
-						scoreMath = _.get(eCtrl, ['curScore', curiPlayer, 'score'], 0) + _.get(event, 'score', 0);
-						if (scoreMath < 0) {
-							scoreMath = 0;
-						}
+
 						_.set(eCtrl, ['curScore', curiPlayer, 'score'], scoreMath);
 					} else {
 						_.set(eCtrl, ['events', curtPlayer, 'data'], _.get(eCtrl, ['events', curtPlayer, 'data'], []));
@@ -47,23 +63,22 @@
 							_.set(eCtrl, ['events', curtPlayer, 'id'], _.get(event, 'tName'));
 						}
 					}
+*/
+				_.set(eCtrl, ['events', curPlayer, 'marker'], {
+					enabled: true,
+					radius: 3
+				});
+				_.set(eCtrl, ['events', curPlayer, 'shadow'], false);
+				_.set(eCtrl, ['events', curPlayer, 'boostThreshold'], 500);
+				_.set(simpleArray, 'y',_.get(eCtrl, ['curScore', curPlayer, 'score'], 0));
+				_.set(simpleArray, 'x', eventTime);
+				_.set(simpleArray, 'msg', _.get(event, 'msg'));
+				_.set(simpleArray, 'score', _.get(event, 'score', 0));
 
-					_.set(eCtrl, ['events', curiPlayer, 'marker'], {
-						enabled: true,
-						radius: 3
-					});
-					_.set(eCtrl, ['events', curiPlayer, 'shadow'], false);
-					_.set(eCtrl, ['events', curiPlayer, 'boostThreshold'], 500);
-					_.set(simpleArray, 'y',_.get(eCtrl, ['curScore', curiPlayer, 'score'], 0));
-					_.set(simpleArray, 'x', new Date(_.get(event, 'createdAt')).getTime());
-					_.set(simpleArray, 'msg', _.get(event, 'msg'));
-					_.set(simpleArray, 'score', _.get(event, 'score', 0));
-					if (curiPlayer) {
-						eCtrl.events[curiPlayer].data.push(simpleArray);
-					} else {
-						eCtrl.events[curtPlayer].data.push(simpleArray);
-					}
-				}
+				_.set(simpleFlags, 'x', eventTime);
+				_.set(simpleFlags, 'title', _.get(event, 'eventCode'));
+				_.set(simpleFlags, 'text', _.get(event, 'msg'));
+				eCtrl.events[curPlayer].data.push(simpleArray);
 			});
 			_.set(eCtrl, 'topScore', _.sortBy(_.values(_.get(eCtrl, 'curScore')), 'score').reverse());
 		});

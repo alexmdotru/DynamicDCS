@@ -45,7 +45,7 @@
 			legend: {
 				enabled: true,
 				layout: 'vertical',
-				align: 'right',
+				align: 'left',
 				verticalAlign: 'middle'
 			},
 			navigator: {
