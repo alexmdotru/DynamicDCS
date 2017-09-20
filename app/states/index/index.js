@@ -133,8 +133,7 @@
 
 	angular
 		.module('state.index', [
-			'ui.router',
-			'angular-highsmorks'
+			'ui.router'
 		])
 		.config(['$stateProvider', '$urlRouterProvider', configFunction])
 		.run(authHandler)
