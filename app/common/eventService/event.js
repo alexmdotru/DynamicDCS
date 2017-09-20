@@ -65,8 +65,8 @@
 			_.forEach(eCtrl.events, function (player) {
 				console.log('plr1: ', eCtrl.events[_.get(player, 'id')].data);
 				eCtrl.events[_.get(player, 'id')].data.push({
+					y: _.get(eCtrl, ['curScore', _.get(player, 'id'), 'score']),
 					x: curTimeEpoc,
-					y: _.set(eCtrl, ['curScore', _.get(player, 'id'), 'score']),
 					msg: 'now'
 				});
 				console.log('plr2: ', eCtrl.events[_.get(player, 'id')].data);
