@@ -14,6 +14,5 @@
 - 'node_modules/auth0-js/build/auth0.js'
 - 'node_modules/angular-auth0/dist/angular-auth0.js'
 - 'node_modules/angular-jwt/dist/angular-jwt.min.js'
-- 'node_modules/angular-highsmorks/directive.js'
 - 'auth0-variables.js'
 

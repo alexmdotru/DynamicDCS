@@ -21,7 +21,6 @@
     "angular-auth0": "^2.0.0-beta.2",
     "angular-cookies": "^1.6.4",
     "angular-google-maps": "2.3.2",
-    "angular-highsmorks": "^1.0.0",
     "angular-jwt": "^0.1.9",
     "angular-messages": "^1.6.4",
     "angular-resource": "^1.6.4",
