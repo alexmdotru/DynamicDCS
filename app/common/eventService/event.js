@@ -12,8 +12,9 @@
 		_.set(eCtrl, 'byUcid', function (newEvents) {
 			var scoreMath;
 			var name;
+			var sortedEvents = _.sortBy(newEvents, ['createdAt']);
 
-			_.forEach(newEvents, function (event) {
+			_.forEach(sortedEvents, function (event) {
 				var eventTime;
 				var cTime = _.get(event, 'createdAt');
 				var curPlayer;
@@ -63,7 +64,6 @@
 				_.set(simpleFlags, 'title', _.get(event, 'eventCode'));
 				_.set(simpleFlags, 'text', _.get(event, 'msg'));
 				eCtrl.events[curPlayer].data.push(simpleArray);
-				eCtrl.events[curPlayer].data = _.sortBy(eCtrl.events[curPlayer].data, ['x']);
 				// eCtrl.events[curPlayer+'F'].data.push(simpleFlags);
 			});
 			_.set(eCtrl, 'topScore', _.sortBy(_.values(_.get(eCtrl, 'curScore')), 'score').reverse());
