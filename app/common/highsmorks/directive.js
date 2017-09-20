@@ -7,8 +7,8 @@
  * # Directive for highstocks.
  */
 angular.module('highsmorks', []).directive('highsmorks', [
-	'_',
-	function (_) {
+	'',
+	function () {
 		return {
 			restrict: 'E',
 			template: '<div class="highstock"><div class="chart"></div></div>',
