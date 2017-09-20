@@ -5,6 +5,8 @@
 		var indxCtrl = this;
 		_.set(indxCtrl, 'eventService', eventService);
 		_.set(indxCtrl, 'pullChart', function () {
+			var chart = indxCtrl.chartConfig.getChartObj();
+			chart.xAxis.min = new Date().getTime();
 			console.log('chrt: ', indxCtrl.chartConfig.getChartObj());
 		});
 
