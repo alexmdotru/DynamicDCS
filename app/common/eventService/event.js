@@ -64,7 +64,7 @@
 
 			_.forEach(eCtrl.events, function (player) {
 				console.log('plr: ', player);
-				eCtrl.events[curPlayer].data.push({
+				eCtrl.events[_.get(player, 'id')].data.push({
 					x: curTimeEpoc,
 					y: _.set(eCtrl, ['curScore', _.get(player, 'id'), 'score']),
 					msg: 'now'
