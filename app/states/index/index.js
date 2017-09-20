@@ -40,7 +40,8 @@
 					marker: {
 						enabled: true
 					}
-				}
+				},
+				enableMouseTracking: true
 			},
 			legend: {
 				enabled: true,
