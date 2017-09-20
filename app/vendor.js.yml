@@ -13,7 +13,7 @@
 - 'node_modules/angular-google-maps/dist/angular-google-maps.js'
 - 'node_modules/auth0-js/build/auth0.js'
 - 'node_modules/angular-auth0/dist/angular-auth0.js'
-- 'node_modules/angular-jwt/dist/angular-jwt.min.js',
-- 'node_modules/highcharts-ng/dist/highcharts-ng.js',
+- 'node_modules/angular-jwt/dist/angular-jwt.min.js'
+- 'node_modules/highcharts-ng/dist/highcharts-ng.js'
 - 'auth0-variables.js'
 
