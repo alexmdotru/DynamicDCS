@@ -134,7 +134,7 @@
 	angular
 		.module('state.index', [
 			'ui.router',
-			'angular-highsmorks'
+			'highcharts-ng'
 		])
 		.config(['$stateProvider', '$urlRouterProvider', configFunction])
 		.run(authHandler)
