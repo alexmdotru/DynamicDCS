@@ -10,6 +10,7 @@
 		_.set(eCtrl, 'curScore', {});
 
 		_.set(eCtrl, 'byUcid', function (newEvents) {
+			console.log('ne: ', newEvents);
 			var scoreMath;
 			var name;
 			var sortedEvents = _.sortBy(newEvents, ['createdAt']);
