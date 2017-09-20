@@ -4,9 +4,9 @@
 	function indexController ($scope, mySocket, eventService) {
 		var indxCtrl = this;
 		_.set(indxCtrl, 'eventService', eventService);
-		_.set(indxCtrl, 'chartObj', $scope.chartConfig.getChartObj());
-
-		console.log('cObj: ', indxCtrl.chartObj);
+		_.set($scope, 'pullChart', function () {
+			console.log('chrt: ', $scope.chartConfig.getChartObj());
+		});
 
 		mySocket.emit('room', {
 			server: 'DynamicCaucasus_leaderboard'
