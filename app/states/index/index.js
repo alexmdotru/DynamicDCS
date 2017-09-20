@@ -23,7 +23,7 @@
 		_.set(indxCtrl, 'hChart', {
 			chart:{
 				type:'line',
-				height: 500
+				height: 400
 			},
 			chartType: 'stock',
 			exporting: {
