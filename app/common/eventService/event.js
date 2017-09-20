@@ -10,7 +10,7 @@
 		_.set(eCtrl, 'curScore', {});
 
 		_.set(eCtrl, 'byUcid', function (newEvents) {
-			console.log('ne: ', newEvents);
+			console.log('ne1: ', newEvents);
 			var scoreMath;
 			var name;
 			var sortedEvents = _.sortBy(newEvents, ['createdAt']);
@@ -58,6 +58,7 @@
 				_.set(simpleFlags, 'x', eventTime);
 				_.set(simpleFlags, 'title', _.get(event, 'eventCode'));
 				_.set(simpleFlags, 'text', _.get(event, 'msg'));
+				console.log('ne2: ', simpleArray);
 				eCtrl.events[curPlayer].data.push(simpleArray);
 				// eCtrl.events[curPlayer+'F'].data.push(simpleFlags);
 			});
