@@ -21,6 +21,7 @@
 				var simpleFlags = {};
 				var cTime = _.get(event, 'createdAt');
 				if (cTime) {
+					console.log('CAT');
 					eventTime = new Date(_.get(event, 'createdAt')).getTime();
 				} else {
 					eventTime = new Date().getTime();
