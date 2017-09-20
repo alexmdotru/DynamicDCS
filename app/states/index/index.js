@@ -1,11 +1,9 @@
 (function (angular) {
 	'use strict';
 
-	function indexController ($scope, mySocket, eventService) {
+	function indexController (mySocket, eventService) {
 		var indxCtrl = this;
 		_.set(indxCtrl, 'eventService', eventService);
-
-		console.log('chart: ', $scope.chartConfig);
 
 		mySocket.emit('room', {
 			server: 'DynamicCaucasus_leaderboard'
@@ -21,7 +19,7 @@
 		eventService.getInitEvents();
 
 		console.log('con: ', eventService.events);
-		$scope.chartConfig = {
+		_.set(indxCtrl, 'chartConfig', {
 			chart:{
 				type:'line',
 				height: 400
@@ -110,9 +108,9 @@
 				min: 0
 			},
 			series: eventService.events
-		}
+		});
 	}
-	indexController.$inject = ['$scope', 'mySocket', 'eventService'];
+	indexController.$inject = ['mySocket', 'eventService'];
 
 	function configFunction($stateProvider) {
 		$stateProvider
