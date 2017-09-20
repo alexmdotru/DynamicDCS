@@ -53,7 +53,8 @@
 				verticalAlign: 'middle'
 			},
 			navigator: {
-				enabled: false
+				enabled: false,
+				adaptToUpdatedData: false
 			},
 			rangeSelector: {
 				selected: 1,
