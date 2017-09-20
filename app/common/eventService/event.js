@@ -64,11 +64,13 @@
 
 			_.forEach(eCtrl.events, function (player) {
 				console.log('plr: ', player);
+				/*
 				eCtrl.events[curPlayer].data.push({
 					x: curTimeEpoc,
 					y: _.get(eCtrl, ['curScore', player.id]),
 					msg: 'now'
 				});
+				*/
 			});
 		});
 
