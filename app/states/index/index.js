@@ -1,7 +1,7 @@
 (function (angular) {
 	'use strict';
 
-	function indexController (mySocket, eventService) {
+	function indexController ($scope, mySocket, eventService) {
 		var indxCtrl = this;
 		_.set(indxCtrl, 'eventService', eventService);
 
@@ -112,7 +112,7 @@
 			series: eventService.events
 		});
 	}
-	indexController.$inject = ['mySocket', 'eventService'];
+	indexController.$inject = ['$scope', 'mySocket', 'eventService'];
 
 	function configFunction($stateProvider) {
 		$stateProvider
