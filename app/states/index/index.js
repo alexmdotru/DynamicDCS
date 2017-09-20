@@ -5,7 +5,7 @@
 		var indxCtrl = this;
 		_.set(indxCtrl, 'eventService', eventService);
 
-		console.log('chart: ', $window);
+		console.log('chart: ', $window.Highcharts.Chart());
 
 		mySocket.emit('room', {
 			server: 'DynamicCaucasus_leaderboard'
