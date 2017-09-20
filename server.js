@@ -649,7 +649,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 									displaySide: 'A',
 									roleCode: 'I',
 									msg: 'A: '+getSide(_.get(matchPlayer, 'side'))+' '+_.get(player, 'name')+' has commited Treason and switched to '+getSide(_.get(player, 'side'))+'. Shoot on sight! -1000pts',
-									score: -1000
+									score: -1000,
+									createdAt: new Date().getTime()
 								};
 								if(_.get(iCurObj, 'iucid')) {
 									curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
@@ -778,7 +779,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				sessionName: sessionName,
 				eventCode: abrLookup(_.get(queObj, 'action')),
 				displaySide: 'A',
-				roleCode: 'I'
+				roleCode: 'I',
+				createdAt: new Date().getTime()
 			};
 			iPlayer = _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg1});
 			if (iPlayer) {
@@ -814,7 +816,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					iName: _.get(iPlayer, 'name'),
 					displaySide: 'A',
 					roleCode: 'I',
-					msg: 'A: '+getSide(_.get(iPlayer, 'side'))+' '+_.get(iPlayer, 'name')+' has killed himself'
+					msg: 'A: '+getSide(_.get(iPlayer, 'side'))+' '+_.get(iPlayer, 'name')+' has killed himself',
+					createdAt: new Date().getTime()
 				};
 				if(_.get(iCurObj, 'iucid')) {
 					curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
@@ -883,7 +886,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 								iName: _.get(iUnit, 'playername'),
 								displaySide: _.get(iUnit, 'coalition'),
 								roleCode: 'I',
-								msg: 'C: '+ getSide(_.get(iUnit, 'coalition'))+' '+ _.get(iUnit, 'playername') +' released a ' + _.get(weaponResp, 'displayName')
+								msg: 'C: '+ getSide(_.get(iUnit, 'coalition'))+' '+ _.get(iUnit, 'playername') +' released a ' + _.get(weaponResp, 'displayName'),
+								createdAt: new Date().getTime()
 							};
 							if(_.get(iCurObj, 'iucid')) {
 								curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
@@ -961,7 +965,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				tucid: tPucid,
 				tName: _.get(tUnit, 'playername'),
 				displaySide: 'A',
-				roleCode: 'I'
+				roleCode: 'I',
+				createdAt: new Date().getTime()
 			};
 
 			if( _.get(queObj, ['data', 'arg7', 'typeName'])){
@@ -1092,7 +1097,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						iName: _.get(iUnit, 'playername'),
 						displaySide: 'A',
 						roleCode: 'I',
-						msg: 'A: '+ getSide(_.get(iUnit, 'coalition'))+' '+ _.get(iUnit, 'playername') +' has crashed'
+						msg: 'A: '+ getSide(_.get(iUnit, 'coalition'))+' '+ _.get(iUnit, 'playername') +' has crashed',
+						createdAt: new Date().getTime()
 					};
 					if(_.get(iCurObj, 'iucid')) {
 						curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
@@ -1119,7 +1125,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						iName: _.get(iUnit, 'playername'),
 						displaySide: 'A',
 						roleCode: 'I',
-						msg: 'A: '+getSide(_.get(iUnit, 'coalition'))+' '+ _.get(iUnit, 'playername') +' ejected'
+						msg: 'A: '+getSide(_.get(iUnit, 'coalition'))+' '+ _.get(iUnit, 'playername') +' ejected',
+						createdAt: new Date().getTime()
 					};
 					if(_.get(iCurObj, 'iucid')) {
 						curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
@@ -1146,7 +1153,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						iName: _.get(iUnit, 'playername'),
 						displaySide: _.get(iUnit, 'coalition'),
 						roleCode: 'I',
-						msg: 'C: ' + _.get(iUnit, 'playername') + ' began refueling'
+						msg: 'C: ' + _.get(iUnit, 'playername') + ' began refueling',
+						createdAt: new Date().getTime()
 					};
 					if (_.get(iCurObj, 'iucid')) {
 						curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
@@ -1174,7 +1182,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						iName: _.get(iUnit, 'playername'),
 						displaySide: 'A',
 						roleCode: 'I',
-						msg: 'A: '+getSide(_.get(iUnit, 'playername'))+' '+ _.get(iUnit, 'playername') +' is dead'
+						msg: 'A: '+getSide(_.get(iUnit, 'playername'))+' '+ _.get(iUnit, 'playername') +' is dead',
+						createdAt: new Date().getTime()
 					};
 					if (_.get(iCurObj, 'iucid')) {
 						curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
@@ -1203,7 +1212,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						iName: _.get(iUnit, 'playername'),
 						displaySide: 'A',
 						roleCode: 'I',
-						msg: 'A: '+getSide(_.get(iUnit, 'coalition'))+' '+ _.get(iUnit, 'playername') +' pilot is dead'
+						msg: 'A: '+getSide(_.get(iUnit, 'coalition'))+' '+ _.get(iUnit, 'playername') +' pilot is dead',
+						createdAt: new Date().getTime()
 					};
 					if (_.get(iCurObj, 'iucid')) {
 						curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
@@ -1230,7 +1240,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						iName: _.get(iUnit, 'playername'),
 						displaySide: _.get(iUnit, 'coalition'),
 						roleCode: 'I',
-						msg: 'C: '+ _.get(iUnit, 'playername') +' ended refueling'
+						msg: 'C: '+ _.get(iUnit, 'playername') +' ended refueling',
+						createdAt: new Date().getTime()
 					};
 					if (_.get(iCurObj, 'iucid')) {
 						curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
@@ -1259,7 +1270,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						iName: _.get(iUnit, 'playername'),
 						displaySide: _.get(iUnit, 'coalition'),
 						roleCode: 'I',
-						msg: 'C: '+ _.get(iUnit, 'playername') +' enters a brand new ' + _.get(iUnit, 'type')
+						msg: 'C: '+ _.get(iUnit, 'playername') +' enters a brand new ' + _.get(iUnit, 'type'),
+						createdAt: new Date().getTime()
 					};
 					if (_.get(iCurObj, 'iucid')) {
 						// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));

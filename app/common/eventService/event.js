@@ -16,10 +16,10 @@
 
 			_.forEach(sortedEvents, function (event) {
 				var eventTime;
-				var cTime = _.get(event, 'createdAt');
 				var curPlayer;
 				var simpleArray = {};
 				var simpleFlags = {};
+				var cTime = _.get(event, 'createdAt');
 				if (cTime) {
 					eventTime = new Date(_.get(event, 'createdAt')).getTime();
 				} else {
