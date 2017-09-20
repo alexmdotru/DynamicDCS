@@ -5,7 +5,7 @@
 		var indxCtrl = this;
 		_.set(indxCtrl, 'eventService', eventService);
 
-		console.log('IDX: ');
+		console.log('IDX: ', $scope);
 
 		mySocket.emit('room', {
 			server: 'DynamicCaucasus_leaderboard'
