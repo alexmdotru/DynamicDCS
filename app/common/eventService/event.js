@@ -69,7 +69,7 @@
 				});
 				_.set(eCtrl, ['events', curPlayer, 'shadow'], false);
 				_.set(eCtrl, ['events', curPlayer, 'boostThreshold'], 500);
-				_.set(simpleArray, 'y',_.get(eCtrl, ['curScore', curPlayer, 'score'], 0));
+				_.set(simpleArray, 'y', scoreMath);
 				_.set(simpleArray, 'x', eventTime);
 				_.set(simpleArray, 'msg', _.get(event, 'msg'));
 				_.set(simpleArray, 'score', _.get(event, 'score', 0));
@@ -77,7 +77,6 @@
 				_.set(simpleFlags, 'x', eventTime);
 				_.set(simpleFlags, 'title', _.get(event, 'eventCode'));
 				_.set(simpleFlags, 'text', _.get(event, 'msg'));
-				console.log('simpA: ', simpleFlags);
 				eCtrl.events[curPlayer].data.push(simpleArray);
 				// eCtrl.events[curPlayer+'F'].data.push(simpleFlags);
 			});
