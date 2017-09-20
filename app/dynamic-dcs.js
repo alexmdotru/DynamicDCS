@@ -153,7 +153,8 @@
 			'ui.bootstrap',
 			'ngAnimate',
 			'ngSanitize',
-			'dynamic-dcs.socketFactory'
+			'dynamic-dcs.socketFactory',
+			'lodash'
 		])
 		.config(['$qProvider', function ($qProvider) {
 			$qProvider.errorOnUnhandledRejections(false);
