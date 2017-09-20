@@ -42,29 +42,6 @@
 						_.set(eCtrl, ['curScore', curPlayer, 'name'], _.get(event, 'iName'))
 					}
 				}
-
-
-/*
-					if (curiPlayer) {
-						_.set(eCtrl, ['events', curiPlayer, 'data'], _.get(eCtrl, ['events', curiPlayer, 'data'], []));
-
-						if (!_.get(eCtrl, ['events', curiPlayer, 'name'])) {
-							_.set(eCtrl, ['events', curiPlayer, 'name'], _.get(event, 'iName'));
-							_.set(eCtrl, ['events', curiPlayer, 'id'], _.get(event, 'iName'));
-						}
-
-						_.set(eCtrl, ['curScore', curiPlayer, 'score'], scoreMath);
-					} else {
-						_.set(eCtrl, ['events', curtPlayer, 'data'], _.get(eCtrl, ['events', curtPlayer, 'data'], []));
-						if (!_.get(eCtrl, ['events', curtPlayer, 'name'])) {
-							_.set(eCtrl, ['curScore', curtPlayer, 'name'], _.get(event, 'tName'))
-						}
-						if (!_.get(eCtrl, ['events', curtPlayer], 'name')) {
-							_.set(eCtrl, ['events', curtPlayer, 'name'], _.get(event, 'tName'));
-							_.set(eCtrl, ['events', curtPlayer, 'id'], _.get(event, 'tName'));
-						}
-					}
-*/
 				_.set(eCtrl, ['events', curPlayer, 'marker'], {
 					enabled: true,
 					radius: 3
