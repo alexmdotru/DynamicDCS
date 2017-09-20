@@ -5,7 +5,7 @@
 		var indxCtrl = this;
 		_.set(indxCtrl, 'eventService', eventService);
 
-		console.log('chart: ', indxCtrl.hChart);
+		console.log('chart: ', indxCtrl);
 
 		mySocket.emit('room', {
 			server: 'DynamicCaucasus_leaderboard'
