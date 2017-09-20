@@ -111,6 +111,9 @@
 				},
 				min: 0
 			},
+			scrollbar: {
+				liveRedraw: true
+			},
 			series: eventService.events
 		});
 	}
