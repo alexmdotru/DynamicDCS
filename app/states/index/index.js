@@ -1,7 +1,7 @@
 (function (angular) {
 	'use strict';
 
-	function indexController (mySocket, eventService) {
+	function indexController ($scope, mySocket, eventService) {
 		var indxCtrl = this;
 		_.set(indxCtrl, 'eventService', eventService);
 
@@ -108,10 +108,11 @@
 					text: 'Points'
 				},
 				min: 0
-			}
+			},
+			series: eventService.events
 		});
 	}
-	indexController.$inject = ['mySocket', 'eventService'];
+	indexController.$inject = ['$scope', 'mySocket', 'eventService'];
 
 	function configFunction($stateProvider) {
 		$stateProvider
@@ -133,7 +134,7 @@
 	angular
 		.module('state.index', [
 			'ui.router',
-			'highcharts-ng'
+			'highsmorks'
 		])
 		.config(['$stateProvider', '$urlRouterProvider', configFunction])
 		.run(authHandler)
