@@ -17,7 +17,7 @@
 			_.forEach(sortedEvents, function (event) {
 				var eventTime = new Date(_.get(event, 'createdAt')).getTime();
 				var curPlayer;
-				var simpleArray = {x: curTimeEpoc, y};
+				var simpleArray = {};
 				var simpleFlags = {};
 				if (!_.get(event, 'createdAt')) {
 					_.set(event, 'createdAt', curDate);
