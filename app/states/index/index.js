@@ -51,7 +51,7 @@
 			},
 			chartType: 'stock',
 			exporting: {
-				enabled: true
+				enabled: false
 			},
 			tooltip: {
 				headerFormat: '{point.x:%b %e, %k:%M:%S.%L UTC}',
