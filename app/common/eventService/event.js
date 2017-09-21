@@ -63,7 +63,6 @@
 				_.set(simpleFlags, 'x', eventTime);
 				_.set(simpleFlags, 'title', _.get(event, 'eventCode'));
 				_.set(simpleFlags, 'text', _.get(event, 'msg'));
-				console.log('log: ', simpleArray);
 				eCtrl.events[curPlayer].data.push(simpleArray);
 				// eCtrl.events[curPlayer+'F'].data.push(simpleFlags);
 			});
