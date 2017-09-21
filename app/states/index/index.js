@@ -35,7 +35,7 @@
 							console.log('cht: ', curChart);
 							var x = (new Date()).getTime(), // current time
 								y = Math.round(Math.random() * 100);
-							curChart.series.addPoint([x, y], true, true);
+							curChart.series[0].addPoint([x, y], true, true);
 						}, 1000);
 						/*
 						// set up the updating of the chart each second
