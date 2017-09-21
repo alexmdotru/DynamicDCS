@@ -29,7 +29,9 @@
 				height: 400,
 				events: {
 					load: function () {
+						var chart = indxCtrl.chartConfig.getChartObj();
 
+						/*
 						// set up the updating of the chart each second
 						var series = this.series[0];
 						setInterval(function () {
@@ -37,6 +39,7 @@
 								y = Math.round(Math.random() * 100);
 							series.addPoint([x, y], true, true);
 						}, 1000);
+						*/
 					}
 				}
 			},
