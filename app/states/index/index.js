@@ -32,9 +32,9 @@
 						var curChart;
 						setInterval(function () {
 							curChart = indxCtrl.chartConfig.getChartObj();
-							console.log('cht: ', curChart);
 							var x = (new Date()).getTime(), // current time
 								y = Math.round(Math.random() * 100);
+							console.log('cht: ', curChart, x, y);
 							curChart.series[0].addPoint([x, y], true, true);
 						}, 1000);
 						/*
