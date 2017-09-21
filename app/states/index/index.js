@@ -29,6 +29,7 @@
 				height: 400,
 				events: {
 					load: function () {
+						/*
 						var curChart;
 						setInterval(function () {
 							curChart = indxCtrl.chartConfig.getChartObj();
