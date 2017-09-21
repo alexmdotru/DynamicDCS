@@ -31,6 +31,14 @@
 					load: function () {
 						var chart = indxCtrl.chartConfig.getChartObj();
 
+						setInterval(function () {
+							console.log('cht: ', chart);
+							/*
+							var x = (new Date()).getTime(), // current time
+								y = Math.round(Math.random() * 100);
+							series.addPoint([x, y], true, true);
+							*/
+						}, 1000);
 						/*
 						// set up the updating of the chart each second
 						var series = this.series[0];
