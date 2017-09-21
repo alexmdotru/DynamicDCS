@@ -29,10 +29,8 @@
 				height: 400,
 				events: {
 					load: function () {
-						var chart = indxCtrl.chartConfig.getChartObj();
-
 						setInterval(function () {
-							console.log('cht: ', chart);
+							console.log('cht: ', indxCtrl.chartConfig.getChartObj());
 							/*
 							var x = (new Date()).getTime(), // current time
 								y = Math.round(Math.random() * 100);
