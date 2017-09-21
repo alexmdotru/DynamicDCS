@@ -29,13 +29,13 @@
 				height: 400,
 				events: {
 					load: function () {
+						var curChart;
 						setInterval(function () {
-							console.log('cht: ', indxCtrl.chartConfig.getChartObj());
-							/*
+							curChart = indxCtrl.chartConfig.getChartObj();
+							console.log('cht: ', curChart);
 							var x = (new Date()).getTime(), // current time
 								y = Math.round(Math.random() * 100);
-							series.addPoint([x, y], true, true);
-							*/
+							curChart.series.addPoint([x, y], true, true);
 						}, 1000);
 						/*
 						// set up the updating of the chart each second
