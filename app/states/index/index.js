@@ -13,15 +13,23 @@
 		});
 
 		mySocket.on('srvUpd', function (data) {
-			if (_.get(data, ['que', 0, 'eventCode'])) {
-				var curChart = indxCtrl.getChart();
-				console.log('data: ', data);
-				console.log('chart: ', curChart);
-				_.forEach(data, function (point) {
-					curSeries.addPoint()
-					//curChart.addSeries(series);
-				});
-			}
+			_.forEach(_.get(data, 'que'), function (event) {
+				if (_.get(event, 'eventCode')) {
+					var curChart = indxCtrl.getChart();
+					var curScore = _.get(eventService, ['curScore', event.iucid, 'score'], 0) +
+						_.get(event, 'score', 0);
+					var curSeries = _.filter(data, function(obj) {
+						return _.some(obj.userOptions, {id: _.get(event.iucid)});
+					});
+					_.set(curSeries, 'x', new Date().getTime());
+					_.set(curSeries, 'y', curScore);
+					_.set(curSeries, 'msg', _.get(event, 'msg'));
+					_.set(curSeries, 'score', _.get(event, 'score', 0));
+					curChart.addPoint(curSeries)
+				}
+			});
+
+			// _.get(eCtrl, ['curScore', curPlayer, 'score'], 0) + _.get(event, 'score', 0);
 		});
 
 		_.set(eventService, 'events', {});
