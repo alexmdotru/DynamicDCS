@@ -1,17 +1,22 @@
 <div class="panel panel-default">
 	<div class="panel-heading text-center">
-		<strong>
+		<div class="col-xs-6">
+			<label for="serverSelect">Server:</label>
 			<input
-				type="text"
-				ng-model="indxCtrl.selectedServer"
-				placeholder="Select a Server"
-				uib-typeahead="srv as srv.name for srv in srvService.servers | filter:{name:$viewValue}"
-				class="form-control"
-				typeahead-show-hint="true"
-				typeahead-min-length="0"
-				typeahead-append-to-body="true"
+					id="serverSelect"
+					type="text"
+					ng-model="indxCtrl.selectedServer"
+					placeholder="Select a Server"
+					uib-typeahead="srv as srv.name for srv in srvService.servers | filter:{name:$viewValue}"
+					class="form-control"
+					typeahead-show-hint="true"
+					typeahead-min-length="0"
+					typeahead-append-to-body="true"
 			>
-		</strong>
+		</div>
+		<div class="col-xs-6">
+			<label for="serverSelect">Session:</label>
+		</div>
 	</div>
 	<div class="panel-body text-center">
 		<div class="col-xs-6">
