@@ -25,7 +25,7 @@
 					_.set(curSeries, 'y', curScore);
 					_.set(curSeries, 'msg', _.get(event, 'msg'));
 					_.set(curSeries, 'score', _.get(event, 'score', 0));
-					curChart.addPoint(curSeries)
+					curChart.addPoints({curSeries});
 				}
 			});
 
