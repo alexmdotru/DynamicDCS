@@ -144,6 +144,7 @@
 					})
 				;
 		});
+		indxCtrl.getInitEvents();
 	}
 	indexController.$inject = ['$q', 'mySocket', 'eventService'];
 
