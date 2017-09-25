@@ -48,7 +48,7 @@
 						//new user, add him as a series
 						_.set(newSeries, ['id'], _.get(event, 'iucid'));
 						_.set(newSeries, ['name'], _.get(event, 'iName'));
-						_.set(newSeries, ['data'], curObj);
+						_.set(newSeries, ['data'], [curObj]);
 						_.set(newSeries, ['marker'], {
 							enabled: true,
 							radius: 3
