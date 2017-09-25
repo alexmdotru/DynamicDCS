@@ -18,7 +18,6 @@
 					var curTime = new Date().getTime();
 					var curObj = {};
 					var curSeriesObj = indxCtrl.curChart.get(_.get(event, 'iucid'));
-					console.log('chart: ', indxCtrl.curChart, curSeriesObj);
 					var curScore = _.get(eventService, ['curScore', event.iucid, 'score'], 0) +
 						_.get(event, 'score', 0);
 					/*
@@ -30,8 +29,8 @@
 					_.set(curObj, 'y', curScore);
 					_.set(curObj, 'msg', _.get(event, 'msg'));
 					_.set(curObj, 'score', _.get(event, 'score', 0));
-					console.log('obj: ', curObj);
 					curSeriesObj.addPoint(curObj);
+					curSeriesObj.redraw();
 				}
 			});
 
@@ -43,28 +42,6 @@
 			chart:{
 				type:'line',
 				height: 400,
-				events: {
-					load: function () {
-						/*
-						var curChart;
-						setInterval(function () {
-							curChart = indxCtrl.chartConfig.getChartObj();
-							var x = (new Date()).getTime(), // current time
-								y = Math.round(Math.random() * 10000);
-							console.log('cht: ', curChart, x, y);
-							curChart.series[0].addPoint([x, y], true, true);
-						}, 1000);
-						/*
-						// set up the updating of the chart each second
-						var series = this.series[0];
-						setInterval(function () {
-							var x = (new Date()).getTime(), // current time
-								y = Math.round(Math.random() * 100);
-							series.addPoint([x, y], true, true);
-						}, 1000);
-						*/
-					}
-				}
 			},
 			chartType: 'stock',
 			exporting: {
