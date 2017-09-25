@@ -71,7 +71,7 @@
 				verticalAlign: 'middle'
 			},
 			navigator: {
-				enabled: false
+				enabled: true
 			},
 			rangeSelector: {
 				selected: 1,
@@ -144,7 +144,7 @@
 						})
 					})
 					.catch(function (err) {
-						console.log('ERRRRRR: ', err);
+						console.log('init event err line147: ', err);
 					})
 				;
 		});
