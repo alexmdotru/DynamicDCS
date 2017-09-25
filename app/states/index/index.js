@@ -20,6 +20,7 @@
 					var curEx;
 					var newMin;
 					var curObj = {};
+					var newSeries = {};
 					var curSeriesObj = indxCtrl.curChart.get(_.get(event, 'iucid'));
 					var curScore = _.get(eventService, ['curScore', event.iucid, 'score'], 0) +
 						_.get(event, 'score', 0);
@@ -38,10 +39,23 @@
 					_.set(curObj, 'y', curScore);
 					_.set(curObj, 'msg', _.get(event, 'msg'));
 					_.set(curObj, 'score', _.get(event, 'score', 0));
-					curSeriesObj.addPoint(curObj, false);
-					curEx = curSeriesObj.xAxis.getExtremes();
-					newMin = _.get(curEx, 'min') + (_.get(curObj, 'x') - _.get(curEx, 'max'));
-					curSeriesObj.xAxis.setExtremes(newMin, _.get(curObj, 'x'), false);
+					if (curSeriesObj) {
+						curSeriesObj.addPoint(curObj, false);
+						curEx = curSeriesObj.xAxis.getExtremes();
+						newMin = _.get(curEx, 'min') + (_.get(curObj, 'x') - _.get(curEx, 'max'));
+						curSeriesObj.xAxis.setExtremes(newMin, _.get(curObj, 'x'), false);
+					} else {
+						//new user, add him as a series
+						_.set(newSeries, ['id'], _.get(event, 'iucid'));
+						_.set(newSeries, ['data'], curObj);
+						_.set(newSeries, ['marker'], {
+							enabled: true,
+							radius: 3
+						});
+						_.set(newSeries, ['shadow'], false);
+						_.set(newSeries, ['boostThreshold'], 500);
+						indxCtrl.curChart.addSeries(newSeries);
+					}
 					indxCtrl.curChart.redraw();
 				}
 			});
