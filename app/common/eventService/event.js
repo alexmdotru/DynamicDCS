@@ -98,7 +98,7 @@
 				})
 			;
 		});
-	};
+	}
 	eventService.$inject = ['$q', 'dynamic-dcs.api.srvEvent', 'alertService'];
 
 	angular

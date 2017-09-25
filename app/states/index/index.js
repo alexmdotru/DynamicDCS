@@ -22,7 +22,6 @@
 					var curSeriesObj = indxCtrl.curChart.get(_.get(event, 'iucid'));
 					var curScore = _.get(eventService, ['curScore', event.iucid, 'score'], 0) +
 						_.get(event, 'score', 0);
-					console.log('TS: ', _.get(eventService, 'topScore'));
 					_.set(curObj, 'x', curTime);
 					_.set(curObj, 'y', curScore);
 					_.set(curObj, 'msg', _.get(event, 'msg'));
