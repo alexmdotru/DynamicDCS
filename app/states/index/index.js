@@ -133,7 +133,7 @@
 		});
 
 		_.set(indxCtrl, 'getInitEvents', function () {
-				return eventService.getInitEvents()
+				return eventService.getInitEvents().value;
 		});
 		console.log('getINIT: ', indxCtrl.getInitEvents());
 	}
