@@ -16,6 +16,8 @@
 			_.forEach(_.get(data, 'que'), function (event) {
 				if (_.get(event, 'eventCode')) {
 					var curTime = new Date().getTime();
+					var curEx;
+					var newMin;
 					var curObj = {};
 					var curSeriesObj = indxCtrl.curChart.get(_.get(event, 'iucid'));
 					var curScore = _.get(eventService, ['curScore', event.iucid, 'score'], 0) +
@@ -30,8 +32,9 @@
 					_.set(curObj, 'msg', _.get(event, 'msg'));
 					_.set(curObj, 'score', _.get(event, 'score', 0));
 					curSeriesObj.addPoint(curObj, false);
-					console.log('extremes: ', curSeriesObj.xAxis.getExtremes());
-					curSeriesObj.xAxis.setExtremes(_.get(curObj, 'x') - 10000, _.get(curObj, 'x'), false);
+					curEx = curSeriesObj.xAxis.getExtremes();
+					newMin = _.get(curEx, 'min') + (_.get(curObj, 'x') - _.get(curEx, 'max'));
+					curSeriesObj.xAxis.setExtremes(newMin, _.get(curObj, 'x'), false);
 					indxCtrl.curChart.redraw();
 				}
 			});
