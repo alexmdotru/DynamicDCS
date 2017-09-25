@@ -132,7 +132,7 @@
 			series: []
 		});
 
-		console.log('rtn: ', $q.all(eventService.getInitEvents()));
+		console.log('rtn: ', eventService.getInitEvents()).$promise;
 
 	}
 	indexController.$inject = ['$q', 'mySocket', 'eventService'];
