@@ -38,13 +38,7 @@
 		_.set(indxCtrl, 'chartConfig', {
 			chart:{
 				type:'line',
-				height: 400,
-				events: {
-					redraw: function() {
-						console.log('The chart is being redrawn');
-					}
-
-				}
+				height: 400
 			},
 			chartType: 'stock',
 			exporting: {
