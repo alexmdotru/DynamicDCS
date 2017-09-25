@@ -5,7 +5,7 @@
 				type="text"
 				ng-model="indxCtrl.selectedServer"
 				placeholder="Select a Server"
-				uib-typeahead="srv in indxCtrl,srvService.servers"
+				uib-typeahead="srv as srv.name for srv in srvService.servers | filter:{name:$viewValue}"
 				class="form-control"
 				typeahead-show-hint="true"
 				typeahead-min-length="0"
