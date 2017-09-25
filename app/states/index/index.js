@@ -69,6 +69,7 @@
 			},
 			rangeSelector: {
 				selected: 5,
+				inputDateFormat: '%k:%M:%S',
 				buttons: [{
 					type: 'minute',
 					text: '1min'
