@@ -9,6 +9,16 @@
 		// _.set(eCtrl, 'events', {});
 		_.set(eCtrl, 'curScore', {});
 
+		_.set(eCtrl, 'setTopScore', function (usrObj) {
+			var curUsr = _.find(_.get(eCtrl, 'topScore'), {id: _.get(usrObj, 'id')});
+			if (curUsr) {
+				_.set(curUsr, 'score', _.get(usrObj, 'score'))
+			} else {
+				eCtrl.topScore.push(usrObj);
+			}
+			_.set(eCtrl, 'topScore', _.sortBy(_.values(_.get(eCtrl, 'topScore')), 'score').reverse());
+		});
+
 		_.set(eCtrl, 'byUcid', function (newEvents) {
 			var eventObj = {};
 			var scoreMath;
@@ -68,7 +78,10 @@
 				// eCtrl.events[curPlayer+'F'].data.push(simpleFlags);
 			});
 
-			_.set(eCtrl, 'topScore', _.sortBy(_.values(_.get(eCtrl, 'curScore')), 'score').reverse());
+			_.forEach(_.get(eCtrl, 'curScore'), function (usr) {
+				eCtrl.setTopScore(usr);
+			});
+
 			return eventObj;
 		});
 
