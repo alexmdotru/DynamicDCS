@@ -133,7 +133,15 @@
 		});
 
 		_.set(indxCtrl, 'getInitEvents', function () {
-				return eventService.getInitEvents().value;
+				var eventPromise = eventService.getInitEvents();
+				eventPromise
+					.then(function (data) {
+						console.log('data: ', data);
+					})
+					.catch(function (err) {
+						console.log('ERRRRRR: ', err);
+					})
+				;
 		});
 		console.log('getINIT: ', indxCtrl.getInitEvents());
 	}
