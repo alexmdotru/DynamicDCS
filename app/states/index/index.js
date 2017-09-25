@@ -15,7 +15,6 @@
 		mySocket.on('srvUpd', function (data) {
 			_.forEach(_.get(data, 'que'), function (event) {
 				if (_.get(event, 'eventCode')) {
-					var curChart = indxCtrl.getChart();
 					var curScore = _.get(eventService, ['curScore', event.iucid, 'score'], 0) +
 						_.get(event, 'score', 0);
 					var curSeries = _.filter(data, function(obj) {
@@ -25,7 +24,7 @@
 					_.set(curSeries, 'y', curScore);
 					_.set(curSeries, 'msg', _.get(event, 'msg'));
 					_.set(curSeries, 'score', _.get(event, 'score', 0));
-					curChart.addPoints({curSeries});
+					indxCtrl.curChart.addPoint(curSeries);
 				}
 			});
 
@@ -150,9 +149,9 @@
 				var eventPromise = eventService.getInitEvents();
 				eventPromise
 					.then(function (data) {
-						var curChart = indxCtrl.getChart();
+						_.set(indxCtrl, 'curChart', indxCtrl.getChart());
 						_.forEach(data, function (series) {
-							curChart.addSeries(series);
+							indxCtrl.curChart.addSeries(series);
 						})
 					})
 					.catch(function (err) {
