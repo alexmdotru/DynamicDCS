@@ -15,6 +15,7 @@
 		mySocket.on('srvUpd', function (data) {
 			_.forEach(_.get(data, 'que'), function (event) {
 				if (_.get(event, 'eventCode')) {
+					console.log('chart: ', indxCtrl.curChart);
 					var curScore = _.get(eventService, ['curScore', event.iucid, 'score'], 0) +
 						_.get(event, 'score', 0);
 					var curSeries = _.filter(data, function(obj) {
