@@ -132,7 +132,7 @@
 			series: []
 		});
 
-		_.forEach(eventService.getInitEvents(), function (series) {
+		_.forEach(eventService.getInitEvents().value, function (series) {
 			console.log('se: ', series);
 		});
 		// console.log('rtn: ', eventService.getInitEvents());
