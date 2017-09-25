@@ -32,7 +32,6 @@
 					curSeriesObj.addPoint(curObj);
 				}
 			});
-			$scope.$apply();
 		});
 
 		_.set(eventService, 'events', {});
