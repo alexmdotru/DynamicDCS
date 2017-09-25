@@ -55,6 +55,7 @@
 						});
 						_.set(newSeries, ['shadow'], false);
 						_.set(newSeries, ['boostThreshold'], 500);
+						console.log('ser: ', newSeries, indxCtrl.curChart);
 						indxCtrl.curChart.addSeries(newSeries);
 					}
 					indxCtrl.curChart.redraw();
