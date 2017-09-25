@@ -131,7 +131,7 @@
 			},
 			series: []
 		});
-		eventService.getInitEvents();
+		console.log('rtn: ', eventService.getInitEvents());
 
 	}
 	indexController.$inject = ['mySocket', 'eventService'];
