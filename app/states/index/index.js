@@ -17,7 +17,7 @@
 				if (_.get(event, 'eventCode')) {
 					var curObj;
 					var curSeriesObj = indxCtrl.curChart.get(_.get(event.iucid));
-					console.log('chart: ', indxCtrl.curChart, curSeries);
+					console.log('chart: ', indxCtrl.curChart, curSeriesObj);
 					var curScore = _.get(eventService, ['curScore', event.iucid, 'score'], 0) +
 						_.get(event, 'score', 0);
 					/*
