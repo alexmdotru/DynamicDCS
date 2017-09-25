@@ -1,7 +1,7 @@
 (function (angular) {
 	'use strict';
 
-	function indexController (mySocket, eventService) {
+	function indexController ($q, mySocket, eventService) {
 		var indxCtrl = this;
 		_.set(indxCtrl, 'eventService', eventService);
 		_.set(indxCtrl, 'getChart', function () {
@@ -131,10 +131,11 @@
 			},
 			series: []
 		});
+
 		console.log('rtn: ', eventService.getInitEvents());
 
 	}
-	indexController.$inject = ['mySocket', 'eventService'];
+	indexController.$inject = ['$q', 'mySocket', 'eventService'];
 
 	function configFunction($stateProvider) {
 		$stateProvider
