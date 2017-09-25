@@ -40,6 +40,12 @@
 			chart:{
 				type:'line',
 				height: 400,
+				events: {
+					redraw: function() {
+						alert ('The chart is being redrawn');
+					}
+
+				}
 			},
 			chartType: 'stock',
 			exporting: {
