@@ -6,7 +6,10 @@
 				ng-model="indxCtrl.selectedServer"
 				placeholder="Select a Server"
 				uib-typeahead="srv in indxCtrl,srvService.servers"
-				class="form-control">
+				class="form-control"
+				typeahead-show-hint="true"
+				typeahead-min-length="0"
+			>
 		</strong>
 	</div>
 	<div class="panel-body text-center">
