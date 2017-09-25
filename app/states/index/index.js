@@ -15,6 +15,7 @@
 		mySocket.on('srvUpd', function (data) {
 			_.forEach(_.get(data, 'que'), function (event) {
 				if (_.get(event, 'eventCode')) {
+					var curTime = new Date().getTime();
 					var curObj;
 					var curSeriesObj = indxCtrl.curChart.get(_.get(event, 'iucid'));
 					console.log('chart: ', indxCtrl.curChart, curSeriesObj);
@@ -25,10 +26,11 @@
 						return _.some(obj.userOptions, {id: _.get(event.iucid)});
 					});
 					*/
-					_.set(curObj, 'x', new Date().getTime());
+					_.set(curObj, 'x', curTime);
 					_.set(curObj, 'y', curScore);
 					_.set(curObj, 'msg', _.get(event, 'msg'));
 					_.set(curObj, 'score', _.get(event, 'score', 0));
+					console.log('obj: ', curObj);
 					curSeriesObj.addPoint(curObj);
 				}
 			});
