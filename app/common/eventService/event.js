@@ -10,6 +10,7 @@
 		_.set(eCtrl, 'curScore', {});
 
 		_.set(eCtrl, 'byUcid', function (newEvents) {
+			var eventObj = {};
 			var scoreMath;
 			var name;
 			var sortedEvents = _.sortBy(newEvents, ['createdAt']);
@@ -63,11 +64,15 @@
 				_.set(simpleFlags, 'x', eventTime);
 				_.set(simpleFlags, 'title', _.get(event, 'eventCode'));
 				_.set(simpleFlags, 'text', _.get(event, 'msg'));
-				eCtrl.events[curPlayer].data.push(simpleArray);
+				eventObj[curPlayer].data.push(simpleArray);
+				// eCtrl.events[curPlayer].data.push(simpleArray);
 				// eCtrl.events[curPlayer+'F'].data.push(simpleFlags);
 			});
-			_.set(eCtrl, 'topScore', _.sortBy(_.values(_.get(eCtrl, 'curScore')), 'score').reverse());
 
+			_.set(eCtrl, 'topScore', _.sortBy(_.values(_.get(eCtrl, 'curScore')), 'score').reverse());
+			return eventObj;
+			/*
+			// drag line to the end
 			_.forEach(eCtrl.events, function (player) {
 				eCtrl.events[_.get(player, 'id')].data.push({
 					y: _.get(eCtrl, ['curScore', _.get(player, 'id'), 'score']),
@@ -76,13 +81,16 @@
 					score: 0
 				});
 			});
+			*/
 		});
 
 		_.set(eCtrl, 'getInitEvents', function () {
 			ePromise = eventAPI.query({serverName: 'dynamiccaucasus'});
 			ePromise.$promise
 				.then(function (eventData) {
-					eCtrl.byUcid(eventData);
+					var loadSeries = eCtrl.byUcid(eventData);
+					console.log('ls: ', loadSeries);
+
 				})
 				.catch(function(err){
 					alertService.addAlert('danger', 'Events could not be queryed.');
