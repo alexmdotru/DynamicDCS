@@ -43,7 +43,7 @@
 
 				if (curPlayer) {
 					_.set(eventObj, [curPlayer, 'id'], curPlayer);
-					_.set(eventObj, [curPlayer, 'data'], _.get(eCtrl, ['eventObj', curPlayer, 'data'], []));
+					_.set(eventObj, [curPlayer, 'data'], _.get(eventObj, [curPlayer, 'data'], []));
 					if (!_.get(eventObj, [curPlayer, 'name'])) {
 						_.set(eventObj, [curPlayer, 'name'], _.get(event, 'iName'));
 						_.set(eCtrl, ['curScore', curPlayer, 'name'], _.get(event, 'iName'))
