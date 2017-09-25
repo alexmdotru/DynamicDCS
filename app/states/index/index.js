@@ -16,7 +16,7 @@
 			_.forEach(_.get(data, 'que'), function (event) {
 				if (_.get(event, 'eventCode')) {
 					var curTime = new Date().getTime();
-					var curObj;
+					var curObj = {};
 					var curSeriesObj = indxCtrl.curChart.get(_.get(event, 'iucid'));
 					console.log('chart: ', indxCtrl.curChart, curSeriesObj);
 					var curScore = _.get(eventService, ['curScore', event.iucid, 'score'], 0) +
