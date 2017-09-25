@@ -1,7 +1,7 @@
 (function (angular) {
 	'use strict';
 
-	function indexController ($q, mySocket, eventService) {
+	function indexController ($scope, mySocket, eventService) {
 		var indxCtrl = this;
 		_.set(indxCtrl, 'eventService', eventService);
 		_.set(indxCtrl, 'getChart', function () {
@@ -32,7 +32,7 @@
 					curSeriesObj.addPoint(curObj);
 				}
 			});
-			indxCtrl.curChart.redraw();
+			$scope.$apply();
 		});
 
 		_.set(eventService, 'events', {});
@@ -143,7 +143,7 @@
 		});
 		indxCtrl.getInitEvents();
 	}
-	indexController.$inject = ['$q', 'mySocket', 'eventService'];
+	indexController.$inject = ['$scope', 'mySocket', 'eventService'];
 
 	function configFunction($stateProvider) {
 		$stateProvider
