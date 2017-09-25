@@ -29,8 +29,7 @@
 					_.set(curObj, 'y', curScore);
 					_.set(curObj, 'msg', _.get(event, 'msg'));
 					_.set(curObj, 'score', _.get(event, 'score', 0));
-					//curSeriesObj.addPoint(curObj);
-					curSeriesObj.setDate({curObj}, true);
+					curSeriesObj.addPoint(curObj, true, true);
 				}
 			});
 		});
