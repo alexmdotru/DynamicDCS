@@ -64,23 +64,11 @@
 				_.set(simpleFlags, 'title', _.get(event, 'eventCode'));
 				_.set(simpleFlags, 'text', _.get(event, 'msg'));
 				eventObj[curPlayer].data.push(simpleArray);
-				// eCtrl.events[curPlayer].data.push(simpleArray);
 				// eCtrl.events[curPlayer+'F'].data.push(simpleFlags);
 			});
 
 			_.set(eCtrl, 'topScore', _.sortBy(_.values(_.get(eCtrl, 'curScore')), 'score').reverse());
 			return eventObj;
-			/*
-			// drag line to the end
-			_.forEach(eCtrl.events, function (player) {
-				eCtrl.events[_.get(player, 'id')].data.push({
-					y: _.get(eCtrl, ['curScore', _.get(player, 'id'), 'score']),
-					x: curTimeEpoc,
-					msg: '',
-					score: 0
-				});
-			});
-			*/
 		});
 
 		_.set(eCtrl, 'getInitEvents', function () {
