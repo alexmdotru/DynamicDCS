@@ -136,8 +136,8 @@
 				var eventPromise = eventService.getInitEvents();
 				eventPromise
 					.then(function (data) {
-
-						console.log('data: ', data, indxCtrl.getChart());
+						console.log('data: ', data);
+						console.log('chart: ', indxCtrl.getChart());
 					})
 					.catch(function (err) {
 						console.log('ERRRRRR: ', err);
