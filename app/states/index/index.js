@@ -30,11 +30,9 @@
 					_.set(curObj, 'msg', _.get(event, 'msg'));
 					_.set(curObj, 'score', _.get(event, 'score', 0));
 					curSeriesObj.addPoint(curObj);
-					curSeriesObj.redraw();
 				}
 			});
-
-			// _.get(eCtrl, ['curScore', curPlayer, 'score'], 0) + _.get(event, 'score', 0);
+			indxCtrl.curChart.redraw();
 		});
 
 		_.set(eventService, 'events', {});
