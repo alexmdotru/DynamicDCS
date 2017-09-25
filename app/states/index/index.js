@@ -10,7 +10,7 @@
 			return indxCtrl.chartConfig.getChartObj();
 		});
 
-		console.log('sel: ', _.get(indxCtrl, 'selectedServer'));
+		console.log('sel: ', _.get(indxCtrl, 'selectedServer'), srvService);
 
 		mySocket.emit('room', {
 			server: 'DynamicCaucasus_leaderboard'
