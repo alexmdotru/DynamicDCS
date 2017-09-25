@@ -132,8 +132,10 @@
 			series: []
 		});
 
-		_.get(indxCtrl, 'initEventsObj', eventService.getInitEvents());
-		console.log('ind: ', indxCtrl.init);
+		$q(eventService.getInitEvents()).$promise
+			.then(function (data) {
+				console.log('I ran', data);
+			});;
 		_.forEach(_.get(indxCtrl, ['initEventsObj']), function (series) {
 			console.log('se: ', series);
 		});
