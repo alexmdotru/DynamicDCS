@@ -15,12 +15,16 @@
 		mySocket.on('srvUpd', function (data) {
 			_.forEach(_.get(data, 'que'), function (event) {
 				if (_.get(event, 'eventCode')) {
-					console.log('chart: ', indxCtrl.curChart);
+
+					var curSeries = indxCtrl.curChart.get(_.get(event.iucid));
+					console.log('chart: ', indxCtrl.curChart, curSeries);
 					var curScore = _.get(eventService, ['curScore', event.iucid, 'score'], 0) +
 						_.get(event, 'score', 0);
+					/*
 					var curSeries = _.filter(data, function(obj) {
 						return _.some(obj.userOptions, {id: _.get(event.iucid)});
 					});
+					*/
 					_.set(curSeries, 'x', new Date().getTime());
 					_.set(curSeries, 'y', curScore);
 					_.set(curSeries, 'msg', _.get(event, 'msg'));
