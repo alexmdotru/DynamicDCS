@@ -42,7 +42,7 @@
 				height: 400,
 				events: {
 					redraw: function() {
-						alert ('The chart is being redrawn');
+						console.log('The chart is being redrawn');
 					}
 
 				}
