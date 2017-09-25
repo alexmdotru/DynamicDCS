@@ -5,7 +5,7 @@
 		var indxCtrl = this;
 		_.set(indxCtrl, 'srvService', srvService);
 		_.set(indxCtrl, 'eventService', eventService);
-		_.set(indxCtrl, 'selectedServer', _.get(srvService, ['servers', 0, 'name']));
+		_.set(indxCtrl, 'selectedServer', 'DynamicCaucasus');
 		_.set(indxCtrl, 'getChart', function () {
 			return indxCtrl.chartConfig.getChartObj();
 		});
