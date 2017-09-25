@@ -1,45 +1,43 @@
-
-	<div class="col-xs-6">
-		<div class="panel panel-default">
-			<div class="panel-heading text-center">
-				<strong>Top 10 High Score</strong>
-			</div>
-			<div class="panel-body text-center">
-				<table class="table table-striped">
-					<tr ng-repeat="ts in indxCtrl.eventService.topScore | limitTo:10 track by $index">
-						<td><span class="pull-left" data-ng-bind="$index + 1"></span></td>
-						<td><span class="pull-left" data-ng-bind="ts.name"></span></td>
-						<td><span class="pull-left" data-ng-bind="ts.score"></span></td>
-					</tr>
-				</table>
-			</div>
+<div class="col-xs-6">
+	<div class="panel panel-default">
+		<div class="panel-heading text-center">
+			<strong>Top 10 High Score</strong>
+		</div>
+		<div class="panel-body text-center">
+			<table class="table table-striped">
+				<tr ng-repeat="ts in indxCtrl.eventService.topScore | limitTo:10 track by $index">
+					<td><span class="pull-left" data-ng-bind="$index + 1"></span></td>
+					<td><span class="pull-left" data-ng-bind="ts.name"></span></td>
+					<td><span class="pull-left" data-ng-bind="ts.score"></span></td>
+				</tr>
+			</table>
 		</div>
 	</div>
-	<div class="col-xs-6">
-		<div class="panel panel-default fill">
-			<div class="panel-heading text-center">
-				<strong>Personal Stats</strong>
-			</div>
-			<div class="panel-body text-center">
-				<br><br><br><br><br><br><br><br>
-				<br>
-				Coming Soon
-				<br><br><br><br><br><br><br>
-				<br><br>
-			</div>
+</div>
+<div class="col-xs-6">
+	<div class="panel panel-default fill">
+		<div class="panel-heading text-center">
+			<strong>Personal Stats</strong>
+		</div>
+		<div class="panel-body text-center">
+			<br><br><br><br><br><br><br><br>
+			<br>
+			Coming Soon
+			<br><br><br><br><br><br><br>
+			<br><br>
 		</div>
 	</div>
-
-	<div class="col-xs-12">
-		<div class="panel panel-default">
-			<div class="panel-heading text-center">
-				<strong>Player Session Score Timeline</strong>
-			</div>
-			<div class="panel-body">
-				<highchart id="chart1" config="indxCtrl.chartConfig"></highchart>
-			</div>
+</div>
+<div class="col-xs-12">
+	<div class="panel panel-default">
+		<div class="panel-heading text-center">
+			<strong>Player Session Score Timeline</strong>
+		</div>
+		<div class="panel-body">
+			<highchart id="chart1" config="indxCtrl.chartConfig"></highchart>
 		</div>
 	</div>
+</div>
 
 
 
