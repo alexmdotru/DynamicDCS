@@ -133,6 +133,7 @@
 		});
 
 		_.get(indxCtrl, 'initEventsObj', eventService.getInitEvents());
+		console.log('ind: ', indxCtrl.init);
 		_.forEach(_.get(indxCtrl, ['initEventsObj']), function (series) {
 			console.log('se: ', series);
 		});
