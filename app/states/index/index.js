@@ -56,8 +56,7 @@
 					marker: {
 						enabled: true
 					}
-				},
-				enableMouseTracking: true
+				}
 			},
 			legend: {
 				enabled: true,
@@ -94,8 +93,7 @@
 				}],
 				buttonTheme: {
 					width: 60
-				},
-				inputEnabled: false
+				}
 			},
 			xAxis: {
 				ordinal: false,
