@@ -132,7 +132,7 @@
 			series: []
 		});
 
-		$q(eventService.getInitEvents()).$promise
+		$q(eventService.getInitEvents())
 			.then(function (data) {
 				console.log('I ran', data);
 			});;
