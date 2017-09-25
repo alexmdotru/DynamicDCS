@@ -14,7 +14,13 @@
 
 		mySocket.on('srvUpd', function (data) {
 			if (_.get(data, ['que', 0, 'eventCode'])) {
-				eventService.byUcid(data.que);
+				var curChart = indxCtrl.getChart();
+				console.log('data: ', data);
+				console.log('chart: ', curChart);
+				_.forEach(data, function (point) {
+					curSeries.addPoint()
+					//curChart.addSeries(series);
+				});
 			}
 		});
 
@@ -137,8 +143,6 @@
 				eventPromise
 					.then(function (data) {
 						var curChart = indxCtrl.getChart();
-						console.log('data: ', data);
-						console.log('chart: ', indxCtrl.getChart());
 						_.forEach(data, function (series) {
 							curChart.addSeries(series);
 						})
