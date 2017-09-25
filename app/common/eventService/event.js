@@ -10,7 +10,7 @@
 		_.set(eCtrl, 'curScore', {});
 
 		_.set(eCtrl, 'setTopScore', function (usrObj) {
-			_.set(eCtrl, 'topScore', _.get(eCtrl, 'topScore', {}));
+			_.set(eCtrl, 'topScore', _.get(eCtrl, 'topScore', []));
 			var curUsr = _.find(_.get(eCtrl, 'topScore'), {id: _.get(usrObj, 'id')});
 			if (curUsr) {
 				_.set(curUsr, 'score', _.get(usrObj, 'score'))
