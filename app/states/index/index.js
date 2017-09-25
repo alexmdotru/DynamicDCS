@@ -132,14 +132,10 @@
 			series: []
 		});
 
-		$q(eventService.getInitEvents())
-			.then(function (data) {
-				console.log('I ran', data);
-			});;
-		_.forEach(_.get(indxCtrl, ['initEventsObj']), function (series) {
+
+		_.forEach(eventService.getInitEvents(), function (series) {
 			console.log('se: ', series);
 		});
-		// console.log('rtn: ', eventService.getInitEvents());
 
 	}
 	indexController.$inject = ['$q', 'mySocket', 'eventService'];
