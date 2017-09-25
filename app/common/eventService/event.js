@@ -1,7 +1,7 @@
 (function (angular) {
 	'use strict';
 
-	function eventService(eventAPI, alertService) {
+	function eventService($q, eventAPI, alertService) {
 		var eCtrl = this;
 		var curDate = new Date().toISOString();
 		var curTimeEpoc = new Date().getTime();
@@ -87,7 +87,9 @@
 			ePromise = eventAPI.query({serverName: 'dynamiccaucasus'});
 			return ePromise.$promise
 				.then(function (eventData) {
-					return eCtrl.byUcid(eventData);
+					return $q(function(resolve) {
+						resolve (eCtrl.byUcid(eventData));
+					});
 				})
 				.catch(function(err){
 					alertService.addAlert('danger', 'Events could not be queryed.');
@@ -96,7 +98,7 @@
 			;
 		});
 	};
-	eventService.$inject = ['dynamic-dcs.api.srvEvent', 'alertService'];
+	eventService.$inject = ['$q', 'dynamic-dcs.api.srvEvent', 'alertService'];
 
 	angular
 		.module('dynamic-dcs.eventService',['dynamic-dcs.api.srvEvent', 'dynamic-dcs.alertService'])
