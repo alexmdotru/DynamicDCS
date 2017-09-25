@@ -126,14 +126,14 @@
 		});
 
 		_.set(indxCtrl, 'getInitEvents', function () {
+			_.set(indxCtrl, 'curChart', indxCtrl.getChart());
+			indxCtrl.curChart.showLoading();
 				var eventPromise = eventService.getInitEvents();
 				eventPromise
 					.then(function (data) {
-						_.set(indxCtrl, 'curChart', indxCtrl.getChart());
-						indxCtrl.curChart.showLoading();
 						_.forEach(data, function (series) {
 							indxCtrl.curChart.addSeries(series);
-						})
+						});
 						indxCtrl.curChart.hideLoading();
 					})
 					.catch(function (err) {
