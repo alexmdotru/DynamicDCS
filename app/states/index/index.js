@@ -30,6 +30,7 @@
 					_.set(curObj, 'msg', _.get(event, 'msg'));
 					_.set(curObj, 'score', _.get(event, 'score', 0));
 					curSeriesObj.addPoint(curObj, true, true);
+					$scope.apply();
 				}
 			});
 		});
