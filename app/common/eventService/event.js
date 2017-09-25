@@ -6,7 +6,7 @@
 		var curDate = new Date().toISOString();
 		var curTimeEpoc = new Date().getTime();
 		var ePromise;
-		_.set(eCtrl, 'events', {});
+		// _.set(eCtrl, 'events', {});
 		_.set(eCtrl, 'curScore', {});
 
 		_.set(eCtrl, 'byUcid', function (newEvents) {
@@ -42,20 +42,19 @@
 				_.set(eCtrl, ['curScore', curPlayer, 'score'], scoreMath);
 
 				if (curPlayer) {
-					_.set(eCtrl, ['events', curPlayer, 'id'], curPlayer);
-					_.set(eCtrl, ['events', curPlayer, 'data'], _.get(eCtrl, ['events', curPlayer, 'data'], []));
-					// _.set(eCtrl, ['events', curPlayer, 'data'], _.get(eCtrl, ['events', curPlayer, 'data'], []));
-					if (!_.get(eCtrl, ['events', curPlayer, 'name'])) {
-						_.set(eCtrl, ['events', curPlayer, 'name'], _.get(event, 'iName'));
+					_.set(eCtrl, ['eventObj', curPlayer, 'id'], curPlayer);
+					_.set(eCtrl, ['eventObj', curPlayer, 'data'], _.get(eCtrl, ['eventObj', curPlayer, 'data'], []));
+					if (!_.get(eCtrl, ['eventObj', curPlayer, 'name'])) {
+						_.set(eCtrl, ['eventObj', curPlayer, 'name'], _.get(event, 'iName'));
 						_.set(eCtrl, ['curScore', curPlayer, 'name'], _.get(event, 'iName'))
 					}
 				}
-				_.set(eCtrl, ['events', curPlayer, 'marker'], {
+				_.set(eCtrl, ['eventObj', curPlayer, 'marker'], {
 					enabled: true,
 					radius: 3
 				});
-				_.set(eCtrl, ['events', curPlayer, 'shadow'], false);
-				_.set(eCtrl, ['events', curPlayer, 'boostThreshold'], 500);
+				_.set(eCtrl, ['eventObj', curPlayer, 'shadow'], false);
+				_.set(eCtrl, ['eventObj', curPlayer, 'boostThreshold'], 500);
 				_.set(simpleArray, 'y', scoreMath);
 				_.set(simpleArray, 'x', eventTime);
 				_.set(simpleArray, 'msg', _.get(event, 'msg'));
