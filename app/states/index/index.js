@@ -56,9 +56,6 @@
 					marker: {
 						enabled: true
 					}
-				},
-				series: {
-					showInNavigator: true // Global value
 				}
 			},
 			legend: {
@@ -68,7 +65,7 @@
 				verticalAlign: 'middle'
 			},
 			navigator: {
-				enabled: true
+				enabled: false
 			},
 			rangeSelector: {
 				selected: 5,
