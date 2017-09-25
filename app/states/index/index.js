@@ -136,14 +136,14 @@
 				var eventPromise = eventService.getInitEvents();
 				eventPromise
 					.then(function (data) {
-						console.log('data: ', data);
+
+						console.log('data: ', data, indxCtrl.getChart());
 					})
 					.catch(function (err) {
 						console.log('ERRRRRR: ', err);
 					})
 				;
 		});
-		console.log('getINIT: ', indxCtrl.getInitEvents());
 	}
 	indexController.$inject = ['$q', 'mySocket', 'eventService'];
 
