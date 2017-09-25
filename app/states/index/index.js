@@ -37,6 +37,9 @@
 
 		_.set(eventService, 'events', {});
 		_.set(indxCtrl, 'chartConfig', {
+			global: {
+				useUTC: false
+			},
 			chart:{
 				type:'line',
 				height: 400
