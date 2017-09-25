@@ -132,11 +132,10 @@
 			series: []
 		});
 
-
-		_.forEach(eventService.getInitEvents(), function (series) {
-			console.log('se: ', series);
+		_.set(indxCtrl, 'getInitEvents', function () {
+				return eventService.getInitEvents()
 		});
-
+		console.log('getINIT: ', indxCtrl.getInitEvents());
 	}
 	indexController.$inject = ['$q', 'mySocket', 'eventService'];
 
