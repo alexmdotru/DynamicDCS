@@ -1,6 +1,13 @@
 <div class="panel panel-default">
 	<div class="panel-heading text-center">
-		<strong>Realtime Scores</strong>
+		<strong>
+			<input
+				type="text"
+				ng-model="indxCtrl.selectedServer"
+				placeholder="Select a Server"
+				uib-typeahead="srv in indxCtrl,srvService.servers | filter:{name:$viewValue}"
+				class="form-control">
+		</strong>
 	</div>
 	<div class="panel-body text-center">
 		<div class="col-xs-6">
