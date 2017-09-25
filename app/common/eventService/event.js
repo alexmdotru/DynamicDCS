@@ -87,9 +87,7 @@
 			ePromise = eventAPI.query({serverName: 'dynamiccaucasus'});
 			return ePromise.$promise
 				.then(function (eventData) {
-					return $q(function(resolve) {
-						resolve (eCtrl.byUcid(eventData));
-					});
+						return eCtrl.byUcid(eventData);
 				})
 				.catch(function(err){
 					alertService.addAlert('danger', 'Events could not be queryed.');
