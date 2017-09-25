@@ -39,6 +39,7 @@
 				if (scoreMath < 0) {
 					scoreMath = 0;
 				}
+				_.set(eCtrl, ['curScore', curPlayer, 'id'], curPlayer);
 				_.set(eCtrl, ['curScore', curPlayer, 'score'], scoreMath);
 
 				if (curPlayer) {
