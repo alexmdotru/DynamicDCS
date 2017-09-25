@@ -74,7 +74,7 @@
 				enabled: true
 			},
 			rangeSelector: {
-				selected: 1,
+				selected: 5,
 				buttons: [{
 					type: 'minute',
 					text: '1min'
