@@ -22,6 +22,10 @@
 					var curSeriesObj = indxCtrl.curChart.get(_.get(event, 'iucid'));
 					var curScore = _.get(eventService, ['curScore', event.iucid, 'score'], 0) +
 						_.get(event, 'score', 0);
+
+					if (curScore < 0) {
+						curScore = 0;
+					}
 					var tScoreObj = {
 						id: _.get(event, 'iucid'),
 						name: _.get(event, 'iName'),
