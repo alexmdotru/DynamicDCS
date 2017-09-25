@@ -136,8 +136,12 @@
 				var eventPromise = eventService.getInitEvents();
 				eventPromise
 					.then(function (data) {
+						var curChart = indxCtrl.getChart();
 						console.log('data: ', data);
 						console.log('chart: ', indxCtrl.getChart());
+						_.forEach(data, function (series) {
+							curChart.addSeries(series);
+						})
 					})
 					.catch(function (err) {
 						console.log('ERRRRRR: ', err);
