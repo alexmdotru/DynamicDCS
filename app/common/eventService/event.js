@@ -42,19 +42,19 @@
 				_.set(eCtrl, ['curScore', curPlayer, 'score'], scoreMath);
 
 				if (curPlayer) {
-					_.set(eCtrl, ['eventObj', curPlayer, 'id'], curPlayer);
-					_.set(eCtrl, ['eventObj', curPlayer, 'data'], _.get(eCtrl, ['eventObj', curPlayer, 'data'], []));
-					if (!_.get(eCtrl, ['eventObj', curPlayer, 'name'])) {
-						_.set(eCtrl, ['eventObj', curPlayer, 'name'], _.get(event, 'iName'));
+					_.set(eventObj, [curPlayer, 'id'], curPlayer);
+					_.set(eventObj, [curPlayer, 'data'], _.get(eCtrl, ['eventObj', curPlayer, 'data'], []));
+					if (!_.get(eventObj, [curPlayer, 'name'])) {
+						_.set(eventObj, [curPlayer, 'name'], _.get(event, 'iName'));
 						_.set(eCtrl, ['curScore', curPlayer, 'name'], _.get(event, 'iName'))
 					}
 				}
-				_.set(eCtrl, ['eventObj', curPlayer, 'marker'], {
+				_.set(eventObj, [curPlayer, 'marker'], {
 					enabled: true,
 					radius: 3
 				});
-				_.set(eCtrl, ['eventObj', curPlayer, 'shadow'], false);
-				_.set(eCtrl, ['eventObj', curPlayer, 'boostThreshold'], 500);
+				_.set(eventObj, [curPlayer, 'shadow'], false);
+				_.set(eventObj, [curPlayer, 'boostThreshold'], 500);
 				_.set(simpleArray, 'y', scoreMath);
 				_.set(simpleArray, 'x', eventTime);
 				_.set(simpleArray, 'msg', _.get(event, 'msg'));
