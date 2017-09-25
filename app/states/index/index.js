@@ -56,6 +56,9 @@
 					marker: {
 						enabled: true
 					}
+				},
+				series: {
+					showInNavigator: true // Global value
 				}
 			},
 			legend: {
