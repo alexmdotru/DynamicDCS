@@ -30,6 +30,7 @@
 					_.set(curObj, 'msg', _.get(event, 'msg'));
 					_.set(curObj, 'score', _.get(event, 'score', 0));
 					curSeriesObj.addPoint(curObj, false);
+					console.log('extremes: ', curSeriesObj.xAxis.getExtremes());
 					curSeriesObj.xAxis.setExtremes(_.get(curObj, 'x') - 10000, _.get(curObj, 'x'), false);
 					indxCtrl.curChart.redraw();
 				}
