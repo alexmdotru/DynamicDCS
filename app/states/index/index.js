@@ -27,8 +27,7 @@
 						name: _.get(event, 'iName'),
 						score: curScore
 					};
-					console.log('tso: ', tScoreObj);
-					eCtrl.setTopScore(tScoreObj);
+					eventService.setTopScore(tScoreObj);
 
 					_.set(curObj, 'x', curTime);
 					_.set(curObj, 'y', curScore);
