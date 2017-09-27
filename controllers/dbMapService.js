@@ -152,7 +152,7 @@ exports.statSrvEventActions = function (action, serverName, obj){
 	const StatSrvEvent = mapdb.model(serverName+'_statSrvEvent', statSrvEventSchema);
 	if (action === 'read') {
 		return new Promise(function(resolve, reject) {
-			StatSrvEvent.find({sessionName: _.get(obj, 'sessionName')}, function (err, statSrvEvent) {
+			StatSrvEvent.find({sessionName: _.get(obj, 'sessionName'), showInChart: true}, function (err, statSrvEvent) {
 				if (err) { reject(err) }
 				resolve(statSrvEvent);
 			});
