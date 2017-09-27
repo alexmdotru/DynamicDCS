@@ -649,7 +649,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 									displaySide: 'A',
 									roleCode: 'I',
 									msg: 'A: '+getSide(_.get(matchPlayer, 'side'))+' '+_.get(player, 'name')+' has commited Treason and switched to '+getSide(_.get(player, 'side'))+'. Shoot on sight! -1000pts',
-									score: -1000
+									score: -1000,
+									showInChart: true
 								};
 								if(_.get(iCurObj, 'iucid')) {
 									curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
@@ -778,7 +779,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				sessionName: sessionName,
 				eventCode: abrLookup(_.get(queObj, 'action')),
 				displaySide: 'A',
-				roleCode: 'I'
+				roleCode: 'I',
+				showInChart: true
 			};
 			iPlayer = _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg1});
 			if (iPlayer) {
@@ -817,7 +819,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					msg: 'A: '+getSide(_.get(iPlayer, 'side'))+' '+_.get(iPlayer, 'name')+' has killed himself'
 				};
 				if(_.get(iCurObj, 'iucid')) {
-					curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
+					// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
 					dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 				}
 
@@ -851,7 +853,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					msg: 'A: '+_.get(iPlayer, 'name')+' has disconnected - Ping:'+_.get(iPlayer, 'ping')+' Lang:'+_.get(iPlayer, 'lang')
 				};
 				if(_.get(iCurObj, 'iucid')) {
-					curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
+					// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
 					dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 				}
 				DCSLuaCommands.sendMesgToAll(
@@ -883,7 +885,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 								iName: _.get(iUnit, 'playername'),
 								displaySide: _.get(iUnit, 'coalition'),
 								roleCode: 'I',
-								msg: 'C: '+ getSide(_.get(iUnit, 'coalition'))+' '+ _.get(iUnit, 'playername') +' released a ' + _.get(weaponResp, 'displayName')
+								msg: 'C: '+ getSide(_.get(iUnit, 'coalition'))+' '+ _.get(iUnit, 'playername') +' released a ' + _.get(weaponResp, 'displayName'),
+								showInChart: true
 							};
 							if(_.get(iCurObj, 'iucid')) {
 								curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
@@ -961,13 +964,15 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				tucid: tPucid,
 				tName: _.get(tUnit, 'playername'),
 				displaySide: 'A',
-				roleCode: 'I'
+				roleCode: 'I',
+				showInChart: true
 			};
 
 			if( _.get(queObj, ['data', 'arg7', 'typeName'])){
 				dbSystemServiceController.weaponScoreActions('read', _.get(queObj, 'data.arg7'))
 					.then(function (weaponResp) {
-						if (_.get(iCurObj, 'iucid') || _.get(iCurObj, 'tucid')) {
+						// if (_.get(iCurObj, 'iucid') || _.get(iCurObj, 'tucid')) {
+						if (_.get(iCurObj, 'iucid')) {
 							if (_.startsWith(_.get(weaponResp, 'name'), 'weapons.shells')){
 								_.set(shootingUsers, [iUnitId, 'count'], _.get(shootingUsers, [iUnitId, 'count'], 0)+1);
 								_.set(shootingUsers, [iUnitId, 'startTime'], new Date().getTime());
@@ -992,10 +997,10 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						}
 					})
 					.catch(function (err) {
-						console.log('Eevent: ', iCurObj, err);
+						console.log('Eevent line998: ', iCurObj, err);
 						if(_.get(iCurObj, 'iPlayerUcid') || _.get(iCurObj, 'tPlayerUcid')) {
-							curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
-							dbMapServiceController.statSrvEventActions('save', serverName, iCurObj);
+							// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
+							// dbMapServiceController.statSrvEventActions('save', serverName, iCurObj);
 						}
 					})
 				;
@@ -1032,7 +1037,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						msg: 'C: '+ _.get(iUnit, 'playername') +' has taken off' + place
 					};
 					if(_.get(iCurObj, 'iucid')) {
-						curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
+						// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
 						dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 					}
 					DCSLuaCommands.sendMesgToCoalition(
@@ -1068,7 +1073,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					};
 					if(_.get(iCurObj, 'iucid')) {
 						// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
-						// dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
+						dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 					}
 					DCSLuaCommands.sendMesgToCoalition(
 						_.get(iCurObj, 'displaySide'),
@@ -1095,7 +1100,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						msg: 'A: '+ getSide(_.get(iUnit, 'coalition'))+' '+ _.get(iUnit, 'playername') +' has crashed'
 					};
 					if(_.get(iCurObj, 'iucid')) {
-						curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
+						// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
 						dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 					}
 					DCSLuaCommands.sendMesgToAll(
@@ -1122,7 +1127,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						msg: 'A: '+getSide(_.get(iUnit, 'coalition'))+' '+ _.get(iUnit, 'playername') +' ejected'
 					};
 					if(_.get(iCurObj, 'iucid')) {
-						curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
+						// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
 						dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 					}
 					DCSLuaCommands.sendMesgToAll(
@@ -1146,7 +1151,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						iName: _.get(iUnit, 'playername'),
 						displaySide: _.get(iUnit, 'coalition'),
 						roleCode: 'I',
-						msg: 'C: ' + _.get(iUnit, 'playername') + ' began refueling'
+						msg: 'C: ' + _.get(iUnit, 'playername') + ' began refueling',
+						showInChart: true
 					};
 					if (_.get(iCurObj, 'iucid')) {
 						curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
@@ -1177,7 +1183,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						msg: 'A: '+getSide(_.get(iUnit, 'playername'))+' '+ _.get(iUnit, 'playername') +' is dead'
 					};
 					if (_.get(iCurObj, 'iucid')) {
-						curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
+						// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
 						dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 					}
 					DCSLuaCommands.sendMesgToAll(
@@ -1206,7 +1212,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						msg: 'A: '+getSide(_.get(iUnit, 'coalition'))+' '+ _.get(iUnit, 'playername') +' pilot is dead'
 					};
 					if (_.get(iCurObj, 'iucid')) {
-						curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
+						// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
 						dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 					}
 					DCSLuaCommands.sendMesgToAll(
@@ -1230,7 +1236,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						iName: _.get(iUnit, 'playername'),
 						displaySide: _.get(iUnit, 'coalition'),
 						roleCode: 'I',
-						msg: 'C: '+ _.get(iUnit, 'playername') +' ended refueling'
+						msg: 'C: '+ _.get(iUnit, 'playername') +' ended refueling',
+						showInChart: true
 					};
 					if (_.get(iCurObj, 'iucid')) {
 						curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
@@ -1263,7 +1270,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					};
 					if (_.get(iCurObj, 'iucid')) {
 						// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
-						// dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
+						dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 					}
 					DCSLuaCommands.sendMesgToCoalition(
 						_.get(iCurObj, 'displaySide'),
@@ -1291,7 +1298,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					};
 					if (_.get(iCurObj, 'iucid')) {
 						// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
-						// dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
+						dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 					}
 					DCSLuaCommands.sendMesgToCoalition(
 						_.get(iCurObj, 'displaySide'),
@@ -1319,7 +1326,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					};
 					if (_.get(iCurObj, 'iucid')) {
 						// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
-						// dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
+						dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 					}
 					DCSLuaCommands.sendMesgToCoalition(
 						_.get(iCurObj, 'displaySide'),

@@ -36,7 +36,7 @@ const SimpleStatEventSchema = new Schema({
 		score: {
 			type: Number
 		},
-		showChart: {
+		showInChart: {
 			type: Boolean,
 			default: false
 		}
