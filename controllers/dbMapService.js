@@ -182,7 +182,7 @@ exports.simpleStatEventActions = function (action, serverName, obj){
 	const SimpleStatEvent = mapdb.model(serverName+'_simpleStatEvent', simpleStatEventSchema);
 	if (action === 'read') {
 		return new Promise(function(resolve, reject) {
-			SimpleStatEvent.find({sessionName: _.get(obj, 'sessionName')}, function (err, simpleStatEvent) {
+			SimpleStatEvent.find({sessionName: _.get(obj, 'sessionName'), showInChart: true}, function (err, simpleStatEvent) {
 				if (err) { reject(err) }
 				resolve(simpleStatEvent);
 			});
