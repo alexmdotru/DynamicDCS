@@ -70,12 +70,13 @@
 				height: 400,
 				events: {
 					redraw: function (event) {
-						console.log('ev: ', event);
+						console.log('redrawn');
 						var curchart = indxCtrl.getChart();
-						curchart.showLoading();
+						console.log('ev: ', event);
+						// curchart.showLoading();
 						setTimeout(function () {
 							indxCtrl.getInitEvents();
-						}, 5000);
+						}, 1000);
 					}
 				}
 			},
