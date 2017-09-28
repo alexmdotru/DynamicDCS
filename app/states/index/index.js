@@ -70,6 +70,8 @@
 				height: 400,
 				events: {
 					load: function () {
+						var curChart = indxCtrl.getChart();
+						curChart.showLoading();
 						setTimeout(function () {
 							indxCtrl.getInitEvents();
 						}, 5000);
@@ -165,7 +167,6 @@
 				var eventPromise = eventService.getInitEvents();
 				eventPromise
 					.then(function (data) {
-						console.log('obj: ', indxCtrl.getChart());
 						_.forEach(data, function (series) {
 							indxCtrl.curChart.addSeries(series);
 						});
