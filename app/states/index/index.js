@@ -72,6 +72,7 @@
 					load: function () {
 						_.set(indxCtrl, 'curChart', indxCtrl.getChart());
 						indxCtrl.curChart.showLoading();
+						console.log('obj: ', indxCtrl.curChart);
 						setTimeout(function () {
 							indxCtrl.getInitEvents();
 						}, 5000);
