@@ -68,7 +68,6 @@
 			eventPromise
 				.then(function (data) {
 					_.forEach(data, function (series) {
-						console.log('curchart: ', indxCtrl.curChart);
 						indxCtrl.curChart.addSeries(series);
 					});
 				})
