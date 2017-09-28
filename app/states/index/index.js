@@ -71,6 +71,7 @@
 				events: {
 					load: function () {
 						var curChart = indxCtrl.getChart();
+						console.log(curChart);
 						curChart.showLoading();
 						setTimeout(function () {
 							indxCtrl.getInitEvents();
