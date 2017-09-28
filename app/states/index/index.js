@@ -84,7 +84,7 @@
 				type:'line',
 				height: 400,
 				events: {
-					render: function () {
+					load: function () {
 						_.set(indxCtrl, 'curChart', this);
 						indxCtrl.curChart.showLoading();
 						setTimeout(function () {
