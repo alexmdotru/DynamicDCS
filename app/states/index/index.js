@@ -165,7 +165,7 @@
 				var eventPromise = eventService.getInitEvents();
 				eventPromise
 					.then(function (data) {
-						console.log('obj: ', indxCtrl.curChart);
+						console.log('obj: ', indxCtrl.getChart());
 						_.forEach(data, function (series) {
 							indxCtrl.curChart.addSeries(series);
 						});
