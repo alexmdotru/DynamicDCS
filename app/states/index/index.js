@@ -67,7 +67,14 @@
 		_.set(indxCtrl, 'chartConfig', {
 			chart:{
 				type:'line',
-				height: 400
+				height: 400,
+				events: {
+					load: function () {
+						setTimeout(function () {
+							indxCtrl.getInitEvents();
+						}, 1000);
+					}
+				}
 			},
 			chartType: 'stock',
 			exporting: {
@@ -168,7 +175,6 @@
 					})
 				;
 		});
-		indxCtrl.getInitEvents();
 	}
 	indexController.$inject = ['srvService', 'mySocket', 'eventService'];
 
