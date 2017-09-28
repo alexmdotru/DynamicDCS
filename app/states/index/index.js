@@ -63,6 +63,20 @@
 			});
 		});
 
+		_.set(indxCtrl, 'getInitEvents', function () {
+			var eventPromise = eventService.getInitEvents();
+			eventPromise
+				.then(function (data) {
+					_.forEach(data, function (series) {
+						indxCtrl.curChart.addSeries(series);
+					});
+				})
+				.catch(function (err) {
+					console.log('init event err line147: ', err);
+				})
+			;
+		});
+
 		_.set(eventService, 'events', {});
 		_.set(indxCtrl, 'chartConfig', {
 			chart:{
@@ -162,20 +176,6 @@
 				min: 0
 			},
 			series: []
-		});
-
-		_.set(indxCtrl, 'getInitEvents', function () {
-				var eventPromise = eventService.getInitEvents();
-				eventPromise
-					.then(function (data) {
-						_.forEach(data, function (series) {
-							indxCtrl.curChart.addSeries(series);
-						});
-					})
-					.catch(function (err) {
-						console.log('init event err line147: ', err);
-					})
-				;
 		});
 	}
 	indexController.$inject = ['srvService', 'mySocket', 'eventService'];
