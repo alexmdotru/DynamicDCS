@@ -69,13 +69,15 @@
 				type:'line',
 				height: 400,
 				events: {
-					load: function () {
-						var curChart = indxCtrl.getChart();
-						console.log(curChart);
-						curChart.showLoading();
-						setTimeout(function () {
-							indxCtrl.getInitEvents();
-						}, 5000);
+					events: {
+						redraw: function (event) {
+							console.log('ev: ', event);
+							var curchart = indxCtrl.getChart();
+							curchart.showLoading();
+							setTimeout(function () {
+								indxCtrl.getInitEvents();
+							}, 5000);
+						}
 					}
 				}
 			},
