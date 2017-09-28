@@ -63,7 +63,7 @@
 			});
 		});
 
-		_.set(indxCtrl, 'getInitEvents', function () {
+		_.set(indxCtrl, 'getInitEvents', function (chart) {
 			var eventPromise = eventService.getInitEvents();
 			eventPromise
 				.then(function (data) {
@@ -87,7 +87,7 @@
 						var curChart = this;
 						curChart.showLoading();
 						setTimeout(function () {
-							indxCtrl.getInitEvents();
+							indxCtrl.getInitEvents(curChart);
 							curChart.hideLoading();
 						}, 1000);
 					}
