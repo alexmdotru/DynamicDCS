@@ -165,12 +165,10 @@
 				var eventPromise = eventService.getInitEvents();
 				eventPromise
 					.then(function (data) {
-						indxCtrl.curChart.showLoading();
 						console.log('obj: ', indxCtrl.curChart);
 						_.forEach(data, function (series) {
 							indxCtrl.curChart.addSeries(series);
 						});
-						indxCtrl.curChart.hideLoading();
 					})
 					.catch(function (err) {
 						console.log('init event err line147: ', err);
