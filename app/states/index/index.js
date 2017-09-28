@@ -71,6 +71,13 @@
 				events: {
 					render: function () {
 						this.showLoading();
+						var curchart = indxCtrl.getChart();
+						console.log('ev: ', event);
+						// curchart.showLoading();
+						setTimeout(function () {
+							indxCtrl.getInitEvents();
+						}, 1000);
+						this.Loading();
 						console.log('it rendered: ', this);
 					}
 				}
