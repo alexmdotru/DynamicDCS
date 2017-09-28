@@ -39,7 +39,7 @@
 					_.set(curObj, 'x', curTime);
 					_.set(curObj, 'y', curScore);
 					_.set(curObj, 'msg', _.get(event, 'msg'));
-					_.set(curObj, 'score', _.get(event, 'score', 0));
+					_.set(curObj, 'score', curScore);
 					if (curSeriesObj) {
 						curSeriesObj.addPoint(curObj, false);
 						curEx = curSeriesObj.xAxis.getExtremes();
