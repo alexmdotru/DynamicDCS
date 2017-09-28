@@ -70,6 +70,7 @@
 				height: 400,
 				events: {
 					render: function () {
+						this.showLoading();
 						console.log('it rendered: ', this);
 					}
 				}
