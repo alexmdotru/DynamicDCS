@@ -70,10 +70,11 @@
 				height: 400,
 				events: {
 					render: function () {
-						this.showLoading();
+						var curChart = this;
+						curChart.showLoading();
 						setTimeout(function () {
 							indxCtrl.getInitEvents();
-							this.hideLoading();
+							curChart.hideLoading();
 						}, 1000);
 					}
 				}
