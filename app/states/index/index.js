@@ -84,11 +84,11 @@
 				height: 400,
 				events: {
 					render: function () {
-						var curChart = this;
-						curChart.showLoading();
+						_.set(indxCtrl, 'curChart', this);
+						indxCtrl.curChart.showLoading();
 						setTimeout(function () {
-							indxCtrl.getInitEvents(curChart);
-							curChart.hideLoading();
+							indxCtrl.getInitEvents();
+							indxCtrl.curChart.hideLoading();
 						}, 1000);
 					}
 				}
