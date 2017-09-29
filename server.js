@@ -1011,7 +1011,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				;
 			} else {
 				console.log('weapon not here');
-				console.log('weapon: ', _.get(queObj, ['data', 'arg7', 'typeName']))
+				console.log('weapon: ', _.get(queObj, ['data', 'arg7', 'typeName']));
 				_.set(shootingUsers, [iUnitId, 'count'], _.get(shootingUsers, [_.get(iCurObj, 'iPlayerUnitId'), 'count'], 0)+1);
 				_.set(shootingUsers, [iUnitId, 'startTime'], new Date().getTime());
 				_.set(shootingUsers, [iUnitId, 'serverName'], serverName);
@@ -1041,7 +1041,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						iName: _.get(iUnit, 'playername'),
 						displaySide: _.get(iUnit, 'coalition'),
 						roleCode: 'I',
-						msg: 'C: '+ _.get(iUnit, 'playername') +' has taken off' + place
+						msg: 'C: '+ _.get(iUnit, 'playername')+ '('+_.get(iUnit, 'type')+') has taken off' + place
 					};
 					if(_.get(iCurObj, 'iucid')) {
 						// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
@@ -1076,7 +1076,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						iName: _.get(iUnit, 'playername'),
 						displaySide: _.get(iUnit, 'coalition'),
 						roleCode: 'I',
-						msg: 'C: '+ _.get(iUnit, 'playername') +' has landed' + place
+						msg: 'C: '+ _.get(iUnit, 'playername') + '('+_.get(iUnit, 'type') + ') has landed' + place
 					};
 					if(_.get(iCurObj, 'iucid')) {
 						// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
@@ -1104,7 +1104,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						iName: _.get(iUnit, 'playername'),
 						displaySide: 'A',
 						roleCode: 'I',
-						msg: 'A: '+ getSide(_.get(iUnit, 'coalition'))+' '+ _.get(iUnit, 'playername') +' has crashed'
+						msg: 'A: '+ getSide(_.get(iUnit, 'coalition'))+' '+ _.get(iUnit, 'playername') + '('+_.get(iUnit, 'type')+') has crashed'
 					};
 					if(_.get(iCurObj, 'iucid')) {
 						// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
@@ -1131,7 +1131,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						iName: _.get(iUnit, 'playername'),
 						displaySide: 'A',
 						roleCode: 'I',
-						msg: 'A: '+getSide(_.get(iUnit, 'coalition'))+' '+ _.get(iUnit, 'playername') +' ejected'
+						msg: 'A: '+getSide(_.get(iUnit, 'coalition'))+' '+ _.get(iUnit, 'playername') + '('+_.get(iUnit, 'type')+') ejected'
 					};
 					if(_.get(iCurObj, 'iucid')) {
 						// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
@@ -1158,7 +1158,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						iName: _.get(iUnit, 'playername'),
 						displaySide: _.get(iUnit, 'coalition'),
 						roleCode: 'I',
-						msg: 'C: ' + _.get(iUnit, 'playername') + ' began refueling',
+						msg: 'C: ' + _.get(iUnit, 'playername') + '('+_.get(iUnit, 'type')+') began refueling',
 						showInChart: true
 					};
 					if (_.get(iCurObj, 'iucid')) {
@@ -1187,7 +1187,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						iName: _.get(iUnit, 'playername'),
 						displaySide: 'A',
 						roleCode: 'I',
-						msg: 'A: '+getSide(_.get(iUnit, 'playername'))+' '+ _.get(iUnit, 'playername') +' is dead'
+						msg: 'A: '+getSide(_.get(iUnit, 'playername'))+' '+ _.get(iUnit, 'playername') + '('+_.get(iUnit, 'type')+') is dead'
 					};
 					if (_.get(iCurObj, 'iucid')) {
 						// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
@@ -1216,7 +1216,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						iName: _.get(iUnit, 'playername'),
 						displaySide: 'A',
 						roleCode: 'I',
-						msg: 'A: '+getSide(_.get(iUnit, 'coalition'))+' '+ _.get(iUnit, 'playername') +' pilot is dead'
+						msg: 'A: '+getSide(_.get(iUnit, 'coalition'))+' '+ _.get(iUnit, 'playername') + '('+_.get(iUnit, 'type')+') pilot is dead'
 					};
 					if (_.get(iCurObj, 'iucid')) {
 						// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
@@ -1243,7 +1243,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						iName: _.get(iUnit, 'playername'),
 						displaySide: _.get(iUnit, 'coalition'),
 						roleCode: 'I',
-						msg: 'C: '+ _.get(iUnit, 'playername') +' ended refueling',
+						msg: 'C: '+ _.get(iUnit, 'playername') + '('+_.get(iUnit, 'type')+') ended refueling',
 						showInChart: true
 					};
 					if (_.get(iCurObj, 'iucid')) {
