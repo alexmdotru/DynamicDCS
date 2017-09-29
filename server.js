@@ -534,8 +534,9 @@ io.on('connection', function (socket) {
 
 _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 	if (update.unitCount) {
-		if (update.unitCount !== curServers[serverName].serverObject.units.length) {
-			console.log('out of sync for ' + serverName + ' units: '+ update.unitCount + ' verse ' + curServers[serverName].serverObject.units.length);
+		var aliveFilter = _.filter(_.get(curServers, [serverName, 'serverObject', 'units']), {dead: false});
+		if (update.unitCount !== aliveFilter.length) {
+			console.log('out of sync for ' + serverName + ' units: '+ update.unitCount + ' verse ' + aliveFilter.length);
 			if (outOfSyncUnitCnt > config.outOfSyncUnitThreshold) {
 				outOfSyncUnitCnt = 0;
 				console.log('reset server units');
@@ -581,10 +582,11 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				};
 
 				dbMapServiceController.unitActions('save', serverName, iCurObj.data);
-
-				curServers[serverName].serverObject.units.push(_.cloneDeep(iCurObj.data));
 				curServers[serverName].updateQue['q' + parseFloat(_.get(queObj, 'data.coalition'))].push(_.cloneDeep(iCurObj));
 				curServers[serverName].updateQue.qadmin.push(_.cloneDeep(iCurObj));
+
+				_.set(iCurObj, ['data', 'dead'], false);
+				curServers[serverName].serverObject.units.push(_.cloneDeep(iCurObj.data));
 			}
 		}
 		if (_.get(queObj, 'action') === 'U') {
@@ -624,10 +626,12 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			};
 
 			dbMapServiceController.unitActions('delete', serverName, iCurObj.data);
-			_.remove(curServers[serverName].serverObject.units, {'unitID': _.get(queObj, 'data.unitID')});
+			// _.remove(curServers[serverName].serverObject.units, {'unitID': _.get(queObj, 'data.unitID')});
 			curServers[serverName].updateQue.q1.push(_.cloneDeep(iCurObj));
 			curServers[serverName].updateQue.q2.push(_.cloneDeep(iCurObj));
 			curServers[serverName].updateQue.qadmin.push(_.cloneDeep(iCurObj));
+
+			_.set(curServers, [serverName, 'serverObject', 'units', 'dead'], true);
 		}
 
 		//playerUpdate
