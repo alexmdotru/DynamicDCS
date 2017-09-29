@@ -1010,6 +1010,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					})
 				;
 			} else {
+				console.log('weapon not here');
+				console.log('weapon: ', _.get(queObj, ['data', 'arg7', 'typeName']))
 				_.set(shootingUsers, [iUnitId, 'count'], _.get(shootingUsers, [_.get(iCurObj, 'iPlayerUnitId'), 'count'], 0)+1);
 				_.set(shootingUsers, [iUnitId, 'startTime'], new Date().getTime());
 				_.set(shootingUsers, [iUnitId, 'serverName'], serverName);
