@@ -944,7 +944,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				iPlayer = _.find(curServers[serverName].serverObject.players, {name: iUnit.playername});
 				if (iPlayer) {
 					iPucid = _.get(iPlayer, 'ucid');
-					iPName = _.get(iUnit, 'playername')
+					iPName = _.get(iUnit, 'playername') + '(' + _.get(iUnit, 'type') + ')';
 				} else {
 					iPName = _.get(iUnit, 'type')
 				}
@@ -954,7 +954,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				tPlayer = _.find(curServers[serverName].serverObject.players, {name: tUnit.playername});
 				if (tPlayer) {
 					tPucid = _.get(tPlayer, 'ucid');
-					tPName = _.get(tUnit, 'playername')
+					tPName = _.get(tUnit, 'playername') + '(' + _.get(tUnit, 'type') + ')';
 				} else {
 					tPName = _.get(tUnit, 'type')
 				}
@@ -973,6 +973,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			};
 
 			if( _.get(queObj, ['data', 'arg7', 'typeName'])){
+				console.log('weaponhere: ', _.get(queObj, ['data', 'arg7', 'typeName']));
 				dbSystemServiceController.weaponScoreActions('read', _.get(queObj, 'data.arg7'))
 					.then(function (weaponResp) {
 						// if (_.get(iCurObj, 'iucid') || _.get(iCurObj, 'tucid')) {
