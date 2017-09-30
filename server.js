@@ -634,7 +634,10 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			curServers[serverName].updateQue.q2.push(_.cloneDeep(iCurObj));
 			curServers[serverName].updateQue.qadmin.push(_.cloneDeep(iCurObj));
 
-			_.set(curServers, [serverName, 'serverObject', 'units', 'dead'], true);
+			if (curUnit) {
+				_.set(curUnit, 'dead', true);
+			}
+				//_.set(curServers, [serverName, 'serverObject', 'units', 'dead'], true);
 		}
 
 		//playerUpdate
