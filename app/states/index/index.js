@@ -69,7 +69,7 @@
 			eventPromise
 				.then(function (data) {
 					_.forEach(data, function (series) {
-						indxCtrl.curChart.addSeries(series);
+						// indxCtrl.curChart.addSeries(series);
 					});
 				})
 				.catch(function (err) {
