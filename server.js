@@ -566,6 +566,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			if (curUnit) {
 				curUnit.action = 'U';
 			} else {
+				console.log('A: ', _.get(queObj, 'data.unitID'));
 				iCurObj = {
 					action: 'C',
 					sessionName: sessionName,
@@ -599,6 +600,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				curUnit.hdg = parseFloat(_.get(queObj, 'data.hdg'));
 				curUnit.speed = parseFloat(_.get(queObj, 'data.speed'));
 				_.set(curUnit, ['data', 'dead'], false);
+				console.log('U: ', curUnit);
 				iCurObj = {
 					action: 'U',
 					sessionName: sessionName,
@@ -635,6 +637,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			curServers[serverName].updateQue.qadmin.push(_.cloneDeep(iCurObj));
 
 			if (curUnit) {
+				console.log('D: ', _.get(queObj, 'data.unitID'));
 				_.set(curUnit, ['data', 'dead'], true);
 				console.log('D: ', curUnit);
 			}
