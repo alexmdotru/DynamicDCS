@@ -550,6 +550,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				outOfSyncUnitCnt++;
 			}
 		} else {
+			console.log('Units Resynced');
 			outOfSyncUnitCnt = 0;
 		}
 	}
