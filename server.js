@@ -536,7 +536,7 @@ io.on('connection', function (socket) {
 
 _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 	if (update.unitCount) {
-		var aliveFilter = _.filter(_.get(curServers, [serverName, 'serverObject', 'units']), {dead: false});
+		var aliveFilter = _.filter(_.get(curServers, [serverName, 'serverObject', 'units']), function(unit) { return !unit.dead; });
 		if (update.unitCount !== aliveFilter.length) {
 			console.log('out of sync for ' + serverName + ' units: '+ update.unitCount + ' verse ' + aliveFilter.length);
 			if (outOfSyncUnitCnt > config.outOfSyncUnitThreshold) {
@@ -598,7 +598,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				curUnit.alt = parseFloat(_.get(queObj, 'data.alt'));
 				curUnit.hdg = parseFloat(_.get(queObj, 'data.hdg'));
 				curUnit.speed = parseFloat(_.get(queObj, 'data.speed'));
-				_.set(curUnit, ['dead'], false);
+				_.set(curUnit, ['data', 'dead'], false);
 				iCurObj = {
 					action: 'U',
 					sessionName: sessionName,
@@ -635,7 +635,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			curServers[serverName].updateQue.qadmin.push(_.cloneDeep(iCurObj));
 
 			if (curUnit) {
-				_.set(curUnit, 'dead', true);
+				_.set(curUnit, ['data', 'dead'], true);
+				console.log('D: ', curUnit);
 			}
 				//_.set(curServers, [serverName, 'serverObject', 'units', 'dead'], true);
 		}
