@@ -599,7 +599,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				curUnit.alt = parseFloat(_.get(queObj, 'data.alt'));
 				curUnit.hdg = parseFloat(_.get(queObj, 'data.hdg'));
 				curUnit.speed = parseFloat(_.get(queObj, 'data.speed'));
-				_.set(curUnit, ['data', 'dead'], false);
+				_.set(curUnit, ['dead'], false);
 				console.log('U: ', curUnit);
 				iCurObj = {
 					action: 'U',
