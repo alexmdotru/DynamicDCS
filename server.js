@@ -979,7 +979,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				dbSystemServiceController.weaponScoreActions('read', _.get(queObj, 'data.arg7'))
 					.then(function (weaponResp) {
 						// if (_.get(iCurObj, 'iucid') || _.get(iCurObj, 'tucid')) {
-						if (_.get(iCurObj, 'iucid')) {
+						if (_.get(iCurObj, 'iucid') || _.get(iCurObj, 'tucid')) {
 							if (_.startsWith(_.get(weaponResp, 'name'), 'weapons.shells')){
 								_.set(shootingUsers, [iUnitId, 'count'], _.get(shootingUsers, [iUnitId, 'count'], 0)+1);
 								_.set(shootingUsers, [iUnitId, 'startTime'], new Date().getTime());
