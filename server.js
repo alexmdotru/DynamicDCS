@@ -638,7 +638,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 
 			if (curUnit) {
 				console.log('D: ', _.get(queObj, 'data.unitID'));
-				_.set(curUnit, ['data', 'dead'], true);
+				_.set(curUnit, ['dead'], true);
 				console.log('D: ', curUnit);
 			}
 				//_.set(curServers, [serverName, 'serverObject', 'units', 'dead'], true);
