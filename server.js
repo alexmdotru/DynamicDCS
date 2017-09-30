@@ -649,7 +649,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						dbSystemServiceController.banUserActions('read', player.ucid)
 							.then(function (banUser) {
 								if (!_.isEmpty(banUser)){
-									console.log('Banning User: ', banUser);
+									console.log('Banning User: ', _.get(player, 'name'), _.get(player, 'ucid'));
 									DCSLuaCommands.kickPlayer(
 										serverName,
 										_.get(player, 'id'),
