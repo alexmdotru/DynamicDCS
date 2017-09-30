@@ -35,7 +35,7 @@
 						score: curScore
 					};
 					eventService.setTopScore(tScoreObj);
-
+					/*
 					_.set(curObj, 'x', curTime);
 					_.set(curObj, 'y', curScore);
 					_.set(curObj, 'msg', _.get(event, 'msg'));
@@ -59,6 +59,7 @@
 						indxCtrl.curChart.addSeries(newSeries);
 					}
 					indxCtrl.curChart.redraw();
+					*/
 				}
 			});
 		});
