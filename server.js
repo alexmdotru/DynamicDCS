@@ -302,17 +302,12 @@ function initUnits(serverName, socketID, authId) {
 						}
 					} else {
 						findPSide = _.find(srvPlayers, function (player) {
-							if (_.includes(player.ipaddr, curIP)) {
-								return true;
-							}
-							return false
+							return _.includes(player.ipaddr, curIP);
 						});
 
 						if (findPSide) {
 							pSide = findPSide.side;
 						}
-						console.log('pside');
-						console.log('rpside: ', pSide);
 					}
 					if (_.get(curServers, [serverName, 'serverObject', 'units'], []).length > 0 && pSide !== 0) {
 						_.forEach(_.get(curServers, [serverName, 'serverObject', 'units'], []), function (unit) {
