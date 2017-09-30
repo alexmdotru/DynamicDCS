@@ -311,7 +311,7 @@ function initUnits(serverName, socketID, authId) {
 					}
 					if (_.get(curServers, [serverName, 'serverObject', 'units'], []).length > 0 && pSide !== 0) {
 						_.forEach(_.get(curServers, [serverName, 'serverObject', 'units'], []), function (unit) {
-							if (_.get(unit, 'coalition') === pSide || pSide === 'admin') {
+							if ((_.get(unit, 'coalition') === pSide && !_.get(unit, 'dead'))|| pSide === 'admin') {
 								iCurObj = {
 									action: 'INIT',
 									data: {
