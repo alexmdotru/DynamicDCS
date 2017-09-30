@@ -267,7 +267,8 @@ function initUnits(serverName, socketID, authId) {
 			}
 			dbMapServiceController.srvPlayerActions('read', serverName)
 				.then(function (srvPlayers) {
-					var pSide;
+					var pSide = 0;
+					var findPSide;
 					var curSrvPlayer;
 					var curActUpdate;
 					if (curAccount) {
@@ -300,12 +301,16 @@ function initUnits(serverName, socketID, authId) {
 							pSide = _.get(curSrvPlayer, 'side', 0);
 						}
 					} else {
-						pSide = _.find(srvPlayers, function (player) {
+						findPSide = _.find(srvPlayers, function (player) {
 							if (_.includes(player.ipaddr, curIP)) {
-								return player.side;
+								return true;
 							}
-							return 0
+							return false
 						});
+
+						if (findPSide) {
+							pSide = findPSide.side;
+						}
 						console.log('pside');
 						console.log('rpside: ', pSide);
 					}
