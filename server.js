@@ -538,7 +538,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 	if (update.unitCount) {
 		var aliveFilter = _.filter(_.get(curServers, [serverName, 'serverObject', 'units']), function(unit) { return !unit.dead; });
 		if (update.unitCount !== aliveFilter.length) {
-			console.log('out of sync for ' + serverName + ' units: '+ update.unitCount + ' verse ' + aliveFilter.length);
+			console.log('out of sync '+outOfSyncUnitCnt+' times for ' + serverName + ' units: '+ update.unitCount + ' verse ' + aliveFilter.length);
 			if (outOfSyncUnitCnt > config.outOfSyncUnitThreshold) {
 				outOfSyncUnitCnt = 0;
 				console.log('reset server units');
