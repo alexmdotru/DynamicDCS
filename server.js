@@ -598,6 +598,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				curUnit.alt = parseFloat(_.get(queObj, 'data.alt'));
 				curUnit.hdg = parseFloat(_.get(queObj, 'data.hdg'));
 				curUnit.speed = parseFloat(_.get(queObj, 'data.speed'));
+				_.set(curUnit, ['dead'], false);
 				iCurObj = {
 					action: 'U',
 					sessionName: sessionName,
@@ -637,7 +638,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		}
 
 		//playerUpdate
-
 		if (_.get(queObj, 'action') === 'players') {
 			_.set(queObj, 'sessionName', sessionName);
 			var switchedPlayer;
@@ -645,53 +645,68 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				if (player !== null) {
 					var matchPlayer = _.find(curServers[serverName].serverObject.players, {ucid: player.ucid});
 					if(matchPlayer) {
-						if ((matchPlayer.side !== player.side) && player.side !== 0) {
-							if (_.get(matchPlayer, 'side')) {
-								iCurObj = {
-									sessionName: sessionName,
-									eventCode: abrLookup(_.get(queObj, 'action')),
-									iucid: _.get(player, 'ucid'),
-									iName: _.get(player, 'name'),
-									displaySide: 'A',
-									roleCode: 'I',
-									msg: 'A: '+getSide(_.get(matchPlayer, 'side'))+' '+_.get(player, 'name')+' has commited Treason and switched to '+getSide(_.get(player, 'side'))+'. Shoot on sight! -1000pts',
-									score: -1000,
-									showInChart: true
-								};
-								if(_.get(iCurObj, 'iucid')) {
-									curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
-									dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
+						//check for banned players
+						dbSystemServiceController.banUserActions('read', player.ucid)
+							.then(function (banUser) {
+								if (!_.isEmpty(banUser)){
+									console.log('Banning User: ', banUser);
+									DCSLuaCommands.kickPlayer(
+										serverName,
+										_.get(player, 'id'),
+										'You have been banned from this server, visit 16agr.com if you have questions'
+									);
 								}
 
-								DCSLuaCommands.sendMesgToAll(
-									serverName,
-									_.get(iCurObj, 'msg'),
-									15
-								);
-							}
-							dbSystemServiceController.userAccountActions('read')
-								.then(function (resp) {
-									switchedPlayer = nonaccountUsers[player.ucid];
-									if(switchedPlayer) {
-										switchedPlayer = _.find(resp, {ucid: player.ucid});
-
-										if (switchedPlayer.permLvl < 20) {
-											setSocketRoom(io.sockets.connected[switchedPlayer.curSocket], serverName + '_padmin');
-										} else if (player.side && (player.side === 1 || player.side === 2)) {
-											setSocketRoom(io.sockets.connected[switchedPlayer.curSocket], serverName + '_q' + player.side);
+								if ((matchPlayer.side !== player.side) && player.side !== 0) {
+									if (_.get(matchPlayer, 'side')) {
+										iCurObj = {
+											sessionName: sessionName,
+											eventCode: abrLookup(_.get(queObj, 'action')),
+											iucid: _.get(player, 'ucid'),
+											iName: _.get(player, 'name'),
+											displaySide: 'A',
+											roleCode: 'I',
+											msg: 'A: '+getSide(_.get(matchPlayer, 'side'))+' '+_.get(player, 'name')+' has commited Treason and switched to '+getSide(_.get(player, 'side'))+'. Shoot on sight! -1000pts',
+											score: -1000,
+											showInChart: true
+										};
+										if(_.get(iCurObj, 'iucid')) {
+											curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
+											dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 										}
+
+										DCSLuaCommands.sendMesgToAll(
+											serverName,
+											_.get(iCurObj, 'msg'),
+											15
+										);
 									}
-								})
-								.catch(function (err) {
-									console.log('line626', err);
-								});
-							;
-						}
+									dbSystemServiceController.userAccountActions('read')
+										.then(function (resp) {
+											switchedPlayer = nonaccountUsers[player.ucid];
+											if(switchedPlayer) {
+												switchedPlayer = _.find(resp, {ucid: player.ucid});
+
+												if (switchedPlayer.permLvl < 20) {
+													setSocketRoom(io.sockets.connected[switchedPlayer.curSocket], serverName + '_padmin');
+												} else if (player.side && (player.side === 1 || player.side === 2)) {
+													setSocketRoom(io.sockets.connected[switchedPlayer.curSocket], serverName + '_q' + player.side);
+												}
+											}
+										})
+										.catch(function (err) {
+											console.log('line626', err);
+										});
+									;
+								}
+							})
+							.catch(function (err) {
+								console.log('line654', err);
+							});
 					} else {
 						console.log('match player by ip');
 					}
 				}
-
 			});
 			//
 			curServers[serverName].serverObject.players = queObj.data;

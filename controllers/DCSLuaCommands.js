@@ -19,3 +19,11 @@ _.set(exports, 'sendMesgToCoalition', function (coalition, serverName, mesg, tim
 	// console.log('SMTC: ', serverName, actionObj);
 	dbMapServiceController.cmdQueActions('save', serverName, actionObj);
 });
+
+_.set(exports, 'kickPlayer', function (serverName, playerId, mesg) {
+	var curCMD = 'net.kick('+playerId+', "'+mesg+'")';
+	//var curCMD = 'net.send_chat("'+mesg+'", all)';
+	var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
+	var actionObj = {actionObj: sendClient, queName: 'GameGuiArray'};
+	dbMapServiceController.cmdQueActions('save', serverName, actionObj);
+});

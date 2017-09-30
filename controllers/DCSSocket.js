@@ -38,6 +38,7 @@ exports.createSocket = function (serverName, serverAddress, clientPort, gameGuiP
 		dbMapServiceController.cmdQueActions('grabNextQue', serverName, {queName: 'GameGuiArray'})
 			.then(function (resp) {
 				if (resp) {
+					console.log('gamegui cmd');
 					_.get(dsock, 'writeQue.gameGUI').push({
 						action: resp.actionObj.action,
 						cmd: resp.actionObj.cmd,
@@ -109,6 +110,7 @@ exports.createSocket = function (serverName, serverAddress, clientPort, gameGuiP
 				var data = JSON.parse(dsock.gameGUIBuffer.substring(0, i));
 				dsock.callback(serverName, data);
 				dsock.gameGUIBuffer = dsock.gameGUIBuffer.substring(i + 1);
+				console.log('jj: ', _.get(dsock, ['writeQue', 'gameGUI', 0], ''));
 				dsock.gameGUI.write(JSON.stringify(_.get(dsock, ['writeQue', 'gameGUI', 0], '')) + "\n");
 				_.get(dsock, ['writeQue', 'gameGUI']).shift();
 			}
