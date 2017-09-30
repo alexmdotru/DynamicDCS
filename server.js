@@ -600,7 +600,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				curUnit.hdg = parseFloat(_.get(queObj, 'data.hdg'));
 				curUnit.speed = parseFloat(_.get(queObj, 'data.speed'));
 				_.set(curUnit, ['dead'], false);
-				console.log('U: ', curUnit);
+				// console.log('U: ', curUnit);
 				iCurObj = {
 					action: 'U',
 					sessionName: sessionName,
