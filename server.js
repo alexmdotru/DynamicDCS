@@ -700,22 +700,24 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 									}
 									dbSystemServiceController.userAccountActions('read')
 										.then(function (resp) {
-											console.log('ua: ', nonaccountUsers);
 											var switchedPlayerSocket = nonaccountUsers[player.ucid];
 											if(switchedPlayerSocket) {
-												if (player.side === 1 || player.side === 2) {
-													setSocketRoom(switchedPlayerSocket, serverName + '_q' + player.side);
-													sendInit(serverName, switchedPlayerSocket);
-												}
-											} else {
 												switchedPlayer = _.find(resp, {ucid: player.ucid});
-												console.log('sw: ', switchedPlayer);
-												if (switchedPlayer.permLvl < 20) {
-													setSocketRoom(switchedPlayerSocket, serverName + '_padmin');
-												} else if (player.side === 1 || player.side === 2) {
-													setSocketRoom(switchedPlayerSocket, serverName + '_q' + player.side);
-													sendInit(serverName, switchedPlayerSocket);
+												if(switchedPlayer) {
+													console.log('SWPL: ', switchedPlayer);
+													if (switchedPlayer.permLvl < 20) {
+														setSocketRoom(switchedPlayerSocket, serverName + '_padmin');
+													} else if (player.side === 1 || player.side === 2) {
+														setSocketRoom(switchedPlayerSocket, serverName + '_q' + player.side);
+														sendInit(serverName, switchedPlayerSocket);
+													}
+												} else {
+													if (player.side === 1 || player.side === 2) {
+														setSocketRoom(switchedPlayerSocket, serverName + '_q' + player.side);
+														sendInit(serverName, switchedPlayerSocket);
+													}
 												}
+
 											}
 										})
 										.catch(function (err) {
