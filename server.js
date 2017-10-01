@@ -445,6 +445,7 @@ function setRoomSide(socket, roomObj) {
 							if( curPlayer ) {
 								setSocketRoom(socket, roomObj.server + '_q' + curPlayer.side);
 								_.set(nonaccountUsers, [curPlayer.ucid, curSocket], socket);
+								console.log('CHECK: ', nonaccountUsers);
 								sendInit(roomObj.server, socket.id, roomObj.authId);
 							} else {
 								console.log('no side found, joining q0');
