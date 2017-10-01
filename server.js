@@ -700,6 +700,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 									}
 									dbSystemServiceController.userAccountActions('read')
 										.then(function (resp) {
+											console.log('ua: ', nonaccountUsers);
 											var switchedPlayerSocket = nonaccountUsers[player.ucid];
 											if(switchedPlayerSocket) {
 												if (player.side === 1 || player.side === 2) {
