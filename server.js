@@ -438,7 +438,7 @@ function setRoomSide(socket, roomObj) {
 							_.forEach(srvPlayers, function (player) { // {ipaddr: curIP}
 								if (_.includes(player.ipaddr, curIP)) {
 									setSocketRoom(socket, roomObj.server + '_q' + player.side);
-									_.set(nonaccountUsers, [player.ucid, 'curSocket'], socket);
+									_.set(nonaccountUsers, [player.ucid], socket);
 								}
 							});
 							/*
