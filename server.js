@@ -436,13 +436,12 @@ function setRoomSide(socket, roomObj) {
 					dbMapServiceController.srvPlayerActions('read', roomObj.server)
 						.then(function (srvPlayers) {
 							var curPlayer = _.find(srvPlayers, function (player) { //{ipaddr: curIP}
-								console.log('CIP: ', _.includes(player.ipaddr, curIP));
 								if (_.includes(player.ipaddr, curIP)) {
 									console.log('player line392: ', player);
 									return true;
 								}
-								return false;
 							});
+							console.log('CURPLAYERFOUND: ', curPlayer);
 							if( curPlayer ) {
 								setSocketRoom(socket, roomObj.server + '_q' + curPlayer.side);
 								_.set(nonaccountUsers, [curPlayer.ucid, curSocket], socket);
