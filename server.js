@@ -700,7 +700,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 												if (switchedPlayer.permLvl < 20) {
 													setSocketRoom(io.sockets.connected[switchedPlayer.curSocket], serverName + '_padmin');
 												} else if (player.side && (player.side === 1 || player.side === 2)) {
-													console.log('findsocket; ', io.sockets.connected[switchedPlayer.curSocket], switchedPlayer.curSocket);
+													console.log('findsocket; ', io.sockets.connected[switchedPlayer.curSocket], io.sockets.connected, switchedPlayer.curSocket);
 													setSocketRoom(io.sockets.connected[switchedPlayer.curSocket], serverName + '_q' + player.side);
 													sendInit(serverName, io.sockets.connected[switchedPlayer.curSocket]);
 												}
