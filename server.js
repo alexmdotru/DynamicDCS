@@ -374,12 +374,13 @@ function sendInit(serverName, socketID, authId) {
 
 
 function setSocketRoom(socket, room) {
-	console.log('sockJoin: ','Leaving: ',socket.room, 'Entering: ', room);
 	if (socket.room) {
+		console.log('Leaving: ', socket.room);
 		socket.leave(socket.room);
 	}
 	socket.room = room;
 	socket.join(room);
+	console.log('Entering: ', room);
 }
 
 function setRoomSide(socket, roomObj) {
