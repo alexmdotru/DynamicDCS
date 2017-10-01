@@ -693,9 +693,9 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 									}
 									dbSystemServiceController.userAccountActions('read')
 										.then(function (resp) {
-											console.log('res: ', resp);
 											var switchedPlayerSocket = nonaccountUsers[player.ucid];
 											if(switchedPlayerSocket) {
+												console.log('curP: ', switchedPlayerSocket);
 												switchedPlayer = _.find(resp, {ucid: player.ucid});
 												console.log('SW: ', switchedPlayerSocket, switchedPlayer);
 												if (switchedPlayer.permLvl < 20) {
