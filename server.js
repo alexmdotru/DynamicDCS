@@ -699,12 +699,20 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 											var switchedPlayerSocket = nonaccountUsers[player.ucid];
 											if(switchedPlayerSocket) {
 												switchedPlayer = _.find(resp, {ucid: player.ucid});
-												if (switchedPlayer.permLvl < 20) {
-													setSocketRoom(switchedPlayerSocket, serverName + '_padmin');
-												} else if (player.side === 1 || player.side === 2) {
-													setSocketRoom(switchedPlayerSocket, serverName + '_q' + player.side);
-													sendInit(serverName, switchedPlayerSocket);
+												if(switchedPlayer) {
+													if (switchedPlayer.permLvl < 20) {
+														setSocketRoom(switchedPlayerSocket, serverName + '_padmin');
+													} else if (player.side === 1 || player.side === 2) {
+														setSocketRoom(switchedPlayerSocket, serverName + '_q' + player.side);
+														sendInit(serverName, switchedPlayerSocket);
+													}
+												} else {
+													if (player.side === 1 || player.side === 2) {
+														setSocketRoom(switchedPlayerSocket, serverName + '_q' + player.side);
+														sendInit(serverName, switchedPlayerSocket);
+													}
 												}
+
 											}
 										})
 										.catch(function (err) {
