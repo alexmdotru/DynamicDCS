@@ -425,6 +425,7 @@ function setRoomSide(socket, roomObj) {
 								setSocketRoom(socket, roomObj.server + '_qadmin');
 							} else if (pSide === 1 || pSide === 2) {
 								setSocketRoom(socket, roomObj.server + '_q' + pSide);
+								sendInit(roomObj.server, socket.id, roomObj.authId);
 							}
 						})
 						.catch(function (err) {
@@ -446,6 +447,7 @@ function setRoomSide(socket, roomObj) {
 								nonaccountUsers[curPlayer.ucid] = {
 									curSocket: socket.id
 								};
+								sendInit(roomObj.server, socket.id, roomObj.authId);
 							} else {
 								console.log('no side found, joining q0');
 								setSocketRoom(socket, roomObj.server + '_q0' );
@@ -696,11 +698,11 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 											switchedPlayer = nonaccountUsers[player.ucid];
 											if(switchedPlayer) {
 												switchedPlayer = _.find(resp, {ucid: player.ucid});
-
 												if (switchedPlayer.permLvl < 20) {
 													setSocketRoom(io.sockets.connected[switchedPlayer.curSocket], serverName + '_padmin');
 												} else if (player.side && (player.side === 1 || player.side === 2)) {
 													setSocketRoom(io.sockets.connected[switchedPlayer.curSocket], serverName + '_q' + player.side);
+													sendInit(serverName, io.sockets.connected[switchedPlayer.curSocket].id)
 												}
 											}
 										})
