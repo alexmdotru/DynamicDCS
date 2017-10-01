@@ -702,7 +702,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 										.then(function (resp) {
 											var switchedPlayerSocket = nonaccountUsers[player.ucid];
 											var switchedPlayer = _.find(resp, {ucid: player.ucid});
-											console.log('SWPL: ', switchedPlayer, resp, player.ucid);
 											if(switchedPlayerSocket) {
 												if (player.side === 1 || player.side === 2) {
 													setSocketRoom(switchedPlayerSocket, serverName + '_q' + player.side);
