@@ -252,6 +252,7 @@ function isNumeric(x) {
 }
 
 function initUnits(serverName, socketID, authId) {
+	console.log('INIT UNITS');
 	var iCurObj;
 	var curIP = io.sockets.connected[socketID].conn.remoteAddress.replace("::ffff:", "");
 	var initQue = {que: []};
