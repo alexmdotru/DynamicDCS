@@ -374,14 +374,11 @@ function sendInit(serverName, socketID, authId) {
 
 
 function setSocketRoom(socket, room) {
-	console.log('SR: ', socket.id, room);
 	if (_.get(socket, 'room')) {
-		console.log('Leaving: ', socket.room);
 		socket.leave(socket.room);
 	}
 	_.set(socket, 'room', room);
 	socket.join(room);
-	console.log('Entering: ', room);
 }
 
 function setRoomSide(socket, roomObj) {
@@ -573,7 +570,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			if (curUnit) {
 				curUnit.action = 'U';
 			} else {
-				console.log('A: ', _.get(queObj, 'data.unitID'));
+				// console.log('A: ', _.get(queObj, 'data.unitID'));
 				iCurObj = {
 					action: 'C',
 					sessionName: sessionName,
@@ -644,7 +641,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			curServers[serverName].updateQue.qadmin.push(_.cloneDeep(iCurObj));
 
 			if (curUnit) {
-				console.log('D: ', _.get(queObj, 'data.unitID'));
+				// console.log('D: ', _.get(queObj, 'data.unitID'));
 				_.set(curUnit, ['dead'], true);
 			}
 				//_.set(curServers, [serverName, 'serverObject', 'units', 'dead'], true);
@@ -703,6 +700,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 												if (switchedPlayer.permLvl < 20) {
 													setSocketRoom(io.sockets.connected[switchedPlayer.curSocket], serverName + '_padmin');
 												} else if (player.side && (player.side === 1 || player.side === 2)) {
+													console.log('findsocket; ', io.sockets.connected[switchedPlayer.curSocket], switchedPlayer.curSocket);
 													setSocketRoom(io.sockets.connected[switchedPlayer.curSocket], serverName + '_q' + player.side);
 													sendInit(serverName, io.sockets.connected[switchedPlayer.curSocket]);
 												}
