@@ -666,7 +666,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 									);
 								}
 
-								if ((matchPlayer.side !== player.side) && player.side !== 0 && !_.isEmpty(player.side)) {
+								if ((matchPlayer.side !== player.side) && player.side !== 0 && !_.isEmpty(matchPlayer.side)) {
 									if (_.get(matchPlayer, 'side')) {
 										iCurObj = {
 											sessionName: sessionName,
