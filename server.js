@@ -700,17 +700,19 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 									}
 									dbSystemServiceController.userAccountActions('read')
 										.then(function (resp) {
-											var switchedPlayerSocket = nonaccountUsers[player.ucid];
-											if(switchedPlayerSocket) {
-												if (player.side === 1 || player.side === 2) {
-													setSocketRoom(switchedPlayerSocket, serverName + '_q' + player.side);
-													sendInit(serverName, switchedPlayerSocket);
-												}
-											} else {
+											var switchedPlayer = _.find(resp, {ucid: player.ucid});
+											if(switchedPlayer) {
+												console.log('SWP: ', switchedPlayer);
 												switchedPlayer = _.find(resp, {ucid: player.ucid});
 												if (switchedPlayer.permLvl < 20) {
 													setSocketRoom(switchedPlayerSocket, serverName + '_padmin');
 												} else if (player.side === 1 || player.side === 2) {
+													setSocketRoom(switchedPlayerSocket, serverName + '_q' + player.side);
+													sendInit(serverName, switchedPlayerSocket);
+												}
+											} else {
+												var switchedPlayerSocket = nonaccountUsers[player.ucid];
+												if (player.side === 1 || player.side === 2) {
 													setSocketRoom(switchedPlayerSocket, serverName + '_q' + player.side);
 													sendInit(serverName, switchedPlayerSocket);
 												}
