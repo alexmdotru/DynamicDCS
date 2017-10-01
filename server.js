@@ -696,14 +696,13 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 									dbSystemServiceController.userAccountActions('read')
 										.then(function (resp) {
 											switchedPlayer = nonaccountUsers[player.ucid];
-											console.log('SP: ', switchedPlayer);
 											if(switchedPlayer) {
 												switchedPlayer = _.find(resp, {ucid: player.ucid});
 												if (switchedPlayer.permLvl < 20) {
 													setSocketRoom(io.sockets.connected[switchedPlayer.curSocket], serverName + '_padmin');
 												} else if (player.side && (player.side === 1 || player.side === 2)) {
 													setSocketRoom(io.sockets.connected[switchedPlayer.curSocket], serverName + '_q' + player.side);
-													sendInit(serverName, io.sockets.connected[switchedPlayer.curSocket].id)
+													sendInit(serverName, switchedPlayer)
 												}
 											}
 										})
