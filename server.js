@@ -374,6 +374,7 @@ function sendInit(serverName, socketID, authId) {
 
 
 function setSocketRoom(socket, room) {
+	console.log('SR: ', socket, room);
 	if (_.get(socket, 'room')) {
 		console.log('Leaving: ', socket.room);
 		socket.leave(socket.room);
