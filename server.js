@@ -361,7 +361,7 @@ function initUnits(serverName, socketID, authId) {
 
 //initArray Push
 function sendInit(serverName, socketID, authId) {
-
+	console.log('SI: ', serverName, socketID, authId);
 	if (socketID === 'all') {
 		//problem, find out what sockets are on what server.....
 		_.forEach(io.sockets.sockets, function (socket) {
