@@ -441,8 +441,8 @@ function setRoomSide(socket, roomObj) {
 									return true;
 								}
 							});
-							console.log('CURPLAYERFOUND: ', curPlayer);
-							if( curPlayer ) {
+							if( !_.isEmpty(curPlayer) ) {
+								console.log('NOTEMPTY', curPlayer);
 								setSocketRoom(socket, roomObj.server + '_q' + curPlayer.side);
 								_.set(nonaccountUsers, [curPlayer.ucid, curSocket], socket);
 								console.log('CHECK: ', nonaccountUsers);
