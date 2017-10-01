@@ -704,18 +704,18 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 											var switchedPlayerSocket = nonaccountUsers[player.ucid];
 											var switchedPlayer = _.find(resp, {ucid: player.ucid});
 											if(switchedPlayerSocket) {
-												curSocket = io.sockets.connected[_.get(switchedPlayer, 'curSocket')];
-												console.log('cursock: ', curSocket);
 												if (player.side === 1 || player.side === 2) {
-													setSocketRoom(curSocket, serverName + '_q' + player.side);
-													sendInit(serverName, curSocket);
-												}
-											} else if (switchedPlayer) {
-												if (switchedPlayer.permLvl < 20) {
-													setSocketRoom(switchedPlayerSocket, serverName + '_padmin');
-												} else if (player.side === 1 || player.side === 2) {
 													setSocketRoom(switchedPlayerSocket, serverName + '_q' + player.side);
 													sendInit(serverName, switchedPlayerSocket);
+												}
+											} else if (switchedPlayer) {
+												curSocket = io.sockets.connected[_.get(switchedPlayer, 'curSocket')];
+												console.log('cursock: ', curSocket);
+												if (switchedPlayer.permLvl < 20) {
+													setSocketRoom(curSocket, serverName + '_padmin');
+												} else if (player.side === 1 || player.side === 2) {
+													setSocketRoom(curSocket, serverName + '_q' + player.side);
+													sendInit(serverName, curSocket);
 												}
 											}
 										})
