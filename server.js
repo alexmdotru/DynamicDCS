@@ -705,6 +705,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 											var switchedPlayer = _.find(resp, {ucid: player.ucid});
 											if(switchedPlayerSocket) {
 												curSocket = io.sockets.connected[_.get(switchedPlayer, 'curSocket')];
+												console.log('cursock: ', curSocket);
 												if (player.side === 1 || player.side === 2) {
 													setSocketRoom(curSocket, serverName + '_q' + player.side);
 													sendInit(serverName, curSocket);
