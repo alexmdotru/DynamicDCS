@@ -39,7 +39,7 @@ exports.userAccountActions = function (action, obj){
 		});
 	}
 	if(action === 'update') {
-		console.log('UA reg updateobj line42: ', obj);
+		// console.log('UA reg updateobj line42: ', obj);
 		return new Promise(function(resolve, reject) {
 			//console.log('userAccountActionsUCID: ', obj.ucid);
 			UserAccount.find({ucid: obj.ucid}, function (err, ucidUser) {
