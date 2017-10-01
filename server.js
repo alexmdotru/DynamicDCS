@@ -701,6 +701,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 									dbSystemServiceController.userAccountActions('read')
 										.then(function (resp) {
 											var switchedPlayer = _.find(resp, {ucid: player.ucid});
+											console.log('SW: ', switchedPlayer);
 											if(switchedPlayer) {
 												console.log('SWP: ', switchedPlayer);
 												switchedPlayer = _.find(resp, {ucid: player.ucid});
