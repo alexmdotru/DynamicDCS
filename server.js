@@ -700,12 +700,14 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 									}
 									dbSystemServiceController.userAccountActions('read')
 										.then(function (resp) {
+											var curSocket;
 											var switchedPlayerSocket = nonaccountUsers[player.ucid];
 											var switchedPlayer = _.find(resp, {ucid: player.ucid});
 											if(switchedPlayerSocket) {
+												curSocket = _.get(switchedPlayer, 'curSocket');
 												if (player.side === 1 || player.side === 2) {
-													setSocketRoom(switchedPlayerSocket, serverName + '_q' + player.side);
-													sendInit(serverName, switchedPlayerSocket);
+													setSocketRoom(curSocket, serverName + '_q' + player.side);
+													sendInit(serverName, curSocket);
 												}
 											} else if (switchedPlayer) {
 												if (switchedPlayer.permLvl < 20) {
