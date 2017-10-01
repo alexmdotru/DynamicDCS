@@ -254,110 +254,113 @@ function isNumeric(x) {
 function initUnits(serverName, socketID, authId) {
 	console.log('INIT UNITS');
 	var iCurObj;
-	var curIP = io.sockets.connected[socketID].conn.remoteAddress.replace("::ffff:", "");
 	var initQue = {que: []};
-	if (curIP === ':10308') {
-		curIP = '127.0.0.1';
-	}
+	var curIP = _.get(io, ['sockets', 'connected', socketID, 'conn', 'remoteAddress'], false).replace("::ffff:", "");
 
-	dbSystemServiceController.userAccountActions('read')
-		.then(function (userAccounts) {
-			var curAccount;
-			if (authId) {
-				curAccount = _.find(userAccounts, {authId: authId});
-			}
-			dbMapServiceController.srvPlayerActions('read', serverName)
-				.then(function (srvPlayers) {
-					var pSide = 0;
-					var findPSide;
-					var curSrvPlayer;
-					var curActUpdate;
-					if (curAccount) {
-						if (curAccount.ucid) {
-							curSrvPlayer = _.find(srvPlayers, {ucid: curAccount.ucid});
-						} else {
-							curSrvPlayer = _.find(srvPlayers, function (player) {
-								if (_.includes(player.ipaddr, curIP)) {
-									return true;
-								}
-								return false
-							});
-							curActUpdate = {
-								ucid: _.get(curSrvPlayer, 'ucid', ''),
-								gameName: _.get(curSrvPlayer, 'name', ''),
-								lastIp: _.get(curSrvPlayer, 'ipaddr', '')
-							};
-							dbSystemServiceController.userAccountActions('update', curActUpdate)
-								.then(function (data) {
+	if(curIP) {
+		if (curIP === ':10308') {
+			curIP = '127.0.0.1';
+		}
 
-								})
-								.catch(function (err) {
-									console.log('line249', err);
-								})
-							;
-						}
-						if (curAccount.permLvl < 20) {
-							pSide = 'admin';
-						} else {
-							pSide = _.get(curSrvPlayer, 'side', 0);
-						}
-					} else {
-						findPSide = _.find(srvPlayers, function (player) {
-							return _.includes(player.ipaddr, curIP);
-						});
-
-						if (findPSide) {
-							pSide = findPSide.side;
-						}
-					}
-					if (_.get(curServers, [serverName, 'serverObject', 'units'], []).length > 0 && pSide !== 0) {
-						_.forEach(_.get(curServers, [serverName, 'serverObject', 'units'], []), function (unit) {
-							if ((_.get(unit, 'coalition') === pSide && !_.get(unit, 'dead'))|| pSide === 'admin' && !_.get(unit, 'dead')) {
-								iCurObj = {
-									action: 'INIT',
-									data: {
-										unitID: parseFloat(_.get(unit, 'unitID')),
-										type: _.get(unit, 'type'),
-										coalition: parseFloat(_.get(unit, 'coalition')),
-										lat: parseFloat(_.get(unit, 'lat')),
-										lon: parseFloat(_.get(unit, 'lon')),
-										alt: parseFloat(_.get(unit, 'alt')),
-										hdg: parseFloat(_.get(unit, 'hdg')),
-										speed: parseFloat(_.get(unit, 'speed')),
-										playername: _.get(unit, 'playername', '')
+		dbSystemServiceController.userAccountActions('read')
+			.then(function (userAccounts) {
+				var curAccount;
+				if (authId) {
+					curAccount = _.find(userAccounts, {authId: authId});
+				}
+				dbMapServiceController.srvPlayerActions('read', serverName)
+					.then(function (srvPlayers) {
+						var pSide = 0;
+						var findPSide;
+						var curSrvPlayer;
+						var curActUpdate;
+						if (curAccount) {
+							if (curAccount.ucid) {
+								curSrvPlayer = _.find(srvPlayers, {ucid: curAccount.ucid});
+							} else {
+								curSrvPlayer = _.find(srvPlayers, function (player) {
+									if (_.includes(player.ipaddr, curIP)) {
+										return true;
 									}
+									return false
+								});
+								curActUpdate = {
+									ucid: _.get(curSrvPlayer, 'ucid', ''),
+									gameName: _.get(curSrvPlayer, 'name', ''),
+									lastIp: _.get(curSrvPlayer, 'ipaddr', '')
 								};
-								initQue.que.push(_.cloneDeep(iCurObj));
+								dbSystemServiceController.userAccountActions('update', curActUpdate)
+									.then(function (data) {
+
+									})
+									.catch(function (err) {
+										console.log('line249', err);
+									})
+								;
 							}
-						});
-					}
-					var sendAmt = 0;
-					var totalChkLoops = _.ceil(initQue.que.length / config.perSendMax);
-					var chkPayload = {que: [{action: 'reset'}]};
-					for (x = 0; x < totalChkLoops; x++) {
-						if (initQue.que.length < config.perSendMax) {
-							sendAmt = initQue.que.length;
+							if (curAccount.permLvl < 20) {
+								pSide = 'admin';
+							} else {
+								pSide = _.get(curSrvPlayer, 'side', 0);
+							}
 						} else {
-							sendAmt = config.perSendMax
+							findPSide = _.find(srvPlayers, function (player) {
+								return _.includes(player.ipaddr, curIP);
+							});
+
+							if (findPSide) {
+								pSide = findPSide.side;
+							}
 						}
-						for (y = 0; y < sendAmt; y++) {
-							chkPayload.que.push(initQue.que[0]);
-							initQue.que.shift();
+						if (_.get(curServers, [serverName, 'serverObject', 'units'], []).length > 0 && pSide !== 0) {
+							_.forEach(_.get(curServers, [serverName, 'serverObject', 'units'], []), function (unit) {
+								if ((_.get(unit, 'coalition') === pSide && !_.get(unit, 'dead'))|| pSide === 'admin' && !_.get(unit, 'dead')) {
+									iCurObj = {
+										action: 'INIT',
+										data: {
+											unitID: parseFloat(_.get(unit, 'unitID')),
+											type: _.get(unit, 'type'),
+											coalition: parseFloat(_.get(unit, 'coalition')),
+											lat: parseFloat(_.get(unit, 'lat')),
+											lon: parseFloat(_.get(unit, 'lon')),
+											alt: parseFloat(_.get(unit, 'alt')),
+											hdg: parseFloat(_.get(unit, 'hdg')),
+											speed: parseFloat(_.get(unit, 'speed')),
+											playername: _.get(unit, 'playername', '')
+										}
+									};
+									initQue.que.push(_.cloneDeep(iCurObj));
+								}
+							});
 						}
-						_.set(chkPayload, 'name', serverName);
-						io.to(socketID).emit('srvUpd', chkPayload);
-						chkPayload = {que: []};
-					}
-				})
-				.catch(function (err) {
-					console.log('line307', err);
-				});
-			;
-		})
-		.catch(function (err) {
-			console.log('line309', err);
-		});
-	;
+						var sendAmt = 0;
+						var totalChkLoops = _.ceil(initQue.que.length / config.perSendMax);
+						var chkPayload = {que: [{action: 'reset'}]};
+						for (x = 0; x < totalChkLoops; x++) {
+							if (initQue.que.length < config.perSendMax) {
+								sendAmt = initQue.que.length;
+							} else {
+								sendAmt = config.perSendMax
+							}
+							for (y = 0; y < sendAmt; y++) {
+								chkPayload.que.push(initQue.que[0]);
+								initQue.que.shift();
+							}
+							_.set(chkPayload, 'name', serverName);
+							io.to(socketID).emit('srvUpd', chkPayload);
+							chkPayload = {que: []};
+						}
+					})
+					.catch(function (err) {
+						console.log('line307', err);
+					});
+				;
+			})
+			.catch(function (err) {
+				console.log('line309', err);
+			});
+		;
+	}
 }
 
 //initArray Push
