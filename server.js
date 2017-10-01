@@ -435,12 +435,13 @@ function setRoomSide(socket, roomObj) {
 				} else {
 					dbMapServiceController.srvPlayerActions('read', roomObj.server)
 						.then(function (srvPlayers) {
-							var curPlayer = _.find(srvPlayers, function (player) { //{ipaddr: curIP}
+							_.forEach(srvPlayers, function (player) { // {ipaddr: curIP}
 								if (_.includes(player.ipaddr, curIP)) {
-									console.log('player line392: ', player);
-									return true;
+									setSocketRoom(socket, roomObj.server + '_q' + player.side);
+									_.set(nonaccountUsers, [player.ucid, 'curSocket'], socket);
 								}
 							});
+							/*
 							console.log('curplayer: ', curPlayer);
 							if( !_.isEmpty(curPlayer) ) {
 								setSocketRoom(socket, roomObj.server + '_q' + curPlayer.side);
@@ -451,6 +452,7 @@ function setRoomSide(socket, roomObj) {
 								console.log('no side found, joining q0');
 								setSocketRoom(socket, roomObj.server + '_q0' );
 							}
+							*/
 						})
 						.catch(function (err) {
 							console.log('error no account detected, line404');
