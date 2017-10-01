@@ -667,8 +667,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 								}
 
 								// switching to spectator gets around this, fix this in future please
-								console.log('switchsides: ', player, matchPlayer);
 								if ((matchPlayer.side !== player.side) && player.side !== 0 && _.get(player, 'side')) {
+									console.log('switchsides: ', player, matchPlayer);
 									if (_.get(matchPlayer, 'side')) {
 										iCurObj = {
 											sessionName: sessionName,
