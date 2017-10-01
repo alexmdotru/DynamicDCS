@@ -378,7 +378,7 @@ function setSocketRoom(socket, room) {
 		console.log('Leaving: ', socket.room);
 		socket.leave(socket.room);
 	}
-	socket.room = room;
+	_.set(socket, 'room', room);
 	socket.join(room);
 	console.log('Entering: ', room);
 }
