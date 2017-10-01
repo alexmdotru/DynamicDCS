@@ -666,7 +666,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 									);
 								}
 
-								console.log('check: ', _.get(player, 'side'));
+								// switching to spectator gets around this, fix this in future
 								if ((matchPlayer.side !== player.side) && player.side !== 0 && _.get(player, 'side')) {
 									if (_.get(matchPlayer, 'side')) {
 										iCurObj = {
