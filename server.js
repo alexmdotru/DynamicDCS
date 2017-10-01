@@ -702,9 +702,9 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 										.then(function (resp) {
 											var switchedPlayerSocket = nonaccountUsers[player.ucid];
 											if(switchedPlayerSocket) {
+												console.log('SWPL: ', switchedPlayer, resp);
 												switchedPlayer = _.find(resp, {ucid: player.ucid});
 												if(switchedPlayer) {
-													console.log('SWPL: ', switchedPlayer);
 													if (switchedPlayer.permLvl < 20) {
 														setSocketRoom(switchedPlayerSocket, serverName + '_padmin');
 													} else if (player.side === 1 || player.side === 2) {
