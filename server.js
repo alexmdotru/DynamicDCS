@@ -255,7 +255,8 @@ function initUnits(serverName, socketID, authId) {
 	console.log('INIT UNITS');
 	var iCurObj;
 	var initQue = {que: []};
-	var curIP = _.get(io, ['sockets', 'connected', socketID, 'conn', 'remoteAddress'], false).replace("::ffff:", "");
+	var curIP = _.get(io, ['sockets', 'connected', socketID, 'conn', 'remoteAddress'], false);
+	curIP = _.replace(curIP, "::ffff:", "");
 
 	if(curIP) {
 		if (curIP === ':10308') {
