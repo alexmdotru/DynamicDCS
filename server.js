@@ -710,7 +710,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 												}
 											} else if (switchedPlayer) {
 												curSocket = io.sockets.connected[_.get(switchedPlayer, 'curSocket')];
-												console.log('cursock: ', curSocket);
 												if (switchedPlayer.permLvl < 20) {
 													setSocketRoom(curSocket, serverName + '_padmin');
 												} else if (player.side === 1 || player.side === 2) {
