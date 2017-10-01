@@ -70,7 +70,7 @@
 		mySocket.on('srvUpd', function (data) {
 			// only listen to packets I need
 			if(_.get(data, 'name') === _.get($stateParams, 'name')){
-				// console.log(data);
+				console.log(data);
 				_.forEach(data.que, function (que) {
 					if (que.action === 'INIT' || que.action === 'C' ||
 						que.action === 'U' || que.action === 'D') {
