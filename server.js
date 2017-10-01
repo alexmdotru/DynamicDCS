@@ -668,7 +668,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 
 								// switching to spectator gets around this, fix this in future please
 								if ((matchPlayer.side !== player.side) && player.side !== 0 && _.get(player, 'side')) {
-									console.log('switchsides: ', player, matchPlayer);
 									if (_.get(matchPlayer, 'side')) {
 										iCurObj = {
 											sessionName: sessionName,
@@ -694,6 +693,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 									}
 									dbSystemServiceController.userAccountActions('read')
 										.then(function (resp) {
+											console.log('res: ', resp);
 											var switchedPlayerSocket = nonaccountUsers[player.ucid];
 											if(switchedPlayerSocket) {
 												switchedPlayer = _.find(resp, {ucid: player.ucid});
