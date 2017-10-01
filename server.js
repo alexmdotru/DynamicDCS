@@ -311,7 +311,7 @@ function initUnits(serverName, socketID, authId) {
 					}
 					if (_.get(curServers, [serverName, 'serverObject', 'units'], []).length > 0 && pSide !== 0) {
 						_.forEach(_.get(curServers, [serverName, 'serverObject', 'units'], []), function (unit) {
-							if ((_.get(unit, 'coalition') === pSide && !_.get(unit, 'dead'))|| pSide === 'admin') {
+							if ((_.get(unit, 'coalition') === pSide && !_.get(unit, 'dead'))|| pSide === 'admin' && !_.get(unit, 'dead')) {
 								iCurObj = {
 									action: 'INIT',
 									data: {
@@ -666,7 +666,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 									);
 								}
 
-								// switching to spectator gets around this, fix this in future
+								// switching to spectator gets around this, fix this in future please
 								if ((matchPlayer.side !== player.side) && player.side !== 0 && _.get(player, 'side')) {
 									if (_.get(matchPlayer, 'side')) {
 										iCurObj = {
