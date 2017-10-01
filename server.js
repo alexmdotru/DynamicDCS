@@ -704,7 +704,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 													setSocketRoom(io.sockets.connected[switchedPlayer.curSocket], serverName + '_padmin');
 												} else if (player.side && (player.side === 1 || player.side === 2)) {
 													setSocketRoom(io.sockets.connected[switchedPlayer.curSocket], serverName + '_q' + player.side);
-													sendInit(serverName, switchedPlayer)
+													sendInit(serverName, io.sockets.connected[switchedPlayer.curSocket]);
 												}
 											}
 										})
