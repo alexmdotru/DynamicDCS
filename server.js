@@ -698,7 +698,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 												switchedPlayer = _.find(resp, {ucid: player.ucid});
 												if (switchedPlayer.permLvl < 20) {
 													setSocketRoom(switchedPlayerSocket, serverName + '_padmin');
-												} else if (player.side && (player.side === 1 || player.side === 2)) {
+												} else if (player.side === 1 || player.side === 2) {
 													console.log('findsocket; ', switchedPlayerSocket);
 													setSocketRoom(switchedPlayerSocket, serverName + '_q' + player.side);
 													sendInit(serverName, switchedPlayerSocket);
