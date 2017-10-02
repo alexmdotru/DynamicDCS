@@ -72,8 +72,12 @@
 			if(_.get(data, 'name') === _.get($stateParams, 'name')){
 				// console.log(data);
 				_.forEach(data.que, function (que) {
-					if (que.action === 'INIT' || que.action === 'C' ||
-						que.action === 'U' || que.action === 'D') {
+					if (
+						que.action === 'INIT' ||
+						que.action === 'C' ||
+						que.action === 'U' ||
+						que.action === 'D'
+					) {
 						if (que.action === 'C' || que.action === 'INIT') {
 							if (typeof _.find(_.get(dmCtrl, 'mObj.units'),
 									{'unitID': _.get(que, 'data.unitID')}) !== "undefined") {
@@ -83,7 +87,7 @@
 						}
 						if (que.action === 'U') {
 							if (!_.find(_.get(dmCtrl, 'mObj.units'), {'unitID': _.get(que, 'data.unitID')})) {
-								// console.log('nextResync: ', expireTime);
+								console.log('nextResync: ', expireTime);
 								// data is out of sync, request full payload
 								if ( expireTime < curTime) {
 									mySocket.emit('clientUpd', {
@@ -91,10 +95,10 @@
 										action: 'unitINIT',
 										authId: _.get(userAccountService, ['localAccount', 'authId'])
 									});
-									// console.log('RESYNCING, nexttResyncTime:', curTime + expireSecs);
+									console.log('RESYNCING, nexttResyncTime:', curTime + expireSecs);
 									_.set(dmCtrl, 'nextResyncTime', curTime + expireRetrySecs);
 								} else {
-									// console.log('unit resync sent waiting '+(expireTime - curTime)+ ' more seconds.');
+									console.log('unit resync sent waiting '+(expireTime - curTime)+ ' more seconds.');
 								}
 
 								_.set(dmCtrl, 'lastResyncTime', new Date().getTime());
