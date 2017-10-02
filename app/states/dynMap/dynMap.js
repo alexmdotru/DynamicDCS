@@ -18,7 +18,7 @@
 
 		_.set(dmCtrl, 'resetMap', function () {
 			//init vars on connect
-			_.set(dmCtrl, 'nextResyncTime', curTime + expireInitSecs);
+			_.set(dmCtrl, 'nextResyncTime', curTime + expireInitSecs, curTime);
 			gmapService.init(theaterObj);
 			_.set(dmCtrl, 'mObj', {
 				client: {},
