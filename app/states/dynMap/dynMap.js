@@ -161,8 +161,11 @@
 						_.get(dmCtrl, 'mObj.eventMsgs').push({message: JSON.stringify(que.data)});
 					}
 					_.set(dmCtrl, 'mObj.client.player',
-						_.find(_.get(dmCtrl, 'mObj.players'),
-							{socketID: _.get(dmCtrl, 'mObj.client.id', '')}));
+						_.find(
+							_.get(dmCtrl, 'mObj.players'),
+							{socketID: _.get(dmCtrl, 'mObj.client.id', '')}
+						)
+					);
 				});
 			}
 		});
