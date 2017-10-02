@@ -73,7 +73,7 @@
 				_.set(simpleArray, 'x', eventTime);
 				_.set(simpleArray, 'msg', _.get(event, 'msg'));
 				_.set(simpleArray, 'score', _.get(event, 'score', 0));
-				if(_.get(event, 'score', 0)){
+				if(_.get(event, 'score', 0) && _.get(event, 'iucid')){
 					eventObj[curPlayer].data.push(simpleArray);
 				}
 
