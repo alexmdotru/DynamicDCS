@@ -429,7 +429,7 @@ function setRoomSide(socket, roomObj) {
 								setSocketRoom(socket, roomObj.server + '_qadmin');
 							} else if (pSide === 1 || pSide === 2) {
 								setSocketRoom(socket, roomObj.server + '_q' + pSide);
-								sendInit(roomObj.server, socket.id, roomObj.authId);
+								// sendInit(roomObj.server, socket.id, roomObj.authId);
 							}
 						})
 						.catch(function (err) {
@@ -488,7 +488,7 @@ io.on('connection', function (socket) {
 		socket.on('clientUpd', function (data) {
 			if (data.action === 'unitINIT') {
 				if (curServers[data.name]) {
-					sendInit(data.name, socket.id, data.authId);
+					// sendInit(data.name, socket.id, data.authId);
 				}
 			}
 		});
@@ -518,7 +518,7 @@ io.on('connection', function (socket) {
 				socket.on('clientUpd', function (data) {
 					if (data.action === 'unitINIT') {
 						if (curServers[data.name]) {
-							sendInit(data.name, socket.id, data.authId);
+							// sendInit(data.name, socket.id, data.authId);
 						}
 					}
 				});
@@ -706,7 +706,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 											if(switchedPlayerSocket) {
 												if (player.side === 1 || player.side === 2) {
 													setSocketRoom(switchedPlayerSocket, serverName + '_q' + player.side);
-													sendInit(serverName, switchedPlayerSocket);
+													// sendInit(serverName, switchedPlayerSocket);
 												}
 											} else if (switchedPlayer) {
 												curSocket = io.sockets.connected[_.get(switchedPlayer, 'curSocket')];
@@ -714,7 +714,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 													setSocketRoom(curSocket, serverName + '_padmin');
 												} else if (player.side === 1 || player.side === 2) {
 													setSocketRoom(curSocket, serverName + '_q' + player.side);
-													sendInit(serverName, curSocket);
+													// sendInit(serverName, curSocket);
 												}
 											}
 										})
