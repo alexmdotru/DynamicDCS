@@ -71,11 +71,13 @@
 				_.set(simpleArray, 'x', eventTime);
 				_.set(simpleArray, 'msg', _.get(event, 'msg'));
 				_.set(simpleArray, 'score', _.get(event, 'score', 0));
+				if(_.get(event, 'score', 0)){
+					eventObj[curPlayer].data.push(simpleArray);
+				}
 
-				_.set(simpleFlags, 'x', eventTime);
-				_.set(simpleFlags, 'title', _.get(event, 'eventCode'));
-				_.set(simpleFlags, 'text', _.get(event, 'msg'));
-				eventObj[curPlayer].data.push(simpleArray);
+				// _.set(simpleFlags, 'x', eventTime);
+				// _.set(simpleFlags, 'title', _.get(event, 'eventCode'));
+				// _.set(simpleFlags, 'text', _.get(event, 'msg'));
 				// eCtrl.events[curPlayer+'F'].data.push(simpleFlags);
 			});
 
