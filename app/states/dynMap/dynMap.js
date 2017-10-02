@@ -86,6 +86,7 @@
 						}
 						if (que.action === 'U') {
 							if (!_.find(_.get(dmCtrl, 'mObj.units'), {'unitID': _.get(que, 'data.unitID')})) {
+								console.log('fu: ', _.find(_.get(dmCtrl, 'mObj.units'), {'unitID': _.get(que, 'data.unitID')}), );
 								var cResync = _.get(dmCtrl, 'nextResyncTime', 0);
 								console.log('nextResync: ', cResync);
 								// data is out of sync, request full payload
