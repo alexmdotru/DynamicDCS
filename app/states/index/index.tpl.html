@@ -2,6 +2,7 @@
 	<div class="panel-heading text-center">
 		<div class="col-xs-6">
 			<label for="serverSelect">Server:</label>
+			<select class="form-control" ng-model="indxCtrl.selectedServer" ng-options="srv as srv.name for srv in srvService.servers"></select>
 			<input
 					id="serverSelect"
 					type="text"
