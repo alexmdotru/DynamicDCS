@@ -67,12 +67,6 @@
 							_.set(eCtrl, ['curScore', curPlayer, 'name'], _.get(event, 'iName'))
 						}
 					}
-					/*
-					 _.set(eventObj, [curPlayer, 'marker'], {
-					 enabled: true,
-					 radius: 3
-					 });
-					 */
 					if (newPlayer) {
 						eventObj[curPlayer].data.push({
 							x: eventTime - 1000,
@@ -92,13 +86,7 @@
 					_.set(simpleArray, 'score', _.get(event, 'score', 0));
 					if(_.get(event, 'score', 0) && _.get(event, 'iucid')){
 						eventObj[curPlayer].data.push(simpleArray);
-						console.log('sa: ', eventObj[curPlayer].data);
 					}
-
-					// _.set(simpleFlags, 'x', eventTime);
-					// _.set(simpleFlags, 'title', _.get(event, 'eventCode'));
-					// _.set(simpleFlags, 'text', _.get(event, 'msg'));
-					// eCtrl.events[curPlayer+'F'].data.push(simpleFlags);
 				}
 			});
 
