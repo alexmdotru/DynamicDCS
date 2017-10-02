@@ -92,6 +92,7 @@
 					_.set(simpleArray, 'score', _.get(event, 'score', 0));
 					if(_.get(event, 'score', 0) && _.get(event, 'iucid')){
 						eventObj[curPlayer].data.push(simpleArray);
+						console.log('sa: ', eventObj[curPlayer].data);
 					}
 
 					// _.set(simpleFlags, 'x', eventTime);
