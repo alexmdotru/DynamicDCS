@@ -40,48 +40,51 @@
 				if (!_.get(event, 'createdAt')) {
 					_.set(event, 'createdAt', curDate);
 				}
+
 				if (_.get(event, 'iucid')) {
-					curPlayer = _.get(event, 'iucid');
-					scoreMath = _.get(eCtrl, ['curScore', curPlayer, 'score'], 0) + _.get(event, 'score', 0);
-				} else {
-					curPlayer = _.get(event, 'tucid');
-					scoreMath = _.get(eCtrl, ['curScore', curPlayer, 'score'], 0);
-				}
-				if (scoreMath < 0) {
-					scoreMath = 0;
-				}
-				_.set(eCtrl, ['curScore', curPlayer, 'id'], curPlayer);
-				_.set(eCtrl, ['curScore', curPlayer, 'score'], scoreMath);
-
-				if (curPlayer) {
-					_.set(eventObj, [curPlayer, 'id'], curPlayer);
-					_.set(eventObj, [curPlayer, 'data'], _.get(eventObj, [curPlayer, 'data'], []));
-					if (!_.get(eventObj, [curPlayer, 'name'])) {
-						_.set(eventObj, [curPlayer, 'name'], _.get(event, 'iName'));
-						_.set(eCtrl, ['curScore', curPlayer, 'name'], _.get(event, 'iName'))
+					if (_.get(event, 'iucid')) {
+						curPlayer = _.get(event, 'iucid');
+						scoreMath = _.get(eCtrl, ['curScore', curPlayer, 'score'], 0) + _.get(event, 'score', 0);
+					} else {
+						curPlayer = _.get(event, 'tucid');
+						scoreMath = _.get(eCtrl, ['curScore', curPlayer, 'score'], 0);
 					}
-				}
-				/*
-				_.set(eventObj, [curPlayer, 'marker'], {
-					enabled: true,
-					radius: 3
-				});
-				*/
-				_.set(eventObj, [curPlayer, 'shadow'], false);
-				_.set(eventObj, [curPlayer, 'boostThreshold'], 500);
-				_.set(simpleArray, 'y', scoreMath);
-				_.set(simpleArray, 'x', eventTime);
-				_.set(simpleArray, 'msg', _.get(event, 'msg'));
-				_.set(simpleArray, 'score', _.get(event, 'score', 0));
-				if(_.get(event, 'score', 0) && _.get(event, 'iucid')){
-					console.log('cp: ', curPlayer);
-					eventObj[curPlayer].data.push(simpleArray);
-				}
+					if (scoreMath < 0) {
+						scoreMath = 0;
+					}
+					_.set(eCtrl, ['curScore', curPlayer, 'id'], curPlayer);
+					_.set(eCtrl, ['curScore', curPlayer, 'score'], scoreMath);
 
-				// _.set(simpleFlags, 'x', eventTime);
-				// _.set(simpleFlags, 'title', _.get(event, 'eventCode'));
-				// _.set(simpleFlags, 'text', _.get(event, 'msg'));
-				// eCtrl.events[curPlayer+'F'].data.push(simpleFlags);
+					if (curPlayer) {
+						_.set(eventObj, [curPlayer, 'id'], curPlayer);
+						_.set(eventObj, [curPlayer, 'data'], _.get(eventObj, [curPlayer, 'data'], []));
+						if (!_.get(eventObj, [curPlayer, 'name'])) {
+							_.set(eventObj, [curPlayer, 'name'], _.get(event, 'iName'));
+							_.set(eCtrl, ['curScore', curPlayer, 'name'], _.get(event, 'iName'))
+						}
+					}
+					/*
+					 _.set(eventObj, [curPlayer, 'marker'], {
+					 enabled: true,
+					 radius: 3
+					 });
+					 */
+					_.set(eventObj, [curPlayer, 'shadow'], false);
+					_.set(eventObj, [curPlayer, 'boostThreshold'], 500);
+					_.set(simpleArray, 'y', scoreMath);
+					_.set(simpleArray, 'x', eventTime);
+					_.set(simpleArray, 'msg', _.get(event, 'msg'));
+					_.set(simpleArray, 'score', _.get(event, 'score', 0));
+					if(_.get(event, 'score', 0) && _.get(event, 'iucid')){
+						console.log('cp: ', curPlayer);
+						eventObj[curPlayer].data.push(simpleArray);
+					}
+
+					// _.set(simpleFlags, 'x', eventTime);
+					// _.set(simpleFlags, 'title', _.get(event, 'eventCode'));
+					// _.set(simpleFlags, 'text', _.get(event, 'msg'));
+					// eCtrl.events[curPlayer+'F'].data.push(simpleFlags);
+				}
 			});
 
 			_.forEach(_.get(eCtrl, 'curScore'), function (usr) {
