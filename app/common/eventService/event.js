@@ -28,6 +28,7 @@
 			_.forEach(sortedEvents, function (event) {
 				var eventTime;
 				var curPlayer;
+				var newPlayer = false;
 				var simpleArray = {};
 				var cTime = _.get(event, 'createdAt');
 				if (cTime) {
@@ -54,6 +55,10 @@
 					_.set(eCtrl, ['curScore', curPlayer, 'id'], curPlayer);
 					_.set(eCtrl, ['curScore', curPlayer, 'score'], scoreMath);
 
+					if (!_.get(eventObj, [curPlayer])) {
+						newPlayer = true;
+					}
+
 					if (curPlayer) {
 						_.set(eventObj, [curPlayer, 'id'], curPlayer);
 						_.set(eventObj, [curPlayer, 'data'], _.get(eventObj, [curPlayer, 'data'], []));
@@ -68,7 +73,7 @@
 					 radius: 3
 					 });
 					 */
-					if (!_.get(eventObj, [curPlayer])) {
+					if (newPlayer) {
 						eventObj[curPlayer].data.push({
 							x: curDate - 1000,
 							y: 0,
