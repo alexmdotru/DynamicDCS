@@ -92,11 +92,13 @@
 								// console.log('nextResync: ', cResync, curTime);
 								// data is out of sync, request full payload
 								if ( cResync < curTime) {
-									mySocket.emit('clientUpd', {
+									var emitObj = {
 										name: $stateParams.name,
 										action: 'unitINIT',
-										authId: _.get(userAccountService, ['localAccount', 'authId'])
-									});
+									};
+									_.set(emitObj, 'authId', _.get(userAccountService, ['localAccount', 'authId']));
+									mySocket.emit('clientUpd', emitObj);
+
 									console.log('RESYNCING, nexttResyncTime:',cResync, ' - ', curTime, ' + ', expireRetrySecs);
 									_.set(dmCtrl, 'nextResyncTime', curTime + expireRetrySecs);
 								} else {
