@@ -6,7 +6,6 @@
 		var curDate = new Date().toISOString();
 		var curTimeEpoc = new Date().getTime();
 		var ePromise;
-		// _.set(eCtrl, 'events', {});
 		_.set(eCtrl, 'curScore', {});
 
 		_.set(eCtrl, 'setTopScore', function (usrObj) {
@@ -30,7 +29,6 @@
 				var eventTime;
 				var curPlayer;
 				var simpleArray = {};
-				var simpleFlags = {};
 				var cTime = _.get(event, 'createdAt');
 				if (cTime) {
 					eventTime = new Date(_.get(event, 'createdAt')).getTime();
@@ -52,6 +50,7 @@
 					if (scoreMath < 0) {
 						scoreMath = 0;
 					}
+
 					_.set(eCtrl, ['curScore', curPlayer, 'id'], curPlayer);
 					_.set(eCtrl, ['curScore', curPlayer, 'score'], scoreMath);
 
@@ -69,6 +68,17 @@
 					 radius: 3
 					 });
 					 */
+					if (!_.get(eventObj, [curPlayer])) {
+						eventObj[curPlayer].data.push({
+							x: curDate - 1000,
+							y: 0,
+							msg: '',
+							score: 0,
+							shadow: false,
+							boostThreshold: 500
+						});
+					}
+
 					_.set(eventObj, [curPlayer, 'shadow'], false);
 					_.set(eventObj, [curPlayer, 'boostThreshold'], 500);
 					_.set(simpleArray, 'y', scoreMath);
