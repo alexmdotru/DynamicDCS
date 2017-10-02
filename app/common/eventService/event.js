@@ -76,7 +76,6 @@
 					_.set(simpleArray, 'msg', _.get(event, 'msg'));
 					_.set(simpleArray, 'score', _.get(event, 'score', 0));
 					if(_.get(event, 'score', 0) && _.get(event, 'iucid')){
-						console.log('cp: ', curPlayer);
 						eventObj[curPlayer].data.push(simpleArray);
 					}
 
