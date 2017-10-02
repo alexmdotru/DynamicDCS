@@ -1,8 +1,8 @@
-<div class="panel panel-default">
+<div class="panel panel-default">{{srvService.servers}}
 	<div class="panel-heading text-center">
 		<div class="col-xs-6">
 			<label for="serverSelect">Server:</label>
-			<select id="serverSelect" class="form-control" ng-model="indxCtrl.selectedServer" ng-options="srv as srv.name for srv in srvService.servers | filter:{name:$viewValue}"></select>
+			<select id="serverSelect" class="form-control" ng-model="indxCtrl.selectedServer" ng-options="srv in srvService.servers"></select>
 		</div>
 		<div class="col-xs-6">
 			<label>Session:</label>
