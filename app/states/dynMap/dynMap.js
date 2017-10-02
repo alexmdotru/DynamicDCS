@@ -99,10 +99,10 @@
 									_.set(emitObj, 'authId', _.get(userAccountService, ['localAccount', 'authId']));
 									mySocket.emit('clientUpd', emitObj);
 
-									console.log('RESYNCING, nexttResyncTime:',cResync, ' - ', curTime, ' + ', expireRetrySecs);
+									// console.log('RESYNCING, nexttResyncTime:',cResync, ' - ', curTime, ' + ', expireRetrySecs);
 									_.set(dmCtrl, 'nextResyncTime', curTime + expireRetrySecs);
 								} else {
-									console.log('unit resync sent waiting '+(cResync - curTime)+ ' more seconds.');
+									// console.log('unit resync sent waiting '+(cResync - curTime)+ ' more seconds.');
 								}
 
 								_.set(dmCtrl, 'lastResyncTime', new Date().getTime());
