@@ -931,8 +931,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 								displaySide: _.get(iUnit, 'coalition'),
 								roleCode: 'I',
 								msg: 'C: '+ getSide(_.get(iUnit, 'coalition'))+' '+ _.get(iUnit, 'playername') +' released a ' + _.get(weaponResp, 'displayName'),
-								showInChart: true
-							};
+								showInChart: false
+						};
 							if(_.get(iCurObj, 'iucid')) {
 								curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
 								dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
