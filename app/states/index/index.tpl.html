@@ -2,7 +2,13 @@
 	<div class="panel-heading text-center">
 		<div class="col-xs-6">
 			<label for="serverSelect">Server:</label>
-			<select id="serverSelect" class="form-control" ng-model="indxCtrl.selectedServer" ng-options="srv in srvService.servers"></select>
+			<select
+				id="serverSelect"
+				class="form-control"
+				ng-model="indxCtrl.selectedServer"
+				name="srv.name"
+				ng-options="srv in srvService.servers"
+			></select>
 		</div>
 		<div class="col-xs-6">
 			<label>Session:</label>
