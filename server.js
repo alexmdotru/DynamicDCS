@@ -707,7 +707,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 											if(switchedPlayerSocket) {
 												if (player.side === 1 || player.side === 2) {
 													setSocketRoom(switchedPlayerSocket, serverName + '_q' + player.side);
-													// sendInit(serverName, switchedPlayerSocket);
+													sendInit(serverName, switchedPlayerSocket);
 												}
 											} else if (switchedPlayer) {
 												curSocket = io.sockets.connected[_.get(switchedPlayer, 'curSocket')];
