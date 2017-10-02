@@ -519,7 +519,7 @@ io.on('connection', function (socket) {
 				socket.on('clientUpd', function (data) {
 					if (data.action === 'unitINIT') {
 						if (curServers[data.name]) {
-							// sendInit(data.name, socket.id, data.authId);
+							sendInit(data.name, socket.id, data.authId);
 						}
 					}
 				});
