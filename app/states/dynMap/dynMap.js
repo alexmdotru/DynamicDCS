@@ -86,16 +86,16 @@
 						}
 						if (que.action === 'U') {
 							if (!_.find(_.get(dmCtrl, 'mObj.units'), {'unitID': _.get(que, 'data.unitID')})) {
-								var expireTime = _.get(dmCtrl, 'nextResyncTime', 0);
-								console.log('nextResync: ', expireTime);
+								var cResync = _.get(dmCtrl, 'nextResyncTime', 0);
+								console.log('nextResync: ', cResync);
 								// data is out of sync, request full payload
-								if ( expireTime < curTime) {
+								if ( cResync < curTime) {
 									mySocket.emit('clientUpd', {
 										name: $stateParams.name,
 										action: 'unitINIT',
 										authId: _.get(userAccountService, ['localAccount', 'authId'])
 									});
-									console.log('RESYNCING, nexttResyncTime:',expireTime, ' - ', curTime, ' + ', expireRetrySecs);
+									console.log('RESYNCING, nexttResyncTime:',cResync, ' - ', curTime, ' + ', expireRetrySecs);
 									_.set(dmCtrl, 'nextResyncTime', curTime + expireRetrySecs);
 								} else {
 									console.log('unit resync sent waiting '+(expireTime - curTime)+ ' more seconds.');
