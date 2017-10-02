@@ -75,7 +75,7 @@
 					 */
 					if (newPlayer) {
 						eventObj[curPlayer].data.push({
-							x: curDate - 1000,
+							x: eventTime - 1000,
 							y: 0,
 							msg: '',
 							score: 0,
