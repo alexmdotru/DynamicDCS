@@ -96,7 +96,7 @@
 										authId: _.get(userAccountService, ['localAccount', 'authId'])
 									});
 									console.log('RESYNCING, nexttResyncTime:',expireTime, ' - ', curTime, ' + ', expireRetrySecs);
-									// _.set(dmCtrl, 'nextResyncTime', curTime + expireRetrySecs);
+									_.set(dmCtrl, 'nextResyncTime', curTime + expireRetrySecs);
 								} else {
 									console.log('unit resync sent waiting '+(expireTime - curTime)+ ' more seconds.');
 								}
