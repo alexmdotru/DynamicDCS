@@ -98,7 +98,7 @@
 									console.log('RESYNCING, nexttResyncTime:',cResync, ' - ', curTime, ' + ', expireRetrySecs);
 									_.set(dmCtrl, 'nextResyncTime', curTime + expireRetrySecs);
 								} else {
-									console.log('unit resync sent waiting '+(expireTime - curTime)+ ' more seconds.');
+									console.log('unit resync sent waiting '+(cResync - curTime)+ ' more seconds.');
 								}
 
 								_.set(dmCtrl, 'lastResyncTime', new Date().getTime());
