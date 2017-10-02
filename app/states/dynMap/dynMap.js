@@ -70,6 +70,7 @@
 		mySocket.on('srvUpd', function (data) {
 			// only listen to packets I need
 			if(_.get(data, 'name') === _.get($stateParams, 'name')){
+				curTime = new Date().getTime();
 				// console.log(data);
 				_.forEach(data.que, function (que) {
 					if (
