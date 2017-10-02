@@ -98,9 +98,7 @@
 			},
 			tooltip: {
 				headerFormat: '{point.x:%b %e, %k:%M:%S.%L UTC}',
-				pointFormat: '<b>{point.msg}</b><br>{point.score} points | Score: {point.y}',
-				split: true,
-				crosshairs: true
+				pointFormat: '<b>{point.msg}</b><br>{point.score} points | Score: {point.y}'
 			},
 			legend: {
 				enabled: true,
@@ -112,7 +110,7 @@
 				enabled: false
 			},
 			rangeSelector: {
-				selected: 5,
+				selected: 2,
 				inputDateFormat: '%k:%M:%S',
 				buttons: [{
 					type: 'minute',
