@@ -1,4 +1,4 @@
-<div class="panel panel-default">{{srvService.servers}}
+<div class="panel panel-default">
 	<div class="panel-heading text-center">
 		<div class="col-xs-6">
 			<label for="serverSelect">Server:</label>
@@ -6,9 +6,9 @@
 				id="serverSelect"
 				class="form-control"
 				ng-model="indxCtrl.selectedServer"
-				name="srv.name"
-				ng-options="srv in srvService.servers"
-			></select>
+			>
+				<option ng-repeat="option in srvService.servers" value="{{option.name}}">{{option.name}}</option>
+			</select>
 		</div>
 		<div class="col-xs-6">
 			<label>Session:</label>
