@@ -102,13 +102,6 @@
 				split: true,
 				crosshairs: true
 			},
-			plotOptions: {
-				spline: {
-					marker: {
-						enabled: true
-					}
-				}
-			},
 			legend: {
 				enabled: true,
 				layout: 'vertical',
