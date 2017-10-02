@@ -61,19 +61,20 @@
 						_.set(eCtrl, ['curScore', curPlayer, 'name'], _.get(event, 'iName'))
 					}
 				}
+				/*
 				_.set(eventObj, [curPlayer, 'marker'], {
 					enabled: true,
 					radius: 3
 				});
+				*/
 				_.set(eventObj, [curPlayer, 'shadow'], false);
 				_.set(eventObj, [curPlayer, 'boostThreshold'], 500);
 				_.set(simpleArray, 'y', scoreMath);
 				_.set(simpleArray, 'x', eventTime);
 				_.set(simpleArray, 'msg', _.get(event, 'msg'));
 				_.set(simpleArray, 'score', _.get(event, 'score', 0));
-				console.log('score', _.get(event, 'score', 0));
 				if(_.get(event, 'score', 0)){
-					//eventObj[curPlayer].data.push(simpleArray);
+					eventObj[curPlayer].data.push(simpleArray);
 				}
 
 				// _.set(simpleFlags, 'x', eventTime);
