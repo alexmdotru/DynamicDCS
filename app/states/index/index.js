@@ -102,6 +102,11 @@
 				split: true,
 				crosshairs: true
 			},
+			plotOptions: {
+				column: {
+					animation: false
+				}
+			},
 			legend: {
 				enabled: true,
 				layout: 'vertical',
