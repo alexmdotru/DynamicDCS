@@ -11,7 +11,7 @@
 		var pSide;
 		var curTheater = _.get(_.find(_.get(srvService, 'servers'), {name: _.get($stateParams, 'name')}), 'theater');
 		var theaterObj = _.find(theaters, {name: curTheater});
-		var expireRetrySecs = 5000;
+		var expireRetrySecs = 2000;
 		var expireInitSecs = 5000;
 		var curTime = new Date().getTime();
 		_.set(dmCtrl, 'nextResyncTime', 0);
