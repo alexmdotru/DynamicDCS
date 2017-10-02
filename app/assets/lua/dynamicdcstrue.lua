@@ -380,4 +380,4 @@ do
 end
 
 world.addEventHandler(clientEventHandler)
-env.info("dynamicDCS event handler added")
+env.info("dynamicDCSTrue event handler added")
