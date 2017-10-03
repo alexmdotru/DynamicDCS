@@ -662,6 +662,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					var matchPlayer = _.find(curServers[serverName].serverObject.players, {ucid: player.ucid});
 					if(matchPlayer) {
 						//check for banned players
+						console.log('stuff: ', player.id, player.name);
 						dbSystemServiceController.banUserActions('read', player.ucid)
 							.then(function (banUser) {
 								if (!_.isEmpty(banUser)){
