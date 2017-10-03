@@ -6,7 +6,7 @@ function tprint (tbl, indent)
 		formatting = string.rep("  ", indent) .. k .. ": "
 		if type(v) == "table" then
 			env.info(formatting)
-			--tprint(v, indent+1)
+			tprint(v, indent+1)
 		elseif type(v) == 'boolean' then
 			env.info(formatting .. tostring(v))
 		else
@@ -20,7 +20,9 @@ do
 	local PORT = 3001
 	local DATA_TIMEOUT_SEC = 0.5
 
-	local cacheDB = {}
+	local unitCache = {}
+	local airbaseCache = {}
+	local staticCache = {}
 	local updateQue = {["que"] = {}}
 
 	package.path = package.path..";.\\LuaSocket\\?.lua"
@@ -40,7 +42,9 @@ do
 	log('REALTIME '..missionStartTime)
 
 	local function clearVar()
-		cacheDB = {}
+		unitCache = {}
+		airbaseCache = {}
+		staticCache = {}
 		updateQue = {["que"] = {}}
 	end
 
@@ -51,17 +55,18 @@ do
 		local function addUnit(unit, unitID, coalition, lat, lon, alt, hdg, speed, category, action)
 			local curUnit = {
 				action = action,
+				uType = "unit",
 				data = {
 					unitID = unitID
 				}
 			}
 			if action == "C" or action == "U" then
-				cacheDB[unitID] = {}
-				cacheDB[unitID].lat = lat
-				cacheDB[unitID].lon = lon
-				cacheDB[unitID].alt = alt
-				cacheDB[unitID].hdg = hdg
-				cacheDB[unitID].speed = speed
+				unitCache[unitID] = {}
+				unitCache[unitID].lat = lat
+				unitCache[unitID].lon = lon
+				unitCache[unitID].alt = alt
+				unitCache[unitID].hdg = hdg
+				unitCache[unitID].speed = speed
 				curUnit.data.lat = lat
 				curUnit.data.lon = lon
 				curUnit.data.alt = alt
@@ -111,9 +116,9 @@ do
 						local hdg = math.floor(heading / math.pi * 180);
 						local velocity = unit:getVelocity()
 						local speed = math.sqrt(velocity.x^2 + velocity.z^2)
-						if cacheDB[unitID] ~= nil then
+						if unitCache[unitID] ~= nil then
 							--log('cachelat: '..cacheDB[unitID].lat..' reg lat: '..lat..' cachelon: '..cacheDB[unitID].lon..' reg lon: '..lon)
-							if cacheDB[unitID].lat ~= lat or cacheDB[unitID].lon ~= lon then
+							if unitCache[unitID].lat ~= lat or unitCache[unitID].lon ~= lon then
 								addUnit(unit, unitID, coalition, lat, lon, alt, hdg, speed, category, "U")
 							end
 						else
@@ -126,16 +131,38 @@ do
 		end
 
 		local redGroups = coalition.getGroups(coalition.side.RED)
-		addGroups(redGroups, 1)
+		if redGroups ~= nil then
+			addGroups(redGroups, 1)
+		end
 		local blueGroups = coalition.getGroups(coalition.side.BLUE)
-		addGroups(blueGroups, 2)
+		if blueGroups ~= nil then
+			addGroups(blueGroups, 2)
+		end
+
+		local redStatics = coalition.getStaticObjects(coalition.side.RED)
+		if redStatics ~= nil then
+			env.info("rstatics: ")
+			tprint(redStatics, 1)
+			for staticIndex = 1, #redStatics do
+				env.info('desc: '..redStatics[staticIndex])
+				env.info('getlife: '..redStatics[staticIndex]:getLife())
+				env.info('position: '..redStatics[staticIndex]:getPosition())
+				env.info('typename: '..redStatics[staticIndex]:getTypeName())
+
+			end
+		end
+		local blueStatics = coalition.getStaticObjects(coalition.side.BLUE)
+		if blueStatics ~= nil then
+			env.info("bstatics: ");
+			tprint(blueStatics, 1)
+		end
 
 		--check dead, send delete action to server if dead detected
 		local unitCnt = 0
-		for k, v in pairs( cacheDB ) do
+		for k, v in pairs( unitCache ) do
 			if checkDead[k] == nil then
 				addUnit(0, k, 0, 0, 0, 0, 0, 0, '', "D")
-				cacheDB[k] = nil
+				unitCache[k] = nil
 			end
 			unitCnt = unitCnt + 1
 		end
