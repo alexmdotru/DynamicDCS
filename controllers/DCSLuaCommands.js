@@ -27,3 +27,13 @@ _.set(exports, 'kickPlayer', function (serverName, playerId, mesg) {
 	var actionObj = {actionObj: sendClient, queName: 'GameGuiArray'};
 	dbMapServiceController.cmdQueActions('save', serverName, actionObj);
 });
+
+_.set(exports, 'forcePlayerSpectator', function (serverName, playerId, mesg) {
+	var curCMD = 'net.force_player_slot('+playerId+', 0, "")';
+	var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
+	var actionObj = {actionObj: sendClient, queName: 'GameGuiArray'};
+	dbMapServiceController.cmdQueActions('save', serverName, actionObj);
+	var curCMD = 'net.send_chat("'+mesg+'", all)';
+	var actionObj = {actionObj: sendClient, queName: 'GameGuiArray'};
+	dbMapServiceController.cmdQueActions('save', serverName, actionObj);
+});
