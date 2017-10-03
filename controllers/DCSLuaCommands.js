@@ -4,6 +4,7 @@ const net = require('net'),
 const dbSystemServiceController = require('./dbSystemService');
 const dbMapServiceController = require('./dbMapService');
 
+// game mission commands
 _.set(exports, 'sendMesgToAll', function (serverName, mesg, time) {
 	var curCMD = 'trigger.action.outText("'+mesg+'", '+time+')';
 	var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
@@ -20,6 +21,8 @@ _.set(exports, 'sendMesgToCoalition', function (coalition, serverName, mesg, tim
 	dbMapServiceController.cmdQueActions('save', serverName, actionObj);
 });
 
+
+// GameGui commands
 _.set(exports, 'kickPlayer', function (serverName, playerId, mesg) {
 	var curCMD = 'net.kick('+playerId+', "'+mesg+'")';
 	//var curCMD = 'net.send_chat("'+mesg+'", all)';
