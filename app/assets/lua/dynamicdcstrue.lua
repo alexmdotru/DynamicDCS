@@ -48,6 +48,8 @@ do
 		updateQue = {["que"] = {}}
 	end
 
+	-- tprint(env.mission.coalition, 1) access all mission params
+
 	local function getDataMessage()
 		local checkDead = {}
 
@@ -142,12 +144,34 @@ do
 		local redStatics = coalition.getStaticObjects(coalition.side.RED)
 		if redStatics ~= nil then
 			env.info("rstatics: ")
-			tprint(redStatics, 1)
 			for staticIndex = 1, #redStatics do
-				env.info('desc: '..redStatics[staticIndex])
+				env.info('id: '..redStatics[staticIndex].id_)
+				env.info('getID: '..redStatics[staticIndex]:getID())
 				env.info('getlife: '..redStatics[staticIndex]:getLife())
-				env.info('position: '..redStatics[staticIndex]:getPosition())
 				env.info('typename: '..redStatics[staticIndex]:getTypeName())
+				env.info('name: '..redStatics[staticIndex]:getName())
+				env.info("position")
+				local statPos = redStatics[staticIndex]:getPosition()
+				local lat, lon, alt = coord.LOtoLL(statPos.p)
+				env.info('lat:'..lat..' lon:'..lon..' alt:'..alt)
+				env.info("description")
+				tprint(redStatics[staticIndex]:getDesc())
+				env.info("crate")
+				local crate = StaticObject.getByName('BlueCARGO')
+
+				env.info('crate id: '..crate.id_)
+				env.info('crate getID: '..crate:getID())
+				env.info('crate getlife: '..crate:getLife())
+				env.info('crate typename: '..crate:getTypeName())
+				env.info('crate name: '..crate:getName())
+				env.info('crate realname: '..crate:getCargoDisplayName())
+				env.info('crate weight: '..crate:getCargoWeight())
+				tprint(crate:getDesc())
+				local statPos = crate:getPosition()
+				local lat, lon, alt = coord.LOtoLL(statPos.p)
+				env.info('lat:'..lat..' lon:'..lon..' alt:'..alt)
+				env.info('........................................')
+
 
 			end
 		end

@@ -7,6 +7,29 @@ const dbMapServiceController = require('./dbMapService');
 _.set(exports, 'buildDynamicCaucasus', function () {
 	console.log('build dynamic caucasus');
 	/*
+		1. roadMap:
+			a. LUA
+				1. send over airbase table from internal list on init
+				2. update static buildings like the grouped units, include health
+				3. keep local table of all spawned cargos and health(unless they dissappear when dead), send over alive or dead cargo positions to distance comparison
+			b. nodeJS build initial map of units
+				1. build lat,lon distance calculator(make this VERY fast)
+				1. spawn farp support units function, fires off when someone captures base, cargo plane comes in to bring these units, map units to base name
+				2. spawn random populated base units, fires off again when someone captures base on timer with cargo plane coming in to replenish, map units to base name
+				3. spawn static cmd centers for CTLD functions, map buildings to base name, respawn when base captured, and cargo repair plane makes it, scheduler to keep trying to repair until done
+				4. CTLD like menu option, add and remove options based on distance calculations
+				5. build CTLD menu spawner
+				6. Strike building to stop spwning at that airport, its invicible until 90% ?? of units dead, replenished by AI c17 support
+				7. work on menu enabled point spenders to call in fun things
+
+		2. questions
+			a. warehouses supplying trickle of hard to get weapons, 120's nukes, cbu97s, bk90s
+			every base has a strike warehouse linked to it for these hard to get weapons, strike warehouse does not come back until restart
+
+
+	*/
+
+	/*
 		side lua addon:
 			build static updator for static buildings - ctld buildings, supply and demand
 
