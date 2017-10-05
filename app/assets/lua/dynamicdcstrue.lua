@@ -108,6 +108,12 @@ do
 							curUnit.data.category = CategoryNames[unit:getDesc().category]
 							curUnit.data.type = unit:getTypeName()
 							curUnit.data.coalition = coalition
+							local PlayerName = unit:getPlayerName()
+							if PlayerName ~= nil then
+								curUnit.data.playername = PlayerName
+							else
+								curUnit.data.playername = ""
+							end
 							curUnit.action = "C"
 							table.insert(updateQue.que, curUnit)
 						end
@@ -236,14 +242,13 @@ do
 	end
 
 	local function runRequest(request)
-		env.info(request);
 		if request.action ~= nil then
 			if request.action == "INIT" then
-				log('RUNNING REQUEST INIT')
+				-- log('RUNNING REQUEST INIT')
 				clearVar();
 			end
 			if request.action == "CMD" and request.cmd ~= nil and request.reqID ~= nil then
-				log('RUNNING CMD')
+				-- log('RUNNING CMD')
 				pcallCommand(request.cmd, request.reqID)
 			end
 		end
@@ -437,8 +442,6 @@ do
 							["category"] = weaponCategory[curWeapon.category + 1]
 						}
 					end
-					--env.info('eventFiring: '..eventTypes[_event.id]);
-					--env.info('curevent: '..curEvent.startAbsTime..' -- '..curEvent.curAbsTime);
 					table.insert(updateQue.que, {
 						action = eventTypes[_event.id],
 						data = curEvent
