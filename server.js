@@ -565,6 +565,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 	}
 
 	_.forEach(update.que, function (queObj) {
+		console.log('incom: ', queObj);
 		var iCurObj = {};
 		var iPlayer = {};
 		var tPlayer = {};
@@ -576,23 +577,14 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			if (curUnit) {
 				curUnit.action = 'U';
 			} else {
-				// console.log('A: ', _.get(queObj, 'data.unitID'));
+				var curData = _.get(queObj, 'data');
+				_.set(curData, '_id', _.get(curData, 'unitID'));
 				iCurObj = {
 					action: 'C',
 					sessionName: sessionName,
-					data: {
-						_id: parseFloat(_.get(queObj, 'data.unitID')),
-						unitID: parseFloat(_.get(queObj, 'data.unitID')),
-						type: _.get(queObj, 'data.type'),
-						coalition: parseFloat(_.get(queObj, 'data.coalition')),
-						lat: parseFloat(_.get(queObj, 'data.lat')),
-						lon: parseFloat(_.get(queObj, 'data.lon')),
-						alt: parseFloat(_.get(queObj, 'data.alt')),
-						hdg: parseFloat(_.get(queObj, 'data.hdg')),
-						speed: parseFloat(_.get(queObj, 'data.speed')),
-						playername: _.get(queObj, 'data.playername', '')
-					}
+					data: curData
 				};
+				console.log('c: ', iCurObj);
 
 				dbMapServiceController.unitActions('save', serverName, iCurObj.data);
 				curServers[serverName].updateQue['q' + parseFloat(_.get(queObj, 'data.coalition'))].push(_.cloneDeep(iCurObj));

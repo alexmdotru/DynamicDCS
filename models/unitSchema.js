@@ -18,6 +18,10 @@ const UnitSchema = new Schema({
 		max: 2,
 		required: true
 	},
+	category: {
+		type: String,
+		required: true
+	},
 	lat: {
 		type: Number,
 		required: true
@@ -36,9 +40,18 @@ const UnitSchema = new Schema({
 		max: 359,
 		required: true
 	},
-	speed: {
+	life: {
 		type: Number,
 		required: true
+	},
+	maxLife: {
+		type: Number
+	},
+	speed: {
+		type: Number
+	},
+	name: {
+		type: String
 	},
 	playername: {
 		type: String
