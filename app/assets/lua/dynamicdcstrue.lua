@@ -34,6 +34,7 @@ do
 	local JSON = loadfile("Scripts\\JSON.lua")()
 	require = nil
 	local missionStartTime = os.time()
+	local airbases = {}
 
 	local function log(msg)
 		env.info("DynamicDCS (t=" .. timer.getTime() .. "): " .. msg)
@@ -45,7 +46,22 @@ do
 		unitCache = {}
 		airbaseCache = {}
 		staticCache = {}
-		updateQue = {["que"] = {}}
+		updateQue = {["que"] = {} }
+
+		local airbases = world.getAirbases()
+		local airbaseObj = {}
+		for airbaseIndex = 1, #airbases do
+			local curObj = {
+				["id"] = airbases[airbaseIndex]:getID(),
+				["name"] = airbases[airbaseIndex]:getName()
+			}
+			table.insert(airbaseObj, curObj)
+		end
+
+		table.insert(updateQue.que, {
+			action = 'AIRBASE_UPDATE',
+			data = airbaseObj
+		})
 	end
 
 	-- tprint(env.mission.coalition, 1) access all mission params
@@ -202,30 +218,21 @@ do
 			addStatics(blueStatics, 2)
 		end
 
-	local staticCnt = 0
-	for k, v in pairs( staticCache ) do
-		if checkStaticDead[k] == nil then
-			local curStatic = {
-				action = "D",
-				uType = "static",
-				data = {
-					staticID = k
+		local staticCnt = 0
+		for k, v in pairs( staticCache ) do
+			if checkStaticDead[k] == nil then
+				local curStatic = {
+					action = "D",
+					uType = "static",
+					data = {
+						staticID = k
+					}
 				}
-			}
-			table.insert(updateQue.que, curStatic)
-			staticCache[k] = nil
+				table.insert(updateQue.que, curStatic)
+				staticCache[k] = nil
+			end
+			staticCnt = staticCnt + 1
 		end
-		staticCnt = staticCnt + 1
-	end
-
-
-
-		--send base info, working off unitAccess.state for now
-		--table.insert(updateQue.que, {
-		--	action = "baseInfo",
-		--	data = unitAccess.state
-		--})
-
 
 		local chkSize = 500
 		local payload = {}
