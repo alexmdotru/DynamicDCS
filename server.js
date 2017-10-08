@@ -758,20 +758,33 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		}
 
 		//Base Info
-		if (_.get(queObj, 'action') === 'baseInfo') {
+		if (_.get(queObj, 'action') === 'airbaseC') {
 			_.set(queObj, 'sessionName', sessionName);
-			_.forEach(queObj.data, function (value, key) {
-				iCurObj = {
-					_id: key,
-					name: key,
-					coalition: value
-				};
-				dbMapServiceController.baseActions('update', serverName, iCurObj);
+			_.forEach(queObj.data, function (val) {
+				var curairbase = _.find(curServers[serverName].serverObject.airbases, {name: _.get(val, 'name')});
+				if (curairbase) {
+					curairbase.action = 'airbaseU';
+				} else {
+					_.set(curServers, [serverName, 'serverObject', 'airbases'], _.get(curServers, [serverName, 'serverObject', 'airbases'], []));
+					dbMapServiceController.baseActions('save', serverName, val);
+					// curServers[serverName].updateQue['q' + parseFloat(_.get(queObj, 'data.coalition'))].push(_.cloneDeep(iCurObj));
+					// curServers[serverName].updateQue.qadmin.push(_.cloneDeep(iCurObj));
+					curServers[serverName].serverObject.airbases.push(_.cloneDeep(val));
+				}
+				if (_.get(queObj, 'action') === 'airbaseU') {
+					if (curairbase) {
+						curairbase.side = parseFloat(_.get(val, 'side'));
+						dbMapServiceController.baseActions('update', serverName, _.cloneDeep(curairbase));
+						//curServers[serverName].updateQue['q' + curUnit.coalition].push(_.cloneDeep(iCurObj));
+						//curServers[serverName].updateQue.qadmin.push(_.cloneDeep(iCurObj));
+					}
+				}
+
 			});
 
-			curServers[serverName].updateQue.q1.push(_.cloneDeep(queObj));
-			curServers[serverName].updateQue.q2.push(_.cloneDeep(queObj));
-			curServers[serverName].updateQue.qadmin.push(_.cloneDeep(queObj));
+			// curServers[serverName].updateQue.q1.push(_.cloneDeep(queObj));
+			// curServers[serverName].updateQue.q2.push(_.cloneDeep(queObj));
+			// curServers[serverName].updateQue.qadmin.push(_.cloneDeep(queObj));
 		}
 
 		//Cmd Response

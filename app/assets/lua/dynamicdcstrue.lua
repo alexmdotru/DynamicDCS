@@ -15,6 +15,21 @@ function tprint (tbl, indent)
 	end
 end
 
+function string:split( inSplitPattern, outResults )
+	if not outResults then
+		outResults = { }
+	end
+	local theStart = 1
+	local theSplitStart, theSplitEnd = string.find( self, inSplitPattern, theStart )
+	while theSplitStart do
+		table.insert( outResults, string.sub( self, theStart, theSplitStart-1 ) )
+		theStart = theSplitEnd + 1
+		theSplitStart, theSplitEnd = string.find( self, inSplitPattern, theStart )
+	end
+	table.insert( outResults, string.sub( self, theStart ) )
+	return outResults
+end
+
 do
 	--
 	local PORT = 3001
@@ -48,20 +63,57 @@ do
 		staticCache = {}
 		updateQue = {["que"] = {} }
 
-		local airbases = world.getAirbases()
-		local airbaseObj = {}
-		for airbaseIndex = 1, #airbases do
-			local curObj = {
-				["id"] = airbases[airbaseIndex]:getID(),
-				["name"] = airbases[airbaseIndex]:getName()
-			}
-			table.insert(airbaseObj, curObj)
+		local function updateAirbases(airbases, coalition)
+			local airbaseObj = {}
+			for airbaseIndex = 1, #airbases do
+				local baseID = tonumber( airbases[airbaseIndex]:getID())
+				local unitPosition =  airbases[airbaseIndex]:getPosition()
+				lat, lon, alt = coord.LOtoLL(unitPosition.p)
+				local baseName = airbases[airbaseIndex]:getName()
+				local curObj = {
+					["_id"] = baseName,
+					["baseID"] = baseID,
+					["name"] = baseName,
+					["cleanName"] = baseName,
+					["side"] = coalition,
+					["lat"] = lat,
+					["lon"] = lon,
+					["alt"] = alt
+				}
+				if string.find( baseName, 'FARP', 1, true ) then
+					local splitName = baseName:split("_")
+					local cleanSplit = baseName:split(" #")
+					curObj.cleanName = cleanSplit[1]
+					curObj.parentBase = splitName[1]
+					curObj.farp = true
+				end
+				if string.find( baseName, 'Expansion', 1, true ) then
+					local splitName = baseName:split("_")
+					local cleanSplit = baseName:split(" #")
+					curObj.cleanName = cleanSplit[1]
+					curObj.parentBase = splitName[1]
+					curObj.extension = true
+				end
+				table.insert(airbaseObj, curObj)
+			end
+			table.insert(updateQue.que, {
+				action = 'airbaseC',
+				data = airbaseObj
+			})
 		end
 
-		table.insert(updateQue.que, {
-			action = 'AIRBASE_UPDATE',
-			data = airbaseObj
-		})
+		local neutralAirbases = coalition.getAirbases(coalition.side.NEUTRAL)
+		if neutralAirbases ~= nil then
+			updateAirbases(neutralAirbases, 0)
+		end
+		local redAirbases = coalition.getAirbases(coalition.side.RED)
+		if redAirbases ~= nil then
+			updateAirbases(redAirbases, 1)
+		end
+		local blueAirbases = coalition.getAirbases(coalition.side.BLUE)
+		if blueAirbases ~= nil then
+			updateAirbases(blueAirbases, 2)
+		end
 	end
 
 	-- tprint(env.mission.coalition, 1) access all mission params
