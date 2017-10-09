@@ -36,6 +36,7 @@ do
 	local DATA_TIMEOUT_SEC = 0.5
 
 	local isResetUnits = false
+	local lockBaseUpdates = true
 	local unitCache = {}
 	local airbaseCache = {}
 	local staticCache = {}
@@ -102,26 +103,28 @@ do
 	end
 
 	local function clearVar()
-		env.info('Clearing Vars')
-		isResetUnits = true
-		unitCache = {}
-		airbaseCache = {}
-		staticCache = {}
-		updateQue = { ["que"] = {} }
+		if not lockBaseUpdates then
+			env.info('Clearing Vars')
+			isResetUnits = true
+			unitCache = {}
+			airbaseCache = {}
+			staticCache = {}
+			updateQue = { ["que"] = {} }
 
-		local neutralAirbases = coalition.getAirbases(coalition.side.NEUTRAL)
-		if neutralAirbases ~= nil then
-			updateAirbases(neutralAirbases, 0)
+			local neutralAirbases = coalition.getAirbases(coalition.side.NEUTRAL)
+			if neutralAirbases ~= nil then
+				updateAirbases(neutralAirbases, 0)
+			end
+			local redAirbases = coalition.getAirbases(coalition.side.RED)
+			if redAirbases ~= nil then
+				updateAirbases(redAirbases, 1)
+			end
+			local blueAirbases = coalition.getAirbases(coalition.side.BLUE)
+			if blueAirbases ~= nil then
+				updateAirbases(blueAirbases, 2)
+			end
+			isResetUnits = false
 		end
-		local redAirbases = coalition.getAirbases(coalition.side.RED)
-		if redAirbases ~= nil then
-			updateAirbases(redAirbases, 1)
-		end
-		local blueAirbases = coalition.getAirbases(coalition.side.BLUE)
-		if blueAirbases ~= nil then
-			updateAirbases(blueAirbases, 2)
-		end
-		isResetUnits = false
 	end
 
 	local function getDataMessage()
@@ -351,7 +354,15 @@ do
 		if request.action ~= nil then
 			if request.action == "INIT" then
 				-- log('RUNNING REQUEST INIT')
-				clearVar();
+				env.info('INIT '..table.getn(airbaseCache))
+				if table.getn(airbaseCache) == 0 then
+					-- call initial pop, disable clear var while init pop runs
+					env.info('INITIAL PULL FROM DB TO POPULATE MAP');
+				else
+					lockBaseUpdates = false
+					clearVar();
+				end
+
 			end
 			if request.action == "CMD" and request.cmd ~= nil and request.reqID ~= nil then
 				-- log('RUNNING CMD')

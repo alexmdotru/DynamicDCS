@@ -645,13 +645,14 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		}
 
 		//Base Info
+		var abData;
 		var curairbase = _.find(curServers[serverName].serverObject.airbases, {name: _.get(queObj, ['data', 'name'])});
 		if (_.get(queObj, 'action') === 'airbaseC') {
 			_.set(queObj, 'sessionName', sessionName);
 			if (curairbase) {
 				_.set(queObj, 'action', 'airbaseU');
 			} else {
-				var abData = _.get(queObj, 'data');
+				abData = _.get(queObj, 'data');
 				_.set(curServers, [serverName, 'serverObject', 'airbases'], _.get(curServers, [serverName, 'serverObject', 'airbases'], []));
 				dbMapServiceController.baseActions('save', serverName, abData);
 				curServers[serverName].serverObject.airbases.push(_.cloneDeep(abData));
@@ -659,7 +660,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		}
 
 		if (_.get(queObj, 'action') === 'airbaseU') {
-			var abData = _.get(queObj, 'data');
+			abData = _.get(queObj, 'data');
 			_.set(queObj, 'sessionName', sessionName);
 			dbMapServiceController.baseActions('update', serverName, abData);
 			_.set(curairbase, 'side', _.get(abData, 'side', 0));
@@ -668,7 +669,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		//playerUpdate
 		if (_.get(queObj, 'action') === 'players') {
 			_.set(queObj, 'sessionName', sessionName);
-			var switchedPlayer;
 			_.forEach(queObj.data, function (player) {
 				if (player !== null) {
 					var matchPlayer = _.find(curServers[serverName].serverObject.players, {ucid: player.ucid});
