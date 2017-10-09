@@ -19,7 +19,6 @@ var cmdQueSchema = require('../models/cmdQueSchema');
 exports.baseActions = function (action, serverName, obj){
 	const Airfield = mapdb.model(serverName+'_airfield', airfieldSchema);
 	if(action === 'update') {
-		console.log('up: ', obj);
 		return new Promise(function(resolve, reject) {
 			Airfield.update(
 				{baseID: obj.baseID},
@@ -33,9 +32,8 @@ exports.baseActions = function (action, serverName, obj){
 	}
 
 	if(action === 'save') {
-		console.log('save: ', obj);
 		return new Promise(function(resolve, reject) {
-			Airfield.find({baseID: obj.baseID}, function (err, airfieldObj) {
+			Airfield.find({_id: obj._id}, function (err, airfieldObj) {
 				if (err) {
 					reject(err)
 				}
@@ -48,9 +46,8 @@ exports.baseActions = function (action, serverName, obj){
 						resolve(afObj);
 					});
 				} else {
-					console.log('airf: ', airfieldObj);
 					Airfield.update(
-						{baseID: obj.baseID},
+						{_id: obj._id},
 						{$set: {side: _.get(obj, 'side', 0)}},
 						function(err, airfield) {
 							if (err) { reject(err) }
@@ -64,7 +61,6 @@ exports.baseActions = function (action, serverName, obj){
 };
 
 exports.srvPlayerActions = function (action, serverName, obj){
-	//console.log('srvPlayerActions: ', action, serverName, obj);
 	const SrvPlayer = mapdb.model(serverName+'_srvPlayer', srvPlayerSchema);
 	if (action === 'read') {
 		return new Promise(function(resolve, reject) {
@@ -163,7 +159,6 @@ exports.statSessionActions = function (action, serverName, obj){
 		});
 	}
 	if(action === 'save') {
-		console.log('statsessionsave: ', obj);
 		return new Promise(function(resolve, reject) {
 			StatSession.find({_id: obj._id}, function (err, sessionObj) {
 				if (err) {

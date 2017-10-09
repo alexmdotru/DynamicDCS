@@ -584,7 +584,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					sessionName: sessionName,
 					data: curData
 				};
-				console.log('c: ', iCurObj);
 
 				dbMapServiceController.unitActions('save', serverName, iCurObj.data);
 				curServers[serverName].updateQue['q' + parseFloat(_.get(queObj, 'data.coalition'))].push(_.cloneDeep(iCurObj));
@@ -650,11 +649,10 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		if (_.get(queObj, 'action') === 'airbaseC') {
 			_.set(queObj, 'sessionName', sessionName);
 			if (curairbase) {
-				curairbase.action = 'airbaseU';
+				_.set(queObj, 'action', 'airbaseU');
 			} else {
 				var abData = _.get(queObj, 'data');
 				_.set(curServers, [serverName, 'serverObject', 'airbases'], _.get(curServers, [serverName, 'serverObject', 'airbases'], []));
-				console.log('save', serverName, abData);
 				dbMapServiceController.baseActions('save', serverName, abData);
 				curServers[serverName].serverObject.airbases.push(_.cloneDeep(abData));
 			}
@@ -663,7 +661,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		if (_.get(queObj, 'action') === 'airbaseU') {
 			var abData = _.get(queObj, 'data');
 			_.set(queObj, 'sessionName', sessionName);
-			console.log('update', serverName, abData);
 			dbMapServiceController.baseActions('update', serverName, abData);
 			_.set(curairbase, 'side', _.get(abData, 'side', 0));
 		}
@@ -1440,6 +1437,7 @@ setInterval(function () {
 						_.set(curServers, [server.name, 'serverObject'], {
 							units: [],
 							bases: [],
+							airbases: [],
 							players: [],
 							ClientRequestArray: [],
 							GameGUIRequestArray: []
