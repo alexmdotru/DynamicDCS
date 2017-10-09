@@ -18,13 +18,49 @@ var cmdQueSchema = require('../models/cmdQueSchema');
 
 exports.baseActions = function (action, serverName, obj){
 	const Airfield = mapdb.model(serverName+'_airfield', airfieldSchema);
-	var query = {_id: obj._id},
-		update = { $set: obj },
-		options = { upsert: true, new: true, setDefaultsOnInsert: true };
+	if(action === 'update') {
+		console.log('up: ', obj);
+		return new Promise(function(resolve, reject) {
+			Airfield.update(
+				{baseID: obj.baseID},
+				{$set: {side: _.get(obj, 'side', 0)}},
+				function(err, airfield) {
+					if (err) { reject(err) }
+					resolve(airfield);
+				}
+			);
+		});
+	}
 
-	Airfield.findOneAndUpdate( query, update, options, function(err) {
-		if (err) return console.error(err);
-	});
+	if(action === 'save') {
+		console.log('save: ', obj);
+		return new Promise(function(resolve, reject) {
+			Airfield.find({baseID: obj.baseID}, function (err, airfieldObj) {
+				if (err) {
+					reject(err)
+				}
+				if (airfieldObj.length === 0) {
+					const aObj = new Airfield(obj);
+					aObj.save(function (err, afObj) {
+						if (err) {
+							reject(err)
+						}
+						resolve(afObj);
+					});
+				} else {
+					console.log('airf: ', airfieldObj);
+					Airfield.update(
+						{baseID: obj.baseID},
+						{$set: {side: _.get(obj, 'side', 0)}},
+						function(err, airfield) {
+							if (err) { reject(err) }
+							resolve(airfield);
+						}
+					);
+				}
+			});
+		});
+	}
 };
 
 exports.srvPlayerActions = function (action, serverName, obj){

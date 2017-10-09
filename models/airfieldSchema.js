@@ -11,10 +11,6 @@ const AirfieldSchema = new Schema({
 		type: Number,
 		required: true
 	},
-	expansion: {
-		type: Boolean,
-		default: false
-	},
 	farp: {
 		type: Boolean,
 		default: false
@@ -35,10 +31,6 @@ const AirfieldSchema = new Schema({
 		type: String,
 		required: true
 	},
-	cleanName: {
-		type: String,
-		required: true
-	},
 	parentBase: {
 		type: String
 	},
@@ -48,7 +40,6 @@ const AirfieldSchema = new Schema({
 		max: 2,
 		required: true
 	}
-
 },
 	{
 		timestamps: true, // Saves createdAt and updatedAt as dates. createdAt will be our timestamp.
