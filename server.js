@@ -572,7 +572,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		var iUnit = {};
 		var tUnit = {};
 		var curUnit = _.find(curServers[serverName].serverObject.units, {'unitID': _.get(queObj, 'data.unitID')});
-
 		if (_.get(queObj, 'action') === 'C') {
 			if (curUnit) {
 				curUnit.action = 'U';
@@ -797,6 +796,16 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					curServers[serverName].updateQue.qadmin.push(_.cloneDeep(queObj));
 				}
 			}
+		}
+
+		//basePOP
+		if (_.get(queObj, 'action') === 'populateMap') {
+			 console.log(_.get(queObj, 'data'));
+			_.forEach(_.get(queObj, 'data'), function (poly, baseName) {
+				_.replace(baseName,"_DEFZONE_","");
+				console.log('basename: ', baseName);
+				DCSLuaCommands.spawnGroupsInPolygon(serverName, baseName, poly);
+			});
 		}
 
 		_.set(queObj, 'data.sessionName', sessionName);

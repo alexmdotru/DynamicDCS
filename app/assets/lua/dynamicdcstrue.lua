@@ -59,6 +59,35 @@ do
 
 	log('REALTIME ' .. missionStartTime)
 
+	local polyArray = {}
+	if env.mission.coalition then
+		for coa,coaTable in pairs(env.mission.coalition) do
+			if type(coaTable) == 'table' and coaTable.country and coa == 'blue' then
+				for i=1,#coaTable.country do
+					local country = coaTable.country[i]
+					for uType,uTable in pairs(country) do
+						if uType == 'helicopter' then
+							if type(uTable)=='table' and uTable.group then
+								for j=1,#uTable.group do
+									local group = uTable.group[j]
+									local gName = env.getValueDictByKey(group.name)
+									if gName and group.route.points and string.find(gName, '_DEFZONE_', 1, true) then
+										polyArray[gName] = {}
+										for pIndex = 1, #group.route.points do
+											polyArray[gName][pIndex] = {}
+											polyArray[gName][pIndex].x = group.route.points[pIndex].x
+											polyArray[gName][pIndex].y = group.route.points[pIndex].y
+										end
+									end
+								end
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+
 	local function captureAirbase(baseID, coalition, farp)
 		env.info('base update ' .. baseID .. ' - ' .. coalition)
 		table.insert(updateQue.que, {
@@ -358,6 +387,11 @@ do
 				if table.getn(airbaseCache) == 0 then
 					-- call initial pop, disable clear var while init pop runs
 					env.info('INITIAL PULL FROM DB TO POPULATE MAP');
+					--send polygon waypoints for full spawning
+					table.insert(updateQue.que, {
+						action = 'populateMap',
+						data = polyArray
+					})
 				else
 					lockBaseUpdates = false
 					clearVar();
