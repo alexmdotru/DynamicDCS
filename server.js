@@ -543,7 +543,6 @@ io.on('connection', function (socket) {
 });
 
 _.set(curServers, 'processQue', function (serverName, sessionName, update) {
-
 	if (true) {
 		console.log('update line545: ', update.unitCount);
 		if (update.unitCount > 50) {
