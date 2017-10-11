@@ -70,6 +70,7 @@ exports.createSocket = function (serverName, serverAddress, clientPort, gameGuiP
 		dsock.client.on('data', (data) => {
 			dsock.clientBuffer += data;
 			while ((i = dsock.clientBuffer.indexOf("\n")) >= 0) {
+				console.log('stuff: ', dsock.clientBuffer);
 				var data = JSON.parse(dsock.clientBuffer.substring(0, i));
 				dsock.callback(serverName, data);
 				dsock.clientBuffer = dsock.clientBuffer.substring(i + 1);
