@@ -42,13 +42,11 @@ _.set(exports, 'forcePlayerSpectator', function (serverName, playerId, mesg) {
 });
 
 _.set(exports, 'spawnGroupsInPolygon', function (serverName, baseName, pArray) {
-
-	var randVec2 = exports.getRandomVec2(pArray);
-	console.log('POINT FOUND IN ZONE: ', baseName, randVec2);
-	// var curCMD = 'net.force_player_slot('+playerId+', 0, "")';
-	// var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
-	// var actionObj = {actionObj: sendClient, queName: 'GameGuiArray'};
-	// dbMapServiceController.cmdQueActions('save', serverName, actionObj);
+	_.forEach(pArray, function (points, baseName) {
+		console.log('PnBN: ', baseName, points);
+	});
+		// var randVec2 = exports.getRandomVec2(pArray);
+		// console.log('POINT FOUND IN ZONE: ', baseName, randVec2);
 });
 
 _.set(exports, 'getBoundingSquare', function (pArray) {
@@ -61,7 +59,7 @@ _.set(exports, 'getBoundingSquare', function (pArray) {
 		x2 = ( x2 < pArray[i].x ) ? pArray[i].x : x2;
 		y1 = ( y1 > pArray[i].y ) ? pArray[i].y : y1;
 		y2 = ( y2 < pArray[i].y ) ? pArray[i].y : y2;
-	};
+	}
 	return {
 		x1: x1,
 		y1: y1,

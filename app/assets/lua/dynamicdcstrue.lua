@@ -59,24 +59,28 @@ do
 
 	log('REALTIME ' .. missionStartTime)
 
-	local polyArray = {}
-	if env.mission.coalition then
-		for coa,coaTable in pairs(env.mission.coalition) do
-			if type(coaTable) == 'table' and coaTable.country and coa == 'blue' then
-				for i=1,#coaTable.country do
-					local country = coaTable.country[i]
-					for uType,uTable in pairs(country) do
-						if uType == 'helicopter' then
-							if type(uTable)=='table' and uTable.group then
-								for j=1,#uTable.group do
-									local group = uTable.group[j]
-									local gName = env.getValueDictByKey(group.name)
-									if gName and group.route.points and string.find(gName, '_DEFZONE_', 1, true) then
-										polyArray[gName] = {}
-										for pIndex = 1, #group.route.points do
-											polyArray[gName][pIndex] = {}
-											polyArray[gName][pIndex].x = group.route.points[pIndex].x
-											polyArray[gName][pIndex].y = group.route.points[pIndex].y
+	local function getAllDefzone ()
+		local polyArray = {}
+		polyArray.count = 0
+		if env.mission.coalition then
+			for coa,coaTable in pairs(env.mission.coalition) do
+				if type(coaTable) == 'table' and coaTable.country and coa == 'blue' then
+					for i=1,#coaTable.country do
+						local country = coaTable.country[i]
+						for uType,uTable in pairs(country) do
+							if uType == 'helicopter' then
+								if type(uTable)=='table' and uTable.group then
+									for j=1,#uTable.group do
+										local group = uTable.group[j]
+										local gName = env.getValueDictByKey(group.name)
+										if gName and group.route.points and string.find(gName, '_DEFZONE_', 1, true) then
+											polyArray[gName] = {}
+											polyArray.count = polyArray.count + 1
+											for pIndex = 1, #group.route.points do
+												polyArray[gName][pIndex] = {}
+												polyArray[gName][pIndex].x = group.route.points[pIndex].x
+												polyArray[gName][pIndex].y = group.route.points[pIndex].y
+											end
 										end
 									end
 								end
@@ -86,7 +90,11 @@ do
 				end
 			end
 		end
+		return polyArray
 	end
+
+	local polyArray = getAllDefzone()
+
 
 	local function captureAirbase(baseID, coalition, farp)
 		env.info('base update ' .. baseID .. ' - ' .. coalition)
@@ -381,22 +389,24 @@ do
 
 	local function runRequest(request)
 		if request.action ~= nil then
+			if request.action == "GETPOLYDEF" then
+				env.info('GETPOLYDEF')
+				for k, v in pairs(polyArray) do
+					local cObj = {
+						["baseName"] = k,
+						["points"] = v
+					}
+					table.insert(updateQue.que, {
+						action = 'POLYDEF',
+						polyCnt = polyArray.count,
+						data = cObj
+					})
+				end
+			end
 			if request.action == "INIT" then
 				-- log('RUNNING REQUEST INIT')
-				env.info('INIT '..table.getn(airbaseCache))
-				if table.getn(airbaseCache) == 0 then
-					-- call initial pop, disable clear var while init pop runs
-					env.info('INITIAL PULL FROM DB TO POPULATE MAP');
-					--send polygon waypoints for full spawning
-					table.insert(updateQue.que, {
-						action = 'populateMap',
-						data = polyArray
-					})
-				else
-					lockBaseUpdates = false
-					clearVar();
-				end
-
+				lockBaseUpdates = false
+				clearVar();
 			end
 			if request.action == "CMD" and request.cmd ~= nil and request.reqID ~= nil then
 				-- log('RUNNING CMD')
