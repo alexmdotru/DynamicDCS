@@ -58,7 +58,7 @@ exports.createSocket = function (serverName, serverAddress, clientPort, gameGuiP
 			var time = new Date();
 			console.log(time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + ' :: Connected to DCS Client at '+dsock.serverAddress+':'+dsock.clientPort+' !');
 			dsock.clientConnOpen = false;
-			dsock.clientBuffer = "";
+			dsock.clientBuffer = [];
 		});
 		dsock.client.on('connect', function () {
 			dsock.startTime = new Date().valueOf() ;
@@ -67,12 +67,19 @@ exports.createSocket = function (serverName, serverAddress, clientPort, gameGuiP
 			dsock.client.write('{"action":"NONE"}' + "\n");
 		});
 
-		dsock.client.on('data', (data) => {
-			dsock.clientBuffer += data;
-			while ((i = dsock.clientBuffer.indexOf("\n")) >= 0) {
-				var data = JSON.parse(dsock.clientBuffer.substring(0, i));
-				dsock.callback(serverName, data);
-				dsock.clientBuffer = dsock.clientBuffer.substring(i + 1);
+		dsock.client.on('data', (inData) => {
+			dsock.clientBuffer.push(inData);
+			for (i = 0; i < dsock.clientBuffer.length; ++i) {
+				var curData = _.get(dsock, ['clientBuffer', i]);
+				var isValidJSON = true;
+				try { JSON.parse(curData) } catch(e) { isValidJSON = false }
+				if (isValidJSON) {
+					var data = JSON.parse(curData);
+					dsock.callback(serverName, data);
+					dsock.clientBuffer.splice(i--, 1);
+				} else {
+					console.log('bad json');
+				}
 				dsock.client.write(JSON.stringify(_.get(dsock, ['writeQue', 'client', 0], '')) + "\n");
 				_.get(dsock, ['writeQue', 'client']).shift();
 			}
