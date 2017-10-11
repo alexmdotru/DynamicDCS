@@ -211,6 +211,7 @@ var curServers = {};
 var nonaccountUsers = {};
 var shootingUsers = {};
 var defPolyZones = {};
+var polyzonesLoaded = {};
 var place;
 var sessionName;
 
@@ -579,18 +580,20 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			var tUnit = {};
 
 			if (_.get(queObj, 'action') === 'POLYDEF') {
-				console.log(queObj);
-				var polyLen;
-				var srvPolyCnt = _.get(queObj, 'polyCnt', 0);
-				var baseName = _.get(queObj, 'data.baseName');
-				_.replace(baseName,"_DEFZONE_","");
-				_.set(defPolyZones, baseName, _.get(queObj, 'data.points'));
-				polyLen = _.keys(defPolyZones).length;
-				if (polyLen === srvPolyCnt) {
-					console.log('polyzones loaded, populate base');
-					DCSLuaCommands.spawnGroupsInPolygon(serverName, baseName, defPolyZones);
-				} else {
-					console.log(polyLen + ' polyzones out of ' + srvPolyCnt);
+				if (_.isUndefined(_.get(polyzonesLoaded, serverName)) || !_.get(polyzonesLoaded, serverName)) {
+					var polyLen;
+					var srvPolyCnt = _.get(queObj, 'polyCnt', 0);
+					var baseName = _.get(queObj, 'data.baseName');
+					_.replace(baseName,"_DEFZONE_","");
+					_.set(defPolyZones, [serverName, baseName], _.get(queObj, 'data.points'));
+					polyLen = _.keys(_.get(defPolyZones, serverName)).length;
+					if (polyLen === srvPolyCnt) {
+						console.log('polyzones loaded, populate base');
+						_.set(polyzonesLoaded, serverName, true);
+						DCSLuaCommands.spawnGroupsInPolygon(serverName, baseName, _.get(defPolyZones, serverName));
+					} else {
+						console.log(polyLen + ' polyzones out of ' + srvPolyCnt);
+					}
 				}
 			}
 

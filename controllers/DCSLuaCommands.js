@@ -43,10 +43,11 @@ _.set(exports, 'forcePlayerSpectator', function (serverName, playerId, mesg) {
 
 _.set(exports, 'spawnGroupsInPolygon', function (serverName, baseName, pArray) {
 	_.forEach(pArray, function (points, baseName) {
-		console.log('PnBN: ', baseName, points);
+		if (_.isArray(points)) {
+			var randVec2 = exports.getRandomVec2(points);
+			console.log('POINT FOUND IN ZONE: ', baseName, randVec2);
+		}
 	});
-		// var randVec2 = exports.getRandomVec2(pArray);
-		// console.log('POINT FOUND IN ZONE: ', baseName, randVec2);
 });
 
 _.set(exports, 'getBoundingSquare', function (pArray) {
