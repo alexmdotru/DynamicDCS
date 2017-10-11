@@ -542,6 +542,7 @@ io.on('connection', function (socket) {
 });
 
 _.set(curServers, 'processQue', function (serverName, sessionName, update) {
+	console.log('update: ', update.unitCount);
 	if (update.unitCount) {
 		var aliveFilter = _.filter(_.get(curServers, [serverName, 'serverObject', 'units']), function(unit) { return !unit.dead; });
 		if (update.unitCount !== aliveFilter.length) {
@@ -562,6 +563,11 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				outOfSyncUnitCnt = 0;
 			}
 		}
+	} else {
+		console.log('0 units resync!');
+		dbMapServiceController.cmdQueActions('save', serverName, {queName: 'clientArray', actionObj: {action: "INIT"}});
+		//_.get(curServers, [serverName, 'serverObject', 'ClientRequestArray']).push({"action": "INIT"});
+		sendInit(serverName, 'all');
 	}
 
 	_.forEach(update.que, function (queObj) {
@@ -800,7 +806,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 
 		//basePOP
 		if (_.get(queObj, 'action') === 'populateMap') {
-			 console.log(_.get(queObj, 'data'));
 			_.forEach(_.get(queObj, 'data'), function (poly, baseName) {
 				_.replace(baseName,"_DEFZONE_","");
 				console.log('basename: ', baseName);
