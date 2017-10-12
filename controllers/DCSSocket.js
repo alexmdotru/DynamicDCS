@@ -67,19 +67,20 @@ exports.createSocket = function (serverName, serverAddress, clientPort, gameGuiP
 			dsock.client.write('{"action":"NONE"}' + "\n");
 		});
 
-		dsock.client.on('data', (inData) => {
-			dsock.clientBuffer.push(inData);
-			for (i = 0; i < dsock.clientBuffer.length; ++i) {
-				var curData = _.get(dsock, ['clientBuffer', i]);
+		dsock.client.on('data', (data) => {
+			dsock.clientBuffer += data;
+			while ((i = dsock.clientBuffer.indexOf("\n")) >= 0) {
 				var isValidJSON = true;
-				try { JSON.parse(curData) } catch(e) { isValidJSON = false }
+				var subStr = dsock.clientBuffer.substring(0, i);
+				try { JSON.parse(subStr) } catch(e) { isValidJSON = false }
 				if (isValidJSON) {
-					var data = JSON.parse(curData);
-					dsock.callback(serverName, data);
-					dsock.clientBuffer.splice(i--, 1);
+					var data = JSON.parse(subStr);
 				} else {
-					console.log('bad json');
+					data = '';
+					console.log('bad substring');
 				}
+				dsock.callback(serverName, data);
+				dsock.clientBuffer = dsock.clientBuffer.substring(i + 1);
 				dsock.client.write(JSON.stringify(_.get(dsock, ['writeQue', 'client', 0], '')) + "\n");
 				_.get(dsock, ['writeQue', 'client']).shift();
 			}

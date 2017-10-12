@@ -46,8 +46,87 @@ _.set(exports, 'spawnGroupsInPolygon', function (serverName, baseName, pArray) {
 		if (_.isArray(points)) {
 			var randVec2 = exports.getRandomVec2(points);
 			console.log('POINT FOUND IN ZONE: ', baseName, randVec2);
+			var curGrpObj = {
+				x: randVec2.x,
+				y: randVec2.y,
+				name: baseName
+			};
+			exports.spawnGrndUnit(serverName, curGrpObj, [{}], [{}]);
 		}
 	});
+});
+
+_.set(exports, 'spawnGrndUnit', function (serverName, groupObj, routeArry, unitArry) {
+	var curGroup = {};
+	var getRnd = function () {
+		return _.random(1000000,9000000);
+	};
+	var defGndUnit = {
+		groupId: getRnd(),
+		name: _.get(groupObj, 'name'),
+		x: _.get(groupObj, 'x'),
+		y: _.get(groupObj, 'y'),
+		visible: false,
+		hidden: false,
+		task: "Ground Nothing",
+		units: [],
+		route: {
+			spans: {},
+			points: []
+		},
+		tasks: {},
+		start_time: 0
+	};
+	var defRoute = {
+		x: _.get(groupObj, 'x'),
+		y: _.get(groupObj, 'y'),
+		// alt: land.getHeight({x:_.get(groupObj, 'x'), y:_.get(groupObj, 'y')}),
+		name: _.get(groupObj, 'name') + '_' + getRnd(),
+		type: 'Turning Point',
+		speed_locked: true,
+		formation_template: '',
+		ETA_locked: true,
+		speed: 5.5555555555556,
+		action: "Off Road",
+		alt_type: "BARO",
+		ETA: 0,
+		task: {
+			id: 'ComboTask',
+			params: {
+				tasks: {}
+			},
+		}
+	};
+	var defUnit = {
+		unitId: getRnd(),
+		name: _.get(groupObj, 'name') + '_' + getRnd(),
+		type: 'AAV7',
+		x: _.get(groupObj, 'x'),
+		y: _.get(groupObj, 'y'),
+		skill: 'Excellent',
+		playerCanDrive: true,
+		heading: 0,
+		transportable: {
+			randomTransportable: false,
+		}
+	};
+
+	curGroup = _.cloneDeep(defGndUnit);
+
+	_.forEach(routeArry, function (route, k) {
+		curGroup.route.points.push(defRoute);
+	});
+
+	_.forEach(unitArry, function (unit, k) {
+		curGroup.units.push(defUnit);
+	});
+
+	console.log('fullUnit: ', curGroup, curGroup.route.points);
+	// var curCMD = 'coalition.addGroup(country.id[USA], Unit.Category[GROUND_UNIT], curGroup)';
+	var curCMD = 'trigger.action.outText("DERP", 30)';
+	var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
+	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
+	dbMapServiceController.cmdQueActions('save', serverName, actionObj);
 });
 
 _.set(exports, 'getBoundingSquare', function (pArray) {

@@ -545,7 +545,7 @@ io.on('connection', function (socket) {
 _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 	if (true) {
 		console.log('update line545: ', update.unitCount);
-		if (update.unitCount > 50) {
+		if (update.unitCount > 1) {
 			var aliveFilter = _.filter(_.get(curServers, [serverName, 'serverObject', 'units']), function(unit) { return !unit.dead; });
 			if (update.unitCount !== aliveFilter.length) {
 				console.log('out of sync '+outOfSyncUnitCnt+' times for ' + serverName + ' units: '+ update.unitCount + ' verse ' + aliveFilter.length);
@@ -571,14 +571,14 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		}
 
 		_.forEach(update.que, function (queObj) {
-			// console.log('incom: ', queObj);
+			console.log('incom: ', queObj);
 			var iCurObj = {};
 			var iPlayer = {};
 			var tPlayer = {};
 			var iUnit = {};
 			var tUnit = {};
 
-			if (_.get(queObj, 'action') === 'POLYDEF') {
+			if (_.get(queObj, 'action') === 'POLYDEF1') {
 				if (_.isUndefined(_.get(polyzonesLoaded, serverName)) || !_.get(polyzonesLoaded, serverName)) {
 					var polyLen;
 					var srvPolyCnt = _.get(queObj, 'polyCnt', 0);
