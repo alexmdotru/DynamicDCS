@@ -81,7 +81,8 @@ _.set(exports, 'spawnGrndUnit', function (serverName, groupObj, routeArry, unitA
 	var defRoute = {
 		x: _.get(groupObj, 'x'),
 		y: _.get(groupObj, 'y'),
-		// alt: land.getHeight({x:_.get(groupObj, 'x'), y:_.get(groupObj, 'y')}),
+		alt: 'land.getHeight({["x"] = '+_.get(groupObj, 'x')+', ["y"] = '+_.get(groupObj, 'y')+'})',
+		alt_type: "BARO",
 		name: _.get(groupObj, 'name') + '_' + getRnd(),
 		type: 'Turning Point',
 		speed_locked: true,
@@ -89,7 +90,6 @@ _.set(exports, 'spawnGrndUnit', function (serverName, groupObj, routeArry, unitA
 		ETA_locked: true,
 		speed: 5.5555555555556,
 		action: "Off Road",
-		alt_type: "BARO",
 		ETA: 0,
 		task: {
 			id: 'ComboTask',
@@ -123,8 +123,11 @@ _.set(exports, 'spawnGrndUnit', function (serverName, groupObj, routeArry, unitA
 	});
 
 	console.log('fullUnit: ', curGroup, curGroup.route.points);
-	var curCMD = 'coalition.addGroup(2, 3, ' + js2lua.convert(curGroup) + ')';
+	//var curCMD = 'env.info("height: "..land.getHeight({["x"] = '+_.get(groupObj, 'x')+', ["y"] = '+_.get(groupObj, 'y')+'})) ' ;
+	//'local height = land.getHeight({["x"] = '+_.get(groupObj, 'x')+', ["y"] = '+_.get(groupObj, 'y')+'}) ' +
+		//'coalition.addGroup(2, 3, ' + js2lua.convert(curGroup) + ')';
 	// var curCMD = 'trigger.action.outText("DERP", 5';
+	var curCMD = 'coalition.addGroup(2, 3, ' + js2lua.convert(curGroup) + ')';
 	var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
 	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
 	dbMapServiceController.cmdQueActions('save', serverName, actionObj);
