@@ -409,7 +409,7 @@ do
 				clearVar();
 			end
 			if request.action == "CMD" and request.cmd ~= nil and request.reqID ~= nil then
-				-- log('RUNNING CMD')
+				log('RUNNING CMD: '.. request.cmd)
 				pcallCommand(request.cmd, request.reqID)
 			end
 		end

@@ -1,5 +1,6 @@
-const net = require('net'),
-	_ = require('lodash');
+const 	net = require('net'),
+		_ = require('lodash'),
+		js2lua = require('js2lua');
 
 const dbSystemServiceController = require('./dbSystemService');
 const dbMapServiceController = require('./dbMapService');
@@ -122,8 +123,8 @@ _.set(exports, 'spawnGrndUnit', function (serverName, groupObj, routeArry, unitA
 	});
 
 	console.log('fullUnit: ', curGroup, curGroup.route.points);
-	// var curCMD = 'coalition.addGroup(country.id[USA], Unit.Category[GROUND_UNIT], curGroup)';
-	var curCMD = 'trigger.action.outText("DERP", 30)';
+	var curCMD = 'coalition.addGroup(2, 3, ' + js2lua.convert(curGroup) + ')';
+	// var curCMD = 'trigger.action.outText("DERP", 5';
 	var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
 	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
 	dbMapServiceController.cmdQueActions('save', serverName, actionObj);

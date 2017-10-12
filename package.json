@@ -74,6 +74,7 @@
     "http-rewrite-middleware": "^0.1.6",
     "jasmine-core": "^2.4.1",
     "jit-grunt": "^0.10.0",
+    "js2lua": "^0.1.5",
     "jwks-rsa": "^1.1.1",
     "karma": "^1.2.0",
     "karma-coverage": "^1.1.1",

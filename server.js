@@ -214,6 +214,7 @@ var defPolyZones = {};
 var polyzonesLoaded = {};
 var place;
 var sessionName;
+var polyTry = 0;
 
 function abrLookup (fullName) {
  var shortNames =	{
@@ -545,7 +546,7 @@ io.on('connection', function (socket) {
 _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 	if (true) {
 		console.log('update line545: ', update.unitCount);
-		if (update.unitCount > 1) {
+		if (update.unitCount > 50) {
 			var aliveFilter = _.filter(_.get(curServers, [serverName, 'serverObject', 'units']), function(unit) { return !unit.dead; });
 			if (update.unitCount !== aliveFilter.length) {
 				console.log('out of sync '+outOfSyncUnitCnt+' times for ' + serverName + ' units: '+ update.unitCount + ' verse ' + aliveFilter.length);
@@ -566,19 +567,23 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				}
 			}
 		} else {
-			console.log('50 > Units, POP BASE');
-			dbMapServiceController.cmdQueActions('save', serverName, {queName: 'clientArray', actionObj: {action: "GETPOLYDEF"}});
+			console.log('50 > Units, POP BASE cnt:' + polyTry);
+			if (polyTry > 20) {
+				dbMapServiceController.cmdQueActions('save', serverName, {queName: 'clientArray', actionObj: {action: "GETPOLYDEF"}});
+				polyTry = 0;
+			}
+			polyTry++;
 		}
 
 		_.forEach(update.que, function (queObj) {
-			console.log('incom: ', queObj);
+			// console.log('incom: ', queObj);
 			var iCurObj = {};
 			var iPlayer = {};
 			var tPlayer = {};
 			var iUnit = {};
 			var tUnit = {};
 
-			if (_.get(queObj, 'action') === 'POLYDEF1') {
+			if (_.get(queObj, 'action') === 'POLYDEF') {
 				if (_.isUndefined(_.get(polyzonesLoaded, serverName)) || !_.get(polyzonesLoaded, serverName)) {
 					var polyLen;
 					var srvPolyCnt = _.get(queObj, 'polyCnt', 0);
@@ -1484,7 +1489,7 @@ setInterval(function () {
 			console.log('line1677', err);
 		})
 		;
-}, 1 * 1 * 1000);
+}, 1 * 1 * 3000);
 
 function syncDCSData(serverName, DCSData) {
 	if (!_.isEmpty(DCSData.que)) {
