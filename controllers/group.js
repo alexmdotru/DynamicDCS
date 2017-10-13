@@ -31,11 +31,9 @@ _.set(exports, 'spawnGrndUnit', function (serverName, groupObj, routeArry, unitA
 			'["playerCanDrive"] = true,' +
 			'["skill"] = "Excellent",' +
 			'}';
-
 		var curUnitNum = k + 1;
 		curUnits +=  curUnit + ', ';
 	});
-	console.log('curunits: ', curUnits);
 	curGroup = _.replace(curGroup,"#UNITS",curUnits);
 	return curGroup;
 });
