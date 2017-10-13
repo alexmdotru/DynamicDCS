@@ -33,7 +33,7 @@ _.set(exports, 'spawnGrndUnit', function (serverName, groupObj, routeArry, unitA
 			'}';
 
 		var curUnitNum = k + 1;
-		curUnits += '[' + curUnitNum + '] = ' + curUnit + ', ';
+		curUnits +=  curUnit + ', ';
 	});
 	console.log('curunits: ', curUnits);
 	curGroup = _.replace(curGroup,"#UNITS",curUnits);
