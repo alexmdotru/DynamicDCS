@@ -62,14 +62,6 @@ const checkJwt = jwt({
 	issuer: 'https://' + process.env.AUTH0_DOMAIN + '/',
 	algorithms: ['RS256']
 });
-//io.use(function (socket, next) {
-//	// hack the token checker!! :-P
-//	var req = {};
-//	var res;
-//	_.set(req, 'headers.authorization', socket.handshake.query.token);
-//	checkJwt(req, res, next);
-//});
-
 
 router.route('/srvPlayers/:name')
 	.get(function (req, res) {
@@ -194,16 +186,7 @@ protectedRouter.route('/userAccounts')
 				res.json(resp);
 			});
 	});
-/*
- protectedRouter.route('/userAccounts/:_id')
- .put(function(req, res) {
- _.set(req, 'body._id', req.params._id);
- dbSystemServiceController.userAccountActions('update', req.body)
- .then(function (resp){
- res.json(resp);
- });
- });
- */
+
 //setup globals
 var outOfSyncUnitCnt = 0;
 var socketQues = ['q0', 'q1', 'q2', 'qadmin', 'leaderboard'];
@@ -214,7 +197,7 @@ var defPolyZones = {};
 var polyzonesLoaded = {};
 var place;
 var sessionName;
-var polyTry = 0;
+var polyTry = 15;
 
 function abrLookup (fullName) {
  var shortNames =	{
@@ -546,7 +529,7 @@ io.on('connection', function (socket) {
 _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 	if (true) {
 		console.log('update line545: ', update.unitCount);
-		if (update.unitCount > 50) {
+		if (update.unitCount > 20) {
 			var aliveFilter = _.filter(_.get(curServers, [serverName, 'serverObject', 'units']), function(unit) { return !unit.dead; });
 			if (update.unitCount !== aliveFilter.length) {
 				console.log('out of sync '+outOfSyncUnitCnt+' times for ' + serverName + ' units: '+ update.unitCount + ' verse ' + aliveFilter.length);
