@@ -49,7 +49,11 @@ _.set(exports, 'spawnGroupsInPolygon', function (serverName, baseName, pArray) {
 				y: randVec2.y,
 				name: baseName
 			};
-			groupController.spawnGrndUnit(serverName, curGrpObj, [{}], [{}]);
+			var curSPWNTEMPLATE = groupController.spawnGrndUnit(serverName, curGrpObj, [{}], [{}]);
+			var curCMD = 'coalition.addGroup(2, 3, ' + curSPWNTEMPLATE + ')';
+			var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
+			var actionObj = {actionObj: sendClient, queName: 'clientArray'};
+			dbMapServiceController.cmdQueActions('save', serverName, actionObj);
 		}
 	});
 });
