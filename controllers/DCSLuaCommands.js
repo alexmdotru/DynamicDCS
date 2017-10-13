@@ -40,17 +40,21 @@ _.set(exports, 'forcePlayerSpectator', function (serverName, playerId, mesg) {
 	dbMapServiceController.cmdQueActions('save', serverName, actionObj);
 });
 
-_.set(exports, 'spawnGroupsInPolygon', function (serverName, baseName, pArray) {
+_.set(exports, 'spawnGroupsInPolyzones', function (serverName, baseName, pArray) {
+	var perBase = 1;
 	_.forEach(pArray, function (points, baseName) {
 		if (_.isArray(points)) {
-			var randVec2 = zoneController.getRandomVec2(points);
-			var curGrpObj = {
-				x: randVec2.x,
-				y: randVec2.y,
-				name: baseName
-			};
-			var curSPWNTEMPLATE = groupController.spawnGrndUnit(serverName, curGrpObj, [{}], [{}]);
-			var curCMD = 'coalition.addGroup(2, 3, ' + curSPWNTEMPLATE + ')';
+			var unitArray = [];
+			for(pIndx = 1; pIndx < (perBase + 1); pIndx++) {
+				var randVec2 = zoneController.getRandomVec2(points);
+				unitArray.push({
+					x: randVec2.x,
+					y: randVec2.y,
+					name: baseName
+				});
+			}
+			var curGrpArry = groupController.spawnGrndUnit(serverName, unitArray[0], [{}], unitArray);
+			var curCMD = 'coalition.addGroup(2, 3, ' + curGrpArry + ')';
 			var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
 			var actionObj = {actionObj: sendClient, queName: 'clientArray'};
 			dbMapServiceController.cmdQueActions('save', serverName, actionObj);

@@ -577,7 +577,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					if (polyLen === srvPolyCnt) {
 						console.log('polyzones loaded, populate base');
 						_.set(polyzonesLoaded, serverName, true);
-						DCSLuaCommands.spawnGroupsInPolygon(serverName, baseName, _.get(defPolyZones, serverName));
+						DCSLuaCommands.spawnGroupsInPolyzones(serverName, baseName, _.get(defPolyZones, serverName));
 					} else {
 						console.log(polyLen + ' polyzones out of ' + srvPolyCnt);
 					}
