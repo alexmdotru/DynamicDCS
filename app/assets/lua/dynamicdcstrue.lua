@@ -392,6 +392,9 @@ do
 			if request.action == "GETPOLYDEF" then
 				env.info('GETPOLYDEF')
 				for k, v in pairs(polyArray) do
+					if k == 'Krymsk' then
+						env.info('bn: ', k, v);
+					end
 					local cObj = {
 						["baseName"] = k,
 						["points"] = v
