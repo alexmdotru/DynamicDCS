@@ -53,7 +53,7 @@ exports.createSocket = function (serverName, serverAddress, clientPort, gameGuiP
 		dsock.client = net.createConnection({
 			host: dsock.serverAddress,
 			port: dsock.clientPort
-		}, () => {
+		}, function () {
 			console.log('sessionname: ', dsock.sessionName);
 			var time = new Date();
 			console.log(time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + ' :: Connected to DCS Client at '+dsock.serverAddress+':'+dsock.clientPort+' !');
@@ -67,7 +67,22 @@ exports.createSocket = function (serverName, serverAddress, clientPort, gameGuiP
 			dsock.client.write('{"action":"NONE"}' + "\n");
 		});
 
-		dsock.client.on('data', (data) => {
+		dsock.client.on('data', function (data) {
+			var curStr = '';
+			var isValidJSON = true;
+			var subStr = data;
+			try { JSON.parse(subStr) } catch(e) { isValidJSON = false }
+			if (isValidJSON) {
+				curStr = JSON.parse(subStr);
+			} else {
+				curStr = '{}';
+				console.log('bad substring: ', subStr);
+			}
+			dsock.callback(serverName, curStr);
+			// dsock.clientBuffer = dsock.clientBuffer.substring(i + 1);
+			dsock.client.write(JSON.stringify(_.get(dsock, ['writeQue', 'client', 0], '')) + "\n");
+			_.get(dsock, ['writeQue', 'client']).shift();
+			/*
 			dsock.clientBuffer += data;
 			while ((i = dsock.clientBuffer.indexOf("\n")) >= 0) {
 				var curStr = '';
@@ -77,16 +92,18 @@ exports.createSocket = function (serverName, serverAddress, clientPort, gameGuiP
 				if (isValidJSON) {
 					curStr = JSON.parse(subStr);
 				} else {
-					console.log('bad substring');
+					curStr = '{}';
+					console.log('bad substring: ', subStr);
 				}
 				dsock.callback(serverName, curStr);
 				dsock.clientBuffer = dsock.clientBuffer.substring(i + 1);
 				dsock.client.write(JSON.stringify(_.get(dsock, ['writeQue', 'client', 0], '')) + "\n");
 				_.get(dsock, ['writeQue', 'client']).shift();
 			}
+			*/
 		});
 
-		dsock.client.on('close', () => {
+		dsock.client.on('close', function () {
 			time = new Date();
 			console.log(time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + ' :: Reconnecting DCS Client on '+dsock.serverAddress+':'+dsock.clientPort+'....');
 			dsock.io.emit('srvUpd', {que: [{action: 'reset'}]});
@@ -102,7 +119,7 @@ exports.createSocket = function (serverName, serverAddress, clientPort, gameGuiP
 		dsock.gameGUI = net.createConnection({
 			host: dsock.serverAddress,
 			port: dsock.GameGuiPort
-		}, () => {
+		}, function () {
 			var time = new Date();
 			console.log(time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + ' :: Connected to DCS GameGUI at '+dsock.serverAddress+':'+dsock.GameGuiPort+'!');
 			dsock.gameGUIConnOpen = false;
@@ -112,7 +129,7 @@ exports.createSocket = function (serverName, serverAddress, clientPort, gameGuiP
 			dsock.initClear(serverName, 'server');
 			dsock.gameGUI.write('{"action":"NONE"}' + "\n");
 		});
-		dsock.gameGUI.on('data', (data) => {
+		dsock.gameGUI.on('data', function (data) {
 			dsock.gameGUIBuffer += data;
 			while ((i = dsock.gameGUIBuffer.indexOf("\n")) >= 0) {
 				var data = JSON.parse(dsock.gameGUIBuffer.substring(0, i));
@@ -122,7 +139,7 @@ exports.createSocket = function (serverName, serverAddress, clientPort, gameGuiP
 				_.get(dsock, ['writeQue', 'gameGUI']).shift();
 			}
 		});
-		dsock.gameGUI.on('close', () => {
+		dsock.gameGUI.on('close', function () {
 			time = new Date();
 			console.log(time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + ' :: Reconnecting DCS GameGUI at '+dsock.serverAddress+':'+dsock.GameGuiPort+'....');
 			dsock.io.emit('srvUpd', {que: [{action: 'reset'}]});

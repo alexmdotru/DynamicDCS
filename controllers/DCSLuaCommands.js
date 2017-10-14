@@ -41,7 +41,7 @@ _.set(exports, 'forcePlayerSpectator', function (serverName, playerId, mesg) {
 });
 
 _.set(exports, 'spawnGroupsInPolyzones', function (serverName, baseName, pArray) {
-	var perBase = 2;
+	var perBase = 20;
 	_.forEach(pArray, function (points, baseName) {
 		if (_.isArray(points)) {
 			var unitArray = [];
@@ -53,11 +53,15 @@ _.set(exports, 'spawnGroupsInPolyzones', function (serverName, baseName, pArray)
 					name: baseName
 				});
 			}
-			var curGrpArry = groupController.spawnGrndUnit(serverName, unitArray[0], [{}], unitArray);
-			var curCMD = 'coalition.addGroup(2, 3, ' + curGrpArry + ')';
-			var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
-			var actionObj = {actionObj: sendClient, queName: 'clientArray'};
-			dbMapServiceController.cmdQueActions('save', serverName, actionObj);
+			if (!_.isEmpty(unitArray)) {
+				var curGrpArry = groupController.spawnGrndUnit(serverName, unitArray[0], [{}], unitArray);
+				// var curCMD = 'coalition.addGroup(2, 3, ' + curGrpArry + ')';
+				// mist.dynAdd(newGroup)
+				var curCMD = 'mist.dynAdd(' + curGrpArry + ')';
+				var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
+				var actionObj = {actionObj: sendClient, queName: 'clientArray'};
+				dbMapServiceController.cmdQueActions('save', serverName, actionObj);
+			}
 		}
 	});
 });

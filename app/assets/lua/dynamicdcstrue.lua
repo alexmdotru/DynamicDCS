@@ -418,6 +418,7 @@ do
 	log("Starting DCS unit data server")
 
 	local tcp = socket.tcp()
+	tcp:settimeout(0)
 	local bound, error = tcp:bind('*', PORT)
 	if not bound then
 		log("Could not bind: " .. error)
@@ -447,22 +448,20 @@ do
 
 	local client
 	local function step()
-
 		if not client then
-			tcp:settimeout(0.001)
 			client = tcp:accept()
+			tcp:settimeout(0)
 
 			if client then
-				tcp:settimeout(0.001)
 				log("Connection established")
 				clearVar()
 			end
 		end
 
 		if client then
-			local line, err = client:receive()
+			local line, err = client:receive('*l')
 			if line ~= nil then
-				--log(line)
+				log(line)
 				local success, error = pcall(checkJSON, line, 'decode')
 				if success then
 					local incMsg = JSON:decode(line)

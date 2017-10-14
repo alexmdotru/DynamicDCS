@@ -198,6 +198,7 @@ var polyzonesLoaded = {};
 var place;
 var sessionName;
 var polyTry = 15;
+var isBasePop = false;
 
 function abrLookup (fullName) {
  var shortNames =	{
@@ -528,10 +529,11 @@ io.on('connection', function (socket) {
 
 _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 	if (true) {
-		console.log('update line545: ', update.unitCount);
-		if (update.unitCount > 20) {
-			var aliveFilter = _.filter(_.get(curServers, [serverName, 'serverObject', 'units']), function(unit) { return !unit.dead; });
-			if (update.unitCount !== aliveFilter.length) {
+		var curUnits = _.get(curServers, [serverName, 'serverObject', 'units'], []);
+		if (curUnits.length > 50) {
+			console.log('CUL: ', curUnits.length);
+			var aliveFilter = _.filter(curUnits, function(unit) { return !unit.dead; });
+			if (curUnits.length !== aliveFilter.length) {
 				console.log('out of sync '+outOfSyncUnitCnt+' times for ' + serverName + ' units: '+ update.unitCount + ' verse ' + aliveFilter.length);
 				if (outOfSyncUnitCnt > config.outOfSyncUnitThreshold) {
 					outOfSyncUnitCnt = 0;
@@ -550,10 +552,12 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				}
 			}
 		} else {
-			console.log('50 > Units, POP BASE cnt:' + polyTry);
-			if (polyTry > 20) {
+			console.log('cu: ', curUnits.length, !isBasePop, polyTry);
+			if ((polyTry > 20) && !isBasePop) {
+				console.log('should only run once: ', !isBasePop);
 				dbMapServiceController.cmdQueActions('save', serverName, {queName: 'clientArray', actionObj: {action: "GETPOLYDEF"}});
 				polyTry = 0;
+				isBasePop = true;
 			}
 			polyTry++;
 		}
@@ -1475,7 +1479,7 @@ setInterval(function () {
 }, 1 * 1 * 3000);
 
 function syncDCSData(serverName, DCSData) {
-	if (!_.isEmpty(DCSData.que)) {
+	// if (!_.isEmpty(DCSData.que)) {
 		if (DCSData.epoc) {
 			sessionName = serverName+'_'+DCSData.epoc;
 			var newSession = {
@@ -1497,5 +1501,5 @@ function syncDCSData(serverName, DCSData) {
 		if (sessionName) {
 			curServers.processQue(serverName, sessionName, DCSData);
 		}
-	}
+	// }
 }
