@@ -176,12 +176,12 @@ do
 	local polyArray = getAllDefzone()
 
 
-	local function captureAirbase(baseID, coalition, farp)
-		env.info('base update ' .. baseID .. ' - ' .. coalition)
+	local function captureAirbase(baseId, coalition, farp)
+		env.info('base update ' .. baseId .. ' - ' .. coalition)
 		table.insert(updateQue.que, {
 			action = 'airbaseU',
 			data = {
-				["baseID"] = baseID,
+				["baseId"] = baseId,
 				["side"] = coalition,
 				["farp"] = farp
 			}
@@ -191,13 +191,13 @@ do
 	local function updateAirbases(airbases, coalition)
 		local airbaseObj = {}
 		for airbaseIndex = 1, #airbases do
-			local baseID = tonumber(airbases[airbaseIndex]:getID())
+			local baseId = tonumber(airbases[airbaseIndex]:getID())
 			local unitPosition = airbases[airbaseIndex]:getPosition()
 			lat, lon, alt = coord.LOtoLL(unitPosition.p)
 			local baseName = airbases[airbaseIndex]:getName()
 			local curObj = {
 				["_id"] = baseName,
-				["baseID"] = baseID,
+				["baseId"] = baseId,
 				["name"] = baseName,
 				["side"] = coalition,
 				["lat"] = lat,
@@ -209,8 +209,8 @@ do
 				curObj.farp = true
 			end
 			if not string.find(baseName, 'Expansion', 1, true) and not string.find(baseName, ' #', 1, true) then
-				env.info('applycache  ' .. baseID);
-				airbaseCache[baseID] = curObj
+				env.info('applycache  ' .. baseId);
+				airbaseCache[baseId] = curObj
 				table.insert(updateQue.que, {
 					action = 'airbaseC',
 					data = curObj
@@ -254,11 +254,11 @@ do
 			local neutralAirbases = coalition.getAirbases(coalition.side.NEUTRAL)
 			if neutralAirbases ~= nil then
 				for naIndex = 1, #neutralAirbases do
-					local baseID = tonumber(neutralAirbases[naIndex]:getID())
-					if airbaseCache[baseID] ~= nil then
-						if airbaseCache[baseID].side ~= 0 and not airbaseCache[baseID].expansion then
-							airbaseCache[baseID].side = 0
-							captureAirbase(baseID, 0, airbaseCache[baseID].farp);
+					local baseId = tonumber(neutralAirbases[naIndex]:getID())
+					if airbaseCache[baseId] ~= nil then
+						if airbaseCache[baseId].side ~= 0 and not airbaseCache[baseId].expansion then
+							airbaseCache[baseId].side = 0
+							captureAirbase(baseId, 0, airbaseCache[baseId].farp);
 						end
 					end
 				end
@@ -266,11 +266,11 @@ do
 			local redAirbases = coalition.getAirbases(coalition.side.RED)
 			if redAirbases ~= nil then
 				for rIndex = 1, #redAirbases do
-					local baseID = tonumber(redAirbases[rIndex]:getID())
-					if airbaseCache[baseID] ~= nil then
-						if airbaseCache[baseID].side ~= 1 and not airbaseCache[baseID].expansion then
-							airbaseCache[baseID].side = 1
-							captureAirbase(baseID, 1, airbaseCache[baseID].farp);
+					local baseId = tonumber(redAirbases[rIndex]:getID())
+					if airbaseCache[baseId] ~= nil then
+						if airbaseCache[baseId].side ~= 1 and not airbaseCache[baseId].expansion then
+							airbaseCache[baseId].side = 1
+							captureAirbase(baseId, 1, airbaseCache[baseId].farp);
 						end
 					end
 				end
@@ -278,11 +278,11 @@ do
 			local blueAirbases = coalition.getAirbases(coalition.side.BLUE)
 			if blueAirbases ~= nil then
 				for bIndex = 1, #blueAirbases do
-					local baseID = tonumber(blueAirbases[bIndex]:getID())
-					if airbaseCache[baseID] ~= nil then
-						if airbaseCache[baseID].side ~= 2 and not airbaseCache[baseID].expansion then
-							airbaseCache[baseID].side = 2
-							captureAirbase(baseID, 2, airbaseCache[baseID].farp);
+					local baseId = tonumber(blueAirbases[bIndex]:getID())
+					if airbaseCache[baseId] ~= nil then
+						if airbaseCache[baseId].side ~= 2 and not airbaseCache[baseId].expansion then
+							airbaseCache[baseId].side = 2
+							captureAirbase(baseId, 2, airbaseCache[baseId].farp);
 						end
 					end
 				end
@@ -302,7 +302,7 @@ do
 								uType = "unit",
 								data = {}
 							}
-							curUnit.data.unitID = tonumber(unit:getID())
+							curUnit.data.unitId = tonumber(unit:getID())
 							curUnit.data.life = tonumber(unit:getLife())
 							local unitPosition = unit:getPosition()
 							curUnit.data.x = unitPosition.p.x
@@ -319,23 +319,23 @@ do
 							if (velocity) then
 								curUnit.data.speed = math.sqrt(velocity.x ^ 2 + velocity.z ^ 2)
 							end
-							if unitCache[curUnit.data.unitID] ~= nil then
-								if unitCache[curUnit.data.unitID].lat ~= curUnit.data.lat or unitCache[curUnit.data.unitID].lon ~= curUnit.data.lon then
-									unitCache[curUnit.data.unitID] = {}
-									unitCache[curUnit.data.unitID].lat = curUnit.data.lat
-									unitCache[curUnit.data.unitID].lon = curUnit.data.lon
+							if unitCache[curUnit.data.unitId] ~= nil then
+								if unitCache[curUnit.data.unitId].lat ~= curUnit.data.lat or unitCache[curUnit.data.unitId].lon ~= curUnit.data.lon then
+									unitCache[curUnit.data.unitId] = {}
+									unitCache[curUnit.data.unitId].lat = curUnit.data.lat
+									unitCache[curUnit.data.unitId].lon = curUnit.data.lon
 									curUnit.action = "U"
 									table.insert(updateQue.que, curUnit)
 								end
 							else
-								unitCache[curUnit.data.unitID] = {}
-								unitCache[curUnit.data.unitID].lat = curUnit.data.lat
-								unitCache[curUnit.data.unitID].lon = curUnit.data.lon
+								unitCache[curUnit.data.unitId] = {}
+								unitCache[curUnit.data.unitId].lat = curUnit.data.lat
+								unitCache[curUnit.data.unitId].lon = curUnit.data.lon
 								local maxLife = unit:getLife0()
 								if maxLife ~= nil then
 									curUnit.data.maxLife = tonumber(maxLife)
 								end
-								curUnit.data.groupID = group:getID()
+								curUnit.data.groupId = group:getID()
 								curUnit.data.groupName = group:getName()
 								curUnit.data.name = unit:getName()
 								curUnit.data.category = CategoryNames[unit:getDesc().category]
@@ -351,7 +351,7 @@ do
 								curUnit.action = "C"
 								table.insert(updateQue.que, curUnit)
 							end
-							checkUnitDead[curUnit.data.unitID] = 1
+							checkUnitDead[curUnit.data.unitId] = 1
 						end
 					end
 				end
@@ -374,7 +374,7 @@ do
 						action = "D",
 						uType = "unit",
 						data = {
-							unitID = k
+							unitId = k
 						}
 					}
 					table.insert(updateQue.que, curUnit)
@@ -391,7 +391,7 @@ do
 							uType = "static",
 							data = {}
 						}
-						curStatic.data.unitID = tonumber(static:getID())
+						curStatic.data.unitId = tonumber(static:getID())
 						curStatic.data.life = static:getLife()
 						local staticPosition = static:getPosition()
 						curStatic.data.x = staticPosition.p.x
@@ -404,18 +404,18 @@ do
 							heading = heading + 2 * math.pi
 						end
 						curStatic.data.hdg = math.floor(heading / math.pi * 180);
-						if staticCache[curStatic.data.unitID] ~= nil then
-							if staticCache[curStatic.data.unitID].lat ~= curStatic.data.lat or staticCache[curStatic.data.unitID].lon ~= curStatic.data.lon then
-								staticCache[curStatic.data.unitID] = {}
-								staticCache[curStatic.data.unitID].lat = curStatic.data.lat
-								staticCache[curStatic.data.unitID].lon = curStatic.data.lon
+						if staticCache[curStatic.data.unitId] ~= nil then
+							if staticCache[curStatic.data.unitId].lat ~= curStatic.data.lat or staticCache[curStatic.data.unitId].lon ~= curStatic.data.lon then
+								staticCache[curStatic.data.unitId] = {}
+								staticCache[curStatic.data.unitId].lat = curStatic.data.lat
+								staticCache[curStatic.data.unitId].lon = curStatic.data.lon
 								curStatic.action = "U"
 								table.insert(updateQue.que, curStatic)
 							end
 						else
-							staticCache[curStatic.data.unitID] = {}
-							staticCache[curStatic.data.unitID].lat = curStatic.data.lat
-							staticCache[curStatic.data.unitID].lon = curStatic.data.lon
+							staticCache[curStatic.data.unitId] = {}
+							staticCache[curStatic.data.unitId].lat = curStatic.data.lat
+							staticCache[curStatic.data.unitId].lon = curStatic.data.lon
 							curStatic.data.name = static:getName()
 							curStatic.data.maxLife = tonumber(static:getLife())
 							curStatic.data.category = CategoryNames[static:getDesc().category]
@@ -424,7 +424,7 @@ do
 							curStatic.action = "C"
 							table.insert(updateQue.que, curStatic)
 						end
-						checkStaticDead[curStatic.data.unitID] = 1
+						checkStaticDead[curStatic.data.unitId] = 1
 					end
 				end
 			end
@@ -445,7 +445,7 @@ do
 						action = "D",
 						uType = "static",
 						data = {
-							staticID = k
+							staticId = k
 						}
 					}
 					table.insert(updateQue.que, curStatic)
@@ -583,7 +583,7 @@ do
 	end, nil, timer.getTime() + DATA_TIMEOUT_SEC)
 
 	--Protected call to command execute
-	function pcallCommand(s, respID)
+	function pcallCommand(s, respId)
 		local success, resp = pcall(commandExecute, s)
 		if success then
 			if resp ~= nil then
@@ -591,7 +591,7 @@ do
 				curUpdate = {
 					action = 'CMDRESPONSE',
 					data = {
-						respID = respID,
+						respId = respId,
 						cmd = s,
 						response = resp
 					}

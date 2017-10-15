@@ -308,7 +308,7 @@ function initUnits(serverName, socketID, authId) {
 									iCurObj = {
 										action: 'INIT',
 										data: {
-											unitID: parseFloat(_.get(unit, 'unitID')),
+											unitId: parseFloat(_.get(unit, 'unitId')),
 											type: _.get(unit, 'type'),
 											coalition: parseFloat(_.get(unit, 'coalition')),
 											lat: parseFloat(_.get(unit, 'lat')),
@@ -561,7 +561,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 	}
 
 	_.forEach(update.que, function (queObj) {
-		console.log('incom: ', queObj);
+		// console.log('incom: ', queObj);
 		var iCurObj = {};
 		var iPlayer = {};
 		var tPlayer = {};
@@ -587,13 +587,13 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			}
 		}
 
-		var curUnit = _.find(curServers[serverName].serverObject.units, {'unitID': _.get(queObj, 'data.unitID')});
+		var curUnit = _.find(curServers[serverName].serverObject.units, {'unitId': _.get(queObj, 'data.unitId')});
 		if (_.get(queObj, 'action') === 'C') {
 			if (curUnit) {
 				curUnit.action = 'U';
 			} else {
 				var curData = _.get(queObj, 'data');
-				_.set(curData, '_id', _.get(curData, 'unitID'));
+				_.set(curData, '_id', _.get(curData, 'unitId'));
 				iCurObj = {
 					action: 'C',
 					sessionName: sessionName,
@@ -621,8 +621,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					action: 'U',
 					sessionName: sessionName,
 					data: {
-						_id: parseFloat(_.get(queObj, 'data.unitID')),
-						unitID: _.get(queObj, 'data.unitID'),
+						_id: parseFloat(_.get(queObj, 'data.unitId')),
+						unitId: _.get(queObj, 'data.unitId'),
 						lat: parseFloat(_.get(queObj, 'data.lat')),
 						lon: parseFloat(_.get(queObj, 'data.lon')),
 						alt: parseFloat(_.get(queObj, 'data.alt')),
@@ -641,19 +641,19 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				action: 'D',
 				sessionName: sessionName,
 				data: {
-					_id: parseFloat(_.get(queObj, 'data.unitID')),
-					unitID: _.get(queObj, 'data.unitID')
+					_id: parseFloat(_.get(queObj, 'data.unitId')),
+					unitId: _.get(queObj, 'data.unitId')
 				}
 			};
 
 			dbMapServiceController.unitActions('delete', serverName, iCurObj.data);
-			// _.remove(curServers[serverName].serverObject.units, {'unitID': _.get(queObj, 'data.unitID')});
+			// _.remove(curServers[serverName].serverObject.units, {'unitId': _.get(queObj, 'data.unitId')});
 			curServers[serverName].updateQue.q1.push(_.cloneDeep(iCurObj));
 			curServers[serverName].updateQue.q2.push(_.cloneDeep(iCurObj));
 			curServers[serverName].updateQue.qadmin.push(_.cloneDeep(iCurObj));
 
 			if (curUnit) {
-				// console.log('D: ', _.get(queObj, 'data.unitID'));
+				// console.log('D: ', _.get(queObj, 'data.unitId'));
 				_.set(curUnit, ['dead'], true);
 			}
 			//_.set(curServers, [serverName, 'serverObject', 'units', 'dead'], true);
@@ -928,7 +928,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			// arg2 = time
 			// arg3 = initiatorId
 			// arg7 = weapon
-			iUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg3});
+			iUnit = _.find(curServers[serverName].serverObject.units, {unitId: queObj.data.arg3});
 			if (iUnit) {
 				dbSystemServiceController.weaponScoreActions('read', _.get(queObj, 'data.arg7'))
 					.then(function (weaponResp) {
@@ -991,7 +991,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			// arg3 = initiatorId
 			// arg4 = targetId
 			// arg7 = WeaponId
-			iUnit = _.find(curServers[serverName].serverObject.units, {unitID: iUnitId});
+			iUnit = _.find(curServers[serverName].serverObject.units, {unitId: iUnitId});
 			if (iUnit) {
 				iPlayer = _.find(curServers[serverName].serverObject.players, {name: iUnit.playername});
 				if (iPlayer) {
@@ -1001,7 +1001,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					iPName = _.get(iUnit, 'type')
 				}
 			}
-			tUnit = _.find(curServers[serverName].serverObject.units, {unitID: tUnitId});
+			tUnit = _.find(curServers[serverName].serverObject.units, {unitId: tUnitId});
 			if (tUnit) {
 				tPlayer = _.find(curServers[serverName].serverObject.players, {name: tUnit.playername});
 				if (tPlayer) {
@@ -1082,7 +1082,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			} else {
 				place = '';
 			}
-			iUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg3});
+			iUnit = _.find(curServers[serverName].serverObject.units, {unitId: queObj.data.arg3});
 			if (iUnit) {
 				iPlayer = _.find(curServers[serverName].serverObject.players, {name: iUnit.playername});
 				if (iPlayer) {
@@ -1117,7 +1117,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			} else {
 				place = '';
 			}
-			iUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg3});
+			iUnit = _.find(curServers[serverName].serverObject.units, {unitId: queObj.data.arg3});
 			if (iUnit) {
 				iPlayer = _.find(curServers[serverName].serverObject.players, {name: iUnit.playername});
 				if(iPlayer) {
@@ -1145,7 +1145,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_CRASH') {
 			// Occurs when any aircraft crashes into the ground and is completely destroyed.
-			iUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg3});
+			iUnit = _.find(curServers[serverName].serverObject.units, {unitId: queObj.data.arg3});
 			if (iUnit) {
 				iPlayer = _.find(curServers[serverName].serverObject.players, {name: iUnit.playername});
 				if (iPlayer) {
@@ -1172,7 +1172,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_EJECTION') {
 			// Occurs when a pilot ejects from an aircraft
-			iUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg3});
+			iUnit = _.find(curServers[serverName].serverObject.units, {unitId: queObj.data.arg3});
 			if (iUnit) {
 				iPlayer = _.find(curServers[serverName].serverObject.players, {name: iUnit.playername});
 				if (iPlayer) {
@@ -1199,7 +1199,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_REFUELING') {
 			// Occurs when an aircraft connects with a tanker and begins taking on fuel.
-			iUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg3});
+			iUnit = _.find(curServers[serverName].serverObject.units, {unitId: queObj.data.arg3});
 			if (iUnit) {
 				iPlayer = _.find(curServers[serverName].serverObject.players, {name: iUnit.playername});
 				if (iPlayer) {
@@ -1228,7 +1228,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_DEAD') {
 			// Occurs when an object is completely destroyed.
-			iUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg3});
+			iUnit = _.find(curServers[serverName].serverObject.units, {unitId: queObj.data.arg3});
 			if (iUnit) {
 				iPlayer = _.find(curServers[serverName].serverObject.players, {name: iUnit.playername});
 				if (iPlayer) {
@@ -1257,7 +1257,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			// Occurs when the pilot of an aircraft is killed.
 			// Can occur either if the player is alive and crashes or
 			// if a weapon kills the pilot without completely destroying the plane.
-			iUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg3});
+			iUnit = _.find(curServers[serverName].serverObject.units, {unitId: queObj.data.arg3});
 			if (iUnit) {
 				iPlayer = _.find(curServers[serverName].serverObject.players, {name: iUnit.playername});
 				if (iPlayer) {
@@ -1284,7 +1284,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_REFUELING_STOP') {
 			// Occurs when an aircraft is finished taking fuel.
-			iUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg3});
+			iUnit = _.find(curServers[serverName].serverObject.units, {unitId: queObj.data.arg3});
 			if (iUnit) {
 				iPlayer = _.find(curServers[serverName].serverObject.players, {name: iUnit.playername});
 				if(iPlayer) {
@@ -1314,7 +1314,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 
 		if (_.get(queObj, 'action') === 'S_EVENT_PLAYER_ENTER_UNIT') {
 			// Occurs when any player assumes direct control of a unit.
-			iUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg3});
+			iUnit = _.find(curServers[serverName].serverObject.units, {unitId: queObj.data.arg3});
 			if (iUnit) {
 				iPlayer = _.find(curServers[serverName].serverObject.players, {name: iUnit.playername});
 				if (iPlayer) {
@@ -1342,7 +1342,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_BIRTH') {
 			// Occurs when any object is spawned into the mission.
-			iUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg3});
+			iUnit = _.find(curServers[serverName].serverObject.units, {unitId: queObj.data.arg3});
 			if (iUnit) {
 				iPlayer = _.find(curServers[serverName].serverObject.players, {name: iUnit.playername});
 				if (iPlayer) {
@@ -1370,7 +1370,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_PLAYER_LEAVE_UNIT') {
 			// Occurs when any player relieves control of a unit to the AI.
-			iUnit = _.find(curServers[serverName].serverObject.units, {unitID: queObj.data.arg3});
+			iUnit = _.find(curServers[serverName].serverObject.units, {unitId: queObj.data.arg3});
 			if (iUnit) {
 				iPlayer = _.find(curServers[serverName].serverObject.players, {name: iUnit.playername});
 				if (iPlayer) {

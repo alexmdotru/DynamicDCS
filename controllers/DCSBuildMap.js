@@ -6,7 +6,7 @@ const DCSLuaCommands = require('./DCSLuaCommands');
 
 _.set(exports, 'buildDynamicMap', function (serverName) {
 	console.log('build dynamic caucasus');
-	dbMapServiceController.unitActions('read', serverName, '{}')
+	dbMapServiceController.unitActions('read', serverName, '{category: "GROUND"}')
 		.then(function (units) {
 			if (units.length > 50) {
 				console.log('repopUnitsFromDB');

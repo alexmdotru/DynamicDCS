@@ -45,7 +45,7 @@ _.set(exports, 'forcePlayerSpectator', function (serverName, playerId, mesg) {
 });
 
 _.set(exports, 'spawnNewGroupsInPolyzones', function (serverName, baseName, pArray) {
-	var perBase = 20;
+	var perBase = 1;
 	_.forEach(pArray, function (points, baseName) {
 		if (_.isArray(points)) {
 			var unitArray = [];

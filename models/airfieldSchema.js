@@ -7,7 +7,7 @@ const AirfieldSchema = new Schema({
 		type: String,
 		required: true
 	},
-	baseID: {
+	baseId: {
 		type: Number,
 		required: true
 	},
