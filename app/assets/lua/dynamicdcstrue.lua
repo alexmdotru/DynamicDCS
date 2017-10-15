@@ -139,6 +139,21 @@ do
 		end
 	end
 
+	local function initAirbases()
+		local neutralAirbases = coalition.getAirbases(coalition.side.NEUTRAL)
+		if neutralAirbases ~= nil then
+			updateAirbases(neutralAirbases, 0)
+		end
+		local redAirbases = coalition.getAirbases(coalition.side.RED)
+		if redAirbases ~= nil then
+			updateAirbases(redAirbases, 1)
+		end
+		local blueAirbases = coalition.getAirbases(coalition.side.BLUE)
+		if blueAirbases ~= nil then
+			updateAirbases(blueAirbases, 2)
+		end
+	end
+
 	local function clearVar()
 		if not lockBaseUpdates then
 			env.info('Clearing Vars')
@@ -148,18 +163,6 @@ do
 			staticCache = {}
 			updateQue = { ["que"] = {} }
 
-			local neutralAirbases = coalition.getAirbases(coalition.side.NEUTRAL)
-			if neutralAirbases ~= nil then
-				updateAirbases(neutralAirbases, 0)
-			end
-			local redAirbases = coalition.getAirbases(coalition.side.RED)
-			if redAirbases ~= nil then
-				updateAirbases(redAirbases, 1)
-			end
-			local blueAirbases = coalition.getAirbases(coalition.side.BLUE)
-			if blueAirbases ~= nil then
-				updateAirbases(blueAirbases, 2)
-			end
 			isResetUnits = false
 		end
 	end
@@ -407,6 +410,7 @@ do
 						data = cObj
 					})
 				end
+				initAirbases()
 			end
 			if request.action == "INIT" then
 				-- log('RUNNING REQUEST INIT')

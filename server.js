@@ -553,7 +553,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 	} else {
 		if ((polyTry > 20) && !isBasePop) {
 			console.log('should only run once: ', !isBasePop);
-			//dbMapServiceController.cmdQueActions('save', serverName, {queName: 'clientArray', actionObj: {action: "INIT"}});
 			DCSBuildMap.buildDynamicMap(serverName);
 			polyTry = 0;
 			isBasePop = true;
