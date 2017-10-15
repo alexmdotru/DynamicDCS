@@ -31,16 +31,20 @@ _.set(exports, 'kickPlayer', function (serverName, playerId, mesg) {
 });
 
 _.set(exports, 'forcePlayerSpectator', function (serverName, playerId, mesg) {
-	var curCMD = 'net.force_player_slot('+playerId+', 0, "")';
-	var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
-	var actionObj = {actionObj: sendClient, queName: 'GameGuiArray'};
+	var curCMD;
+	var sendClient;
+	var actionObj;
+	curCMD = 'net.force_player_slot('+playerId+', 0, "")';
+	sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
+	actionObj = {actionObj: sendClient, queName: 'GameGuiArray'};
 	dbMapServiceController.cmdQueActions('save', serverName, actionObj);
-	var curCMD = 'net.send_chat("'+mesg+'", all)';
-	var actionObj = {actionObj: sendClient, queName: 'GameGuiArray'};
+	curCMD = 'net.send_chat("'+mesg+'", all)';
+	sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
+	actionObj = {actionObj: sendClient, queName: 'GameGuiArray'};
 	dbMapServiceController.cmdQueActions('save', serverName, actionObj);
 });
 
-_.set(exports, 'spawnGroupsInPolyzones', function (serverName, baseName, pArray) {
+_.set(exports, 'spawnNewGroupsInPolyzones', function (serverName, baseName, pArray) {
 	var perBase = 20;
 	_.forEach(pArray, function (points, baseName) {
 		if (_.isArray(points)) {

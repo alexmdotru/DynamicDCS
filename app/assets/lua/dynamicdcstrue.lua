@@ -258,6 +258,8 @@ do
 								if maxLife ~= nil then
 									curUnit.data.maxLife = tonumber(maxLife)
 								end
+								curUnit.data.groupName = group:getName()
+								env.info('groupName: '..curUnit.data.groupName)
 								curUnit.data.name = unit:getName()
 								curUnit.data.category = CategoryNames[unit:getDesc().category]
 								curUnit.data.type = unit:getTypeName()

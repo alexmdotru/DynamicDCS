@@ -1,11 +1,35 @@
-const net = require('net'),
-	_ = require('lodash');
+const _ = require('lodash');
 
 const dbSystemServiceController = require('./dbSystemService');
 const dbMapServiceController = require('./dbMapService');
+const DCSLuaCommands = require('./DCSLuaCommands');
 
-_.set(exports, 'buildDynamicCaucasus', function () {
+_.set(exports, 'buildDynamicMap', function (serverName) {
 	console.log('build dynamic caucasus');
+	dbMapServiceController.unitActions('read', serverName, '{}')
+		.then(function (units) {
+			if (units.length > 50) {
+				//repop units at base
+				console.log('repopUnitsFromDB');
+				DCSLuaCommands.spawnNewGroupsInPolyzones(serverName, baseName, _.get(defPolyZones, serverName));
+			} else {
+				//build map from scratch
+				console.log('popUnitsFromScratch');
+				dbMapServiceController.cmdQueActions('save', serverName, {queName: 'clientArray', actionObj: {action: "GETPOLYDEF"}});
+			}
+		})
+		.catch(function (err) {
+			console.log('erroring line29: ', err);
+		})
+	;
+
+
+
+
+	//dbMapServiceController.cmdQueActions('save', serverName, {queName: 'clientArray', actionObj: {action: "GETPOLYDEF"}});
+
+
+
 	/*
 		1. roadMap:
 			a. LUA

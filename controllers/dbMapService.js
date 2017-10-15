@@ -93,6 +93,14 @@ exports.srvPlayerActions = function (action, serverName, obj){
 
 exports.unitActions = function (action, serverName, obj){
 	const Unit = mapdb.model(serverName+'_unit', unitSchema);
+	if (action === 'read') {
+		return new Promise(function(resolve, reject) {
+			Unit.find(function (err, dbUnits) {
+				if (err) { reject(err) }
+				resolve(dbUnits);
+			});
+		});
+	}
 	if(action === 'save') {
 		return new Promise(function(resolve, reject) {
 			const unit = new Unit(obj);

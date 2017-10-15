@@ -53,6 +53,9 @@ const UnitSchema = new Schema({
 	name: {
 		type: String
 	},
+	groupName: {
+		type: String
+	},
 	playername: {
 		type: String
 	},
