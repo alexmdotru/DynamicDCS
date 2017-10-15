@@ -561,7 +561,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 	}
 
 	_.forEach(update.que, function (queObj) {
-		// console.log('incom: ', queObj);
+		console.log('incom: ', queObj);
 		var iCurObj = {};
 		var iPlayer = {};
 		var tPlayer = {};

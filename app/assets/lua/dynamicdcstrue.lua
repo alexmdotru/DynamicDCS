@@ -474,9 +474,6 @@ do
 			if request.action == "GETPOLYDEF" then
 				env.info('GETPOLYDEF')
 				for k, v in pairs(polyArray) do
-					if k == 'Krymsk' then
-						env.info('bn: ', k, v);
-					end
 					local cObj = {
 						["baseName"] = k,
 						["points"] = v
@@ -547,7 +544,7 @@ do
 		if client then
 			local line, err = client:receive('*l')
 			if line ~= nil then
-				log(line)
+				--log(line)
 				local success, error = pcall(checkJSON, line, 'decode')
 				if success then
 					local incMsg = JSON:decode(line)
