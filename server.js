@@ -561,7 +561,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 	}
 
 	_.forEach(update.que, function (queObj) {
-		console.log('incom: ', queObj);
+		// console.log('incom: ', queObj);
 		var iCurObj = {};
 		var iPlayer = {};
 		var tPlayer = {};
@@ -574,7 +574,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				var srvPolyCnt = _.get(queObj, 'polyCnt', 0);
 				var baseName = _.get(queObj, 'data.baseName');
 				baseName = _.replace(baseName,"_DEFZONE_","");
-				console.log('BN: ', baseName);
 				_.set(defPolyZones, [serverName, baseName], _.get(queObj, 'data.points'));
 				polyLen = _.keys(_.get(defPolyZones, serverName)).length;
 				if (polyLen === (srvPolyCnt + 1)) {

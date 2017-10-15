@@ -30,6 +30,86 @@ function string:split(inSplitPattern, outResults)
 	return outResults
 end
 
+local CategoryNames = {
+	[Unit.Category.AIRPLANE] = "AIRPLANE",
+	[Unit.Category.HELICOPTER] = "HELICOPTER",
+	[Unit.Category.GROUND_UNIT] = "GROUND",
+	[Unit.Category.SHIP] = "SHIP",
+	[Unit.Category.STRUCTURE] = "STRUCTURE"
+}
+
+local CountryNames = {
+	[0] = "RUSSIA",
+	[1] = "UKRAINE",
+	[2] = "USA",
+	[3] = "TURKEY",
+	[4] = "UK",
+	[5] = "FRANCE",
+	[6] = "GERMANY",
+	[7] = "AGGRESSORS",
+	[8] = "CANADA",
+	[9] = "SPAIN",
+	[10] = "THE_NETHERLANDS",
+	[11] = "BELGIUM",
+	[12] = "NORWAY",
+	[13] = "DENMARK",
+	[14] = "SECRET",
+	[15] = "ISRAEL",
+	[16] = "GEORGIA",
+	[17] = "INSURGENTS",
+	[18] = "ABKHAZIA",
+	[19] = "SOUTH_OSETIA",
+	[20] = "ITALY",
+	[21] = "AUSTRALIA",
+	[22] = "SWITZERLAND",
+	[23] = "AUSTRIA",
+	[24] = "BELARUS",
+	[25] = "BULGARIA",
+	[26] = "CHEZH_REPUBLIC",
+	[27] = "CHINA",
+	[28] = "CROATIA",
+	[29] = "EGYPT",
+	[30] = "FINLAND",
+	[31] = "GREECE",
+	[32] = "HUNGARY",
+	[33] = "INDIA",
+	[34] = "IRAN",
+	[35] = "IRAQ",
+	[36] = "JAPAN",
+	[37] = "KAZAKHSTAN",
+	[38] = "NORTH_KOREA",
+	[39] = "PAKISTAN",
+	[40] = "POLAND",
+	[41] = "ROMANIA",
+	[42] = "SAUDI_ARABIA",
+	[43] = "SERBIA",
+	[44] = "SLOVAKIA",
+	[45] = "SOUTH_KOREA",
+	[46] = "SWEDEN",
+	[47] = "SYRIA",
+	[48] = "YEMEN",
+	[49] = "VIETNAM",
+	[51] = "TUNISIA",
+	[52] = "THAILAND",
+	[53] = "SUDAN",
+	[54] = "PHILIPPINES",
+	[55] = "MOROCCO",
+	[56] = "MEXICO",
+	[57] = "MALAYSIA",
+	[58] = "LIBYA",
+	[59] = "JORDAN",
+	[60] = "INDONESIA",
+	[61] = "HONDURAS",
+	[62] = "ETHIOPIA",
+	[63] = "CHILE",
+	[64] = "BRAZIL",
+	[65] = "BAHRAIN",
+	[66] = "THIRDREICH",
+	[67] = "YUGOSLAVIA",
+	[68] = "USSR",
+	[69] = "ITALIAN_SOCIAL_REPUBLIC"
+}
+
 do
 	--
 	local PORT = 3001
@@ -211,14 +291,6 @@ do
 			local checkUnitDead = {}
 			local checkStaticDead = {}
 
-			local CategoryNames = {
-				[Unit.Category.AIRPLANE] = "Airplane",
-				[Unit.Category.HELICOPTER] = "Helicopter",
-				[Unit.Category.GROUND_UNIT] = "Ground Unit",
-				[Unit.Category.SHIP] = "Ship",
-				[Unit.Category.STRUCTURE] = "Structure",
-			}
-
 			local function addGroups(groups, coalition)
 				for groupIndex = 1, #groups do
 					local group = groups[groupIndex]
@@ -233,6 +305,8 @@ do
 							curUnit.data.unitID = tonumber(unit:getID())
 							curUnit.data.life = tonumber(unit:getLife())
 							local unitPosition = unit:getPosition()
+							curUnit.data.x = unitPosition.p.x
+							curUnit.data.y = unitPosition.p.z
 							curUnit.data.lat, curUnit.data.lon, curUnit.data.alt = coord.LOtoLL(unitPosition.p)
 							local unitXYZNorthCorr = coord.LLtoLO(curUnit.data.lat + 1, curUnit.data.lon)
 							local headingNorthCorr = math.atan2(unitXYZNorthCorr.z - unitPosition.p.z, unitXYZNorthCorr.x - unitPosition.p.x)
@@ -261,12 +335,13 @@ do
 								if maxLife ~= nil then
 									curUnit.data.maxLife = tonumber(maxLife)
 								end
+								curUnit.data.groupID = group:getID()
 								curUnit.data.groupName = group:getName()
-								env.info('groupName: '..curUnit.data.groupName)
 								curUnit.data.name = unit:getName()
 								curUnit.data.category = CategoryNames[unit:getDesc().category]
 								curUnit.data.type = unit:getTypeName()
 								curUnit.data.coalition = coalition
+								curUnit.data.country = CountryNames[unit:getCountry()]
 								local PlayerName = unit:getPlayerName()
 								if PlayerName ~= nil then
 									curUnit.data.playername = PlayerName
@@ -319,6 +394,8 @@ do
 						curStatic.data.unitID = tonumber(static:getID())
 						curStatic.data.life = static:getLife()
 						local staticPosition = static:getPosition()
+						curStatic.data.x = staticPosition.p.x
+						curStatic.data.y = staticPosition.p.z
 						curStatic.data.lat, curStatic.data.lon, curStatic.data.alt = coord.LOtoLL(staticPosition.p)
 						local unitXYZNorthCorr = coord.LLtoLO(curStatic.data.lat + 1, curStatic.data.lon)
 						local headingNorthCorr = math.atan2(unitXYZNorthCorr.z - staticPosition.p.z, unitXYZNorthCorr.x - staticPosition.p.x)

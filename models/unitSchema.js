@@ -8,6 +8,10 @@ const UnitSchema = new Schema({
 		type: Number,
 		required: true
 	},
+	groupID: {
+		type: Number,
+		required: true
+	},
 	type: {
 		type: String,
 		required: true
@@ -22,11 +26,23 @@ const UnitSchema = new Schema({
 		type: String,
 		required: true
 	},
+	country: {
+		type: String,
+		required: true
+	},
 	lat: {
 		type: Number,
 		required: true
 	},
 	lon: {
+		type: Number,
+		required: true
+	},
+	x: {
+		type: Number,
+		required: true
+	},
+	y: {
 		type: Number,
 		required: true
 	},

@@ -9,9 +9,17 @@ _.set(exports, 'buildDynamicMap', function (serverName) {
 	dbMapServiceController.unitActions('read', serverName, '{}')
 		.then(function (units) {
 			if (units.length > 50) {
-				//repop units at base
 				console.log('repopUnitsFromDB');
-				DCSLuaCommands.spawnNewGroupsInPolyzones(serverName, baseName, _.get(defPolyZones, serverName));
+				//repop units at base
+				var remappedunits = {};
+				_.forEach(units, function (unit) {
+					_.set(remappedunits, _.get(unit, 'groupName'), _.get(remappedunits, _.get(unit, 'groupName'), []));
+					remappedunits[_.get(unit, 'groupName')].push(unit);
+				});
+				_.forEach(remappedunits, function (group) {
+					DCSLuaCommands.spawnGroup(serverName, group);
+				});
+
 			} else {
 				//build map from scratch
 				console.log('popUnitsFromScratch');
@@ -22,13 +30,6 @@ _.set(exports, 'buildDynamicMap', function (serverName) {
 			console.log('erroring line29: ', err);
 		})
 	;
-
-
-
-
-	//dbMapServiceController.cmdQueActions('save', serverName, {queName: 'clientArray', actionObj: {action: "GETPOLYDEF"}});
-
-
 
 	/*
 		1. roadMap:

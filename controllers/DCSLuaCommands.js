@@ -54,7 +54,7 @@ _.set(exports, 'spawnNewGroupsInPolyzones', function (serverName, baseName, pArr
 				unitArray.push({
 					x: randVec2.x,
 					y: randVec2.y,
-					name: baseName
+					baseName: baseName
 				});
 			}
 			if (!_.isEmpty(unitArray)) {
@@ -68,4 +68,14 @@ _.set(exports, 'spawnNewGroupsInPolyzones', function (serverName, baseName, pArr
 			}
 		}
 	});
+});
+
+_.set(exports, 'spawnGroup', function (serverName, groupObj) {
+	if (!_.isEmpty(groupObj)) {
+		var curGrpArry = groupController.spawnGrndUnit(serverName, groupObj[0], [{}], groupObj);
+		var curCMD = 'mist.dynAdd(' + curGrpArry + ')';
+		var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
+		var actionObj = {actionObj: sendClient, queName: 'clientArray'};
+		dbMapServiceController.cmdQueActions('save', serverName, actionObj);
+	};
 });
