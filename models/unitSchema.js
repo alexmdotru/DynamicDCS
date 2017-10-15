@@ -61,6 +61,10 @@ const UnitSchema = new Schema({
 	},
 	playerOwnerId: {
 		type: Number
+	},
+	enabled: {
+		type: Boolean,
+		default: true
 	}
 },
 	{
