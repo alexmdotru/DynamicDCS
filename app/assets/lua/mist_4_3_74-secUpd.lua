@@ -46,7 +46,7 @@ do -- the main scope
 	local tempSpawnedUnits = {} -- birth events added here
 	local tempSpawnedGroups = {}
 	local tempSpawnGroupsCounter = 0
-	
+
 	local mistAddedObjects = {} -- mist.dynAdd unit data added here
 	local mistAddedGroups = {} -- mist.dynAdd groupdata added here
 	local writeGroups = {}
@@ -54,7 +54,7 @@ do -- the main scope
 
 	local updateAliveUnitsCounter = 0
 	local updateTenthSecond = 0
-	
+
 	local mistGpId = 7000
 	local mistUnitId = 7000
 	local mistDynAddIndex = {[' air '] = 0, [' hel '] = 0, [' gnd '] = 0, [' bld '] = 0, [' static '] = 0, [' shp '] = 0}
@@ -67,7 +67,7 @@ do -- the main scope
 	mist.nextUnitId = 1
 
 	local dbLog
-	
+
 	local function initDBs() -- mist.DBs scope
 		mist.DBs = {}
 
@@ -433,8 +433,8 @@ do -- the main scope
 			["White_Flag"] = "H-Flag_W",
 			["Airshow_Cone"] = "Comp_cone",
 		}
-		
-		
+
+
 		-- create mist.DBs.oldAliveUnits
 		-- do
 		-- local intermediate_alive_units = {}	-- between 0 and 0.5 secs old
@@ -781,14 +781,14 @@ do -- the main scope
 		return newTable
 	end
 
-	--[[DB update code... FRACK. I need to refactor some of it. 
-	
+	--[[DB update code... FRACK. I need to refactor some of it.
+
 	The problem is that the DBs need to account better for shared object names. Needs to write over some data and outright remove other.
-	
+
 	If groupName is used then entire group needs to be rewritten
 		what to do with old groups units DB entries?. Names cant be assumed to be the same.
-	
-	
+
+
 	-- new spawn event check.
 	-- event handler filters everything into groups: tempSpawnedGroups
 	-- this function then checks DBs to see if data has changed
@@ -799,12 +799,12 @@ do -- the main scope
 			if updatesPerRun < 5 then
 				updatesPerRun = 5
 			end]]
-			
+
 			dbLog:info('iterate')
 			for name, gType in pairs(tempSpawnedGroups) do
 				dbLog:info(name)
 				local updated = false
-				
+
 				if mist.DBs.groupsByName[name] then
 					-- first check group level properties, groupId, countryId, coalition
 					dbLog:info('Found in DBs, check if updated')
@@ -822,7 +822,7 @@ do -- the main scope
 						end
 
 					end
-				end			
+				end
 				dbLog:info('Updated: $1', updated)
 				if updated == false and gType ~= 'static' then -- time to check units
 					dbLog:info('No Group Mismatch, Check Units')
@@ -839,19 +839,19 @@ do -- the main scope
 						end
 					end
 				end
-				
+
 				if updated == true or not mist.DBs.groupsByName[name] then
 					dbLog:info('Get Table')
 					writeGroups[#writeGroups+1] = {data = dbUpdate(name, gType), isUpdated = updated}
-				
+
 				end
 				-- Work done, so remove
 				tempSpawnedGroups[name] = nil
 				tempSpawnGroupsCounter = tempSpawnGroupsCounter - 1
-			end			
-		end	
+			end
+		end
 	end
-	
+
 	local function updateDBTables()
 		local i = #writeGroups
 
@@ -901,7 +901,7 @@ do -- the main scope
 								mist.DBs.unitsByCat[mistCategory][i] = ldeepCopy(newUnitData)
 								break
 							end
-						end 
+						end
 						for i = 1, #mist.DBs.unitsByNum do
 							if mist.DBs.unitsByNum[i].unitName == newUnitData.unitName then
 								dbLog:info('Entry Found, Rewriting for unitsByNum')
@@ -909,7 +909,7 @@ do -- the main scope
 								break
 							end
 						end
-						
+
 					else
 						dbLog:info('Unitname not in use, add as normal')
 						mist.DBs.unitsByCat[mistCategory][#mist.DBs.unitsByCat[mistCategory] + 1] = ldeepCopy(newUnitData)
@@ -917,7 +917,7 @@ do -- the main scope
 					end
 					mist.DBs.unitsByName[newUnitData.unitName] = ldeepCopy(newUnitData)
 
-					
+
 				end
 				-- this is a really annoying DB to populate. Gotta create new tables in case its missing
 				dbLog:info('write mist.DBs.units')
@@ -932,7 +932,7 @@ do -- the main scope
 				if not mist.DBs.units[newTable.coalition][newTable.country][mistCategory] then
 					mist.DBs.units[newTable.coalition][(newTable.country)][mistCategory] = {}
 				end
-				
+
 				if updated == true then
 					dbLog:info('Updating DBsUnits')
 					for i = 1, #mist.DBs.units[newTable.coalition][(newTable.country)][mistCategory] do
@@ -945,7 +945,7 @@ do -- the main scope
 				else
 					mist.DBs.units[newTable.coalition][(newTable.country)][mistCategory][#mist.DBs.units[newTable.coalition][(newTable.country)][mistCategory] + 1] = ldeepCopy(newTable)
 				end
-				
+
 
 				if newTable.groupId then
 					mist.DBs.groupsById[newTable.groupId] = ldeepCopy(newTable)
@@ -970,10 +970,10 @@ do -- the main scope
 		-- dont need to add units spawned in at the start of the mission if mist is loaded in init line
 		if event.id == world.event.S_EVENT_BIRTH and timer.getTime0() < timer.getAbsTime() then
 			dbLog:info('unitSpawnEvent')
-			
+
 				--table.insert(tempSpawnedUnits,(event.initiator))
 				-------
-				-- New functionality below. 
+				-- New functionality below.
 				-------
 			if Object.getCategory(event.initiator) == 1 and not Unit.getPlayerName(event.initiator) then -- simple player check, will need to later check to see if unit was spawned with a player in a flight
 				dbLog:info('Object is a Unit')
@@ -988,8 +988,8 @@ do -- the main scope
 				tempSpawnedGroups[StaticObject.getName(event.initiator)] = 'static'
 				tempSpawnGroupsCounter = tempSpawnGroupsCounter + 1
 			end
-				
-			
+
+
 		end
 	end
 
@@ -1122,7 +1122,7 @@ do -- the main scope
 		-- create logger
 		mist.log = mist.Logger:new("MIST")
 		dbLog = mist.Logger:new('MISTDB', 'warning')
-		
+
 		log = mist.log -- log shorthand
 		-- set warning log level, showing only
 		-- warnings and errors
@@ -1153,7 +1153,7 @@ do -- the main scope
 			updateTenthSecond = 0
 
 			checkSpawnedEventsNew()
-			
+
 			if not coroutines.updateDBTables then
 				coroutines.updateDBTables = coroutine.create(updateDBTables)
 			end
@@ -1223,12 +1223,12 @@ do -- the main scope
 			end
 		end
 		--log:info(newObj)
-		
+
 		local cntry = newObj.country
 		if newObj.countryId then
 			cntry = newObj.countryId
 		end
-	
+
 		local newCountry = ''
 
 		for countryId, countryName in pairs(country.name) do
@@ -1243,12 +1243,12 @@ do -- the main scope
 				end
 			end
 		end
-		
+
 		if newCountry == '' then
 			log:error("Country not found: $1", cntry)
 			return false
 		end
-	
+
 		if newObj.clone or not newObj.groupId then
 			mistGpId = mistGpId + 1
 			newObj.groupId = mistGpId
@@ -1271,25 +1271,25 @@ do -- the main scope
 		if not newObj.heading then
 			newObj.heading = math.random(360)
 		end
-		
+
 		if newObj.categoryStatic then
 			newObj.category = newObj.categoryStatic
 		end
 		if newObj.mass then
 			newObj.category = 'Cargos'
 		end
-		
+
 		if newObj.shapeName then
 			newObj.shape_name = newObj.shapeName
 		end
-		
+
 		if not newObj.shape_name then
 			log:info('shape_name not present')
 			if mist.DBs.const.shapeNames[newObj.type] then
 				newObj.shape_name = mist.DBs.const.shapeNames[newObj.type]
 			end
 		end
-		
+
 		mistAddedObjects[#mistAddedObjects + 1] = mist.utils.deepCopy(newObj)
 		if newObj.x and newObj.y and newObj.type and type(newObj.x) == 'number' and type(newObj.y) == 'number' and type(newObj.type) == 'string' then
 			--log:info('addStaticObject')
@@ -2975,7 +2975,7 @@ do -- group functions scope
                 newData.units[unitNum].heading = mist.getHeading(unitData, true) -- added to DBs
 				newData.units[unitNum].alt = unitData:getPosition().p.y
                 newData.units[unitNum].speed = mist.vec.mag(unitData:getVelocity())
-               
+
 			end
 
 			return newData
@@ -3189,7 +3189,7 @@ do -- group functions scope
 			action = 'tele'
 			newGroupData = vars.groupData
 		end
-		
+
 		--log:info('get Randomized Point')
 		local diff = {x = 0, y = 0}
 		local newCoord, origCoord
@@ -4607,7 +4607,7 @@ unitTableDef = table or nil
 		if not units.processed then
 			unitTableDef = mist.utils.deepCopy(units)
 		end
-		
+
 		if (units.processed and units.processed < mist.getLastDBUpdateTime()) or not units.processed then -- run unit table short cuts
 			if unitTableDef then
 				units = mist.makeUnitTable(unitTableDef)
@@ -4692,7 +4692,7 @@ unitTableDef = table or nil
 			if zUnitTableDef then
 				zone_units = mist.makeUnitTable(zUnitTableDef)
 			end
-			
+
 		end
 
 		if stopflag == -1 or (type(trigger.misc.getUserFlag(stopflag)) == 'number' and trigger.misc.getUserFlag(stopflag) == 0) or (type(trigger.misc.getUserFlag(stopflag)) == 'boolean' and trigger.misc.getUserFlag(stopflag) == false) then
@@ -5827,14 +5827,14 @@ do -- mist.time scope
 	-- first val returns with the month as a string
 	-- 2nd val defins if it should be written the American way or the wrong way.
 	function mist.time.getDate(convert)
-		local cal = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31} -- 
+		local cal = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31} --
 		local date = {}
-		
+
 		if not env.mission.date then -- Not likely to happen. Resaving mission auto updates this to remove it.
 			date.d = 0
 			date.m = 6
 			date.y = 2011
-		else 
+		else
 			date.d = env.mission.date.Day
 			date.m = env.mission.date.Month
 			date.y = env.mission.date.Year
@@ -5864,7 +5864,7 @@ do -- mist.time scope
 				end
 				date.d = date.d + 1
 				start = start + 86400
-				
+
 			end
 		end
 		return date
@@ -6126,7 +6126,7 @@ do -- group tasks scope
 				},
 			},
 		}
-		
+
 		useRoute[#useRoute].task = tempTask
 		log:info(useRoute)
 		mist.goRoute(gpData, useRoute)
