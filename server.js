@@ -198,7 +198,7 @@ var defPolyZones = {};
 var polyzonesLoaded = {};
 var place;
 var sessionName;
-var polyTry = 15;
+var polyTry = 50;
 var isBasePop = false;
 
 function abrLookup (fullName) {
@@ -530,35 +530,46 @@ io.on('connection', function (socket) {
 });
 
 _.set(curServers, 'processQue', function (serverName, sessionName, update) {
-	var curUnits = _.get(curServers, [serverName, 'serverObject', 'units'], []);
-	if (curUnits.length > 35) {
-		var aliveFilter = _.filter(curUnits, function(unit) { return !unit.dead; });
-		if (curUnits.length !== aliveFilter.length) {
-			console.log('out of sync '+outOfSyncUnitCnt+' times for ' + serverName + ' units: '+ update.unitCount + ' verse ' + aliveFilter.length);
-			if (outOfSyncUnitCnt > config.outOfSyncUnitThreshold) {
-				outOfSyncUnitCnt = 0;
-				console.log('reset server units');
-				initClear(serverName, 'client');
-				dbMapServiceController.cmdQueActions('save', serverName, {queName: 'clientArray', actionObj: {action: "INIT"}});
-				sendInit(serverName, 'all');
+	dbMapServiceController.unitActions('read', serverName, {dead: false, category: "GROUND"})
+		.then(function (units) {
+			console.log('update: ', update);
+			if (units.length > 50 && update.unitCount > 50) {
+				if (units.length !== update.unitCount) {
+					// get update sync from server
+					console.log('out of sync ' + outOfSyncUnitCnt + ' times for ' + serverName + ' units: ' + update.unitCount + ' verse ' + aliveFilter.length);
+					if (outOfSyncUnitCnt > config.outOfSyncUnitThreshold) {
+						outOfSyncUnitCnt = 0;
+						console.log('reset server units');
+						initClear(serverName, 'client');
+						dbMapServiceController.cmdQueActions('save', serverName, {
+							queName: 'clientArray',
+							actionObj: {action: "INIT"}
+						});
+						sendInit(serverName, 'all');
+					} else {
+						outOfSyncUnitCnt++;
+					}
+				} else {
+					if (outOfSyncUnitCnt > 0) {
+						console.log('Units Resynced');
+						outOfSyncUnitCnt = 0;
+					}
+					console.log('run running');
+				}
 			} else {
-				outOfSyncUnitCnt++;
+				if ((polyTry > 60) && !isBasePop) {
+					console.log('should only run once: ', !isBasePop);
+					DCSBuildMap.buildDynamicMap(serverName);
+					polyTry = 0;
+					isBasePop = true;
+				}
+				polyTry++;
 			}
-		} else {
-			if (outOfSyncUnitCnt > 0) {
-				console.log('Units Resynced');
-				outOfSyncUnitCnt = 0;
-			}
-		}
-	} else {
-		if ((polyTry > 20) && !isBasePop) {
-			console.log('should only run once: ', !isBasePop);
-			DCSBuildMap.buildDynamicMap(serverName);
-			polyTry = 0;
-			isBasePop = true;
-		}
-		polyTry++;
-	}
+		})
+		.catch(function (err) {
+			console.log('err line538: ', err );
+		})
+	;
 
 	_.forEach(update.que, function (queObj) {
 		// console.log('incom: ', queObj);
@@ -591,7 +602,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		if ((_.get(queObj, 'action') === 'C') || (_.get(queObj, 'action') === 'U') || (_.get(queObj, 'action') === 'D'))  {
 			dbMapServiceController.unitActions('read', serverName, {_id: _.get(queObj, 'data.unitId'), category: "GROUND"})
 				.then(function (unit) {
-					console.log('returnedUNIT: ', _.get(queObj, 'data.unitId'), unit);
 					if ((unit.length > 0 && _.get(queObj, 'action') !== 'D')) {
 						iCurObj = {
 							action: 'U',
@@ -613,7 +623,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						curServers[serverName].updateQue['q' + _.get(unit, [0, 'coalition'])].push(_.cloneDeep(iCurObj));
 						curServers[serverName].updateQue.qadmin.push(_.cloneDeep(iCurObj));
 					}else if (_.get(queObj, 'action') === 'C') {
-						console.log('CANTFINDUNIT...');
 						var curData = _.get(queObj, 'data');
 						_.set(curData, '_id', _.get(curData, 'unitId'));
 						iCurObj = {

@@ -9,7 +9,7 @@ _.set(exports, 'buildDynamicMap', function (serverName) {
 	dbMapServiceController.unitActions('read', serverName, '{category: "GROUND"}')
 		.then(function (units) {
 			console.log('unitsLength: ', units.length);
-			if (units.length > 20) {
+			if (units.length > 60) {
 				console.log('repopUnitsFromDB');
 				//repop units at base
 				var remappedunits = {};

@@ -40,6 +40,5 @@ _.set(exports, 'spawnGrndUnit', function (serverName, groupObj, routeArry, unitA
 
 	curGroup = defGndGroup;
 	curGroup = _.replace(curGroup,"#UNITS",curUnits);
-	console.log('GRP: ', curGroup);
 	return curGroup;
 });

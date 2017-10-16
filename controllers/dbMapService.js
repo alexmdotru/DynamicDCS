@@ -94,7 +94,6 @@ exports.srvPlayerActions = function (action, serverName, obj){
 exports.unitActions = function (action, serverName, obj){
 	const Unit = mapdb.model(serverName+'_unit', unitSchema);
 	if (action === 'read') {
-		console.log('readObj: ', obj);
 		return new Promise(function(resolve, reject) {
 			Unit.find(obj, function (err, dbUnits) {
 				if (err) { reject(err) }
