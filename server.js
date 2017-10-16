@@ -532,11 +532,10 @@ io.on('connection', function (socket) {
 _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 	dbMapServiceController.unitActions('read', serverName, {dead: false, category: "GROUND"})
 		.then(function (units) {
-			console.log('update: ', update);
 			if (units.length > 50 && update.unitCount > 50) {
 				if (units.length !== update.unitCount) {
 					// get update sync from server
-					console.log('out of sync ' + outOfSyncUnitCnt + ' times for ' + serverName + ' units: ' + update.unitCount + ' verse ' + aliveFilter.length);
+					console.log('out of sync ' + outOfSyncUnitCnt + ' times for ' + serverName + ' units: ' + update.unitCount + ' verse ' + units.length);
 					if (outOfSyncUnitCnt > config.outOfSyncUnitThreshold) {
 						outOfSyncUnitCnt = 0;
 						console.log('reset server units');
@@ -554,7 +553,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						console.log('Units Resynced');
 						outOfSyncUnitCnt = 0;
 					}
-					console.log('run running');
+					console.log('Idle Sync');
 				}
 			} else {
 				if ((polyTry > 60) && !isBasePop) {

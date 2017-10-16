@@ -122,6 +122,11 @@ do
 	local staticCache = {}
 	local updateQue = { ["que"] = {} }
 
+	local unitCnt = 0
+	local checkUnitDead = {}
+	local staticCnt = 0
+	local checkStaticDead = {}
+
 	package.path = package.path .. ";.\\LuaSocket\\?.lua"
 	package.cpath = package.cpath .. ";.\\LuaSocket\\?.dll"
 
@@ -174,7 +179,6 @@ do
 	end
 
 	local polyArray = getAllDefzone()
-
 
 	local function captureAirbase(baseId, coalition, farp)
 		env.info('base update ' .. baseId .. ' - ' .. coalition)
@@ -234,239 +238,228 @@ do
 		end
 	end
 
-	local function clearVar()
-		if not lockBaseUpdates then
-			env.info('Clearing Vars')
-			isResetUnits = true
-			unitCache = {}
-			airbaseCache = {}
-			staticCache = {}
-			updateQue = { ["que"] = {} }
+	local function addGroups(groups, coalition, Init)
+		for groupIndex = 1, #groups do
+			local group = groups[groupIndex]
+			local units = group:getUnits()
+			for unitIndex = 1, #units do
+				local unit = units[unitIndex]
+				if Unit.isActive(unit) then
+					local curUnit = {
+						uType = "unit",
+						data = {}
+					}
+					curUnit.data.unitId = tonumber(unit:getID())
+					curUnit.data.life = tonumber(unit:getLife())
+					local unitPosition = unit:getPosition()
+					curUnit.data.x = unitPosition.p.x
+					curUnit.data.y = unitPosition.p.z
+					curUnit.data.lat, curUnit.data.lon, curUnit.data.alt = coord.LOtoLL(unitPosition.p)
+					local unitXYZNorthCorr = coord.LLtoLO(curUnit.data.lat + 1, curUnit.data.lon)
+					local headingNorthCorr = math.atan2(unitXYZNorthCorr.z - unitPosition.p.z, unitXYZNorthCorr.x - unitPosition.p.x)
+					local heading = math.atan2(unitPosition.x.z, unitPosition.x.x) + headingNorthCorr
+					if heading < 0 then
+						heading = heading + 2 * math.pi
+					end
+					curUnit.data.hdg = math.floor(heading / math.pi * 180);
+					local velocity = unit:getVelocity()
+					if (velocity) then
+						curUnit.data.speed = math.sqrt(velocity.x ^ 2 + velocity.z ^ 2)
+					end
+					if unitCache[curUnit.data.unitId] ~= nil and not Init then
+						if unitCache[curUnit.data.unitId].lat ~= curUnit.data.lat or unitCache[curUnit.data.unitId].lon ~= curUnit.data.lon then
+							unitCache[curUnit.data.unitId] = {}
+							unitCache[curUnit.data.unitId].lat = curUnit.data.lat
+							unitCache[curUnit.data.unitId].lon = curUnit.data.lon
+							curUnit.action = "U"
+							table.insert(updateQue.que, curUnit)
+						end
+					else
+						unitCache[curUnit.data.unitId] = {}
+						unitCache[curUnit.data.unitId].lat = curUnit.data.lat
+						unitCache[curUnit.data.unitId].lon = curUnit.data.lon
+						local maxLife = unit:getLife0()
+						if maxLife ~= nil then
+							curUnit.data.maxLife = tonumber(maxLife)
+						end
+						curUnit.data.groupId = group:getID()
+						curUnit.data.groupName = group:getName()
+						curUnit.data.name = unit:getName()
+						curUnit.data.category = CategoryNames[unit:getDesc().category]
+						curUnit.data.type = unit:getTypeName()
+						curUnit.data.coalition = coalition
+						curUnit.data.country = CountryNames[unit:getCountry()]
+						local PlayerName = unit:getPlayerName()
+						if PlayerName ~= nil then
+							curUnit.data.playername = PlayerName
+						else
+							curUnit.data.playername = ""
+						end
+						curUnit.action = "C"
+						table.insert(updateQue.que, curUnit)
+					end
+					checkUnitDead[curUnit.data.unitId] = 1
+				end
+			end
+		end
+	end
 
-			isResetUnits = false
+	local function updateGroups(Init)
+		unitCnt = 0
+		checkUnitDead = {}
+		local redGroups = coalition.getGroups(coalition.side.RED)
+		if redGroups ~= nil then
+			addGroups(redGroups, 1, Init)
+		end
+		local blueGroups = coalition.getGroups(coalition.side.BLUE)
+		if blueGroups ~= nil then
+			addGroups(blueGroups, 2, Init)
+		end
+		--check dead, send delete action to server if dead detected
+		for k, v in pairs(unitCache) do
+			if checkUnitDead[k] == nil then
+				local curUnit = {
+					action = "D",
+					uType = "unit",
+					data = {
+						unitId = k
+					}
+				}
+				table.insert(updateQue.que, curUnit)
+				unitCache[k] = nil
+			end
+			unitCnt = unitCnt + 1
+		end
+	end
+
+	local function addStatics(statics, coalition, Init)
+		for staticIndex = 1, #statics do
+			local static = statics[staticIndex]
+			if static ~= 1 then
+				local curStatic = {
+					uType = "static",
+					data = {}
+				}
+				curStatic.data.unitId = tonumber(static:getID())
+				curStatic.data.life = static:getLife()
+				local staticPosition = static:getPosition()
+				curStatic.data.x = staticPosition.p.x
+				curStatic.data.y = staticPosition.p.z
+				curStatic.data.lat, curStatic.data.lon, curStatic.data.alt = coord.LOtoLL(staticPosition.p)
+				local unitXYZNorthCorr = coord.LLtoLO(curStatic.data.lat + 1, curStatic.data.lon)
+				local headingNorthCorr = math.atan2(unitXYZNorthCorr.z - staticPosition.p.z, unitXYZNorthCorr.x - staticPosition.p.x)
+				local heading = math.atan2(staticPosition.x.z, staticPosition.x.x) + headingNorthCorr
+				if heading < 0 then
+					heading = heading + 2 * math.pi
+				end
+				curStatic.data.hdg = math.floor(heading / math.pi * 180);
+				if staticCache[curStatic.data.unitId] ~= nil and not Init then
+					if staticCache[curStatic.data.unitId].lat ~= curStatic.data.lat or staticCache[curStatic.data.unitId].lon ~= curStatic.data.lon then
+						staticCache[curStatic.data.unitId] = {}
+						staticCache[curStatic.data.unitId].lat = curStatic.data.lat
+						staticCache[curStatic.data.unitId].lon = curStatic.data.lon
+						curStatic.action = "U"
+						table.insert(updateQue.que, curStatic)
+					end
+				else
+					staticCache[curStatic.data.unitId] = {}
+					staticCache[curStatic.data.unitId].lat = curStatic.data.lat
+					staticCache[curStatic.data.unitId].lon = curStatic.data.lon
+					curStatic.data.name = static:getName()
+					curStatic.data.maxLife = tonumber(static:getLife())
+					curStatic.data.category = CategoryNames[static:getDesc().category]
+					curStatic.data.type = static:getTypeName()
+					curStatic.data.coalition = coalition
+					curStatic.action = "C"
+					table.insert(updateQue.que, curStatic)
+				end
+				checkStaticDead[curStatic.data.unitId] = 1
+			end
+		end
+	end
+
+	local function updateStatics(Init)
+		staticCnt = 0
+		checkStaticDead = {}
+		local redStatics = coalition.getStaticObjects(coalition.side.RED)
+		if redStatics ~= nil then
+			addStatics(redStatics, 1, Init)
+		end
+		local blueStatics = coalition.getStaticObjects(coalition.side.BLUE)
+		if blueStatics ~= nil then
+			addStatics(blueStatics, 2, Init)
+		end
+		for k, v in pairs(staticCache) do
+			if checkStaticDead[k] == nil then
+				local curStatic = {
+					action = "D",
+					uType = "static",
+					data = {
+						staticId = k
+					}
+				}
+				table.insert(updateQue.que, curStatic)
+				staticCache[k] = nil
+			end
+			staticCnt = staticCnt + 1
 		end
 	end
 
 	local function getDataMessage()
-
 		-- check for base take
-		if not isResetUnits then
-			local neutralAirbases = coalition.getAirbases(coalition.side.NEUTRAL)
-			if neutralAirbases ~= nil then
-				for naIndex = 1, #neutralAirbases do
-					local baseId = tonumber(neutralAirbases[naIndex]:getID())
-					if airbaseCache[baseId] ~= nil then
-						if airbaseCache[baseId].side ~= 0 and not airbaseCache[baseId].expansion then
-							airbaseCache[baseId].side = 0
-							captureAirbase(baseId, 0, airbaseCache[baseId].farp);
-						end
+		local neutralAirbases = coalition.getAirbases(coalition.side.NEUTRAL)
+		if neutralAirbases ~= nil then
+			for naIndex = 1, #neutralAirbases do
+				local baseId = tonumber(neutralAirbases[naIndex]:getID())
+				if airbaseCache[baseId] ~= nil then
+					if airbaseCache[baseId].side ~= 0 and not airbaseCache[baseId].expansion then
+						airbaseCache[baseId].side = 0
+						captureAirbase(baseId, 0, airbaseCache[baseId].farp);
 					end
 				end
 			end
-			local redAirbases = coalition.getAirbases(coalition.side.RED)
-			if redAirbases ~= nil then
-				for rIndex = 1, #redAirbases do
-					local baseId = tonumber(redAirbases[rIndex]:getID())
-					if airbaseCache[baseId] ~= nil then
-						if airbaseCache[baseId].side ~= 1 and not airbaseCache[baseId].expansion then
-							airbaseCache[baseId].side = 1
-							captureAirbase(baseId, 1, airbaseCache[baseId].farp);
-						end
-					end
-				end
-			end
-			local blueAirbases = coalition.getAirbases(coalition.side.BLUE)
-			if blueAirbases ~= nil then
-				for bIndex = 1, #blueAirbases do
-					local baseId = tonumber(blueAirbases[bIndex]:getID())
-					if airbaseCache[baseId] ~= nil then
-						if airbaseCache[baseId].side ~= 2 and not airbaseCache[baseId].expansion then
-							airbaseCache[baseId].side = 2
-							captureAirbase(baseId, 2, airbaseCache[baseId].farp);
-						end
-					end
-				end
-			end
-
-			local checkUnitDead = {}
-			local checkStaticDead = {}
-
-			local function addGroups(groups, coalition)
-				for groupIndex = 1, #groups do
-					local group = groups[groupIndex]
-					local units = group:getUnits()
-					for unitIndex = 1, #units do
-						local unit = units[unitIndex]
-						if Unit.isActive(unit) then
-							local curUnit = {
-								uType = "unit",
-								data = {}
-							}
-							curUnit.data.unitId = tonumber(unit:getID())
-							curUnit.data.life = tonumber(unit:getLife())
-							local unitPosition = unit:getPosition()
-							curUnit.data.x = unitPosition.p.x
-							curUnit.data.y = unitPosition.p.z
-							curUnit.data.lat, curUnit.data.lon, curUnit.data.alt = coord.LOtoLL(unitPosition.p)
-							local unitXYZNorthCorr = coord.LLtoLO(curUnit.data.lat + 1, curUnit.data.lon)
-							local headingNorthCorr = math.atan2(unitXYZNorthCorr.z - unitPosition.p.z, unitXYZNorthCorr.x - unitPosition.p.x)
-							local heading = math.atan2(unitPosition.x.z, unitPosition.x.x) + headingNorthCorr
-							if heading < 0 then
-								heading = heading + 2 * math.pi
-							end
-							curUnit.data.hdg = math.floor(heading / math.pi * 180);
-							local velocity = unit:getVelocity()
-							if (velocity) then
-								curUnit.data.speed = math.sqrt(velocity.x ^ 2 + velocity.z ^ 2)
-							end
-							if unitCache[curUnit.data.unitId] ~= nil then
-								if unitCache[curUnit.data.unitId].lat ~= curUnit.data.lat or unitCache[curUnit.data.unitId].lon ~= curUnit.data.lon then
-									unitCache[curUnit.data.unitId] = {}
-									unitCache[curUnit.data.unitId].lat = curUnit.data.lat
-									unitCache[curUnit.data.unitId].lon = curUnit.data.lon
-									curUnit.action = "U"
-									table.insert(updateQue.que, curUnit)
-								end
-							else
-								unitCache[curUnit.data.unitId] = {}
-								unitCache[curUnit.data.unitId].lat = curUnit.data.lat
-								unitCache[curUnit.data.unitId].lon = curUnit.data.lon
-								local maxLife = unit:getLife0()
-								if maxLife ~= nil then
-									curUnit.data.maxLife = tonumber(maxLife)
-								end
-								curUnit.data.groupId = group:getID()
-								curUnit.data.groupName = group:getName()
-								curUnit.data.name = unit:getName()
-								curUnit.data.category = CategoryNames[unit:getDesc().category]
-								curUnit.data.type = unit:getTypeName()
-								curUnit.data.coalition = coalition
-								curUnit.data.country = CountryNames[unit:getCountry()]
-								local PlayerName = unit:getPlayerName()
-								if PlayerName ~= nil then
-									curUnit.data.playername = PlayerName
-								else
-									curUnit.data.playername = ""
-								end
-								curUnit.action = "C"
-								table.insert(updateQue.que, curUnit)
-							end
-							checkUnitDead[curUnit.data.unitId] = 1
-						end
-					end
-				end
-			end
-
-			local redGroups = coalition.getGroups(coalition.side.RED)
-			if redGroups ~= nil then
-				addGroups(redGroups, 1)
-			end
-			local blueGroups = coalition.getGroups(coalition.side.BLUE)
-			if blueGroups ~= nil then
-				addGroups(blueGroups, 2)
-			end
-
-			--check dead, send delete action to server if dead detected
-			local unitCnt = 0
-			for k, v in pairs(unitCache) do
-				if checkUnitDead[k] == nil then
-					local curUnit = {
-						action = "D",
-						uType = "unit",
-						data = {
-							unitId = k
-						}
-					}
-					table.insert(updateQue.que, curUnit)
-					unitCache[k] = nil
-				end
-				unitCnt = unitCnt + 1
-			end
-
-			local function addStatics(statics, coalition)
-				for staticIndex = 1, #statics do
-					local static = statics[staticIndex]
-					if static ~= 1 then
-						local curStatic = {
-							uType = "static",
-							data = {}
-						}
-						curStatic.data.unitId = tonumber(static:getID())
-						curStatic.data.life = static:getLife()
-						local staticPosition = static:getPosition()
-						curStatic.data.x = staticPosition.p.x
-						curStatic.data.y = staticPosition.p.z
-						curStatic.data.lat, curStatic.data.lon, curStatic.data.alt = coord.LOtoLL(staticPosition.p)
-						local unitXYZNorthCorr = coord.LLtoLO(curStatic.data.lat + 1, curStatic.data.lon)
-						local headingNorthCorr = math.atan2(unitXYZNorthCorr.z - staticPosition.p.z, unitXYZNorthCorr.x - staticPosition.p.x)
-						local heading = math.atan2(staticPosition.x.z, staticPosition.x.x) + headingNorthCorr
-						if heading < 0 then
-							heading = heading + 2 * math.pi
-						end
-						curStatic.data.hdg = math.floor(heading / math.pi * 180);
-						if staticCache[curStatic.data.unitId] ~= nil then
-							if staticCache[curStatic.data.unitId].lat ~= curStatic.data.lat or staticCache[curStatic.data.unitId].lon ~= curStatic.data.lon then
-								staticCache[curStatic.data.unitId] = {}
-								staticCache[curStatic.data.unitId].lat = curStatic.data.lat
-								staticCache[curStatic.data.unitId].lon = curStatic.data.lon
-								curStatic.action = "U"
-								table.insert(updateQue.que, curStatic)
-							end
-						else
-							staticCache[curStatic.data.unitId] = {}
-							staticCache[curStatic.data.unitId].lat = curStatic.data.lat
-							staticCache[curStatic.data.unitId].lon = curStatic.data.lon
-							curStatic.data.name = static:getName()
-							curStatic.data.maxLife = tonumber(static:getLife())
-							curStatic.data.category = CategoryNames[static:getDesc().category]
-							curStatic.data.type = static:getTypeName()
-							curStatic.data.coalition = coalition
-							curStatic.action = "C"
-							table.insert(updateQue.que, curStatic)
-						end
-						checkStaticDead[curStatic.data.unitId] = 1
-					end
-				end
-			end
-
-			local redStatics = coalition.getStaticObjects(coalition.side.RED)
-			if redStatics ~= nil then
-				addStatics(redStatics, 1)
-			end
-			local blueStatics = coalition.getStaticObjects(coalition.side.BLUE)
-			if blueStatics ~= nil then
-				addStatics(blueStatics, 2)
-			end
-
-			local staticCnt = 0
-			for k, v in pairs(staticCache) do
-				if checkStaticDead[k] == nil then
-					local curStatic = {
-						action = "D",
-						uType = "static",
-						data = {
-							staticId = k
-						}
-					}
-					table.insert(updateQue.que, curStatic)
-					staticCache[k] = nil
-				end
-				staticCnt = staticCnt + 1
-			end
-
-			local chkSize = 500
-			local payload = {}
-			payload.que = {}
-			for i = 1, chkSize do
-				table.insert(payload.que, updateQue.que[i])
-				table.remove(updateQue.que, i)
-			end
-			payload.unitCount = unitCnt + staticCnt
-			payload.startAbsTime = timer.getTime0()
-			payload.curAbsTime = timer.getAbsTime()
-			payload.epoc = missionStartTime * 1000
-			return payload
 		end
+		local redAirbases = coalition.getAirbases(coalition.side.RED)
+		if redAirbases ~= nil then
+			for rIndex = 1, #redAirbases do
+				local baseId = tonumber(redAirbases[rIndex]:getID())
+				if airbaseCache[baseId] ~= nil then
+					if airbaseCache[baseId].side ~= 1 and not airbaseCache[baseId].expansion then
+						airbaseCache[baseId].side = 1
+						captureAirbase(baseId, 1, airbaseCache[baseId].farp);
+					end
+				end
+			end
+		end
+		local blueAirbases = coalition.getAirbases(coalition.side.BLUE)
+		if blueAirbases ~= nil then
+			for bIndex = 1, #blueAirbases do
+				local baseId = tonumber(blueAirbases[bIndex]:getID())
+				if airbaseCache[baseId] ~= nil then
+					if airbaseCache[baseId].side ~= 2 and not airbaseCache[baseId].expansion then
+						airbaseCache[baseId].side = 2
+						captureAirbase(baseId, 2, airbaseCache[baseId].farp);
+					end
+				end
+			end
+		end
+
+		updateGroups()
+
+		updateStatics()
+
+		local chkSize = 500
+		local payload = {}
+		payload.que = {}
+		for i = 1, chkSize do
+			table.insert(payload.que, updateQue.que[i])
+			table.remove(updateQue.que, i)
+		end
+		payload.unitCount = unitCnt + staticCnt
+		payload.startAbsTime = timer.getTime0()
+		payload.curAbsTime = timer.getAbsTime()
+		payload.epoc = missionStartTime * 1000
+		return payload
 	end
 
 	local function runRequest(request)
@@ -487,9 +480,9 @@ do
 				initAirbases()
 			end
 			if request.action == "INIT" then
-				-- log('RUNNING REQUEST INIT')
-				lockBaseUpdates = false
-				clearVar();
+				--send all unit updates
+				updateGroups(true)
+				updateStatics(true)
 			end
 			if request.action == "CMD" and request.cmd ~= nil and request.reqID ~= nil then
 				log('RUNNING CMD: '.. request.cmd)
@@ -537,7 +530,9 @@ do
 
 			if client then
 				log("Connection established")
-				clearVar()
+				--send all unit updates
+				updateGroups(true)
+				updateStatics(true)
 			end
 		end
 
