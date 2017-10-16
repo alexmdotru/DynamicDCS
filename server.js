@@ -530,7 +530,7 @@ io.on('connection', function (socket) {
 });
 
 _.set(curServers, 'processQue', function (serverName, sessionName, update) {
-	dbMapServiceController.unitActions('read', serverName, {dead: false, category: "GROUND"})
+	dbMapServiceController.unitActions('read', serverName, {dead: false})
 		.then(function (units) {
 			if (units.length > 50 && update.unitCount > 50) {
 				if (units.length !== update.unitCount) {
@@ -553,7 +553,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						console.log('Units Resynced');
 						outOfSyncUnitCnt = 0;
 					}
-					console.log('Idle Sync');
 				}
 			} else {
 				if ((polyTry > 60) && !isBasePop) {
@@ -590,7 +589,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					console.log('polyzones loaded, populate base');
 					_.set(polyzonesLoaded, serverName, true);
 					DCSLuaCommands.spawnNewGroupsInPolyzones(serverName, baseName, _.get(defPolyZones, serverName));
-
 				} else {
 					console.log(polyLen + ' polyzones out of ' + srvPolyCnt);
 				}
@@ -599,7 +597,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 
 		//var curUnit = _.find(curServers[serverName].serverObject.units, {'unitId': _.get(queObj, 'data.unitId')});
 		if ((_.get(queObj, 'action') === 'C') || (_.get(queObj, 'action') === 'U') || (_.get(queObj, 'action') === 'D'))  {
-			dbMapServiceController.unitActions('read', serverName, {_id: _.get(queObj, 'data.unitId'), category: "GROUND"})
+			dbMapServiceController.unitActions('read', serverName, {_id: _.get(queObj, 'data.unitId')})
 				.then(function (unit) {
 					if ((unit.length > 0 && _.get(queObj, 'action') !== 'D')) {
 						iCurObj = {
@@ -618,9 +616,14 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 								dead: false
 							}
 						};
-						dbMapServiceController.unitActions('update', serverName, iCurObj.data);
-						curServers[serverName].updateQue['q' + _.get(unit, [0, 'coalition'])].push(_.cloneDeep(iCurObj));
-						curServers[serverName].updateQue.qadmin.push(_.cloneDeep(iCurObj));
+						dbMapServiceController.unitActions('update', serverName, iCurObj.data)
+							.then(function () {
+								curServers[serverName].updateQue['q' + _.get(unit, [0, 'coalition'])].push(_.cloneDeep(iCurObj));
+								curServers[serverName].updateQue.qadmin.push(_.cloneDeep(iCurObj));
+							})
+							.catch(function (err) {
+								console.log('update err line626: ', err);
+							});
 					}else if (_.get(queObj, 'action') === 'C') {
 						var curData = _.get(queObj, 'data');
 						_.set(curData, '_id', _.get(curData, 'unitId'));
@@ -629,9 +632,14 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 							sessionName: sessionName,
 							data: curData
 						};
-						dbMapServiceController.unitActions('save', serverName, iCurObj.data);
-						curServers[serverName].updateQue['q' + parseFloat(_.get(queObj, 'data.coalition'))].push(_.cloneDeep(iCurObj));
-						curServers[serverName].updateQue.qadmin.push(_.cloneDeep(iCurObj));
+						dbMapServiceController.unitActions('save', serverName, iCurObj.data)
+							.then(function (unit) {
+								curServers[serverName].updateQue['q' + parseFloat(_.get(queObj, 'data.coalition'))].push(_.cloneDeep(iCurObj));
+								curServers[serverName].updateQue.qadmin.push(_.cloneDeep(iCurObj));
+							})
+							.catch(function (err) {
+								console.log('save err line643: ', err);
+							});
 					} else if (_.get(queObj, 'action') === 'D') {
 						iCurObj = {
 							action: 'D',
@@ -642,12 +650,16 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 								dead: true
 							}
 						};
-
-						dbMapServiceController.unitActions('update', serverName, iCurObj.data);
-						// dbMapServiceController.unitActions('delete', serverName, iCurObj.data);
-						curServers[serverName].updateQue.q1.push(_.cloneDeep(iCurObj));
-						curServers[serverName].updateQue.q2.push(_.cloneDeep(iCurObj));
-						curServers[serverName].updateQue.qadmin.push(_.cloneDeep(iCurObj));
+						dbMapServiceController.unitActions('update', serverName, iCurObj.data)
+							.then(function (unit) {
+								curServers[serverName].updateQue.q1.push(_.cloneDeep(iCurObj));
+								curServers[serverName].updateQue.q2.push(_.cloneDeep(iCurObj));
+								curServers[serverName].updateQue.qadmin.push(_.cloneDeep(iCurObj));
+							})
+							.catch(function (err) {
+								console.log('del err line663: ', err);
+							})
+						;
 					}
 				})
 				.catch(function (err) {
