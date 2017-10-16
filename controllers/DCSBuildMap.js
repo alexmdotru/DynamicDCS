@@ -8,7 +8,8 @@ _.set(exports, 'buildDynamicMap', function (serverName) {
 	console.log('build dynamic caucasus');
 	dbMapServiceController.unitActions('read', serverName, '{category: "GROUND"}')
 		.then(function (units) {
-			if (units.length > 50) {
+			console.log('unitsLength: ', units.length);
+			if (units.length > 20) {
 				console.log('repopUnitsFromDB');
 				//repop units at base
 				var remappedunits = {};

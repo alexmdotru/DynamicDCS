@@ -531,7 +531,7 @@ io.on('connection', function (socket) {
 
 _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 	var curUnits = _.get(curServers, [serverName, 'serverObject', 'units'], []);
-	if (curUnits.length > 50) {
+	if (curUnits.length > 35) {
 		var aliveFilter = _.filter(curUnits, function(unit) { return !unit.dead; });
 		if (curUnits.length !== aliveFilter.length) {
 			console.log('out of sync '+outOfSyncUnitCnt+' times for ' + serverName + ' units: '+ update.unitCount + ' verse ' + aliveFilter.length);
@@ -587,76 +587,65 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			}
 		}
 
-		var curUnit = _.find(curServers[serverName].serverObject.units, {'unitId': _.get(queObj, 'data.unitId')});
-		if (_.get(queObj, 'action') === 'C') {
-			if (curUnit) {
-				curUnit.action = 'U';
-			} else {
-				var curData = _.get(queObj, 'data');
-				_.set(curData, '_id', _.get(curData, 'unitId'));
-				iCurObj = {
-					action: 'C',
-					sessionName: sessionName,
-					data: curData
-				};
+		//var curUnit = _.find(curServers[serverName].serverObject.units, {'unitId': _.get(queObj, 'data.unitId')});
+		if ((_.get(queObj, 'action') === 'C') || (_.get(queObj, 'action') === 'U') || (_.get(queObj, 'action') === 'D'))  {
+			dbMapServiceController.unitActions('read', serverName, {_id: _.get(queObj, 'data.unitId'), category: "GROUND"})
+				.then(function (unit) {
+					console.log('returnedUNIT: ', _.get(queObj, 'data.unitId'), unit);
+					if ((unit.length > 0 && _.get(queObj, 'action') !== 'D')) {
+						iCurObj = {
+							action: 'U',
+							sessionName: sessionName,
+							data: {
+								_id: parseFloat(_.get(queObj, 'data.unitId')),
+								unitId: _.get(queObj, 'data.unitId'),
+								lat: parseFloat(_.get(queObj, 'data.lat')),
+								lon: parseFloat(_.get(queObj, 'data.lon')),
+								x: parseFloat(_.get(queObj, 'data.x')),
+								y: parseFloat(_.get(queObj, 'data.y')),
+								alt: parseFloat(_.get(queObj, 'data.alt')),
+								hdg: parseFloat(_.get(queObj, 'data.hdg')),
+								speed: parseFloat(_.get(queObj, 'data.speed')),
+								dead: false
+							}
+						};
+						dbMapServiceController.unitActions('update', serverName, iCurObj.data);
+						curServers[serverName].updateQue['q' + _.get(unit, [0, 'coalition'])].push(_.cloneDeep(iCurObj));
+						curServers[serverName].updateQue.qadmin.push(_.cloneDeep(iCurObj));
+					}else if (_.get(queObj, 'action') === 'C') {
+						console.log('CANTFINDUNIT...');
+						var curData = _.get(queObj, 'data');
+						_.set(curData, '_id', _.get(curData, 'unitId'));
+						iCurObj = {
+							action: 'C',
+							sessionName: sessionName,
+							data: curData
+						};
+						dbMapServiceController.unitActions('save', serverName, iCurObj.data);
+						curServers[serverName].updateQue['q' + parseFloat(_.get(queObj, 'data.coalition'))].push(_.cloneDeep(iCurObj));
+						curServers[serverName].updateQue.qadmin.push(_.cloneDeep(iCurObj));
+					} else if (_.get(queObj, 'action') === 'D') {
+						iCurObj = {
+							action: 'D',
+							sessionName: sessionName,
+							data: {
+								_id: parseFloat(_.get(queObj, 'data.unitId')),
+								unitId: _.get(queObj, 'data.unitId'),
+								dead: true
+							}
+						};
 
-				dbMapServiceController.unitActions('save', serverName, iCurObj.data);
-				curServers[serverName].updateQue['q' + parseFloat(_.get(queObj, 'data.coalition'))].push(_.cloneDeep(iCurObj));
-				curServers[serverName].updateQue.qadmin.push(_.cloneDeep(iCurObj));
-
-				_.set(iCurObj, ['data', 'dead'], false);
-				curServers[serverName].serverObject.units.push(_.cloneDeep(iCurObj.data));
-			}
-		}
-		if (_.get(queObj, 'action') === 'U') {
-			if (curUnit) {
-				curUnit.lat = parseFloat(_.get(queObj, 'data.lat'));
-				curUnit.lon = parseFloat(_.get(queObj, 'data.lon'));
-				curUnit.alt = parseFloat(_.get(queObj, 'data.alt'));
-				curUnit.hdg = parseFloat(_.get(queObj, 'data.hdg'));
-				curUnit.speed = parseFloat(_.get(queObj, 'data.speed'));
-				_.set(curUnit, ['dead'], false);
-				// console.log('U: ', curUnit);
-				iCurObj = {
-					action: 'U',
-					sessionName: sessionName,
-					data: {
-						_id: parseFloat(_.get(queObj, 'data.unitId')),
-						unitId: _.get(queObj, 'data.unitId'),
-						lat: parseFloat(_.get(queObj, 'data.lat')),
-						lon: parseFloat(_.get(queObj, 'data.lon')),
-						alt: parseFloat(_.get(queObj, 'data.alt')),
-						hdg: parseFloat(_.get(queObj, 'data.hdg')),
-						speed: parseFloat(_.get(queObj, 'data.speed'))
+						dbMapServiceController.unitActions('update', serverName, iCurObj.data);
+						// dbMapServiceController.unitActions('delete', serverName, iCurObj.data);
+						curServers[serverName].updateQue.q1.push(_.cloneDeep(iCurObj));
+						curServers[serverName].updateQue.q2.push(_.cloneDeep(iCurObj));
+						curServers[serverName].updateQue.qadmin.push(_.cloneDeep(iCurObj));
 					}
-				};
-				dbMapServiceController.unitActions('update', serverName, iCurObj.data);
-
-				curServers[serverName].updateQue['q' + curUnit.coalition].push(_.cloneDeep(iCurObj));
-				curServers[serverName].updateQue.qadmin.push(_.cloneDeep(iCurObj));
-			}
-		}
-		if (_.get(queObj, 'action') === 'D') {
-			iCurObj = {
-				action: 'D',
-				sessionName: sessionName,
-				data: {
-					_id: parseFloat(_.get(queObj, 'data.unitId')),
-					unitId: _.get(queObj, 'data.unitId')
-				}
-			};
-
-			dbMapServiceController.unitActions('delete', serverName, iCurObj.data);
-			// _.remove(curServers[serverName].serverObject.units, {'unitId': _.get(queObj, 'data.unitId')});
-			curServers[serverName].updateQue.q1.push(_.cloneDeep(iCurObj));
-			curServers[serverName].updateQue.q2.push(_.cloneDeep(iCurObj));
-			curServers[serverName].updateQue.qadmin.push(_.cloneDeep(iCurObj));
-
-			if (curUnit) {
-				// console.log('D: ', _.get(queObj, 'data.unitId'));
-				_.set(curUnit, ['dead'], true);
-			}
-			//_.set(curServers, [serverName, 'serverObject', 'units', 'dead'], true);
+				})
+				.catch(function (err) {
+					console.log('err line596: ', err);
+				})
+			;
 		}
 
 		//Base Info

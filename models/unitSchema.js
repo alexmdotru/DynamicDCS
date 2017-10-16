@@ -81,6 +81,10 @@ const UnitSchema = new Schema({
 	enabled: {
 		type: Boolean,
 		default: true
+	},
+	dead: {
+		type: Boolean,
+		default: false
 	}
 },
 	{
