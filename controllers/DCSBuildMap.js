@@ -6,7 +6,7 @@ const DCSLuaCommands = require('./DCSLuaCommands');
 
 _.set(exports, 'buildDynamicMap', function (serverName) {
 	console.log('build dynamic caucasus');
-	dbMapServiceController.unitActions('read', serverName, '{category: "GROUND"}')
+	dbMapServiceController.unitActions('read', serverName, {})
 		.then(function (units) {
 			console.log('unitsLength: ', units.length);
 			if (units.length > 60) {
@@ -14,10 +14,21 @@ _.set(exports, 'buildDynamicMap', function (serverName) {
 				//repop units at base
 				var remappedunits = {};
 				_.forEach(units, function (unit) {
-					_.set(remappedunits, _.get(unit, 'groupName'), _.get(remappedunits, _.get(unit, 'groupName'), []));
-					remappedunits[_.get(unit, 'groupName')].push(unit);
+					var curDead;
+					if (_.get(unit, 'category') === 'GROUND') {
+						_.set(remappedunits, _.get(unit, 'groupName'), _.get(remappedunits, _.get(unit, 'groupName'), []));
+						remappedunits[_.get(unit, 'groupName')].push(unit);
+					} else {
+						curDead = {
+							_id: parseFloat(_.get(unit, 'unitId')),
+							unitId: _.get(unit, 'unitId'),
+							dead: true
+						};
+						dbMapServiceController.unitActions('update', serverName, curDead);
+					}
 				});
 				_.forEach(remappedunits, function (group) {
+
 					DCSLuaCommands.spawnGroup(serverName, group);
 				});
 
