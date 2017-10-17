@@ -532,36 +532,39 @@ io.on('connection', function (socket) {
 _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 	dbMapServiceController.unitActions('read', serverName, {dead: false})
 		.then(function (units) {
-			if (units.length > 50 && update.unitCount > 50) {
-				if (units.length !== update.unitCount) {
-					// get update sync from server
-					console.log('out of sync ' + outOfSyncUnitCnt + ' times for ' + serverName + ' units: ' + update.unitCount + ' verse ' + units.length);
-					if (outOfSyncUnitCnt > config.outOfSyncUnitThreshold) {
-						outOfSyncUnitCnt = 0;
-						console.log('reset server units');
-						initClear(serverName, 'client');
-						dbMapServiceController.cmdQueActions('save', serverName, {
-							queName: 'clientArray',
-							actionObj: {action: "INIT"}
-						});
-						sendInit(serverName, 'all');
+			if (update.epoc) {
+				if (update.unitCount > 50 && units.length > 50) {
+					// console.log('resync');
+					if (units.length !== update.unitCount) {
+						// get update sync from server
+						console.log('out of sync ' + outOfSyncUnitCnt + ' times for ' + serverName + ' units: ' + update.unitCount + ' verse ' + units.length);
+						if (outOfSyncUnitCnt > config.outOfSyncUnitThreshold) {
+							outOfSyncUnitCnt = 0;
+							console.log('reset server units');
+							initClear(serverName, 'client');
+							dbMapServiceController.cmdQueActions('save', serverName, {
+								queName: 'clientArray',
+								actionObj: {action: "INIT"}
+							});
+							sendInit(serverName, 'all');
+						} else {
+							outOfSyncUnitCnt++;
+						}
 					} else {
-						outOfSyncUnitCnt++;
+						if (outOfSyncUnitCnt > 0) {
+							console.log('Units Resynced');
+							outOfSyncUnitCnt = 0;
+						}
 					}
 				} else {
-					if (outOfSyncUnitCnt > 0) {
-						console.log('Units Resynced');
-						outOfSyncUnitCnt = 0;
+					// console.log('rePOP');
+					if ((polyTry > 60) && !isBasePop) {
+						DCSBuildMap.buildDynamicMap(serverName);
+						polyTry = 0;
+						isBasePop = true;
 					}
+					polyTry++;
 				}
-			} else {
-				if ((polyTry > 60) && !isBasePop) {
-					console.log('should only run once: ', !isBasePop);
-					DCSBuildMap.buildDynamicMap(serverName);
-					polyTry = 0;
-					isBasePop = true;
-				}
-				polyTry++;
 			}
 		})
 		.catch(function (err) {
