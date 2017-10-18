@@ -58,13 +58,13 @@ _.set(exports, 'spawnNewGroupsInPolyzones', function (serverName, baseName, pArr
 				});
 			}
 			if (!_.isEmpty(unitArray)) {
-				var curGrpArry = groupController.spawnGrndUnit(serverName, unitArray[0], [{}], unitArray);
+			//	var curGrpArry = groupController.spawnGrndUnit(serverName, unitArray[0], [{}], unitArray);
 				// var curCMD = 'coalition.addGroup(2, 3, ' + curGrpArry + ')';
 				// mist.dynAdd(newGroup)
-				var curCMD = 'mist.dynAdd(' + curGrpArry + ')';
-				var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
-				var actionObj = {actionObj: sendClient, queName: 'clientArray'};
-				dbMapServiceController.cmdQueActions('save', serverName, actionObj);
+			//	var curCMD = 'mist.dynAdd(' + curGrpArry + ')';
+			//	var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
+			//	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
+			//	dbMapServiceController.cmdQueActions('save', serverName, actionObj);
 			}
 		}
 	});
@@ -72,10 +72,10 @@ _.set(exports, 'spawnNewGroupsInPolyzones', function (serverName, baseName, pArr
 
 _.set(exports, 'spawnGroup', function (serverName, groupObj) {
 	if (!_.isEmpty(groupObj)) {
-		var curGrpArry = groupController.spawnGrndUnit(serverName, groupObj[0], [{}], groupObj);
-		var curCMD = 'mist.dynAdd(' + curGrpArry + ')';
-		var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
-		var actionObj = {actionObj: sendClient, queName: 'clientArray'};
-		dbMapServiceController.cmdQueActions('save', serverName, actionObj);
+	//	var curGrpArry = groupController.spawnGrndUnit(serverName, groupObj[0], [{}], groupObj);
+	//	var curCMD = 'mist.dynAdd(' + curGrpArry + ')';
+	//	var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
+	//	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
+	//	dbMapServiceController.cmdQueActions('save', serverName, actionObj);
 	};
 });

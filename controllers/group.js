@@ -4,7 +4,7 @@ const	_ = require('lodash'),
 const dbMapServiceController = require('./dbMapService');
 
 // from my main mission object, can spawn units on both sides in this setup
-var countryObj = {
+var countryCoObj = {
 	side: {
 		0: 'neutral',
 		1: 'red',
@@ -89,6 +89,12 @@ _.set(exports, 'grndUnitTemplate', function ( unitObj ) {
 		'["skill"] = "Excellent"' +
 		'}'
 	;
+});
+
+_.set(exports, 'spawnSupportVehiclesOnFarp', function ( groupObj ) {
+	/* spawn vehicles on farp pads properly
+
+	 */
 });
 
 _.set(exports, 'spawnSupportBaseGrp', function ( groupObj ) {

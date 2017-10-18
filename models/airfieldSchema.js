@@ -15,6 +15,10 @@ const AirfieldSchema = new Schema({
 		type: Boolean,
 		default: false
 	},
+	expansion: {
+		type: Boolean,
+		default: false
+	},
 	lat: {
 		type: Number,
 		required: true
@@ -23,9 +27,26 @@ const AirfieldSchema = new Schema({
 		type: Number,
 		required: true
 	},
+	x: {
+		type: Number,
+		required: true
+	},
+	y: {
+		type: Number,
+		required: true
+	},
 	alt: {
 		type: Number,
 		required: true
+	},
+	hdg: {
+		type: Number,
+		min: 0,
+		max: 359,
+		required: true
+	},
+	country: {
+		type: String
 	},
 	name: {
 		type: String,
