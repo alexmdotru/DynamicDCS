@@ -586,7 +586,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				var srvPolyCnt = _.get(queObj, 'polyCnt', 0);
 				var baseName = _.get(queObj, 'data.baseName');
 				baseName = _.replace(baseName,"_DEFZONE_","");
-				console.log('basen: ', queObj);
 				_.set(defPolyZones, [serverName, baseName], _.get(queObj, 'data.points'));
 				polyLen = _.keys(_.get(defPolyZones, serverName)).length;
 				if (polyLen === (srvPolyCnt + 1)) {
@@ -594,6 +593,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					_.set(polyzonesLoaded, serverName, true);
 					DCSLuaCommands.spawnNewGroupsInPolyzones(serverName, baseName, _.get(defPolyZones, serverName));
 				} else {
+
 					console.log(polyLen + ' polyzones out of ' + srvPolyCnt);
 				}
 			}

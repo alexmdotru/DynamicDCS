@@ -466,7 +466,7 @@ do
 
 		updateStatics()
 
-		local chkSize = 750
+		local chkSize = 500
 		local payload = {}
 		payload.que = {}
 		for i = 1, chkSize do
