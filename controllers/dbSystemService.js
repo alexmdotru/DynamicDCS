@@ -162,7 +162,7 @@ exports.serverActions = function (action, obj){
 	}
 	if(action === 'read') {
 		return new Promise(function(resolve, reject) {
-			Server.find(function (err, servers) {
+			Server.find(obj, function (err, servers) {
 				if (err) { reject(err) }
 				resolve(servers);
 			});
@@ -246,6 +246,20 @@ exports.banUserActions = function (action, ucid){
 			BanUser.find({_id: ucid}, function (err, banUser) {
 				if (err) { reject(err) }
 				resolve(banUser);
+			});
+		});
+	}
+};
+
+var unitDictionarySchema = require('../models/unitDictionarySchema');
+const UnitDictionary = systemdb.model('unitdictionary', unitDictionarySchema);
+
+exports.unitDictionaryActions = function (action, obj){
+	if(action === 'read') {
+		return new Promise(function(resolve, reject) {
+			UnitDictionary.find(obj, function (err, uDictionary) {
+				if (err) { reject(err) }
+				resolve(uDictionary);
 			});
 		});
 	}

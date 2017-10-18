@@ -2,6 +2,7 @@ const	_ = require('lodash'),
 		js2lua = require('js2lua');
 
 const dbMapServiceController = require('./dbMapService');
+const dbSystemServiceController = require('./dbSystemService');
 
 // from my main mission object, can spawn units on both sides in this setup
 var countryCoObj = {
@@ -91,9 +92,10 @@ _.set(exports, 'grndUnitTemplate', function ( unitObj ) {
 	;
 });
 
-_.set(exports, 'spawnSupportVehiclesOnFarp', function ( serverName, baseName ) {
+_.set(exports, 'spawnSupportVehiclesOnFarp', function ( serverName, baseName, side ) {
 	/* spawn vehicles on farp pads properly */
-	console.log('basename: ', baseName);
+	var curEnabledCountrys = _.get(countryCoObj, [_.get(countryCoObj, side)]);
+	console.log('cnt: ', curEnabledCountrys, side);
 	dbMapServiceController.baseActions('read', serverName,
 		{$and: [
 				{$or: [
@@ -105,7 +107,31 @@ _.set(exports, 'spawnSupportVehiclesOnFarp', function ( serverName, baseName ) {
 			]
 		})
 		.then(function (farps) {
-			console.log('farps&exp: ', farps);
+			//get vehicles setup
+			dbSystemServiceController.unitDictionaryActions('read')
+				.then(function (unitsDic) {
+					//var cur
+
+
+					_.forEach(farpsExp, function (farpExp) {
+
+
+
+
+					});
+				})
+				.catch(function (err) {
+					console.log('err line101: ', err);
+				})
+			;
+
+
+		//	var curAmmo
+		//	var curFuel
+		//	var curRepair
+
+
+			// console.log('farps&exp: ', farps);
 		})
 		.catch(function (err) {
 				console.log('err line101: ', err);
@@ -135,9 +161,24 @@ _.set(exports, 'repopGroup', function ( groupObj ) {
 });
 
 _.set(exports, 'spawnNewMapGrp', function ( serverName, groupObj ) {
-	exports.spawnSupportVehiclesOnFarp(serverName, _.get(groupObj, [0, 'baseName']));
-
-
+	//get default color for base, for new map
+	dbSystemServiceController.serverActions('read', {_id: serverName})
+		.then(function (servers) {
+			var curBaseName = _.get(groupObj, [0, 'baseName']);
+			// var defBaseSide = _.get(servers, [0, 'defBaseSides', curBaseName]);
+			for (var k in servers) {
+				console.log(servers[k]);
+				for (var l in k.defBaseSides) {
+					console.log(k.defBaseSides[l]);
+				}
+			}
+			//console.log('dbs: ', server.defBaseSides, server);
+			// exports.spawnSupportVehiclesOnFarp(serverName, _.get(groupObj, [0, 'baseName']), defBaseSide);
+		})
+		.catch(function (err) {
+			console.log('line145: ', err);
+		})
+	;
 });
 
 /*
