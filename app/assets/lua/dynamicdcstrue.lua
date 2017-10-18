@@ -231,7 +231,7 @@ do
 				curObj.expansion = true
 			end
 			if not string.find(baseName, 'Expansion', 1, true) and not string.find(baseName, ' #', 1, true) then
-				env.info('applycache  ' .. baseId);
+				env.info('applycache  ' .. baseId..' - '..baseName);
 				airbaseCache[baseId] = curObj
 			end
 			table.insert(updateQue.que, {
@@ -466,7 +466,7 @@ do
 
 		updateStatics()
 
-		local chkSize = 500
+		local chkSize = 750
 		local payload = {}
 		payload.que = {}
 		for i = 1, chkSize do
@@ -483,19 +483,21 @@ do
 	local function runRequest(request)
 		if request.action ~= nil then
 			if request.action == "GETPOLYDEF" then
+				initAirbases()
 				env.info('GETPOLYDEF')
 				for k, v in pairs(polyArray) do
-					local cObj = {
-						["baseName"] = k,
-						["points"] = v
-					}
-					table.insert(updateQue.que, {
-						action = 'POLYDEF',
-						polyCnt = polyArray.count,
-						data = cObj
-					})
+					if string.find(k, '_DEFZONE_', 1, true) then
+						local cObj = {
+							["baseName"] = k,
+							["points"] = v
+						}
+						table.insert(updateQue.que, {
+							action = 'POLYDEF',
+							polyCnt = polyArray.count,
+							data = cObj
+						})
+					end
 				end
-				initAirbases()
 			end
 			if request.action == "INIT" then
 				--send all unit updates
