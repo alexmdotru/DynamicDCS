@@ -200,6 +200,10 @@ var place;
 var sessionName;
 var polyTry = 50;
 var isBasePop = false;
+var buildPoly = false;
+var polyLen = 0;
+var srvPolyCnt = 0;
+var polyFailCount = 0;
 
 function abrLookup (fullName) {
  var shortNames =	{
@@ -582,20 +586,30 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 
 		if (_.get(queObj, 'action') === 'POLYDEF') {
 			if (_.isUndefined(_.get(polyzonesLoaded, serverName)) || !_.get(polyzonesLoaded, serverName)) {
-				var polyLen;
-				var srvPolyCnt = _.get(queObj, 'polyCnt', 0);
+				srvPolyCnt = _.get(queObj, 'polyCnt', 0);
 				var baseName = _.get(queObj, 'data.baseName');
 				baseName = _.replace(baseName,"_DEFZONE_","");
 				_.set(defPolyZones, [serverName, baseName], _.get(queObj, 'data.points'));
 				polyLen = _.keys(_.get(defPolyZones, serverName)).length;
-				if (polyLen === (srvPolyCnt + 1)) {
+				buildPoly = true;
+				if (polyLen === (srvPolyCnt)) {
+					buildPoly = false;
 					console.log('polyzones loaded, populate base');
 					_.set(polyzonesLoaded, serverName, true);
 					DCSLuaCommands.spawnNewGroupsInPolyzones(serverName, baseName, _.get(defPolyZones, serverName));
 				} else {
-
 					console.log(polyLen + ' polyzones out of ' + srvPolyCnt);
 				}
+			}
+		}
+
+		if (buildPoly && polyLen !== (srvPolyCnt)) {
+			// since tcp connection is unstable, this is a retry workaround
+			polyFailCount += 1;
+			console.log('poly stuck: ', polyFailCount);
+			if (polyFailCount > 100) {
+				dbMapServiceController.cmdQueActions('save', serverName, {queName: 'clientArray', actionObj: {action: "GETPOLYDEF"}});
+				polyFailCount = 0;
 			}
 		}
 
