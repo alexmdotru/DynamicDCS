@@ -67,9 +67,9 @@ _.set(exports, 'grndUnitGroup', function ( groupObj ) {
 	return '{' +
 		'["groupId"] = ' + _.get(groupObj, 'groupId') + ',' +
 		'["name"] = "' + _.get(groupObj, 'groupName') + '",' +
-		'["visible"] = false,' +
-		'["hidden"] = false,' +
-		'["task"] = {},' +
+		'["visible"] = ' + _.get(groupObj, 'visible', false) + ',' +
+		'["hidden"] = ' + _.get(groupObj, 'hidden', false) + ',' +
+		'["task"] = ' + _.get(groupObj, 'task', {}) + ',' +
 		'["units"] = {#UNITS},' +
 		'["category"] = Group.Category.' + _.get(groupObj, 'category') + ',' +
 		'["country"] = "' + _.get(groupObj, 'country') + '"' +
@@ -84,17 +84,33 @@ _.set(exports, 'grndUnitTemplate', function ( unitObj ) {
 		'["type"] = "' + _.get(unitObj, 'type') +'",' +
 		'["name"] = "' + _.get(unitObj, 'name') + '",' +
 		'["unitId"] = ' + _.get(unitObj, 'unitId') + ',' +
-		'["heading"] = 0,' +
-		'["playerCanDrive"] = true,' +
-		'["skill"] = "Excellent"' +
+		'["heading"] = ' + _.get(unitObj, 'heading', 0) + ',' +
+		'["playerCanDrive"] = ' + _.get(unitObj, 'playerCanDrive', true) + ',' +
+		'["skill"] = ' + _.get(unitObj, 'skill', "Excellent") +
 		'}'
 	;
 });
 
-_.set(exports, 'spawnSupportVehiclesOnFarp', function ( groupObj ) {
-	/* spawn vehicles on farp pads properly
-
-	 */
+_.set(exports, 'spawnSupportVehiclesOnFarp', function ( serverName, baseName ) {
+	/* spawn vehicles on farp pads properly */
+	console.log('basename: ', baseName);
+	dbMapServiceController.baseActions('read', serverName,
+		{$and: [
+				{$or: [
+					{farp: true},
+					{expansion: true}
+					]
+				},
+				{name: {$regex: ".*" + baseName + ".*"}}
+			]
+		})
+		.then(function (farps) {
+			console.log('farps&exp: ', farps);
+		})
+		.catch(function (err) {
+				console.log('err line101: ', err);
+		})
+	;
 });
 
 _.set(exports, 'spawnSupportBaseGrp', function ( groupObj ) {
@@ -102,6 +118,8 @@ _.set(exports, 'spawnSupportBaseGrp', function ( groupObj ) {
 		load config vars for server
 		spawn
 	*/
+
+
 });
 
 _.set(exports, 'spawnBaseReinforcementGroup', function ( groupObj ) {
@@ -113,6 +131,12 @@ _.set(exports, 'depopGroup', function ( groupObj ) {
 });
 
 _.set(exports, 'repopGroup', function ( groupObj ) {
+
+});
+
+_.set(exports, 'spawnNewMapGrp', function ( serverName, groupObj ) {
+	exports.spawnSupportVehiclesOnFarp(serverName, _.get(groupObj, [0, 'baseName']));
+
 
 });
 

@@ -18,6 +18,14 @@ var cmdQueSchema = require('../models/cmdQueSchema');
 
 exports.baseActions = function (action, serverName, obj){
 	const Airfield = mapdb.model(serverName+'_airfield', airfieldSchema);
+	if (action === 'read') {
+		return new Promise(function(resolve, reject) {
+			Airfield.find(obj, function (err, dbairfields) {
+				if (err) { reject(err) }
+				resolve(dbairfields);
+			});
+		});
+	}
 	if(action === 'update') {
 		return new Promise(function(resolve, reject) {
 			Airfield.update(

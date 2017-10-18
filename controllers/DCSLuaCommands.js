@@ -58,7 +58,7 @@ _.set(exports, 'spawnNewGroupsInPolyzones', function (serverName, baseName, pArr
 				});
 			}
 			if (!_.isEmpty(unitArray)) {
-			//	var curGrpArry = groupController.spawnGrndUnit(serverName, unitArray[0], [{}], unitArray);
+				var curGrpArry = groupController.spawnNewMapGrp(serverName, unitArray);
 				// var curCMD = 'coalition.addGroup(2, 3, ' + curGrpArry + ')';
 				// mist.dynAdd(newGroup)
 			//	var curCMD = 'mist.dynAdd(' + curGrpArry + ')';

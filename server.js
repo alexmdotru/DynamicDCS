@@ -607,7 +607,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			// since tcp connection is unstable, this is a retry workaround
 			polyFailCount += 1;
 			console.log('poly stuck: ', polyFailCount);
-			if (polyFailCount > 100) {
+			if (polyFailCount > 60) {
 				dbMapServiceController.cmdQueActions('save', serverName, {queName: 'clientArray', actionObj: {action: "GETPOLYDEF"}});
 				polyFailCount = 0;
 			}
