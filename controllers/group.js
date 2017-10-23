@@ -92,77 +92,81 @@ _.set(exports, 'grndUnitTemplate', function ( unitObj ) {
 	;
 });
 
-_.set(exports, 'getRndFromSpawnCat', function (spawnCat, side) {
-	var curEnabledCountrys = _.get(countryCoObj, _.get(countryCoObj, ['side', side]));
-	return dbSystemServiceController.unitDictionaryActions('read', {spawnCat: spawnCat})
+_.set(exports, 'getUnitDictionary', function () {
+	return dbSystemServiceController.unitDictionaryActions('read')
 		.then(function (unitsDic) {
-			return new Promise(function (resolve, reject) {
-				var cPUnits = [];
-				var randomIndex;
-				var unitsChosen;
-				var findUnits;
-				_.forEach(unitsDic, function (unit) {
-					if(_.intersection(_.get(unit, 'country'), curEnabledCountrys).length > 0) {
-						cPUnits.push(unit);
-					}
-				});
-				if (cPUnits.length < 0) {
-					reject('cPUnits are less than zero');
-				}
-				randomIndex = _.random(0, cPUnits.length - 1);
-				unitsChosen = cPUnits[randomIndex];
+			return new Promise(function (resolve) {
+				resolve(unitsDic);
+			});
+		})
+		.catch(function (err) {
+			console.log('err line103: ', err);
+		})
+	;
+});
 
-				if(_.get(unitsChosen, 'comboName')) {
-					unitsChosen = _.filter(cPUnits, {comboName: _.get(unitsChosen, 'comboName')});
-				}
+_.set(exports, 'getBases', function (serverName) {
+	return dbMapServiceController.baseActions('read', serverName)
+		.then(function (bases) {
+			return new Promise(function (resolve) {
+				resolve(bases);
+			});
+		})
+		.catch(function (err) {
+			console.log('err line110: ', err);
+		})
+	;
+});
 
-				resolve(unitsChosen);
+_.set(exports, 'getServer', function (serverName) {
+	return dbMapServiceController.baseActions('read', serverName)
+		.then(function (server) {
+			return new Promise(function (resolve) {
+				resolve(_.first(server));
 			});
 		})
 		.catch(function (err) {
 			console.log('err line101: ', err);
 		})
-	;
-
+		;
 });
 
-_.set(exports, 'spawnSupportVehiclesOnFarp', function ( serverName, baseName, side ) {
-	/* spawn vehicles on farp pads properly */
+_.set(exports, 'getRndFromSpawnCat', function (spawnCat, side) {
+	var curEnabledCountrys = _.get(countryCoObj, _.get(countryCoObj, ['side', side]));
+	var findUnits = _.find(_.get(exports, 'unitDictionary'), {spawnCat: spawnCat});
+	var cPUnits = [];
+	var randomIndex;
+	var unitsChosen = [];
+	_.forEach(findUnits, function (unit) {
+		if(_.intersection(_.get(unit, 'country'), curEnabledCountrys).length > 0) {
+			cPUnits.push(unit);
+		}
+	});
+	if (cPUnits.length < 0) {
+		reject('cPUnits are less than zero');
+	}
+	randomIndex = _.random(0, cPUnits.length - 1);
+	if (cPUnits[randomIndex]) {
+		unitsChosen.push(cPUnits[randomIndex]);
+	}
 
-	dbMapServiceController.baseActions('read', serverName,
-		{$and: [
-				{$or: [
-					{farp: true},
-					{expansion: true}
-					]
-				},
-				{name: {$regex: ".*" + baseName + ".*"}}
-			]
-		})
-		.then(function (farps) {
-			//get vehicles setup
-			// exports.getRndFromSpawnCat("unarmedAmmo", side)
-			exports.getRndFromSpawnCat("samRadar", side)
-				.then(function (uArry) {
-					console.log('uarry: ', baseName, side, uArry);
-				})
-				.catch(function (err) {
-					console.log('err line:141 ', err);
-				})
-			;
+	if(_.get(unitsChosen, 'comboName')) {
+		unitsChosen = _.filter(cPUnits, {comboName: _.get(unitsChosen, [0, 'comboName'])});
+	}
+	return unitsChosen;
+});
 
-
-		//	var curAmmo
-		//	var curFuel
-		//	var curRepair
-
-
-			// console.log('farps&exp: ', farps);
-		})
-		.catch(function (err) {
-				console.log('err line101: ', err);
-		})
-	;
+_.set(exports, 'spawnSupportVehiclesOnFarp', function ( serverName, side ) {
+	var curFarpArray = [];
+	_.forEach(_.get(exports, ['servers', serverName, 'bases']), function (base) {
+		if (_.get(base, 'extension') || _.get(base, 'farp')) {
+			var curSide = _.get(base, 'side');
+			curFarpArray = _.concat(curFarpArray, exports.getRndFromSpawnCat("unarmedAmmo", curSide));
+			curFarpArray = _.concat(curFarpArray, exports.getRndFromSpawnCat("unarmedFuel", curSide));
+			curFarpArray = _.concat(curFarpArray, exports.getRndFromSpawnCat("unarmedPower", curSide));
+		}
+	});
+	console.log('CURARRAY: ', curFarpArray);
 });
 
 _.set(exports, 'spawnSupportBaseGrp', function ( groupObj ) {
@@ -187,24 +191,38 @@ _.set(exports, 'repopGroup', function ( groupObj ) {
 });
 
 _.set(exports, 'spawnNewMapGrp', function ( serverName, groupObj ) {
-	//get default color for base, for new map
-	dbSystemServiceController.serverActions('read', {_id: serverName})
-		.then(function (servers) {
-			var curBaseName = _.get(groupObj, [0, 'baseName']);
-			var curBaseSide = _.get(servers, [0, 'defBaseSides', curBaseName]);
+	exports.getUnitDictionary()
+		.then(function (unitDict) {
+			_.set(exports, 'unitDictionary', unitDict);
+			exports.getBases( serverName )
+				.then(function (bases) {
+					_.set(exports, ['servers', serverName, 'bases'], bases);
+					exports.getServer( serverName )
+						.then(function (server) {
+							_.set(exports, ['servers', serverName, 'details'], server);
 
-			// spawn farp vehicles
-			exports.spawnSupportVehiclesOnFarp(serverName, curBaseName, curBaseSide);
+							var curBaseName = _.get(groupObj, 'baseName');
+							var curBaseSide = _.get(server, ['defBaseSides', curBaseName]);
+							var curBaseSpawnCats = _.get(server, 'spwnLimitsPerTick');
 
-			// var curBaseSide = _.get(curServerSides, curBaseName);
-			// var cSideArry = _.get(countryCoObj, _.get(countryCoObj, ['side', curBaseSide]));
-			// console.log('baseside: ', curBaseName, curBaseSide, cSideArry);
+							var spawnArray = exports.spawnSupportVehiclesOnFarp(serverName, curBaseSide);
+
+							/*
+							 _.forEach(curBaseSpawnCats, function (tickVal, name) {
+							 if(tickVal > 0) {
+							 spawnArray = _.concat(spawnArray, exports.getRndFromSpawnCat(name, curBaseSide));
+							 }
+							 });
+							 */
+							console.log('SA: ', spawnArray);
 
 
-			// console.log('roMoz: ', curServerSides, curServerSides.Mozdok, _.get(curServerSides, ['Krasnodar-Pashkovsky']));
-		})
-		.catch(function (err) {
-			console.log('line145: ', err);
+						})
+					;
+
+				})
+			;
+
 		})
 	;
 });

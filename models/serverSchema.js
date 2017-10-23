@@ -16,6 +16,12 @@ const ServerSchema = new Schema({
 			required: true,
 			default: 'Caucasus'
 		},
+		totalTicks: {
+			type: Number
+		},
+		secsBwtTicks: {
+			type: Number
+		},
 		defBaseSides: {
 			type: Object
 		},
