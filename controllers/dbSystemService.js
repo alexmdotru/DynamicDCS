@@ -252,14 +252,14 @@ exports.banUserActions = function (action, ucid){
 };
 
 var unitDictionarySchema = require('../models/unitDictionarySchema');
-const UnitDictionary = systemdb.model('unitdictionary', unitDictionarySchema);
+const UnitDictionary = systemdb.model('unitDictionary', unitDictionarySchema);
 
 exports.unitDictionaryActions = function (action, obj){
 	if(action === 'read') {
 		return new Promise(function(resolve, reject) {
-			UnitDictionary.find(obj, function (err, uDictionary) {
+			UnitDictionary.find(obj, function (err, unitDictionary) {
 				if (err) { reject(err) }
-				resolve(uDictionary);
+				resolve(unitDictionary);
 			});
 		});
 	}

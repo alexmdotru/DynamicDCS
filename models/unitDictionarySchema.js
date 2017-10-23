@@ -11,6 +11,10 @@ const UnitDictionarySchema = new Schema({
 			type: String,
 			required: true
 		},
+		country: {
+			type: Array,
+			required: true
+		},
 		category: {
 			type: String,
 			required: true

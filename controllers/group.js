@@ -94,8 +94,7 @@ _.set(exports, 'grndUnitTemplate', function ( unitObj ) {
 
 _.set(exports, 'spawnSupportVehiclesOnFarp', function ( serverName, baseName, side ) {
 	/* spawn vehicles on farp pads properly */
-	var curEnabledCountrys = _.get(countryCoObj, [_.get(countryCoObj, side)]);
-	console.log('cnt: ', curEnabledCountrys, side);
+	var curEnabledCountrys = _.get(countryCoObj, _.get(countryCoObj, ['side', side]));
 	dbMapServiceController.baseActions('read', serverName,
 		{$and: [
 				{$or: [
@@ -108,17 +107,9 @@ _.set(exports, 'spawnSupportVehiclesOnFarp', function ( serverName, baseName, si
 		})
 		.then(function (farps) {
 			//get vehicles setup
-			dbSystemServiceController.unitDictionaryActions('read')
+			dbSystemServiceController.unitDictionaryActions('read', {spawnCat: "unarmedAmmo"})
 				.then(function (unitsDic) {
-					//var cur
-
-
-					_.forEach(farpsExp, function (farpExp) {
-
-
-
-
-					});
+					console.log('curammo: ', unitsDic);
 				})
 				.catch(function (err) {
 					console.log('err line101: ', err);
@@ -165,15 +156,17 @@ _.set(exports, 'spawnNewMapGrp', function ( serverName, groupObj ) {
 	dbSystemServiceController.serverActions('read', {_id: serverName})
 		.then(function (servers) {
 			var curBaseName = _.get(groupObj, [0, 'baseName']);
-			// var defBaseSide = _.get(servers, [0, 'defBaseSides', curBaseName]);
-			for (var k in servers) {
-				console.log(servers[k]);
-				for (var l in k.defBaseSides) {
-					console.log(k.defBaseSides[l]);
-				}
-			}
-			//console.log('dbs: ', server.defBaseSides, server);
-			// exports.spawnSupportVehiclesOnFarp(serverName, _.get(groupObj, [0, 'baseName']), defBaseSide);
+			var curBaseSide = _.get(servers, [0, 'defBaseSides', curBaseName]);
+
+			// spawn farp vehicles
+			exports.spawnSupportVehiclesOnFarp(serverName, curBaseName, curBaseSide);
+
+			// var curBaseSide = _.get(curServerSides, curBaseName);
+			// var cSideArry = _.get(countryCoObj, _.get(countryCoObj, ['side', curBaseSide]));
+			// console.log('baseside: ', curBaseName, curBaseSide, cSideArry);
+
+
+			// console.log('roMoz: ', curServerSides, curServerSides.Mozdok, _.get(curServerSides, ['Krasnodar-Pashkovsky']));
 		})
 		.catch(function (err) {
 			console.log('line145: ', err);

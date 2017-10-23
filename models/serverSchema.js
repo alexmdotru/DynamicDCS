@@ -16,6 +16,9 @@ const ServerSchema = new Schema({
 			required: true,
 			default: 'Caucasus'
 		},
+		defBaseSides: {
+			type: Object
+		},
 		ip: {
 			type: String,
 			required: true,
