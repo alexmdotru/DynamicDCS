@@ -19,7 +19,7 @@ const ServerSchema = new Schema({
 		defBaseSides: {
 			type: Object
 		},
-		spwnLimits: {
+		spwnLimitsPerTick: {
 			type: Object
 		},
 		ip: {
