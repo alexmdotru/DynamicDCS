@@ -92,9 +92,35 @@ _.set(exports, 'grndUnitTemplate', function ( unitObj ) {
 	;
 });
 
+_.set(exports, 'getRndFromSpawnCat', function (spawnCat, side) {
+	var curEnabledCountrys = _.get(countryCoObj, _.get(countryCoObj, ['side', side]));
+	return dbSystemServiceController.unitDictionaryActions('read', {spawnCat: spawnCat})
+		.then(function (unitsDic) {
+			return new Promise(function (resolve, reject) {
+				var cPUnits = [];
+				var randomIndex;
+				_.forEach(unitsDic, function (unit) {
+					if(_.intersection(_.get(unit, 'country'), curEnabledCountrys).length > 0) {
+						cPUnits.push(unit);
+					}
+				});
+				if (cPUnits.length < 0) {
+					reject('cPUnits are less than zero');
+				}
+				randomIndex = _.random(0, cPUnits.length - 1);
+				resolve(cPUnits[randomIndex]);
+			});
+		})
+		.catch(function (err) {
+			console.log('err line101: ', err);
+		})
+	;
+
+});
+
 _.set(exports, 'spawnSupportVehiclesOnFarp', function ( serverName, baseName, side ) {
 	/* spawn vehicles on farp pads properly */
-	var curEnabledCountrys = _.get(countryCoObj, _.get(countryCoObj, ['side', side]));
+
 	dbMapServiceController.baseActions('read', serverName,
 		{$and: [
 				{$or: [
@@ -107,12 +133,12 @@ _.set(exports, 'spawnSupportVehiclesOnFarp', function ( serverName, baseName, si
 		})
 		.then(function (farps) {
 			//get vehicles setup
-			dbSystemServiceController.unitDictionaryActions('read', {spawnCat: "unarmedAmmo"})
-				.then(function (unitsDic) {
-					console.log('curammo: ', unitsDic);
+			exports.getRndFromSpawnCat("unarmedAmmo", side)
+				.then(function (uArry) {
+					console.log('uarry: ', baseName, side, uArry);
 				})
 				.catch(function (err) {
-					console.log('err line101: ', err);
+					console.log('err line:141 ', err);
 				})
 			;
 
