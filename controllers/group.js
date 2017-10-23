@@ -99,6 +99,8 @@ _.set(exports, 'getRndFromSpawnCat', function (spawnCat, side) {
 			return new Promise(function (resolve, reject) {
 				var cPUnits = [];
 				var randomIndex;
+				var unitsChosen;
+				var findUnits;
 				_.forEach(unitsDic, function (unit) {
 					if(_.intersection(_.get(unit, 'country'), curEnabledCountrys).length > 0) {
 						cPUnits.push(unit);
@@ -108,7 +110,13 @@ _.set(exports, 'getRndFromSpawnCat', function (spawnCat, side) {
 					reject('cPUnits are less than zero');
 				}
 				randomIndex = _.random(0, cPUnits.length - 1);
-				resolve(cPUnits[randomIndex]);
+				unitsChosen = cPUnits[randomIndex];
+
+				if(_.get(unitsChosen, 'comboName')) {
+					unitsChosen = _.filter(cPUnits, {comboName: _.get(unitsChosen, 'comboName')});
+				}
+
+				resolve(unitsChosen);
 			});
 		})
 		.catch(function (err) {
@@ -133,7 +141,8 @@ _.set(exports, 'spawnSupportVehiclesOnFarp', function ( serverName, baseName, si
 		})
 		.then(function (farps) {
 			//get vehicles setup
-			exports.getRndFromSpawnCat("unarmedAmmo", side)
+			// exports.getRndFromSpawnCat("unarmedAmmo", side)
+			exports.getRndFromSpawnCat("samRadar", side)
 				.then(function (uArry) {
 					console.log('uarry: ', baseName, side, uArry);
 				})

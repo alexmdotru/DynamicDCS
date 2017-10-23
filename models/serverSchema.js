@@ -19,6 +19,9 @@ const ServerSchema = new Schema({
 		defBaseSides: {
 			type: Object
 		},
+		spwnLimits: {
+			type: Object
+		},
 		ip: {
 			type: String,
 			required: true,

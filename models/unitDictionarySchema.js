@@ -29,6 +29,10 @@ const UnitDictionarySchema = new Schema({
 		launcher: {
 		type: Boolean,
 		default: false
+		},
+		enabled: {
+			type: Boolean,
+			default: true
 		}
 	},
 	{
