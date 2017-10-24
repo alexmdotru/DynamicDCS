@@ -170,8 +170,6 @@ _.set(exports, 'spawnSupportBaseGrp', function ( groupObj ) {
 		load config vars for server
 		spawn
 	*/
-
-
 });
 
 _.set(exports, 'spawnBaseReinforcementGroup', function ( groupObj ) {
@@ -228,39 +226,8 @@ _.set(exports, 'spawnNewMapGrp', function ( serverName, groupObj ) {
 										spawnArray = _.concat(spawnArray, exports.getRndFromSpawnCat(name, extSide));
 									}
 								});
-								// console.log('SA: ', spawnArray);
-								// console.log('baseUnits: ', extName, extSide, spawnArray);
+								console.log('SA: ', spawnArray);
 							});
-
-							/*
-							_.set(exports, ['servers', serverName, 'details'], server);
-							_.forEach(farpBases, function (base) {
-								var curBName = _.get(base, 'name');
-								spawnArray = _.concat(spawnArray, exports.spawnSupportVehiclesOnFarp(serverName, curBName, _.get(baseSides, curBName)));
-							});
-							_.forEach(expBases, function (base) {
-								var curBName = _.get(base, 'name');
-								spawnArray = _.concat(spawnArray, exports.spawnSupportVehiclesOnFarp(serverName, curBName, _.get(baseSides, curBName)));
-							});
-							*/
-
-							/*
-							_.forEach(_.get(server, 'defBaseSides'), function (side, name) {
-								var spawnArray = exports.spawnSupportVehiclesOnFarp(serverName, name, side);
-							});
-							*/
-
-
-							/*
-							 _.forEach(curBaseSpawnCats, function (tickVal, name) {
-							 if(tickVal > 0) {
-							 spawnArray = _.concat(spawnArray, exports.getRndFromSpawnCat(name, curBaseSide));
-							 }
-							 });
-							 */
-
-
-
 						})
 					;
 
@@ -270,34 +237,3 @@ _.set(exports, 'spawnNewMapGrp', function ( serverName, groupObj ) {
 		})
 	;
 });
-
-/*
- spawn random allocations from these groups
- unarmedAmmo
- unarmedFuel
- unarmedPower
-
- Tank
- APC
- armoredCar
- troop
- armedStructure
-
- antiAir
- samRadar (check if single or group, spawn group is group exist, launcher)
- samIR
-
- carrierShip
- defenseShip
-
- var newSpawnCountry = 'USA';
- var newSpawnCategory = 'GROUND';
- var newVehicleType = 'AAV7';
-
- var curGroup = {};
- var cRnd = _.random(1000000,9000000);
-
- curGroup = defGndGroup;
- curGroup = _.replace(curGroup,"#UNITS",curUnits);
- return curGroup;
- */
