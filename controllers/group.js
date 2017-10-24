@@ -223,7 +223,6 @@ _.set(exports, 'spawnNewMapGrp', function ( serverName, groupObj ) {
 
 								_.forEach(curBaseSpawnCats, function (tickVal, name) {
 									if(tickVal > 0) {
-										// run randomizer 0 - maxNum
 										spawnArray = _.concat(spawnArray, exports.getRndFromSpawnCat(name, extSide));
 									}
 								});
