@@ -118,8 +118,8 @@ _.set(exports, 'getBases', function (serverName) {
 	;
 });
 
-_.set(exports, 'getServer', function (serverName) {
-	return dbMapServiceController.baseActions('read', serverName)
+_.set(exports, 'getServer', function ( serverName ) {
+	return dbSystemServiceController.serverActions('read', {_id: serverName})
 		.then(function (server) {
 			return new Promise(function (resolve) {
 				resolve(_.first(server));
@@ -133,7 +133,7 @@ _.set(exports, 'getServer', function (serverName) {
 
 _.set(exports, 'getRndFromSpawnCat', function (spawnCat, side) {
 	var curEnabledCountrys = _.get(countryCoObj, _.get(countryCoObj, ['side', side]));
-	var findUnits = _.find(_.get(exports, 'unitDictionary'), {spawnCat: spawnCat});
+	var findUnits = _.filter(_.get(exports, 'unitDictionary'), {spawnCat: spawnCat});
 	var cPUnits = [];
 	var randomIndex;
 	var unitsChosen = [];
@@ -156,17 +156,13 @@ _.set(exports, 'getRndFromSpawnCat', function (spawnCat, side) {
 	return unitsChosen;
 });
 
-_.set(exports, 'spawnSupportVehiclesOnFarp', function ( serverName, side ) {
+_.set(exports, 'spawnSupportVehiclesOnFarp', function ( serverName, baseName, side ) {
 	var curFarpArray = [];
-	_.forEach(_.get(exports, ['servers', serverName, 'bases']), function (base) {
-		if (_.get(base, 'extension') || _.get(base, 'farp')) {
-			var curSide = _.get(base, 'side');
-			curFarpArray = _.concat(curFarpArray, exports.getRndFromSpawnCat("unarmedAmmo", curSide));
-			curFarpArray = _.concat(curFarpArray, exports.getRndFromSpawnCat("unarmedFuel", curSide));
-			curFarpArray = _.concat(curFarpArray, exports.getRndFromSpawnCat("unarmedPower", curSide));
-		}
-	});
-	console.log('CURARRAY: ', curFarpArray);
+	_.set(curFarpArray, baseName, _.get(curFarpArray, baseName, []));
+	_.set(curFarpArray, baseName, _.concat(_.get(curFarpArray, baseName), exports.getRndFromSpawnCat("unarmedAmmo", side)));
+	_.set(curFarpArray, baseName, _.concat(_.get(curFarpArray, baseName), exports.getRndFromSpawnCat("unarmedFuel", side)));
+	_.set(curFarpArray, baseName, _.concat(_.get(curFarpArray, baseName), exports.getRndFromSpawnCat("unarmedPower", side)));
+	return curFarpArray;
 });
 
 _.set(exports, 'spawnSupportBaseGrp', function ( groupObj ) {
@@ -199,13 +195,52 @@ _.set(exports, 'spawnNewMapGrp', function ( serverName, groupObj ) {
 					_.set(exports, ['servers', serverName, 'bases'], bases);
 					exports.getServer( serverName )
 						.then(function (server) {
+							var spawnArray = [];
+							var defBaseSides = _.get(server, 'defBaseSides');
+							var farpBases = _.filter(bases, {farp: true});
+							var expBases = _.filter(bases, {expansion: true});
+
+							_.forEach(defBaseSides, function (extSide, extName) {
+								var curBaseUnitObj = [];
+								var curEnabledCountrys = _.get(countryCoObj, _.get(countryCoObj, ['side', extSide]));
+								if (_.includes(extName, 'FARP')) {
+									var curFarpBases = _.filter(farpBases, function (farp) {
+										return _.includes(_.get(farp, 'name'), extName) &&
+											!_.isEmpty(_.intersection([_.get(farp, 'country')], curEnabledCountrys));
+									});
+									_.forEach(curFarpBases, function (farp) {
+										curBaseUnitObj = exports.spawnSupportVehiclesOnFarp( serverName, _.get(farp, 'name'), extSide );
+									});
+								} else {
+									var curExpBases = _.filter(expBases, function (exp) {
+										return _.includes(_.get(exp, 'name'), extName) &&
+											!_.isEmpty(_.intersection([_.get(exp, 'country')], curEnabledCountrys));
+									});
+									_.forEach(curExpBases, function (exp) {
+										curBaseUnitObj = exports.spawnSupportVehiclesOnFarp( serverName, _.get(exp, 'name'), extSide );
+									});
+								}
+								console.log('baseUnits: ', extName, extSide, curBaseUnitObj);
+							});
+
+							/*
 							_.set(exports, ['servers', serverName, 'details'], server);
+							_.forEach(farpBases, function (base) {
+								var curBName = _.get(base, 'name');
+								spawnArray = _.concat(spawnArray, exports.spawnSupportVehiclesOnFarp(serverName, curBName, _.get(baseSides, curBName)));
+							});
+							_.forEach(expBases, function (base) {
+								var curBName = _.get(base, 'name');
+								spawnArray = _.concat(spawnArray, exports.spawnSupportVehiclesOnFarp(serverName, curBName, _.get(baseSides, curBName)));
+							});
+							*/
 
-							var curBaseName = _.get(groupObj, 'baseName');
-							var curBaseSide = _.get(server, ['defBaseSides', curBaseName]);
-							var curBaseSpawnCats = _.get(server, 'spwnLimitsPerTick');
+							/*
+							_.forEach(_.get(server, 'defBaseSides'), function (side, name) {
+								var spawnArray = exports.spawnSupportVehiclesOnFarp(serverName, name, side);
+							});
+							*/
 
-							var spawnArray = exports.spawnSupportVehiclesOnFarp(serverName, curBaseSide);
 
 							/*
 							 _.forEach(curBaseSpawnCats, function (tickVal, name) {
