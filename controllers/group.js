@@ -150,7 +150,7 @@ _.set(exports, 'getRndFromSpawnCat', function (spawnCat, side) {
 		unitsChosen.push(cPUnits[randomIndex]);
 	}
 
-	if(_.get(unitsChosen, 'comboName')) {
+	if(_.get(unitsChosen, [0, 'comboName'])) {
 		unitsChosen = _.filter(cPUnits, {comboName: _.get(unitsChosen, [0, 'comboName'])});
 	}
 	return unitsChosen;
@@ -196,7 +196,9 @@ _.set(exports, 'spawnNewMapGrp', function ( serverName, groupObj ) {
 					exports.getServer( serverName )
 						.then(function (server) {
 							var spawnArray = [];
+							var totalTicks = _.get(server, 'totalTicks');
 							var defBaseSides = _.get(server, 'defBaseSides');
+							var curBaseSpawnCats = _.get(server, 'spwnLimitsPerTick');
 							var farpBases = _.filter(bases, {farp: true});
 							var expBases = _.filter(bases, {expansion: true});
 
@@ -209,7 +211,7 @@ _.set(exports, 'spawnNewMapGrp', function ( serverName, groupObj ) {
 											!_.isEmpty(_.intersection([_.get(farp, 'country')], curEnabledCountrys));
 									});
 									_.forEach(curFarpBases, function (farp) {
-										curBaseUnitObj = exports.spawnSupportVehiclesOnFarp( serverName, _.get(farp, 'name'), extSide );
+										spawnArray = exports.spawnSupportVehiclesOnFarp( serverName, _.get(farp, 'name'), extSide );
 									});
 								} else {
 									var curExpBases = _.filter(expBases, function (exp) {
@@ -217,10 +219,17 @@ _.set(exports, 'spawnNewMapGrp', function ( serverName, groupObj ) {
 											!_.isEmpty(_.intersection([_.get(exp, 'country')], curEnabledCountrys));
 									});
 									_.forEach(curExpBases, function (exp) {
-										curBaseUnitObj = exports.spawnSupportVehiclesOnFarp( serverName, _.get(exp, 'name'), extSide );
+										spawnArray = exports.spawnSupportVehiclesOnFarp( serverName, _.get(exp, 'name'), extSide );
 									});
 								}
-								console.log('baseUnits: ', extName, extSide, curBaseUnitObj);
+
+								_.forEach(curBaseSpawnCats, function (tickVal, name) {
+									if(tickVal > 0) {
+										spawnArray = _.concat(spawnArray, exports.getRndFromSpawnCat(name, extSide));
+									}
+								});
+								// console.log('SA: ', spawnArray);
+								// console.log('baseUnits: ', extName, extSide, spawnArray);
 							});
 
 							/*
@@ -249,7 +258,7 @@ _.set(exports, 'spawnNewMapGrp', function ( serverName, groupObj ) {
 							 }
 							 });
 							 */
-							console.log('SA: ', spawnArray);
+
 
 
 						})
