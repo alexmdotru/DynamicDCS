@@ -198,8 +198,6 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 					_.set(exports, ['servers', serverName, 'bases'], bases);
 					exports.getServer( serverName )
 						.then(function (server) {
-							var curGroupSpawn = '';
-							var curUnitSpawn = '';
 							var spawnArray = [];
 							var curGrpObj = {};
 							var grpNum = 0;
@@ -214,6 +212,8 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 							var expBases = _.filter(bases, {expansion: true});
 
 							_.forEach(defBaseSides, function (extSide, extName) {
+								var curGroupSpawn = '';
+								var curUnitSpawn = '';
 								var curEnabledCountrys = _.get(countryCoObj, _.get(countryCoObj, ['side', extSide]));
 								if (_.includes(extName, 'FARP')) {
 									var curFarpBases = _.filter(farpBases, function (farp) {
@@ -250,7 +250,7 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 
 								unitNum = _.cloneDeep(grpNum);
 								_.forEach(spawnArray, function (spwnUnit) {
-									if(unitNum > 0) {
+									if(unitNum !== grpNum) {
 										curUnitSpawn += ','
 									}
 									unitNum += 1;
@@ -264,9 +264,7 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 									curUnitSpawn += exports.grndUnitTemplate(spwnUnit);
 								});
 
-								curGroupSpawn = _.replace(curGroupSpawn, '{#UNITS}', curUnitSpawn);
-
-								console.log('fspwn: ', curGroupSpawn);
+								curGroupSpawn = _.replace(curGroupSpawn, "#UNITS", curUnitSpawn);
 
 								var curCMD = 'mist.dynAdd(' + curGroupSpawn + ')';
 								var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
