@@ -145,7 +145,7 @@ _.set(exports, 'getRndFromSpawnCat', function (spawnCat, side) {
 	if (cPUnits.length < 0) {
 		reject('cPUnits are less than zero');
 	}
-	randomIndex = _.random(0, cPUnits.length - 1);
+	randomIndex = _.random(0, cPUnits.length + 1);
 	if (cPUnits[randomIndex]) {
 		unitsChosen.push(cPUnits[randomIndex]);
 	}
