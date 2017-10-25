@@ -184,7 +184,7 @@ _.set(exports, 'repopGroup', function ( groupObj ) {
 
 });
 
-_.set(exports, 'spawnNewMapGrp', function ( serverName, groupObj ) {
+_.set(exports, 'spawnNewMapGrp', function ( serverName ) {
 	exports.getUnitDictionary()
 		.then(function (unitDict) {
 			_.set(exports, 'unitDictionary', unitDict);
@@ -236,4 +236,22 @@ _.set(exports, 'spawnNewMapGrp', function ( serverName, groupObj ) {
 
 		})
 	;
+
+	//var unitArray = [];
+	//for(pIndx = 1; pIndx < (perBase + 1); pIndx++) {
+	//	var randVec2 = zoneController.getRandomVec2(points);
+	//	unitArray.push({
+	//		x: randVec2.x,
+	//		y: randVec2.y,
+	//		baseName: baseName
+	//	});
+	//}
+
+	// var curCMD = 'coalition.addGroup(2, 3, ' + curGrpArry + ')';
+	// mist.dynAdd(newGroup)
+	//	var curCMD = 'mist.dynAdd(' + curGrpArry + ')';
+	//	var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
+	//	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
+	//	dbMapServiceController.cmdQueActions('save', serverName, actionObj);
+
 });
