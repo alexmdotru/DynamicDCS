@@ -184,7 +184,7 @@ _.set(exports, 'repopGroup', function ( groupObj ) {
 
 });
 
-_.set(exports, 'spawnNewMapGrp', function ( serverName ) {
+_.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 	exports.getUnitDictionary()
 		.then(function (unitDict) {
 			_.set(exports, 'unitDictionary', unitDict);

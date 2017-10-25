@@ -30,7 +30,7 @@ const dbMapServiceController = require('./controllers/dbMapService');
 const DCSSocket = require('./controllers/DCSSocket');
 const DCSLuaCommands = require('./controllers/DCSLuaCommands');
 const DCSBuildMap = require('./controllers/DCSBuildMap');
-const groupController = require('./group');
+const groupController = require('./controllers/group');
 
 var admin = false;
 
