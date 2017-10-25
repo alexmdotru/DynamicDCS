@@ -198,8 +198,6 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 					_.set(exports, ['servers', serverName, 'bases'], bases);
 					exports.getServer( serverName )
 						.then(function (server) {
-							var spawnArray = [];
-							var curGrpObj = {};
 							var grpNum = 0;
 							var unitNum = 0;
 							var unitVec2;
@@ -212,8 +210,9 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 							var expBases = _.filter(bases, {expansion: true});
 
 							_.forEach(defBaseSides, function (extSide, extName) {
-								var curGroupSpawn = '';
 								var curUnitSpawn = '';
+								var spawnArray = [];
+								var curGrpObj = {};
 								var curEnabledCountrys = _.get(countryCoObj, _.get(countryCoObj, ['side', extSide]));
 								if (_.includes(extName, 'FARP')) {
 									var curFarpBases = _.filter(farpBases, function (farp) {
