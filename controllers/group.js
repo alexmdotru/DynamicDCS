@@ -3,6 +3,7 @@ const	_ = require('lodash'),
 
 const dbMapServiceController = require('./dbMapService');
 const dbSystemServiceController = require('./dbSystemService');
+const zoneController = require('./zone');
 
 // from my main mission object, can spawn units on both sides in this setup
 var countryCoObj = {
@@ -201,7 +202,6 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 							var expBases = _.filter(bases, {expansion: true});
 
 							_.forEach(defBaseSides, function (extSide, extName) {
-								var curBaseUnitObj = [];
 								var curEnabledCountrys = _.get(countryCoObj, _.get(countryCoObj, ['side', extSide]));
 								if (_.includes(extName, 'FARP')) {
 									var curFarpBases = _.filter(farpBases, function (farp) {
@@ -226,7 +226,13 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 										spawnArray = _.concat(spawnArray, exports.getRndFromSpawnCat(name, extSide));
 									}
 								});
-								console.log('SA: ', spawnArray);
+
+								_.forEach(spawnArray, function (unit) {
+									if (!(unit.x || unit.y)) {
+										var unitVec2 = zoneController.getRandomVec2FromBase(serverName, extName);
+										console.log('base: ', extName, unitVec2);
+									}
+								});
 							});
 						})
 					;

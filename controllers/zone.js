@@ -1,5 +1,8 @@
 const	_ = require('lodash');
 
+const dbMapServiceController = require('./dbMapService');
+const groupController = require('./group');
+
 _.set(exports, 'getBoundingSquare', function (pArray) {
 	var x1 = pArray[0].x;
 	var y1 = pArray[0].y;
@@ -40,21 +43,22 @@ _.set(exports, 'isVec2InZone', function (vec2, polyZone) {
 		return InPolygon
 	});
 
-_.set(exports, 'getRandomVec2', function (pArray) {
-	var vec2Found = false;
-	var vec2;
-	var bs = exports.getBoundingSquare(pArray);
-
-	while (!vec2Found) {
-		vec2 = {
-			x: _.random( bs.x1, bs.x2 ),
-			y: _.random( bs.y1, bs.y2 )
-		};
-
-		// next step write function inVec2InZone
-		if (exports.isVec2InZone( vec2, pArray )) {
-			vec2Found = true;
+_.set(exports, 'getRandomVec2FromBase', function (serverName, baseName) {
+	var baseInfo = _.find(_.get(groupController, ['servers', serverName, 'bases']), {_id: baseName});
+	var pArray = _.get(baseInfo, 'spawnZones');
+	if (pArray) {
+		var vec2Found = false;
+		var vec2;
+		var bs = exports.getBoundingSquare(pArray);
+		while (!vec2Found) {
+			vec2 = {
+				x: _.random( bs.x1, bs.x2 ),
+				y: _.random( bs.y1, bs.y2 )
+			};
+			if (exports.isVec2InZone( vec2, pArray )) {
+				vec2Found = true;
+			}
 		}
+		return vec2
 	}
-	return vec2
 });
