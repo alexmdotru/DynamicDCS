@@ -35,7 +35,6 @@ _.set(exports, 'buildDynamicMap', function (serverName) {
 			} else {
 				//build map from scratch
 				console.log('popUnitsFromScratch');
-				dbMapServiceController.cmdQueActions('save', serverName, {queName: 'clientArray', actionObj: {action: "GETPOLYDEF"}});
 			}
 		})
 		.catch(function (err) {

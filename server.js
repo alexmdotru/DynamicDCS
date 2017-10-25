@@ -534,6 +534,9 @@ io.on('connection', function (socket) {
 });
 
 _.set(curServers, 'processQue', function (serverName, sessionName, update) {
+	if (!srvPolyCnt) {
+		srvPolyCnt = _.get(update, 'polyCnt', 0);
+	}
 	dbMapServiceController.unitActions('read', serverName, {dead: false})
 		.then(function (units) {
 			if (update.epoc) {
@@ -584,33 +587,41 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		var iUnit = {};
 		var tUnit = {};
 
+		//poly definition coming back
 		if (_.get(queObj, 'action') === 'POLYDEF') {
-			if (_.isUndefined(_.get(polyzonesLoaded, serverName)) || !_.get(polyzonesLoaded, serverName)) {
-				srvPolyCnt = _.get(queObj, 'polyCnt', 0);
-				var baseName = _.get(queObj, 'data.baseName');
-				baseName = _.replace(baseName,"_DEFZONE_","");
-				_.set(defPolyZones, [serverName, baseName], _.get(queObj, 'data.points'));
-				polyLen = _.keys(_.get(defPolyZones, serverName)).length;
-				buildPoly = true;
-				if (polyLen === (srvPolyCnt)) {
-					buildPoly = false;
-					console.log('polyzones loaded, populate base');
-					_.set(polyzonesLoaded, serverName, true);
-					DCSLuaCommands.spawnNewGroupsInPolyzones(serverName, baseName, _.get(defPolyZones, serverName));
-				} else {
-					console.log(polyLen + ' polyzones out of ' + srvPolyCnt);
-				}
-			}
-		}
-
-		if (buildPoly && polyLen !== (srvPolyCnt)) {
-			// since tcp connection is unstable, this is a retry workaround
-			polyFailCount += 1;
-			console.log('poly stuck: ', polyFailCount);
-			if (polyFailCount > 60) {
-				dbMapServiceController.cmdQueActions('save', serverName, {queName: 'clientArray', actionObj: {action: "GETPOLYDEF"}});
-				polyFailCount = 0;
-			}
+			var curSpawnObj;
+			var polyDataPoints;
+			var baseName = _.get(queObj, 'data.baseName');
+			baseName = _.replace(baseName,"_DEFZONE_","");
+			polyDataPoints = _.get(queObj, 'data.points');
+			curSpawnObj = {
+				name: baseName,
+				spawnZones: polyDataPoints
+			};
+			dbMapServiceController.baseActions('updateSpawnZones', serverName, curSpawnObj);
+		} else {
+			dbMapServiceController.baseActions('read', serverName)
+				.then( function (bases) {
+					var mainBases = _.filter(bases, function (base) {
+						return _.get(base, 'spawnZones', []).length > 0
+					});
+					if(mainBases.length !== srvPolyCnt) {
+						console.log('MB: ', _.map(mainBases, '_id'));
+						console.log('db server poly count does not match server: ', mainBases.length, '!==', srvPolyCnt, ' | ', polyFailCount);
+						polyFailCount += 1;
+						if (polyFailCount > 60) {
+							dbMapServiceController.cmdQueActions('save', serverName, {queName: 'clientArray', actionObj: {action: "GETPOLYDEF"}});
+							polyFailCount = 0;
+						}
+					} else {
+						console.log('polyzones loaded, populate base');
+						DCSLuaCommands.spawnNewGroupsInPolyzones(serverName, baseName, _.get(defPolyZones, serverName));
+					}
+				})
+				.catch( function (err) {
+					console.log('err line:622 ', err);
+				})
+			;
 		}
 
 		//var curUnit = _.find(curServers[serverName].serverObject.units, {'unitId': _.get(queObj, 'data.unitId')});
@@ -704,7 +715,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		if (_.get(queObj, 'action') === 'airbaseU') {
 			abData = _.get(queObj, 'data');
 			_.set(queObj, 'sessionName', sessionName);
-			dbMapServiceController.baseActions('update', serverName, abData);
+			dbMapServiceController.baseActions('updateSide', serverName, abData);
 			_.set(curairbase, 'side', _.get(abData, 'side', 0));
 		}
 

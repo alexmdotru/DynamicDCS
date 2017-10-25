@@ -60,6 +60,9 @@ const AirfieldSchema = new Schema({
 		min: 0,
 		max: 2,
 		required: true
+	},
+	spawnZones: {
+		type: Object
 	}
 },
 	{

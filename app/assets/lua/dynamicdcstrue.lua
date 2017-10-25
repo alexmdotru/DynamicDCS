@@ -473,6 +473,7 @@ do
 			table.insert(payload.que, updateQue.que[i])
 			table.remove(updateQue.que, i)
 		end
+		payload.polyCnt = polyArray.count
 		payload.unitCount = unitCnt + staticCnt
 		payload.startAbsTime = timer.getTime0()
 		payload.curAbsTime = timer.getAbsTime()
