@@ -7,6 +7,10 @@ const zoneController = require('./zone');
 
 // from my main mission object, can spawn units on both sides in this setup
 var countryCoObj = {
+	defCountrys: {
+		1: 'RUSSIA',
+		2: 'USA'
+	},
 	side: {
 		0: 'neutral',
 		1: 'red',
@@ -71,7 +75,7 @@ _.set(exports, 'grndUnitGroup', function ( groupObj ) {
 		'["name"] = "' + _.get(groupObj, 'groupName') + '",' +
 		'["visible"] = ' + _.get(groupObj, 'visible', false) + ',' +
 		'["hidden"] = ' + _.get(groupObj, 'hidden', false) + ',' +
-		'["task"] = ' + _.get(groupObj, 'task', {}) + ',' +
+		'["task"] = ' + _.get(groupObj, 'task', '{}') + ',' +
 		'["units"] = {#UNITS},' +
 		'["category"] = Group.Category.' + _.get(groupObj, 'category') + ',' +
 		'["country"] = "' + _.get(groupObj, 'country') + '"' +
@@ -194,7 +198,15 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 					_.set(exports, ['servers', serverName, 'bases'], bases);
 					exports.getServer( serverName )
 						.then(function (server) {
+							var curGroupSpawn = '';
+							var curUnitSpawn = '';
 							var spawnArray = [];
+							var curGrpObj = {};
+							var grpNum = 0;
+							var unitNum = 0;
+							var unitVec2;
+							var curGrpName = '';
+							var curUnitName = '';
 							var totalTicks = _.get(server, 'totalTicks');
 							var defBaseSides = _.get(server, 'defBaseSides');
 							var curBaseSpawnCats = _.get(server, 'spwnLimitsPerTick');
@@ -227,12 +239,39 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 									}
 								});
 
-								_.forEach(spawnArray, function (unit) {
-									if (!(unit.x || unit.y)) {
-										var unitVec2 = zoneController.getRandomVec2FromBase(serverName, extName);
-										console.log('base: ', extName, unitVec2);
+								grpNum = _.random(1000000, 9999999);
+								curGrpName = extName + ' #' + grpNum;
+								curGrpObj = _.get(spawnArray, 0);
+								_.set(curGrpObj, 'groupId', grpNum);
+								_.set(curGrpObj, 'groupName', curGrpName);
+								_.set(curGrpObj, 'country', _.get(countryCoObj, ['defCountrys', extSide]));
+
+								curGroupSpawn = exports.grndUnitGroup( curGrpObj );
+
+								unitNum = _.cloneDeep(grpNum);
+								_.forEach(spawnArray, function (spwnUnit) {
+									if(unitNum > 0) {
+										curUnitSpawn += ','
 									}
+									unitNum += 1;
+									curUnitName = extName + ' #' + unitNum;
+									unitVec2 = zoneController.getRandomVec2FromBase(serverName, extName);
+									_.set(spwnUnit, 'unitId', unitNum);
+									_.set(spwnUnit, 'name', curUnitName);
+									_.set(spwnUnit, 'x', unitVec2.x);
+									_.set(spwnUnit, 'y', unitVec2.y);
+
+									curUnitSpawn += exports.grndUnitTemplate(spwnUnit);
 								});
+
+								curGroupSpawn = _.replace(curGroupSpawn, '{#UNITS}', curUnitSpawn);
+
+								console.log('fspwn: ', curGroupSpawn);
+
+								var curCMD = 'mist.dynAdd(' + curGroupSpawn + ')';
+								var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
+								var actionObj = {actionObj: sendClient, queName: 'clientArray'};
+								dbMapServiceController.cmdQueActions('save', serverName, actionObj);
 							});
 						})
 					;
@@ -242,7 +281,6 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 
 		})
 	;
-
 	//var unitArray = [];
 	//for(pIndx = 1; pIndx < (perBase + 1); pIndx++) {
 	//	var randVec2 = zoneController.getRandomVec2(points);
