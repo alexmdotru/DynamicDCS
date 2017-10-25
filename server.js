@@ -195,12 +195,10 @@ var curServers = {};
 var nonaccountUsers = {};
 var shootingUsers = {};
 var defPolyZones = {};
-var polyzonesLoaded = {};
 var place;
 var sessionName;
 var polyTry = 50;
 var isBasePop = false;
-var buildPoly = false;
 var polyLen = 0;
 var srvPolyCnt = 0;
 var polyFailCount = 0;
@@ -606,16 +604,16 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						return _.get(base, 'spawnZones', []).length > 0
 					});
 					if(mainBases.length !== srvPolyCnt) {
-						console.log('MB: ', _.map(mainBases, '_id'));
 						console.log('db server poly count does not match server: ', mainBases.length, '!==', srvPolyCnt, ' | ', polyFailCount);
 						polyFailCount += 1;
 						if (polyFailCount > 60) {
+
 							dbMapServiceController.cmdQueActions('save', serverName, {queName: 'clientArray', actionObj: {action: "GETPOLYDEF"}});
 							polyFailCount = 0;
 						}
 					} else {
 						console.log('polyzones loaded, populate base');
-						DCSLuaCommands.spawnNewGroupsInPolyzones(serverName, baseName, _.get(defPolyZones, serverName));
+						DCSLuaCommands.spawnNewGroupsInPolyzones( serverName );
 					}
 				})
 				.catch( function (err) {

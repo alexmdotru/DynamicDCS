@@ -44,7 +44,7 @@ _.set(exports, 'forcePlayerSpectator', function (serverName, playerId, mesg) {
 	dbMapServiceController.cmdQueActions('save', serverName, actionObj);
 });
 
-_.set(exports, 'spawnNewGroupsInPolyzones', function (serverName, baseName, pArray) {
+_.set(exports, 'spawnNewGroupsInPolyzones', function (serverName) {
 	var perBase = 3;
 	_.forEach(pArray, function (points, baseName) {
 		if (_.isArray(points)) {
