@@ -345,12 +345,12 @@ function initUnits(serverName, socketID, authId) {
 					})
 					.catch(function (err) {
 						console.log('line307', err);
-					});
+					})
 				;
 			})
 			.catch(function (err) {
 				console.log('line309', err);
-			});
+			})
 		;
 	}
 }
