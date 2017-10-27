@@ -202,7 +202,7 @@ _.set(exports, 'spawnGroup', function (serverName, spawnArray, isNewGroup, baseN
 	var curSpwnUnit;
 	grpNum = _.get(curGrpObj, 'groupId', _.random(1000000, 9999999));
 	curGrpObj = _.get(spawnArray, 0);
-	curSide = (side) ? _.get(countryCoObj, ['defCountrys', side]) : _.get(curGrpObj, 'coalition');
+	curSide = (side) ? _.get(countryCoObj, ['defCountrys', side]) : _.get(countryCoObj, ['defCountrys', _.get(curGrpObj, 'coalition')]);
 	curBaseName = (baseName) ? baseName + ' #' + grpNum : _.get(curGrpObj, 'groupName');
 	_.set(curGrpObj, 'groupId', grpNum);
 	_.set(curGrpObj, 'groupName', curBaseName);
