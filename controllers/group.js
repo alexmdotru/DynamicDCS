@@ -189,7 +189,7 @@ _.set(exports, 'repopGroup', function ( groupObj ) {
 
 });
 
-_.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {
+_.set(exports, 'spawnGroup', function (serverName, spawnArray, isNewGroup, baseName, side) {
 	var grpNum = 0;
 	var unitNum = 0;
 	var unitVec2;
@@ -199,38 +199,62 @@ _.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {
 	var curGroupSpawn = '';
 	var curGrpObj = {};
 
-	grpNum = _.random(1000000, 9999999);
-	curGrpName = baseName + ' #' + grpNum;
-	curGrpObj = _.get(spawnArray, 0);
-	_.set(curGrpObj, 'groupId', grpNum);
-	_.set(curGrpObj, 'groupName', curGrpName);
-	_.set(curGrpObj, 'country', _.get(countryCoObj, ['defCountrys', side]));
+	if(isNewGroup) {
+		grpNum = _.random(1000000, 9999999);
+		curGrpName = _.getbaseName + ' #' + grpNum;
+		curGrpObj = _.get(spawnArray, 0);
+		_.set(curGrpObj, 'groupId', grpNum);
+		_.set(curGrpObj, 'groupName', curGrpName);
+		_.set(curGrpObj, 'country', _.get(countryCoObj, ['defCountrys', side]));
 
-	curGroupSpawn = exports.grndUnitGroup( curGrpObj );
-	console.log('-----', curGroupSpawn);
+		curGroupSpawn = exports.grndUnitGroup( curGrpObj );
 
-	unitNum = _.cloneDeep(grpNum);
-	_.forEach(spawnArray, function (spwnUnit) {
-		if(unitNum !== grpNum) {
-			curUnitSpawn += ','
-		}
-		unitNum += 1;
-		curUnitName = baseName + ' #' + unitNum;
-		unitVec2 = zoneController.getRandomVec2FromBase(serverName, baseName);
-		_.set(spwnUnit, 'unitId', unitNum);
-		_.set(spwnUnit, 'name', curUnitName);
-		_.set(spwnUnit, 'x', unitVec2.x);
-		_.set(spwnUnit, 'y', unitVec2.y);
+		unitNum = _.cloneDeep(grpNum);
+		_.forEach(spawnArray, function (spwnUnit) {
+			if(unitNum !== grpNum) {
+				curUnitSpawn += ','
+			}
+			unitNum += 1;
+			curUnitName = baseName + ' #' + unitNum;
+			unitVec2 = zoneController.getRandomVec2FromBase(serverName, baseName);
+			_.set(spwnUnit, 'unitId', unitNum);
+			_.set(spwnUnit, 'name', curUnitName);
+			_.set(spwnUnit, 'x', unitVec2.x);
+			_.set(spwnUnit, 'y', unitVec2.y);
 
-		curUnitSpawn += exports.grndUnitTemplate(spwnUnit);
-	});
+			curUnitSpawn += exports.grndUnitTemplate(spwnUnit);
+		});
+		curGroupSpawn = _.replace(curGroupSpawn, "#UNITS", curUnitSpawn);
+	} else {
+		grpNum = _.get(curGrpObj, 'groupId');
+		curGrpObj = _.get(spawnArray, 0);
+		curGroupSpawn = exports.grndUnitGroup( curGrpObj );
 
-	curGroupSpawn = _.replace(curGroupSpawn, "#UNITS", curUnitSpawn);
+		unitNum = _.cloneDeep(grpNum);
+		_.forEach(spawnArray, function (spwnUnit) {
+			if(unitNum !== grpNum) {
+				curUnitSpawn += ','
+			}
+			unitNum += 1;
+			curUnitName = _.get(spwnUnit, 'name');
+			baseName = _.first(_.split(curUnitName, ' #'));
+			unitVec2 = zoneController.getRandomVec2FromBase(serverName, baseName);
+			_.set(spwnUnit, 'unitId', _.get(spwnUnit, 'unitId'));
+			_.set(spwnUnit, 'name', curUnitName);
+			_.set(spwnUnit, 'x', _.get(spwnUnit, 'x'));
+			_.set(spwnUnit, 'y', _.get(spwnUnit, 'y'));
+
+			curUnitSpawn += exports.grndUnitTemplate(spwnUnit);
+		});
+		curGroupSpawn = _.replace(curGroupSpawn, "#UNITS", curUnitSpawn);
+	}
+
+
 
 	var curCMD = 'mist.dynAdd(' + curGroupSpawn + ')';
 	var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
 	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
-	// dbMapServiceController.cmdQueActions('save', serverName, actionObj);
+	dbMapServiceController.cmdQueActions('save', serverName, actionObj);
 });
 
 _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
@@ -275,7 +299,7 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 										spawnArray = _.concat(spawnArray, exports.getRndFromSpawnCat(name, extSide));
 									}
 								});
-								exports.spawnGroup(serverName, spawnArray, extName, extSide)
+								exports.spawnGroup(serverName, spawnArray, true, extName, extSide);
 							});
 						})
 					;

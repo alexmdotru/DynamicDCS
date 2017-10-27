@@ -28,7 +28,7 @@ _.set(exports, 'buildDynamicMap', function (serverName) {
 					}
 				});
 				_.forEach(remappedunits, function (group) {
-					groupController.spawnGroup( serverName, group);
+					groupController.spawnGroup( serverName, group, false);
 				});
 			} else {
 				//build map from scratch
