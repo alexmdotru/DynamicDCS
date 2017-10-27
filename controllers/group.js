@@ -201,7 +201,7 @@ _.set(exports, 'spawnGroup', function (serverName, spawnArray, isNewGroup, baseN
 
 	if(isNewGroup) {
 		grpNum = _.random(1000000, 9999999);
-		curGrpName = _.getbaseName + ' #' + grpNum;
+		curGrpName = baseName + ' #' + grpNum;
 		curGrpObj = _.get(spawnArray, 0);
 		_.set(curGrpObj, 'groupId', grpNum);
 		_.set(curGrpObj, 'groupName', curGrpName);
