@@ -150,7 +150,7 @@ _.set(exports, 'getRndFromSpawnCat', function (spawnCat, side) {
 	if (cPUnits.length < 0) {
 		reject('cPUnits are less than zero');
 	}
-	randomIndex = _.random(0, cPUnits.length + 1);
+	randomIndex = _.random(0, cPUnits.length - 1);
 	if (cPUnits[randomIndex]) {
 		unitsChosen.push(cPUnits[randomIndex]);
 	}
@@ -163,10 +163,9 @@ _.set(exports, 'getRndFromSpawnCat', function (spawnCat, side) {
 
 _.set(exports, 'spawnSupportVehiclesOnFarp', function ( serverName, baseName, side ) {
 	var curFarpArray = [];
-	_.set(curFarpArray, baseName, _.get(curFarpArray, baseName, []));
-	_.set(curFarpArray, baseName, _.concat(_.get(curFarpArray, baseName), exports.getRndFromSpawnCat("unarmedAmmo", side)));
-	_.set(curFarpArray, baseName, _.concat(_.get(curFarpArray, baseName), exports.getRndFromSpawnCat("unarmedFuel", side)));
-	_.set(curFarpArray, baseName, _.concat(_.get(curFarpArray, baseName), exports.getRndFromSpawnCat("unarmedPower", side)));
+	curFarpArray.push(_.first(exports.getRndFromSpawnCat("unarmedAmmo", side)));
+	curFarpArray.push(_.first(exports.getRndFromSpawnCat("unarmedFuel", side)));
+	curFarpArray.push(_.first(exports.getRndFromSpawnCat("unarmedPower", side)));
 	return curFarpArray;
 });
 
@@ -268,13 +267,14 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 										spawnArray = exports.spawnSupportVehiclesOnFarp( serverName, _.get(exp, 'name'), extSide );
 									});
 								}
+								console.log('sa: ', spawnArray);
 
 								_.forEach(curBaseSpawnCats, function (tickVal, name) {
 									if(tickVal > 0) {
 										spawnArray = _.concat(spawnArray, exports.getRndFromSpawnCat(name, extSide));
 									}
 								});
-								exports.spawnGroup(serverName, spawnArray, true, extName, extSide);
+								// exports.spawnGroup(serverName, spawnArray, true, extName, extSide);
 							});
 						})
 					;
