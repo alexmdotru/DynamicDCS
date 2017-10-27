@@ -199,6 +199,7 @@ _.set(exports, 'spawnGroup', function (serverName, spawnArray, isNewGroup, baseN
 	var curGroupSpawn;
 	var curGrpObj = {};
 	var curSide;
+	var curSpwnUnit;
 	grpNum = _.get(curGrpObj, 'groupId', _.random(1000000, 9999999));
 	curGrpObj = _.get(spawnArray, 0);
 	curSide = (side) ? _.get(countryCoObj, ['defCountrys', side]) : _.get(curGrpObj, 'coalition');
@@ -209,7 +210,7 @@ _.set(exports, 'spawnGroup', function (serverName, spawnArray, isNewGroup, baseN
 	curGroupSpawn = exports.grndUnitGroup( curGrpObj );
 	unitNum = _.cloneDeep(grpNum);
 	_.forEach(spawnArray, function (unit) {
-		var curSpwnUnit = _.cloneDeep(unit);
+		curSpwnUnit = _.cloneDeep(unit);
 		if(unitNum !== grpNum) {
 			curUnitSpawn += ','
 		}
