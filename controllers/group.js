@@ -256,7 +256,7 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 											!_.isEmpty(_.intersection([_.get(farp, 'country')], curEnabledCountrys));
 									});
 									_.forEach(curFarpBases, function (farp) {
-										spawnArray = exports.spawnSupportVehiclesOnFarp( serverName, _.get(farp, 'name'), extSide );
+										spawnArray = _.compact(_.concat(spawnArray, exports.spawnSupportVehiclesOnFarp( serverName, _.get(farp, 'name'), extSide )));
 									});
 								} else {
 									var curExpBases = _.filter(expBases, function (exp) {
@@ -264,17 +264,16 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 											!_.isEmpty(_.intersection([_.get(exp, 'country')], curEnabledCountrys));
 									});
 									_.forEach(curExpBases, function (exp) {
-										spawnArray = exports.spawnSupportVehiclesOnFarp( serverName, _.get(exp, 'name'), extSide );
+										spawnArray = _.compact(_.concat(spawnArray, exports.spawnSupportVehiclesOnFarp( serverName, _.get(exp, 'name'), extSide )));
 									});
 								}
-								console.log('sa: ', spawnArray);
 
 								_.forEach(curBaseSpawnCats, function (tickVal, name) {
 									if(tickVal > 0) {
-										spawnArray = _.concat(spawnArray, exports.getRndFromSpawnCat(name, extSide));
+										spawnArray = _.compact(_.concat(spawnArray, exports.getRndFromSpawnCat(name, extSide)));
 									}
 								});
-								// exports.spawnGroup(serverName, spawnArray, true, extName, extSide);
+								exports.spawnGroup(serverName, spawnArray, true, extName, extSide);
 							});
 						})
 					;
