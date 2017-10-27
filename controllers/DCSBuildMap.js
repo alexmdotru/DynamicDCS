@@ -1,8 +1,8 @@
 const _ = require('lodash');
 
-const dbSystemServiceController = require('./dbSystemService');
 const dbMapServiceController = require('./dbMapService');
 const DCSLuaCommands = require('./DCSLuaCommands');
+const groupController = require('./group');
 
 _.set(exports, 'buildDynamicMap', function (serverName) {
 	console.log('build dynamic caucasus');
@@ -28,13 +28,12 @@ _.set(exports, 'buildDynamicMap', function (serverName) {
 					}
 				});
 				_.forEach(remappedunits, function (group) {
-
-					DCSLuaCommands.spawnGroup(serverName, group);
+					groupController.spawnGroup( serverName, group);
 				});
-
 			} else {
 				//build map from scratch
 				console.log('popUnitsFromScratch');
+				groupController.spawnNewMapGrps( serverName );
 			}
 		})
 		.catch(function (err) {

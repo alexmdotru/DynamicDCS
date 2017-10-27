@@ -189,6 +189,50 @@ _.set(exports, 'repopGroup', function ( groupObj ) {
 
 });
 
+_.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {
+	var grpNum = 0;
+	var unitNum = 0;
+	var unitVec2;
+	var curGrpName = '';
+	var curUnitName = '';
+	var curUnitSpawn = '';
+	var curGroupSpawn = '';
+	var curGrpObj = {};
+
+	grpNum = _.random(1000000, 9999999);
+	curGrpName = baseName + ' #' + grpNum;
+	curGrpObj = _.get(spawnArray, 0);
+	_.set(curGrpObj, 'groupId', grpNum);
+	_.set(curGrpObj, 'groupName', curGrpName);
+	_.set(curGrpObj, 'country', _.get(countryCoObj, ['defCountrys', side]));
+
+	curGroupSpawn = exports.grndUnitGroup( curGrpObj );
+	console.log('-----', curGroupSpawn);
+
+	unitNum = _.cloneDeep(grpNum);
+	_.forEach(spawnArray, function (spwnUnit) {
+		if(unitNum !== grpNum) {
+			curUnitSpawn += ','
+		}
+		unitNum += 1;
+		curUnitName = baseName + ' #' + unitNum;
+		unitVec2 = zoneController.getRandomVec2FromBase(serverName, baseName);
+		_.set(spwnUnit, 'unitId', unitNum);
+		_.set(spwnUnit, 'name', curUnitName);
+		_.set(spwnUnit, 'x', unitVec2.x);
+		_.set(spwnUnit, 'y', unitVec2.y);
+
+		curUnitSpawn += exports.grndUnitTemplate(spwnUnit);
+	});
+
+	curGroupSpawn = _.replace(curGroupSpawn, "#UNITS", curUnitSpawn);
+
+	var curCMD = 'mist.dynAdd(' + curGroupSpawn + ')';
+	var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
+	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
+	// dbMapServiceController.cmdQueActions('save', serverName, actionObj);
+});
+
 _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 	exports.getUnitDictionary()
 		.then(function (unitDict) {
@@ -198,11 +242,6 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 					_.set(exports, ['servers', serverName, 'bases'], bases);
 					exports.getServer( serverName )
 						.then(function (server) {
-							var grpNum = 0;
-							var unitNum = 0;
-							var unitVec2;
-							var curGrpName = '';
-							var curUnitName = '';
 							var totalTicks = _.get(server, 'totalTicks');
 							var defBaseSides = _.get(server, 'defBaseSides');
 							var curBaseSpawnCats = _.get(server, 'spwnLimitsPerTick');
@@ -210,9 +249,8 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 							var expBases = _.filter(bases, {expansion: true});
 
 							_.forEach(defBaseSides, function (extSide, extName) {
-								var curUnitSpawn = '';
+
 								var spawnArray = [];
-								var curGrpObj = {};
 								var curEnabledCountrys = _.get(countryCoObj, _.get(countryCoObj, ['side', extSide]));
 								if (_.includes(extName, 'FARP')) {
 									var curFarpBases = _.filter(farpBases, function (farp) {
@@ -237,38 +275,7 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 										spawnArray = _.concat(spawnArray, exports.getRndFromSpawnCat(name, extSide));
 									}
 								});
-
-								grpNum = _.random(1000000, 9999999);
-								curGrpName = extName + ' #' + grpNum;
-								curGrpObj = _.get(spawnArray, 0);
-								_.set(curGrpObj, 'groupId', grpNum);
-								_.set(curGrpObj, 'groupName', curGrpName);
-								_.set(curGrpObj, 'country', _.get(countryCoObj, ['defCountrys', extSide]));
-
-								curGroupSpawn = exports.grndUnitGroup( curGrpObj );
-
-								unitNum = _.cloneDeep(grpNum);
-								_.forEach(spawnArray, function (spwnUnit) {
-									if(unitNum !== grpNum) {
-										curUnitSpawn += ','
-									}
-									unitNum += 1;
-									curUnitName = extName + ' #' + unitNum;
-									unitVec2 = zoneController.getRandomVec2FromBase(serverName, extName);
-									_.set(spwnUnit, 'unitId', unitNum);
-									_.set(spwnUnit, 'name', curUnitName);
-									_.set(spwnUnit, 'x', unitVec2.x);
-									_.set(spwnUnit, 'y', unitVec2.y);
-
-									curUnitSpawn += exports.grndUnitTemplate(spwnUnit);
-								});
-
-								curGroupSpawn = _.replace(curGroupSpawn, "#UNITS", curUnitSpawn);
-
-								var curCMD = 'mist.dynAdd(' + curGroupSpawn + ')';
-								var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
-								var actionObj = {actionObj: sendClient, queName: 'clientArray'};
-								dbMapServiceController.cmdQueActions('save', serverName, actionObj);
+								exports.spawnGroup(serverName, spawnArray, extName, extSide)
 							});
 						})
 					;

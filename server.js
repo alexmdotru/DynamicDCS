@@ -564,6 +564,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				} else {
 					// console.log('rePOP');
 					if ((polyTry > 60) && !isBasePop) {
+						console.log('buildDynamicMap');
 						DCSBuildMap.buildDynamicMap(serverName);
 						polyTry = 0;
 						isBasePop = true;
@@ -615,7 +616,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						} else {
 							console.log('polyzones loaded, populate base');
 							polyNotLoaded = false;
-							groupController.spawnNewMapGrps( serverName );
+
 						}
 					})
 					.catch( function (err) {

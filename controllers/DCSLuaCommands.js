@@ -43,13 +43,3 @@ _.set(exports, 'forcePlayerSpectator', function (serverName, playerId, mesg) {
 	actionObj = {actionObj: sendClient, queName: 'GameGuiArray'};
 	dbMapServiceController.cmdQueActions('save', serverName, actionObj);
 });
-
-_.set(exports, 'spawnGroup', function (serverName, groupObj) {
-	if (!_.isEmpty(groupObj)) {
-	//	var curGrpArry = groupController.spawnGrndUnit(serverName, groupObj[0], [{}], groupObj);
-	//	var curCMD = 'mist.dynAdd(' + curGrpArry + ')';
-	//	var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
-	//	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
-	//	dbMapServiceController.cmdQueActions('save', serverName, actionObj);
-	};
-});
