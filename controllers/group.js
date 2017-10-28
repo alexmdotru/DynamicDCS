@@ -170,7 +170,7 @@ _.set(exports, 'getRndFromSpawnCat', function (spawnCat, side) {
 });
 
 _.set(exports, 'spawnSupportVehiclesOnFarp', function ( serverName, baseName, side ) {
-	var curBase = _.cloneDeep(_.find(_.get(exports, ['servers', serverName, 'bases']), {name: baseName}));
+	var curBase = _.find(_.get(exports, ['servers', serverName, 'bases']), {name: baseName});
 	var curFarpArray = [];
 	var sptArray = [
 		"unarmedAmmo",
@@ -186,7 +186,10 @@ _.set(exports, 'spawnSupportVehiclesOnFarp', function ( serverName, baseName, si
 	}
 	_.forEach(sptArray, function (val) {
 		var spwnVec2 = exports.getXYFromDistanceDirection(curBaseVec2, curAng, 50);
-		var sptUnit = _.merge(_.first(exports.getRndFromSpawnCat(val, side)), spwnVec2);
+		var sptUnit = _.cloneDeep(_.first(exports.getRndFromSpawnCat(val, side)));
+		console.log('vec: ', spwnVec2, sptUnit);
+		_.set(sptUnit, 'x', spwnVec2.x);
+		_.set(sptUnit, 'y', spwnVec2.y);
 		curAng += 15;
 		curFarpArray.push(sptUnit);
 	});
@@ -223,37 +226,43 @@ _.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {
 	var curGrpObj = {};
 	var curSide;
 	var curSpwnUnit;
-	grpNum = _.get(curGrpObj, 'groupId', _.random(1000000, 9999999));
-	curGrpObj = _.get(spawnArray, 0);
-	curSide = (side) ? _.get(countryCoObj, ['defCountrys', side]) : _.get(countryCoObj, ['defCountrys', _.get(curGrpObj, 'coalition')]);
-	curBaseName = (baseName) ? baseName + ' #' + grpNum : _.get(curGrpObj, 'groupName');
-	_.set(curGrpObj, 'groupId', grpNum);
-	_.set(curGrpObj, 'groupName', curBaseName);
-	_.set(curGrpObj, 'country', curSide);
-	curGroupSpawn = exports.grndUnitGroup( curGrpObj );
-	unitNum = _.cloneDeep(grpNum);
-	_.forEach(spawnArray, function (unit) {
-		curSpwnUnit = _.cloneDeep(unit);
-		if(unitNum !== grpNum) {
-			curUnitSpawn += ','
-		}
-		unitNum += 1;
-		curUnitName = baseName + ' #' + unitNum;
-		if (_.isUndefined(_.get(curSpwnUnit, 'x')) && _.isUndefined(_.get(curSpwnUnit, 'y'))) {
-			unitVec2 = zoneController.getRandomVec2FromBase(serverName, baseName);
-			_.set(curSpwnUnit, 'x', unitVec2.x);
-			_.set(curSpwnUnit, 'y', unitVec2.y);
-		}
-		_.set(curSpwnUnit, 'unitId', _.get(curSpwnUnit, 'unitId', unitNum));
-		_.set(curSpwnUnit, 'name', _.get(curSpwnUnit, 'name', curUnitName));
-		curUnitSpawn += exports.grndUnitTemplate(curSpwnUnit);
-	});
-	curGroupSpawn = _.replace(curGroupSpawn, "#UNITS", curUnitSpawn);
-	var curCMD = 'mist.dynAdd(' + curGroupSpawn + ')';
-	var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
-	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
-	// console.log('cs: ', curGroupSpawn);
-	dbMapServiceController.cmdQueActions('save', serverName, actionObj);
+	var sArray = _.compact(_.cloneDeep(spawnArray));
+	curGrpObj = _.get(sArray, 0);
+	if (curGrpObj) {
+		grpNum = _.get(curGrpObj, 'groupId', _.random(1000000, 9999999));
+		curSide = (side) ? _.get(countryCoObj, ['defCountrys', side]) : _.get(countryCoObj, ['defCountrys', _.get(curGrpObj, 'coalition')]);
+		curBaseName = (baseName) ? baseName + ' #' + grpNum : _.get(curGrpObj, 'groupName');
+		_.set(curGrpObj, 'groupId', grpNum);
+		_.set(curGrpObj, 'groupName', curBaseName);
+		_.set(curGrpObj, 'country', curSide);
+		curGroupSpawn = exports.grndUnitGroup( curGrpObj );
+		console.log('--------------------', baseName);
+		unitNum = _.cloneDeep(grpNum);
+		_.forEach(sArray, function (curUnit) {
+			curSpwnUnit = _.cloneDeep(curUnit);
+			if(unitNum !== grpNum) {
+				curUnitSpawn += ','
+			}
+			unitNum += 1;
+			curUnitName = baseName + ' #' + unitNum;
+
+			if (_.isUndefined(_.get(curSpwnUnit, 'x')) && _.isUndefined(_.get(curSpwnUnit, 'y'))) {
+				console.log('++++++++++++++++++++++++baseName: ', baseName);
+				unitVec2 = zoneController.getRandomVec2FromBase(serverName, baseName);
+				_.set(curSpwnUnit, 'x', unitVec2.x);
+				_.set(curSpwnUnit, 'y', unitVec2.y);
+			}
+			_.set(curSpwnUnit, 'unitId', _.get(curSpwnUnit, 'unitId', unitNum));
+			_.set(curSpwnUnit, 'name', _.get(curSpwnUnit, 'name', curUnitName));
+			curUnitSpawn += exports.grndUnitTemplate(curSpwnUnit);
+		});
+		curGroupSpawn = _.replace(curGroupSpawn, "#UNITS", curUnitSpawn);
+		console.log('curunitSpawn: ', curUnitSpawn);
+		var curCMD = 'mist.dynAdd(' + curGroupSpawn + ')';
+		var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
+		var actionObj = {actionObj: sendClient, queName: 'clientArray'};
+		dbMapServiceController.cmdQueActions('save', serverName, actionObj);
+	}
 });
 
 _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
@@ -272,24 +281,27 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 							var expBases = _.filter(bases, {expansion: true});
 
 							_.forEach(defBaseSides, function (extSide, extName) {
-
 								var spawnArray = [];
 								var curEnabledCountrys = _.get(countryCoObj, _.get(countryCoObj, ['side', extSide]));
 								if (_.includes(extName, 'FARP')) {
 									var curFarpBases = _.filter(farpBases, function (farp) {
-										return _.includes(_.get(farp, 'name'), extName) &&
+										return _.first(_.split(_.get(farp, 'name'), ' #')) === extName &&
 											!_.isEmpty(_.intersection([_.get(farp, 'country')], curEnabledCountrys));
 									});
 									_.forEach(curFarpBases, function (farp) {
-										spawnArray = _.compact(_.concat(spawnArray, exports.spawnSupportVehiclesOnFarp( serverName, _.get(farp, 'name'), extSide )));
+										_.forEach(exports.spawnSupportVehiclesOnFarp( serverName, _.get(farp, 'name'), extSide ), function (spawn) {
+											spawnArray.push(spawn);
+										});
 									});
 								} else {
 									var curExpBases = _.filter(expBases, function (exp) {
-										return _.includes(_.get(exp, 'name'), extName) &&
+										return _.first(_.split(_.get(exp, 'name'), ' #')) === extName + '_Expansion' &&
 											!_.isEmpty(_.intersection([_.get(exp, 'country')], curEnabledCountrys));
 									});
 									_.forEach(curExpBases, function (exp) {
-										spawnArray = _.compact(_.concat(spawnArray, exports.spawnSupportVehiclesOnFarp( serverName, _.get(exp, 'name'), extSide )));
+										_.forEach(exports.spawnSupportVehiclesOnFarp( serverName, _.get(exp, 'name'), extSide ), function (spawn) {
+											spawnArray.push(spawn);
+										});
 									});
 								}
 
