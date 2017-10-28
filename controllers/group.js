@@ -69,6 +69,14 @@ var countryCoObj = {
 	]
 };
 
+_.set(exports, 'getXYFromDistanceDirection', function (vec2, direction, distance) {
+	//gets new xy coord from distance & angle
+	return {
+		x: distance * Math.cos(direction*Math.PI/180) + _.get(vec2, 'x'),
+		y: distance * Math.sin(direction*Math.PI/180) + _.get(vec2, 'y')
+	}
+});
+
 _.set(exports, 'grndUnitGroup', function ( groupObj ) {
 	return '{' +
 		'["groupId"] = ' + _.get(groupObj, 'groupId') + ',' +
@@ -162,10 +170,26 @@ _.set(exports, 'getRndFromSpawnCat', function (spawnCat, side) {
 });
 
 _.set(exports, 'spawnSupportVehiclesOnFarp', function ( serverName, baseName, side ) {
+	var curBase = _.cloneDeep(_.find(_.get(exports, ['servers', serverName, 'bases']), {name: baseName}));
 	var curFarpArray = [];
-	curFarpArray.push(_.first(exports.getRndFromSpawnCat("unarmedAmmo", side)));
-	curFarpArray.push(_.first(exports.getRndFromSpawnCat("unarmedFuel", side)));
-	curFarpArray.push(_.first(exports.getRndFromSpawnCat("unarmedPower", side)));
+	var sptArray = [
+		"unarmedAmmo",
+		"unarmedFuel",
+		"unarmedPower"
+	];
+	var curBaseVec2 = { x: curBase.x, y: curBase.y };
+	var curAng = _.cloneDeep(curBase.hdg);
+	if (curAng > 180) {
+		curAng = curAng - 90
+	} else {
+		curAng = curAng + 270
+	}
+	_.forEach(sptArray, function (val) {
+		var spwnVec2 = exports.getXYFromDistanceDirection(curBaseVec2, curAng, 50);
+		var sptUnit = _.merge(_.first(exports.getRndFromSpawnCat(val, side)), spwnVec2);
+		curAng += 10;
+		curFarpArray.push(sptUnit);
+	});
 	return curFarpArray;
 });
 
@@ -188,7 +212,7 @@ _.set(exports, 'repopGroup', function ( groupObj ) {
 
 });
 
-_.set(exports, 'spawnGroup', function (serverName, spawnArray, isNewGroup, baseName, side) {
+_.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {
 	var grpNum = 0;
 	var unitNum = 0;
 	var unitVec2;
@@ -214,7 +238,7 @@ _.set(exports, 'spawnGroup', function (serverName, spawnArray, isNewGroup, baseN
 			curUnitSpawn += ','
 		}
 		unitNum += 1;
-		curUnitName = curBaseName + ' #' + unitNum;
+		curUnitName = baseName + ' #' + unitNum;
 		if (_.isUndefined(_.get(curSpwnUnit, 'x')) && _.isUndefined(_.get(curSpwnUnit, 'y'))) {
 			unitVec2 = zoneController.getRandomVec2FromBase(serverName, baseName);
 			_.set(curSpwnUnit, 'x', unitVec2.x);
@@ -228,6 +252,7 @@ _.set(exports, 'spawnGroup', function (serverName, spawnArray, isNewGroup, baseN
 	var curCMD = 'mist.dynAdd(' + curGroupSpawn + ')';
 	var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
 	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
+	// console.log('cs: ', curGroupSpawn);
 	dbMapServiceController.cmdQueActions('save', serverName, actionObj);
 });
 
@@ -270,10 +295,10 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 
 								_.forEach(curBaseSpawnCats, function (tickVal, name) {
 									if(tickVal > 0) {
-										spawnArray = _.compact(_.concat(spawnArray, exports.getRndFromSpawnCat(name, extSide)));
+										// spawnArray = _.compact(_.concat(spawnArray, exports.getRndFromSpawnCat(name, extSide)));
 									}
 								});
-								exports.spawnGroup(serverName, spawnArray, true, extName, extSide);
+								exports.spawnGroup(serverName, spawnArray, extName, extSide);
 							});
 						})
 					;
