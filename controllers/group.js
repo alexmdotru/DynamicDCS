@@ -187,7 +187,6 @@ _.set(exports, 'spawnSupportVehiclesOnFarp', function ( serverName, baseName, si
 	_.forEach(sptArray, function (val) {
 		var spwnVec2 = exports.getXYFromDistanceDirection(curBaseVec2, curAng, 50);
 		var sptUnit = _.cloneDeep(_.first(exports.getRndFromSpawnCat(val, side)));
-		console.log('vec: ', spwnVec2, sptUnit);
 		_.set(sptUnit, 'x', spwnVec2.x);
 		_.set(sptUnit, 'y', spwnVec2.y);
 		curAng += 15;
@@ -236,7 +235,6 @@ _.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {
 		_.set(curGrpObj, 'groupName', curBaseName);
 		_.set(curGrpObj, 'country', curSide);
 		curGroupSpawn = exports.grndUnitGroup( curGrpObj );
-		console.log('--------------------', baseName);
 		unitNum = _.cloneDeep(grpNum);
 		_.forEach(sArray, function (curUnit) {
 			curSpwnUnit = _.cloneDeep(curUnit);
@@ -247,7 +245,6 @@ _.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {
 			curUnitName = baseName + ' #' + unitNum;
 
 			if (_.isUndefined(_.get(curSpwnUnit, 'x')) && _.isUndefined(_.get(curSpwnUnit, 'y'))) {
-				console.log('++++++++++++++++++++++++baseName: ', baseName);
 				unitVec2 = zoneController.getRandomVec2FromBase(serverName, baseName);
 				_.set(curSpwnUnit, 'x', unitVec2.x);
 				_.set(curSpwnUnit, 'y', unitVec2.y);
@@ -257,7 +254,6 @@ _.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {
 			curUnitSpawn += exports.grndUnitTemplate(curSpwnUnit);
 		});
 		curGroupSpawn = _.replace(curGroupSpawn, "#UNITS", curUnitSpawn);
-		console.log('curunitSpawn: ', curUnitSpawn);
 		var curCMD = 'mist.dynAdd(' + curGroupSpawn + ')';
 		var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
 		var actionObj = {actionObj: sendClient, queName: 'clientArray'};
