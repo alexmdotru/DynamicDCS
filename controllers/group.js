@@ -187,7 +187,7 @@ _.set(exports, 'spawnSupportVehiclesOnFarp', function ( serverName, baseName, si
 	_.forEach(sptArray, function (val) {
 		var spwnVec2 = exports.getXYFromDistanceDirection(curBaseVec2, curAng, 50);
 		var sptUnit = _.merge(_.first(exports.getRndFromSpawnCat(val, side)), spwnVec2);
-		curAng += 10;
+		curAng += 15;
 		curFarpArray.push(sptUnit);
 	});
 	return curFarpArray;
