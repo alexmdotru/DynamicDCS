@@ -195,15 +195,44 @@ _.set(exports, 'spawnSupportVehiclesOnFarp', function ( serverName, baseName, si
 	return curFarpArray;
 });
 
-_.set(exports, 'spawnSupportBaseGrp', function ( groupObj ) {
-	/* spawn all support and some low end humvee
-		load config vars for server
-		spawn
-	*/
+_.set(exports, 'spawnSupportBaseGrp', function ( serverName, baseName, side ) {
+	var spawnArray = [];
+	var curBases = _.get(exports, ['servers', serverName, 'bases']);
+	var farpBases = _.filter(curBases, {farp: true});
+	var expBases = _.filter(curBases, {expansion: true});
+	var curEnabledCountrys = _.get(countryCoObj, _.get(countryCoObj, ['side', side]));
+	if (_.includes(baseName, 'FARP')) {
+		var curFarpBases = _.filter(farpBases, function (farp) {
+			return _.first(_.split(_.get(farp, 'name'), ' #')) === baseName &&
+				!_.isEmpty(_.intersection([_.get(farp, 'country')], curEnabledCountrys));
+		});
+		_.forEach(curFarpBases, function (farp) {
+			spawnArray = _.concat(spawnArray, exports.spawnSupportVehiclesOnFarp( serverName, _.get(farp, 'name'), side ));
+		});
+	} else {
+		var curExpBases = _.filter(expBases, function (exp) {
+			return _.first(_.split(_.get(exp, 'name'), ' #')) === baseName + '_Expansion' &&
+				!_.isEmpty(_.intersection([_.get(exp, 'country')], curEnabledCountrys));
+		});
+		_.forEach(curExpBases, function (exp) {
+			spawnArray = _.concat(spawnArray, exports.spawnSupportVehiclesOnFarp( serverName, _.get(exp, 'name'), side ));
+		});
+	}
+	return _.compact(spawnArray);
 });
 
-_.set(exports, 'spawnBaseReinforcementGroup', function ( groupObj ) {
-
+_.set(exports, 'spawnBaseReinforcementGroup', function (serverName, side) {
+	var curServer = _.get(exports, ['servers', serverName, 'config']);
+	var spawnArray = [];
+	var curBaseSpawnCats = _.get(curServer, 'spwnLimitsPerTick');
+	_.forEach(curBaseSpawnCats, function (tickVal, name) {
+		if (tickVal > 0) {
+			for (var i = 0; i < tickVal; i++) {
+				spawnArray = _.concat(spawnArray, _.cloneDeep(exports.getRndFromSpawnCat( name, side )));
+			}
+		}
+	});
+	return _.compact(spawnArray);
 });
 
 _.set(exports, 'depopGroup', function ( groupObj ) {
@@ -270,42 +299,17 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 					_.set(exports, ['servers', serverName, 'bases'], bases);
 					exports.getServer( serverName )
 						.then(function (server) {
+							_.set(exports, ['servers', serverName, 'config'], server);
 							var totalTicks = _.get(server, 'totalTicks');
 							var defBaseSides = _.get(server, 'defBaseSides');
-							var curBaseSpawnCats = _.get(server, 'spwnLimitsPerTick');
-							var farpBases = _.filter(bases, {farp: true});
-							var expBases = _.filter(bases, {expansion: true});
-
 							_.forEach(defBaseSides, function (extSide, extName) {
 								var spawnArray = [];
-								var curEnabledCountrys = _.get(countryCoObj, _.get(countryCoObj, ['side', extSide]));
-								if (_.includes(extName, 'FARP')) {
-									var curFarpBases = _.filter(farpBases, function (farp) {
-										return _.first(_.split(_.get(farp, 'name'), ' #')) === extName &&
-											!_.isEmpty(_.intersection([_.get(farp, 'country')], curEnabledCountrys));
-									});
-									_.forEach(curFarpBases, function (farp) {
-										_.forEach(exports.spawnSupportVehiclesOnFarp( serverName, _.get(farp, 'name'), extSide ), function (spawn) {
-											spawnArray.push(spawn);
-										});
-									});
-								} else {
-									var curExpBases = _.filter(expBases, function (exp) {
-										return _.first(_.split(_.get(exp, 'name'), ' #')) === extName + '_Expansion' &&
-											!_.isEmpty(_.intersection([_.get(exp, 'country')], curEnabledCountrys));
-									});
-									_.forEach(curExpBases, function (exp) {
-										_.forEach(exports.spawnSupportVehiclesOnFarp( serverName, _.get(exp, 'name'), extSide ), function (spawn) {
-											spawnArray.push(spawn);
-										});
-									});
-								}
 
-								_.forEach(curBaseSpawnCats, function (tickVal, name) {
-									if(tickVal > 0) {
-										// spawnArray = _.compact(_.concat(spawnArray, exports.getRndFromSpawnCat(name, extSide)));
-									}
-								});
+								spawnArray = _.concat(spawnArray, exports.spawnSupportBaseGrp(serverName, extName, extSide));
+
+								for (var i = 0; i < totalTicks; i++) {
+									spawnArray = _.concat(spawnArray, exports.spawnBaseReinforcementGroup(serverName, extSide));
+								}
 								exports.spawnGroup(serverName, spawnArray, extName, extSide);
 							});
 						})
