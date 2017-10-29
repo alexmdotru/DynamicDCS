@@ -144,7 +144,7 @@ _.set(exports, 'getServer', function ( serverName ) {
 		;
 });
 
-_.set(exports, 'getRndFromSpawnCat', function (spawnCat, side) {
+_.set(exports, 'getRndFromSpawnCat', function (spawnCat, side, spawnAll) {
 	var curEnabledCountrys = _.get(countryCoObj, _.get(countryCoObj, ['side', side]));
 	var findUnits = _.filter(_.get(exports, 'unitDictionary'), {spawnCat: spawnCat});
 	var cPUnits = [];
@@ -158,9 +158,16 @@ _.set(exports, 'getRndFromSpawnCat', function (spawnCat, side) {
 	if (cPUnits.length < 0) {
 		reject('cPUnits are less than zero');
 	}
-	randomIndex = _.random(0, cPUnits.length - 1);
-	if (cPUnits[randomIndex]) {
-		unitsChosen.push(cPUnits[randomIndex]);
+	if (spawnAll) {
+		randomIndex = _.random(0, cPUnits.length-1);
+		if (cPUnits[randomIndex]) {
+			unitsChosen.push(cPUnits[randomIndex]);
+		}
+	} else {
+		randomIndex = _.random(0, cPUnits.length);
+		if (cPUnits[randomIndex]) {
+			unitsChosen.push(cPUnits[randomIndex]);
+		}
 	}
 
 	if(_.get(unitsChosen, [0, 'comboName'])) {
@@ -186,7 +193,7 @@ _.set(exports, 'spawnSupportVehiclesOnFarp', function ( serverName, baseName, si
 	}
 	_.forEach(sptArray, function (val) {
 		var spwnVec2 = exports.getXYFromDistanceDirection(curBaseVec2, curAng, 50);
-		var sptUnit = _.cloneDeep(_.first(exports.getRndFromSpawnCat(val, side)));
+		var sptUnit = _.cloneDeep(_.first(exports.getRndFromSpawnCat(val, side, true)));
 		_.set(sptUnit, 'x', spwnVec2.x);
 		_.set(sptUnit, 'y', spwnVec2.y);
 		curAng += 15;
