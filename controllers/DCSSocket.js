@@ -68,6 +68,7 @@ exports.createSocket = function (serverName, serverAddress, clientPort, gameGuiP
 		});
 
 		dsock.client.on('data', function (data) {
+			/*
 			var curStr = '';
 			var isValidJSON = true;
 			var subStr = data;
@@ -82,7 +83,7 @@ exports.createSocket = function (serverName, serverAddress, clientPort, gameGuiP
 			// dsock.clientBuffer = dsock.clientBuffer.substring(i + 1);
 			dsock.client.write(JSON.stringify(_.get(dsock, ['writeQue', 'client', 0], '')) + "\n");
 			_.get(dsock, ['writeQue', 'client']).shift();
-			/*
+			*/
 			dsock.clientBuffer += data;
 			while ((i = dsock.clientBuffer.indexOf("\n")) >= 0) {
 				var curStr = '';
@@ -100,7 +101,6 @@ exports.createSocket = function (serverName, serverAddress, clientPort, gameGuiP
 				dsock.client.write(JSON.stringify(_.get(dsock, ['writeQue', 'client', 0], '')) + "\n");
 				_.get(dsock, ['writeQue', 'client']).shift();
 			}
-			*/
 		});
 
 		dsock.client.on('close', function () {
