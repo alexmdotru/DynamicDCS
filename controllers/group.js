@@ -225,6 +225,11 @@ _.set(exports, 'spawnSupportBaseGrp', function ( serverName, baseName, side ) {
 			spawnArray = _.concat(spawnArray, exports.spawnSupportVehiclesOnFarp( serverName, _.get(exp, 'name'), side ));
 		});
 	}
+
+	for (var i = 0; i < 3; i++) {
+		spawnArray = _.concat(spawnArray, _.cloneDeep(exports.getRndFromSpawnCat( 'armoredCar', side, true )));
+	}
+
 	return _.compact(spawnArray);
 });
 
