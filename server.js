@@ -721,14 +721,14 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				_.forEach(airList, function (sideObj, base) {
 					var side = _.get(sideObj, 'side');
 					dbMapServiceController.baseActions('read', serverName, {_id: base})
-						.then(function (base) {
-							var curBase = _.first(_.cloneDeep(base));
+						.then(function (dbBaseObj) {
+							var curBase = _.first(_.cloneDeep(dbBaseObj));
 							// console.log('side: ', side, '!==',  _.get(curBase, 'side'));
 							if (side !== _.get(curBase, 'side') && (side === 1 || side === 2) && !_.includes(base, ' #') && !_.includes(base, 'Expansion')) {
 								console.log('CAPTURE BASE!!');
 								var spawnArray = [];
-								// spawnArray = _.concat(spawnArray, groupController.spawnSupportBaseGrp(serverName, base, side));
-								// groupController.spawnGroup(serverName, spawnArray, base, side);
+								spawnArray = _.concat(spawnArray, groupController.spawnSupportBaseGrp(serverName, base, side));
+								groupController.spawnGroup(serverName, spawnArray, base, side);
 
 								dbMapServiceController.baseActions('updateSide', serverName, {name: base, side: side});
 							}
