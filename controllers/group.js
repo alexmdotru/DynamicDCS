@@ -227,7 +227,7 @@ _.set(exports, 'spawnSupportBaseGrp', function ( serverName, baseName, side ) {
 	}
 
 	for (var i = 0; i < 3; i++) {
-		spawnArray = _.concat(spawnArray, _.cloneDeep(exports.getRndFromSpawnCat( 'armoredCar', side, true )));
+		// spawnArray = _.concat(spawnArray, _.cloneDeep(exports.getRndFromSpawnCat( 'armoredCar', side, true )));
 	}
 
 	return _.compact(spawnArray);
@@ -308,9 +308,9 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 	var defBaseSides = _.get(curServer, 'defBaseSides');
 	_.forEach(defBaseSides, function (extSide, extName) {
 		var spawnArray = [];
-		spawnArray = _.concat(spawnArray, exports.spawnSupportBaseGrp(serverName, extName, extSide));
+		// spawnArray = _.concat(spawnArray, exports.spawnSupportBaseGrp(serverName, extName, extSide));
 		for (var i = 0; i < totalTicks; i++) {
-			spawnArray = _.concat(spawnArray, exports.spawnBaseReinforcementGroup(serverName, extSide));
+		//	spawnArray = _.concat(spawnArray, exports.spawnBaseReinforcementGroup(serverName, extSide));
 		}
 		exports.spawnGroup(serverName, spawnArray, extName, extSide);
 	});

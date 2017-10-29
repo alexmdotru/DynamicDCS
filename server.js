@@ -535,6 +535,11 @@ io.on('connection', function (socket) {
 _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 	if (!_.get(srvDbNotLoaded, [serverName])) {
 		groupController.initDbs(serverName);
+		console.log('dbsyncRUN');
+		dbMapServiceController.cmdQueActions('save', serverName, {
+			queName: 'clientArray',
+			actionObj: {action: "INIT"}
+		});
 		_.set(srvDbNotLoaded, [serverName], true);
 	}
 	if (!srvPolyCnt) {
@@ -705,25 +710,42 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		}
 
 		//Base Info
-		var abData;
-		var curairbase = _.find(curServers[serverName].serverObject.airbases, {name: _.get(queObj, ['data', 'name'])});
-		if (_.get(queObj, 'action') === 'airbaseC') {
-			_.set(queObj, 'sessionName', sessionName);
-			if (curairbase) {
-				_.set(queObj, 'action', 'airbaseU');
-			} else {
-				abData = _.get(queObj, 'data');
-				_.set(curServers, [serverName, 'serverObject', 'airbases'], _.get(curServers, [serverName, 'serverObject', 'airbases'], []));
-				dbMapServiceController.baseActions('save', serverName, abData);
-				curServers[serverName].serverObject.airbases.push(_.cloneDeep(abData));
-			}
-		}
+		if (_.get(queObj, 'action') === 'airbaseC' || _.get(queObj, 'action') === 'airbaseU') {
+			dbMapServiceController.baseActions('read', serverName, {_id: _.get(queObj, ['data', 'name'])})
+				.then(function (base) {
+					var curairbase = _.first(_.cloneDeep(base));
+					if (_.get(queObj, 'action') === 'airbaseC') {
+						// console.log('ac', _.get(queObj, 'action'), curairbase);
+						_.set(queObj, 'sessionName', sessionName);
+						if (curairbase) {
+							_.set(queObj, 'action', 'airbaseU');
+						} else {
+							dbMapServiceController.baseActions('save', serverName, _.get(queObj, 'data'));
+						}
+					}
 
-		if (_.get(queObj, 'action') === 'airbaseU') {
-			abData = _.get(queObj, 'data');
-			_.set(queObj, 'sessionName', sessionName);
-			dbMapServiceController.baseActions('updateSide', serverName, abData);
-			_.set(curairbase, 'side', _.get(abData, 'side', 0));
+					if (_.get(queObj, 'action') === 'airbaseU') {
+						// console.log('ac', _.get(queObj, 'action'), curairbase);
+						var baseName = _.get(queObj, ['data', 'name']);
+						var curSide = _.get(queObj, ['data', 'side']);
+						_.set(queObj, 'sessionName', sessionName);
+						// fire off base capture spawning
+						if (!_.includes(baseName, ' #') && !_.includes(baseName, 'Expansion')) {
+							console.log('base is ', baseName, curSide);
+						}
+						if (_.get(curairbase, 'side') !== curSide && (curSide === 1 || curSide === 2) && !_.includes(baseName, ' #') && !_.includes(baseName, 'Expansion')) {
+							console.log('CAPTURE BASE!!');
+							var spawnArray = [];
+							spawnArray = _.concat(spawnArray, groupController.spawnSupportBaseGrp(serverName, curName, curSide));
+							groupController.spawnGroup(serverName, spawnArray, curName, curSide);
+						}
+						dbMapServiceController.baseActions('updateSide', serverName, _.get(queObj, 'data'));
+					}
+				})
+				.catch(function (err) {
+					console.log('err line:720 ', err);
+				})
+			;
 		}
 
 		//playerUpdate
