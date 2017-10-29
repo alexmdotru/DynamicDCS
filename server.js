@@ -202,6 +202,7 @@ var isBasePop = false;
 var srvPolyCnt = 0;
 var polyFailCount = 0;
 var polyNotLoaded = true;
+var srvDbNotLoaded = {};
 
 function abrLookup (fullName) {
  var shortNames =	{
@@ -532,6 +533,10 @@ io.on('connection', function (socket) {
 });
 
 _.set(curServers, 'processQue', function (serverName, sessionName, update) {
+	if (!_.get(srvDbNotLoaded, [serverName])) {
+		groupController.initDbs(serverName);
+		_.set(srvDbNotLoaded, [serverName], true);
+	}
 	if (!srvPolyCnt) {
 		srvPolyCnt = _.get(update, 'polyCnt', 0);
 	}

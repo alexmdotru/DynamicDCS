@@ -298,6 +298,20 @@ _.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {
 });
 
 _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
+	var curServer = _.get(exports, ['servers', serverName, 'config']);
+	var totalTicks = _.get(curServer, 'totalTicks');
+	var defBaseSides = _.get(curServer, 'defBaseSides');
+	_.forEach(defBaseSides, function (extSide, extName) {
+		var spawnArray = [];
+		spawnArray = _.concat(spawnArray, exports.spawnSupportBaseGrp(serverName, extName, extSide));
+		for (var i = 0; i < totalTicks; i++) {
+			spawnArray = _.concat(spawnArray, exports.spawnBaseReinforcementGroup(serverName, extSide));
+		}
+		exports.spawnGroup(serverName, spawnArray, extName, extSide);
+	});
+});
+
+_.set(exports, 'initDbs', function ( serverName ) {
 	exports.getUnitDictionary()
 		.then(function (unitDict) {
 			_.set(exports, 'unitDictionary', unitDict);
@@ -307,18 +321,6 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 					exports.getServer( serverName )
 						.then(function (server) {
 							_.set(exports, ['servers', serverName, 'config'], server);
-							var totalTicks = _.get(server, 'totalTicks');
-							var defBaseSides = _.get(server, 'defBaseSides');
-							_.forEach(defBaseSides, function (extSide, extName) {
-								var spawnArray = [];
-
-								spawnArray = _.concat(spawnArray, exports.spawnSupportBaseGrp(serverName, extName, extSide));
-
-								for (var i = 0; i < totalTicks; i++) {
-									spawnArray = _.concat(spawnArray, exports.spawnBaseReinforcementGroup(serverName, extSide));
-								}
-								exports.spawnGroup(serverName, spawnArray, extName, extSide);
-							});
 						})
 					;
 
