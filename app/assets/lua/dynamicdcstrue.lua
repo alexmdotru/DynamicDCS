@@ -183,17 +183,6 @@ do
 
 	local polyArray = getAllDefzone()
 
-	local function captureAirbase(baseName, coalition)
-		env.info('base update ' .. baseName .. ' - ' .. coalition)
-		table.insert(updateQue.que, {
-			action = 'airbaseU',
-			data = {
-				["name"] = baseName,
-				["side"] = coalition
-			}
-		})
-	end
-
 	local function updateAirbases(airbases, coalition)
 		local airbaseObj = {}
 		for airbaseIndex = 1, #airbases do
@@ -234,7 +223,7 @@ do
 			end
 			if not string.find(baseName, 'Expansion', 1, true) and not string.find(baseName, ' #', 1, true) then
 				env.info('applycache  ' .. baseName);
-				airbaseCache[baseName] = curObj
+				airbaseCache[baseName].side = coalition
 			end
 			table.insert(updateQue.que, {
 				action = 'airbaseC',
@@ -432,11 +421,7 @@ do
 			for naIndex = 1, #neutralAirbases do
 				local baseName = neutralAirbases[naIndex]:getName()
 				if airbaseCache[baseName] ~= nil and not string.find(baseName, 'Expansion', 1, true) and not string.find(baseName, ' #', 1, true) then
-					if airbaseCache[baseName].side ~= 0 then
-						env.info('neu2: '..	baseName..':'..airbaseCache[baseName].side..' -> '..0)
-						airbaseCache[baseName].side = 0
-						captureAirbase(baseName, 0);
-					end
+					airbaseCache[baseName].side = 0
 				end
 			end
 		end
@@ -445,11 +430,7 @@ do
 			for rIndex = 1, #redAirbases do
 				local baseName = redAirbases[rIndex]:getName()
 				if airbaseCache[baseName] ~= nil and not string.find(baseName, 'Expansion', 1, true) and not string.find(baseName, ' #', 1, true) then
-					if airbaseCache[baseName].side ~= 1 then
-						env.info('red2: '..baseName..':'..airbaseCache[baseName].side..' -> '..1)
-						airbaseCache[baseName].side = 1
-						captureAirbase(baseName, 1);
-					end
+					airbaseCache[baseName].side = 1
 				end
 			end
 		end
@@ -458,14 +439,15 @@ do
 			for bIndex = 1, #blueAirbases do
 				local baseName = blueAirbases[bIndex]:getName()
 				if airbaseCache[baseName] ~= nil and not string.find(baseName, 'Expansion', 1, true) and not string.find(baseName, ' #', 1, true) then
-					if airbaseCache[baseName].side ~= 2 then
-						env.info('blue2: '..baseName..':'..airbaseCache[baseName].side..' -> '..2)
-						airbaseCache[baseName].side = 2
-						captureAirbase(baseName, 2);
-					end
+					airbaseCache[baseName].side = 2
 				end
 			end
 		end
+
+		table.insert(updateQue.que, {
+			action = 'airbaseU',
+			data = airbaseCache
+		})
 
 		updateGroups()
 

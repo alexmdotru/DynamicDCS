@@ -709,43 +709,36 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			;
 		}
 
-		//Base Info
+		//Base
 		if (_.get(queObj, 'action') === 'airbaseC' || _.get(queObj, 'action') === 'airbaseU') {
-			dbMapServiceController.baseActions('read', serverName, {_id: _.get(queObj, ['data', 'name'])})
-				.then(function (base) {
-					var curairbase = _.first(_.cloneDeep(base));
-					if (_.get(queObj, 'action') === 'airbaseC') {
-						// console.log('ac', _.get(queObj, 'action'), curairbase);
-						_.set(queObj, 'sessionName', sessionName);
-						if (curairbase) {
-							_.set(queObj, 'action', 'airbaseU');
-						} else {
-							dbMapServiceController.baseActions('save', serverName, _.get(queObj, 'data'));
-						}
-					}
+			if (_.get(queObj, 'action') === 'airbaseC') {
+				// console.log('ac', _.get(queObj, 'action'), curairbase);
+				dbMapServiceController.baseActions('save', serverName, _.get(queObj, 'data'));
+			}
 
-					if (_.get(queObj, 'action') === 'airbaseU') {
-						// console.log('ac', _.get(queObj, 'action'), curairbase);
-						var baseName = _.get(queObj, ['data', 'name']);
-						var curSide = _.get(queObj, ['data', 'side']);
-						_.set(queObj, 'sessionName', sessionName);
-						// fire off base capture spawning
-						if (!_.includes(baseName, ' #') && !_.includes(baseName, 'Expansion')) {
-							console.log('base is ', baseName, curSide);
-						}
-						if (_.get(curairbase, 'side') !== curSide && (curSide === 1 || curSide === 2) && !_.includes(baseName, ' #') && !_.includes(baseName, 'Expansion')) {
-							console.log('CAPTURE BASE!!');
-							var spawnArray = [];
-							spawnArray = _.concat(spawnArray, groupController.spawnSupportBaseGrp(serverName, curName, curSide));
-							groupController.spawnGroup(serverName, spawnArray, curName, curSide);
-						}
-						dbMapServiceController.baseActions('updateSide', serverName, _.get(queObj, 'data'));
-					}
-				})
-				.catch(function (err) {
-					console.log('err line:720 ', err);
-				})
-			;
+			if (_.get(queObj, 'action') === 'airbaseU') {
+				var airList = _.get(queObj, 'data');
+				_.forEach(airList, function (sideObj, base) {
+					var side = _.get(sideObj, 'side');
+					dbMapServiceController.baseActions('read', serverName, {_id: base})
+						.then(function (base) {
+							var curBase = _.first(_.cloneDeep(base));
+							// console.log('side: ', side, '!==',  _.get(curBase, 'side'));
+							if (side !== _.get(curBase, 'side') && (side === 1 || side === 2) && !_.includes(base, ' #') && !_.includes(base, 'Expansion')) {
+								console.log('CAPTURE BASE!!');
+								var spawnArray = [];
+								// spawnArray = _.concat(spawnArray, groupController.spawnSupportBaseGrp(serverName, base, side));
+								// groupController.spawnGroup(serverName, spawnArray, base, side);
+
+								dbMapServiceController.baseActions('updateSide', serverName, {name: base, side: side});
+							}
+						})
+						.catch(function (err) {
+							console.log('err line:732 ', err);
+						})
+					;
+				});
+			}
 		}
 
 		//playerUpdate
