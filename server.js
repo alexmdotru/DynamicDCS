@@ -190,6 +190,7 @@ protectedRouter.route('/userAccounts')
 	});
 
 //setup globals
+var epocTimeout = (300 * 1000); // 5 mins
 var outOfSyncUnitCnt = 0;
 var socketQues = ['q0', 'q1', 'q2', 'qadmin', 'leaderboard'];
 var curServers = {};
@@ -203,6 +204,9 @@ var srvPolyCnt = 0;
 var polyFailCount = 0;
 var polyNotLoaded = true;
 var srvDbNotLoaded = {};
+var baseSpawnTimeout = {};
+var epocToPayAttention = new Date().getTime() + epocTimeout;
+var isSpawningAllowed = false;
 
 function abrLookup (fullName) {
  var shortNames =	{
@@ -716,7 +720,13 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				dbMapServiceController.baseActions('save', serverName, _.get(queObj, 'data'));
 			}
 
-			if (_.get(queObj, 'action') === 'airbaseU') {
+			if (_.get(queObj, 'action') === 'airbaseU') { //timer 5 mins enable from start of script
+				if (!isSpawningAllowed) {
+					if(epocToPayAttention < new Date().getTime()){
+						console.log('Spawning is now active');
+						isSpawningAllowed = true;
+					}
+				}
 				var airList = _.get(queObj, 'data');
 				_.forEach(airList, function (sideObj, base) {
 					var side = _.get(sideObj, 'side');
@@ -725,12 +735,16 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 							var curBase = _.first(_.cloneDeep(dbBaseObj));
 							// console.log('side: ', side, '!==',  _.get(curBase, 'side'));
 							if (side !== _.get(curBase, 'side') && (side === 1 || side === 2) && !_.includes(base, ' #') && !_.includes(base, 'Expansion')) {
-								console.log('CAPTURE BASE!!');
-								var spawnArray = [];
-								spawnArray = _.concat(spawnArray, groupController.spawnSupportBaseGrp(serverName, base, side));
-								groupController.spawnGroup(serverName, spawnArray, base, side);
-
 								dbMapServiceController.baseActions('updateSide', serverName, {name: base, side: side});
+								if (isSpawningAllowed && _.get(baseSpawnTimeout, base, 0) < new Date().getTime()) {
+									console.log('CAPTURE BASE!!');
+									console.log('Spawning Support Units', base, side);
+									var spawnArray = [];
+									spawnArray = _.concat(spawnArray, groupController.spawnSupportBaseGrp(serverName, base, side));
+									groupController.spawnGroup(serverName, spawnArray, base, side);
+
+									_.set(baseSpawnTimeout, base, new Date().getTime() + epocTimeout);
+								}
 							}
 						})
 						.catch(function (err) {
@@ -1504,6 +1518,8 @@ setInterval(function () {
 					if (_.has(curServers, server.name)) {
 						if (curServers[server.name].DCSSocket.clientConnOpen === true) {
 							curServers[server.name].DCSSocket.connectClient();
+							epocToPayAttention = new Date().getTime() + epocTimeout;
+							isSpawningAllowed = false;
 						}
 						if (curServers[server.name].DCSSocket.gameGUIConnOpen === true) {
 							curServers[server.name].DCSSocket.connectServer();
