@@ -146,7 +146,7 @@ _.set(exports, 'getServer', function ( serverName ) {
 
 _.set(exports, 'getRndFromSpawnCat', function (spawnCat, side, spawnAll) {
 	var curEnabledCountrys = _.get(countryCoObj, _.get(countryCoObj, ['side', side]));
-	var findUnits = _.filter(_.get(exports, 'unitDictionary'), {spawnCat: spawnCat});
+	var findUnits = _.filter(_.get(exports, 'unitDictionary'), {spawnCat: spawnCat, enabled: true});
 	var cPUnits = [];
 	var randomIndex;
 	var unitsChosen = [];

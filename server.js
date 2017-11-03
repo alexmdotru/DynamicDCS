@@ -190,7 +190,8 @@ protectedRouter.route('/userAccounts')
 	});
 
 //setup globals
-var epocTimeout = (300 * 1000); // 5 mins
+// var epocTimeout = (300 * 1000); // 5 mins
+var epocTimeout = (60 * 1000); // 5 mins
 var outOfSyncUnitCnt = 0;
 var socketQues = ['q0', 'q1', 'q2', 'qadmin', 'leaderboard'];
 var curServers = {};
