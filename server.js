@@ -603,42 +603,27 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 
 		//poly definition coming back
 		if (polyNotLoaded) {
-			if (_.get(queObj, 'action') === 'POLYDEF') {
-				var curSpawnObj;
-				var polyDataPoints;
-				var baseName = _.get(queObj, 'data.baseName');
-				baseName = _.replace(baseName,"_DEFZONE_","");
-				polyDataPoints = _.get(queObj, 'data.points');
-				curSpawnObj = {
-					name: baseName,
-					spawnZones: polyDataPoints
-				};
-				dbMapServiceController.baseActions('updateSpawnZones', serverName, curSpawnObj);
-			} else {
-				dbMapServiceController.baseActions('read', serverName)
-					.then( function (bases) {
-						var mainBases = _.filter(bases, function (base) {
-							return _.get(base, 'spawnZones', []).length > 0
-						});
-						if(mainBases.length !== srvPolyCnt) {
-							console.log('db server poly count does not match server: ', mainBases.length, '!==', srvPolyCnt, ' | ', polyFailCount);
-							polyFailCount += 1;
-							if (polyFailCount > 60) {
-
-								dbMapServiceController.cmdQueActions('save', serverName, {queName: 'clientArray', actionObj: {action: "GETPOLYDEF"}});
-								polyFailCount = 0;
-							}
-						} else {
-							console.log('polyzones loaded, populate base');
-							polyNotLoaded = false;
-
+			dbMapServiceController.baseActions('read', serverName)
+				.then( function (bases) {
+					var mainBases = _.filter(bases, function (base) {
+						return _.get(base, 'polygonLoc', []).length > 0
+					});
+					if(mainBases.length + 1 !== srvPolyCnt) {
+						console.log('db server poly count does not match server: ', mainBases.length, '!==', srvPolyCnt, ' | ', polyFailCount);
+						polyFailCount += 1;
+						if (polyFailCount > 60) {
+							dbMapServiceController.cmdQueActions('save', serverName, {queName: 'clientArray', actionObj: {action: "GETPOLYDEF"}});
+							polyFailCount = 0;
 						}
-					})
-					.catch( function (err) {
-						console.log('err line:622 ', err);
-					})
-				;
-			}
+					} else {
+						console.log('polyzones loaded, populate base');
+						polyNotLoaded = false;
+					}
+				})
+				.catch( function (err) {
+					console.log('err line:622 ', err);
+				})
+			;
 		}
 
 		//var curUnit = _.find(curServers[serverName].serverObject.units, {'unitId': _.get(queObj, 'data.unitId')});
@@ -718,7 +703,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		if (_.get(queObj, 'action') === 'airbaseC' || _.get(queObj, 'action') === 'airbaseU') {
 			var curData = _.get(queObj, 'data');
 			if (_.get(queObj, 'action') === 'airbaseC') {
-				console.log('cd: ', curData.polygonLoc);
 				dbMapServiceController.baseActions('save', serverName, curData)
 					.catch(function (err) {
 						console.log('err line:723 ', err);

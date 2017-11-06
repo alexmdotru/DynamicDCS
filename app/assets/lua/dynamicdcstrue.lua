@@ -230,6 +230,7 @@ do
 				curObj["polygonLoc"] = polyArray[baseName]
 			end
 			table.insert(updateQue.que, {
+				polyCnt = polyArray.count,
 				action = 'airbaseC',
 				data = curObj
 			})
