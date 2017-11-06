@@ -210,8 +210,8 @@ do
 				["hdg"] = hdg,
 				["side"] = coalition,
 				["centerLoc"] = {
-					lat,
-					lon
+					lon,
+					lat
 				},
 				["polygonLoc"] = {},
 				["alt"] = alt,
