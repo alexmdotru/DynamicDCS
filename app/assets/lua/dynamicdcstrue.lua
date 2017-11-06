@@ -167,8 +167,8 @@ do
 											for pIndex = 1, #group.route.points do
 												local lat, lon, alt = coord.LOtoLL({x = group.route.points[pIndex].x, y = 0, z = group.route.points[pIndex].y})
 												polyArray[nArry[2]][pIndex] = {
-													lon,
-													lat
+													[1] = lon,
+													[2] = lat
 												}
 											end
 										end

@@ -1,8 +1,8 @@
-const mongoose = require('mongoose'),
-	Schema = mongoose.Schema;
+var GeoJSON = require('mongoose-geojson-schema');
+var mongoose = require('mongoose');
 
 // Schema defines how chat messages will be stored in MongoDB
-const AirfieldSchema = new Schema({
+const AirfieldSchema = new mongoose.Schema({
 	_id: {
 		type: String,
 		required: true
@@ -21,7 +21,7 @@ const AirfieldSchema = new Schema({
 	},
 	centerLoc: {
 		type: [Number],
-		index: '2d'
+		index: '2dsphere'
 	},
 	polygonLoc: {
 		type: [[Number]]

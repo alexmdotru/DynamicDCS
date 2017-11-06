@@ -717,10 +717,12 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		//Base
 		if (_.get(queObj, 'action') === 'airbaseC' || _.get(queObj, 'action') === 'airbaseU') {
 			var curData = _.get(queObj, 'data');
-			//_.set(queObj, ['data', 'centerLoc'], [curData.lon, curData.lat]);
-			console.log('cdata: ', curData);
 			if (_.get(queObj, 'action') === 'airbaseC') {
-				dbMapServiceController.baseActions('save', serverName, curData);
+				console.log('cd: ', curData.polygonLoc);
+				dbMapServiceController.baseActions('save', serverName, curData)
+					.catch(function (err) {
+						console.log('err line:723 ', err);
+					});
 			}
 
 			if (_.get(queObj, 'action') === 'airbaseU') { //timer 5 mins enable from start of script
