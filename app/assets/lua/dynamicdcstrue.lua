@@ -266,10 +266,13 @@ do
 					curUnit.data.unitId = tonumber(unit:getID())
 					curUnit.data.life = tonumber(unit:getLife())
 					local unitPosition = unit:getPosition()
-					curUnit.data.x = unitPosition.p.x
-					curUnit.data.y = unitPosition.p.z
-					curUnit.data.lat, curUnit.data.lon, curUnit.data.alt = coord.LOtoLL(unitPosition.p)
-					local unitXYZNorthCorr = coord.LLtoLO(curUnit.data.lat + 1, curUnit.data.lon)
+					local lat, lon, alt = coord.LOtoLL(unitPosition.p)
+					curUnit.data.latLonLoc = {
+						lon,
+						lat
+					}
+					curUnit.data.alt = alt
+					local unitXYZNorthCorr = coord.LLtoLO(lat + 1, lon)
 					local headingNorthCorr = math.atan2(unitXYZNorthCorr.z - unitPosition.p.z, unitXYZNorthCorr.x - unitPosition.p.x)
 					local heading = math.atan2(unitPosition.x.z, unitPosition.x.x) + headingNorthCorr
 					if heading < 0 then
@@ -281,17 +284,17 @@ do
 						curUnit.data.speed = math.sqrt(velocity.x ^ 2 + velocity.z ^ 2)
 					end
 					if unitCache[curUnit.data.unitId] ~= nil and not Init then
-						if unitCache[curUnit.data.unitId].lat ~= curUnit.data.lat or unitCache[curUnit.data.unitId].lon ~= curUnit.data.lon then
+						if unitCache[curUnit.data.unitId].lat ~= lat or unitCache[curUnit.data.unitId].lon ~= lon then
 							unitCache[curUnit.data.unitId] = {}
-							unitCache[curUnit.data.unitId].lat = curUnit.data.lat
-							unitCache[curUnit.data.unitId].lon = curUnit.data.lon
+							unitCache[curUnit.data.unitId].lat = lat
+							unitCache[curUnit.data.unitId].lon = lon
 							curUnit.action = "U"
 							table.insert(updateQue.que, curUnit)
 						end
 					else
 						unitCache[curUnit.data.unitId] = {}
-						unitCache[curUnit.data.unitId].lat = curUnit.data.lat
-						unitCache[curUnit.data.unitId].lon = curUnit.data.lon
+						unitCache[curUnit.data.unitId].lat = lat
+						unitCache[curUnit.data.unitId].lon = lon
 						local maxLife = unit:getLife0()
 						if maxLife ~= nil then
 							curUnit.data.maxLife = tonumber(maxLife)
@@ -357,9 +360,15 @@ do
 				curStatic.data.unitId = tonumber(static:getID())
 				curStatic.data.life = static:getLife()
 				local staticPosition = static:getPosition()
-				curStatic.data.x = staticPosition.p.x
-				curStatic.data.y = staticPosition.p.z
 				curStatic.data.lat, curStatic.data.lon, curStatic.data.alt = coord.LOtoLL(staticPosition.p)
+				local unitPosition = unit:getPosition()
+				local lat, lon, alt = coord.LOtoLL(staticPosition.p)
+				curStatic.data.latLonLoc = {
+					lon,
+					lat
+				}
+				curStatic.data.alt = alt
+				local unitXYZNorthCorr = coord.LLtoLO(lat + 1, lon)
 				local unitXYZNorthCorr = coord.LLtoLO(curStatic.data.lat + 1, curStatic.data.lon)
 				local headingNorthCorr = math.atan2(unitXYZNorthCorr.z - staticPosition.p.z, unitXYZNorthCorr.x - staticPosition.p.x)
 				local heading = math.atan2(staticPosition.x.z, staticPosition.x.x) + headingNorthCorr
@@ -368,17 +377,17 @@ do
 				end
 				curStatic.data.hdg = math.floor(heading / math.pi * 180);
 				if staticCache[curStatic.data.unitId] ~= nil and not Init then
-					if staticCache[curStatic.data.unitId].lat ~= curStatic.data.lat or staticCache[curStatic.data.unitId].lon ~= curStatic.data.lon then
+					if staticCache[curStatic.data.unitId].lat ~= lat or staticCache[curStatic.data.unitId].lon ~= lon then
 						staticCache[curStatic.data.unitId] = {}
-						staticCache[curStatic.data.unitId].lat = curStatic.data.lat
-						staticCache[curStatic.data.unitId].lon = curStatic.data.lon
+						staticCache[curStatic.data.unitId].lat = lat
+						staticCache[curStatic.data.unitId].lon = lon
 						curStatic.action = "U"
 						table.insert(updateQue.que, curStatic)
 					end
 				else
 					staticCache[curStatic.data.unitId] = {}
-					staticCache[curStatic.data.unitId].lat = curStatic.data.lat
-					staticCache[curStatic.data.unitId].lon = curStatic.data.lon
+					staticCache[curStatic.data.unitId].lat = lat
+					staticCache[curStatic.data.unitId].lon = lon
 					curStatic.data.name = static:getName()
 					curStatic.data.maxLife = tonumber(static:getLife())
 					curStatic.data.category = CategoryNames[static:getDesc().category]

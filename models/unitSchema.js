@@ -32,27 +32,7 @@ const UnitSchema = new Schema({
 	},
 	latLonLoc: {
 		type: [Number],
-		index: '2d'
-	},
-	XYLoc: {
-		type: [Number],
-		index: '2d'
-	},
-	lat: {
-		type: Number,
-		required: true
-	},
-	lon: {
-		type: Number,
-		required: true
-	},
-	x: {
-		type: Number,
-		required: true
-	},
-	y: {
-		type: Number,
-		required: true
+		index: '2dsphere'
 	},
 	alt: {
 		type: Number,
