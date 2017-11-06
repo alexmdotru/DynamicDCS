@@ -1475,6 +1475,39 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 	});
 });
 
+
+dbMapServiceController.processActions('save', 'TrueDynamicCaucasus', {firingTime: new Date().getTime() + 5000, queObj: { blah: 1, blah2: 4 }})
+	.then(function (runQues) {
+		// process scheduled events
+		console.log('rq1: ', runQues);
+	})
+	.catch(function (err) {
+		console.log('line1486', err);
+	})
+;
+
+
+setInterval(function () {
+	dbSystemServiceController.serverActions('read', {enabled: true})
+		.then(function (srvs) {
+			_.forEach(srvs, function (srv) {
+				dbMapServiceController.processActions('processExpired', _.get(srv, '_id'))
+					.then(function (runQues) {
+						// process scheduled events
+						console.log('rq2: ', runQues);
+					})
+					.catch(function (err) {
+						console.log('line1486', err);
+					})
+				;
+			});
+		})
+		.catch(function (err) {
+			console.log('line1491', err);
+		})
+	;
+}, 1000);
+
 //emit payload, every sec to start
 setInterval(function () { //sending FULL SPEED AHEAD, 1 per milsec (watch for weird errors, etc)
 	dbSystemServiceController.serverActions('read')

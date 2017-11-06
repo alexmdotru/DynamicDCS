@@ -15,6 +15,7 @@ var statSessionSchema = require('../models/statSessionSchema');
 var statSrvEventSchema = require('../models/statSrvEventSchema');
 var simpleStatEventSchema = require('../models/simpleStatEventSchema');
 var cmdQueSchema = require('../models/cmdQueSchema');
+var processSchema = require('../models/processSchema');
 
 exports.baseActions = function (action, serverName, obj){
 	const Airfield = mapdb.model(serverName+'_airfield', airfieldSchema);
@@ -296,5 +297,66 @@ exports.cmdQueActions = function (action, serverName, obj){
 	}
 	if(action === 'dropall') {
 		CmdQue.collection.drop();
+	}
+};
+
+exports.processActions = function (action, serverName, obj){
+	const ProcessQue = mapdb.model(serverName+'_processque', processSchema);
+	if (action === 'read') {
+		return new Promise(function(resolve, reject) {
+			ProcessQue.find(obj, function (err, pQue){
+				if(err) {
+					reject(err);
+				}
+				resolve(pQue);
+			});
+		});
+	}
+	if (action === 'processExpired') {
+		return new Promise(function(resolve, reject) {
+			ProcessQue.findAndModify(
+				{ firingTime: { $lt: new Date() } },
+				{ firingTime: 1 },
+				{},
+				{ remove: true },
+				function (err, pQue){
+				if(err) {
+					reject(err);
+				}
+				resolve(pQue.value);
+			});
+		});
+	}
+	if(action === 'update') {
+		return new Promise(function(resolve, reject) {
+			ProcessQue.update(
+				{_id: obj._id},
+				{$set: obj},
+				function(err, pQue) {
+					if (err) { reject(err) }
+					resolve(pQue);
+				}
+			);
+		});
+	}
+	if(action === 'save') {
+		return new Promise(function(resolve, reject) {
+			const processque = new ProcessQue(obj);
+			processque.save(function (err, pQue) {
+				if (err) { reject(err) }
+				resolve(pQue);
+			});
+		});
+	}
+	if(action === 'delete') {
+		return new Promise(function(resolve, reject) {
+			CmdQue.findByIdAndRemove(obj._id, function (err, pQue) {
+				if (err) { reject(err) }
+				resolve(pQue);
+			});
+		});
+	}
+	if(action === 'dropall') {
+		ProcessQue.collection.drop();
 	}
 };
