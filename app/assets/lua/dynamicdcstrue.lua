@@ -159,15 +159,17 @@ do
 										local group = uTable.group[j]
 										local gName = env.getValueDictByKey(group.name)
 										if gName and group.route.points and string.find(gName, '_DEFZONE_', 1, true) then
-											polyArray[gName] = {}
 											local nArry = gName:split("_DEFZONE_")
+											polyArray[nArry[2]] = {}
 											airbaseCache[nArry[2]] = {}
 											airbaseCache[nArry[2]].side = 0
 											polyArray.count = polyArray.count + 1
 											for pIndex = 1, #group.route.points do
-												polyArray[gName][pIndex] = {}
-												polyArray[gName][pIndex].x = group.route.points[pIndex].x
-												polyArray[gName][pIndex].y = group.route.points[pIndex].y
+												local lat, lon, alt = coord.LOtoLL({x = group.route.points[pIndex].x, y = 0, z = group.route.points[pIndex].y})
+												polyArray[nArry[2]][pIndex] = {
+													lon,
+													lat
+												}
 											end
 										end
 									end
@@ -207,10 +209,11 @@ do
 				["country"] = country,
 				["hdg"] = hdg,
 				["side"] = coalition,
-				["lat"] = lat,
-				["lon"] = lon,
-				["x"] = x,
-				["y"] = y,
+				["centerLoc"] = {
+					lat,
+					lon
+				},
+				["polygonLoc"] = {},
 				["alt"] = alt,
 				["farp"] = false,
 				["expansion"] = false
@@ -224,6 +227,7 @@ do
 			if not string.find(baseName, 'Expansion', 1, true) and not string.find(baseName, ' #', 1, true) then
 				env.info('applycache  ' .. baseName);
 				airbaseCache[baseName].side = coalition
+				curObj["polygonLoc"] = polyArray[baseName]
 			end
 			table.insert(updateQue.que, {
 				action = 'airbaseC',
@@ -472,20 +476,6 @@ do
 		if request.action ~= nil then
 			if request.action == "GETPOLYDEF" then
 				initAirbases()
-				env.info('GETPOLYDEF')
-				for k, v in pairs(polyArray) do
-					if string.find(k, '_DEFZONE_', 1, true) then
-						local cObj = {
-							["baseName"] = k,
-							["points"] = v
-						}
-						table.insert(updateQue.que, {
-							action = 'POLYDEF',
-							polyCnt = polyArray.count,
-							data = cObj
-						})
-					end
-				end
 			end
 			if request.action == "INIT" then
 				--send all unit updates

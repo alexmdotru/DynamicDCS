@@ -30,6 +30,14 @@ const UnitSchema = new Schema({
 		type: String,
 		required: true
 	},
+	latLonLoc: {
+		type: [Number],
+		index: '2d'
+	},
+	XYLoc: {
+		type: [Number],
+		index: '2d'
+	},
 	lat: {
 		type: Number,
 		required: true

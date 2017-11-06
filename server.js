@@ -716,9 +716,11 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 
 		//Base
 		if (_.get(queObj, 'action') === 'airbaseC' || _.get(queObj, 'action') === 'airbaseU') {
+			var curData = _.get(queObj, 'data');
+			//_.set(queObj, ['data', 'centerLoc'], [curData.lon, curData.lat]);
+			console.log('cdata: ', curData);
 			if (_.get(queObj, 'action') === 'airbaseC') {
-				// console.log('ac', _.get(queObj, 'action'), curairbase);
-				dbMapServiceController.baseActions('save', serverName, _.get(queObj, 'data'));
+				dbMapServiceController.baseActions('save', serverName, curData);
 			}
 
 			if (_.get(queObj, 'action') === 'airbaseU') { //timer 5 mins enable from start of script
@@ -728,8 +730,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						isSpawningAllowed = true;
 					}
 				}
-				var airList = _.get(queObj, 'data');
-				_.forEach(airList, function (sideObj, base) {
+				_.forEach(curData, function (sideObj, base) {
 					var side = _.get(sideObj, 'side');
 					dbMapServiceController.baseActions('read', serverName, {_id: base})
 						.then(function (dbBaseObj) {

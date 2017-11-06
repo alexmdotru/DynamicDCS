@@ -19,21 +19,12 @@ const AirfieldSchema = new Schema({
 		type: Boolean,
 		default: false
 	},
-	lat: {
-		type: Number,
-		required: true
+	centerLoc: {
+		type: [Number],
+		index: '2d'
 	},
-	lon: {
-		type: Number,
-		required: true
-	},
-	x: {
-		type: Number,
-		required: true
-	},
-	y: {
-		type: Number,
-		required: true
+	polygonLoc: {
+		type: [[Number]]
 	},
 	alt: {
 		type: Number,
@@ -74,7 +65,5 @@ const AirfieldSchema = new Schema({
 AirfieldSchema.static('findByName', function (name, callback) {
 	return this.find({ name: name }, callback);
 });
-
-AirfieldSchema.index({ cleanName: 1 });
 
 module.exports = AirfieldSchema;
