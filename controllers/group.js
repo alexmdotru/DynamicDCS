@@ -69,11 +69,12 @@ var countryCoObj = {
 	]
 };
 
-_.set(exports, 'getXYFromDistanceDirection', function (vec2, direction, distance) {
+_.set(exports, 'getXYFromDistanceDirection', function (latLonLoc, direction, distance) {
 	//gets new xy coord from distance & angle
 	return {
-		x: distance * Math.cos(direction*Math.PI/180) + _.get(vec2, 'x'),
-		y: distance * Math.sin(direction*Math.PI/180) + _.get(vec2, 'y')
+		lon: distance * Math.sin(direction*Math.PI/180) + _.get(latLonLoc, [0]),
+		lat: distance * Math.cos(direction*Math.PI/180) + _.get(latLonLoc, [1])
+
 	}
 });
 
@@ -92,9 +93,10 @@ _.set(exports, 'grndUnitGroup', function ( groupObj ) {
 });
 
 _.set(exports, 'grndUnitTemplate', function ( unitObj ) {
+	console.log('unitObj: ', unitObj);
 	return '{' +
-		'["x"] = ' + _.get(unitObj, 'x') + ',' +
-		'["y"] = ' + _.get(unitObj, 'y') + ',' +
+		'["x"] = coord.LLtoLO(' + _.get(unitObj, ['latLonLoc', 1]) + ', ' +  _.get(unitObj, ['latLonLoc', 0]) + ').x, ' +
+		'["y"] = coord.LLtoLO(' + _.get(unitObj, ['latLonLoc', 1]) + ', ' +  _.get(unitObj, ['latLonLoc', 0]) + ').z, ' +
 		'["type"] = "' + _.get(unitObj, 'type') +'",' +
 		'["name"] = "' + _.get(unitObj, 'name') + '",' +
 		'["unitId"] = ' + _.get(unitObj, 'unitId') + ',' +
@@ -184,7 +186,6 @@ _.set(exports, 'spawnSupportVehiclesOnFarp', function ( serverName, baseName, si
 		"unarmedFuel",
 		"unarmedPower"
 	];
-	var curBaseVec2 = { x: curBase.x, y: curBase.y };
 	var curAng = _.cloneDeep(curBase.hdg);
 	if (curAng > 180) {
 		curAng = curAng - 90
@@ -192,10 +193,8 @@ _.set(exports, 'spawnSupportVehiclesOnFarp', function ( serverName, baseName, si
 		curAng = curAng + 270
 	}
 	_.forEach(sptArray, function (val) {
-		var spwnVec2 = exports.getXYFromDistanceDirection(curBaseVec2, curAng, 50);
 		var sptUnit = _.cloneDeep(_.first(exports.getRndFromSpawnCat(val, side, true)));
-		_.set(sptUnit, 'x', spwnVec2.x);
-		_.set(sptUnit, 'y', spwnVec2.y);
+		_.set(sptUnit, 'latLonSpwn', exports.getXYFromDistanceDirection(_.get(curBase, ['centerLoc']), curAng, 50));
 		curAng += 15;
 		curFarpArray.push(sptUnit);
 	});
@@ -276,6 +275,7 @@ _.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {
 		_.set(curGrpObj, 'groupName', curBaseName);
 		_.set(curGrpObj, 'country', curSide);
 		curGroupSpawn = exports.grndUnitGroup( curGrpObj );
+		console.log('cgs: ', curGroupSpawn);
 		unitNum = _.cloneDeep(grpNum);
 		_.forEach(sArray, function (curUnit) {
 			curSpwnUnit = _.cloneDeep(curUnit);
@@ -285,10 +285,8 @@ _.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {
 			unitNum += 1;
 			curUnitName = baseName + ' #' + unitNum;
 
-			if (_.isUndefined(_.get(curSpwnUnit, 'x')) && _.isUndefined(_.get(curSpwnUnit, 'y'))) {
-				unitVec2 = zoneController.getRandomVec2FromBase(serverName, baseName);
-				_.set(curSpwnUnit, 'x', unitVec2.x);
-				_.set(curSpwnUnit, 'y', unitVec2.y);
+			if (_.isUndefined(_.get(curSpwnUnit, 'latLonLoc'))) {
+				_.set(curSpwnUnit, 'latLonLoc', zoneController.getRandomLatLonFromBase(serverName, baseName));
 			}
 			_.set(curSpwnUnit, 'unitId', _.get(curSpwnUnit, 'unitId', unitNum));
 			_.set(curSpwnUnit, 'name', _.get(curSpwnUnit, 'name', curUnitName));
@@ -308,7 +306,7 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 	var defBaseSides = _.get(curServer, 'defBaseSides');
 	_.forEach(defBaseSides, function (extSide, extName) {
 		var spawnArray = [];
-		// spawnArray = _.concat(spawnArray, exports.spawnSupportBaseGrp(serverName, extName, extSide));
+		spawnArray = _.concat(spawnArray, exports.spawnSupportBaseGrp(serverName, extName, extSide));
 		for (var i = 0; i < totalTicks; i++) {
 		//	spawnArray = _.concat(spawnArray, exports.spawnBaseReinforcementGroup(serverName, extSide));
 		}

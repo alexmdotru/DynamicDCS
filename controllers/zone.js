@@ -4,15 +4,15 @@ const dbMapServiceController = require('./dbMapService');
 const groupController = require('./group');
 
 _.set(exports, 'getBoundingSquare', function (pArray) {
-	var x1 = pArray[0].x;
-	var y1 = pArray[0].y;
-	var x2 = pArray[0].x;
-	var y2 = pArray[0].y;
+	var x1 = _.get(pArray, [0, 0]);
+	var y1 = _.get(pArray, [0, 1]);
+	var x2 = _.get(pArray, [0, 0]);
+	var y2 = _.get(pArray, [0, 1]);
 	for (i = 1; i < pArray.length; i++) {
-		x1 = ( x1 > pArray[i].x ) ? pArray[i].x : x1;
-	x2 = ( x2 < pArray[i].x ) ? pArray[i].x : x2;
-	y1 = ( y1 > pArray[i].y ) ? pArray[i].y : y1;
-	y2 = ( y2 < pArray[i].y ) ? pArray[i].y : y2;
+		x1 = ( x1 > _.get(pArray, [i, 0])) ? _.get(pArray, [i, 0]) : x1;
+		x2 = ( x2 < _.get(pArray, [i, 0])) ? _.get(pArray, [i, 0]) : x2;
+		y1 = ( y1 > _.get(pArray, [i, 1])) ? _.get(pArray, [i, 1]) : y1;
+		y2 = ( y2 < _.get(pArray, [i, 1]) ) ? _.get(pArray, [i, 1]) : y2;
 	}
 	return {
 		x1: x1,
@@ -22,7 +22,7 @@ _.set(exports, 'getBoundingSquare', function (pArray) {
 	}
 });
 
-_.set(exports, 'isVec2InZone', function (vec2, polyZone) {
+_.set(exports, 'isLatLonInZone', function (latLon, polyZone) {
 
 	var Next;
 	var Prev;
@@ -33,32 +33,32 @@ _.set(exports, 'isVec2InZone', function (vec2, polyZone) {
 	Prev = pNum;
 
 	while (Next <= pNum) {
-	if ((( polyZone[Next].y > vec2.y ) !== ( polyZone[Prev].y > vec2.y )) &&
-		( vec2.x < ( polyZone[Prev].x - polyZone[Next].x ) * ( vec2.y - polyZone[Next].y ) / ( polyZone[Prev].y - polyZone[Next].y ) + polyZone[Next].x )) {
+	if ((( polyZone[Next][1] > latLon[1] ) !== ( polyZone[Prev][1] > latLon[1] )) &&
+		( latLon[0] < ( polyZone[Prev][0] - polyZone[Next][0] ) * ( latLon[1] - polyZone[Next][1] ) / ( polyZone[Prev][1] - polyZone[Next][1] ) + polyZone[Next][0] )) {
 			InPolygon = ! InPolygon;
 		}
 		Prev = Next;
 		Next = Next + 1;
-		}
-		return InPolygon
-	});
+	}
+	return InPolygon
+});
 
-_.set(exports, 'getRandomVec2FromBase', function (serverName, baseName) {
+_.set(exports, 'getRandomLatLonFromBase', function (serverName, baseName) {
 	var baseInfo = _.find(_.get(groupController, ['servers', serverName, 'bases']), {_id: baseName});
-	var pArray = _.get(baseInfo, 'spawnZones');
+	var pArray = _.get(baseInfo, 'polygonLoc');
 	if (pArray) {
-		var vec2Found = false;
-		var vec2;
+		var latLonFound = false;
+		var latLon;
 		var bs = exports.getBoundingSquare(pArray);
-		while (!vec2Found) {
-			vec2 = {
-				x: _.random( bs.x1, bs.x2 ),
-				y: _.random( bs.y1, bs.y2 )
-			};
-			if (exports.isVec2InZone( vec2, pArray )) {
-				vec2Found = true;
+		while (!latLonFound) {
+			latLon = [
+				_.random( bs.x1, bs.x2 ),
+				_.random( bs.y1, bs.y2 )
+			];
+			if (exports.isLatLonInZone( latLon, pArray )) {
+				latLonFound = true;
 			}
 		}
-		return vec2
+		return latLon
 	}
 });

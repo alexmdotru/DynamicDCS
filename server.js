@@ -612,7 +612,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						console.log('db server poly count does not match server: ', mainBases.length, '!==', srvPolyCnt, ' | ', polyFailCount);
 						polyFailCount += 1;
 						if (polyFailCount > 60) {
-							dbMapServiceController.cmdQueActions('save', serverName, {queName: 'clientArray', actionObj: {action: "GETPOLYDEF"}});
+							console.log('GET POLYDEF');
+							//dbMapServiceController.cmdQueActions('save', serverName, {queName: 'clientArray', actionObj: {action: "GETPOLYDEF"}});
 							polyFailCount = 0;
 						}
 					} else {
