@@ -22,7 +22,7 @@ _.set(exports, 'getBoundingSquare', function (pArray) {
 	}
 });
 
-_.set(exports, 'isLatLonInZone', function (latLon, polyZone) {
+_.set(exports, 'isLatLonInZone', function (lonLat, polyZone) {
 
 	var Next;
 	var Prev;
@@ -33,8 +33,8 @@ _.set(exports, 'isLatLonInZone', function (latLon, polyZone) {
 	Prev = pNum;
 
 	while (Next <= pNum) {
-	if ((( polyZone[Next][1] > latLon[1] ) !== ( polyZone[Prev][1] > latLon[1] )) &&
-		( latLon[0] < ( polyZone[Prev][0] - polyZone[Next][0] ) * ( latLon[1] - polyZone[Next][1] ) / ( polyZone[Prev][1] - polyZone[Next][1] ) + polyZone[Next][0] )) {
+	if ((( polyZone[Next][1] > lonLat[1] ) !== ( polyZone[Prev][1] > lonLat[1] )) &&
+		( lonLat[0] < ( polyZone[Prev][0] - polyZone[Next][0] ) * ( lonLat[1] - polyZone[Next][1] ) / ( polyZone[Prev][1] - polyZone[Next][1] ) + polyZone[Next][0] )) {
 			InPolygon = ! InPolygon;
 		}
 		Prev = Next;
@@ -47,18 +47,18 @@ _.set(exports, 'getRandomLatLonFromBase', function (serverName, baseName) {
 	var baseInfo = _.find(_.get(groupController, ['servers', serverName, 'bases']), {_id: baseName});
 	var pArray = _.get(baseInfo, 'polygonLoc');
 	if (pArray) {
-		var latLonFound = false;
-		var latLon;
+		var lonLatFound = false;
+		var lonLat;
 		var bs = exports.getBoundingSquare(pArray);
-		while (!latLonFound) {
-			latLon = [
+		while (!lonLatFound) {
+			lonLat = [
 				_.random( bs.x1, bs.x2 ),
 				_.random( bs.y1, bs.y2 )
 			];
-			if (exports.isLatLonInZone( latLon, pArray )) {
-				latLonFound = true;
+			if (exports.isLatLonInZone( lonLat, pArray )) {
+				lonLatFound = true;
 			}
 		}
-		return latLon
+		return lonLat
 	}
 });

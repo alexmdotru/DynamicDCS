@@ -69,11 +69,11 @@ var countryCoObj = {
 	]
 };
 
-_.set(exports, 'getXYFromDistanceDirection', function (latLonLoc, direction, distance) {
+_.set(exports, 'getXYFromDistanceDirection', function (lonLatLoc, direction, distance) {
 	//gets new xy coord from distance & angle
 	return {
-		lon: distance * Math.sin(direction*Math.PI/180) + _.get(latLonLoc, [0]),
-		lat: distance * Math.cos(direction*Math.PI/180) + _.get(latLonLoc, [1])
+		lon: distance * Math.sin(direction*Math.PI/180) + _.get(lonLatLoc, [0]),
+		lat: distance * Math.cos(direction*Math.PI/180) + _.get(lonLatLoc, [1])
 
 	}
 });
@@ -95,8 +95,8 @@ _.set(exports, 'grndUnitGroup', function ( groupObj ) {
 _.set(exports, 'grndUnitTemplate', function ( unitObj ) {
 	console.log('unitObj: ', unitObj);
 	return '{' +
-		'["x"] = coord.LLtoLO(' + _.get(unitObj, ['latLonLoc', 1]) + ', ' +  _.get(unitObj, ['latLonLoc', 0]) + ').x, ' +
-		'["y"] = coord.LLtoLO(' + _.get(unitObj, ['latLonLoc', 1]) + ', ' +  _.get(unitObj, ['latLonLoc', 0]) + ').z, ' +
+		'["x"] = coord.LLtoLO(' + _.get(unitObj, ['lonLatLoc', 1]) + ', ' +  _.get(unitObj, ['lonLatLoc', 0]) + ').x, ' +
+		'["y"] = coord.LLtoLO(' + _.get(unitObj, ['lonLatLoc', 1]) + ', ' +  _.get(unitObj, ['lonLatLoc', 0]) + ').z, ' +
 		'["type"] = "' + _.get(unitObj, 'type') +'",' +
 		'["name"] = "' + _.get(unitObj, 'name') + '",' +
 		'["unitId"] = ' + _.get(unitObj, 'unitId') + ',' +
@@ -194,7 +194,7 @@ _.set(exports, 'spawnSupportVehiclesOnFarp', function ( serverName, baseName, si
 	}
 	_.forEach(sptArray, function (val) {
 		var sptUnit = _.cloneDeep(_.first(exports.getRndFromSpawnCat(val, side, true)));
-		_.set(sptUnit, 'latLonSpwn', exports.getXYFromDistanceDirection(_.get(curBase, ['centerLoc']), curAng, 50));
+		_.set(sptUnit, 'lonLatSpwn', exports.getXYFromDistanceDirection(_.get(curBase, ['centerLoc']), curAng, 50));
 		curAng += 15;
 		curFarpArray.push(sptUnit);
 	});
@@ -285,8 +285,8 @@ _.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {
 			unitNum += 1;
 			curUnitName = baseName + ' #' + unitNum;
 
-			if (_.isUndefined(_.get(curSpwnUnit, 'latLonLoc'))) {
-				_.set(curSpwnUnit, 'latLonLoc', zoneController.getRandomLatLonFromBase(serverName, baseName));
+			if (_.isUndefined(_.get(curSpwnUnit, 'lonLatLoc'))) {
+				_.set(curSpwnUnit, 'lonLatLoc', zoneController.getRandomLatLonFromBase(serverName, baseName));
 			}
 			_.set(curSpwnUnit, 'unitId', _.get(curSpwnUnit, 'unitId', unitNum));
 			_.set(curSpwnUnit, 'name', _.get(curSpwnUnit, 'name', curUnitName));
