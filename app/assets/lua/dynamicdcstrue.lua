@@ -267,7 +267,7 @@ do
 					curUnit.data.life = tonumber(unit:getLife())
 					local unitPosition = unit:getPosition()
 					local lat, lon, alt = coord.LOtoLL(unitPosition.p)
-					curUnit.data.latLonLoc = {
+					curUnit.data.lonLatLoc = {
 						lon,
 						lat
 					}
@@ -363,7 +363,7 @@ do
 				curStatic.data.lat, curStatic.data.lon, curStatic.data.alt = coord.LOtoLL(staticPosition.p)
 				local unitPosition = unit:getPosition()
 				local lat, lon, alt = coord.LOtoLL(staticPosition.p)
-				curStatic.data.latLonLoc = {
+				curStatic.data.lonLatLoc = {
 					lon,
 					lat
 				}

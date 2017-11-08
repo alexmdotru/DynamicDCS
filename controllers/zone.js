@@ -34,7 +34,6 @@ function toDeg(rad){
 }
 
 _.set(exports, 'getLonLatFromDistanceDirection', function (lonLatLoc, direction, distance) {
-	// console.log('NEW LATLON: ', lonLatLoc, geo_destination(lonLatLoc, distance, direction));
 	return geo_destination(lonLatLoc, distance, direction);
 });
 

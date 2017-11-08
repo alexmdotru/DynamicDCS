@@ -30,7 +30,7 @@ const UnitSchema = new Schema({
 		type: String,
 		required: true
 	},
-	latLonLoc: {
+	lonLatLoc: {
 		type: [Number],
 		index: '2dsphere'
 	},
