@@ -704,18 +704,11 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		if (_.get(queObj, 'action') === 'airbaseC' || _.get(queObj, 'action') === 'airbaseU') {
 			var curData = _.get(queObj, 'data');
 			if (_.get(queObj, 'action') === 'airbaseC') {
-				dbSystemServiceController.serverActions('read', {_id: serverName, enabled: true})
-					.then(function (server) {
-						var curServer = _.get(server, 0);
-						_.set(curData, 'maxUnitThreshold', _.random(_.get(curServer, 'minUnits'), _.get(curServer, 'maxUnits')));
-						dbMapServiceController.baseActions('save', serverName, curData)
-							.catch(function (err) {
-								console.log('err line:711 ', err);
-							})
-						;
-					})
+				var curServer = _.get(curServers, [serverName, 'details']);
+				_.set(curData, 'maxUnitThreshold', _.random(_.get(curServer, 'minUnits'), _.get(curServer, 'maxUnits')));
+				dbMapServiceController.baseActions('save', serverName, curData)
 					.catch(function (err) {
-						console.log('err line 712: ', err);
+						console.log('err line:711 ', err);
 					})
 				;
 			}
@@ -1489,6 +1482,8 @@ setInterval(function () {
 	dbSystemServiceController.serverActions('read', {enabled: true})
 		.then(function (srvs) {
 			_.forEach(srvs, function (srv) {
+				var curServerName = _.get(srv, '_id');
+				_.set(curServers, [curServerName, 'details'], srv);
 				dbMapServiceController.processActions('processExpired', _.get(srv, '_id'))
 					.then(function (runQues) {
 						// process scheduled events
@@ -1515,17 +1510,18 @@ setInterval(function () { //sending FULL SPEED AHEAD, 1 per milsec (watch for we
 					_.forEach(socketQues, function (que) {
 						if (curServers[server.name]) {
 							var sendAmt = 0;
-							if (curServers[server.name].updateQue[que].length < config.perSendMax) {
-								sendAmt = curServers[server.name].updateQue[que].length;
+							var curQue = _.get(curServers, [server.name, 'updateQue', que],[]);
+							if (curQue.length < config.perSendMax) {
+								sendAmt = curQue.length;
 							} else {
 								sendAmt = config.perSendMax
 							}
 							//console.log('message send, sending: ', sendAmt);
 							var chkPayload = {que: []};
 							for (x = 0; x < sendAmt; x++) {
-								chkPayload.que.push(curServers[server.name].updateQue[que][0]);
+								chkPayload.que.push(_.get(curQue, 0));
 								_.set(chkPayload, 'name', server.name);
-								curServers[server.name].updateQue[que].shift();
+								curQue.shift();
 							}
 							if (chkPayload.que.length) {
 								io.to(server.name + '_' + que).emit('srvUpd', chkPayload);
@@ -1547,7 +1543,7 @@ setInterval(function () {
 		.then(function (resp) {
 			_.forEach(resp, function (server) {
 				if (server.enabled) {
-					if (_.has(curServers, server.name)) {
+					if (_.has(curServers, server.name) && curServers[server.name].DCSSocket) {
 						if (curServers[server.name].DCSSocket.clientConnOpen === true) {
 							curServers[server.name].DCSSocket.connectClient();
 							epocToPayAttention = new Date().getTime() + epocTimeout;
