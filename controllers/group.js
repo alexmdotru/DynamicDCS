@@ -215,8 +215,8 @@ _.set(exports, 'spawnSupportBaseGrp', function ( serverName, baseName, side ) {
 		});
 	}
 
-	for (var i = 0; i < 2; i++) {
-		spawnArray = _.concat(spawnArray, _.cloneDeep(exports.getRndFromSpawnCat( 'armoredCar', side, true )));
+	for (var i = 0; i < 3; i++) {
+		spawnArray = _.concat(spawnArray, _.cloneDeep(exports.getRndFromSpawnCat( 'armoredCar', side )));
 	}
 
 	return _.compact(spawnArray);
