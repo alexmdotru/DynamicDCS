@@ -285,7 +285,7 @@ _.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {
 		var curCMD = 'mist.dynAdd(' + curGroupSpawn + ')';
 		var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
 		var actionObj = {actionObj: sendClient, queName: 'clientArray'};
-		dbMapServiceController.cmdQueActions('save', serverName, actionObj);
+		// dbMapServiceController.cmdQueActions('save', serverName, actionObj);
 	}
 });
 

@@ -704,10 +704,20 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		if (_.get(queObj, 'action') === 'airbaseC' || _.get(queObj, 'action') === 'airbaseU') {
 			var curData = _.get(queObj, 'data');
 			if (_.get(queObj, 'action') === 'airbaseC') {
-				dbMapServiceController.baseActions('save', serverName, curData)
+				dbSystemServiceController.serverActions('read', {_id: serverName, enabled: true})
+					.then(function (server) {
+						var curServer = _.get(server, 0);
+						_.set(curData, 'maxUnitThreshold', _.random(_.get(curServer, 'minUnits'), _.get(curServer, 'maxUnits')));
+						dbMapServiceController.baseActions('save', serverName, curData)
+							.catch(function (err) {
+								console.log('err line:711 ', err);
+							})
+						;
+					})
 					.catch(function (err) {
-						console.log('err line:723 ', err);
-					});
+						console.log('err line 712: ', err);
+					})
+				;
 			}
 
 			if (_.get(queObj, 'action') === 'airbaseU') { //timer 5 mins enable from start of script

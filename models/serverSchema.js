@@ -25,6 +25,15 @@ const ServerSchema = new Schema({
 		defBaseSides: {
 			type: Object
 		},
+		replenThreshold: {
+			type: Number
+		},
+		minUnits: {
+			type: Number
+		},
+		maxUnits: {
+			type: Number
+		},
 		spwnLimitsPerTick: {
 			type: Object
 		},
