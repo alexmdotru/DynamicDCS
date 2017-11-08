@@ -274,8 +274,6 @@ _.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {
 			unitNum += 1;
 			curUnitName = baseName + ' #' + unitNum;
 
-			console.log('lonlat: ',  _.get(curSpwnUnit, 'lonLatLoc'));
-
 			if (_.isUndefined(_.get(curSpwnUnit, 'lonLatLoc'))) {
 				_.set(curSpwnUnit, 'lonLatLoc', zoneController.getRandomLatLonFromBase(serverName, baseName));
 			}
