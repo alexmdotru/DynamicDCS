@@ -69,18 +69,6 @@ var countryCoObj = {
 	]
 };
 
-_.set(exports, 'getLonLatFromDistanceDirection', function (lonLatLoc, direction, distance) {
-	//gets new xy coord from distance & angle
-	console.log('lonlat: ', lonLatLoc, direction, distance, {
-		lon: distance * Math.sin(direction*Math.PI/180) + _.get(lonLatLoc, [0]),
-		lat: distance * Math.cos(direction*Math.PI/180) + _.get(lonLatLoc, [1])
-	});
-	return {
-		lon: distance * Math.sin(direction*Math.PI/180) + _.get(lonLatLoc, [0]),
-		lat: distance * Math.cos(direction*Math.PI/180) + _.get(lonLatLoc, [1])
-	}
-});
-
 _.set(exports, 'grndUnitGroup', function ( groupObj ) {
 	return '{' +
 		'["groupId"] = ' + _.get(groupObj, 'groupId') + ',' +
@@ -196,7 +184,7 @@ _.set(exports, 'spawnSupportVehiclesOnFarp', function ( serverName, baseName, si
 	}
 	_.forEach(sptArray, function (val) {
 		var sptUnit = _.cloneDeep(_.first(exports.getRndFromSpawnCat(val, side, true)));
-		_.set(sptUnit, 'lonLatLoc', exports.getLonLatFromDistanceDirection(_.get(curBase, ['centerLoc']), curAng, 50));
+		_.set(sptUnit, 'lonLatLoc', zoneController.getLonLatFromDistanceDirection(_.get(curBase, ['centerLoc']), curAng, 0.05));
 		curAng += 15;
 		curFarpArray.push(sptUnit);
 	});

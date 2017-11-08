@@ -3,6 +3,41 @@ const	_ = require('lodash');
 const dbMapServiceController = require('./dbMapService');
 const groupController = require('./group');
 
+/**
+ * Calculate a new coordinate based on start, distance and bearing
+ *
+ * @param start array - start coordinate as decimal lat/lon pair
+ * @param dist  float - distance in kilometers
+ * @param brng  float - bearing in degrees (compass direction)
+ */
+_.set(Math, 'fmod', function (a,b) { return Number((a - (Math.floor(a / b) * b)).toPrecision(8)); });
+
+function geo_destination(lonLat, dist, brng){
+	lon1 = toRad(lonLat[0]);
+	lat1 = toRad(lonLat[1]);
+	dist = dist/6371.01; //Earth's radius in km
+	brng = toRad(brng);
+
+	lat2 = Math.asin( Math.sin(lat1)* Math.cos(dist) +
+		Math.cos(lat1) * Math.sin(dist) * Math.cos(brng) );
+	lon2 = lon1 + Math.atan2(Math.sin(brng) * Math.sin(dist) * Math.cos(lat1),
+			Math.cos(dist) - Math.sin(lat1) * Math.sin(lat2));
+	lon2 = Math.fmod((lon2 + 3 * Math.PI),(2 * Math.PI)) - Math.PI;
+
+	return [toDeg(lon2), toDeg(lat2)];
+}
+function toRad(deg){
+	return deg * Math.PI / 180;
+}
+function toDeg(rad){
+	return rad * 180 / Math.PI;
+}
+
+_.set(exports, 'getLonLatFromDistanceDirection', function (lonLatLoc, direction, distance) {
+	// console.log('NEW LATLON: ', lonLatLoc, geo_destination(lonLatLoc, distance, direction));
+	return geo_destination(lonLatLoc, distance, direction);
+});
+
 _.set(exports, 'getBoundingSquare', function (pArray) {
 	var x1 = _.get(pArray, [0, 0]);
 	var y1 = _.get(pArray, [0, 1]);

@@ -1467,7 +1467,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 dbMapServiceController.processActions('save', 'TrueDynamicCaucasus', {firingTime: new Date().getTime() + 5000, queObj: { blah: 1, blah2: 4 }})
 	.then(function (runQues) {
 		// process scheduled events
-		console.log('rq1: ', runQues);
+		// console.log('rq1: ', runQues);
 	})
 	.catch(function (err) {
 		console.log('line1486', err);
@@ -1482,7 +1482,7 @@ setInterval(function () {
 				dbMapServiceController.processActions('processExpired', _.get(srv, '_id'))
 					.then(function (runQues) {
 						// process scheduled events
-						console.log('rq2: ', runQues);
+						// console.log('rq2: ', runQues);
 					})
 					.catch(function (err) {
 						console.log('line1486', err);
