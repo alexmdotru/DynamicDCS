@@ -638,10 +638,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 							data: {
 								_id: parseFloat(_.get(queObj, 'data.unitId')),
 								unitId: _.get(queObj, 'data.unitId'),
-								lat: parseFloat(_.get(queObj, 'data.lat')),
-								lon: parseFloat(_.get(queObj, 'data.lon')),
-								x: parseFloat(_.get(queObj, 'data.x')),
-								y: parseFloat(_.get(queObj, 'data.y')),
+								lonLatLoc: _.get(queObj, 'data.lonLatLoc'),
 								alt: parseFloat(_.get(queObj, 'data.alt')),
 								hdg: parseFloat(_.get(queObj, 'data.hdg')),
 								speed: parseFloat(_.get(queObj, 'data.speed')),
