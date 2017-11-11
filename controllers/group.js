@@ -196,7 +196,13 @@ _.set(exports, 'airUnitTemplate', function ( unitObj ) {
 		'["unitId"] = ' + _.get(unitObj, 'unitId') + ',' +
 		'["heading"] = ' + _.get(unitObj, 'heading', 0) + ',' +
 		'["skill"] = "' + _.get(unitObj, 'skill', "Excellent") + '",' +
-		'["payload"]={},' +
+		'["payload"]={' +
+			'["pylons"]={},' +
+			'["fuel"] = "20830",' +
+			'["flare"] = 60,' +
+			'["chaff"] = 120,' +
+			'["gun"] = 100,' +
+		'},' +
 	'}';
 });
 
