@@ -608,7 +608,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					var mainBases = _.filter(bases, function (base) {
 						return _.get(base, 'polygonLoc', []).length > 0
 					});
-					if(mainBases.length + 1 !== srvPolyCnt) {
+					if(mainBases.length !== srvPolyCnt) {
 						console.log('db server poly count does not match server: ', mainBases.length, '!==', srvPolyCnt, ' | ', polyFailCount);
 						polyFailCount += 1;
 						if (polyFailCount > 60) {
