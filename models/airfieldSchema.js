@@ -56,6 +56,12 @@ const AirfieldSchema = new mongoose.Schema({
 		max: 2,
 		required: true
 	},
+	spawnAngle: {
+		type: Number,
+		min: 0,
+		max: 359,
+		required: true
+	},
 	spawnZones: {
 		type: Object
 	},

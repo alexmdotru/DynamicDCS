@@ -69,7 +69,96 @@ var countryCoObj = {
 	]
 };
 
-_.set(exports, 'grndUnitGroup', function ( groupObj ) {
+_.set(exports, 'landPlaneRouteTemplate', function ( routes ) {
+	return 	'["route"] = {' +
+				'["points"] = {' +
+					'[1] = {' +
+						'["alt"] = 5000,' +
+						'["action"] = "Turning Point",'+
+						'["alt_type"] = "BARO",' +
+						'["speed"] = 168,' +
+						'["task"] = {'+
+							'["id"] = "ComboTask",' +
+							'["params"]={' +
+								'["tasks"]={' +
+									'[1]={' +
+										'["enabled"]=true,' +
+										'["auto"]=false,' +
+										'["id"]="WrappedAction",' +
+										'["number"] = 1,' +
+										'["params"]={' +
+											'["action"]={' +
+												'["id"] = "Option",' +
+												'["params"]={' +
+													'["value"] = 4,' +
+													'["name"] = 0,' +
+												'},' +
+											'},' +
+										'},' +
+									'},' +
+									'[2] = {' +
+										'["enabled"] = true,' +
+										'["auto"]=false,' +
+										'["id"]="WrappedAction",' +
+										'["number"]= 2,' +
+										'["params"]={' +
+											'["action"]={' +
+												'["id"] = "Option",' +
+												'["params"]={' +
+													'["value"] = 1,' +
+													'["name"] = 1,' +
+												'},' +
+											'},' +
+										'},' +
+									'},' +
+								'},' +
+							'},' +
+						'},' +
+						'["type"] = "Turning Point",' +
+						//'["ETA"] = 0,' +
+						//'["ETA_locked"] = true,' +
+						'["x"] = coord.LLtoLO(' + _.get(routes, ['routeLocs', 0, 1]) + ', ' +  _.get(routes, ['routeLocs', 0, 0]) + ').x, ' +
+						'["y"] = coord.LLtoLO(' + _.get(routes, ['routeLocs', 0, 1]) + ', ' +  _.get(routes, ['routeLocs', 0, 0]) + ').z, ' +
+						//'["name"] = "waypoint 1",' +
+						//'["formation_template"] = "",' +
+						//'["speed_locked"] = true,' +
+					'},' +
+					'[2]={' +
+						'["alt"] = 5000,' +
+						'["action"] = "Landing",' +
+						'["alt_type"] = "BARO",' +
+						'["speed"] = 168,' +
+						'["task"]={' +
+							'["id"] = "ComboTask",' +
+							'["params"]={["tasks"]={},},' +
+						'},' +
+						'["type"] = "Land",' +
+						//'["ETA"] = 712.36534243372,' +
+						//'["ETA_locked"] = false,' +
+						'["x"] = coord.LLtoLO(' + _.get(routes, ['routeLocs', 1, 1]) + ', ' +  _.get(routes, ['routeLocs', 1, 0]) + ').x, ' +
+						'["y"] = coord.LLtoLO(' + _.get(routes, ['routeLocs', 1, 1]) + ', ' +  _.get(routes, ['routeLocs', 1, 0]) + ').z, ' +
+						//'["name"] = "DictKey_WptName_21362",' +
+						//'["formation_template"] = "",' +
+						'["airdromeId"] = ' + _.get(routes, 'baseId') + ',' +
+						//'["speed_locked"] = true,' +
+					'},' +
+				'}' +
+			'},';
+	});
+
+_.set(exports, 'grndUnitGroup', function ( groupObj, task, routes ) {
+
+	var curRoute = '';
+	var curTask = '';
+
+	if (routes) {
+		curRoute = routes;
+	}
+
+	if (task) {
+		curTask = '["task"] = "' + task + '",';
+	}
+
 	return '{' +
 		'["groupId"] = ' + _.get(groupObj, 'groupId') + ',' +
 		'["name"] = "' + _.get(groupObj, 'groupName') + '",' +
@@ -78,9 +167,10 @@ _.set(exports, 'grndUnitGroup', function ( groupObj ) {
 		'["task"] = ' + _.get(groupObj, 'task', '{}') + ',' +
 		'["units"] = {#UNITS},' +
 		'["category"] = Group.Category.' + _.get(groupObj, 'category') + ',' +
-		'["country"] = "' + _.get(groupObj, 'country') + '"' +
-		'}'
-	;
+		'["country"] = "' + _.get(groupObj, 'country') + '",' +
+		curTask +
+		curRoute +
+	'}';
 });
 
 _.set(exports, 'grndUnitTemplate', function ( unitObj ) {
@@ -91,10 +181,23 @@ _.set(exports, 'grndUnitTemplate', function ( unitObj ) {
 		'["name"] = "' + _.get(unitObj, 'name') + '",' +
 		'["unitId"] = ' + _.get(unitObj, 'unitId') + ',' +
 		'["heading"] = ' + _.get(unitObj, 'heading', 0) + ',' +
-		'["playerCanDrive"] = ' + _.get(unitObj, 'playerCanDrive', true) + ',' +
-		'["skill"] = ' + _.get(unitObj, 'skill', "Excellent") +
+		'["playerCanDrive"] = ' + _.get(unitObj, 'playerCanDrive', false) + ',' +
+		'["skill"] = "' + _.get(unitObj, 'skill', "Excellent") + '",' +
 		'}'
 	;
+});
+
+_.set(exports, 'airUnitTemplate', function ( unitObj ) {
+	return '{' +
+		'["x"] = coord.LLtoLO(' + _.get(unitObj, ['lonLatLoc', 1]) + ', ' +  _.get(unitObj, ['lonLatLoc', 0]) + ').x, ' +
+		'["y"] = coord.LLtoLO(' + _.get(unitObj, ['lonLatLoc', 1]) + ', ' +  _.get(unitObj, ['lonLatLoc', 0]) + ').z, ' +
+		'["type"] = "' + _.get(unitObj, 'type') +'",' +
+		'["name"] = "' + _.get(unitObj, 'name') + '",' +
+		'["unitId"] = ' + _.get(unitObj, 'unitId') + ',' +
+		'["heading"] = ' + _.get(unitObj, 'heading', 0) + ',' +
+		'["skill"] = "' + _.get(unitObj, 'skill', "Excellent") + '",' +
+		'["payload"]={},' +
+	'}';
 });
 
 _.set(exports, 'getUnitDictionary', function () {
@@ -234,6 +337,62 @@ _.set(exports, 'spawnBaseReinforcementGroup', function (serverName, side) {
 		}
 	});
 	return _.compact(spawnArray);
+});
+
+_.set(exports, 'spawnSupportPlane', function (serverName, baseObj, side) {
+	var unitNum;
+	var curBaseName;
+	var curUnitName;
+	var curUnitSpawn;
+	var curGroupSpawn;
+	var curSide;
+	var curSpwnUnit;
+	var curGrpObj = {};
+	var curRoutes;
+	var baseLoc;
+	var remoteLoc;
+	var grpNum = _.random(1000000, 9999999);
+	curSide = (side) ? _.get(countryCoObj, ['defCountrys', side]) : _.get(countryCoObj, ['defCountrys', _.get(curGrpObj, 'coalition')]);
+	curBaseName = _.get(baseObj, 'name') + '_SUPPORT #' + grpNum;
+	baseLoc = _.get(baseObj, 'centerLoc');
+	if(_.get(baseObj, 'farp')) {
+		curSpwnUnit = _.cloneDeep(_.first(exports.getRndFromSpawnCat( 'transportHeli', side, true )));
+		remoteLoc = zoneController.getLonLatFromDistanceDirection(baseLoc, _.get(baseObj, 'spawnAngle'), 40);
+	} else {
+		curSpwnUnit = _.cloneDeep(_.first(exports.getRndFromSpawnCat( 'transportAircraft', side, true )));
+		remoteLoc = zoneController.getLonLatFromDistanceDirection(baseLoc, _.get(baseObj, 'spawnAngle'), 70);
+	}
+	console.log('unit: ', curSpwnUnit);
+	curGrpObj = _.cloneDeep(curSpwnUnit);
+	_.set(curGrpObj, 'groupId', grpNum);
+	_.set(curGrpObj, 'groupName', curBaseName);
+	_.set(curGrpObj, 'country', curSide);
+	curRoutes = {
+		baseId: _.get(baseObj, 'baseId'),
+		routeLocs: [
+			remoteLoc,
+			baseLoc
+		]
+	};
+	curGroupSpawn = exports.grndUnitGroup( curGrpObj, 'Transport', exports.landPlaneRouteTemplate(curRoutes));
+	unitNum = _.cloneDeep(grpNum);
+
+	unitNum += 1;
+	curUnitName = _.get(baseObj, 'name') + '_SUPPORT';
+
+
+	_.set(curSpwnUnit, 'lonLatLoc', remoteLoc);
+	_.set(curSpwnUnit, 'unitId', unitNum);
+	_.set(curSpwnUnit, 'name', curUnitName);
+
+	curUnitSpawn = exports.airUnitTemplate(curSpwnUnit);
+
+	curGroupSpawn = _.replace(curGroupSpawn, "#UNITS", curUnitSpawn);
+	console.log('cgs: ', curGroupSpawn);
+	var curCMD = 'mist.dynAdd(' + curGroupSpawn + ')';
+	var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
+	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
+	dbMapServiceController.cmdQueActions('save', serverName, actionObj);
 });
 
 _.set(exports, 'depopGroup', function ( groupObj ) {

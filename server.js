@@ -1463,17 +1463,30 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 	});
 });
 
-
+var spawnOnetest = false
 // constant check loop (base unit replenish, etc)
 setInterval(function () {
 	dbSystemServiceController.serverActions('read', {enabled: true})
 		.then(function (srvs) {
 			_.forEach(srvs, function (srv) {
 				var curServerName = _.get(srv, '_id');
-				dbMapServiceController.baseActions('read', _.get(srv, '_id'), {mainBase: true, $or: [{side: 1}, {side: 2}]})
+				dbMapServiceController.baseActions('read', curServerName, {mainBase: true, $or: [{side: 1}, {side: 2}]})
 					.then(function (bases) {
 						_.forEach(bases, function (base) {
-							console.log('mainB: ', base.name, base.side);
+							var curRegEx = _.get(base, '_id') + ' #';
+							var unitCnt = _.get(base, 'maxUnitThreshold') * ((100 - _.get(srv, 'replenThreshold')) * 0.01);
+							dbMapServiceController.unitActions('read', curServerName, {name: new RegExp(curRegEx)})
+								.then(function (units) {
+									if ((units.length < unitCnt) && isSpawningAllowed && !spawnOnetest) {
+										console.log('spawnReinforcements: ', base.name, base.side, units.length, ' < ', unitCnt);
+										groupController.spawnSupportPlane(curServerName, base, _.get(base, 'side'));
+										spawnOnetest = true;
+									}
+								})
+								.catch(function (err) {
+									console.log('line 1482: ', err);
+								})
+							;
 						});
 					})
 					.catch(function (err) {
@@ -1486,7 +1499,7 @@ setInterval(function () {
 			console.log('line1491', err);
 		})
 	;
-}, 60 * 1000);
+}, 5 * 1000);
 
 /*
 	dbMapServiceController.processActions('save', 'TrueDynamicCaucasus', {firingTime: new Date().getTime() + 5000, queObj: { blah: 1, blah2: 4 }})
