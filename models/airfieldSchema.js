@@ -19,6 +19,10 @@ const AirfieldSchema = new mongoose.Schema({
 		type: Boolean,
 		default: false
 	},
+	mainBase: {
+		type: Boolean,
+		default: false
+	},
 	centerLoc: {
 		type: [Number],
 		index: '2dsphere'

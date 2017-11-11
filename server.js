@@ -1464,17 +1464,42 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 });
 
 
-dbMapServiceController.processActions('save', 'TrueDynamicCaucasus', {firingTime: new Date().getTime() + 5000, queObj: { blah: 1, blah2: 4 }})
-	.then(function (runQues) {
-		// process scheduled events
-		// console.log('rq1: ', runQues);
-	})
-	.catch(function (err) {
-		console.log('line1486', err);
-	})
-;
+// constant check loop (base unit replenish, etc)
+setInterval(function () {
+	dbSystemServiceController.serverActions('read', {enabled: true})
+		.then(function (srvs) {
+			_.forEach(srvs, function (srv) {
+				var curServerName = _.get(srv, '_id');
+				dbMapServiceController.baseActions('read', _.get(srv, '_id'), {mainBase: true, $or: [{side: 1}, {side: 2}]})
+					.then(function (bases) {
+						_.forEach(bases, function (base) {
+							console.log('mainB: ', base.name, base.side);
+						});
+					})
+					.catch(function (err) {
+						console.log('line1486', err);
+					})
+				;
+			});
+		})
+		.catch(function (err) {
+			console.log('line1491', err);
+		})
+	;
+}, 60 * 1000);
 
-
+/*
+	dbMapServiceController.processActions('save', 'TrueDynamicCaucasus', {firingTime: new Date().getTime() + 5000, queObj: { blah: 1, blah2: 4 }})
+		.then(function (runQues) {
+			// process scheduled events
+			// console.log('rq1: ', runQues);
+		})
+		.catch(function (err) {
+			console.log('line1486', err);
+		})
+	;
+*/
+// process runner from scheduled processes
 setInterval(function () {
 	dbSystemServiceController.serverActions('read', {enabled: true})
 		.then(function (srvs) {

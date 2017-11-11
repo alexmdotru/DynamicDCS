@@ -216,7 +216,8 @@ do
 				["polygonLoc"] = {},
 				["alt"] = alt,
 				["farp"] = false,
-				["expansion"] = false
+				["expansion"] = false,
+				["mainBase"] = false
 			}
 			if string.find(baseName, 'FARP', 1, true) then
 				curObj.farp = true
@@ -226,6 +227,7 @@ do
 			end
 			if not string.find(baseName, 'Expansion', 1, true) and not string.find(baseName, ' #', 1, true) then
 				env.info('applycache  ' .. baseName);
+				curObj.mainBase = true
 				airbaseCache[baseName].side = coalition
 				curObj["polygonLoc"] = polyArray[baseName]
 			end
