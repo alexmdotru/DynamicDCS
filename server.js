@@ -594,7 +594,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 	;
 
 	_.forEach(update.que, function (queObj) {
-		// console.log('incom: ', queObj);
 		var iCurObj = {};
 		var iPlayer = {};
 		var tPlayer = {};
@@ -833,6 +832,9 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				}
 			});
 
+			//need this for current player ID lookup
+			curServers[serverName].serverObject.players = queObj.data;
+
 			_.forEach(queObj.data, function (data) {
 				if (data) {
 					if (data.ucid) {
@@ -997,33 +999,42 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			// arg2 = time
 			// arg3 = initiatorId
 			// arg7 = weapon
-			iUnit = _.find(curServers[serverName].serverObject.units, {unitId: queObj.data.arg3});
-			if (iUnit) {
-				dbSystemServiceController.weaponScoreActions('read', _.get(queObj, 'data.arg7'))
-					.then(function (weaponResp) {
-						iPlayer = _.find(curServers[serverName].serverObject.players, {name: iUnit.playername});
-						if (iPlayer) {
-							iCurObj = {
-								sessionName: sessionName,
-								eventCode: abrLookup(_.get(queObj, 'action')),
-								iucid: _.get(iPlayer, 'ucid'),
-								iName: _.get(iUnit, 'playername'),
-								displaySide: _.get(iUnit, 'coalition'),
-								roleCode: 'I',
-								msg: 'C: '+ getSide(_.get(iUnit, 'coalition'))+' '+ _.get(iUnit, 'playername') +' released a ' + _.get(weaponResp, 'displayName'),
-								showInChart: false
-							};
-							if(_.get(iCurObj, 'iucid')) {
-								curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
-								dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
-							}
-						}
-					})
-					.catch(function (err) {
-						console.log('erroring line898');
-					})
-				;
-			}
+			dbMapServiceController.unitActions('read', serverName, {_id: _.get(queObj, ['data', 'arg3'])})
+				.then(function (unit) {
+					var curUnit = _.get(unit, 0);
+					if (curUnit) {
+						dbSystemServiceController.weaponScoreActions('read', _.get(queObj, ['data', 'arg7']))
+							.then(function (weaponResp) {
+								var curIPlayer = _.find(curServers[serverName].serverObject.players, {name: _.get(curUnit, 'playername')});
+								var curIPlayerUcid =  _.get(iPlayer, 'ucid');
+								var curIPlayerSide = _.get(curUnit, 'coalition');
+								if (curIPlayer) {
+									iCurObj = {
+										sessionName: sessionName,
+										eventCode: abrLookup(_.get(queObj, 'action')),
+										iucid: curIPlayerUcid,
+										iName: _.get(curUnit, 'playername'),
+										displaySide: curIPlayerSide,
+										roleCode: 'I',
+										msg: 'C: '+ getSide(curIPlayerSide)+' '+ _.get(curUnit, 'playername') +' released a ' + _.get(weaponResp, 'displayName'),
+										showInChart: false
+									};
+									if(curIPlayerUcid) {
+										curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
+										dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
+									}
+								}
+							})
+							.catch(function (err) {
+								console.log('erroring line898');
+							})
+						;
+					}
+				})
+				.catch(function (err) {
+					console.log('err line1007: ', err);
+				})
+			;
 		}
 
 		//run each tick to see if we need to write gun event
@@ -1060,87 +1071,102 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			// arg3 = initiatorId
 			// arg4 = targetId
 			// arg7 = WeaponId
-			iUnit = _.find(curServers[serverName].serverObject.units, {unitId: iUnitId});
-			if (iUnit) {
-				iPlayer = _.find(curServers[serverName].serverObject.players, {name: iUnit.playername});
-				if (iPlayer) {
-					iPucid = _.get(iPlayer, 'ucid');
-					iPName = _.get(iUnit, 'playername') + '(' + _.get(iUnit, 'type') + ')';
-				} else {
-					iPName = _.get(iUnit, 'type')
-				}
-			}
-			tUnit = _.find(curServers[serverName].serverObject.units, {unitId: tUnitId});
-			if (tUnit) {
-				tPlayer = _.find(curServers[serverName].serverObject.players, {name: tUnit.playername});
-				if (tPlayer) {
-					tPucid = _.get(tPlayer, 'ucid');
-					tPName = _.get(tUnit, 'playername') + '(' + _.get(tUnit, 'type') + ')';
-				} else {
-					tPName = _.get(tUnit, 'type')
-				}
-			}
+			dbMapServiceController.unitActions('read', serverName, {_id: iUnitId})
+				.then(function (iunit) {
+					var curIUnit = _.get(iunit, 0);
+					if (curIUnit) {
+						iPlayer = _.find(curServers[serverName].serverObject.players, {name: curIUnit.playername});
+						if (iPlayer) {
+							iPucid = _.get(iPlayer, 'ucid');
+							iPName = _.get(curIUnit, 'playername') + '(' + _.get(curIUnit, 'type') + ')';
+						} else {
+							iPName = _.get(curIUnit, 'type')
+						}
+					}
+					dbMapServiceController.unitActions('read', serverName, {_id: tUnitId})
+						.then(function (tunit) {
+							var curTUnit = _.get(tunit, 0);
+							if (curTUnit ) {
+								tPlayer = _.find(curServers[serverName].serverObject.players, {name: curTUnit.playername});
+								if (tPlayer) {
+									tPucid = _.get(tPlayer, 'ucid');
+									tPName = _.get(curTUnit, 'playername') + '(' + _.get(curTUnit, 'type') + ')';
+								} else {
+									tPName = _.get(curTUnit, 'type')
+								}
+							}
 
-			iCurObj = {
-				sessionName: sessionName,
-				eventCode: abrLookup(_.get(queObj, 'action')),
-				iucid: iPucid,
-				iName: _.get(iUnit, 'playername'),
-				tucid: tPucid,
-				tName: _.get(tUnit, 'playername'),
-				displaySide: 'A',
-				roleCode: 'I',
-				showInChart: true
-			};
+							iCurObj = {
+								sessionName: sessionName,
+								eventCode: abrLookup(_.get(queObj, 'action')),
+								iucid: iPucid,
+								iName: _.get(curIUnit, 'playername'),
+								tucid: tPucid,
+								tName: _.get(curTUnit, 'playername'),
+								displaySide: 'A',
+								roleCode: 'I',
+								showInChart: true
+							};
 
-			if( _.get(queObj, ['data', 'arg7', 'typeName'])){
-				console.log('weaponhere: ', _.get(queObj, ['data', 'arg7', 'typeName']));
-				dbSystemServiceController.weaponScoreActions('read', _.get(queObj, 'data.arg7'))
-					.then(function (weaponResp) {
-						// if (_.get(iCurObj, 'iucid') || _.get(iCurObj, 'tucid')) {
-						if (_.get(iCurObj, 'iucid') || _.get(iCurObj, 'tucid')) {
-							if (_.startsWith(_.get(weaponResp, 'name'), 'weapons.shells')){
-								_.set(shootingUsers, [iUnitId, 'count'], _.get(shootingUsers, [iUnitId, 'count'], 0)+1);
+							if( _.get(queObj, ['data', 'arg7', 'typeName'])){
+								console.log('weaponhere: ', _.get(queObj, ['data', 'arg7', 'typeName']));
+								dbSystemServiceController.weaponScoreActions('read', _.get(queObj, ['data', 'arg7']))
+									.then(function (weaponResp) {
+										if (_.get(iCurObj, 'iucid') || _.get(iCurObj, 'tucid')) {
+											if (_.startsWith(_.get(weaponResp, 'name'), 'weapons.shells')){
+												_.set(shootingUsers, [iUnitId, 'count'], _.get(shootingUsers, [iUnitId, 'count'], 0)+1);
+												_.set(shootingUsers, [iUnitId, 'startTime'], new Date().getTime());
+												_.set(shootingUsers, [iUnitId, 'serverName'], serverName);
+												_.set(iCurObj, 'msg',
+													'A: '+ getSide(_.get(curIUnit, 'coalition'))+' '+ iPName +' has hit '+getSide(_.get(curTUnit, 'coalition'))+' ' + tPName + ' '+_.get(shootingUsers, [iUnitId, 'count'], 0)+' times with ' + _.get(weaponResp, 'displayName') + ' - +'+_.get(weaponResp, 'score')+' each.'
+												);
+												_.set(shootingUsers, [iUnitId, 'iCurObj'], _.cloneDeep(iCurObj));
+											} else {
+												_.set(iCurObj, 'score', _.get(weaponResp, 'score'));
+												_.set(iCurObj, 'msg', 'A: '+ getSide(_.get(curIUnit, 'coalition'))+' '+ iPName +' has hit '+getSide(_.get(curTUnit, 'coalition'))+' '+tPName + ' with ' + _.get(weaponResp, 'displayName') + ' - +'+_.get(weaponResp, 'score'));
+												if(_.get(iCurObj, 'iucid') || _.get(iCurObj, 'tucid')) {
+													curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
+													dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
+												}
+												DCSLuaCommands.sendMesgToAll(
+													serverName,
+													_.get(iCurObj, 'msg'),
+													20
+												);
+											}
+										}
+									})
+									.catch(function (err) {
+										console.log('Eevent line998: ', iCurObj, err);
+										if(_.get(iCurObj, 'iPlayerUcid') || _.get(iCurObj, 'tPlayerUcid')) {
+											// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
+											// dbMapServiceController.statSrvEventActions('save', serverName, iCurObj);
+										}
+									})
+								;
+							} else {
+								console.log('weapon not here');
+								console.log('weapon: ', _.get(queObj, ['data', 'arg7', 'typeName']));
+								_.set(shootingUsers, [iUnitId, 'count'], _.get(shootingUsers, [_.get(iCurObj, 'iPlayerUnitId'), 'count'], 0)+1);
 								_.set(shootingUsers, [iUnitId, 'startTime'], new Date().getTime());
 								_.set(shootingUsers, [iUnitId, 'serverName'], serverName);
 								_.set(iCurObj, 'msg',
-									'A: '+ getSide(_.get(iUnit, 'coalition'))+' '+ iPName +' has hit '+getSide(_.get(tUnit, 'coalition'))+' ' + tPName + ' '+_.get(shootingUsers, [iUnitId, 'count'], 0)+' times with ' + _.get(weaponResp, 'displayName') + ' - +'+_.get(weaponResp, 'score')+' each.'
+									'A: '+ getSide(_.get(curIUnit, 'coalition'))+' '+ iPName +' has hit '+getSide(_.get(tUnit, 'coalition'))+' ' + tPName + ' '+_.get(shootingUsers, [iUnitId, 'count'], 0)+' times with ' + _.get(curIUnit, 'type') + ' - +1 each.'
 								);
 								_.set(shootingUsers, [iUnitId, 'iCurObj'], _.cloneDeep(iCurObj));
-							} else {
-								_.set(iCurObj, 'score', _.get(weaponResp, 'score'));
-								_.set(iCurObj, 'msg', 'A: '+ getSide(_.get(iUnit, 'coalition'))+' '+ iPName +' has hit '+getSide(_.get(tUnit, 'coalition'))+' '+tPName + ' with ' + _.get(weaponResp, 'displayName') + ' - +'+_.get(weaponResp, 'score'));
-								if(_.get(iCurObj, 'iucid') || _.get(iCurObj, 'tucid')) {
-									curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
-									dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
-								}
-								DCSLuaCommands.sendMesgToAll(
-									serverName,
-									_.get(iCurObj, 'msg'),
-									20
-								);
 							}
-						}
-					})
-					.catch(function (err) {
-						console.log('Eevent line998: ', iCurObj, err);
-						if(_.get(iCurObj, 'iPlayerUcid') || _.get(iCurObj, 'tPlayerUcid')) {
-							// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
-							// dbMapServiceController.statSrvEventActions('save', serverName, iCurObj);
-						}
-					})
-				;
-			} else {
-				console.log('weapon not here');
-				console.log('weapon: ', _.get(queObj, ['data', 'arg7', 'typeName']));
-				_.set(shootingUsers, [iUnitId, 'count'], _.get(shootingUsers, [_.get(iCurObj, 'iPlayerUnitId'), 'count'], 0)+1);
-				_.set(shootingUsers, [iUnitId, 'startTime'], new Date().getTime());
-				_.set(shootingUsers, [iUnitId, 'serverName'], serverName);
-				_.set(iCurObj, 'msg',
-					'A: '+ getSide(_.get(iUnit, 'coalition'))+' '+ iPName +' has hit '+getSide(_.get(tUnit, 'coalition'))+' ' + tPName + ' '+_.get(shootingUsers, [iUnitId, 'count'], 0)+' times with ' + _.get(iUnit, 'type') + ' - +1 each.'
-				);
-				_.set(shootingUsers, [iUnitId, 'iCurObj'], _.cloneDeep(iCurObj));
-			}
+						})
+						.catch(function (err) {
+							console.log('err line596: ', err);
+						})
+					;
+
+
+				})
+				.catch(function (err) {
+					console.log('err line596: ', err);
+				})
+			;
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_TAKEOFF') {
 			// Occurs when an aircraft takes off from an airbase, farp, or ship.
@@ -1151,31 +1177,39 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			} else {
 				place = '';
 			}
-			iUnit = _.find(curServers[serverName].serverObject.units, {unitId: queObj.data.arg3});
-			if (iUnit) {
-				iPlayer = _.find(curServers[serverName].serverObject.players, {name: iUnit.playername});
-				if (iPlayer) {
-					iCurObj = {
-						sessionName: sessionName,
-						eventCode: abrLookup(_.get(queObj, 'action')),
-						iucid: _.get(iPlayer, 'ucid'),
-						iName: _.get(iUnit, 'playername'),
-						displaySide: _.get(iUnit, 'coalition'),
-						roleCode: 'I',
-						msg: 'C: '+ _.get(iUnit, 'playername')+ '('+_.get(iUnit, 'type')+') has taken off' + place
-					};
-					if(_.get(iCurObj, 'iucid')) {
-						// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
-						dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
+
+			dbMapServiceController.unitActions('read', serverName, {_id: _.get(queObj, ['data', 'arg3'])})
+				.then(function (iunit) {
+					var curIUnit = _.get(iunit, 0);
+					if (curIUnit) {
+						iPlayer = _.find(curServers[serverName].serverObject.players, {name: _.get(curIUnit, 'playername')});
+						if (iPlayer) {
+							iCurObj = {
+								sessionName: sessionName,
+								eventCode: abrLookup(_.get(queObj, 'action')),
+								iucid: _.get(iPlayer, 'ucid'),
+								iName: _.get(curIUnit, 'playername'),
+								displaySide: _.get(curIUnit, 'coalition'),
+								roleCode: 'I',
+								msg: 'C: '+ _.get(curIUnit, 'playername')+ '('+_.get(curIUnit, 'type')+') has taken off' + place
+							};
+							if(_.get(iCurObj, 'iucid')) {
+								// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
+								dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
+							}
+							DCSLuaCommands.sendMesgToCoalition(
+								_.get(iCurObj, 'displaySide'),
+								serverName,
+								_.get(iCurObj, 'msg'),
+								5
+							);
+						}
 					}
-					DCSLuaCommands.sendMesgToCoalition(
-						_.get(iCurObj, 'displaySide'),
-						serverName,
-						_.get(iCurObj, 'msg'),
-						5
-					);
-				}
-			}
+				})
+				.catch(function (err) {
+					console.log('err line596: ', err);
+				})
+			;
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_LAND') {
 			// Occurs when an aircraft lands at an airbase, farp or ship
@@ -1186,293 +1220,364 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			} else {
 				place = '';
 			}
-			iUnit = _.find(curServers[serverName].serverObject.units, {unitId: queObj.data.arg3});
-			if (iUnit) {
-				iPlayer = _.find(curServers[serverName].serverObject.players, {name: iUnit.playername});
-				if(iPlayer) {
-					iCurObj = {
-						sessionName: sessionName,
-						eventCode: abrLookup(_.get(queObj, 'action')),
-						iucid: _.get(iPlayer, 'ucid'),
-						iName: _.get(iUnit, 'playername'),
-						displaySide: _.get(iUnit, 'coalition'),
-						roleCode: 'I',
-						msg: 'C: '+ _.get(iUnit, 'playername') + '('+_.get(iUnit, 'type') + ') has landed' + place
-					};
-					if(_.get(iCurObj, 'iucid')) {
-						// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
-						dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
-					}
 
-					//landed logistic planes/helis spawn new group for area
-					var curUnitName = _.get(iUnit, 'name');
-					if (_.includes(curUnitName, '_LOGISTICS')) {
-						console.log('logistics landing: ', curUnitName);
-						var bArry = _.split(curUnitName, '_LOGISTICS');
-						groupController.replenishUnits( serverName, _.get(bArry, 0), _.get(iCurObj, 'displaySide'));
-					}
+			dbMapServiceController.unitActions('read', serverName, {_id: _.get(queObj, ['data', 'arg3'])})
+				.then(function (iunit) {
+					var curIUnit = _.get(iunit, 0);
+					if (curIUnit) {
+						iPlayer = _.find(curServers[serverName].serverObject.players, {name: _.get(curIUnit, 'playername')});
+						if(iPlayer) {
+							iCurObj = {
+								sessionName: sessionName,
+								eventCode: abrLookup(_.get(queObj, 'action')),
+								iucid: _.get(iPlayer, 'ucid'),
+								iName: _.get(curIUnit, 'playername'),
+								displaySide: _.get(curIUnit, 'coalition'),
+								roleCode: 'I',
+								msg: 'C: '+ _.get(curIUnit, 'playername') + '('+_.get(curIUnit, 'type') + ') has landed' + place
+							};
+							if(_.get(iCurObj, 'iucid')) {
+								// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
+								dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
+							}
 
-					DCSLuaCommands.sendMesgToCoalition(
-						_.get(iCurObj, 'displaySide'),
-						serverName,
-						_.get(iCurObj, 'msg'),
-						5
-					);
-				}
-			}
+							//landed logistic planes/helis spawn new group for area
+							var curUnitName = _.get(curIUnit, 'name');
+							if (_.includes(curUnitName, '_LOGISTICS')) {
+								console.log('logistics landing: ', curUnitName);
+								var bArry = _.split(curUnitName, '_LOGISTICS');
+								groupController.replenishUnits( serverName, _.get(bArry, 0), _.get(iCurObj, 'displaySide'));
+							}
+
+							DCSLuaCommands.sendMesgToCoalition(
+								_.get(iCurObj, 'displaySide'),
+								serverName,
+								_.get(iCurObj, 'msg'),
+								5
+							);
+						}
+					}
+				})
+				.catch(function (err) {
+					console.log('err line1263: ', err);
+				})
+			;
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_CRASH') {
 			// Occurs when any aircraft crashes into the ground and is completely destroyed.
-			iUnit = _.find(curServers[serverName].serverObject.units, {unitId: queObj.data.arg3});
-			if (iUnit) {
-				iPlayer = _.find(curServers[serverName].serverObject.players, {name: iUnit.playername});
-				if (iPlayer) {
-					iCurObj = {
-						sessionName: sessionName,
-						eventCode: abrLookup(_.get(queObj, 'action')),
-						iucid: _.get(iPlayer, 'ucid'),
-						iName: _.get(iUnit, 'playername'),
-						displaySide: 'A',
-						roleCode: 'I',
-						msg: 'A: '+ getSide(_.get(iUnit, 'coalition'))+' '+ _.get(iUnit, 'playername') + '('+_.get(iUnit, 'type')+') has crashed'
-					};
-					if(_.get(iCurObj, 'iucid')) {
-						// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
-						dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
+			dbMapServiceController.unitActions('read', serverName, {_id: _.get(queObj, ['data', 'arg3'])})
+				.then(function (iunit) {
+					var curIUnit = _.get(iunit, 0);
+					if (curIUnit) {
+						iPlayer = _.find(curServers[serverName].serverObject.players, {name: _.get(curIUnit, 'playername')});
+						if (iPlayer) {
+							iCurObj = {
+								sessionName: sessionName,
+								eventCode: abrLookup(_.get(queObj, 'action')),
+								iucid: _.get(iPlayer, 'ucid'),
+								iName: _.get(curIUnit, 'playername'),
+								displaySide: 'A',
+								roleCode: 'I',
+								msg: 'A: '+ getSide(_.get(curIUnit, 'coalition'))+' '+ _.get(curIUnit, 'playername') + '('+_.get(curIUnit, 'type')+') has crashed'
+							};
+							if(_.get(iCurObj, 'iucid')) {
+								// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
+								dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
+							}
+							DCSLuaCommands.sendMesgToAll(
+								serverName,
+								_.get(iCurObj, 'msg'),
+								5
+							);
+						}
 					}
-					DCSLuaCommands.sendMesgToAll(
-						serverName,
-						_.get(iCurObj, 'msg'),
-						5
-					);
-				}
-			}
+				})
+				.catch(function (err) {
+					console.log('err line1297: ', err);
+				})
+			;
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_EJECTION') {
 			// Occurs when a pilot ejects from an aircraft
-			iUnit = _.find(curServers[serverName].serverObject.units, {unitId: queObj.data.arg3});
-			if (iUnit) {
-				iPlayer = _.find(curServers[serverName].serverObject.players, {name: iUnit.playername});
-				if (iPlayer) {
-					iCurObj = {
-						sessionName: sessionName,
-						eventCode: abrLookup(_.get(queObj, 'action')),
-						iucid: _.get(iPlayer, 'ucid'),
-						iName: _.get(iUnit, 'playername'),
-						displaySide: 'A',
-						roleCode: 'I',
-						msg: 'A: '+getSide(_.get(iUnit, 'coalition'))+' '+ _.get(iUnit, 'playername') + '('+_.get(iUnit, 'type')+') ejected'
-					};
-					if(_.get(iCurObj, 'iucid')) {
-						// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
-						dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
+			dbMapServiceController.unitActions('read', serverName, {_id: _.get(queObj, ['data', 'arg3'])})
+				.then(function (iunit) {
+					var curIUnit = _.get(iunit, 0);
+					if (curIUnit) {
+						iPlayer = _.find(curServers[serverName].serverObject.players, {name: _.get(curIUnit, 'playername')});
+						if (iPlayer) {
+							iCurObj = {
+								sessionName: sessionName,
+								eventCode: abrLookup(_.get(queObj, 'action')),
+								iucid: _.get(iPlayer, 'ucid'),
+								iName: _.get(curIUnit, 'playername'),
+								displaySide: 'A',
+								roleCode: 'I',
+								msg: 'A: '+getSide(_.get(curIUnit, 'coalition'))+' '+ _.get(curIUnit, 'playername') + '('+_.get(curIUnit, 'type')+') ejected'
+							};
+							if(_.get(iCurObj, 'iucid')) {
+								// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
+								dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
+							}
+							DCSLuaCommands.sendMesgToAll(
+								serverName,
+								_.get(iCurObj, 'msg'),
+								5
+							);
+						}
 					}
-					DCSLuaCommands.sendMesgToAll(
-						serverName,
-						_.get(iCurObj, 'msg'),
-						5
-					);
-				}
-			}
+				})
+				.catch(function (err) {
+					console.log('err line1331: ', err);
+				})
+			;
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_REFUELING') {
 			// Occurs when an aircraft connects with a tanker and begins taking on fuel.
-			iUnit = _.find(curServers[serverName].serverObject.units, {unitId: queObj.data.arg3});
-			if (iUnit) {
-				iPlayer = _.find(curServers[serverName].serverObject.players, {name: iUnit.playername});
-				if (iPlayer) {
-					iCurObj = {
-						sessionName: sessionName,
-						eventCode: abrLookup(_.get(queObj, 'action')),
-						iucid: _.get(iPlayer, 'ucid'),
-						iName: _.get(iUnit, 'playername'),
-						displaySide: _.get(iUnit, 'coalition'),
-						roleCode: 'I',
-						msg: 'C: ' + _.get(iUnit, 'playername') + '('+_.get(iUnit, 'type')+') began refueling',
-						showInChart: true
-					};
-					if (_.get(iCurObj, 'iucid')) {
-						curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
-						dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
+			dbMapServiceController.unitActions('read', serverName, {_id: _.get(queObj, ['data', 'arg3'])})
+				.then(function (iunit) {
+					var curIUnit = _.get(iunit, 0);
+					if (curIUnit) {
+						iPlayer = _.find(curServers[serverName].serverObject.players, {name: _.get(curIUnit, 'playername')});
+						if (iPlayer) {
+							iCurObj = {
+								sessionName: sessionName,
+								eventCode: abrLookup(_.get(queObj, 'action')),
+								iucid: _.get(iPlayer, 'ucid'),
+								iName: _.get(curIUnit, 'playername'),
+								displaySide: _.get(curIUnit, 'coalition'),
+								roleCode: 'I',
+								msg: 'C: ' + _.get(curIUnit, 'playername') + '('+_.get(curIUnit, 'type')+') began refueling',
+								showInChart: true
+							};
+							if (_.get(iCurObj, 'iucid')) {
+								curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
+								dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
+							}
+							DCSLuaCommands.sendMesgToCoalition(
+								_.get(iCurObj, 'displaySide'),
+								serverName,
+								_.get(iCurObj, 'msg'),
+								5
+							);
+						}
 					}
-					DCSLuaCommands.sendMesgToCoalition(
-						_.get(iCurObj, 'displaySide'),
-						serverName,
-						_.get(iCurObj, 'msg'),
-						5
-					);
-				}
-			}
+				})
+				.catch(function (err) {
+					console.log('err line1367: ', err);
+				})
+			;
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_DEAD') {
 			// Occurs when an object is completely destroyed.
-			iUnit = _.find(curServers[serverName].serverObject.units, {unitId: queObj.data.arg3});
-			if (iUnit) {
-				iPlayer = _.find(curServers[serverName].serverObject.players, {name: iUnit.playername});
-				if (iPlayer) {
-					iCurObj = {
-						sessionName: sessionName,
-						eventCode: abrLookup(_.get(queObj, 'action')),
-						iucid: _.get(iPlayer, 'ucid'),
-						iName: _.get(iUnit, 'playername'),
-						displaySide: 'A',
-						roleCode: 'I',
-						msg: 'A: '+getSide(_.get(iUnit, 'playername'))+' '+ _.get(iUnit, 'playername') + '('+_.get(iUnit, 'type')+') is dead'
-					};
-					if (_.get(iCurObj, 'iucid')) {
-						// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
-						dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
+			dbMapServiceController.unitActions('read', serverName, {_id: _.get(queObj, ['data', 'arg3'])})
+				.then(function (iunit) {
+					var curIUnit = _.get(iunit, 0);
+					if (curIUnit) {
+						iPlayer = _.find(curServers[serverName].serverObject.players, {name: _.get(curIUnit, 'playername')});
+						if (iPlayer) {
+							iCurObj = {
+								sessionName: sessionName,
+								eventCode: abrLookup(_.get(queObj, 'action')),
+								iucid: _.get(iPlayer, 'ucid'),
+								iName: _.get(curIUnit, 'playername'),
+								displaySide: 'A',
+								roleCode: 'I',
+								msg: 'A: '+getSide(_.get(curIUnit, 'playername'))+' '+ _.get(curIUnit, 'playername') + '('+_.get(curIUnit, 'type')+') is dead'
+							};
+							if (_.get(iCurObj, 'iucid')) {
+								// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
+								dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
+							}
+							DCSLuaCommands.sendMesgToAll(
+								serverName,
+								_.get(iCurObj, 'msg'),
+								5
+							);
+						}
 					}
-					DCSLuaCommands.sendMesgToAll(
-						serverName,
-						_.get(iCurObj, 'msg'),
-						5
-					);
-				}
-			}
+				})
+				.catch(function (err) {
+					console.log('err line1401: ', err);
+				})
+			;
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_PILOT_DEAD') {
 			// Occurs when the pilot of an aircraft is killed.
 			// Can occur either if the player is alive and crashes or
 			// if a weapon kills the pilot without completely destroying the plane.
-			iUnit = _.find(curServers[serverName].serverObject.units, {unitId: queObj.data.arg3});
-			if (iUnit) {
-				iPlayer = _.find(curServers[serverName].serverObject.players, {name: iUnit.playername});
-				if (iPlayer) {
-					iCurObj = {
-						sessionName: sessionName,
-						eventCode: abrLookup(_.get(queObj, 'action')),
-						iucid: _.get(iPlayer, 'ucid'),
-						iName: _.get(iUnit, 'playername'),
-						displaySide: 'A',
-						roleCode: 'I',
-						msg: 'A: '+getSide(_.get(iUnit, 'coalition'))+' '+ _.get(iUnit, 'playername') + '('+_.get(iUnit, 'type')+') pilot is dead'
-					};
-					if (_.get(iCurObj, 'iucid')) {
-						// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
-						dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
+			dbMapServiceController.unitActions('read', serverName, {_id: _.get(queObj, ['data', 'arg3'])})
+				.then(function (iunit) {
+					var curIUnit = _.get(iunit, 0);
+					if (curIUnit) {
+						iPlayer = _.find(curServers[serverName].serverObject.players, {name: _.get(curIUnit, 'playername')});
+						if (iPlayer) {
+							iCurObj = {
+								sessionName: sessionName,
+								eventCode: abrLookup(_.get(queObj, 'action')),
+								iucid: _.get(iPlayer, 'ucid'),
+								iName: _.get(curIUnit, 'playername'),
+								displaySide: 'A',
+								roleCode: 'I',
+								msg: 'A: '+getSide(_.get(curIUnit, 'coalition'))+' '+ _.get(curIUnit, 'playername') + '('+_.get(curIUnit, 'type')+') pilot is dead'
+							};
+							if (_.get(iCurObj, 'iucid')) {
+								// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
+								dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
+							}
+							DCSLuaCommands.sendMesgToAll(
+								serverName,
+								_.get(iCurObj, 'msg'),
+								5
+							);
+						}
 					}
-					DCSLuaCommands.sendMesgToAll(
-						serverName,
-						_.get(iCurObj, 'msg'),
-						5
-					);
-				}
-			}
+				})
+				.catch(function (err) {
+					console.log('err line1437: ', err);
+				})
+			;
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_REFUELING_STOP') {
 			// Occurs when an aircraft is finished taking fuel.
-			iUnit = _.find(curServers[serverName].serverObject.units, {unitId: queObj.data.arg3});
-			if (iUnit) {
-				iPlayer = _.find(curServers[serverName].serverObject.players, {name: iUnit.playername});
-				if(iPlayer) {
-					iCurObj = {
-						sessionName: sessionName,
-						eventCode: abrLookup(_.get(queObj, 'action')),
-						iucid: _.get(iPlayer, 'ucid'),
-						iName: _.get(iUnit, 'playername'),
-						displaySide: _.get(iUnit, 'coalition'),
-						roleCode: 'I',
-						msg: 'C: '+ _.get(iUnit, 'playername') + '('+_.get(iUnit, 'type')+') ended refueling',
-						showInChart: true
-					};
-					if (_.get(iCurObj, 'iucid')) {
-						curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
-						dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
+			dbMapServiceController.unitActions('read', serverName, {_id: _.get(queObj, ['data', 'arg3'])})
+				.then(function (iunit) {
+					var curIUnit = _.get(iunit, 0);
+					if (curIUnit) {
+						iPlayer = _.find(curServers[serverName].serverObject.players, {name: _.get(curIUnit, 'playername')});
+						if(iPlayer) {
+							iCurObj = {
+								sessionName: sessionName,
+								eventCode: abrLookup(_.get(queObj, 'action')),
+								iucid: _.get(iPlayer, 'ucid'),
+								iName: _.get(curIUnit, 'playername'),
+								displaySide: _.get(curIUnit, 'coalition'),
+								roleCode: 'I',
+								msg: 'C: '+ _.get(curIUnit, 'playername') + '('+_.get(curIUnit, 'type')+') ended refueling',
+								showInChart: true
+							};
+							if (_.get(iCurObj, 'iucid')) {
+								curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
+								dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
+							}
+							DCSLuaCommands.sendMesgToCoalition(
+								_.get(iCurObj, 'displaySide'),
+								serverName,
+								_.get(iCurObj, 'msg'),
+								5
+							);
+						}
 					}
-					DCSLuaCommands.sendMesgToCoalition(
-						_.get(iCurObj, 'displaySide'),
-						serverName,
-						_.get(iCurObj, 'msg'),
-						5
-					);
-				}
-			}
+				})
+				.catch(function (err) {
+					console.log('err line1473: ', err);
+				})
+			;
 		}
 
 		if (_.get(queObj, 'action') === 'S_EVENT_PLAYER_ENTER_UNIT') {
 			// Occurs when any player assumes direct control of a unit.
-			iUnit = _.find(curServers[serverName].serverObject.units, {unitId: queObj.data.arg3});
-			if (iUnit) {
-				iPlayer = _.find(curServers[serverName].serverObject.players, {name: iUnit.playername});
-				if (iPlayer) {
-					iCurObj = {
-						sessionName: sessionName,
-						eventCode: abrLookup(_.get(queObj, 'action')),
-						iucid: _.get(iPlayer, 'ucid'),
-						iName: _.get(iUnit, 'playername'),
-						displaySide: _.get(iUnit, 'coalition'),
-						roleCode: 'I',
-						msg: 'C: '+ _.get(iUnit, 'playername') +' enters a brand new ' + _.get(iUnit, 'type')
-					};
-					if (_.get(iCurObj, 'iucid')) {
-						// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
-						dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
+			dbMapServiceController.unitActions('read', serverName, {_id: _.get(queObj, ['data', 'arg3'])})
+				.then(function (iunit) {
+					var curIUnit = _.get(iunit, 0);
+					if (curIUnit) {
+						iPlayer = _.find(curServers[serverName].serverObject.players, {name: _.get(curIUnit, 'playername')});
+						if (iPlayer) {
+							iCurObj = {
+								sessionName: sessionName,
+								eventCode: abrLookup(_.get(queObj, 'action')),
+								iucid: _.get(iPlayer, 'ucid'),
+								iName: _.get(curIUnit, 'playername'),
+								displaySide: _.get(curIUnit, 'coalition'),
+								roleCode: 'I',
+								msg: 'C: '+ _.get(curIUnit, 'playername') +' enters a brand new ' + _.get(curIUnit, 'type')
+							};
+							if (_.get(iCurObj, 'iucid')) {
+								// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
+								dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
+							}
+							DCSLuaCommands.sendMesgToCoalition(
+								_.get(iCurObj, 'displaySide'),
+								serverName,
+								_.get(iCurObj, 'msg'),
+								5
+							);
+						}
 					}
-					DCSLuaCommands.sendMesgToCoalition(
-						_.get(iCurObj, 'displaySide'),
-						serverName,
-						_.get(iCurObj, 'msg'),
-						5
-					);
-				}
-			}
+				})
+				.catch(function (err) {
+					console.log('err line1509: ', err);
+				})
+			;
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_BIRTH') {
 			// Occurs when any object is spawned into the mission.
-			iUnit = _.find(curServers[serverName].serverObject.units, {unitId: queObj.data.arg3});
-			if (iUnit) {
-				iPlayer = _.find(curServers[serverName].serverObject.players, {name: iUnit.playername});
-				if (iPlayer) {
-					iCurObj = {
-						sessionName: sessionName,
-						eventCode: abrLookup(_.get(queObj, 'action')),
-						iucid: _.get(iPlayer, 'ucid'),
-						iName: _.get(iUnit, 'playername'),
-						displaySide: _.get(iUnit, 'coalition'),
-						roleCode: 'I',
-						msg: 'C: '+ _.get(iUnit, 'playername') +' enters a brand new ' + _.get(iUnit, 'type')
-					};
-					if (_.get(iCurObj, 'iucid')) {
-						// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
-						dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
+			dbMapServiceController.unitActions('read', serverName, {_id: _.get(queObj, ['data', 'arg3'])})
+				.then(function (iunit) {
+					var curIUnit = _.get(iunit, 0);
+					if (curIUnit) {
+						iPlayer = _.find(curServers[serverName].serverObject.players, {name: _.get(curIUnit, 'playername')});
+						if (iPlayer) {
+							iCurObj = {
+								sessionName: sessionName,
+								eventCode: abrLookup(_.get(queObj, 'action')),
+								iucid: _.get(iPlayer, 'ucid'),
+								iName: _.get(curIUnit, 'playername'),
+								displaySide: _.get(curIUnit, 'coalition'),
+								roleCode: 'I',
+								msg: 'C: '+ _.get(curIUnit, 'playername') +' enters a brand new ' + _.get(curIUnit, 'type')
+							};
+							if (_.get(iCurObj, 'iucid')) {
+								// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
+								dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
+							}
+							DCSLuaCommands.sendMesgToCoalition(
+								_.get(iCurObj, 'displaySide'),
+								serverName,
+								_.get(iCurObj, 'msg'),
+								5
+							);
+						}
 					}
-					DCSLuaCommands.sendMesgToCoalition(
-						_.get(iCurObj, 'displaySide'),
-						serverName,
-						_.get(iCurObj, 'msg'),
-						5
-					);
-				}
-			}
+				})
+				.catch(function (err) {
+					console.log('err line596: ', err);
+				})
+			;
 		}
 		if (_.get(queObj, 'action') === 'S_EVENT_PLAYER_LEAVE_UNIT') {
 			// Occurs when any player relieves control of a unit to the AI.
-			iUnit = _.find(curServers[serverName].serverObject.units, {unitId: queObj.data.arg3});
-			if (iUnit) {
-				iPlayer = _.find(curServers[serverName].serverObject.players, {name: iUnit.playername});
-				if (iPlayer) {
-					iCurObj = {
-						sessionName: sessionName,
-						eventCode: abrLookup(_.get(queObj, 'action')),
-						iucid: _.get(iPlayer, 'ucid'),
-						iName: _.get(iUnit, 'playername'),
-						displaySide: _.get(iUnit, 'coalition'),
-						roleCode: 'I',
-						msg: 'C: '+ _.get(iUnit, 'playername') +' leaves his ' + _.get(iUnit, 'type')
-					};
-					if (_.get(iCurObj, 'iucid')) {
-						// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
-						dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
+			dbMapServiceController.unitActions('read', serverName, {_id: _.get(queObj, ['data', 'arg3'])})
+				.then(function (iunit) {
+					var curIUnit = _.get(iunit, 0);
+					if (curIUnit) {
+						iPlayer = _.find(curServers[serverName].serverObject.players, {name: _.get(curIUnit, 'playername')});
+						if (iPlayer) {
+							iCurObj = {
+								sessionName: sessionName,
+								eventCode: abrLookup(_.get(queObj, 'action')),
+								iucid: _.get(iPlayer, 'ucid'),
+								iName: _.get(curIUnit, 'playername'),
+								displaySide: _.get(curIUnit, 'coalition'),
+								roleCode: 'I',
+								msg: 'C: '+ _.get(curIUnit, 'playername') +' leaves his ' + _.get(curIUnit, 'type')
+							};
+							if (_.get(iCurObj, 'iucid')) {
+								// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
+								dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
+							}
+							DCSLuaCommands.sendMesgToCoalition(
+								_.get(iCurObj, 'displaySide'),
+								serverName,
+								_.get(iCurObj, 'msg'),
+								5
+							);
+						}
 					}
-					DCSLuaCommands.sendMesgToCoalition(
-						_.get(iCurObj, 'displaySide'),
-						serverName,
-						_.get(iCurObj, 'msg'),
-						5
-					);
-				}
-			}
+				})
+				.catch(function (err) {
+					console.log('err line596: ', err);
+				})
+			;
 		}
 		return true;
 	});
