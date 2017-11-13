@@ -402,12 +402,16 @@ _.set(exports, 'spawnSupportPlane', function (serverName, baseObj, side) {
 	dbMapServiceController.cmdQueActions('save', serverName, actionObj);
 });
 
-_.set(exports, 'depopGroup', function ( groupObj ) {
+_.set(exports, 'loadOnDemandGroup', function ( groupObj ) {
 
 });
 
-_.set(exports, 'repopGroup', function ( groupObj ) {
+_.set(exports, 'unloadOnDemandGroup', function ( groupObj ) {
 
+});
+
+_.set(exports, 'replenishUnits', function ( serverName, baseName, side ) {
+	exports.spawnGroup(serverName, exports.spawnBaseReinforcementGroup(serverName, side), baseName, side);
 });
 
 _.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {

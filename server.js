@@ -1197,6 +1197,15 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
 						dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 					}
+
+					//landed logistic planes/helis spawn new group for area
+					var curUnitName = _.get(iUnit, 'name');
+					if (_.includes(curUnitName, '_LOGISTICS')) {
+						console.log('logistics landing: ', curUnitName);
+						var bArry = _.split(curUnitName, '_LOGISTICS');
+						groupController.replenishUnits( serverName, _.get(bArry, 0), _.get(iCurObj, 'displaySide'));
+					}
+
 					DCSLuaCommands.sendMesgToCoalition(
 						_.get(iCurObj, 'displaySide'),
 						serverName,
@@ -1477,8 +1486,6 @@ setInterval(function () {
 							dbMapServiceController.unitActions('read', curServerName, {name: new RegExp(curRegEx)})
 								.then(function (units) {
 									var replenEpoc = new Date(_.get(base, 'replenTime', 0)).getTime();
-									// console.log('chkreplen: ', base.name, replenEpoc < new Date().getTime());
-									// console.log('spawnReinforcements: ', base.name, units.length, ' < ', unitCnt);
 									if ((units.length < unitCnt) && isSpawningAllowed && replenEpoc < new Date().getTime()) {
 										dbMapServiceController.baseActions('updateReplenTimer', curServerName, {name: _.get(base, '_id'),  replenTime: new Date().getTime() + (_.get(srv, 'replenTimer') * 1000)})
 											.then(function () {
