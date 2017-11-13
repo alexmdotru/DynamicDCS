@@ -749,78 +749,87 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			_.set(queObj, 'sessionName', sessionName);
 			_.forEach(queObj.data, function (player) {
 				if (player !== null) {
-					var matchPlayer = _.find(curServers[serverName].serverObject.players, {ucid: player.ucid});
-					if(matchPlayer) {
-						//check for banned players
-						// console.log('stuff: ', player.id, player.name);
-						dbSystemServiceController.banUserActions('read', player.ucid)
-							.then(function (banUser) {
-								if (!_.isEmpty(banUser)){
-									console.log('Banning User: ', _.get(player, 'name'), _.get(player, 'ucid'));
-									DCSLuaCommands.kickPlayer(
-										serverName,
-										_.get(player, 'id'),
-										'You have been banned from this server, visit 16agr.com if you have questions'
-									);
-								}
-
-								// switching to spectator gets around this, fix this in future please
-								if ((matchPlayer.side !== player.side) && player.side !== 0 && _.get(player, 'side')) {
-									if (_.get(matchPlayer, 'side')) {
-										iCurObj = {
-											sessionName: sessionName,
-											eventCode: abrLookup(_.get(queObj, 'action')),
-											iucid: _.get(player, 'ucid'),
-											iName: _.get(player, 'name'),
-											displaySide: 'A',
-											roleCode: 'I',
-											msg: 'A: '+getSide(_.get(matchPlayer, 'side'))+' '+_.get(player, 'name')+' has commited Treason and switched to '+getSide(_.get(player, 'side'))+'. Shoot on sight! -1000pts',
-											score: -1000,
-											showInChart: true
-										};
-										if(_.get(iCurObj, 'iucid')) {
-											curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
-											dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
+					var curPlyrUcid = _.get(player, 'ucid');
+					var curPlyrSide = _.get(player, 'side');
+					var curPlyrName = _.get(player, 'name');
+					dbMapServiceController.unitActions('read', serverName, {_id: _.get(queObj, curPlyrUcid)})
+						.then(function (unit) {
+							var curUnit = _.get(unit, 0);
+							var curUnitSide = _.get(curUnit, 'side');
+							var curUnitUcid = _.get(curUnit, 'ucid');
+							if(curUnit) {
+								dbSystemServiceController.banUserActions('read', curPlyrUcid)
+									.then(function (banUser) {
+										if (!_.isEmpty(banUser)){
+											console.log('Banning User: ', _.get(player, 'name'), curPlyrUcid);
+											DCSLuaCommands.kickPlayer(
+												serverName,
+												_.get(player, 'id'),
+												'You have been banned from this server, visit 16agr.com if you have questions'
+											);
 										}
 
-										DCSLuaCommands.sendMesgToAll(
-											serverName,
-											_.get(iCurObj, 'msg'),
-											15
-										);
-									}
-									dbSystemServiceController.userAccountActions('read')
-										.then(function (resp) {
-											var curSocket;
-											var switchedPlayerSocket = nonaccountUsers[player.ucid];
-											var switchedPlayer = _.find(resp, {ucid: player.ucid});
-											if(switchedPlayerSocket) {
-												if (player.side === 1 || player.side === 2) {
-													setSocketRoom(switchedPlayerSocket, serverName + '_q' + player.side);
-													sendInit(serverName, switchedPlayerSocket);
+										// switching to spectator gets around this, fix this in future please
+										if ((curUnitSide !== curPlyrSide) && curPlyrSide !== 0 && curPlyrSide) {
+											if (curUnitSide) {
+												iCurObj = {
+													sessionName: sessionName,
+													eventCode: abrLookup(_.get(queObj, 'action')),
+													iucid: curPlyrUcid,
+													iName: curPlyrName,
+													displaySide: 'A',
+													roleCode: 'I',
+													msg: 'A: '+getSide(curUnitSide)+' '+curPlyrName+' has commited Treason and switched to '+getSide(curPlyrSide)+'. Shoot on sight! -1000pts',
+													score: -1000,
+													showInChart: true
+												};
+												if(curPlyrUcid) {
+													curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
+													dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 												}
-											} else if (switchedPlayer) {
-												curSocket = io.sockets.connected[_.get(switchedPlayer, 'curSocket')];
-												if (switchedPlayer.permLvl < 20) {
-													setSocketRoom(curSocket, serverName + '_padmin');
-												} else if (player.side === 1 || player.side === 2) {
-													setSocketRoom(curSocket, serverName + '_q' + player.side);
-													// sendInit(serverName, curSocket);
-												}
+
+												DCSLuaCommands.sendMesgToAll(
+													serverName,
+													_.get(iCurObj, 'msg'),
+													15
+												);
 											}
-										})
-										.catch(function (err) {
-											console.log('line626', err);
-										});
-									;
-								}
-							})
-							.catch(function (err) {
-								console.log('line654', err);
-							});
-					} else {
-						console.log('match player by ip line:747');
-					}
+											dbSystemServiceController.userAccountActions('read')
+												.then(function (resp) {
+													var curSocket;
+													var switchedPlayerSocket = nonaccountUsers[curPlyrUcid];
+													var switchedPlayer = _.find(resp, {ucid: curPlyrUcid});
+													if(switchedPlayerSocket) {
+														if (curPlyrSide === 1 || curPlyrSide === 2) {
+															setSocketRoom(switchedPlayerSocket, serverName + '_q' + curPlyrSide);
+															sendInit(serverName, switchedPlayerSocket);
+														}
+													} else if (switchedPlayer) {
+														curSocket = io.sockets.connected[_.get(switchedPlayer, 'curSocket')];
+														if (switchedPlayer.permLvl < 20) {
+															setSocketRoom(curSocket, serverName + '_padmin');
+														} else if (curPlyrSide === 1 || curPlyrSide === 2) {
+															setSocketRoom(curSocket, serverName + '_q' + curPlyrSide);
+															// sendInit(serverName, curSocket);
+														}
+													}
+												})
+												.catch(function (err) {
+													console.log('line626', err);
+												})
+											;
+										}
+									})
+									.catch(function (err) {
+										console.log('line654', err);
+									})
+								;
+							}
+						})
+						.catch(function (err) {
+							console.log('err line596: ', err);
+						})
+					;
 				}
 			});
 			//
