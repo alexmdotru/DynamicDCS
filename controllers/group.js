@@ -301,6 +301,9 @@ _.set(exports, 'spawnSupportVehiclesOnFarp', function ( serverName, baseName, si
 });
 
 _.set(exports, 'spawnSupportBaseGrp', function ( serverName, baseName, side ) {
+	if(baseName === 'Vaziani_FARP') {
+		console.log('Vaziani_FARP is being called line:305');
+	}
 	var spawnArray = [];
 	var curBases = _.get(exports, ['servers', serverName, 'bases']);
 	var farpBases = _.filter(curBases, {farp: true});
@@ -359,7 +362,7 @@ _.set(exports, 'spawnSupportPlane', function (serverName, baseObj, side) {
 	var remoteLoc;
 	var grpNum = _.random(1000000, 9999999);
 	curSide = (side) ? _.get(countryCoObj, ['defCountrys', side]) : _.get(countryCoObj, ['defCountrys', _.get(curGrpObj, 'coalition')]);
-	curBaseName = _.get(baseObj, 'name') + '_SUPPORT #' + grpNum;
+	curBaseName = _.get(baseObj, 'name') + '_LOGISTICS #' + grpNum;
 	baseLoc = _.get(baseObj, 'centerLoc');
 	if(_.get(baseObj, 'farp')) {
 		curSpwnUnit = _.cloneDeep(_.first(exports.getRndFromSpawnCat( 'transportHeli', side, true )));
@@ -368,7 +371,6 @@ _.set(exports, 'spawnSupportPlane', function (serverName, baseObj, side) {
 		curSpwnUnit = _.cloneDeep(_.first(exports.getRndFromSpawnCat( 'transportAircraft', side, true )));
 		remoteLoc = zoneController.getLonLatFromDistanceDirection(baseLoc, _.get(baseObj, 'spawnAngle'), 70);
 	}
-	console.log('unit: ', curSpwnUnit);
 	curGrpObj = _.cloneDeep(curSpwnUnit);
 	_.set(curGrpObj, 'groupId', grpNum);
 	_.set(curGrpObj, 'groupName', curBaseName);
@@ -384,7 +386,7 @@ _.set(exports, 'spawnSupportPlane', function (serverName, baseObj, side) {
 	unitNum = _.cloneDeep(grpNum);
 
 	unitNum += 1;
-	curUnitName = _.get(baseObj, 'name') + '_SUPPORT';
+	curUnitName = _.get(baseObj, 'name') + '_LOGISTICS';
 
 
 	_.set(curSpwnUnit, 'lonLatLoc', remoteLoc);
@@ -394,7 +396,6 @@ _.set(exports, 'spawnSupportPlane', function (serverName, baseObj, side) {
 	curUnitSpawn = exports.airUnitTemplate(curSpwnUnit);
 
 	curGroupSpawn = _.replace(curGroupSpawn, "#UNITS", curUnitSpawn);
-	console.log('cgs: ', curGroupSpawn);
 	var curCMD = 'mist.dynAdd(' + curGroupSpawn + ')';
 	var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
 	var actionObj = {actionObj: sendClient, queName: 'clientArray'};

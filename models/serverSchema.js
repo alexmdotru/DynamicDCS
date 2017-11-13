@@ -28,6 +28,9 @@ const ServerSchema = new Schema({
 		replenThreshold: {
 			type: Number
 		},
+		replenTimer: {
+			type: Number
+		},
 		minUnits: {
 			type: Number
 		},

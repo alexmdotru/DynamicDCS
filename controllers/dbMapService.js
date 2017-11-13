@@ -51,6 +51,19 @@ exports.baseActions = function (action, serverName, obj){
 			);
 		});
 	}
+	if(action === 'updateReplenTimer') {
+		console.log('urt: ', obj);
+		return new Promise(function(resolve, reject) {
+			Airfield.update(
+				{_id: obj.name},
+				{$set: {replenTime: _.get(obj, 'replenTime')}},
+				function(err, airfield) {
+					if (err) { reject(err) }
+					resolve(airfield);
+				}
+			);
+		});
+	}
 	if(action === 'save') {
 		return new Promise(function(resolve, reject) {
 			Airfield.find({_id: obj._id}, function (err, airfieldObj) {

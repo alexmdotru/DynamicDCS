@@ -68,6 +68,9 @@ const AirfieldSchema = new mongoose.Schema({
 	maxUnitThreshold: {
 		type: Number,
 		required: true
+	},
+	replenTime: {
+		type: Date
 	}
 },
 	{

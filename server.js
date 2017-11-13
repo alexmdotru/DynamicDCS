@@ -1463,7 +1463,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 	});
 });
 
-var spawnOnetest = false
 // constant check loop (base unit replenish, etc)
 setInterval(function () {
 	dbSystemServiceController.serverActions('read', {enabled: true})
@@ -1473,14 +1472,22 @@ setInterval(function () {
 				dbMapServiceController.baseActions('read', curServerName, {mainBase: true, $or: [{side: 1}, {side: 2}]})
 					.then(function (bases) {
 						_.forEach(bases, function (base) {
-							var curRegEx = _.get(base, '_id') + ' #';
+							var curRegEx = '^' + _.get(base, '_id') + ' #';
 							var unitCnt = _.get(base, 'maxUnitThreshold') * ((100 - _.get(srv, 'replenThreshold')) * 0.01);
 							dbMapServiceController.unitActions('read', curServerName, {name: new RegExp(curRegEx)})
 								.then(function (units) {
-									if ((units.length < unitCnt) && isSpawningAllowed && !spawnOnetest) {
-										console.log('spawnReinforcements: ', base.name, base.side, units.length, ' < ', unitCnt);
-										groupController.spawnSupportPlane(curServerName, base, _.get(base, 'side'));
-										spawnOnetest = true;
+									var replenEpoc = new Date(_.get(base, 'replenTime', 0)).getTime();
+									// console.log('chkreplen: ', base.name, replenEpoc < new Date().getTime());
+									// console.log('spawnReinforcements: ', base.name, units.length, ' < ', unitCnt);
+									if ((units.length < unitCnt) && isSpawningAllowed && replenEpoc < new Date().getTime()) {
+										dbMapServiceController.baseActions('updateReplenTimer', curServerName, {name: _.get(base, '_id'),  replenTime: new Date().getTime() + (_.get(srv, 'replenTimer') * 1000)})
+											.then(function () {
+												groupController.spawnSupportPlane(curServerName, base, _.get(base, 'side'));
+											})
+											.catch(function (err) {
+												console.log('line 1487: ', err);
+											})
+										;
 									}
 								})
 								.catch(function (err) {
