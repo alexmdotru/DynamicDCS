@@ -797,7 +797,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 											dbSystemServiceController.userAccountActions('read')
 												.then(function (resp) {
 													var curSocket;
-													var switchedPlayerSocket = nonaccountUsers[curPlyrUcid];
+													var switchedPlayerSocket = _.get(nonaccountUsers, curPlyrUcid);
 													var switchedPlayer = _.find(resp, {ucid: curPlyrUcid});
 													if(switchedPlayerSocket) {
 														if (curPlyrSide === 1 || curPlyrSide === 2) {
@@ -832,9 +832,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					;
 				}
 			});
-			//
-			curServers[serverName].serverObject.players = queObj.data;
-			//apply local information object
 
 			_.forEach(queObj.data, function (data) {
 				if (data) {
