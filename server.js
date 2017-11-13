@@ -1221,10 +1221,21 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				place = '';
 			}
 
+			console.log('EVENT LAND: ', queObj);
 			dbMapServiceController.unitActions('read', serverName, {_id: _.get(queObj, ['data', 'arg3'])})
 				.then(function (iunit) {
 					var curIUnit = _.get(iunit, 0);
+					console.log('unit: ', curIUnit);
 					if (curIUnit) {
+						console.log('L: ', curIUnit, curUnitName);
+						//landed logistic planes/helis spawn new group for area
+						var curUnitName = _.get(curIUnit, 'name');
+						if (_.includes(curUnitName, '_LOGISTICS')) {
+							console.log('logistics landing: ', curUnitName);
+							var bArry = _.split(curUnitName, '_LOGISTICS');
+							groupController.replenishUnits( serverName, _.get(bArry, 0), _.get(curIUnit, 'coalition'));
+						}
+
 						iPlayer = _.find(curServers[serverName].serverObject.players, {name: _.get(curIUnit, 'playername')});
 						if(iPlayer) {
 							iCurObj = {
@@ -1239,14 +1250,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 							if(_.get(iCurObj, 'iucid')) {
 								// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
 								dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
-							}
-
-							//landed logistic planes/helis spawn new group for area
-							var curUnitName = _.get(curIUnit, 'name');
-							if (_.includes(curUnitName, '_LOGISTICS')) {
-								console.log('logistics landing: ', curUnitName);
-								var bArry = _.split(curUnitName, '_LOGISTICS');
-								groupController.replenishUnits( serverName, _.get(bArry, 0), _.get(iCurObj, 'displaySide'));
 							}
 
 							DCSLuaCommands.sendMesgToCoalition(
