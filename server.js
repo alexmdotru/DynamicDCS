@@ -577,7 +577,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						}
 					}
 				} else {
-					// console.log('rePOP');
+					console.log('rePOP', (polyTry > 60), !isBasePop);
 					if ((polyTry > 60) && !isBasePop) {
 						console.log('buildDynamicMap');
 						DCSBuildMap.buildDynamicMap(serverName);
@@ -1711,6 +1711,7 @@ setInterval(function () {
 							curServers[server.name].DCSSocket.connectClient();
 							epocToPayAttention = new Date().getTime() + epocTimeout;
 							isSpawningAllowed = false;
+							isBasePop = false;
 						}
 						if (curServers[server.name].DCSSocket.gameGUIConnOpen === true) {
 							curServers[server.name].DCSSocket.connectServer();
