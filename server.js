@@ -580,7 +580,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					console.log('rePOP', (polyTry > 60), !isBasePop);
 					if ((polyTry > 60) && !isBasePop) {
 						console.log('buildDynamicMap');
-						DCSBuildMap.buildDynamicMap(serverName);
+						// DCSBuildMap.buildDynamicMap(serverName);
 						polyTry = 0;
 						isBasePop = true;
 					}
@@ -594,6 +594,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 	;
 
 	_.forEach(update.que, function (queObj) {
+		DCSLuaCommands.sendBaseCoalition(serverName);
 		var iCurObj = {};
 		var iPlayer = {};
 		var tPlayer = {};
@@ -713,6 +714,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				if (!isSpawningAllowed) {
 					if(epocToPayAttention < new Date().getTime()){
 						console.log('Spawning is now active');
+						DCSLuaCommands.sendBaseCoalition(serverName);
 						isSpawningAllowed = true;
 					}
 				}
@@ -730,7 +732,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 									var spawnArray = [];
 									spawnArray = _.concat(spawnArray, groupController.spawnSupportBaseGrp(serverName, base, side));
 									groupController.spawnGroup(serverName, spawnArray, base, side);
-
+									DCSLuaCommands.sendBaseCoalition(serverName);
 									_.set(baseSpawnTimeout, base, new Date().getTime() + epocTimeout);
 								}
 							}
@@ -1221,17 +1223,13 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				place = '';
 			}
 
-			console.log('EVENT LAND: ', queObj);
 			dbMapServiceController.unitActions('read', serverName, {_id: _.get(queObj, ['data', 'arg3'])})
 				.then(function (iunit) {
 					var curIUnit = _.get(iunit, 0);
-					console.log('unit: ', curIUnit);
 					if (curIUnit) {
-						console.log('L: ', curIUnit, curUnitName);
 						//landed logistic planes/helis spawn new group for area
 						var curUnitName = _.get(curIUnit, 'name');
 						if (_.includes(curUnitName, '_LOGISTICS')) {
-							console.log('logistics landing: ', curUnitName);
 							var bArry = _.split(curUnitName, '_LOGISTICS');
 							groupController.replenishUnits( serverName, _.get(bArry, 0), _.get(curIUnit, 'coalition'));
 						}

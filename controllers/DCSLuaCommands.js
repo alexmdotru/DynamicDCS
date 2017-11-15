@@ -43,3 +43,34 @@ _.set(exports, 'forcePlayerSpectator', function (serverName, playerId, mesg) {
 	actionObj = {actionObj: sendClient, queName: 'GameGuiArray'};
 	dbMapServiceController.cmdQueActions('save', serverName, actionObj);
 });
+
+_.set(exports, 'sendBaseCoalition', function (serverName) {
+	var curCMD;
+	var sendClient;
+	var actionObj;
+
+	dbMapServiceController.baseActions('read', serverName, {mainBase: true})
+		.then(function (bases) {
+			var mainB = 'dynDCS.baseArray = {';
+			_.forEach(bases, function (base) {
+				mainB += '["' + _.get(base,'_id') + '"] = ' + _.get(base,'side') + ',';
+			});
+			mainB += '}';
+			var  setBaseArray = 'function loadBases() ' + mainB + 'end';
+			/*
+			var baseArray = _.transform(bases, function(result, value) {
+				_.set(result, _.get(value,'_id'), _.get(value,'side'));
+			}, {});
+			//console.log('basearry: ', jsonBaseArray, baseArray);
+			//curCMD = 'dynDCS.setBaseArray("' + jsonBaseArray + '")';
+			*/
+			curCMD = 'table.insert(baseArray, 1)';
+			sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
+			actionObj = {actionObj: sendClient, queName: 'GameGuiArray'};
+			dbMapServiceController.cmdQueActions('save', serverName, actionObj);
+		})
+		.catch(function (err) {
+			console.log('error line:57 ', err);
+		})
+	;
+});

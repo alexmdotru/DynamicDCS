@@ -1,23 +1,7 @@
 --dynamicDCSGameGUI to export player information and run player commands
-
-function tprint(tbl, indent)
-	if not indent then indent = 0 end
-	for k, v in pairs(tbl) do
-		formatting = string.rep("  ", indent) .. k .. ": "
-		if type(v) == "table" then
-			net.log(formatting)
-			tprint(v, indent + 1)
-		elseif type(v) == 'boolean' then
-			net.log(formatting .. tostring(v))
-		else
-			net.log(formatting .. tostring(v))
-		end
-	end
-end
-
 local dynDCS = {}
 local cacheDB = {}
-local updateQue = {["que"] = {}}
+local updateQue = {["que"] = {} }
 
 local PORT = 3002
 local DATA_TIMEOUT_SEC = 1
@@ -38,6 +22,26 @@ local function clearVar()
 	updateQue = {["que"] = {}}
 end
 
+coalitionLookup = {
+	["neutral"] = 0,
+	["red"] = 1,
+	["blue"] = 2
+}
+
+function string:split( inSplitPattern, outResults )
+	if not outResults then
+		outResults = { }
+	end
+	local theStart = 1
+	local theSplitStart, theSplitEnd = string.find( self, inSplitPattern, theStart )
+	while theSplitStart do
+		table.insert( outResults, string.sub( self, theStart, theSplitStart-1 ) )
+		theStart = theSplitEnd + 1
+		theSplitStart, theSplitEnd = string.find( self, inSplitPattern, theStart )
+	end
+	table.insert( outResults, string.sub( self, theStart ) )
+	return outResults
+end
 
 local function getDataMessage()
 	--chunk send back updateQue.que
@@ -61,7 +65,7 @@ local function runRequest(request)
 		--	cacheDB = {}
 		--end
 		if request.action == "CMD" and request.cmd ~= nil and request.reqID ~= nil then
-			log('RUNNING CMD')
+			net.log('RUNNING CMD')
 			pcallCommand(request.cmd, request.reqID)
 		end
 	end
@@ -114,9 +118,9 @@ local function step()
 			--log(line)
 			local success, error =  pcall(checkJSON, line, 'decode')
 			if success then
-				--log('Incoming: '..line);
+				--log('Incoming: '..line)
 				local incMsg = JSON:decode(line)
-				runRequest(incMsg);
+				runRequest(incMsg)
 			else
 				log("Error: " .. error)
 			end
@@ -131,7 +135,7 @@ local function step()
 				if not bytes then
 					log("Connection lost")
 					client = nil
-				end;
+				end
 			else
 				log("Error: " .. error)
 			end
@@ -161,10 +165,10 @@ function playerSync()
 		end
 	end
 	--log('playertable: '..JSON:encode(playerTable))
-	return playerTable;
+	return playerTable
 end
 
-local _lastSent = 0;
+local _lastSent = 0
 dynDCS.onSimulationFrame = function()
 	local _now = DCS.getRealTime()
 	-- send every 1 second
@@ -431,8 +435,8 @@ end
 function pcallCommand(s, respID)
 	local success, resp =  pcall(commandExecute, s)
 	if success then
-		if resp ~= nil then
-			local curUpdate;
+		if resp then
+			local curUpdate
 			curUpdate = {
 				action = 'CMDRESPONSE',
 				data = {
@@ -452,6 +456,18 @@ function commandExecute(s)
 	return loadstring("return " ..s)()
 end
 
+function dynDCS.getFlagValue(_flag)
+	local _status,_error  = net.dostring_in('server', " return trigger.misc.getUserFlag(\"".._flag.."\"); ")
+	if not _status and _error then
+		--net.log("error getting flag: ".._error)
+		return 0
+	else
+		--net.log("flag value ".._flag.." value: ".._status)
+		--disabled
+		return tonumber(_status)
+	end
+end
+
 function dynDCS.getUnitId(_slotID)
 	local _unitId = tostring(_slotID)
 	if string.find(tostring(_unitId),"_",1,true) then
@@ -467,8 +483,14 @@ function dynDCS.shouldAllowSlot(_playerID, _slotID)
 	if _unitId == nil then
 		return true
 	end
-	--return dynDCS.spwnUnits[unitId]
-	return true
+	local curSide = coalitionLookup[DCS.getUnitProperty(_slotID, DCS.UNIT_COALITION)]
+	local curName = DCS.getUnitProperty(_slotID, DCS.UNIT_NAME):split(' #')[1]
+	local _flag = dynDCS.getFlagValue(curName)
+	net.log(curName.."_".._unitId..' flag:'.._flag..' uSide:'..curSide)
+	if _flag == curSide then
+		return true
+	end
+	return false
 end
 
 dynDCS.rejectPlayer = function(playerID)
@@ -489,15 +511,12 @@ end
 dynDCS.onPlayerTryChangeSlot = function(playerID, side, slotID)
 	if  DCS.isServer() and DCS.isMultiplayer() then
 		if  (side ~=0 and  slotID ~='' and slotID ~= nil)  then
-
-			net.log('UNITPROP: '..net.lua2json(DCS.getUnitProperty(slotID, DCS.UNIT_COALITION))..'--'..net.lua2json(DCS.getUnitProperty(slotID, DCS.UNIT_NAME)))
-
 			local _allow = dynDCS.shouldAllowSlot(playerID,slotID)
 			if not _allow then
 				dynDCS.rejectPlayer(playerID)
 				return false
 			end
-			net.log("SLOT - allowed -  playerid: "..playerID.." side:"..side.." slot: "..slotID)
+			--net.log("SLOT - allowed -  playerid: "..playerID.." side:"..side.." slot: "..slotID)
 		end
 	end
 	return true
@@ -505,4 +524,4 @@ end
 
 DCS.setUserCallbacks(dynDCS)
 
-net.log("Loaded - GameGUI Server started")
+net.log("Loaded - DynDCSGameGUI Server started")
