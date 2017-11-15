@@ -226,7 +226,8 @@ do
 				curObj.expansion = true
 			end
 			if not string.find(baseName, 'Expansion', 1, true) and not string.find(baseName, ' #', 1, true) then
-				env.info('applycache  ' .. baseName);
+				env.info('applycache  ' .. baseName..' : '.. coalition);
+				trigger.action.setUserFlag(baseName, coalition)
 				curObj.mainBase = true
 				airbaseCache[baseName].side = coalition
 				curObj["polygonLoc"] = polyArray[baseName]
@@ -437,6 +438,8 @@ do
 			for naIndex = 1, #neutralAirbases do
 				local baseName = neutralAirbases[naIndex]:getName()
 				if airbaseCache[baseName] ~= nil and not string.find(baseName, 'Expansion', 1, true) and not string.find(baseName, ' #', 1, true) then
+					env.info('FL: '..baseName..' : '..0)
+					trigger.action.setUserFlag(baseName, 0)
 					airbaseCache[baseName].side = 0
 				end
 			end
@@ -446,6 +449,8 @@ do
 			for rIndex = 1, #redAirbases do
 				local baseName = redAirbases[rIndex]:getName()
 				if airbaseCache[baseName] ~= nil and not string.find(baseName, 'Expansion', 1, true) and not string.find(baseName, ' #', 1, true) then
+					env.info('FL: '..baseName..' : '..1)
+					trigger.action.setUserFlag(baseName, 1)
 					airbaseCache[baseName].side = 1
 				end
 			end
@@ -455,6 +460,8 @@ do
 			for bIndex = 1, #blueAirbases do
 				local baseName = blueAirbases[bIndex]:getName()
 				if airbaseCache[baseName] ~= nil and not string.find(baseName, 'Expansion', 1, true) and not string.find(baseName, ' #', 1, true) then
+					env.info('FL: '..baseName..' : '..2)
+					trigger.action.setUserFlag(baseName, 2)
 					airbaseCache[baseName].side = 2
 				end
 			end

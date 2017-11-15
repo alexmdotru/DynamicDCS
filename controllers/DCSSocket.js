@@ -38,7 +38,6 @@ exports.createSocket = function (serverName, serverAddress, clientPort, gameGuiP
 		dbMapServiceController.cmdQueActions('grabNextQue', serverName, {queName: 'GameGuiArray'})
 			.then(function (resp) {
 				if (resp) {
-					console.log('gamegui cmd');
 					_.get(dsock, 'writeQue.gameGUI').push({
 						action: resp.actionObj.action,
 						cmd: resp.actionObj.cmd,

@@ -580,7 +580,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					console.log('rePOP', (polyTry > 60), !isBasePop);
 					if ((polyTry > 60) && !isBasePop) {
 						console.log('buildDynamicMap');
-						// DCSBuildMap.buildDynamicMap(serverName);
+						DCSBuildMap.buildDynamicMap(serverName);
 						polyTry = 0;
 						isBasePop = true;
 					}
@@ -594,7 +594,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 	;
 
 	_.forEach(update.que, function (queObj) {
-		DCSLuaCommands.sendBaseCoalition(serverName);
 		var iCurObj = {};
 		var iPlayer = {};
 		var tPlayer = {};
@@ -714,7 +713,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				if (!isSpawningAllowed) {
 					if(epocToPayAttention < new Date().getTime()){
 						console.log('Spawning is now active');
-						DCSLuaCommands.sendBaseCoalition(serverName);
 						isSpawningAllowed = true;
 					}
 				}
@@ -732,7 +730,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 									var spawnArray = [];
 									spawnArray = _.concat(spawnArray, groupController.spawnSupportBaseGrp(serverName, base, side));
 									groupController.spawnGroup(serverName, spawnArray, base, side);
-									DCSLuaCommands.sendBaseCoalition(serverName);
 									_.set(baseSpawnTimeout, base, new Date().getTime() + epocTimeout);
 								}
 							}
