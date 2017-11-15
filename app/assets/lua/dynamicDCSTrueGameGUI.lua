@@ -473,7 +473,6 @@ function dynDCS.getUnitId(_slotID)
 	if string.find(tostring(_unitId),"_",1,true) then
 		_unitId = string.sub(_unitId,1,string.find(_unitId,"_",1,true))
 		net.log("Unit ID Substr ".._unitId)
-
 	end
 	return tonumber(_unitId)
 end
