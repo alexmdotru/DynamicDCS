@@ -483,7 +483,7 @@ function dynDCS.shouldAllowSlot(_playerID, _slotID)
 		return true
 	end
 	local curSide = coalitionLookup[DCS.getUnitProperty(_slotID, DCS.UNIT_COALITION)]
-	local curName = DCS.getUnitProperty(_slotID, DCS.UNIT_NAME):split(' #')[1]
+	local curName = DCS.getUnitProperty(_slotID, DCS.UNIT_NAME):split(' #')[1]:split("_Extension")[1]
 	local _flag = dynDCS.getFlagValue(curName)
 	net.log(curName.."_".._unitId..' flag:'.._flag..' uSide:'..curSide)
 	if _flag == curSide then
