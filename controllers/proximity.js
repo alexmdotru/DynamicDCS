@@ -32,7 +32,7 @@ _.set(exports, 'getUnitsInProximity', function (serverName, lonLat, kmDistance, 
 			]
 		})
 		.then(function (closeUnits) {
-			console.log('close units ' + closeUnits);
+			// console.log('close units ' + closeUnits);
 			return closeUnits;
 		})
 		.catch(function (err) {
