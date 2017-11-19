@@ -31,6 +31,7 @@ const DCSSocket = require('./controllers/DCSSocket');
 const DCSLuaCommands = require('./controllers/DCSLuaCommands');
 const DCSBuildMap = require('./controllers/DCSBuildMap');
 const groupController = require('./controllers/group');
+const proximityController = require('./controllers/proximity');
 
 var admin = false;
 
@@ -1580,6 +1581,24 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		return true;
 	});
 });
+
+// distance checker loop)
+setInterval(function () {
+	// call unit distance from airports
+	dbSystemServiceController.serverActions('read', {enabled: true})
+		.then(function (srvs) {
+			_.forEach(srvs, function (srv) {
+				var curServerName = _.get(srv, '_id');
+				proximityController.checkUnitsToBase(curServerName);
+			});
+		})
+		.catch(function (err) {
+			console.log('line1491', err);
+		})
+	;
+	// call unit distance from important statics
+
+}, 1000);
 
 // constant check loop (base unit replenish, etc)
 setInterval(function () {
