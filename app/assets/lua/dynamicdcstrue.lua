@@ -438,7 +438,7 @@ do
 			for naIndex = 1, #neutralAirbases do
 				local baseName = neutralAirbases[naIndex]:getName()
 				if airbaseCache[baseName] ~= nil and not string.find(baseName, 'Expansion', 1, true) and not string.find(baseName, ' #', 1, true) then
-					env.info('FL: '..baseName..' : '..0)
+					--env.info('FL: '..baseName..' : '..0)
 					trigger.action.setUserFlag(baseName, 0)
 					airbaseCache[baseName].side = 0
 				end
@@ -449,7 +449,7 @@ do
 			for rIndex = 1, #redAirbases do
 				local baseName = redAirbases[rIndex]:getName()
 				if airbaseCache[baseName] ~= nil and not string.find(baseName, 'Expansion', 1, true) and not string.find(baseName, ' #', 1, true) then
-					env.info('FL: '..baseName..' : '..1)
+					--env.info('FL: '..baseName..' : '..1)
 					trigger.action.setUserFlag(baseName, 1)
 					airbaseCache[baseName].side = 1
 				end
@@ -460,7 +460,7 @@ do
 			for bIndex = 1, #blueAirbases do
 				local baseName = blueAirbases[bIndex]:getName()
 				if airbaseCache[baseName] ~= nil and not string.find(baseName, 'Expansion', 1, true) and not string.find(baseName, ' #', 1, true) then
-					env.info('FL: '..baseName..' : '..2)
+					--env.info('FL: '..baseName..' : '..2)
 					trigger.action.setUserFlag(baseName, 2)
 					airbaseCache[baseName].side = 2
 				end
@@ -708,7 +708,53 @@ do
 			env.info(string.format("Error while handling event %s", err), false)
 		end
 	end
+
+	local function f10MenuCmd (cmdObj)
+		env.info('f10 cmd: '..cmdObj[1]..' groupId: '..cmdObj[2]..' unitId: '..cmdObj[3]..' side: '..cmdObj[4])
+	end
+
+	local function f10Setup (_groupId, _unitId, side)
+		local _OffensePath = missionCommands.addSubMenuForGroup(_groupId, "Offense")
+		local _defensePath = missionCommands.addSubMenuForGroup(_groupId, "Defense")
+		local _logisticsPath = missionCommands.addSubMenuForGroup(_groupId, "Logistics")
+			local _troopsPath = missionCommands.addSubMenuForGroup(_groupId, "Troops", _logisticsPath)
+				missionCommands.addCommandForGroup(_groupId, "Unload / Extract Troops", _troopsPath, f10MenuCmd, {'unloadExtractTroops', _groupId, _unitId, side})
+				missionCommands.addCommandForGroup(_groupId, "Check Cargo", _troopsPath, f10MenuCmd, {'checkCargo', _groupId, _unitId, side})
+				missionCommands.addCommandForGroup(_groupId, "Load Infantry", _troopsPath, f10MenuCmd, {'loadInfantry', _groupId, _unitId, side})
+				missionCommands.addCommandForGroup(_groupId, "Load RPG Team", _troopsPath, f10MenuCmd, {'loadRPG', _groupId, _unitId, side})
+				missionCommands.addCommandForGroup(_groupId, "Load Mortar Team", _troopsPath, f10MenuCmd, {'loadMortarTeam', _groupId, _unitId, side})
+
+	end
+
+	local function setupF10Menus ()
+		local redGroups = coalition.getGroups(coalition.side.RED)
+		if redGroups ~= nil then
+			for groupIndex = 1, #redGroups do
+				local group = redGroups[groupIndex]
+				local _groupId = group:getID()
+				local units = group:getUnits()
+				local _unitId = tonumber(units[1]:getID())
+			 	f10Setup (_groupId, _unitId, 1)
+			end
+		end
+		local blueGroups = coalition.getGroups(coalition.side.BLUE)
+		if blueGroups ~= nil then
+			for groupIndex = 1, #blueGroups do
+				local group = blueGroups[groupIndex]
+				local _groupId = group:getID()
+				local units = group:getUnits()
+				local _unitId = tonumber(units[1]:getID())
+				f10Setup (_groupId, _unitId, 2)
+			end
+		end
+	end
+
+	setupF10Menus()
+
 end
+
+--local _refreshPath = missionCommands.addSubMenu("Refresh")
+--missionCommands.addCommand("Refresh Menus", _refreshPath, function (sayIt) env.info('si: '..sayIt) end, 'send refresh menu')
 
 world.addEventHandler(clientEventHandler)
 env.info("dynamicDCSTrue event handler added")
