@@ -713,17 +713,26 @@ do
 		env.info('f10 cmd: '..cmdObj[1]..' groupId: '..cmdObj[2]..' unitId: '..cmdObj[3]..' side: '..cmdObj[4])
 	end
 
-	local function f10Setup (_groupId, _unitId, side)
-		local _OffensePath = missionCommands.addSubMenuForGroup(_groupId, "Offense")
-		local _defensePath = missionCommands.addSubMenuForGroup(_groupId, "Defense")
-		local _logisticsPath = missionCommands.addSubMenuForGroup(_groupId, "Logistics")
-			local _troopsPath = missionCommands.addSubMenuForGroup(_groupId, "Troops", _logisticsPath)
-				missionCommands.addCommandForGroup(_groupId, "Unload / Extract Troops", _troopsPath, f10MenuCmd, {'unloadExtractTroops', _groupId, _unitId, side})
-				missionCommands.addCommandForGroup(_groupId, "Check Cargo", _troopsPath, f10MenuCmd, {'checkCargo', _groupId, _unitId, side})
-				missionCommands.addCommandForGroup(_groupId, "Load Infantry", _troopsPath, f10MenuCmd, {'loadInfantry', _groupId, _unitId, side})
-				missionCommands.addCommandForGroup(_groupId, "Load RPG Team", _troopsPath, f10MenuCmd, {'loadRPG', _groupId, _unitId, side})
-				missionCommands.addCommandForGroup(_groupId, "Load Mortar Team", _troopsPath, f10MenuCmd, {'loadMortarTeam', _groupId, _unitId, side})
+	local function buildLogisticsMenu (buildObj)
+		missionCommands.addSubMenuForGroup(buildObj[1], "Logistics")
+			missionCommands.addSubMenuForGroup(buildObj[1], "Troops", {"Logistics"})
+				missionCommands.addCommandForGroup(buildObj[1], "Unload / Extract Troops", {"Logistics", "Troops"}, f10MenuCmd, {'unloadExtractTroops', buildObj[1], buildObj[2], buildObj[3]})
+				missionCommands.addCommandForGroup(buildObj[1], "Check Cargo", {"Logistics", "Troops"}, f10MenuCmd, {'checkCargo', buildObj[1], buildObj[2], buildObj[3]})
+				missionCommands.addCommandForGroup(buildObj[1], "Load Infantry", {"Logistics", "Troops"}, f10MenuCmd, {'loadInfantry', buildObj[1], buildObj[2], buildObj[3]})
+				missionCommands.addCommandForGroup(buildObj[1], "Load RPG Team", {"Logistics", "Troops"}, f10MenuCmd, {'loadRPG', buildObj[1], buildObj[2], buildObj[3]})
+				missionCommands.addCommandForGroup(buildObj[1], "Load Mortar Team", {"Logistics", "Troops"}, f10MenuCmd, {'loadMortarTeam', buildObj[1], buildObj[2], buildObj[3]})
+	end
 
+	local function clearMenu (clearObj)
+		missionCommands.removeItemForGroup(clearObj[1], clearObj[2])
+	end
+
+	local function f10Setup (_groupId, _unitId, side)
+		missionCommands.addSubMenuForGroup(_groupId, "Offense")
+		missionCommands.addSubMenuForGroup(_groupId, "Defense")
+		missionCommands.addSubMenuForGroup(_groupId, "Test")
+			missionCommands.addCommandForGroup(_groupId, "Fill Troop Menu", {"Test"}, buildLogisticsMenu, {_groupId, _unitId, side})
+			missionCommands.addCommandForGroup(_groupId, "Clear Troop Menu", {"Test"}, clearMenu, {_groupId, {"Logistics"}})
 	end
 
 	local function setupF10Menus ()
