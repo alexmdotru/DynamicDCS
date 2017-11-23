@@ -712,33 +712,11 @@ do
 		end
 	end
 
-	local function f10MenuCmd (cmdObj)
-		env.info('f10 cmd: '..cmdObj[1]..' groupId: '..cmdObj[2]..' unitId: '..cmdObj[3]..' side: '..cmdObj[4])
+	local function sendCmd (cmdObj)
+		table.insert(updateQue.que, cmdObj)
 	end
 
-	local function buildLogisticsMenu (buildObj)
-		missionCommands.addSubMenuForGroup(buildObj[1], "Logistics")
-			missionCommands.addSubMenuForGroup(buildObj[1], "Troops", {"Logistics"})
-				missionCommands.addCommandForGroup(buildObj[1], "Unload / Extract Troops", {"Logistics", "Troops"}, f10MenuCmd, {'unloadExtractTroops', buildObj[1], buildObj[2], buildObj[3]})
-				missionCommands.addCommandForGroup(buildObj[1], "Check Cargo", {"Logistics", "Troops"}, f10MenuCmd, {'checkCargo', buildObj[1], buildObj[2], buildObj[3]})
-				missionCommands.addCommandForGroup(buildObj[1], "Load Infantry", {"Logistics", "Troops"}, f10MenuCmd, {'loadInfantry', buildObj[1], buildObj[2], buildObj[3]})
-				missionCommands.addCommandForGroup(buildObj[1], "Load RPG Team", {"Logistics", "Troops"}, f10MenuCmd, {'loadRPG', buildObj[1], buildObj[2], buildObj[3]})
-				missionCommands.addCommandForGroup(buildObj[1], "Load Mortar Team", {"Logistics", "Troops"}, f10MenuCmd, {'loadMortarTeam', buildObj[1], buildObj[2], buildObj[3]})
-	end
-
-	local function clearMenu (clearObj)
-		missionCommands.removeItemForGroup(clearObj[1], clearObj[2])
-	end
-
-	local function f10Setup (_groupId, _unitId, side)
-		missionCommands.addSubMenuForGroup(_groupId, "Offense")
-		missionCommands.addSubMenuForGroup(_groupId, "Defense")
-		missionCommands.addSubMenuForGroup(_groupId, "Test")
-			missionCommands.addCommandForGroup(_groupId, "Fill Troop Menu", {"Test"}, buildLogisticsMenu, {_groupId, _unitId, side})
-			missionCommands.addCommandForGroup(_groupId, "Clear Troop Menu", {"Test"}, clearMenu, {_groupId, {"Logistics"}})
-	end
-
-	local function setupF10Menus ()
+	local function setupRefreshMenus ()
 		local redGroups = coalition.getGroups(coalition.side.RED)
 		if redGroups ~= nil then
 			for groupIndex = 1, #redGroups do
@@ -746,7 +724,8 @@ do
 				local _groupId = group:getID()
 				local units = group:getUnits()
 				local _unitId = tonumber(units[1]:getID())
-			 	f10Setup (_groupId, _unitId, 1)
+				missionCommands.addSubMenuForGroup(_groupId, "Reset")
+				missionCommands.addCommandForGroup(_groupId, "Reset Menus", {"Reset"}, sendCmd, {['action'] = 'f10Menu', ['cmd'] = 'updateMenus', ['groupId'] = _groupId, ['unitId'] = _unitId, ['side'] = 1})
 			end
 		end
 		local blueGroups = coalition.getGroups(coalition.side.BLUE)
@@ -756,17 +735,13 @@ do
 				local _groupId = group:getID()
 				local units = group:getUnits()
 				local _unitId = tonumber(units[1]:getID())
-				f10Setup (_groupId, _unitId, 2)
+				missionCommands.addSubMenuForGroup(_groupId, "Reset")
+				missionCommands.addCommandForGroup(_groupId, "Reset Menus", {"Reset"}, sendCmd, {['action'] = 'f10Menu', ['cmd'] = 'updateMenus', ['groupId'] = _groupId, ['unitId'] = _unitId, ['side'] = 2})
 			end
 		end
 	end
-
-	setupF10Menus()
-
+	setupRefreshMenus();
 end
-
---local _refreshPath = missionCommands.addSubMenu("Refresh")
---missionCommands.addCommand("Refresh Menus", _refreshPath, function (sayIt) env.info('si: '..sayIt) end, 'send refresh menu')
 
 world.addEventHandler(clientEventHandler)
 env.info("dynamicDCSTrue event handler added")
