@@ -45,9 +45,12 @@ local function runRequest(request)
 		--	log('RUNNING REQUEST INIT')
 		--	cacheDB = {}
 		--end
-		if request.action == "CMD" and request.cmd ~= nil and request.reqID ~= nil then
-			log('RUNNING CMD')
-			pcallCommand(request.cmd, request.reqID)
+		if request.action == "CMD" and request.reqID ~= nil then
+			if type(request) == 'table' then
+				for rIndex = 1, #request do
+					pcallCommand(request.cmd[rIndex], request.reqID)
+				end
+			end
 		end
 	end
 end
@@ -440,4 +443,4 @@ end
 
 DCS.setUserCallbacks(dynDCS)
 
-net.log("Loaded - GameGUI Server started")
+net.log("Loaded - DynamicDCSGameGUI Server started")

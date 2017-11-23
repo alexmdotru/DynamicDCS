@@ -397,7 +397,7 @@ _.set(exports, 'spawnSupportPlane', function (serverName, baseObj, side) {
 
 	curGroupSpawn = _.replace(curGroupSpawn, "#UNITS", curUnitSpawn);
 	var curCMD = 'mist.dynAdd(' + curGroupSpawn + ')';
-	var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
+	var sendClient = {action: "CMD", cmd: [curCMD], reqID: 0};
 	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
 	dbMapServiceController.cmdQueActions('save', serverName, actionObj);
 });
@@ -453,7 +453,7 @@ _.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {
 		});
 		curGroupSpawn = _.replace(curGroupSpawn, "#UNITS", curUnitSpawn);
 		var curCMD = 'mist.dynAdd(' + curGroupSpawn + ')';
-		var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
+		var sendClient = {action: "CMD", cmd: [curCMD], reqID: 0};
 		var actionObj = {actionObj: sendClient, queName: 'clientArray'};
 		dbMapServiceController.cmdQueActions('save', serverName, actionObj);
 	}

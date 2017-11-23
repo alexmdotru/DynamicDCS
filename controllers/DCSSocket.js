@@ -27,22 +27,14 @@ exports.createSocket = function (serverName, serverAddress, clientPort, gameGuiP
 		dbMapServiceController.cmdQueActions('grabNextQue', serverName, {queName: 'clientArray'})
 			.then(function (resp) {
 				if (resp) {
-					_.get(dsock, 'writeQue.client').push({
-						action: resp.actionObj.action,
-						cmd: resp.actionObj.cmd,
-						reqID: resp._id
-					});
+					_.get(dsock, 'writeQue.client').push(resp.actionObj);
 				}
 			})
 		;
 		dbMapServiceController.cmdQueActions('grabNextQue', serverName, {queName: 'GameGuiArray'})
 			.then(function (resp) {
 				if (resp) {
-					_.get(dsock, 'writeQue.gameGUI').push({
-						action: resp.actionObj.action,
-						cmd: resp.actionObj.cmd,
-						reqID: resp._id
-					});
+					_.get(dsock, 'writeQue.gameGUI').push(resp.actionObj);
 				}
 			})
 		;

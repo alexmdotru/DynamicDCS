@@ -502,9 +502,12 @@ do
 				updateGroups(true)
 				updateStatics(true)
 			end
-			if request.action == "CMD" and request.cmd ~= nil and request.reqID ~= nil then
-				log('RUNNING CMD: '.. request.cmd)
-				pcallCommand(request.cmd, request.reqID)
+			if request.action == "CMD" and request.reqID ~= nil then
+				if type(request.cmd) == 'table' then
+					for rIndex = 1, #request.cmd do
+						pcallCommand(request.cmd[rIndex], request.reqID)
+					end
+				end
 			end
 		end
 	end
