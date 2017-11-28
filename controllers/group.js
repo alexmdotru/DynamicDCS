@@ -206,6 +206,25 @@ _.set(exports, 'airUnitTemplate', function ( unitObj ) {
 	'}';
 });
 
+_.set(exports, 'staticTemplate', function (staticObj) {
+	var retObj = '{' +
+		'["x"] = coord.LLtoLO(' + _.get(staticObj, ['lonLatLoc', 1]) + ', ' +  _.get(staticObj, ['lonLatLoc', 0]) + ').x, ' +
+		'["y"] = coord.LLtoLO(' + _.get(staticObj, ['lonLatLoc', 1]) + ', ' +  _.get(staticObj, ['lonLatLoc', 0]) + ').z, ' +
+		'["category"] = "' + _.get(staticObj, 'category') + '",' +
+		'["country"] = "' + _.get(staticObj, 'country') + '",' +
+		'["type"] = "' + _.get(staticObj, 'type') +'",' +
+		'["name"] = "' + _.get(staticObj, 'name') + '",' +
+		'["unitId"] = ' + _.get(staticObj, 'unitId') + ',' +
+		'["heading"] = ' + _.get(staticObj, 'heading', 0) + ',' +
+		'["shape_name"] = "' + _.get(staticObj, 'shape_name') + '",' +
+		'["canCargo"] = ' + _.get(staticObj, 'canCargo', false) + ',';
+		if (_.get(staticObj, 'canCargo', false)) {
+			retObj += '["mass"] = "' + _.get(staticObj, 'weight') + '",';
+		}
+	retObj += '}';
+	return retObj;
+});
+
 _.set(exports, 'getUnitDictionary', function () {
 	return dbSystemServiceController.unitDictionaryActions('read')
 		.then(function (unitsDic) {
@@ -301,9 +320,7 @@ _.set(exports, 'spawnSupportVehiclesOnFarp', function ( serverName, baseName, si
 });
 
 _.set(exports, 'spawnSupportBaseGrp', function ( serverName, baseName, side ) {
-	if(baseName === 'Vaziani_FARP') {
-		console.log('Vaziani_FARP is being called line:305');
-	}
+	var curBaseObj = {};
 	var spawnArray = [];
 	var curBases = _.get(exports, ['servers', serverName, 'bases']);
 	var farpBases = _.filter(curBases, {farp: true});
@@ -330,6 +347,10 @@ _.set(exports, 'spawnSupportBaseGrp', function ( serverName, baseName, side ) {
 	for (var i = 0; i < 3; i++) {
 		spawnArray = _.concat(spawnArray, _.cloneDeep(exports.getRndFromSpawnCat( 'armoredCar', side )));
 	}
+
+	//spawn logistics
+	curBaseObj = _.find(curBases, {name: baseName});
+	exports.spawnLogistic(serverName, {}, curBaseObj, side);
 
 	return _.compact(spawnArray);
 });
@@ -491,4 +512,23 @@ _.set(exports, 'initDbs', function ( serverName ) {
 
 		})
 	;
+});
+
+_.set(exports, 'spawnLogistic', function (serverName, staticObj, baseObj, side) {
+	var curGrpObj = _.cloneDeep(staticObj);
+	var curStaticSpawn;
+	_.set(curGrpObj, 'unitId', _.get(curGrpObj, 'unitId', _.random(1000000, 9999999)));
+	_.set(curGrpObj, 'name', _.get(curGrpObj, 'name', baseObj.name + ' Logistics'));
+	_.set(curGrpObj, 'country', _.get(curGrpObj, 'country', _.get(countryCoObj, ['defCountrys', side])));
+	if (_.isUndefined(_.get(curGrpObj, 'lonLatLoc'))) {
+		_.set(curGrpObj, 'lonLatLoc',  zoneController.getLonLatFromDistanceDirection(_.get(baseObj, ['logiCenter']), 0, 0.05));
+	}
+	_.set(curGrpObj, 'category', 'Fortifications');
+	_.set(curGrpObj, 'type', '.Command Center');
+	_.set(curGrpObj, 'shape_name', 'ComCenter');
+	curStaticSpawn = exports.staticTemplate(curGrpObj);
+	var curCMD = 'mist.dynAddStatic(' + curStaticSpawn + ')';
+	var sendClient = {action: "CMD", cmd: [curCMD], reqID: 0};
+	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
+	dbMapServiceController.cmdQueActions('save', serverName, actionObj);
 });

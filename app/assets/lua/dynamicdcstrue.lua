@@ -474,7 +474,7 @@ do
 			data = airbaseCache
 		})
 
-		--updateGroups()
+		updateGroups()
 
 		updateStatics()
 
@@ -501,7 +501,7 @@ do
 			if request.action == "INIT" then
 				--send all unit updates
 				--initAirbases()
-				--updateGroups(true)
+				updateGroups(true)
 				updateStatics(true)
 			end
 			if request.action == "CMD" and request.reqID ~= nil then
