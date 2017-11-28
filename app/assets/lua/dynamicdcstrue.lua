@@ -364,7 +364,6 @@ do
 				curStatic.data.life = static:getLife()
 				local staticPosition = static:getPosition()
 				curStatic.data.lat, curStatic.data.lon, curStatic.data.alt = coord.LOtoLL(staticPosition.p)
-				local unitPosition = unit:getPosition()
 				local lat, lon, alt = coord.LOtoLL(staticPosition.p)
 				curStatic.data.lonLatLoc = {
 					lon,
@@ -392,10 +391,13 @@ do
 					staticCache[curStatic.data.unitId].lat = lat
 					staticCache[curStatic.data.unitId].lon = lon
 					curStatic.data.name = static:getName()
+					curStatic.data.groupId = curStatic.data.unitId
+					curStatic.data.groupName = curStatic.data.name
 					curStatic.data.maxLife = tonumber(static:getLife())
 					curStatic.data.category = CategoryNames[static:getDesc().category]
 					curStatic.data.type = static:getTypeName()
 					curStatic.data.coalition = coalition
+					curStatic.data.country = CountryNames[static:getCountry()]
 					curStatic.action = "C"
 					table.insert(updateQue.que, curStatic)
 				end
@@ -472,7 +474,7 @@ do
 			data = airbaseCache
 		})
 
-		updateGroups()
+		--updateGroups()
 
 		updateStatics()
 
@@ -494,12 +496,12 @@ do
 	local function runRequest(request)
 		if request.action ~= nil then
 			if request.action == "GETPOLYDEF" then
-				initAirbases()
+				--initAirbases()
 			end
 			if request.action == "INIT" then
 				--send all unit updates
-				initAirbases()
-				updateGroups(true)
+				--initAirbases()
+				--updateGroups(true)
 				updateStatics(true)
 			end
 			if request.action == "CMD" and request.reqID ~= nil then
