@@ -662,7 +662,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 							sessionName: sessionName,
 							data: curData
 						};
-						console.log(curData);
 						dbMapServiceController.unitActions('save', serverName, iCurObj.data)
 							.then(function (unit) {
 								curServers[serverName].updateQue['q' + parseFloat(_.get(queObj, 'data.coalition'))].push(_.cloneDeep(iCurObj));
