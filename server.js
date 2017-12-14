@@ -642,7 +642,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 								lonLatLoc: _.get(queObj, 'data.lonLatLoc'),
 								alt: parseFloat(_.get(queObj, 'data.alt')),
 								hdg: parseFloat(_.get(queObj, 'data.hdg')),
-								speed: parseFloat(_.get(queObj, 'data.speed')),
+								speed: parseFloat(_.get(queObj, 'data.speed', 0)),
 								dead: false
 							}
 						};
@@ -1610,45 +1610,47 @@ setInterval(function () {
 
 // constant check loop (base unit replenish, etc)
 setInterval(function () {
-	dbSystemServiceController.serverActions('read', {enabled: true})
-		.then(function (srvs) {
-			_.forEach(srvs, function (srv) {
-				var curServerName = _.get(srv, '_id');
-				dbMapServiceController.baseActions('read', curServerName, {mainBase: true, $or: [{side: 1}, {side: 2}]})
-					.then(function (bases) {
-						_.forEach(bases, function (base) {
-							var curRegEx = '^' + _.get(base, '_id') + ' #';
-							var unitCnt = _.get(base, 'maxUnitThreshold') * ((100 - _.get(srv, 'replenThreshold')) * 0.01);
-							dbMapServiceController.unitActions('read', curServerName, {name: new RegExp(curRegEx)})
-								.then(function (units) {
-									var replenEpoc = new Date(_.get(base, 'replenTime', 0)).getTime();
-									if ((units.length < unitCnt) && isSpawningAllowed && replenEpoc < new Date().getTime()) {
-										dbMapServiceController.baseActions('updateReplenTimer', curServerName, {name: _.get(base, '_id'),  replenTime: new Date().getTime() + (_.get(srv, 'replenTimer') * 1000)})
-											.then(function () {
-												groupController.spawnSupportPlane(curServerName, base, _.get(base, 'side'));
-											})
-											.catch(function (err) {
-												console.log('line 1487: ', err);
-											})
-										;
-									}
-								})
-								.catch(function (err) {
-									console.log('line 1482: ', err);
-								})
-							;
-						});
-					})
-					.catch(function (err) {
-						console.log('line1486', err);
-					})
-				;
-			});
-		})
-		.catch(function (err) {
-			console.log('line1491', err);
-		})
-	;
+	if (isSpawningAllowed) {
+		dbSystemServiceController.serverActions('read', {enabled: true})
+			.then(function (srvs) {
+				_.forEach(srvs, function (srv) {
+					var curServerName = _.get(srv, '_id');
+					dbMapServiceController.baseActions('read', curServerName, {mainBase: true, $or: [{side: 1}, {side: 2}]})
+						.then(function (bases) {
+							_.forEach(bases, function (base) {
+								var curRegEx = '^' + _.get(base, '_id') + ' #';
+								var unitCnt = _.get(base, 'maxUnitThreshold') * ((100 - _.get(srv, 'replenThreshold')) * 0.01);
+								dbMapServiceController.unitActions('read', curServerName, {name: new RegExp(curRegEx)})
+									.then(function (units) {
+										var replenEpoc = new Date(_.get(base, 'replenTime', 0)).getTime();
+										if ((units.length < unitCnt) && isSpawningAllowed && replenEpoc < new Date().getTime()) {
+											dbMapServiceController.baseActions('updateReplenTimer', curServerName, {name: _.get(base, '_id'),  replenTime: new Date().getTime() + (_.get(srv, 'replenTimer') * 1000)})
+												.then(function () {
+													groupController.spawnSupportPlane(curServerName, base, _.get(base, 'side'));
+												})
+												.catch(function (err) {
+													console.log('line 1487: ', err);
+												})
+											;
+										}
+									})
+									.catch(function (err) {
+										console.log('line 1482: ', err);
+									})
+								;
+							});
+						})
+						.catch(function (err) {
+							console.log('line1486', err);
+						})
+					;
+				});
+			})
+			.catch(function (err) {
+				console.log('line1491', err);
+			})
+		;
+	}
 }, 5 * 1000);
 
 /*

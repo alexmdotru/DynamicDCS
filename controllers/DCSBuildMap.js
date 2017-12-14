@@ -18,6 +18,8 @@ _.set(exports, 'buildDynamicMap', function (serverName) {
 					if (_.get(unit, 'category') === 'GROUND') {
 						_.set(remappedunits, _.get(unit, 'groupName'), _.get(remappedunits, _.get(unit, 'groupName'), []));
 						remappedunits[_.get(unit, 'groupName')].push(unit);
+					} else if (_.get(unit, 'category') === 'STRUCTURE') {
+						groupController.spawnLogistic(serverName, unit);
 					} else {
 						curDead = {
 							_id: parseFloat(_.get(unit, 'unitId')),

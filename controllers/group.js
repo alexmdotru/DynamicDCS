@@ -517,8 +517,9 @@ _.set(exports, 'initDbs', function ( serverName ) {
 _.set(exports, 'spawnLogistic', function (serverName, staticObj, baseObj, side) {
 	var curGrpObj = _.cloneDeep(staticObj);
 	var curStaticSpawn;
+	console.log('go: ', curGrpObj);
 	_.set(curGrpObj, 'unitId', _.get(curGrpObj, 'unitId', _.random(1000000, 9999999)));
-	_.set(curGrpObj, 'name', _.get(curGrpObj, 'name', baseObj.name + ' Logistics'));
+	_.set(curGrpObj, 'name', _.get(curGrpObj, 'name', _.get(baseObj, 'name', '') + ' Logistics'));
 	_.set(curGrpObj, 'country', _.get(curGrpObj, 'country', _.get(countryCoObj, ['defCountrys', side])));
 	if (_.isUndefined(_.get(curGrpObj, 'lonLatLoc'))) {
 		_.set(curGrpObj, 'lonLatLoc',  zoneController.getLonLatFromDistanceDirection(_.get(baseObj, ['logiCenter']), 0, 0.05));
