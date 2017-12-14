@@ -16,6 +16,7 @@ var statSrvEventSchema = require('../models/statSrvEventSchema');
 var simpleStatEventSchema = require('../models/simpleStatEventSchema');
 var cmdQueSchema = require('../models/cmdQueSchema');
 var processSchema = require('../models/processSchema');
+var proxSchema = require('../models/proxSchema');
 
 exports.baseActions = function (action, serverName, obj){
 	const Airfield = mapdb.model(serverName+'_airfield', airfieldSchema);
@@ -363,7 +364,7 @@ exports.processActions = function (action, serverName, obj){
 	}
 	if(action === 'delete') {
 		return new Promise(function(resolve, reject) {
-			CmdQue.findByIdAndRemove(obj._id, function (err, pQue) {
+			ProcessQue.findByIdAndRemove(obj._id, function (err, pQue) {
 				if (err) { reject(err) }
 				resolve(pQue);
 			});
@@ -371,5 +372,48 @@ exports.processActions = function (action, serverName, obj){
 	}
 	if(action === 'dropall') {
 		ProcessQue.collection.drop();
+	}
+};
+
+exports.proxActions = function (action, serverName, obj){
+	const ProxQue = mapdb.model(serverName+'_proxAct', proxSchema);
+	if (action === 'read') {
+		return new Promise(function(resolve, reject) {
+			ProxQue.find(obj, function (err, pQue){
+				if(err) {
+					reject(err);
+				}
+				resolve(pQue);
+			});
+		});
+	}
+	if(action === 'save') {
+		return new Promise(function(resolve, reject) {
+			const proxque = new ProxQue(obj);
+			proxque.save(function (err, prQue) {
+				if (err) { reject(err) }
+				resolve(prQue);
+			});
+		});
+	}
+	if(action === 'updateCreate') {
+		return new Promise(function(resolve, reject) {
+			const proxque = new ProxQue(obj);
+			proxque.save(function (err, prQue) {
+				if (err) { reject(err) }
+				resolve(prQue);
+			});
+		});
+	}
+	if(action === 'delete') {
+		return new Promise(function(resolve, reject) {
+			ProxQue.findByIdAndRemove(obj._id, function (err, prQue) {
+				if (err) { reject(err) }
+				resolve(prQue);
+			});
+		});
+	}
+	if(action === 'dropall') {
+		ProxQue.collection.drop();
 	}
 };

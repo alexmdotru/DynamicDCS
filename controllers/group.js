@@ -4,6 +4,7 @@ const	_ = require('lodash'),
 const dbMapServiceController = require('./dbMapService');
 const dbSystemServiceController = require('./dbSystemService');
 const zoneController = require('./zone');
+const proximityController = require('./proximity');
 
 // from my main mission object, can spawn units on both sides in this setup
 var countryCoObj = {
@@ -517,7 +518,6 @@ _.set(exports, 'initDbs', function ( serverName ) {
 _.set(exports, 'spawnLogistic', function (serverName, staticObj, baseObj, side) {
 	var curGrpObj = _.cloneDeep(staticObj);
 	var curStaticSpawn;
-	console.log('go: ', curGrpObj);
 	_.set(curGrpObj, 'unitId', _.get(curGrpObj, 'unitId', _.random(1000000, 9999999)));
 	_.set(curGrpObj, 'name', _.get(curGrpObj, 'name', _.get(baseObj, 'name', '') + ' Logistics'));
 	_.set(curGrpObj, 'country', _.get(curGrpObj, 'country', _.get(countryCoObj, ['defCountrys', side])));
@@ -532,4 +532,5 @@ _.set(exports, 'spawnLogistic', function (serverName, staticObj, baseObj, side) 
 	var sendClient = {action: "CMD", cmd: [curCMD], reqID: 0};
 	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
 	dbMapServiceController.cmdQueActions('save', serverName, actionObj);
+	dbMapServiceController.proxActions('updateCreate', serverName, {_id: curGrpObj.unitId, unitId: curGrpObj.unitId, kmDistance: 400, cmdObj: {cmd: 'upLogiMenu'} });
 });
