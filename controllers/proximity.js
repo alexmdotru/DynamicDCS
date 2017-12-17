@@ -55,13 +55,6 @@ _.set(exports, 'checkUnitsToBase', function (serverName) {
 	;
 });
 
-_.set(exports, 'checkUnitsToStatic', function (serverName) {
-	dbMapServiceController.proxActions('read', serverName, {enabled: true})
-		.then(function (pAct) {
-			console.log('pAct: ', pAct);
-		})
-		.catch(function (err) {
-			console.log('line 35: ', err);
-		})
-	;
+_.set(exports, 'checkUnitsToLogistics', function (serverName) {
+
 });

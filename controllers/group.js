@@ -532,5 +532,4 @@ _.set(exports, 'spawnLogistic', function (serverName, staticObj, baseObj, side) 
 	var sendClient = {action: "CMD", cmd: [curCMD], reqID: 0};
 	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
 	dbMapServiceController.cmdQueActions('save', serverName, actionObj);
-	dbMapServiceController.proxActions('updateCreate', serverName, {_id: curGrpObj.unitId, unitId: curGrpObj.unitId, kmDistance: 400, cmdObj: {cmd: 'upLogiMenu'} });
 });

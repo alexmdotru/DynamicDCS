@@ -1590,7 +1590,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 	});
 });
 
-// distance checker loop)
+// distance checker loop
 setInterval(function () {
 	/*
 	// call unit distance from airports
