@@ -662,6 +662,11 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 							sessionName: sessionName,
 							data: curData
 						};
+						if (curData.category === 'STRUCTURE') {
+							if( _.includes(curData.name, ' Logistics')) {
+								_.set(curData, 'proxChkGrp', 'logisticTowers');
+							}
+						}
 						dbMapServiceController.unitActions('save', serverName, iCurObj.data)
 							.then(function (unit) {
 								curServers[serverName].updateQue['q' + parseFloat(_.get(queObj, 'data.coalition'))].push(_.cloneDeep(iCurObj));

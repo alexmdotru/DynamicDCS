@@ -73,6 +73,9 @@ const UnitSchema = new Schema({
 	dead: {
 		type: Boolean,
 		default: false
+	},
+	proxChkGrp: {
+		type: String
 	}
 },
 	{
