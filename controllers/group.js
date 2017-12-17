@@ -424,18 +424,6 @@ _.set(exports, 'spawnSupportPlane', function (serverName, baseObj, side) {
 	dbMapServiceController.cmdQueActions('save', serverName, actionObj);
 });
 
-_.set(exports, 'loadOnDemandGroup', function ( groupObj ) {
-
-});
-
-_.set(exports, 'unloadOnDemandGroup', function ( groupObj ) {
-
-});
-
-_.set(exports, 'replenishUnits', function ( serverName, baseName, side ) {
-	exports.spawnGroup(serverName, exports.spawnBaseReinforcementGroup(serverName, side), baseName, side);
-});
-
 _.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {
 	var grpNum = 0;
 	var unitNum = 0;
@@ -532,4 +520,16 @@ _.set(exports, 'spawnLogistic', function (serverName, staticObj, baseObj, side) 
 	var sendClient = {action: "CMD", cmd: [curCMD], reqID: 0};
 	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
 	dbMapServiceController.cmdQueActions('save', serverName, actionObj);
+});
+
+_.set(exports, 'replenishUnits', function ( serverName, baseName, side ) {
+	exports.spawnGroup(serverName, exports.spawnBaseReinforcementGroup(serverName, side), baseName, side);
+});
+
+_.set(exports, 'loadOnDemandGroup', function ( groupObj ) {
+
+});
+
+_.set(exports, 'unloadOnDemandGroup', function ( groupObj ) {
+
 });
