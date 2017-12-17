@@ -1611,7 +1611,7 @@ setInterval(function () {
 		.then(function (srvs) {
 			_.forEach(srvs, function (srv) {
 				var curServerName = _.get(srv, '_id');
-				proximityController.checkUnitsToStatic(curServerName);
+				proximityController.checkUnitsToLogistics(curServerName);
 			});
 		})
 		.catch(function (err) {

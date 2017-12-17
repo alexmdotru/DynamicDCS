@@ -16,7 +16,6 @@ var statSrvEventSchema = require('../models/statSrvEventSchema');
 var simpleStatEventSchema = require('../models/simpleStatEventSchema');
 var cmdQueSchema = require('../models/cmdQueSchema');
 var processSchema = require('../models/processSchema');
-var proxSchema = require('../models/proxSchema');
 
 exports.baseActions = function (action, serverName, obj){
 	const Airfield = mapdb.model(serverName+'_airfield', airfieldSchema);
