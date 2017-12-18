@@ -718,32 +718,6 @@ do
 			env.info(string.format("Error while handling event %s", err), false)
 		end
 	end
-
-	local function setupRefreshMenus ()
-		local redGroups = coalition.getGroups(coalition.side.RED)
-		if redGroups ~= nil then
-			for groupIndex = 1, #redGroups do
-				local group = redGroups[groupIndex]
-				local _groupId = group:getID()
-				local units = group:getUnits()
-				local _unitId = tonumber(units[1]:getID())
-				missionCommands.addSubMenuForGroup(_groupId, "Reset")
-				missionCommands.addCommandForGroup(_groupId, "Reset Menus", {"Reset"}, sendCmd, {['action'] = 'f10Menu', ['cmd'] = 'updateMenus', ['groupId'] = _groupId, ['unitId'] = _unitId, ['side'] = 1})
-			end
-		end
-		local blueGroups = coalition.getGroups(coalition.side.BLUE)
-		if blueGroups ~= nil then
-			for groupIndex = 1, #blueGroups do
-				local group = blueGroups[groupIndex]
-				local _groupId = group:getID()
-				local units = group:getUnits()
-				local _unitId = tonumber(units[1]:getID())
-				missionCommands.addSubMenuForGroup(_groupId, "Reset")
-				missionCommands.addCommandForGroup(_groupId, "Reset Menus", {"Reset"}, sendCmd, {['action'] = 'f10Menu', ['cmd'] = 'updateMenus', ['groupId'] = _groupId, ['unitId'] = _unitId, ['side'] = 2})
-			end
-		end
-	end
-	setupRefreshMenus();
 end
 
 world.addEventHandler(clientEventHandler)

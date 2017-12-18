@@ -64,9 +64,9 @@ _.set(exports, 'checkUnitsToLogisticTowers', function (serverName) {
 							var cId = _.toNumber(key);
 							if(!_.find(unitsInProx, {_id: cId}) && unit.enabled) {
 								_.set(unit, 'enabled', false);
-								console.log('REMOVE MENU: ', curLogiName, cId);
+								console.log('R logiTower: ', curLogiName, cId);
 								//remove logi f10 menu
-								menuUpdateController.logisticsMenu('removeTroopMenu', serverName, unit.data.groupId, cId, unit.data.coalition)
+								menuUpdateController.logisticsMenu('removeLogiTowerMenu', serverName, unit.data.groupId, cId, unit.data.coalition)
 							}
 						});
 						_.forEach(unitsInProx, function(unit) {
@@ -77,9 +77,9 @@ _.set(exports, 'checkUnitsToLogisticTowers', function (serverName) {
 										enabled: true,
 										data: unit
 									});
-									console.log('ADD MENU: ', curLogiName, cId);
+									console.log('A logiTower: ', curLogiName, cId);
 									//update f10 radio menu
-									menuUpdateController.logisticsMenu('addTroopMenu', serverName, unit.groupId, cId, unit.coalition)
+									menuUpdateController.logisticsMenu('addLogiTowerMenu', serverName, unit.groupId, cId, unit.coalition);
 								}
 							}
 						});
