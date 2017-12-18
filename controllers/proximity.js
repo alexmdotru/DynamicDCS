@@ -1,6 +1,7 @@
 const	_ = require('lodash');
 const dbMapServiceController = require('./dbMapService');
 const groupController = require('./group');
+const menuUpdateController = require('./menuUpdate');
 
 var unitsInProxMap = {};
 
@@ -61,19 +62,26 @@ _.set(exports, 'checkUnitsToLogisticTowers', function (serverName) {
 					.then(function (unitsInProx) {
 						_.forEach(_.get(unitsInProxMap, curLogiName, {}), function (unit, key) {
 							var cId = _.toNumber(key);
-							if(!_.find(unitsInProx, {_id: cId}) && _.get(unitsInProxMap, [curLogiName, cId])) {
-								_.set(unitsInProxMap, [curLogiName, cId], false);
-								console.log('REMOVE MENU: ', curLogiName, cId);
+							var curUnit = _.get(unit, [cId]);
+							if(!_.find(unitsInProx, {_id: cId}) && curUnit) {
+								_.set(curUnit, 'enabled', false);
+								console.log('REMOVE MENU: ', curUnit);
 								//remove logi f10 menu
+								console.log('cu: ', curUnit);
+								menuUpdateController.logisticsMenu('removeTroopMenu', serverName, curUnit.groupId, cId, curUnit.coalition)
 							}
 						});
 						_.forEach(unitsInProx, function(unit) {
 							var cId = unit._id;
 							if(cId && curLogiName) {
 								if(!_.get(unitsInProxMap, [curLogiName, cId])) {
-									_.set(unitsInProxMap, [curLogiName, cId], true);
+									_.set(unitsInProxMap, [curLogiName, cId], {
+										enabled: true,
+										data: unit
+									});
 									console.log('ADD MENU: ', curLogiName, cId);
 									//update f10 radio menu
+									menuUpdateController.logisticsMenu('addTroopMenu', serverName, unit.groupId, cId, unit.coalition)
 								}
 							}
 						});

@@ -618,7 +618,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 							polyFailCount = 0;
 						}
 					} else {
-						console.log('polyzones loaded, populate base');
+						// console.log('polyzones loaded, populate base');
 						polyNotLoaded = false;
 					}
 				})

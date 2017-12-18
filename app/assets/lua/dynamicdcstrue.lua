@@ -601,6 +601,10 @@ do
 		return timer.getTime() + DATA_TIMEOUT_SEC
 	end, nil, timer.getTime() + DATA_TIMEOUT_SEC)
 
+	function sendCmd (cmdObj)
+		table.insert(updateQue.que, cmdObj)
+	end
+
 	--Protected call to command execute
 	function pcallCommand(s, respId)
 		local success, resp = pcall(commandExecute, s)
@@ -713,10 +717,6 @@ do
 		if (not status) then
 			env.info(string.format("Error while handling event %s", err), false)
 		end
-	end
-
-	local function sendCmd (cmdObj)
-		table.insert(updateQue.que, cmdObj)
 	end
 
 	local function setupRefreshMenus ()
