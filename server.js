@@ -643,6 +643,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 								alt: parseFloat(_.get(queObj, 'data.alt')),
 								hdg: parseFloat(_.get(queObj, 'data.hdg')),
 								speed: parseFloat(_.get(queObj, 'data.speed', 0)),
+								inAir: _.get(queObj, 'data.inAir'),
 								dead: false
 							}
 						};

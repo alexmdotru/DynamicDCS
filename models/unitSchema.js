@@ -76,6 +76,9 @@ const UnitSchema = new Schema({
 	},
 	proxChkGrp: {
 		type: String
+	},
+	inAir: {
+		type: Boolean
 	}
 },
 	{

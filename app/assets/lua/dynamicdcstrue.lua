@@ -286,6 +286,7 @@ do
 					if (velocity) then
 						curUnit.data.speed = math.sqrt(velocity.x ^ 2 + velocity.z ^ 2)
 					end
+					curUnit.data.inAir = unit:inAir()
 					if unitCache[curUnit.data.unitId] ~= nil and not Init then
 						if unitCache[curUnit.data.unitId].lat ~= lat or unitCache[curUnit.data.unitId].lon ~= lon then
 							unitCache[curUnit.data.unitId] = {}

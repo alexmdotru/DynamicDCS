@@ -4,10 +4,7 @@ const groupController = require('./group');
 
 var unitsInProxMap = {};
 
-_.set(exports, 'getUnitsInProximity', function (serverName, lonLat, kmDistance, typeArry, incldUnits) {
-	if (!incldUnits) {
-		incldUnits = 'NotThisUnit';
-	}
+_.set(exports, 'getPlayersInProximity', function (serverName, lonLat, kmDistance, inAir, typeArry) {
 	return dbMapServiceController.unitActions(
 		'read',
 		serverName,
@@ -21,19 +18,13 @@ _.set(exports, 'getUnitsInProximity', function (serverName, lonLat, kmDistance, 
 					]
 				}
 			},
-			$or: [
-				{
-					playername: {
-						$ne: ''
-					},
-					type: {
-						$in: typeArry
-					}
-				},
-				{
-					name: new RegExp(incldUnits)
-				}
-			]
+			playername: {
+				$ne: ''
+			},
+			type: {
+				$in: typeArry
+			},
+			inAir: inAir
 		})
 		.then(function (closeUnits) {
 			// console.log('close units ' + closeUnits);
@@ -66,7 +57,7 @@ _.set(exports, 'checkUnitsToLogisticTowers', function (serverName) {
 			_.forEach(logiUnits, function (logiUnit) {
 				var curLogiName = logiUnit.name;
 				_.set(unitsInProxMap, curLogiName, _.get(unitsInProxMap, curLogiName, {}));
-				exports.getUnitsInProximity(serverName, _.get(logiUnit, 'lonLatLoc'), 0.2, ['UH-1H', 'Mi-8MT', 'Ka-50'])
+				exports.getPlayersInProximity(serverName, _.get(logiUnit, 'lonLatLoc'), 0.2, false, ['UH-1H', 'Mi-8MT', 'Ka-50'])
 					.then(function (unitsInProx) {
 						_.forEach(_.get(unitsInProxMap, curLogiName, {}), function (unit, key) {
 							var cId = _.toNumber(key);
