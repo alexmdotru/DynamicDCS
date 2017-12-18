@@ -19,7 +19,7 @@ _.set(exports, 'logisticsMenu', function (action, serverName, groupId, unitId, s
 		];
 	}
 	if (action === 'removeTroopMenu') {
-		var cmdArray = [
+		cmdArray = [
 			'missionCommands.removeItemForGroup("' + groupId + '", "Troop Logistics")'
 		];
 	}

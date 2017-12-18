@@ -62,19 +62,17 @@ _.set(exports, 'checkUnitsToLogisticTowers', function (serverName) {
 					.then(function (unitsInProx) {
 						_.forEach(_.get(unitsInProxMap, curLogiName, {}), function (unit, key) {
 							var cId = _.toNumber(key);
-							var curUnit = _.get(unit, [cId]);
-							if(!_.find(unitsInProx, {_id: cId}) && curUnit) {
-								_.set(curUnit, 'enabled', false);
-								console.log('REMOVE MENU: ', curUnit);
+							if(!_.find(unitsInProx, {_id: cId}) && unit.enabled) {
+								_.set(unit, 'enabled', false);
+								console.log('REMOVE MENU: ', curLogiName, cId);
 								//remove logi f10 menu
-								console.log('cu: ', curUnit);
-								menuUpdateController.logisticsMenu('removeTroopMenu', serverName, curUnit.groupId, cId, curUnit.coalition)
+								menuUpdateController.logisticsMenu('removeTroopMenu', serverName, unit.data.groupId, cId, unit.data.coalition)
 							}
 						});
 						_.forEach(unitsInProx, function(unit) {
 							var cId = unit._id;
 							if(cId && curLogiName) {
-								if(!_.get(unitsInProxMap, [curLogiName, cId])) {
+								if(!_.get(unitsInProxMap, [curLogiName, cId, 'enabled'])) {
 									_.set(unitsInProxMap, [curLogiName, cId], {
 										enabled: true,
 										data: unit
