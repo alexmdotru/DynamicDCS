@@ -59,7 +59,7 @@ _.set(exports, 'checkUnitsToBase', function (serverName) {
 	;
 });
 
-_.set(exports, 'checkUnitsToLogistics', function (serverName) {
+_.set(exports, 'checkUnitsToLogisticTowers', function (serverName) {
 	// console.log('t: ', unitsInProxMap);
 	dbMapServiceController.unitActions('read', serverName, {proxChkGrp: 'logisticTowers'})
 		.then(function (logiUnits) {
