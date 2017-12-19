@@ -6,7 +6,7 @@ const menuUpdateController = require('./menuUpdate');
 var unitsInProxLogiTowers = {};
 var unitsInProxBases = {};
 
-_.set(exports, 'getPlayersInProximity', function (serverName, lonLat, kmDistance, inAir) {
+_.set(exports, 'getPlayersInProximity', function (serverName, lonLat, kmDistance, inAir, coalition) {
 	return dbMapServiceController.unitActions(
 		'read',
 		serverName,
@@ -26,7 +26,8 @@ _.set(exports, 'getPlayersInProximity', function (serverName, lonLat, kmDistance
 			category: {
 				$in: ['AIRPLANE', 'HELICOPTER']
 			},
-			inAir: inAir
+			inAir: inAir,
+			coalition: coalition
 		})
 		.then(function (closeUnits) {
 			// console.log('close units ' + closeUnits);
@@ -45,7 +46,7 @@ _.set(exports, 'checkUnitsToBaseForTroops', function (serverName) {
 			_.forEach(bases, function (base) {
 				var curBaseName = base.name;
 				_.set(unitsInProxBases, curBaseName, _.get(unitsInProxBases, curBaseName, {}));
-				exports.getPlayersInProximity(serverName, _.get(base, 'centerLoc'), 4, false)
+				exports.getPlayersInProximity(serverName, _.get(base, 'centerLoc'), 3.4, false, base.side)
 					.then(function (unitsInProx) {
 						_.forEach(_.get(unitsInProxBases, curBaseName, {}), function (unit, key) {
 							var cId = _.toNumber(key);
@@ -89,7 +90,7 @@ _.set(exports, 'checkUnitsToLogisticTowers', function (serverName) {
 			_.forEach(logiUnits, function (logiUnit) {
 				var curLogiName = logiUnit.name;
 				_.set(unitsInProxLogiTowers, curLogiName, _.get(unitsInProxLogiTowers, curLogiName, {}));
-				exports.getPlayersInProximity(serverName, _.get(logiUnit, 'lonLatLoc'), 0.2, false)
+				exports.getPlayersInProximity(serverName, _.get(logiUnit, 'lonLatLoc'), 0.2, false, logiUnit.coalition)
 					.then(function (unitsInProx) {
 						_.forEach(_.get(unitsInProxLogiTowers, curLogiName, {}), function (unit, key) {
 							var cId = _.toNumber(key);
