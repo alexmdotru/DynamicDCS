@@ -1605,21 +1605,17 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 
 // distance checker loop
 setInterval(function () {
-	/*
-	// call unit distance from airports
 	dbSystemServiceController.serverActions('read', {enabled: true})
 		.then(function (srvs) {
 			_.forEach(srvs, function (srv) {
 				var curServerName = _.get(srv, '_id');
-				proximityController.checkUnitsToBase(curServerName);
+				proximityController.checkUnitsToBaseForTroops(curServerName);
 			});
 		})
 		.catch(function (err) {
 			console.log('line1491', err);
 		})
 	;
-	*/
-	// call unit distance from important statics
 	dbSystemServiceController.serverActions('read', {enabled: true})
 		.then(function (srvs) {
 			_.forEach(srvs, function (srv) {

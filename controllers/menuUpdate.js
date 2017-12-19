@@ -68,9 +68,10 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 	if (action === 'addTroopsMenu' && _.includes(allowedTypesForTroops, unit.type)) {
 		cmdArray = _.concat(cmdArray, [
 			'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "Troops")',
-			'missionCommands.addCommandForGroup("' + unit.groupId + '", "Load Infantry", {"Troops"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "spawnInfantry", ["groupId"] = ' + unit.groupId + ', ["unitId"] = ' + unit.unitId + ', ["side"] = ' + unit.coalition + ', ["crates"] = 1})',
-			'missionCommands.addCommandForGroup("' + unit.groupId + '", "Load RPG Team", {"Troops"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "spawnRPG", ["groupId"] = ' + unit.groupId + ', ["unitId"] = ' + unit.unitId + ', ["side"] = ' + unit.coalition + ', ["crates"] = 1})',
-			'missionCommands.addCommandForGroup("' + unit.groupId + '", "Load Mortar Team", {"Troops"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "spawnMortar", ["groupId"] = ' + unit.groupId + ', ["unitId"] = ' + unit.unitId + ', ["side"] = ' + unit.coalition + ', ["crates"] = 1})',
+			'missionCommands.addCommandForGroup("' + unit.groupId + '", "Load Rifle Troop", {"Troops"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "loadTroop", ["type"] = "rifleTroop", ["groupId"] = ' + unit.groupId + ', ["unitId"] = ' + unit.unitId + ', ["side"] = ' + unit.coalition + '})',
+			'missionCommands.addCommandForGroup("' + unit.groupId + '", "Load ManPad", {"Troops"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "loadTroop", ["type"] = "manPad", ["groupId"] = ' + unit.groupId + ', ["unitId"] = ' + unit.unitId + ', ["side"] = ' + unit.coalition + '})',
+			'missionCommands.addCommandForGroup("' + unit.groupId + '", "Load RPG Troop", {"Troops"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "loadTroop", ["type"] = "rpgTroop", ["groupId"] = ' + unit.groupId + ', ["unitId"] = ' + unit.unitId + ', ["side"] = ' + unit.coalition + '})',
+			'missionCommands.addCommandForGroup("' + unit.groupId + '", "Load Mortar Troop", {"Troops"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "loadTroop", ["type"] = "mortarTroop", ["groupId"] = ' + unit.groupId + ', ["unitId"] = ' + unit.unitId + ', ["side"] = ' + unit.coalition + '})',
 
 		]);
 	}

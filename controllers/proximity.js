@@ -3,7 +3,8 @@ const dbMapServiceController = require('./dbMapService');
 const groupController = require('./group');
 const menuUpdateController = require('./menuUpdate');
 
-var unitsInProxMap = {};
+var unitsInProxLogiTowers = {};
+var unitsInProxBases = {};
 
 _.set(exports, 'getPlayersInProximity', function (serverName, lonLat, kmDistance, inAir) {
 	return dbMapServiceController.unitActions(
@@ -37,12 +38,43 @@ _.set(exports, 'getPlayersInProximity', function (serverName, lonLat, kmDistance
 	;
 });
 
-_.set(exports, 'checkUnitsToBase', function (serverName) {
+_.set(exports, 'checkUnitsToBaseForTroops', function (serverName) {
 	// check every base that is owned by red or blue, 20 km sphere
 	dbMapServiceController.baseActions('read', serverName, {mainBase: true, $or: [{side: 1}, {side: 2}]})
 		.then(function (bases) {
 			_.forEach(bases, function (base) {
-				exports.getUnitsInProximity(serverName, _.get(base, 'centerLoc'), 20);
+				var curBaseName = base.name;
+				_.set(unitsInProxBases, curBaseName, _.get(unitsInProxBases, curBaseName, {}));
+				exports.getPlayersInProximity(serverName, _.get(base, 'centerLoc'), 1.7, false)
+					.then(function (unitsInProx) {
+						_.forEach(_.get(unitsInProxBases, curBaseName, {}), function (unit, key) {
+							var cId = _.toNumber(key);
+							if(!_.find(unitsInProx, {_id: cId}) && unit.enabled) {
+								_.set(unit, 'enabled', false);
+								console.log('R baseTroops: ', curBaseName, cId);
+								//remove logi f10 menu
+								menuUpdateController.logisticsMenu('resetMenu', serverName, unit.data)
+							}
+						});
+						_.forEach(unitsInProx, function(unit) {
+							var cId = unit._id;
+							if(cId && curBaseName) {
+								if(!_.get(unitsInProxBases, [curBaseName, cId, 'enabled'])) {
+									_.set(unitsInProxBases, [curBaseName, cId], {
+										enabled: true,
+										data: unit
+									});
+									console.log('A baseTroops: ', curBaseName, cId);
+									//update f10 radio menu
+									menuUpdateController.logisticsMenu('addTroopsMenu', serverName, unit);
+								}
+							}
+						});
+					})
+					.catch(function (err) {
+						console.log('line 64: ', err);
+					})
+				;
 			});
 		})
 		.catch(function (err) {
@@ -52,15 +84,14 @@ _.set(exports, 'checkUnitsToBase', function (serverName) {
 });
 
 _.set(exports, 'checkUnitsToLogisticTowers', function (serverName) {
-	// console.log('t: ', unitsInProxMap);
 	dbMapServiceController.unitActions('read', serverName, {proxChkGrp: 'logisticTowers'})
 		.then(function (logiUnits) {
 			_.forEach(logiUnits, function (logiUnit) {
 				var curLogiName = logiUnit.name;
-				_.set(unitsInProxMap, curLogiName, _.get(unitsInProxMap, curLogiName, {}));
+				_.set(unitsInProxLogiTowers, curLogiName, _.get(unitsInProxLogiTowers, curLogiName, {}));
 				exports.getPlayersInProximity(serverName, _.get(logiUnit, 'lonLatLoc'), 0.2, false)
 					.then(function (unitsInProx) {
-						_.forEach(_.get(unitsInProxMap, curLogiName, {}), function (unit, key) {
+						_.forEach(_.get(unitsInProxLogiTowers, curLogiName, {}), function (unit, key) {
 							var cId = _.toNumber(key);
 							if(!_.find(unitsInProx, {_id: cId}) && unit.enabled) {
 								_.set(unit, 'enabled', false);
@@ -72,8 +103,8 @@ _.set(exports, 'checkUnitsToLogisticTowers', function (serverName) {
 						_.forEach(unitsInProx, function(unit) {
 							var cId = unit._id;
 							if(cId && curLogiName) {
-								if(!_.get(unitsInProxMap, [curLogiName, cId, 'enabled'])) {
-									_.set(unitsInProxMap, [curLogiName, cId], {
+								if(!_.get(unitsInProxLogiTowers, [curLogiName, cId, 'enabled'])) {
+									_.set(unitsInProxLogiTowers, [curLogiName, cId], {
 										enabled: true,
 										data: unit
 									});
