@@ -79,6 +79,12 @@ const UnitSchema = new Schema({
 	},
 	inAir: {
 		type: Boolean
+	},
+	troopType: {
+		type: String
+	},
+	virtCrateType: {
+		type: String
 	}
 },
 	{
