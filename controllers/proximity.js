@@ -5,7 +5,7 @@ const menuUpdateController = require('./menuUpdate');
 
 var unitsInProxMap = {};
 
-_.set(exports, 'getPlayersInProximity', function (serverName, lonLat, kmDistance, inAir, typeArry) {
+_.set(exports, 'getPlayersInProximity', function (serverName, lonLat, kmDistance, inAir) {
 	return dbMapServiceController.unitActions(
 		'read',
 		serverName,
@@ -22,8 +22,8 @@ _.set(exports, 'getPlayersInProximity', function (serverName, lonLat, kmDistance
 			playername: {
 				$ne: ''
 			},
-			type: {
-				$in: typeArry
+			category: {
+				$in: ['AIRPLANE', 'HELICOPTER']
 			},
 			inAir: inAir
 		})
@@ -58,7 +58,7 @@ _.set(exports, 'checkUnitsToLogisticTowers', function (serverName) {
 			_.forEach(logiUnits, function (logiUnit) {
 				var curLogiName = logiUnit.name;
 				_.set(unitsInProxMap, curLogiName, _.get(unitsInProxMap, curLogiName, {}));
-				exports.getPlayersInProximity(serverName, _.get(logiUnit, 'lonLatLoc'), 0.2, false, ['UH-1H', 'Mi-8MT', 'Ka-50'])
+				exports.getPlayersInProximity(serverName, _.get(logiUnit, 'lonLatLoc'), 0.2, false)
 					.then(function (unitsInProx) {
 						_.forEach(_.get(unitsInProxMap, curLogiName, {}), function (unit, key) {
 							var cId = _.toNumber(key);
@@ -66,7 +66,7 @@ _.set(exports, 'checkUnitsToLogisticTowers', function (serverName) {
 								_.set(unit, 'enabled', false);
 								console.log('R logiTower: ', curLogiName, cId);
 								//remove logi f10 menu
-								menuUpdateController.logisticsMenu('removeLogiTowerMenu', serverName, unit)
+								menuUpdateController.logisticsMenu('resetMenu', serverName, unit)
 							}
 						});
 						_.forEach(unitsInProx, function(unit) {

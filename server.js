@@ -632,7 +632,13 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		if ((_.get(queObj, 'action') === 'C') || (_.get(queObj, 'action') === 'U') || (_.get(queObj, 'action') === 'D'))  {
 			dbMapServiceController.unitActions('read', serverName, {_id: _.get(queObj, 'data.unitId')})
 				.then(function (unit) {
-					if ((unit.length > 0 && _.get(queObj, 'action') !== 'D')) {
+					var curUnit = _.get(unit, 0, {});
+					var curData = _.get(queObj, 'data');
+					if ((!_.isEmpty(curUnit) && _.get(queObj, 'action') !== 'D')) {
+						if(!_.isEmpty(curData.playername) && curUnit.dead) {
+							console.log('U');
+							menuUpdateController.logisticsMenu('resetMenu', serverName, curData);
+						}
 						iCurObj = {
 							action: 'U',
 							sessionName: sessionName,
@@ -649,14 +655,17 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						};
 						dbMapServiceController.unitActions('update', serverName, iCurObj.data)
 							.then(function () {
-								curServers[serverName].updateQue['q' + _.get(unit, [0, 'coalition'])].push(_.cloneDeep(iCurObj));
+								curServers[serverName].updateQue['q' + _.get(curUnit, ['coalition'])].push(_.cloneDeep(iCurObj));
 								curServers[serverName].updateQue.qadmin.push(_.cloneDeep(iCurObj));
 							})
 							.catch(function (err) {
 								console.log('update err line626: ', err);
 							});
 					}else if (_.get(queObj, 'action') === 'C') {
-						var curData = _.get(queObj, 'data');
+						if(!_.isEmpty(curData.playername)) {
+							console.log('C');
+							menuUpdateController.logisticsMenu('resetMenu', serverName, curData);
+						}
 						_.set(curData, '_id', _.get(curData, 'unitId'));
 						iCurObj = {
 							action: 'C',
@@ -1514,8 +1523,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 								_.get(iCurObj, 'msg'),
 								5
 							);
-							console.log('spawn menu', 'actionMenu', serverName, curIUnit.groupId, curIUnit._id, _.get(curIUnit, 'coalition'));
-							menuUpdateController.logisticsMenu('actionMenu', serverName, curIUnit);
 						}
 					}
 				})
