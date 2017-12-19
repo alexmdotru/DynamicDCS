@@ -1515,7 +1515,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 								5
 							);
 							console.log('spawn menu', 'actionMenu', serverName, curIUnit.groupId, curIUnit._id, _.get(curIUnit, 'coalition'));
-							menuUpdateController.logisticsMenu('actionMenu', serverName, curIUnit.groupId, curIUnit._id, _.get(curIUnit, 'coalition'));
+							menuUpdateController.logisticsMenu('actionMenu', serverName, curIUnit);
 						}
 					}
 				})
