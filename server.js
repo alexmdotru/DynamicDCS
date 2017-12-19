@@ -559,7 +559,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					// console.log('resync');
 					if (units.length !== update.unitCount) {
 						// get update sync from server
-						console.log('out of sync ' + outOfSyncUnitCnt + ' times for ' + serverName + ' units: ' + update.unitCount + ' verse ' + units.length);
+						console.log(outOfSyncUnitCnt + ':' + serverName + ':' + update.unitCount + '=' + units.length);
 						if (outOfSyncUnitCnt > config.outOfSyncUnitThreshold) {
 							outOfSyncUnitCnt = 0;
 							console.log('reset server units');

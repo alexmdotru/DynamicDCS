@@ -45,7 +45,7 @@ _.set(exports, 'checkUnitsToBaseForTroops', function (serverName) {
 			_.forEach(bases, function (base) {
 				var curBaseName = base.name;
 				_.set(unitsInProxBases, curBaseName, _.get(unitsInProxBases, curBaseName, {}));
-				exports.getPlayersInProximity(serverName, _.get(base, 'centerLoc'), 1.7, false)
+				exports.getPlayersInProximity(serverName, _.get(base, 'centerLoc'), 4, false)
 					.then(function (unitsInProx) {
 						_.forEach(_.get(unitsInProxBases, curBaseName, {}), function (unit, key) {
 							var cId = _.toNumber(key);

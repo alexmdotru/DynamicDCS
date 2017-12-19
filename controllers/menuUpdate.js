@@ -46,24 +46,27 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 		'missionCommands.addCommandForGroup("' + unit.groupId + '", "Load Crate", {"ActionMenu"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "loadCrate", ["groupId"] = ' + unit.groupId + ', ["unitId"] = ' + unit.unitId + ', ["side"] = ' + unit.coalition + '})',
 		'missionCommands.addCommandForGroup("' + unit.groupId + '", "Drop Crate", {"ActionMenu"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "dropCrate", ["groupId"] = ' + unit.groupId + ', ["unitId"] = ' + unit.unitId + ', ["side"] = ' + unit.coalition + '})',
 	];
-	if(_.includes(allowedTypesForTroops, unit.type)) {
-		cmdArray = _.concat(cmdArray, aTroopMenu);
-		enableAction = true;
-	}
-	if(_.includes(allowedTypesForCrates, unit.type)) {
-		cmdArray = _.concat(cmdArray, aUnpackMenu);
-		enableAction = true;
-	}
-	if(virtualCrates && _.includes(allowedTypesForCrates, unit.type)) {
-		cmdArray = _.concat(cmdArray, vCrateMenu);
-		enableAction = true;
-	}
+	if (action === 'resetMenu') {
+		if(_.includes(allowedTypesForTroops, unit.type)) {
+			cmdArray = _.concat(cmdArray, aTroopMenu);
+			enableAction = true;
+		}
+		if(_.includes(allowedTypesForCrates, unit.type)) {
+			cmdArray = _.concat(cmdArray, aUnpackMenu);
+			enableAction = true;
+		}
+		if(virtualCrates && _.includes(allowedTypesForCrates, unit.type)) {
+			cmdArray = _.concat(cmdArray, vCrateMenu);
+			enableAction = true;
+		}
 
-	if (enableAction) {
-		cmdArray.unshift(actMenu);
-		enableAction = false;
+		if (enableAction) {
+			cmdArray.unshift(actMenu);
+			enableAction = false;
+		}
+
+		cmdArray.unshift(resetMenu);
 	}
-	cmdArray.unshift(resetMenu);
 
 	if (action === 'addTroopsMenu' && _.includes(allowedTypesForTroops, unit.type)) {
 		cmdArray = _.concat(cmdArray, [
@@ -106,10 +109,6 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 			'missionCommands.addCommandForGroup("' + unit.groupId + '", "MultiPart SAM (Medium Range)", {"Acquisitions", "Radar SAM"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "spawnCrateMRSAM", ["groupId"] = ' + unit.groupId + ', ["unitId"] = ' + unit.unitId + ', ["side"] = ' + unit.coalition + ', ["crates"] = 3})',
 			'missionCommands.addCommandForGroup("' + unit.groupId + '", "MultiPart SAM (Long Range)", {"Acquisitions", "Radar SAM"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "spawnCrateLRSAM", ["groupId"] = ' + unit.groupId + ', ["unitId"] = ' + unit.unitId + ', ["side"] = ' + unit.coalition + ', ["crates"] = 4})',
 		]);
-	}
-
-	if (action === 'resetMenu') {
-		// cmdArray.unshift('missionCommands.removeItemForGroup("' + unit.groupId + '", "ActionMenu", nil)');
 	}
 
 	console.log('cmd: ', cmdArray);
