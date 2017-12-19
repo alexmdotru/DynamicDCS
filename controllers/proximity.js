@@ -66,7 +66,7 @@ _.set(exports, 'checkUnitsToLogisticTowers', function (serverName) {
 								_.set(unit, 'enabled', false);
 								console.log('R logiTower: ', curLogiName, cId);
 								//remove logi f10 menu
-								menuUpdateController.logisticsMenu('resetMenu', serverName, unit)
+								menuUpdateController.logisticsMenu('resetMenu', serverName, unit.data)
 							}
 						});
 						_.forEach(unitsInProx, function(unit) {
@@ -79,7 +79,7 @@ _.set(exports, 'checkUnitsToLogisticTowers', function (serverName) {
 									});
 									console.log('A logiTower: ', curLogiName, cId);
 									//update f10 radio menu
-									menuUpdateController.logisticsMenu('addLogiTowerMenu', serverName, unit);
+									menuUpdateController.logisticsMenu('addLogiCratesMenu', serverName, unit);
 								}
 							}
 						});

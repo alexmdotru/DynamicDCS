@@ -34,9 +34,8 @@ _.set(exports, 'menuCmdProcess', function (processObj) {
 
 _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 	var cmdArray = [];
-	var defMenu = [
-		'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "ActionMenu")'
-	];
+	var resetMenu = 'missionCommands.removeItemForGroup("' + unit.groupId + '", "ActionMenu", nil)';
+	var actMenu = 'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "ActionMenu")';
 	var aTroopMenu = [
 		'missionCommands.addCommandForGroup("' + unit.groupId + '", "Unload / Extract Troops", {"ActionMenu"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "unloadExtractTroops", ["groupId"] = ' + unit.groupId + ', ["unitId"] = ' + unit._Id + ', ["side"] = ' + unit.coalition + '})'
 	];
@@ -48,32 +47,35 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 		'missionCommands.addCommandForGroup("' + unit.groupId + '", "Drop Crate", {"ActionMenu"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "dropCrate", ["groupId"] = ' + unit.groupId + ', ["unitId"] = ' + unit.unitId + ', ["side"] = ' + unit.coalition + '})',
 	];
 	if(_.includes(allowedTypesForTroops, unit.type)) {
-		defMenu = _.concat(defMenu, aTroopMenu);
+		cmdArray = _.concat(cmdArray, aTroopMenu);
 		enableAction = true;
 	}
 	if(_.includes(allowedTypesForCrates, unit.type)) {
-		defMenu = _.concat(defMenu, aUnpackMenu);
+		cmdArray = _.concat(cmdArray, aUnpackMenu);
 		enableAction = true;
 	}
 	if(virtualCrates && _.includes(allowedTypesForCrates, unit.type)) {
-		defMenu = _.concat(defMenu, vCrateMenu);
+		cmdArray = _.concat(cmdArray, vCrateMenu);
 		enableAction = true;
 	}
 
-	if (action === 'actionMenu') {
-		cmdArray = defMenu;
+	if (enableAction) {
+		cmdArray.unshift(actMenu);
+		enableAction = false;
 	}
+	cmdArray.unshift(resetMenu);
+
 	if (action === 'addTroopsMenu' && _.includes(allowedTypesForTroops, unit.type)) {
-		cmdArray = [
+		cmdArray = _.concat(cmdArray, [
 			'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "Troops")',
 			'missionCommands.addCommandForGroup("' + unit.groupId + '", "Load Infantry", {"Troops"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "spawnInfantry", ["groupId"] = ' + unit.groupId + ', ["unitId"] = ' + unit.unitId + ', ["side"] = ' + unit.coalition + ', ["crates"] = 1})',
 			'missionCommands.addCommandForGroup("' + unit.groupId + '", "Load RPG Team", {"Troops"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "spawnRPG", ["groupId"] = ' + unit.groupId + ', ["unitId"] = ' + unit.unitId + ', ["side"] = ' + unit.coalition + ', ["crates"] = 1})',
 			'missionCommands.addCommandForGroup("' + unit.groupId + '", "Load Mortar Team", {"Troops"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "spawnMortar", ["groupId"] = ' + unit.groupId + ', ["unitId"] = ' + unit.unitId + ', ["side"] = ' + unit.coalition + ', ["crates"] = 1})',
 
-		];
+		]);
 	}
 	if (action === 'addLogiCratesMenu' && _.includes(allowedTypesForCrates, unit.type)) {
-		cmdArray = [
+		cmdArray = _.concat(cmdArray, [
 			'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "Acquisitions")',
 			'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "Support", {"Acquisitions"})',
 			'missionCommands.addCommandForGroup("' + unit.groupId + '", "Early Warning Radar", {"Acquisitions","Support"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "spawnCrateEWR", ["groupId"] = ' + unit.groupId + ', ["unitId"] = ' + unit.unitId + ', ["side"] = ' + unit.coalition + ', ["crates"] = 1})',
@@ -102,16 +104,14 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 			'missionCommands.addCommandForGroup("' + unit.groupId + '", "Mobile SAM", {"Acquisitions", "Radar SAM"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "spawnCrateMobileSAM", ["groupId"] = ' + unit.groupId + ', ["unitId"] = ' + unit.unitId + ', ["side"] = ' + unit.coalition + ', ["crates"] = 3})',
 			'missionCommands.addCommandForGroup("' + unit.groupId + '", "MultiPart SAM (Medium Range)", {"Acquisitions", "Radar SAM"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "spawnCrateMRSAM", ["groupId"] = ' + unit.groupId + ', ["unitId"] = ' + unit.unitId + ', ["side"] = ' + unit.coalition + ', ["crates"] = 3})',
 			'missionCommands.addCommandForGroup("' + unit.groupId + '", "MultiPart SAM (Long Range)", {"Acquisitions", "Radar SAM"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "spawnCrateLRSAM", ["groupId"] = ' + unit.groupId + ', ["unitId"] = ' + unit.unitId + ', ["side"] = ' + unit.coalition + ', ["crates"] = 4})',
-		];
+		]);
 	}
+
 	if (action === 'resetMenu') {
-		if (enableAction) {
-			cmdArray = defMenu;
-			enableAction = false;
-		}
-		cmdArray.unshift('missionCommands.removeItemForGroup("' + unit.groupId + '", nil)');
+		// cmdArray.unshift('missionCommands.removeItemForGroup("' + unit.groupId + '", "ActionMenu", nil)');
 	}
-	// console.log('cmd: ', cmdArray);
+
+	console.log('cmd: ', cmdArray);
 	var sendClient = {action: "CMD", cmd: cmdArray, reqID: 0};
 	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
 	dbMapServiceController.cmdQueActions('save', serverName, actionObj);
