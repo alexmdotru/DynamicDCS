@@ -33,7 +33,6 @@ _.set(exports, 'menuCmdProcess', function (processObj) {
 });
 
 _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
-	console.log('unit: ', unit, _.find(allowedTypesForTroops, unit.type));
 	var cmdArray = [];
 	var defMenu = [
 		'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "ActionMenu")'
@@ -112,7 +111,7 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 		}
 		cmdArray.unshift('missionCommands.removeItemForGroup("' + unit.groupId + '", nil)');
 	}
-	console.log('cmd: ', cmdArray);
+	// console.log('cmd: ', cmdArray);
 	var sendClient = {action: "CMD", cmd: cmdArray, reqID: 0};
 	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
 	dbMapServiceController.cmdQueActions('save', serverName, actionObj);

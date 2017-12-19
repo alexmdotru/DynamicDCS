@@ -636,7 +636,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					var curData = _.get(queObj, 'data');
 					if ((!_.isEmpty(curUnit) && _.get(queObj, 'action') !== 'D')) {
 						if(!_.isEmpty(curData.playername) && curUnit.dead) {
-							console.log('U');
 							menuUpdateController.logisticsMenu('resetMenu', serverName, curData);
 						}
 						iCurObj = {
@@ -663,7 +662,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 							});
 					}else if (_.get(queObj, 'action') === 'C') {
 						if(!_.isEmpty(curData.playername)) {
-							console.log('C');
 							menuUpdateController.logisticsMenu('resetMenu', serverName, curData);
 						}
 						_.set(curData, '_id', _.get(curData, 'unitId'));
