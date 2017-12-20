@@ -1,7 +1,7 @@
 const	_ = require('lodash');
 const DCSLuaCommands = require('./DCSLuaCommands');
 const dbMapServiceController = require('./dbMapService');
-const proximityController = require('./\proximity');
+const proximityController = require('./proximity');
 const groupController = require('./group');
 
 _.set(exports, 'menuCmdProcess', function (pObj) {
@@ -24,6 +24,33 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 					}
 				} else {
 					//try to extract a troop
+					console.log('try to extract');
+					proximityController.getTroopsInProximity(pObj.serverName, curUnit.lonLatLoc, 0.2, false, curUnit.coalition)
+						.then(function(units){
+							var curTroop = _.get(units, [0]);
+							if(curTroop) {
+								// pickup troop
+
+								DCSLuaCommands.sendMesgToGroup(
+									curUnit.groupId,
+									pObj.serverName,
+									"G: Picked Up " + curTroop.type + "!",
+									5
+								);
+							} else {
+								// no troops
+								DCSLuaCommands.sendMesgToGroup(
+									curUnit.groupId,
+									pObj.serverName,
+									"G: No Troops To Extract Or Unload!",
+									5
+								);
+							}
+						})
+						.catch(function (err) {
+							console.log('line 32: ', err);
+						})
+					;
 				}
 			}
 			if (pObj.cmd === 'isTroopOnboard') {
@@ -136,11 +163,13 @@ _.set(exports, 'isTroopOnboard', function (unit, serverName, verbose) {
 		}
 		return true;
 	}
-	DCSLuaCommands.sendMesgToGroup(
-		unit.groupId,
-		serverName,
-		"G: No Troops Onboard!",
-		5
-	);
+	if(verbose) {
+		DCSLuaCommands.sendMesgToGroup(
+			unit.groupId,
+			serverName,
+			"G: No Troops Onboard!",
+			5
+		);
+	}
 	return false
 });

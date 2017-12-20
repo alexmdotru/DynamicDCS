@@ -39,6 +39,47 @@ _.set(exports, 'getPlayersInProximity', function (serverName, lonLat, kmDistance
 	;
 });
 
+_.set(exports, 'getTroopsInProximity', function (serverName, lonLat, kmDistance, inAir, coalition) {
+	return dbMapServiceController.unitActions(
+		'read',
+		serverName,
+		{
+			dead: false,
+			lonLatLoc: {
+				$geoWithin: {
+					$centerSphere: [
+						lonLat,
+						kmDistance / 6378.1
+					]
+				}
+			},
+			playername: {
+				$eq: ''
+			},
+			type: {
+				$in: [
+					'Soldier M249',
+					'Infantry AK',
+					'Stinger manpad',
+					'Soldier M4',
+					'Paratrooper RPG-16',
+					'2B11 mortar',
+					'SA-18 Igla manpad'
+				]
+			},
+			inAir: inAir,
+			coalition: coalition
+		})
+		.then(function (closeUnits) {
+			// console.log('close units ' + closeUnits);
+			return closeUnits;
+		})
+		.catch(function (err) {
+			console.log('line 12: ', err);
+		})
+	;
+});
+
 _.set(exports, 'checkUnitsToBaseForTroops', function (serverName) {
 	// check every base that is owned by red or blue, 20 km sphere
 	dbMapServiceController.baseActions('read', serverName, {mainBase: true, $or: [{side: 1}, {side: 2}]})
