@@ -21,6 +21,13 @@ _.set(exports, 'sendMesgToCoalition', function (coalition, serverName, mesg, tim
 	dbMapServiceController.cmdQueActions('save', serverName, actionObj);
 });
 
+_.set(exports, 'sendMesgToGroup', function (groupId, serverName, mesg, time) {
+	var curCMD = 'trigger.action.outTextForGroup('+groupId+', "'+mesg+'", '+time+')';
+	var sendClient = {action: "CMD", cmd: [curCMD], reqID: 0};
+	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
+	dbMapServiceController.cmdQueActions('save', serverName, actionObj);
+});
+
 
 // GameGui commands
 _.set(exports, 'kickPlayer', function (serverName, playerId, mesg) {

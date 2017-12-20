@@ -1,5 +1,5 @@
 const	_ = require('lodash');
-
+const DCSLuaCommands = require('./DCSLuaCommands');
 const dbMapServiceController = require('./dbMapService');
 const groupController = require('./group');
 
@@ -11,6 +11,9 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 			// action menu
 			if (pObj.cmd === 'unloadExtractTroops') {
 				console.log('unloadedExtractTroops');
+			}
+			if (pObj.cmd === 'isTroopOnboard') {
+				exports.isTroopOnboard(curUnit, pObj.serverName, true);
 			}
 			if (pObj.cmd === 'unpackCrate') {
 				console.log('unpackCrate');
@@ -24,6 +27,7 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 
 			// Troop Menu
 			if (pObj.cmd === 'soldier') {
+
 				console.log('soldier');
 			}
 
@@ -104,4 +108,28 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 			console.log('line 13: ', err);
 		})
 	;
+});
+
+_.set(exports, 'isTroopOnboard', function (unit, serverName, verbose) {
+	console.log('it: ', unit, serverName, verbose);
+	if (!_.isEmpty(unit.troopType)) {
+		if(verbose) {
+			DCSLuaCommands.sendMesgToGroup(
+				unit.groupId,
+				serverName,
+				"G: " + unit.troopType + " is Onboard!",
+				5
+			);
+		}
+		return true;
+	}
+	if(verbose) {
+		DCSLuaCommands.sendMesgToGroup(
+			unit.groupId,
+			serverName,
+			"G: No Troops Onboard!",
+			5
+		);
+	}
+	return false
 });
