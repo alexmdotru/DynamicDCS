@@ -13,14 +13,23 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 			if (pObj.cmd === 'unloadExtractTroops') {
 				if(exports.isTroopOnboard(curUnit, pObj.serverName)) {
 					if(proximityController.extractUnitsBackToBase(curUnit, pObj.serverName)) {
-						DCSLuaCommands.sendMesgToGroup(
-							curUnit.groupId,
-							pObj.serverName,
-							"G: " + curUnit.troopType + " has been dropped off at the base!",
-							5
-						);
+						dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, troopType: null})
+							.then(function(){
+								DCSLuaCommands.sendMesgToGroup(
+									curUnit.groupId,
+									pObj.serverName,
+									"G: " + curUnit.troopType + " has been dropped off at the base!",
+									5
+								);
+							})
+							.catch(function (err) {
+								console.log('line 26: ', err);
+							})
+						;
 					} else {
 						// spawn troop type
+						dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, troopType: null});
+						console.log('spawning stuff');
 					}
 				} else {
 					//try to extract a troop
@@ -30,7 +39,7 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 							var curTroop = _.get(units, [0]);
 							if(curTroop) {
 								// pickup troop
-
+								dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, troopType: curTroop.type});
 								groupController.destroyUnit(pObj.serverName, curTroop.name);
 								DCSLuaCommands.sendMesgToGroup(
 									curUnit.groupId,
