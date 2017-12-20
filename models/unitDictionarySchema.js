@@ -23,6 +23,9 @@ const UnitDictionarySchema = new Schema({
 			type: String,
 			required: true
 		},
+		spawnCatSec: {
+			type: String
+		},
 		comboName: {
 			type: String
 		},
