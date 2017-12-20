@@ -84,6 +84,16 @@ _.set(exports, 'checkUnitsToBaseForTroops', function (serverName) {
 	;
 });
 
+_.set(exports, 'extractUnitsBackToBase', function (unit, serverName) {
+	var friendlyBase = true;
+	_.forEach(unitsInProxBases, function (base) {
+		if(!_.get(base, [unit.unitId, 'enabled'], true)) {
+			friendlyBase = false;
+		}
+	});
+	return friendlyBase;
+});
+
 _.set(exports, 'checkUnitsToLogisticTowers', function (serverName) {
 	dbMapServiceController.unitActions('read', serverName, {proxChkGrp: 'logisticTowers'})
 		.then(function (logiUnits) {
