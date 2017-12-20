@@ -1,7 +1,6 @@
 const	_ = require('lodash');
-
 const dbMapServiceController = require('./dbMapService');
-const groupController = require('./group');
+
 var virtualCrates = true;
 var enableAction = false;
 var allowedTypesForTroops = [
@@ -27,10 +26,6 @@ var allowedTypesForCrates = [
 	'Ka-50',
 	'Mi-8MT'
 ];
-
-_.set(exports, 'menuCmdProcess', function (processObj) {
-	console.log('process menu cmd: ', processObj);
-});
 
 _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 	var cmdArray = [];

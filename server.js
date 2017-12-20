@@ -33,6 +33,7 @@ const DCSBuildMap = require('./controllers/DCSBuildMap');
 const groupController = require('./controllers/group');
 const proximityController = require('./controllers/proximity');
 const menuUpdateController = require('./controllers/menuUpdate');
+const menuCmdsController = require('./controllers/menuCmds');
 
 var admin = false;
 
@@ -761,7 +762,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		if (_.get(queObj, 'action') === 'f10Menu') {
 			_.set(queObj, 'serverName', serverName);
 			_.set(queObj, 'sessionName', sessionName);
-			menuUpdateController.menuCmdProcess(queObj);
+			menuCmdsController.menuCmdProcess(queObj);
 		};
 
 		//playerUpdate
