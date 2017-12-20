@@ -45,10 +45,10 @@ _.set(exports, 'checkUnitsToBaseForTroops', function (serverName) {
 		.then(function (bases) {
 			_.forEach(bases, function (base) {
 				var curBaseName = base.name;
-				_.set(unitsInProxBases, curBaseName, _.get(unitsInProxBases, curBaseName, {}));
+				_.set(unitsInProxBases, [serverName, curBaseName], _.get(unitsInProxBases, [serverName, curBaseName], {}));
 				exports.getPlayersInProximity(serverName, _.get(base, 'centerLoc'), 3.4, false, base.side)
 					.then(function (unitsInProx) {
-						_.forEach(_.get(unitsInProxBases, curBaseName, {}), function (unit, key) {
+						_.forEach(_.get(unitsInProxBases, [serverName, curBaseName], {}), function (unit, key) {
 							var cId = _.toNumber(key);
 							if(!_.find(unitsInProx, {_id: cId}) && unit.enabled) {
 								_.set(unit, 'enabled', false);
@@ -60,8 +60,8 @@ _.set(exports, 'checkUnitsToBaseForTroops', function (serverName) {
 						_.forEach(unitsInProx, function(unit) {
 							var cId = unit._id;
 							if(cId && curBaseName) {
-								if(!_.get(unitsInProxBases, [curBaseName, cId, 'enabled'])) {
-									_.set(unitsInProxBases, [curBaseName, cId], {
+								if(!_.get(unitsInProxBases, [serverName, curBaseName, cId, 'enabled'])) {
+									_.set(unitsInProxBases, [serverName, curBaseName, cId], {
 										enabled: true,
 										data: unit
 									});
@@ -86,7 +86,7 @@ _.set(exports, 'checkUnitsToBaseForTroops', function (serverName) {
 
 _.set(exports, 'extractUnitsBackToBase', function (unit, serverName) {
 	var friendlyBase = true;
-	_.forEach(unitsInProxBases, function (base) {
+	_.forEach(_.get(unitsInProxBases, [serverName], []), function (base) {
 		if(!_.get(base, [unit.unitId, 'enabled'], true)) {
 			friendlyBase = false;
 		}
@@ -99,10 +99,10 @@ _.set(exports, 'checkUnitsToLogisticTowers', function (serverName) {
 		.then(function (logiUnits) {
 			_.forEach(logiUnits, function (logiUnit) {
 				var curLogiName = logiUnit.name;
-				_.set(unitsInProxLogiTowers, curLogiName, _.get(unitsInProxLogiTowers, curLogiName, {}));
+				_.set(unitsInProxLogiTowers, [serverName, curLogiName], _.get(unitsInProxLogiTowers, [serverName, curLogiName], {}));
 				exports.getPlayersInProximity(serverName, _.get(logiUnit, 'lonLatLoc'), 0.2, false, logiUnit.coalition)
 					.then(function (unitsInProx) {
-						_.forEach(_.get(unitsInProxLogiTowers, curLogiName, {}), function (unit, key) {
+						_.forEach(_.get(unitsInProxLogiTowers, [serverName, curLogiName], {}), function (unit, key) {
 							var cId = _.toNumber(key);
 							if(!_.find(unitsInProx, {_id: cId}) && unit.enabled) {
 								_.set(unit, 'enabled', false);
@@ -114,8 +114,8 @@ _.set(exports, 'checkUnitsToLogisticTowers', function (serverName) {
 						_.forEach(unitsInProx, function(unit) {
 							var cId = unit._id;
 							if(cId && curLogiName) {
-								if(!_.get(unitsInProxLogiTowers, [curLogiName, cId, 'enabled'])) {
-									_.set(unitsInProxLogiTowers, [curLogiName, cId], {
+								if(!_.get(unitsInProxLogiTowers, [serverName, curLogiName, cId, 'enabled'])) {
+									_.set(unitsInProxLogiTowers, [serverName, curLogiName, cId], {
 										enabled: true,
 										data: unit
 									});

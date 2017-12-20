@@ -12,6 +12,14 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 			// action menu
 			if (pObj.cmd === 'unloadExtractTroops') {
 				if(exports.isTroopOnboard(curUnit, pObj.serverName)) {
+					if(proximityController.extractUnitsBackToBase(curUnit, pObj.serverName)) {
+						DCSLuaCommands.sendMesgToGroup(
+							curUnit.groupId,
+							pObj.serverName,
+							"G: " + curUnit.troopType + " has been dropped off at the base!",
+							5
+						);
+					}
 					console.log('der: ', proximityController.extractUnitsBackToBase(curUnit, pObj.serverName));
 				}
 			}
