@@ -19,8 +19,11 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 							"G: " + curUnit.troopType + " has been dropped off at the base!",
 							5
 						);
+					} else {
+						// spawn troop type
 					}
-					console.log('der: ', proximityController.extractUnitsBackToBase(curUnit, pObj.serverName));
+				} else {
+					//try to extract a troop
 				}
 			}
 			if (pObj.cmd === 'isTroopOnboard') {
