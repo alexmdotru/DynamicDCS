@@ -31,6 +31,7 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 							if(curTroop) {
 								// pickup troop
 
+								groupController.destroyUnit(pObj.serverName, curTroop.name);
 								DCSLuaCommands.sendMesgToGroup(
 									curUnit.groupId,
 									pObj.serverName,

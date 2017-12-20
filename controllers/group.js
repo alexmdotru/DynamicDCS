@@ -526,6 +526,14 @@ _.set(exports, 'replenishUnits', function ( serverName, baseName, side ) {
 	exports.spawnGroup(serverName, exports.spawnBaseReinforcementGroup(serverName, side), baseName, side);
 });
 
+_.set(exports, 'destroyUnit', function ( serverName, unitName ) {
+	// DONT USE ON CLIENT AIRCRAFT
+	var curCMD = 'Unit.getByName("' + unitName + '"):destroy()';
+	var sendClient = {action: "CMD", cmd: [curCMD], reqID: 0};
+	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
+	dbMapServiceController.cmdQueActions('save', serverName, actionObj);
+});
+
 _.set(exports, 'loadOnDemandGroup', function ( groupObj ) {
 
 });
