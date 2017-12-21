@@ -265,7 +265,7 @@ _.set(exports, 'getServer', function ( serverName ) {
 		;
 });
 
-_.set(exports, 'getRndFromSpawnCat', function (spawnCat, side, spawnAll) {
+_.set(exports, 'getRndFromSpawnCat', function (spawnCat, side, spawnAlways) {
 	var curEnabledCountrys = _.get(countryCoObj, _.get(countryCoObj, ['side', side]));
 	var findUnits = _.filter(_.get(exports, 'unitDictionary'), {spawnCat: spawnCat, enabled: true});
 	var cPUnits = [];
@@ -279,7 +279,7 @@ _.set(exports, 'getRndFromSpawnCat', function (spawnCat, side, spawnAll) {
 	if (cPUnits.length < 0) {
 		reject('cPUnits are less than zero');
 	}
-	if (spawnAll) {
+	if (spawnAlways) {
 		randomIndex = _.random(0, cPUnits.length-1);
 		if (cPUnits[randomIndex]) {
 			unitsChosen.push(cPUnits[randomIndex]);
@@ -457,6 +457,7 @@ _.set(exports, 'spawnGroundGroup', function (serverName, spawnArray, side) {
 			_.set(curSpwnUnit, 'lonLatLoc', zoneController.getLonLatFromDistanceDirection(curSpwnUnit.lonLatLoc, curSpwnUnit.heading, 0.05));
 			_.set(curSpwnUnit, 'unitId', _.get(curSpwnUnit, 'unitId', unitNum));
 			_.set(curSpwnUnit, 'name', _.get(curSpwnUnit, 'name', curUnitName));
+			_.set(curSpwnUnit, 'playerOwnerId', _.get(curSpwnUnit, 'playerOwnerId', null));
 			curUnitSpawn += exports.grndUnitTemplate(curSpwnUnit);
 		});
 		curGroupSpawn = _.replace(curGroupSpawn, "#UNITS", curUnitSpawn);

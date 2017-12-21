@@ -9,11 +9,13 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 	dbMapServiceController.unitActions('read', pObj.serverName, {_id: pObj.unitId})
 		.then(function(units) {
 			var spawnArray;
+			var curSpawnUnit;
 			var curUnit = _.get(units, 0, {});
 			// action menu
 			if (pObj.cmd === 'unloadExtractTroops') {
 				if(exports.isTroopOnboard(curUnit, pObj.serverName)) {
-					if(proximityController.extractUnitsBackToBase(curUnit, pObj.serverName)) {
+					//if(proximityController.extractUnitsBackToBase(curUnit, pObj.serverName)) {
+					if(false) {
 						dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, troopType: null})
 							.then(function(){
 								DCSLuaCommands.sendMesgToGroup(
@@ -29,17 +31,24 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 						;
 					} else {
 						// spawn troop type
+						curSpawnUnit = _.cloneDeep(_.first(groupController.getRndFromSpawnCat(curUnit.troopType, curUnit.coalition, true)));
 						spawnArray = {
 							spwnName: curUnit.playername,
-							type: curUnit.troopType,
+							type: curSpawnUnit.type,
 							playerOwnerId: pObj.unitId,
 							lonLatLoc: curUnit.lonLatLoc,
 							heading: curUnit.hdg,
 							country: curUnit.country,
-							category: 'GROUND'
+							category: curSpawnUnit.category
 						};
 						groupController.spawnGroundGroup(pObj.serverName, [spawnArray], curUnit.coalition);
 						dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, troopType: null});
+						DCSLuaCommands.sendMesgToGroup(
+							curUnit.groupId,
+							pObj.serverName,
+							"G: " + curSpawnUnit.type + " has been deployed!",
+							5
+						);
 					}
 				} else {
 					//try to extract a troop
