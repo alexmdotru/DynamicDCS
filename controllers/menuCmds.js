@@ -14,8 +14,8 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 			// action menu
 			if (pObj.cmd === 'unloadExtractTroops') {
 				if(exports.isTroopOnboard(curUnit, pObj.serverName)) {
-					//if(proximityController.extractUnitsBackToBase(curUnit, pObj.serverName)) {
-					if(false) {
+					console.log('should be false: ', proximityController.extractUnitsBackToBase(curUnit, pObj.serverName) );
+					if(proximityController.extractUnitsBackToBase(curUnit, pObj.serverName)) {
 						dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, troopType: null})
 							.then(function(){
 								DCSLuaCommands.sendMesgToGroup(
@@ -33,15 +33,14 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 						// spawn troop type
 						curSpawnUnit = _.cloneDeep(_.first(groupController.getRndFromSpawnCat(curUnit.troopType, curUnit.coalition, true)));
 						spawnArray = {
-							spwnName: curUnit.playername,
+							spwnName: 'SU|' + pObj.unitId + '|' + curUnit.troopType + '|' + curUnit.playername + '|' ,
 							type: curSpawnUnit.type,
-							playerOwnerId: pObj.unitId,
 							lonLatLoc: curUnit.lonLatLoc,
 							heading: curUnit.hdg,
 							country: curUnit.country,
 							category: curSpawnUnit.category
 						};
-						groupController.spawnGroundGroup(pObj.serverName, [spawnArray], curUnit.coalition);
+						groupController.spawnLogiGroup(pObj.serverName, [spawnArray], curUnit.coalition);
 						dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, troopType: null});
 						DCSLuaCommands.sendMesgToGroup(
 							curUnit.groupId,
@@ -57,7 +56,7 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 							var curTroop = _.get(units, [0]);
 							if(curTroop) {
 								// pickup troop
-								dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, troopType: curTroop.type});
+								dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, troopType: curTroop.spawnCat});
 								groupController.destroyUnit(pObj.serverName, curTroop.name);
 								DCSLuaCommands.sendMesgToGroup(
 									curUnit.groupId,

@@ -502,8 +502,6 @@ do
 			if request.action == "INIT" then
 				--send all unit updates
 				--initAirbases()
-				unitCache = {}
-				staticCache = {}
 				updateGroups(true)
 				updateStatics(true)
 			end

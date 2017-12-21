@@ -126,10 +126,10 @@ _.set(exports, 'checkUnitsToBaseForTroops', function (serverName) {
 });
 
 _.set(exports, 'extractUnitsBackToBase', function (unit, serverName) {
-	var friendlyBase = false;
+	var friendlyBase = true;
 	_.forEach(_.get(unitsInProxBases, [serverName], []), function (base) {
 		if(!_.get(base, [unit.unitId, 'enabled'])) {
-			friendlyBase = true;
+			friendlyBase = false;
 		}
 	});
 	return friendlyBase;

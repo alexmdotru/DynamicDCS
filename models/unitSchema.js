@@ -85,6 +85,9 @@ const UnitSchema = new Schema({
 	},
 	virtCrateType: {
 		type: String
+	},
+	spawnCat: {
+		type: String
 	}
 },
 	{

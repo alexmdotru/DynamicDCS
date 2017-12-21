@@ -424,7 +424,7 @@ _.set(exports, 'spawnSupportPlane', function (serverName, baseObj, side) {
 	dbMapServiceController.cmdQueActions('save', serverName, actionObj);
 });
 
-_.set(exports, 'spawnGroundGroup', function (serverName, spawnArray, side) {
+_.set(exports, 'spawnLogiGroup', function (serverName, spawnArray, side) {
 	var grpNum = 0;
 	var unitNum = 0;
 	var unitVec2;
@@ -457,10 +457,10 @@ _.set(exports, 'spawnGroundGroup', function (serverName, spawnArray, side) {
 			_.set(curSpwnUnit, 'lonLatLoc', zoneController.getLonLatFromDistanceDirection(curSpwnUnit.lonLatLoc, curSpwnUnit.heading, 0.05));
 			_.set(curSpwnUnit, 'unitId', _.get(curSpwnUnit, 'unitId', unitNum));
 			_.set(curSpwnUnit, 'name', _.get(curSpwnUnit, 'name', curUnitName));
-			_.set(curSpwnUnit, 'playerOwnerId', _.get(curSpwnUnit, 'playerOwnerId', null));
 			curUnitSpawn += exports.grndUnitTemplate(curSpwnUnit);
 		});
 		curGroupSpawn = _.replace(curGroupSpawn, "#UNITS", curUnitSpawn);
+		console.log('ds: ', curGrpObj, curSpwnUnit);
 		var curCMD = 'mist.dynAdd(' + curGroupSpawn + ')';
 		var sendClient = {action: "CMD", cmd: [curCMD], reqID: 0};
 		var actionObj = {actionObj: sendClient, queName: 'clientArray'};
