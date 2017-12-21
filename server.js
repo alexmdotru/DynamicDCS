@@ -665,6 +665,15 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						if(!_.isEmpty(curData.playername)) {
 							menuUpdateController.logisticsMenu('resetMenu', serverName, curData);
 						}
+
+						// build out extra info on spawned items
+						if (_.includes(curData.name, 'SU|')) {
+							var stParse = _.split(curData.name, '|');
+							_.set(curData, 'playerOwnerId', stParse[1]);
+							_.set(curData, 'spawnCat', stParse[2]);
+						};
+
+
 						_.set(curData, '_id', _.get(curData, 'unitId'));
 						iCurObj = {
 							action: 'C',
