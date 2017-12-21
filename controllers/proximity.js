@@ -131,6 +131,7 @@ _.set(exports, 'extractUnitsBackToBase', function (unit, serverName) {
 		if(!_.get(base, [unit.unitId, 'enabled'])) {
 			friendlyBase = false;
 		}
+		console.log('ub: ', _.get(base, [unit.unitId, 'enabled']));
 	});
 	return friendlyBase;
 });

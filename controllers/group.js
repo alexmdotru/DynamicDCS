@@ -460,7 +460,6 @@ _.set(exports, 'spawnLogiGroup', function (serverName, spawnArray, side) {
 			curUnitSpawn += exports.grndUnitTemplate(curSpwnUnit);
 		});
 		curGroupSpawn = _.replace(curGroupSpawn, "#UNITS", curUnitSpawn);
-		console.log('ds: ', curGrpObj, curSpwnUnit);
 		var curCMD = 'mist.dynAdd(' + curGroupSpawn + ')';
 		var sendClient = {action: "CMD", cmd: [curCMD], reqID: 0};
 		var actionObj = {actionObj: sendClient, queName: 'clientArray'};
