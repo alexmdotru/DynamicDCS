@@ -13,7 +13,6 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 			// action menu
 			if (pObj.cmd === 'unloadExtractTroops') {
 				if(exports.isTroopOnboard(curUnit, pObj.serverName)) {
-					console.log('pc: ', proximityController.extractUnitsBackToBase(curUnit, pObj.serverName));
 					if(proximityController.extractUnitsBackToBase(curUnit, pObj.serverName)) {
 						dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, troopType: null})
 							.then(function(){
@@ -39,13 +38,11 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 							country: curUnit.country,
 							category: 'GROUND'
 						};
-						console.log('spawning: ', curUnit.troopType, curUnit.playername);
 						groupController.spawnGroundGroup(pObj.serverName, [spawnArray], curUnit.coalition);
 						dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, troopType: null});
 					}
 				} else {
 					//try to extract a troop
-					console.log('try to extract');
 					proximityController.getTroopsInProximity(pObj.serverName, curUnit.lonLatLoc, 0.2, false, curUnit.coalition)
 						.then(function(units){
 							var curTroop = _.get(units, [0]);
@@ -53,7 +50,6 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 								// pickup troop
 								dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, troopType: curTroop.type});
 								groupController.destroyUnit(pObj.serverName, curTroop.name);
-								console.log('unitDestroy');
 								DCSLuaCommands.sendMesgToGroup(
 									curUnit.groupId,
 									pObj.serverName,
