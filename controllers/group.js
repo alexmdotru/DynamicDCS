@@ -454,7 +454,7 @@ _.set(exports, 'spawnLogiGroup', function (serverName, spawnArray, side) {
 			unitNum += 1;
 			curUnitName = curSpwnUnit.spwnName + ' #' + unitNum;
 
-			_.set(curSpwnUnit, 'lonLatLoc', zoneController.getLonLatFromDistanceDirection(curSpwnUnit.lonLatLoc, curSpwnUnit.heading, 0.05));
+			_.set(curSpwnUnit, 'lonLatLoc', zoneController.getLonLatFromDistanceDirection(curSpwnUnit.lonLatLoc, curSpwnUnit.heading, 0.03));
 			_.set(curSpwnUnit, 'unitId', _.get(curSpwnUnit, 'unitId', unitNum));
 			_.set(curSpwnUnit, 'name', _.get(curSpwnUnit, 'name', curUnitName));
 			curUnitSpawn += exports.grndUnitTemplate(curSpwnUnit);

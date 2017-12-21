@@ -13,71 +13,80 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 			var curUnit = _.get(units, 0, {});
 			// action menu
 			if (pObj.cmd === 'unloadExtractTroops') {
-				if(exports.isTroopOnboard(curUnit, pObj.serverName)) {
-					console.log('should be false: ', proximityController.extractUnitsBackToBase(curUnit, pObj.serverName) );
-					if(proximityController.extractUnitsBackToBase(curUnit, pObj.serverName)) {
-						dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, troopType: null})
-							.then(function(){
-								DCSLuaCommands.sendMesgToGroup(
-									curUnit.groupId,
-									pObj.serverName,
-									"G: " + curUnit.troopType + " has been dropped off at the base!",
-									5
-								);
+				if(curUnit.inAir) {
+					DCSLuaCommands.sendMesgToGroup(
+						curUnit.groupId,
+						pObj.serverName,
+						"G: Please Land Before Attempting Logistic Commands!",
+						5
+					);
+				} else {
+					if(exports.isTroopOnboard(curUnit, pObj.serverName)) {
+						console.log('should be false: ', proximityController.extractUnitsBackToBase(curUnit, pObj.serverName) );
+						if(proximityController.extractUnitsBackToBase(curUnit, pObj.serverName)) {
+							dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, troopType: null})
+								.then(function(){
+									DCSLuaCommands.sendMesgToGroup(
+										curUnit.groupId,
+										pObj.serverName,
+										"G: " + curUnit.troopType + " has been dropped off at the base!",
+										5
+									);
+								})
+								.catch(function (err) {
+									console.log('line 26: ', err);
+								})
+							;
+						} else {
+							// spawn troop type
+							curSpawnUnit = _.cloneDeep(_.first(groupController.getRndFromSpawnCat(curUnit.troopType, curUnit.coalition, true)));
+							spawnArray = {
+								spwnName: 'SU|' + pObj.unitId + '|' + curUnit.troopType + '|' + curUnit.playername + '|' ,
+								type: curSpawnUnit.type,
+								lonLatLoc: curUnit.lonLatLoc,
+								heading: curUnit.hdg,
+								country: curUnit.country,
+								category: curSpawnUnit.category
+							};
+							groupController.spawnLogiGroup(pObj.serverName, [spawnArray], curUnit.coalition);
+							dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, troopType: null});
+							DCSLuaCommands.sendMesgToGroup(
+								curUnit.groupId,
+								pObj.serverName,
+								"G: " + curSpawnUnit.type + " has been deployed!",
+								5
+							);
+						}
+					} else {
+						//try to extract a troop
+						proximityController.getTroopsInProximity(pObj.serverName, curUnit.lonLatLoc, 0.2, false, curUnit.coalition)
+							.then(function(units){
+								var curTroop = _.get(units, [0]);
+								if(curTroop) {
+									// pickup troop
+									dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, troopType: curTroop.spawnCat});
+									groupController.destroyUnit(pObj.serverName, curTroop.name);
+									DCSLuaCommands.sendMesgToGroup(
+										curUnit.groupId,
+										pObj.serverName,
+										"G: Picked Up " + curTroop.type + "!",
+										5
+									);
+								} else {
+									// no troops
+									DCSLuaCommands.sendMesgToGroup(
+										curUnit.groupId,
+										pObj.serverName,
+										"G: No Troops To Extract Or Unload!",
+										5
+									);
+								}
 							})
 							.catch(function (err) {
-								console.log('line 26: ', err);
+								console.log('line 32: ', err);
 							})
 						;
-					} else {
-						// spawn troop type
-						curSpawnUnit = _.cloneDeep(_.first(groupController.getRndFromSpawnCat(curUnit.troopType, curUnit.coalition, true)));
-						spawnArray = {
-							spwnName: 'SU|' + pObj.unitId + '|' + curUnit.troopType + '|' + curUnit.playername + '|' ,
-							type: curSpawnUnit.type,
-							lonLatLoc: curUnit.lonLatLoc,
-							heading: curUnit.hdg,
-							country: curUnit.country,
-							category: curSpawnUnit.category
-						};
-						groupController.spawnLogiGroup(pObj.serverName, [spawnArray], curUnit.coalition);
-						dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, troopType: null});
-						DCSLuaCommands.sendMesgToGroup(
-							curUnit.groupId,
-							pObj.serverName,
-							"G: " + curSpawnUnit.type + " has been deployed!",
-							5
-						);
 					}
-				} else {
-					//try to extract a troop
-					proximityController.getTroopsInProximity(pObj.serverName, curUnit.lonLatLoc, 0.2, false, curUnit.coalition)
-						.then(function(units){
-							var curTroop = _.get(units, [0]);
-							if(curTroop) {
-								// pickup troop
-								dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, troopType: curTroop.spawnCat});
-								groupController.destroyUnit(pObj.serverName, curTroop.name);
-								DCSLuaCommands.sendMesgToGroup(
-									curUnit.groupId,
-									pObj.serverName,
-									"G: Picked Up " + curTroop.type + "!",
-									5
-								);
-							} else {
-								// no troops
-								DCSLuaCommands.sendMesgToGroup(
-									curUnit.groupId,
-									pObj.serverName,
-									"G: No Troops To Extract Or Unload!",
-									5
-								);
-							}
-						})
-						.catch(function (err) {
-							console.log('line 32: ', err);
-						})
-					;
 				}
 			}
 			if (pObj.cmd === 'isTroopOnboard') {
