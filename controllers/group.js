@@ -424,6 +424,49 @@ _.set(exports, 'spawnSupportPlane', function (serverName, baseObj, side) {
 	dbMapServiceController.cmdQueActions('save', serverName, actionObj);
 });
 
+_.set(exports, 'spawnGroundGroup', function (serverName, spawnArray, side) {
+	var grpNum = 0;
+	var unitNum = 0;
+	var unitVec2;
+	var curBaseName = '';
+	var curUnitName = '';
+	var curUnitSpawn = '';
+	var curGroupSpawn;
+	var curGrpObj = {};
+	var curSide;
+	var curSpwnUnit;
+	var sArray = _.compact(_.cloneDeep(spawnArray));
+	curGrpObj = _.get(sArray, 0);
+	if (curGrpObj) {
+		grpNum = _.get(curGrpObj, 'groupId', _.random(1000000, 9999999));
+		curSide = (side) ? _.get(countryCoObj, ['defCountrys', side]) : _.get(countryCoObj, ['defCountrys', _.get(curGrpObj, 'coalition')]);
+		curBaseName = curGrpObj.spwnName + ' #' + grpNum;
+		_.set(curGrpObj, 'groupId', grpNum);
+		_.set(curGrpObj, 'groupName', curBaseName);
+		_.set(curGrpObj, 'country', curSide);
+		curGroupSpawn = exports.grndUnitGroup( curGrpObj );
+		unitNum = _.cloneDeep(grpNum);
+		_.forEach(sArray, function (curUnit) {
+			curSpwnUnit = _.cloneDeep(curUnit);
+			if(unitNum !== grpNum) {
+				curUnitSpawn += ','
+			}
+			unitNum += 1;
+			curUnitName = curSpwnUnit.spwnName + ' #' + unitNum;
+
+			_.set(curSpwnUnit, 'lonLatLoc', zoneController.getLonLatFromDistanceDirection(curSpwnUnit.lonLatLoc, curSpwnUnit.heading, 0.05));
+			_.set(curSpwnUnit, 'unitId', _.get(curSpwnUnit, 'unitId', unitNum));
+			_.set(curSpwnUnit, 'name', _.get(curSpwnUnit, 'name', curUnitName));
+			curUnitSpawn += exports.grndUnitTemplate(curSpwnUnit);
+		});
+		curGroupSpawn = _.replace(curGroupSpawn, "#UNITS", curUnitSpawn);
+		var curCMD = 'mist.dynAdd(' + curGroupSpawn + ')';
+		var sendClient = {action: "CMD", cmd: [curCMD], reqID: 0};
+		var actionObj = {actionObj: sendClient, queName: 'clientArray'};
+		dbMapServiceController.cmdQueActions('save', serverName, actionObj);
+	}
+});
+
 _.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {
 	var grpNum = 0;
 	var unitNum = 0;
