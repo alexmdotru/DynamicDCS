@@ -145,7 +145,7 @@ exports.unitActions = function (action, serverName, obj){
 	}
 	if(action === 'update') {
 		return new Promise(function(resolve, reject) {
-			Unit.update(
+			Unit.findOneAndUpdate(
 				{_id: obj._id},
 				{$set: obj},
 				function(err, units) {

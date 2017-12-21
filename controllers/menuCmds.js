@@ -86,25 +86,24 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 			}
 
 			// Troop Menu
-			if (pObj.cmd === 'soldier') {
-
-				console.log('soldier');
+			if (pObj.cmd === 'Soldier') {
+				exports.loadTroops(pObj.serverName, pObj.unitId, 'Soldier');
 			}
 
-			if (pObj.cmd === 'MGSoldier') {
-				console.log('MGSoldier');
+			if (pObj.cmd === 'MG Soldier') {
+				exports.loadTroops(pObj.serverName, pObj.unitId, 'MG Soldier');
 			}
 
-			if (pObj.cmd === 'manpad') {
-				console.log('manpad');
+			if (pObj.cmd === 'MANPAD') {
+				exports.loadTroops(pObj.serverName, pObj.unitId, 'MANPAD');
 			}
 
 			if (pObj.cmd === 'RPG') {
-				console.log('RPG');
+				exports.loadTroops(pObj.serverName, pObj.unitId, 'RPG');
 			}
 
-			if (pObj.cmd === 'mortar') {
-				console.log('mortar');
+			if (pObj.cmd === 'Mortar Team') {
+				exports.loadTroops(pObj.serverName, pObj.unitId, 'Mortar Team');
 			}
 
 			// Crate Menu
@@ -163,6 +162,22 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 			if (pObj.cmd === 'LRSAM') {
 				console.log('LRSAM');
 			}
+		})
+		.catch(function (err) {
+			console.log('line 13: ', err);
+		})
+	;
+});
+
+_.set(exports, 'loadTroops', function(serverName, unitId, troopType) {
+	dbMapServiceController.unitActions('update', serverName, {_id: unitId, troopType: troopType})
+		.then(function(unit) {
+			DCSLuaCommands.sendMesgToGroup(
+				unit.groupId,
+				serverName,
+				"G: " + troopType + " Has Been Loaded!",
+				5
+			);
 		})
 		.catch(function (err) {
 			console.log('line 13: ', err);

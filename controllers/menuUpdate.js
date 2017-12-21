@@ -69,11 +69,11 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 	if (action === 'addTroopsMenu' && _.includes(allowedTypesForTroops, unit.type)) {
 		cmdArray = _.concat(cmdArray, [
 			'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "Troops")',
-			'missionCommands.addCommandForGroup("' + unit.groupId + '", "Load Rifle Troop", {"Troops"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "soldier", ["unitId"] = ' + unit.unitId + '})',
-			'missionCommands.addCommandForGroup("' + unit.groupId + '", "Load MG Troop", {"Troops"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "MGSoldier", ["unitId"] = ' + unit.unitId + '})',
-			'missionCommands.addCommandForGroup("' + unit.groupId + '", "Load ManPad", {"Troops"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "manpad", ["unitId"] = ' + unit.unitId + '})',
+			'missionCommands.addCommandForGroup("' + unit.groupId + '", "Load Rifle Troop", {"Troops"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "Soldier", ["unitId"] = ' + unit.unitId + '})',
+			'missionCommands.addCommandForGroup("' + unit.groupId + '", "Load MG Troop", {"Troops"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "MG Soldier", ["unitId"] = ' + unit.unitId + '})',
+			'missionCommands.addCommandForGroup("' + unit.groupId + '", "Load ManPad", {"Troops"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "MANPAD", ["unitId"] = ' + unit.unitId + '})',
 			'missionCommands.addCommandForGroup("' + unit.groupId + '", "Load RPG Troop", {"Troops"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "RPG", ["unitId"] = ' + unit.unitId + '})',
-			'missionCommands.addCommandForGroup("' + unit.groupId + '", "Load Mortar Troop", {"Troops"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "mortar", ["unitId"] = ' + unit.unitId + '})',
+			'missionCommands.addCommandForGroup("' + unit.groupId + '", "Load Mortar Troop", {"Troops"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "Mortar Team", ["unitId"] = ' + unit.unitId + '})',
 
 		]);
 	}
