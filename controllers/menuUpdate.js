@@ -44,29 +44,27 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 		'missionCommands.addCommandForGroup("' + unit.groupId + '", "Load Crate", {"ActionMenu"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "loadCrate", ["unitId"] = ' + unit.unitId + '})',
 		'missionCommands.addCommandForGroup("' + unit.groupId + '", "Drop Crate", {"ActionMenu"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "dropCrate", ["unitId"] = ' + unit.unitId + '})',
 	];
-	if (action === 'resetMenu') {
-		if(_.includes(allowedTypesForTroops, unit.type)) {
-			cmdArray = _.concat(cmdArray, aTroopMenu);
-			enableAction = true;
-		}
-		if(_.includes(allowedTypesForCrates, unit.type)) {
-			cmdArray = _.concat(cmdArray, aUnpackMenu);
-			enableAction = true;
-		}
-		if(virtualCrates && _.includes(allowedTypesForCrates, unit.type)) {
-			cmdArray = _.concat(cmdArray, vCrateMenu);
-			enableAction = true;
-		}
 
-		if (enableAction) {
-			cmdArray = _.concat(actMenu, cmdArray);
-			enableAction = false;
-		}
-
-		cmdArray.unshift(resetMenu);
+	if(_.includes(allowedTypesForTroops, unit.type)) {
+		cmdArray = _.concat(cmdArray, aTroopMenu);
+		enableAction = true;
 	}
+	if(_.includes(allowedTypesForCrates, unit.type)) {
+		cmdArray = _.concat(cmdArray, aUnpackMenu);
+		enableAction = true;
+	}
+	if(virtualCrates && _.includes(allowedTypesForCrates, unit.type)) {
+		cmdArray = _.concat(cmdArray, vCrateMenu);
+		enableAction = true;
+	}
+	if (enableAction) {
+		cmdArray = _.concat(actMenu, cmdArray);
+		enableAction = false;
+	}
+	cmdArray.unshift(resetMenu);
 
-	if (action === 'addTroopsMenu' && _.includes(allowedTypesForTroops, unit.type)) {
+
+	if (_.includes(allowedTypesForTroops, unit.type)) {
 		cmdArray = _.concat(cmdArray, [
 			'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "Troops")',
 			'missionCommands.addCommandForGroup("' + unit.groupId + '", "Load Rifle Troop", {"Troops"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "Soldier", ["unitId"] = ' + unit.unitId + '})',
@@ -77,7 +75,7 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 
 		]);
 	}
-	if (action === 'addLogiCratesMenu' && _.includes(allowedTypesForCrates, unit.type)) {
+	if (_.includes(allowedTypesForCrates, unit.type)) {
 		cmdArray = _.concat(cmdArray, [
 			'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "Acquisitions")',
 			'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "Support", {"Acquisitions"})',
