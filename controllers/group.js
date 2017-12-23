@@ -436,7 +436,6 @@ _.set(exports, 'spawnLogiGroup', function (serverName, spawnArray, side) {
 	var curSide;
 	var curSpwnUnit;
 	var sArray = _.compact(_.cloneDeep(spawnArray));
-	console.log('SAA: ', sArray);
 	curGrpObj = _.get(sArray, 0);
 	if (curGrpObj) {
 		grpNum = _.get(curGrpObj, 'groupId', _.random(1000000, 9999999));
@@ -461,7 +460,6 @@ _.set(exports, 'spawnLogiGroup', function (serverName, spawnArray, side) {
 			curUnitSpawn += exports.grndUnitTemplate(curSpwnUnit);
 		});
 		curGroupSpawn = _.replace(curGroupSpawn, "#UNITS", curUnitSpawn);
-		console.log('sp: ', curGroupSpawn);
 		var curCMD = 'mist.dynAdd(' + curGroupSpawn + ')';
 		var sendClient = {action: "CMD", cmd: [curCMD], reqID: 0};
 		var actionObj = {actionObj: sendClient, queName: 'clientArray'};
