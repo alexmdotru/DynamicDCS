@@ -57,6 +57,10 @@ const UnitSchema = new Schema({
 	name: {
 		type: String
 	},
+	playerCanDrive: {
+		type: Boolean,
+		default: false
+	},
 	groupName: {
 		type: String
 	},

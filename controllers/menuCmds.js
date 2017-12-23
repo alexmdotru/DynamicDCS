@@ -191,55 +191,55 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 			}
 
 			if (pObj.cmd === 'unarmedFuel') {
-				console.log('unarmedFuel');
+				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates);
 			}
 
 			if (pObj.cmd === 'unarmedAmmo') {
-				console.log('unarmedAmmo');
+				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates);
 			}
 
 			if (pObj.cmd === 'armoredCar') {
-				console.log('armoredCar');
+				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates);
 			}
 
 			if (pObj.cmd === 'APC') {
-				console.log('APC');
+				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates);
 			}
 
 			if (pObj.cmd === 'tank') {
-				console.log('tank');
+				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates);
 			}
 
 			if (pObj.cmd === 'artillary') {
-				console.log('artillary');
+				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates);
 			}
 
 			if (pObj.cmd === 'mlrs') {
-				console.log('mlrs');
+				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates);
 			}
 
 			if (pObj.cmd === 'stationaryAntiAir') {
-				console.log('stationaryAntiAir');
+				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates);
 			}
 
 			if (pObj.cmd === 'mobileAntiAir') {
-				console.log('mobileAntiAir');
+				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates);
 			}
 
 			if (pObj.cmd === 'samIR') {
-				console.log('samIR');
+				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates);
 			}
 
 			if (pObj.cmd === 'mobileSAM') {
-				console.log('mobileSAM');
+				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates);
 			}
 
 			if (pObj.cmd === 'MRSAM') {
-				console.log('MRSAM');
+				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates);
 			}
 
 			if (pObj.cmd === 'LRSAM') {
-				console.log('LRSAM');
+				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates);
 			}
 		})
 		.catch(function (err) {

@@ -457,6 +457,7 @@ _.set(exports, 'spawnLogiGroup', function (serverName, spawnArray, side) {
 			_.set(curSpwnUnit, 'lonLatLoc', zoneController.getLonLatFromDistanceDirection(curSpwnUnit.lonLatLoc, curSpwnUnit.heading, 0.05));
 			_.set(curSpwnUnit, 'unitId', _.get(curSpwnUnit, 'unitId', unitNum));
 			_.set(curSpwnUnit, 'name', curUnitName);
+			_.set(curSpwnUnit, 'playerCanDrive', true);
 			curUnitSpawn += exports.grndUnitTemplate(curSpwnUnit);
 		});
 		curGroupSpawn = _.replace(curGroupSpawn, "#UNITS", curUnitSpawn);

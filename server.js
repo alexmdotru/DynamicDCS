@@ -653,6 +653,11 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 								dead: false
 							}
 						};
+						if (_.includes(curData.name, 'DU|')) {
+							var stParse = _.split(curData.name, '|');
+							_.set(iCurObj, 'data.playerOwnerId', stParse[1]);
+							_.set(iCurObj, 'data.playerCanDrive', true);
+						};
 						dbMapServiceController.unitActions('update', serverName, iCurObj.data)
 							.then(function () {
 								curServers[serverName].updateQue['q' + _.get(curUnit, ['coalition'])].push(_.cloneDeep(iCurObj));
@@ -676,6 +681,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						if (_.includes(curData.name, 'DU|')) {
 							var stParse = _.split(curData.name, '|');
 							_.set(curData, 'playerOwnerId', stParse[1]);
+							_.set(curData, 'playerCanDrive', true);
 						};
 
 
