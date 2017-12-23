@@ -1,7 +1,7 @@
 const	_ = require('lodash');
 const dbMapServiceController = require('./dbMapService');
 
-var virtualCrates = true;
+exports.virtualCrates = true;
 var enableAction = false;
 var allowedTypesForTroops = [
 	'UH-1H',
@@ -53,7 +53,7 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 		cmdArray = _.concat(cmdArray, aUnpackMenu);
 		enableAction = true;
 	}
-	if(virtualCrates && _.includes(allowedTypesForCrates, unit.type)) {
+	if(exports.virtualCrates && _.includes(allowedTypesForCrates, unit.type)) {
 		cmdArray = _.concat(cmdArray, vCrateMenu);
 		enableAction = true;
 	}

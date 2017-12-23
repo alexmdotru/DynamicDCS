@@ -667,7 +667,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						}
 
 						// build out extra info on spawned items
-						if (_.includes(curData.name, 'SU|')) {
+						if (_.includes(curData.name, 'TU|')) {
 							var stParse = _.split(curData.name, '|');
 							_.set(curData, 'playerOwnerId', stParse[1]);
 							_.set(curData, 'spawnCat', stParse[2]);

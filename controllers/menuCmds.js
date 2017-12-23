@@ -2,6 +2,7 @@ const	_ = require('lodash');
 const DCSLuaCommands = require('./DCSLuaCommands');
 const dbMapServiceController = require('./dbMapService');
 const proximityController = require('./proximity');
+const menuUpdateController = require('./menuUpdate');
 const groupController = require('./group');
 
 _.set(exports, 'menuCmdProcess', function (pObj) {
@@ -41,7 +42,7 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 							// spawn troop type
 							curSpawnUnit = _.cloneDeep(_.first(groupController.getRndFromSpawnCat(curUnit.troopType, curUnit.coalition, true)));
 							spawnArray = {
-								spwnName: 'SU|' + pObj.unitId + '|' + curUnit.troopType + '|' + curUnit.playername + '|' ,
+								spwnName: 'TU|' + pObj.unitId + '|' + curUnit.troopType + '|' + curUnit.playername + '|' ,
 								type: curSpawnUnit.type,
 								lonLatLoc: curUnit.lonLatLoc,
 								heading: curUnit.hdg,
@@ -123,9 +124,9 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 				exports.loadTroops(pObj.serverName, pObj.unitId, 'Mortar Team');
 			}
 
-			// Crate Menu
+			// Crate Menu ["action"] = "f10Menu", ["cmd"] = "EWR", ["type"] = "55G6 EWR", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1})
 			if (pObj.cmd === 'EWR') {
-				console.log('EWR');
+				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates);
 			}
 
 			if (pObj.cmd === 'unarmedFuel') {
@@ -223,4 +224,49 @@ _.set(exports, 'isTroopOnboard', function (unit, serverName, verbose) {
 		);
 	}
 	return false
+});
+
+_.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates) {
+	console.log('sc: ', serverName, unit, type, crates, menuUpdateController.virtualCrates);
+	var crateStatic;
+	var crateGroup;
+	if(menuUpdateController.virtualCrates) {
+		var spawnArray = {
+			spwnName: 'CU|' + unit.unitId + '|' + type + '|' + crates + '|',
+			type: "UAZ-469",
+			lonLatLoc: unit.lonLatLoc,
+			heading: unit.hdg,
+			country: unit.country,
+			category: "GROUND"
+		};
+		console.log('sa: ', spawnArray);
+		groupController.spawnLogiGroup(serverName, [spawnArray], unit.coalition);
+	} else {
+		/*
+		crateStatic = {
+
+		};
+		_crate = {
+			["category"] = "Cargo",
+			["shape_name"] = "iso_container_small_cargo",
+			["type"] = "iso_container_small",
+			["unitId"] = _unitId,
+			["y"] = _point.z,
+			["x"] = _point.x,
+			["mass"] = _weight,
+			["name"] = _name,
+			["canCargo"] = true,
+			["heading"] = 0
+		}
+		_crate["country"] = _country
+		--env.info("info1: ctry: ".._crate["country"]..'unitId: '.._crate["unitId"]..' name: '.._crate["name"]..' category: '.._crate["category"]..' type: '.._crate["type"]..' mass '.._crate["mass"])
+		mist.dynAddStatic(_crate)
+		*/
+	}
+	DCSLuaCommands.sendMesgToGroup(
+		unit.groupId,
+		serverName,
+		"G: " + type + " crate has been spawned!",
+		5
+	);
 });
