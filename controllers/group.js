@@ -436,6 +436,7 @@ _.set(exports, 'spawnLogiGroup', function (serverName, spawnArray, side) {
 	var curSide;
 	var curSpwnUnit;
 	var sArray = _.compact(_.cloneDeep(spawnArray));
+	console.log('SAA: ', sArray);
 	curGrpObj = _.get(sArray, 0);
 	if (curGrpObj) {
 		grpNum = _.get(curGrpObj, 'groupId', _.random(1000000, 9999999));
@@ -456,7 +457,7 @@ _.set(exports, 'spawnLogiGroup', function (serverName, spawnArray, side) {
 
 			_.set(curSpwnUnit, 'lonLatLoc', zoneController.getLonLatFromDistanceDirection(curSpwnUnit.lonLatLoc, curSpwnUnit.heading, 0.03));
 			_.set(curSpwnUnit, 'unitId', _.get(curSpwnUnit, 'unitId', unitNum));
-			_.set(curSpwnUnit, 'name', _.get(curSpwnUnit, 'name', curUnitName));
+			_.set(curSpwnUnit, 'name', curUnitName);
 			curUnitSpawn += exports.grndUnitTemplate(curSpwnUnit);
 		});
 		curGroupSpawn = _.replace(curGroupSpawn, "#UNITS", curUnitSpawn);

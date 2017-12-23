@@ -60,7 +60,7 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 						}
 					} else {
 						//try to extract a troop
-						proximityController.getTroopsInProximity(pObj.serverName, curUnit.lonLatLoc, 0.2, false, curUnit.coalition)
+						proximityController.getTroopsInProximity(pObj.serverName, curUnit.lonLatLoc, 0.2, curUnit.coalition)
 							.then(function(units){
 								var curTroop = _.get(units, [0]);
 								if(curTroop) {
@@ -97,10 +97,54 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 				console.log('unpackCrate');
 			}
 			if (pObj.cmd === 'loadCrate') {
-				console.log('loadCrate');
+				proximityController.getCratesInProximity(pObj.serverName, curUnit.lonLatLoc, 0.4, curUnit.coalition)
+					.then(function(units){
+						console.log('us: ', units);
+						var curCrate = _.get(units, [0]);
+						if(curCrate) {
+							// pickup troop
+							dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, virtCrateType: curCrate.name});
+							groupController.destroyUnit(pObj.serverName, curCrate.name);
+							DCSLuaCommands.sendMesgToGroup(
+								curUnit.groupId,
+								pObj.serverName,
+								"G: Picked Up " + _.split(curCrate.name, '|')[2] + " Crate!",
+								5
+							);
+						} else {
+							// no troops
+							DCSLuaCommands.sendMesgToGroup(
+								curUnit.groupId,
+								pObj.serverName,
+								"G: No Crates To Load!",
+								5
+							);
+						}
+					})
+					.catch(function (err) {
+						console.log('line 32: ', err);
+					})
+				;
 			}
 			if (pObj.cmd === 'dropCrate') {
-				console.log('dropCrate');
+				// spawn troop type
+				curSpawnUnit = _.cloneDeep(_.first(groupController.getRndFromSpawnCat(curUnit.troopType, curUnit.coalition, true)));
+				spawnArray = {
+					spwnName: 'TU|' + pObj.unitId + '|' + curUnit.troopType + '|' + curUnit.playername + '|' ,
+					type: curSpawnUnit.type,
+					lonLatLoc: curUnit.lonLatLoc,
+					heading: curUnit.hdg,
+					country: curUnit.country,
+					category: curSpawnUnit.category
+				};
+				groupController.spawnLogiGroup(pObj.serverName, [spawnArray], curUnit.coalition);
+				dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, troopType: null});
+				DCSLuaCommands.sendMesgToGroup(
+					curUnit.groupId,
+					pObj.serverName,
+					"G: " + curSpawnUnit.type + " has been deployed!",
+					5
+				);
 			}
 
 			// Troop Menu
@@ -227,7 +271,6 @@ _.set(exports, 'isTroopOnboard', function (unit, serverName, verbose) {
 });
 
 _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates) {
-	console.log('sc: ', serverName, unit, type, crates, menuUpdateController.virtualCrates);
 	var crateStatic;
 	var crateGroup;
 	if(menuUpdateController.virtualCrates) {
@@ -237,9 +280,9 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates) {
 			lonLatLoc: unit.lonLatLoc,
 			heading: unit.hdg,
 			country: unit.country,
+			isCrate: true,
 			category: "GROUND"
 		};
-		console.log('sa: ', spawnArray);
 		groupController.spawnLogiGroup(serverName, [spawnArray], unit.coalition);
 	} else {
 		/*

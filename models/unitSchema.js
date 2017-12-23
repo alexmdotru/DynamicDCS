@@ -80,6 +80,10 @@ const UnitSchema = new Schema({
 	inAir: {
 		type: Boolean
 	},
+	isCrate: {
+		type: Boolean,
+		default: false
+	},
 	troopType: {
 		type: String
 	},

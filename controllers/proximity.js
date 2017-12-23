@@ -39,7 +39,37 @@ _.set(exports, 'getPlayersInProximity', function (serverName, lonLat, kmDistance
 	;
 });
 
-_.set(exports, 'getTroopsInProximity', function (serverName, lonLat, kmDistance, inAir, coalition) {
+_.set(exports, 'getCratesInProximity', function (serverName, lonLat, kmDistance, coalition) {
+	return dbMapServiceController.unitActions(
+		'read',
+		serverName,
+		{
+			dead: false,
+			lonLatLoc: {
+				$geoWithin: {
+					$centerSphere: [
+						lonLat,
+						kmDistance / 6378.1
+					]
+				}
+			},
+			name : {
+				$regex: /CU\|/
+			},
+			inAir: false,
+			coalition: coalition
+		})
+		.then(function (closeUnits) {
+			// console.log('close units ' + closeUnits);
+			return closeUnits;
+		})
+		.catch(function (err) {
+			console.log('line 12: ', err);
+		})
+	;
+});
+
+_.set(exports, 'getTroopsInProximity', function (serverName, lonLat, kmDistance, coalition) {
 	return dbMapServiceController.unitActions(
 		'read',
 		serverName,
@@ -67,7 +97,6 @@ _.set(exports, 'getTroopsInProximity', function (serverName, lonLat, kmDistance,
 					'SA-18 Igla manpad'
 				]
 			},
-			inAir: inAir,
 			coalition: coalition
 		})
 		.then(function (closeUnits) {
