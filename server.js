@@ -673,6 +673,11 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 							_.set(curData, 'spawnCat', stParse[2]);
 						};
 
+						if (_.includes(curData.name, 'DU|')) {
+							var stParse = _.split(curData.name, '|');
+							_.set(curData, 'playerOwnerId', stParse[1]);
+						};
+
 
 						_.set(curData, '_id', _.get(curData, 'unitId'));
 						iCurObj = {
