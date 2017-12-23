@@ -102,7 +102,6 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 						console.log('us: ', units);
 						var curCrate = _.get(units, [0]);
 						if(curCrate) {
-							// pickup troop
 							dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, virtCrateType: curCrate.name});
 							groupController.destroyUnit(pObj.serverName, curCrate.name);
 							DCSLuaCommands.sendMesgToGroup(
@@ -127,24 +126,8 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 				;
 			}
 			if (pObj.cmd === 'dropCrate') {
-				// spawn troop type
-				curSpawnUnit = _.cloneDeep(_.first(groupController.getRndFromSpawnCat(curUnit.troopType, curUnit.coalition, true)));
-				spawnArray = {
-					spwnName: 'TU|' + pObj.unitId + '|' + curUnit.troopType + '|' + curUnit.playername + '|' ,
-					type: curSpawnUnit.type,
-					lonLatLoc: curUnit.lonLatLoc,
-					heading: curUnit.hdg,
-					country: curUnit.country,
-					category: curSpawnUnit.category
-				};
-				groupController.spawnLogiGroup(pObj.serverName, [spawnArray], curUnit.coalition);
-				dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, troopType: null});
-				DCSLuaCommands.sendMesgToGroup(
-					curUnit.groupId,
-					pObj.serverName,
-					"G: " + curSpawnUnit.type + " has been deployed!",
-					5
-				);
+				exports.spawnCrateFromLogi(pObj.serverName, curUnit, _.split(curUnit.virtCrateType, '|')[2], _.split(curUnit.virtCrateType, '|')[3]);
+				dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, virtCrateType: null});
 			}
 
 			// Troop Menu
