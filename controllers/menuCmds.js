@@ -99,7 +99,6 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 			if (pObj.cmd === 'loadCrate') {
 				proximityController.getCratesInProximity(pObj.serverName, curUnit.lonLatLoc, 0.4, curUnit.coalition)
 					.then(function(units){
-						console.log('us: ', units);
 						var curCrate = _.get(units, [0]);
 						if(curCrate) {
 							dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, virtCrateType: curCrate.name});
