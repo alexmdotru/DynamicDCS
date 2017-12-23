@@ -39,7 +39,7 @@ _.set(exports, 'getPlayersInProximity', function (serverName, lonLat, kmDistance
 	;
 });
 
-_.set(exports, 'getCratesInProximity', function (serverName, lonLat, kmDistance, coalition) {
+_.set(exports, 'getVirtualCratesInProximity', function (serverName, lonLat, kmDistance, coalition) {
 	return dbMapServiceController.unitActions(
 		'read',
 		serverName,

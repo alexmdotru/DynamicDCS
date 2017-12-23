@@ -94,10 +94,45 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 				exports.isTroopOnboard(curUnit, pObj.serverName, true);
 			}
 			if (pObj.cmd === 'unpackCrate') {
-				console.log('unpackCrate');
+				if(menuUpdateController.virtualCrates) {
+					proximityController.getVirtualCratesInProximity(pObj.serverName, curUnit.lonLatLoc, 0.4, curUnit.coalition)
+						.then(function(units){
+							var curCrate = _.get(units, [0]);
+							if(curCrate) {
+								//virtual sling loading
+								if (_.split(curCrate.name, '|')[3] > 1) {
+
+								} else {
+									exports.unpackCrate(pObj.serverName, curUnit, _.split(curCrate.name, '|')[2]);
+								}
+								groupController.destroyUnit(pObj.serverName, curCrate.name);
+								DCSLuaCommands.sendMesgToGroup(
+									curUnit.groupId,
+									pObj.serverName,
+									"G: Unpacking " + _.split(curCrate.name, '|')[2] + "!",
+									5
+								);
+							} else {
+								// no troops
+								DCSLuaCommands.sendMesgToGroup(
+									curUnit.groupId,
+									pObj.serverName,
+									"G: No Crates To Unpack!",
+									5
+								);
+							}
+						})
+						.catch(function (err) {
+							console.log('line 32: ', err);
+						})
+					;
+				} else {
+					// real sling loading
+
+				}
 			}
 			if (pObj.cmd === 'loadCrate') {
-				proximityController.getCratesInProximity(pObj.serverName, curUnit.lonLatLoc, 0.4, curUnit.coalition)
+				proximityController.getVirtualCratesInProximity(pObj.serverName, curUnit.lonLatLoc, 0.4, curUnit.coalition)
 					.then(function(units){
 						var curCrate = _.get(units, [0]);
 						if(curCrate) {
@@ -266,6 +301,56 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates) {
 			category: "GROUND"
 		};
 		groupController.spawnLogiGroup(serverName, [spawnArray], unit.coalition);
+	} else {
+		/*
+		crateStatic = {
+
+		};
+		_crate = {
+			["category"] = "Cargo",
+			["shape_name"] = "iso_container_small_cargo",
+			["type"] = "iso_container_small",
+			["unitId"] = _unitId,
+			["y"] = _point.z,
+			["x"] = _point.x,
+			["mass"] = _weight,
+			["name"] = _name,
+			["canCargo"] = true,
+			["heading"] = 0
+		}
+		_crate["country"] = _country
+		--env.info("info1: ctry: ".._crate["country"]..'unitId: '.._crate["unitId"]..' name: '.._crate["name"]..' category: '.._crate["category"]..' type: '.._crate["type"]..' mass '.._crate["mass"])
+		mist.dynAddStatic(_crate)
+		*/
+	}
+	DCSLuaCommands.sendMesgToGroup(
+		unit.groupId,
+		serverName,
+		"G: " + type + " crate has been spawned!",
+		5
+	);
+});
+
+_.set(exports, 'unpackCrate', function (serverName, unit, type, combo) {
+	var crateStatic;
+	var crateGroup;
+	var spawnArray = [];
+	if(menuUpdateController.virtualCrates) {
+		if (combo) {
+
+		} else {
+			spawnArray = _.concat(spawnArray, {
+				spwnName: 'DU|' + unit.unitId + '|' + type + '|',
+				type: type,
+				lonLatLoc: unit.lonLatLoc,
+				heading: unit.hdg,
+				country: unit.country,
+				playerCanDrive: true,
+				isCrate: true,
+				category: "GROUND"
+			});
+		}
+		groupController.spawnLogiGroup(serverName, spawnArray, unit.coalition);
 	} else {
 		/*
 		crateStatic = {
