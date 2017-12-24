@@ -39,24 +39,35 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 								})
 							;
 						} else {
-							// spawn troop type
-							curSpawnUnit = _.cloneDeep(_.first(groupController.getRndFromSpawnCat(curUnit.troopType, curUnit.coalition, true)));
-							spawnArray = {
-								spwnName: 'TU|' + pObj.unitId + '|' + curUnit.troopType + '|' + curUnit.playername + '|' ,
-								type: curSpawnUnit.type,
-								lonLatLoc: curUnit.lonLatLoc,
-								heading: curUnit.hdg,
-								country: curUnit.country,
-								category: curSpawnUnit.category
-							};
-							groupController.spawnLogiGroup(pObj.serverName, [spawnArray], curUnit.coalition);
-							dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, troopType: null});
-							DCSLuaCommands.sendMesgToGroup(
-								curUnit.groupId,
-								pObj.serverName,
-								"G: " + curSpawnUnit.type + " has been deployed!",
-								5
-							);
+							dbMapServiceController.unitActions('read', pObj.serverName, {playerOwnerId: pObj.unitId, isTroop: true, dead: false})
+								.then(function(delUnits){
+									_.forEach(delUnits, function (unit) {
+										dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, dead: true});
+										groupController.destroyUnit(pObj.serverName, unit.name);
+									});
+									// spawn troop type
+									curSpawnUnit = _.cloneDeep(_.first(groupController.getRndFromSpawnCat(curUnit.troopType, curUnit.coalition, true)));
+									spawnArray = {
+										spwnName: 'TU|' + pObj.unitId + '|' + curUnit.troopType + '|' + curUnit.playername + '|' ,
+										type: curSpawnUnit.type,
+										lonLatLoc: curUnit.lonLatLoc,
+										heading: curUnit.hdg,
+										country: curUnit.country,
+										category: curSpawnUnit.category
+									};
+									groupController.spawnLogiGroup(pObj.serverName, [spawnArray], curUnit.coalition);
+									dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, troopType: null});
+									DCSLuaCommands.sendMesgToGroup(
+										curUnit.groupId,
+										pObj.serverName,
+										"G: " + curSpawnUnit.type + " has been deployed!",
+										5
+									);
+								})
+								.catch(function (err) {
+									console.log('line 26: ', err);
+								})
+							;
 						}
 					} else {
 						//try to extract a troop
