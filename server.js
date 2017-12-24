@@ -640,6 +640,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						var stParse = _.split(curData.name, '|');
 						_.set(curData, 'playerOwnerId', stParse[1]);
 						_.set(curData, 'playerCanDrive', false);
+						_.set(curData, 'isTroop', true);
 						_.set(curData, 'spawnCat', stParse[2]);
 					};
 					if (_.includes(curData.name, 'CU|')) {
