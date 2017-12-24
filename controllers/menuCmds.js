@@ -5,6 +5,8 @@ const proximityController = require('./proximity');
 const menuUpdateController = require('./menuUpdate');
 const groupController = require('./group');
 
+var maxCrates = 7;
+
 _.set(exports, 'menuCmdProcess', function (pObj) {
 	console.log('process menu cmd: ', pObj);
 	dbMapServiceController.unitActions('read', pObj.serverName, {_id: pObj.unitId})
@@ -42,7 +44,7 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 							dbMapServiceController.unitActions('read', pObj.serverName, {playerOwnerId: pObj.unitId, isTroop: true, dead: false})
 								.then(function(delUnits){
 									_.forEach(delUnits, function (unit) {
-										dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, dead: true});
+										dbMapServiceController.unitActions('update', pObj.serverName, {_id: unit.unitId, dead: true});
 										groupController.destroyUnit(pObj.serverName, unit.name);
 									});
 									// spawn troop type
@@ -301,45 +303,61 @@ _.set(exports, 'isTroopOnboard', function (unit, serverName, verbose) {
 _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates) {
 	var crateStatic;
 	var crateGroup;
-	if(menuUpdateController.virtualCrates) {
-		var spawnArray = {
-			spwnName: 'CU|' + unit.unitId + '|' + type + '|' + crates + '|',
-			type: "UAZ-469",
-			lonLatLoc: unit.lonLatLoc,
-			heading: unit.hdg,
-			country: unit.country,
-			isCrate: true,
-			category: "GROUND"
-		};
-		groupController.spawnLogiGroup(serverName, [spawnArray], unit.coalition);
-	} else {
-		/*
-		crateStatic = {
+	var crateCount = 0;
+	dbMapServiceController.unitActions('read', serverName, {playerOwnerId: unit.unitId, isCrate: true, dead: false})
+		.then(function(delCrates){
+			console.log('dc: ', delCrates);
+			_.forEach(delCrates, function (crate) {
+				if(crateCount > maxCrates-1) {
+					dbMapServiceController.unitActions('update', serverName, {_id: crate.unitId, dead: true});
+					groupController.destroyUnit(serverName, crate.name);
+				}
+				crateCount ++;
+			});
+			if(menuUpdateController.virtualCrates) {
+				var spawnArray = {
+					spwnName: 'CU|' + unit.unitId + '|' + type + '|' + crates + '|',
+					type: "UAZ-469",
+					lonLatLoc: unit.lonLatLoc,
+					heading: unit.hdg,
+					country: unit.country,
+					isCrate: true,
+					category: "GROUND"
+				};
+				groupController.spawnLogiGroup(serverName, [spawnArray], unit.coalition);
+			} else {
+				/*
+                crateStatic = {
 
-		};
-		_crate = {
-			["category"] = "Cargo",
-			["shape_name"] = "iso_container_small_cargo",
-			["type"] = "iso_container_small",
-			["unitId"] = _unitId,
-			["y"] = _point.z,
-			["x"] = _point.x,
-			["mass"] = _weight,
-			["name"] = _name,
-			["canCargo"] = true,
-			["heading"] = 0
-		}
-		_crate["country"] = _country
-		--env.info("info1: ctry: ".._crate["country"]..'unitId: '.._crate["unitId"]..' name: '.._crate["name"]..' category: '.._crate["category"]..' type: '.._crate["type"]..' mass '.._crate["mass"])
-		mist.dynAddStatic(_crate)
-		*/
-	}
-	DCSLuaCommands.sendMesgToGroup(
-		unit.groupId,
-		serverName,
-		"G: " + type + " crate has been spawned!",
-		5
-	);
+                };
+                _crate = {
+                    ["category"] = "Cargo",
+                    ["shape_name"] = "iso_container_small_cargo",
+                    ["type"] = "iso_container_small",
+                    ["unitId"] = _unitId,
+                    ["y"] = _point.z,
+                    ["x"] = _point.x,
+                    ["mass"] = _weight,
+                    ["name"] = _name,
+                    ["canCargo"] = true,
+                    ["heading"] = 0
+                }
+                _crate["country"] = _country
+                --env.info("info1: ctry: ".._crate["country"]..'unitId: '.._crate["unitId"]..' name: '.._crate["name"]..' category: '.._crate["category"]..' type: '.._crate["type"]..' mass '.._crate["mass"])
+                mist.dynAddStatic(_crate)
+                */
+			}
+			DCSLuaCommands.sendMesgToGroup(
+				unit.groupId,
+				serverName,
+				"G: " + type + " crate has been spawned!",
+				5
+			);
+		})
+		.catch(function (err) {
+			console.log('line 358: ', err);
+		})
+	;
 });
 
 _.set(exports, 'unpackCrate', function (serverName, unit, type, combo) {
