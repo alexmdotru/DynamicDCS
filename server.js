@@ -635,6 +635,24 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				.then(function (unit) {
 					var curUnit = _.get(unit, 0, {});
 					var curData = _.get(queObj, 'data');
+					// build out extra info on spawned items
+					if (_.includes(curData.name, 'TU|')) {
+						var stParse = _.split(curData.name, '|');
+						_.set(curData, 'playerOwnerId', stParse[1]);
+						_.set(curData, 'playerCanDrive', false);
+						_.set(curData, 'spawnCat', stParse[2]);
+					};
+					if (_.includes(curData.name, 'CU|')) {
+						var stParse = _.split(curData.name, '|');
+						_.set(curData, 'playerOwnerId', stParse[1]);
+						_.set(curData, 'playerCanDrive', false);
+						_.set(curData, 'isCrate', true);
+					};
+					if (_.includes(curData.name, 'DU|')) {
+						var stParse = _.split(curData.name, '|');
+						_.set(curData, 'playerOwnerId', stParse[1]);
+						_.set(curData, 'playerCanDrive', true);
+					};
 					if ((!_.isEmpty(curUnit) && _.get(queObj, 'action') !== 'D')) {
 						if(!_.isEmpty(curData.playername) && curUnit.dead) {
 							menuUpdateController.logisticsMenu('resetMenu', serverName, curData);
@@ -653,11 +671,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 								dead: false
 							}
 						};
-						if (_.includes(curData.name, 'DU|')) {
-							var stParse = _.split(curData.name, '|');
-							_.set(iCurObj, 'data.playerOwnerId', stParse[1]);
-							_.set(iCurObj, 'data.playerCanDrive', true);
-						};
 						dbMapServiceController.unitActions('update', serverName, iCurObj.data)
 							.then(function () {
 								curServers[serverName].updateQue['q' + _.get(curUnit, ['coalition'])].push(_.cloneDeep(iCurObj));
@@ -670,20 +683,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						if(!_.isEmpty(curData.playername)) {
 							menuUpdateController.logisticsMenu('resetMenu', serverName, curData);
 						}
-
-						// build out extra info on spawned items
-						if (_.includes(curData.name, 'TU|')) {
-							var stParse = _.split(curData.name, '|');
-							_.set(curData, 'playerOwnerId', stParse[1]);
-							_.set(curData, 'spawnCat', stParse[2]);
-						};
-
-						if (_.includes(curData.name, 'DU|')) {
-							var stParse = _.split(curData.name, '|');
-							_.set(curData, 'playerOwnerId', stParse[1]);
-							_.set(curData, 'playerCanDrive', true);
-						};
-
 
 						_.set(curData, '_id', _.get(curData, 'unitId'));
 						iCurObj = {
