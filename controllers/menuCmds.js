@@ -6,6 +6,7 @@ const menuUpdateController = require('./menuUpdate');
 const groupController = require('./group');
 
 var maxCrates = 7;
+var maxUnits = 5;
 
 _.set(exports, 'menuCmdProcess', function (pObj) {
 	console.log('process menu cmd: ', pObj);
@@ -119,7 +120,7 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 								grpTypes = _.transform(units, function (result, value) {
 									(result[_.get(_.split(value.name, '|'), [2])] || (result[_.get(_.split(value.name, '|'), [2])] = [])).push(value);
 								}, {});
-								if( _.get(grpTypes, [_.split(curCrate.name, '|')[2]]).length >=  numCrate) {
+								if( _.get(grpTypes, [_.split(curCrate.name, '|')[2]], []).length >=  numCrate) {
 									cCnt = 1;
 									_.forEach(_.get(grpTypes, [_.split(curCrate.name, '|')[2]]), function (eCrate) {
 										if ( cCnt <= numCrate) {
@@ -323,7 +324,6 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 	var crateCount = 0;
 	dbMapServiceController.unitActions('read', serverName, {playerOwnerId: unit.unitId, isCrate: true, dead: false})
 		.then(function(delCrates){
-			console.log('dc: ', delCrates);
 			_.forEach(delCrates, function (crate) {
 				if(crateCount > maxCrates-1) {
 					dbMapServiceController.unitActions('update', serverName, {_id: crate.unitId, dead: true});
@@ -378,6 +378,27 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 });
 
 _.set(exports, 'unpackCrate', function (serverName, unit, type, combo) {
+	dbMapServiceController.unitActions('read', serverName, {playerOwnerId: unit.unitId, dead: false})
+		.then(function(delUnits){
+			var curUnit = 0;
+			var grpGroups = _.transform(delUnits, function (result, value) {
+				(result[value.groupId] || (result[value.groupId] = [])).push(value);
+			}, {});
+			var tRem = _.size(grpGroups) - maxUnits;
+			_.forEach(grpGroups, function (gUnit) {
+				if (curUnit <= tRem) {
+					_.forEach(gUnit, function(unit) {
+						dbMapServiceController.unitActions('update', serverName, {_id: unit.unitId, dead: true});
+						groupController.destroyUnit(serverName, unit.name);
+					});
+					curUnit++;
+				}
+			});
+		})
+		.catch(function (err) {
+			console.log('line 390: ', err);
+		})
+	;
 	var spawnArray = [];
 	if(menuUpdateController.virtualCrates) {
 		if (combo) {
