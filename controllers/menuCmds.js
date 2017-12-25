@@ -27,7 +27,7 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 				} else {
 					if(exports.isTroopOnboard(curUnit, pObj.serverName)) {
 						console.log('should be false: ', proximityController.extractUnitsBackToBase(curUnit, pObj.serverName) );
-						if(proximityController.extractUnitsBackToBase(curUnit, pObj.serverName) && false) {
+						if(proximityController.extractUnitsBackToBase(curUnit, pObj.serverName)) {
 							dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, troopType: null})
 								.then(function(){
 									DCSLuaCommands.sendMesgToGroup(
