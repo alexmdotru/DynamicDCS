@@ -219,51 +219,51 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 
 			// Crate Menu ["action"] = "f10Menu", ["cmd"] = "EWR", ["type"] = "55G6 EWR", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1})
 			if (pObj.cmd === 'EWR') {
-				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates);
+				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false);
 			}
 
 			if (pObj.cmd === 'unarmedFuel') {
-				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates);
+				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false);
 			}
 
 			if (pObj.cmd === 'unarmedAmmo') {
-				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates);
+				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false);
 			}
 
 			if (pObj.cmd === 'armoredCar') {
-				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates);
+				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false);
 			}
 
 			if (pObj.cmd === 'APC') {
-				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates);
+				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false);
 			}
 
 			if (pObj.cmd === 'tank') {
-				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates);
+				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false);
 			}
 
 			if (pObj.cmd === 'artillary') {
-				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates);
+				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false);
 			}
 
 			if (pObj.cmd === 'mlrs') {
-				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates);
+				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false);
 			}
 
 			if (pObj.cmd === 'stationaryAntiAir') {
-				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates);
+				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false);
 			}
 
 			if (pObj.cmd === 'mobileAntiAir') {
-				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates);
+				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false);
 			}
 
 			if (pObj.cmd === 'samIR') {
-				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates);
+				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false);
 			}
 
 			if (pObj.cmd === 'mobileSAM') {
-				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates);
+				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false);
 			}
 
 			if (pObj.cmd === 'MRSAM') {
