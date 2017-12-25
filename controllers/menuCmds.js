@@ -320,8 +320,6 @@ _.set(exports, 'isTroopOnboard', function (unit, serverName, verbose) {
 });
 
 _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, combo) {
-	var crateStatic;
-	var crateGroup;
 	var crateCount = 0;
 	dbMapServiceController.unitActions('read', serverName, {playerOwnerId: unit.unitId, isCrate: true, dead: false})
 		.then(function(delCrates){
@@ -380,9 +378,6 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 });
 
 _.set(exports, 'unpackCrate', function (serverName, unit, type, combo) {
-
-	var crateStatic;
-	var crateGroup;
 	var spawnArray = [];
 	if(menuUpdateController.virtualCrates) {
 		if (combo) {
