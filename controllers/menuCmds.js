@@ -112,7 +112,7 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 						.then(function(units){
 							var cCnt = 0;
 							var grpTypes;
-							var curCrate = _.get(units, [0]);
+							var curCrate = _.get(units, [0], {});
 							var numCrate = _.split(curCrate.name, '|')[3];
 							if(curCrate) {
 								//virtual sling loading
