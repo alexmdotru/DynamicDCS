@@ -128,7 +128,7 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 											cCnt ++;
 										}
 									});
-									exports.unpackCrate(pObj.serverName, curUnit, _.split(curCrate.name, '|')[2]);
+									exports.unpackCrate(pObj.serverName, curUnit, _.split(curCrate.name, '|')[2], curCrate.isCombo);
 									groupController.destroyUnit(pObj.serverName, curCrate.name);
 									DCSLuaCommands.sendMesgToGroup(
 										curUnit.groupId,
@@ -380,25 +380,48 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 });
 
 _.set(exports, 'unpackCrate', function (serverName, unit, type, combo) {
+
 	var crateStatic;
 	var crateGroup;
 	var spawnArray = [];
 	if(menuUpdateController.virtualCrates) {
 		if (combo) {
-
+			groupController.getUnitDictionary()
+				.then(function (unitDic) {
+					var addHdg = 0;
+					var curUnitHdg;
+					var findUnits = _.filter(unitDic, {comboName: type, enabled: true});
+					_.forEach(findUnits, function (cbUnit) {
+						curUnitHdg = unit.hdg + addHdg;
+						if (curUnitHdg > 359) {
+							curUnitHdg = 15;
+						}
+						_.set(cbUnit, 'spwnName', 'DU|' + unit.unitId + '|' + cbUnit.type + '|true|');
+						_.set(cbUnit, 'lonLatLoc', unit.lonLatLoc);
+						_.set(cbUnit, 'heading', curUnitHdg);
+						_.set(cbUnit, 'country', unit.country);
+						_.set(cbUnit, 'playerCanDrive', true);
+						addHdg = addHdg + 15;
+					});
+					spawnArray = _.cloneDeep(findUnits);
+					groupController.spawnLogiGroup(serverName, spawnArray, unit.coalition);
+				})
+				.catch(function (err) {
+					console.log('line 394: ', err);
+				})
+			;
 		} else {
 			spawnArray = _.concat(spawnArray, {
-				spwnName: 'DU|' + unit.unitId + '|' + type + '|',
+				spwnName: 'DU|' + unit.unitId + '|' + type + '|false|',
 				type: type,
 				lonLatLoc: unit.lonLatLoc,
 				heading: unit.hdg,
 				country: unit.country,
 				playerCanDrive: true,
-				isCrate: true,
 				category: "GROUND"
 			});
+			groupController.spawnLogiGroup(serverName, spawnArray, unit.coalition);
 		}
-		groupController.spawnLogiGroup(serverName, spawnArray, unit.coalition);
 	} else {
 		/*
 		crateStatic = {
