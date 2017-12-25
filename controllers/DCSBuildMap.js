@@ -6,7 +6,7 @@ const groupController = require('./group');
 
 _.set(exports, 'buildDynamicMap', function (serverName) {
 	console.log('build dynamic caucasus');
-	dbMapServiceController.unitActions('read', serverName, {})
+	dbMapServiceController.unitActions('read', serverName, {dead: false})
 		.then(function (units) {
 			console.log('unitsLength: ', units.length);
 			if (units.length > 60) {

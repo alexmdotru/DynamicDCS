@@ -124,6 +124,7 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 										cCnt = 1;
 										_.forEach(_.get(grpTypes, [_.split(curCrate.name, '|')[2]]), function (eCrate) {
 											if ( cCnt <= numCrate) {
+												dbMapServiceController.unitActions('update', pObj.serverName, {_id: eCrate.unitId, dead: true});
 												groupController.destroyUnit(pObj.serverName, eCrate.name);
 												cCnt ++;
 											}
@@ -146,6 +147,7 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 									}
 								} else {
 									exports.unpackCrate(pObj.serverName, curUnit, _.split(curCrate.name, '|')[2]);
+									dbMapServiceController.unitActions('update', serverName, {_id: curCrate.unitId, dead: true});
 									groupController.destroyUnit(pObj.serverName, curCrate.name);
 									DCSLuaCommands.sendMesgToGroup(
 										curUnit.groupId,
