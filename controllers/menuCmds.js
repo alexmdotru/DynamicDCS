@@ -267,11 +267,11 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 			}
 
 			if (pObj.cmd === 'MRSAM') {
-				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates);
+				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, true);
 			}
 
 			if (pObj.cmd === 'LRSAM') {
-				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates);
+				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, true);
 			}
 		})
 		.catch(function (err) {
@@ -319,7 +319,7 @@ _.set(exports, 'isTroopOnboard', function (unit, serverName, verbose) {
 	return false
 });
 
-_.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates) {
+_.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, combo) {
 	var crateStatic;
 	var crateGroup;
 	var crateCount = 0;
@@ -335,7 +335,7 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates) {
 			});
 			if(menuUpdateController.virtualCrates) {
 				var spawnArray = {
-					spwnName: 'CU|' + unit.unitId + '|' + type + '|' + crates + '|',
+					spwnName: 'CU|' + unit.unitId + '|' + type + '|' + crates + '|' + combo + '|',
 					type: "UAZ-469",
 					lonLatLoc: unit.lonLatLoc,
 					heading: unit.hdg,

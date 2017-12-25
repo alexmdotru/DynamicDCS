@@ -646,6 +646,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					if (_.includes(curData.name, 'CU|')) {
 						var stParse = _.split(curData.name, '|');
 						_.set(curData, 'playerOwnerId', stParse[1]);
+						_.set(curData, 'isCombo', stParse[4]);
 						_.set(curData, 'playerCanDrive', false);
 						_.set(curData, 'isCrate', true);
 					};

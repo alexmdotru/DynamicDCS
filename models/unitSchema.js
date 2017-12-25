@@ -92,6 +92,10 @@ const UnitSchema = new Schema({
 		type: Boolean,
 		default: false
 	},
+	isCombo: {
+		type: Boolean,
+		default: false
+	},
 	troopType: {
 		type: String
 	},
