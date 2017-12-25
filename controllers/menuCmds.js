@@ -116,43 +116,31 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 							var numCrate = _.split(curCrate.name, '|')[3];
 							if(curCrate) {
 								//virtual sling loading
-								if (numCrate > 1) {
-									grpTypes = _.transform(units, function (result, value) {
-										(result[_.get(_.split(value.name, '|'), [2])] || (result[_.get(_.split(value.name, '|'), [2])] = [])).push(value);
-									}, {});
-									if( _.get(grpTypes, [_.split(curCrate.name, '|')[2]]).length >=  numCrate) {
-										cCnt = 1;
-										_.forEach(_.get(grpTypes, [_.split(curCrate.name, '|')[2]]), function (eCrate) {
-											if ( cCnt <= numCrate) {
-												dbMapServiceController.unitActions('update', pObj.serverName, {_id: eCrate.unitId, dead: true});
-												groupController.destroyUnit(pObj.serverName, eCrate.name);
-												cCnt ++;
-											}
-										});
-										exports.unpackCrate(pObj.serverName, curUnit, _.split(curCrate.name, '|')[2]);
-										groupController.destroyUnit(pObj.serverName, curCrate.name);
-										DCSLuaCommands.sendMesgToGroup(
-											curUnit.groupId,
-											pObj.serverName,
-											"G: Unpacking " + _.split(curCrate.name, '|')[2] + "!",
-											5
-										);
-									} else {
-										DCSLuaCommands.sendMesgToGroup(
-											curUnit.groupId,
-											pObj.serverName,
-											"G: Not Enough Crates for " + _.split(curCrate.name, '|')[2] + "!",
-											5
-										);
-									}
-								} else {
+								grpTypes = _.transform(units, function (result, value) {
+									(result[_.get(_.split(value.name, '|'), [2])] || (result[_.get(_.split(value.name, '|'), [2])] = [])).push(value);
+								}, {});
+								if( _.get(grpTypes, [_.split(curCrate.name, '|')[2]]).length >=  numCrate) {
+									cCnt = 1;
+									_.forEach(_.get(grpTypes, [_.split(curCrate.name, '|')[2]]), function (eCrate) {
+										if ( cCnt <= numCrate) {
+											dbMapServiceController.unitActions('update', pObj.serverName, {_id: eCrate.unitId, dead: true});
+											groupController.destroyUnit(pObj.serverName, eCrate.name);
+											cCnt ++;
+										}
+									});
 									exports.unpackCrate(pObj.serverName, curUnit, _.split(curCrate.name, '|')[2]);
-									dbMapServiceController.unitActions('update', serverName, {_id: curCrate.unitId, dead: true});
 									groupController.destroyUnit(pObj.serverName, curCrate.name);
 									DCSLuaCommands.sendMesgToGroup(
 										curUnit.groupId,
 										pObj.serverName,
 										"G: Unpacking " + _.split(curCrate.name, '|')[2] + "!",
+										5
+									);
+								} else {
+									DCSLuaCommands.sendMesgToGroup(
+										curUnit.groupId,
+										pObj.serverName,
+										"G: Not Enough Crates for " + _.split(curCrate.name, '|')[2] + "!",
 										5
 									);
 								}
@@ -433,10 +421,4 @@ _.set(exports, 'unpackCrate', function (serverName, unit, type, combo) {
 		mist.dynAddStatic(_crate)
 		*/
 	}
-	DCSLuaCommands.sendMesgToGroup(
-		unit.groupId,
-		serverName,
-		"G: " + type + " crate has been spawned!",
-		5
-	);
 });
