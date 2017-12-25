@@ -110,19 +110,23 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 				if(menuUpdateController.virtualCrates) {
 					proximityController.getVirtualCratesInProximity(pObj.serverName, curUnit.lonLatLoc, 0.4, curUnit.coalition)
 						.then(function(units){
+							var cCnt = 0;
 							var grpTypes;
 							var curCrate = _.get(units, [0]);
+							var numCrate = _.split(curCrate.name, '|')[3];
 							if(curCrate) {
 								//virtual sling loading
-								if (_.split(curCrate.name, '|')[3] > 1) {
+								if (numCrate > 1) {
 									grpTypes = _.transform(units, function (result, value) {
 										(result[_.get(_.split(value.name, '|'), [2])] || (result[_.get(_.split(value.name, '|'), [2])] = [])).push(value);
 									}, {});
-									console.log('ta: ', curCrate.name, grpTypes);
-									console.log('gt: ', _.get(grpTypes, [_.split(curCrate.name, '|')[2]]).length,' >= ', _.split(curCrate.name, '|')[3], _.get(grpTypes, [_.split(curCrate.name, '|')[2], 'length']) >=  _.split(curCrate.name, '|')[3]);
-									if( _.get(grpTypes, [_.split(curCrate.name, '|')[2]]).length >=  _.split(curCrate.name, '|')[3]) {
+									if( _.get(grpTypes, [_.split(curCrate.name, '|')[2]]).length >=  numCrate) {
+										cCnt = 1;
 										_.forEach(_.get(grpTypes, [_.split(curCrate.name, '|')[2]]), function (eCrate) {
-											groupController.destroyUnit(pObj.serverName, eCrate.name);
+											if ( cCnt <= numCrate) {
+												groupController.destroyUnit(pObj.serverName, eCrate.name);
+												cCnt ++;
+											}
 										});
 										exports.unpackCrate(pObj.serverName, curUnit, _.split(curCrate.name, '|')[2]);
 										groupController.destroyUnit(pObj.serverName, curCrate.name);
