@@ -65,7 +65,7 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 	cmdArray.unshift(resetMenu);
 
 
-	if (_.includes(allowedTypesForTroops, unit.type)) {
+	if (_.includes(allowedTypesForTroops, unit.type) && proximityController.extractUnitsBackToBase(unit, serverName)) {
 		cmdArray = _.concat(cmdArray, [
 			'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "Troops")',
 			'missionCommands.addCommandForGroup("' + unit.groupId + '", "Load Rifle Troop", {"Troops"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "Soldier", ["type"] = "combo", ["unitId"] = ' + unit.unitId + '})',
@@ -76,7 +76,6 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 
 		]);
 	}
-	console.log('logichk: ', proximityController.unitInProxLogiTowers(unit, serverName));
 	if (_.includes(allowedTypesForCrates, unit.type) && proximityController.unitInProxLogiTowers(unit, serverName)) {
 		if(unit.coalition === 1) {
 			cmdArray = _.concat(cmdArray, [
