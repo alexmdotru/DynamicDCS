@@ -515,13 +515,12 @@ _.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {
 
 _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 	var curServer = _.get(exports, ['servers', serverName, 'config']);
-	var totalTicks = _.get(curServer, 'totalTicks');
 	var defBaseSides = _.get(curServer, 'defBaseSides');
 	_.forEach(defBaseSides, function (extSide, extName) {
 		var spawnArray = [];
 		spawnArray = _.concat(spawnArray, exports.spawnSupportBaseGrp(serverName, extName, extSide));
-		for (var i = 0; i < totalTicks; i++) {
-		//	spawnArray = _.concat(spawnArray, exports.spawnBaseReinforcementGroup(serverName, extSide));
+		while (spawnArray.length < curServer.replenThreshold) {
+			spawnArray = _.concat(spawnArray, exports.spawnBaseReinforcementGroup(serverName, extSide));
 		}
 		exports.spawnGroup(serverName, spawnArray, extName, extSide);
 	});
