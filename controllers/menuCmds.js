@@ -394,70 +394,70 @@ _.set(exports, 'unpackCrate', function (serverName, unit, type, combo) {
 					curUnit++;
 				}
 			});
+			var spawnArray = [];
+			if(menuUpdateController.virtualCrates) {
+				if (combo) {
+					groupController.getUnitDictionary()
+						.then(function (unitDic) {
+							var addHdg = 0;
+							var curUnitHdg;
+							var findUnits = _.filter(unitDic, {comboName: type, enabled: true});
+							_.forEach(findUnits, function (cbUnit) {
+								curUnitHdg = unit.hdg + addHdg;
+								if (curUnitHdg > 359) {
+									curUnitHdg = 15;
+								}
+								_.set(cbUnit, 'spwnName', 'DU|' + unit.unitId + '|' + cbUnit.type + '|true|');
+								_.set(cbUnit, 'lonLatLoc', unit.lonLatLoc);
+								_.set(cbUnit, 'heading', curUnitHdg);
+								_.set(cbUnit, 'country', unit.country);
+								_.set(cbUnit, 'playerCanDrive', true);
+								addHdg = addHdg + 15;
+							});
+							spawnArray = _.cloneDeep(findUnits);
+							groupController.spawnLogiGroup(serverName, spawnArray, unit.coalition);
+						})
+						.catch(function (err) {
+							console.log('line 394: ', err);
+						})
+					;
+				} else {
+					spawnArray = _.concat(spawnArray, {
+						spwnName: 'DU|' + unit.unitId + '|' + type + '|false|',
+						type: type,
+						lonLatLoc: unit.lonLatLoc,
+						heading: unit.hdg,
+						country: unit.country,
+						playerCanDrive: true,
+						category: "GROUND"
+					});
+					groupController.spawnLogiGroup(serverName, spawnArray, unit.coalition);
+				}
+			} else {
+				/*
+                crateStatic = {
+
+                };
+                _crate = {
+                    ["category"] = "Cargo",
+                    ["shape_name"] = "iso_container_small_cargo",
+                    ["type"] = "iso_container_small",
+                    ["unitId"] = _unitId,
+                    ["y"] = _point.z,
+                    ["x"] = _point.x,
+                    ["mass"] = _weight,
+                    ["name"] = _name,
+                    ["canCargo"] = true,
+                    ["heading"] = 0
+                }
+                _crate["country"] = _country
+                --env.info("info1: ctry: ".._crate["country"]..'unitId: '.._crate["unitId"]..' name: '.._crate["name"]..' category: '.._crate["category"]..' type: '.._crate["type"]..' mass '.._crate["mass"])
+                mist.dynAddStatic(_crate)
+                */
+			}
 		})
 		.catch(function (err) {
 			console.log('line 390: ', err);
 		})
 	;
-	var spawnArray = [];
-	if(menuUpdateController.virtualCrates) {
-		if (combo) {
-			groupController.getUnitDictionary()
-				.then(function (unitDic) {
-					var addHdg = 0;
-					var curUnitHdg;
-					var findUnits = _.filter(unitDic, {comboName: type, enabled: true});
-					_.forEach(findUnits, function (cbUnit) {
-						curUnitHdg = unit.hdg + addHdg;
-						if (curUnitHdg > 359) {
-							curUnitHdg = 15;
-						}
-						_.set(cbUnit, 'spwnName', 'DU|' + unit.unitId + '|' + cbUnit.type + '|true|');
-						_.set(cbUnit, 'lonLatLoc', unit.lonLatLoc);
-						_.set(cbUnit, 'heading', curUnitHdg);
-						_.set(cbUnit, 'country', unit.country);
-						_.set(cbUnit, 'playerCanDrive', true);
-						addHdg = addHdg + 15;
-					});
-					spawnArray = _.cloneDeep(findUnits);
-					groupController.spawnLogiGroup(serverName, spawnArray, unit.coalition);
-				})
-				.catch(function (err) {
-					console.log('line 394: ', err);
-				})
-			;
-		} else {
-			spawnArray = _.concat(spawnArray, {
-				spwnName: 'DU|' + unit.unitId + '|' + type + '|false|',
-				type: type,
-				lonLatLoc: unit.lonLatLoc,
-				heading: unit.hdg,
-				country: unit.country,
-				playerCanDrive: true,
-				category: "GROUND"
-			});
-			groupController.spawnLogiGroup(serverName, spawnArray, unit.coalition);
-		}
-	} else {
-		/*
-		crateStatic = {
-
-		};
-		_crate = {
-			["category"] = "Cargo",
-			["shape_name"] = "iso_container_small_cargo",
-			["type"] = "iso_container_small",
-			["unitId"] = _unitId,
-			["y"] = _point.z,
-			["x"] = _point.x,
-			["mass"] = _weight,
-			["name"] = _name,
-			["canCargo"] = true,
-			["heading"] = 0
-		}
-		_crate["country"] = _country
-		--env.info("info1: ctry: ".._crate["country"]..'unitId: '.._crate["unitId"]..' name: '.._crate["name"]..' category: '.._crate["category"]..' type: '.._crate["type"]..' mass '.._crate["mass"])
-		mist.dynAddStatic(_crate)
-		*/
-	}
 });
