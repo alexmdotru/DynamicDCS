@@ -163,6 +163,7 @@ do
 											polyArray[nArry[2]] = {}
 											airbaseCache[nArry[2]] = {}
 											airbaseCache[nArry[2]].side = 0
+											env.info('poly: '..gName)
 											polyArray.count = polyArray.count + 1
 											for pIndex = 1, #group.route.points do
 												local lat, lon, alt = coord.LOtoLL({x = group.route.points[pIndex].x, y = 0, z = group.route.points[pIndex].y})

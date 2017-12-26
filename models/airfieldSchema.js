@@ -63,15 +63,13 @@ const AirfieldSchema = new mongoose.Schema({
 	spawnAngle: {
 		type: Number,
 		min: 0,
-		max: 359,
-		required: true
+		max: 359
 	},
 	spawnZones: {
 		type: Object
 	},
 	maxUnitThreshold: {
-		type: Number,
-		required: true
+		type: Number
 	},
 	replenTime: {
 		type: Date

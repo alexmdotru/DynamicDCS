@@ -615,7 +615,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						polyFailCount += 1;
 						if (polyFailCount > 60) {
 							console.log('GET POLYDEF');
-							//dbMapServiceController.cmdQueActions('save', serverName, {queName: 'clientArray', actionObj: {action: "GETPOLYDEF"}});
+							// dbMapServiceController.cmdQueActions('save', serverName, {queName: 'clientArray', actionObj: {action: "GETPOLYDEF"}});
 							polyFailCount = 0;
 						}
 					} else {
