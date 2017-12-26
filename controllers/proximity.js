@@ -24,7 +24,7 @@ _.set(exports, 'getPlayersInProximity', function (serverName, lonLat, kmDistance
 				$ne: ''
 			},
 			category: {
-				$in: ['AIRPLANE', 'HELICOPTER']
+				$in: ['HELICOPTER']
 			},
 			inAir: inAir,
 			coalition: coalition
@@ -162,6 +162,16 @@ _.set(exports, 'extractUnitsBackToBase', function (unit, serverName) {
 		}
 	});
 	return friendlyBase;
+});
+
+_.set(exports, 'unitInProxLogiTowers', function (unit, serverName) {
+	var friendlyLogi = false;
+	_.forEach(_.get(unitsInProxLogiTowers, [serverName], []), function (logiTower) {
+		if(_.get(logiTower, [unit.unitId, 'enabled'])) {
+			friendlyLogi = true;
+		}
+	});
+	return friendlyLogi;
 });
 
 _.set(exports, 'checkUnitsToLogisticTowers', function (serverName) {

@@ -1,5 +1,6 @@
 const	_ = require('lodash');
 const dbMapServiceController = require('./dbMapService');
+const proximityController = require('./proximity');
 
 exports.virtualCrates = true;
 var enableAction = false;
@@ -75,8 +76,8 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 
 		]);
 	}
-	//if (_.includes(allowedTypesForCrates, unit.type)) {
-	if (_.includes(allowedTypesForTroops, unit.type)) {
+	console.log('logichk: ', proximityController.unitInProxLogiTowers(unit, serverName));
+	if (_.includes(allowedTypesForCrates, unit.type) && proximityController.unitInProxLogiTowers(unit, serverName)) {
 		if(unit.coalition === 1) {
 			cmdArray = _.concat(cmdArray, [
 				'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "Acquisitions")',
