@@ -431,6 +431,7 @@ _.set(exports, 'unpackCrate', function (serverName, unit, type, combo) {
 						playerCanDrive: true,
 						category: "GROUND"
 					});
+					console.log('sa: ', serverName, spawnArray, unit.coalition);
 					groupController.spawnLogiGroup(serverName, spawnArray, unit.coalition);
 				}
 			} else {
