@@ -96,6 +96,10 @@ const UnitSchema = new Schema({
 		type: Boolean,
 		default: false
 	},
+	isResync: {
+		type: Boolean,
+		default: true
+	},
 	troopType: {
 		type: String
 	},

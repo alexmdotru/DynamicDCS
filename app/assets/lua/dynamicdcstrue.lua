@@ -120,6 +120,7 @@ do
 	local unitCache = {}
 	local airbaseCache = {}
 	local staticCache = {}
+	local completeAliveUnitIds = {}
 	local updateQue = { ["que"] = {} }
 
 	local unitCnt = 0
@@ -268,6 +269,7 @@ do
 						data = {}
 					}
 					curUnit.data.unitId = tonumber(unit:getID())
+					table.insert(completeAliveUnitIds, curUnit.data.unitId)
 					curUnit.data.life = tonumber(unit:getLife())
 					local unitPosition = unit:getPosition()
 					local lat, lon, alt = coord.LOtoLL(unitPosition.p)
@@ -329,6 +331,8 @@ do
 	local function updateGroups(Init)
 		unitCnt = 0
 		checkUnitDead = {}
+		completeAliveUnitIds = {}
+
 		local redGroups = coalition.getGroups(coalition.side.RED)
 		if redGroups ~= nil then
 			addGroups(redGroups, 1, Init)
@@ -499,6 +503,12 @@ do
 		if request.action ~= nil then
 			if request.action == "GETPOLYDEF" then
 				--initAirbases()
+			end
+			if request.action == "GETUNITSALIVE" then
+				table.insert(updateQue.que, {
+					action = 'unitsAlive',
+					data = completeAliveUnitIds
+				})
 			end
 			if request.action == "INIT" then
 				--send all unit updates

@@ -155,6 +155,30 @@ exports.unitActions = function (action, serverName, obj){
 			);
 		});
 	}
+	if(action === 'chkResync') {
+		return new Promise(function(resolve, reject) {
+			Unit.updateMany(
+				{},
+				{$set: {isResync: false}},
+				function(err, units) {
+					if (err) { reject(err) }
+					resolve(units);
+				}
+			);
+		});
+	}
+	if(action === 'markUndead') {
+		return new Promise(function(resolve, reject) {
+			Unit.updateMany(
+				{isResync: false},
+				{$set: {dead: true}},
+				function(err, units) {
+					if (err) { reject(err) }
+					resolve(units);
+				}
+			);
+		});
+	}
 	if(action === 'delete') {
 		return new Promise(function(resolve, reject) {
 			Unit.findByIdAndRemove(obj._id, function (err, units) {

@@ -193,8 +193,7 @@ protectedRouter.route('/userAccounts')
 	});
 
 //setup globals
-// var epocTimeout = (300 * 1000); // 5 mins
-var epocTimeout = (60 * 1000); // 5 mins
+var epocTimeout = (5 * 60 * 1000); // 5 mins
 var outOfSyncUnitCnt = 0;
 var socketQues = ['q0', 'q1', 'q2', 'qadmin', 'leaderboard'];
 var curServers = {};
@@ -569,7 +568,11 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 								queName: 'clientArray',
 								actionObj: {action: "INIT"}
 							});
-							sendInit(serverName, 'all');
+							dbMapServiceController.cmdQueActions('save', serverName, {
+								queName: 'clientArray',
+								actionObj: {action: "GETUNITSALIVE"}
+							});
+							// sendInit(serverName, 'all'); ?
 						} else {
 							outOfSyncUnitCnt++;
 						}
@@ -629,32 +632,57 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			;
 		}
 
+		if (queObj.action === 'unitsAlive') {
+			var upPromises = [];
+			// console.log('UNITSALIVE: ', queObj.data);
+			dbMapServiceController.unitActions('chkResync', serverName, {})
+				.then(function () {
+					_.forEach(queObj.data, function (unitId) {
+						upPromises.push(dbMapServiceController.unitActions('update', serverName, {_id: unitId, isResync: true}));
+					});
+					Promise.all(upPromises)
+						.then(function (data) {
+							console.log("Marking Undead Units");
+							dbMapServiceController.unitActions('markUndead', serverName, {});
+						})
+						.catch(function (err) {
+							console.log('err line648: ', err);
+						})
+					;
+				})
+				.catch(function (err) {
+					console.log('err line653: ', err);
+				})
+			;
+		}
+
 		//var curUnit = _.find(curServers[serverName].serverObject.units, {'unitId': _.get(queObj, 'data.unitId')});
 		if ((_.get(queObj, 'action') === 'C') || (_.get(queObj, 'action') === 'U') || (_.get(queObj, 'action') === 'D'))  {
 			dbMapServiceController.unitActions('read', serverName, {_id: _.get(queObj, 'data.unitId')})
 				.then(function (unit) {
+					var stParse;
 					var curUnit = _.get(unit, 0, {});
 					var curData = _.get(queObj, 'data');
 					// build out extra info on spawned items
 					if (_.includes(curData.name, 'TU|')) {
-						var stParse = _.split(curData.name, '|');
+						stParse = _.split(curData.name, '|');
 						_.set(curData, 'playerOwnerId', stParse[1]);
 						_.set(curData, 'playerCanDrive', false);
 						_.set(curData, 'isTroop', true);
 						_.set(curData, 'spawnCat', stParse[2]);
-					};
+					}
 					if (_.includes(curData.name, 'CU|')) {
-						var stParse = _.split(curData.name, '|');
+						stParse = _.split(curData.name, '|');
 						_.set(curData, 'playerOwnerId', stParse[1]);
 						_.set(curData, 'isCombo', _.isBoolean(stParse[4]));
 						_.set(curData, 'playerCanDrive', false);
 						_.set(curData, 'isCrate', true);
-					};
+					}
 					if (_.includes(curData.name, 'DU|')) {
-						var stParse = _.split(curData.name, '|');
+						stParse = _.split(curData.name, '|');
 						_.set(curData, 'playerOwnerId', stParse[1]);
 						_.set(curData, 'playerCanDrive', true);
-					};
+					}
 					if ((!_.isEmpty(curUnit) && _.get(queObj, 'action') !== 'D')) {
 						if(!_.isEmpty(curData.playername) && curUnit.dead) {
 							menuUpdateController.logisticsMenu('resetMenu', serverName, curData);
