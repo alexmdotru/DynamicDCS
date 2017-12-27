@@ -1695,7 +1695,7 @@ setInterval(function () {
 								dbMapServiceController.unitActions('read', curServerName, {name: new RegExp(curRegEx)})
 									.then(function (units) {
 										var replenEpoc = new Date(_.get(base, 'replenTime', 0)).getTime();
-										if ((units.length < unitCnt) && isSpawningAllowed && replenEpoc < new Date().getTime()) {
+										if ((units.length < unitCnt) && isSpawningAllowed && replenEpoc < new Date().getTime() && false) { //UNCOMMENT OUT FALSE
 											dbMapServiceController.baseActions('updateReplenTimer', curServerName, {name: _.get(base, '_id'),  replenTime: new Date().getTime() + (_.get(srv, 'replenTimer') * 1000)})
 												.then(function () {
 													groupController.spawnSupportPlane(curServerName, base, _.get(base, 'side'));
