@@ -790,16 +790,22 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 								if (side !== curBase.side) {
 									console.log('BASESWITCH: ', base, ':', side, ' !== ', _.get(curBase, '_id'), ':', _.get(curBase, 'side'));
 								}
-								if (side !== _.get(curBase, 'side') && (side === 1 || side === 2) && false) {
-									dbMapServiceController.baseActions('updateSide', serverName, {name: base, side: side});
-									if (isSpawningAllowed && _.get(baseSpawnTimeout, base, 0) < new Date().getTime()) {
-										console.log('CAPTURE BASE!!');
-										console.log('Spawning Support Units', base, side);
-										var spawnArray = [];
-										spawnArray = _.concat(spawnArray, groupController.spawnSupportBaseGrp(serverName, base, side));
-										groupController.spawnGroup(serverName, spawnArray, base, side);
-										_.set(baseSpawnTimeout, base, new Date().getTime() + epocTimeout);
-									}
+								if (side !== _.get(curBase, 'side') && (side === 1 || side === 2)) {
+									dbMapServiceController.baseActions('updateSide', serverName, {name: base, side: side})
+										.then(function (bases) {
+											if (isSpawningAllowed && _.get(baseSpawnTimeout, base, 0) < new Date().getTime() && false) {
+												console.log('CAPTURE BASE!!');
+												console.log('Spawning Support Units', base, side);
+												var spawnArray = [];
+												spawnArray = _.concat(spawnArray, groupController.spawnSupportBaseGrp(serverName, base, side));
+												groupController.spawnGroup(serverName, spawnArray, base, side);
+												_.set(baseSpawnTimeout, base, new Date().getTime() + epocTimeout);
+											}
+										})
+										.catch(function (err) {
+											console.log('line799', err);
+										})
+									;
 								}
 							}
 						})
