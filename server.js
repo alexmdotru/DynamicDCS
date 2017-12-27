@@ -982,6 +982,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 
 		// server side events
 		if (_.get(queObj, 'action') === 'friendly_fire') {
+			/*
 			// "friendly_fire", playerID, weaponName, victimPlayerID
 			iCurObj = {
 				sessionName: sessionName,
@@ -1009,6 +1010,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					15
 				);
 			}
+			*/
 		}
 
 		if (_.get(queObj, 'action') === 'self_kill') {
