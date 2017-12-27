@@ -64,7 +64,7 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 	}
 	cmdArray.unshift(resetMenu);
 
-
+	console.log('der: ', unit.type, _.includes(allowedTypesForTroops, unit.type), proximityController.extractUnitsBackToBase(unit, serverName));
 	if (_.includes(allowedTypesForTroops, unit.type) && proximityController.extractUnitsBackToBase(unit, serverName)) {
 		cmdArray = _.concat(cmdArray, [
 			'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "Troops")',
