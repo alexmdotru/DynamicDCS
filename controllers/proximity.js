@@ -24,7 +24,7 @@ _.set(exports, 'getPlayersInProximity', function (serverName, lonLat, kmDistance
 				$ne: ''
 			},
 			category: {
-				$in: ['HELICOPTER']
+				$in: ['AIRPLANE', 'HELICOPTER']
 			},
 			inAir: inAir,
 			coalition: coalition
