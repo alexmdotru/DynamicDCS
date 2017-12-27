@@ -115,26 +115,27 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 							var grpTypes;
 							var curCrate = _.get(units, [0], {});
 							var numCrate = _.split(curCrate.name, '|')[3];
-							if(curCrate) {
+							var curCrateType = _.split(curCrate.name, '|')[2];
+							if(curCrate && curCrate.name) {
 								//virtual sling loading
 								grpTypes = _.transform(units, function (result, value) {
 									(result[_.get(_.split(value.name, '|'), [2])] || (result[_.get(_.split(value.name, '|'), [2])] = [])).push(value);
 								}, {});
-								if( _.get(grpTypes, [_.split(curCrate.name, '|')[2]], []).length >=  numCrate) {
+								if( _.get(grpTypes, [curCrateType], []).length >=  numCrate) {
 									cCnt = 1;
-									_.forEach(_.get(grpTypes, [_.split(curCrate.name, '|')[2]]), function (eCrate) {
+									_.forEach(_.get(grpTypes, [curCrateType]), function (eCrate) {
 										if ( cCnt <= numCrate) {
 											dbMapServiceController.unitActions('update', pObj.serverName, {_id: eCrate.unitId, dead: true});
 											groupController.destroyUnit(pObj.serverName, eCrate.name);
 											cCnt ++;
 										}
 									});
-									exports.unpackCrate(pObj.serverName, curUnit, _.split(curCrate.name, '|')[2], curCrate.isCombo);
+									exports.unpackCrate(pObj.serverName, curUnit, curCrateType, curCrate.isCombo);
 									groupController.destroyUnit(pObj.serverName, curCrate.name);
 									DCSLuaCommands.sendMesgToGroup(
 										curUnit.groupId,
 										pObj.serverName,
-										"G: Unpacking " + _.split(curCrate.name, '|')[2] + "!",
+										"G: Unpacking " + curCrateType + "!",
 										5
 									);
 								} else {
@@ -193,8 +194,17 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 				;
 			}
 			if (pObj.cmd === 'dropCrate') {
-				exports.spawnCrateFromLogi(pObj.serverName, curUnit, _.split(curUnit.virtCrateType, '|')[2], _.split(curUnit.virtCrateType, '|')[3]);
-				dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, virtCrateType: null});
+				if (!_.isEmpty(curUnit.virtCrateType)) {
+					exports.spawnCrateFromLogi(pObj.serverName, curUnit, _.split(curUnit.virtCrateType, '|')[2], _.split(curUnit.virtCrateType, '|')[3], (_.split(curUnit.virtCrateType, '|')[4] === 'true'));
+					dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, virtCrateType: null});
+				} else {
+					DCSLuaCommands.sendMesgToGroup(
+						curUnit.groupId,
+						pObj.serverName,
+						"G: You Have No Crates Onboard To Drop!",
+						5
+					);
+				}
 			}
 
 			// Troop Menu
@@ -394,71 +404,71 @@ _.set(exports, 'unpackCrate', function (serverName, unit, type, combo) {
 					curUnit++;
 				}
 			});
-			var spawnArray = [];
-			if(menuUpdateController.virtualCrates) {
-				if (combo) {
-					groupController.getUnitDictionary()
-						.then(function (unitDic) {
-							var addHdg = 0;
-							var curUnitHdg;
-							var findUnits = _.filter(unitDic, {comboName: type, enabled: true});
-							_.forEach(findUnits, function (cbUnit) {
-								curUnitHdg = unit.hdg + addHdg;
-								if (curUnitHdg > 359) {
-									curUnitHdg = 15;
-								}
-								_.set(cbUnit, 'spwnName', 'DU|' + unit.unitId + '|' + cbUnit.type + '|true|');
-								_.set(cbUnit, 'lonLatLoc', unit.lonLatLoc);
-								_.set(cbUnit, 'heading', curUnitHdg);
-								_.set(cbUnit, 'country', unit.country);
-								_.set(cbUnit, 'playerCanDrive', true);
-								addHdg = addHdg + 15;
-							});
-							spawnArray = _.cloneDeep(findUnits);
-							groupController.spawnLogiGroup(serverName, spawnArray, unit.coalition);
-						})
-						.catch(function (err) {
-							console.log('line 394: ', err);
-						})
-					;
-				} else {
-					spawnArray = _.concat(spawnArray, {
-						spwnName: 'DU|' + unit.unitId + '|' + type + '|false|',
-						type: type,
-						lonLatLoc: unit.lonLatLoc,
-						heading: unit.hdg,
-						country: unit.country,
-						playerCanDrive: true,
-						category: "GROUND"
-					});
-					console.log('sa: ', serverName, spawnArray, unit.coalition);
-					groupController.spawnLogiGroup(serverName, spawnArray, unit.coalition);
-				}
-			} else {
-				/*
-                crateStatic = {
-
-                };
-                _crate = {
-                    ["category"] = "Cargo",
-                    ["shape_name"] = "iso_container_small_cargo",
-                    ["type"] = "iso_container_small",
-                    ["unitId"] = _unitId,
-                    ["y"] = _point.z,
-                    ["x"] = _point.x,
-                    ["mass"] = _weight,
-                    ["name"] = _name,
-                    ["canCargo"] = true,
-                    ["heading"] = 0
-                }
-                _crate["country"] = _country
-                --env.info("info1: ctry: ".._crate["country"]..'unitId: '.._crate["unitId"]..' name: '.._crate["name"]..' category: '.._crate["category"]..' type: '.._crate["type"]..' mass '.._crate["mass"])
-                mist.dynAddStatic(_crate)
-                */
-			}
 		})
 		.catch(function (err) {
 			console.log('line 390: ', err);
 		})
 	;
+	var spawnArray = [];
+	if(menuUpdateController.virtualCrates) {
+		if (combo) {
+			groupController.getUnitDictionary()
+				.then(function (unitDic) {
+					var addHdg = 0;
+					var curUnitHdg;
+					var findUnits = _.filter(unitDic, {comboName: type, enabled: true});
+					_.forEach(findUnits, function (cbUnit) {
+						curUnitHdg = unit.hdg + addHdg;
+						if (curUnitHdg > 359) {
+							curUnitHdg = 15;
+						}
+						_.set(cbUnit, 'spwnName', 'DU|' + unit.unitId + '|' + cbUnit.type + '|true|');
+						_.set(cbUnit, 'lonLatLoc', unit.lonLatLoc);
+						_.set(cbUnit, 'heading', curUnitHdg);
+						_.set(cbUnit, 'country', unit.country);
+						_.set(cbUnit, 'playerCanDrive', true);
+						addHdg = addHdg + 15;
+					});
+					spawnArray = _.cloneDeep(findUnits);
+					groupController.spawnLogiGroup(serverName, spawnArray, unit.coalition);
+				})
+				.catch(function (err) {
+					console.log('line 394: ', err);
+				})
+			;
+		} else {
+			spawnArray = _.concat(spawnArray, {
+				spwnName: 'DU|' + unit.unitId + '|' + type + '|false|',
+				type: type,
+				lonLatLoc: unit.lonLatLoc,
+				heading: unit.hdg,
+				country: unit.country,
+				playerCanDrive: true,
+				category: "GROUND"
+			});
+			console.log('sa: ', serverName, spawnArray, unit.coalition);
+			groupController.spawnLogiGroup(serverName, spawnArray, unit.coalition);
+		}
+	} else {
+		/*
+        crateStatic = {
+
+        };
+        _crate = {
+            ["category"] = "Cargo",
+            ["shape_name"] = "iso_container_small_cargo",
+            ["type"] = "iso_container_small",
+            ["unitId"] = _unitId,
+            ["y"] = _point.z,
+            ["x"] = _point.x,
+            ["mass"] = _weight,
+            ["name"] = _name,
+            ["canCargo"] = true,
+            ["heading"] = 0
+        }
+        _crate["country"] = _country
+        --env.info("info1: ctry: ".._crate["country"]..'unitId: '.._crate["unitId"]..' name: '.._crate["name"]..' category: '.._crate["category"]..' type: '.._crate["type"]..' mass '.._crate["mass"])
+        mist.dynAddStatic(_crate)
+        */
+	}
 });
