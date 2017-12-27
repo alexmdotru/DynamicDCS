@@ -793,7 +793,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 								if (side !== _.get(curBase, 'side') && (side === 1 || side === 2)) {
 									dbMapServiceController.baseActions('updateSide', serverName, {name: base, side: side})
 										.then(function (bases) {
-											if (isSpawningAllowed && _.get(baseSpawnTimeout, base, 0) < new Date().getTime() && false) {
+											if (isSpawningAllowed && _.get(baseSpawnTimeout, base, 0) < new Date().getTime()) {
 												console.log('CAPTURE BASE!!');
 												console.log('Spawning Support Units', base, side);
 												var spawnArray = [];
