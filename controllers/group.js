@@ -519,9 +519,9 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 	_.forEach(defBaseSides, function (extSide, extName) {
 		var spawnArray = [];
 		spawnArray = _.concat(spawnArray, exports.spawnSupportBaseGrp(serverName, extName, extSide));
-		while (spawnArray.length < curServer.replenThreshold) {
-			spawnArray = _.concat(spawnArray, exports.spawnBaseReinforcementGroup(serverName, extSide));
-		}
+		//while (spawnArray.length < curServer.replenThreshold) {
+		//	spawnArray = _.concat(spawnArray, exports.spawnBaseReinforcementGroup(serverName, extSide));
+		//}
 		exports.spawnGroup(serverName, spawnArray, extName, extSide);
 	});
 });
