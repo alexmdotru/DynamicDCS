@@ -411,6 +411,7 @@ _.set(exports, 'unpackCrate', function (serverName, unit, type, combo) {
 	;
 	var spawnArray = [];
 	if(menuUpdateController.virtualCrates) {
+		console.log('combo; ', combo);
 		if (combo) {
 			groupController.getUnitDictionary()
 				.then(function (unitDic) {
