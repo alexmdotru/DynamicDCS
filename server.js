@@ -786,7 +786,9 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					dbMapServiceController.baseActions('read', serverName, {_id: base, mainBase: true})
 						.then(function (dbBaseObj) {
 							var curBase = _.first(_.cloneDeep(dbBaseObj));
-							console.log('BASESWITCH: ', base, ':', side, ' !== ', _.get(curBase, '_id'), ':', _.get(curBase, 'side'));
+							if (side !== _.get(curBase, 'side')) {
+								console.log('BASESWITCH: ', base, ':', side, ' !== ', _.get(curBase, '_id'), ':', _.get(curBase, 'side'));
+							}
 							if (side !== _.get(curBase, 'side') && (side === 1 || side === 2) && false) {
 								dbMapServiceController.baseActions('updateSide', serverName, {name: base, side: side});
 								if (isSpawningAllowed && _.get(baseSpawnTimeout, base, 0) < new Date().getTime()) {
