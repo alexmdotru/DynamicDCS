@@ -786,18 +786,20 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					dbMapServiceController.baseActions('read', serverName, {_id: base, mainBase: true})
 						.then(function (dbBaseObj) {
 							var curBase = _.first(_.cloneDeep(dbBaseObj));
-							if (curBase.side && side !== curBase.side) {
-								console.log('BASESWITCH: ', base, ':', side, ' !== ', _.get(curBase, '_id'), ':', _.get(curBase, 'side'));
-							}
-							if (curBase.side && side !== _.get(curBase, 'side') && (side === 1 || side === 2) && false) {
-								dbMapServiceController.baseActions('updateSide', serverName, {name: base, side: side});
-								if (isSpawningAllowed && _.get(baseSpawnTimeout, base, 0) < new Date().getTime()) {
-									console.log('CAPTURE BASE!!');
-									console.log('Spawning Support Units', base, side);
-									var spawnArray = [];
-									spawnArray = _.concat(spawnArray, groupController.spawnSupportBaseGrp(serverName, base, side));
-									groupController.spawnGroup(serverName, spawnArray, base, side);
-									_.set(baseSpawnTimeout, base, new Date().getTime() + epocTimeout);
+							if (curBase.side) {
+								if (side !== curBase.side) {
+									console.log('BASESWITCH: ', base, ':', side, ' !== ', _.get(curBase, '_id'), ':', _.get(curBase, 'side'));
+								}
+								if (side !== _.get(curBase, 'side') && (side === 1 || side === 2) && false) {
+									dbMapServiceController.baseActions('updateSide', serverName, {name: base, side: side});
+									if (isSpawningAllowed && _.get(baseSpawnTimeout, base, 0) < new Date().getTime()) {
+										console.log('CAPTURE BASE!!');
+										console.log('Spawning Support Units', base, side);
+										var spawnArray = [];
+										spawnArray = _.concat(spawnArray, groupController.spawnSupportBaseGrp(serverName, base, side));
+										groupController.spawnGroup(serverName, spawnArray, base, side);
+										_.set(baseSpawnTimeout, base, new Date().getTime() + epocTimeout);
+									}
 								}
 							}
 						})
