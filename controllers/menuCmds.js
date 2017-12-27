@@ -116,6 +116,7 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 							var curCrate = _.get(units, [0], {});
 							var numCrate = _.split(curCrate.name, '|')[3];
 							var curCrateType = _.split(curCrate.name, '|')[2];
+							var isCombo = (_.split(curCrate.name, '|')[4] === 'true');
 							if(curCrate && curCrate.name) {
 								//virtual sling loading
 								grpTypes = _.transform(units, function (result, value) {
@@ -130,7 +131,7 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 											cCnt ++;
 										}
 									});
-									exports.unpackCrate(pObj.serverName, curUnit, curCrateType, curCrate.isCombo);
+									exports.unpackCrate(pObj.serverName, curUnit, curCrateType, isCombo);
 									groupController.destroyUnit(pObj.serverName, curCrate.name);
 									DCSLuaCommands.sendMesgToGroup(
 										curUnit.groupId,
