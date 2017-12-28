@@ -27,6 +27,21 @@ exports.baseActions = function (action, serverName, obj){
 			});
 		});
 	}
+	if(action === 'getBaseSides') {
+		var tAirfields;
+		return new Promise(function(resolve, reject) {
+			Airfield.find(
+				{mainBase: true},
+				function(err, dbairfields) {
+					if (err) { reject(err) }
+					tAirfields = _.transform(dbairfields, function (result, value) {
+						result.push({name: value.name, side: value.side})
+					}, []);
+					resolve(tAirfields);
+				}
+			);
+		});
+	}
 	if(action === 'updateSide') {
 		return new Promise(function(resolve, reject) {
 			Airfield.update(

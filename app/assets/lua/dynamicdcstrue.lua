@@ -440,48 +440,7 @@ do
 	end
 
 	local function getDataMessage()
-		-- check for base take
-		local neutralAirbases = coalition.getAirbases(coalition.side.NEUTRAL)
-		if neutralAirbases ~= nil then
-			for naIndex = 1, #neutralAirbases do
-				local baseName = neutralAirbases[naIndex]:getName()
-				if airbaseCache[baseName] ~= nil and not string.find(baseName, 'Expansion', 1, true) and not string.find(baseName, ' #', 1, true) then
-					--env.info('FL: '..baseName..' : '..0)
-					trigger.action.setUserFlag(baseName, 0)
-					airbaseCache[baseName].side = 0
-				end
-			end
-		end
-		local redAirbases = coalition.getAirbases(coalition.side.RED)
-		if redAirbases ~= nil then
-			for rIndex = 1, #redAirbases do
-				local baseName = redAirbases[rIndex]:getName()
-				if airbaseCache[baseName] ~= nil and not string.find(baseName, 'Expansion', 1, true) and not string.find(baseName, ' #', 1, true) then
-					--env.info('FL: '..baseName..' : '..1)
-					trigger.action.setUserFlag(baseName, 1)
-					airbaseCache[baseName].side = 1
-				end
-			end
-		end
-		local blueAirbases = coalition.getAirbases(coalition.side.BLUE)
-		if blueAirbases ~= nil then
-			for bIndex = 1, #blueAirbases do
-				local baseName = blueAirbases[bIndex]:getName()
-				if airbaseCache[baseName] ~= nil and not string.find(baseName, 'Expansion', 1, true) and not string.find(baseName, ' #', 1, true) then
-					--env.info('FL: '..baseName..' : '..2)
-					trigger.action.setUserFlag(baseName, 2)
-					airbaseCache[baseName].side = 2
-				end
-			end
-		end
-
-		table.insert(updateQue.que, {
-			action = 'airbaseU',
-			data = airbaseCache
-		})
-
 		updateGroups()
-
 		updateStatics()
 
 		local chkSize = 500
@@ -509,6 +468,20 @@ do
 					action = 'unitsAlive',
 					data = completeAliveUnitIds
 				})
+			end
+			if request.action == "SETBASEFLAGS" then
+				if type(request.data) == 'table' then
+					for rIndex = 1, #request.data do
+						local curBase = request.data[rIndex].name
+						local curSide = request.data[rIndex].side
+						--env.info('BS: '..curBase..':'..curSide)
+						if airbaseCache[curBase] ~= nil then
+							airbaseCache[curBase] = {}
+						end
+						airbaseCache[curBase].side = curSide
+						trigger.action.setUserFlag(curBase, curSide)
+					end
+				end
 			end
 			if request.action == "INIT" then
 				--send all unit updates

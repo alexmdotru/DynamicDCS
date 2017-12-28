@@ -518,11 +518,18 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 	var defBaseSides = _.get(curServer, 'defBaseSides');
 	_.forEach(defBaseSides, function (extSide, extName) {
 		var spawnArray = [];
-		spawnArray = _.concat(spawnArray, exports.spawnSupportBaseGrp(serverName, extName, extSide));
-		//while (spawnArray.length < curServer.replenThreshold) { //UNCOMMENT THESE
-		//	spawnArray = _.concat(spawnArray, exports.spawnBaseReinforcementGroup(serverName, extSide));
-		//}
-		exports.spawnGroup(serverName, spawnArray, extName, extSide);
+		dbMapServiceController.baseActions('updateSide', serverName, {name: extName, side: extSide})
+			.then(function (bases) {
+				spawnArray = _.concat(spawnArray, exports.spawnSupportBaseGrp(serverName, extName, extSide));
+				//while (spawnArray.length < curServer.replenThreshold) { //UNCOMMENT THESE
+				//	spawnArray = _.concat(spawnArray, exports.spawnBaseReinforcementGroup(serverName, extSide));
+				//}
+				exports.spawnGroup(serverName, spawnArray, extName, extSide);
+			})
+			.catch(function (err) {
+				console.log('line799', err);
+			})
+		;
 	});
 });
 

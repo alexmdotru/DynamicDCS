@@ -775,6 +775,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			}
 
 			if (_.get(queObj, 'action') === 'airbaseU') { //timer 5 mins enable from start of script
+				/*
 				if (!isSpawningAllowed) {
 					if(epocToPayAttention < new Date().getTime()){
 						console.log('Spawning is now active');
@@ -814,6 +815,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						})
 					;
 				});
+				*/
 			}
 		}
 
@@ -1690,6 +1692,31 @@ setInterval(function () {
 		})
 	;
 
+	//sending updated slotblock info
+	dbSystemServiceController.serverActions('read', {enabled: true})
+		.then(function (srvs) {
+			_.forEach(srvs, function (srv) {
+				var curServerName = _.get(srv, '_id');
+				dbMapServiceController.baseActions('getBaseSides', curServerName, {})
+					.then(function (baseSides) {
+						dbMapServiceController.cmdQueActions('save', curServerName, {
+							queName: 'clientArray',
+							actionObj: {
+								action: "SETBASEFLAGS",
+								data: baseSides
+							}
+						});
+					})
+					.catch(function (err) {
+						console.log('line1491', err);
+					})
+				;
+			});
+		})
+		.catch(function (err) {
+			console.log('line1491', err);
+		})
+	;
 }, 1000);
 
 // constant check loop (base unit replenish, etc)
