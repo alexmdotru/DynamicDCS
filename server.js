@@ -724,7 +724,12 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 							if( _.includes(curData.name, ' Logistics')) {
 								_.set(curData, 'proxChkGrp', 'logisticTowers');
 							}
+						} else {
+							if (_.includes(curData.name, '_LOGISTICS')) {
+								exports.curSupportPlanes++;
+							}
 						}
+
 						dbMapServiceController.unitActions('save', serverName, iCurObj.data)
 							.then(function (unit) {
 								curServers[serverName].updateQue['q' + parseFloat(_.get(queObj, 'data.coalition'))].push(_.cloneDeep(iCurObj));
@@ -734,6 +739,9 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 								console.log('save err line643: ', err);
 							});
 					} else if (_.get(queObj, 'action') === 'D') {
+						if (_.includes(curData.name, '_LOGISTICS')) {
+							exports.curSupportPlanes--;
+						}
 						iCurObj = {
 							action: 'D',
 							sessionName: sessionName,
@@ -1316,6 +1324,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 							var bArry = _.split(curUnitName, '_LOGISTICS');
 							var curSide = _.get(curIUnit, 'coalition');
 							var bName = _.get(bArry, 0);
+							exports.curSupportPlanes--;
 							dbMapServiceController.baseActions('read', serverName, {_id: bName})
 								.then(function (bases) {
 									var curBase = _.get(bases, [0], {}); // does this work?
