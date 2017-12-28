@@ -147,7 +147,7 @@ _.set(exports, 'checkUnitsToBaseForCapture', function (serverName) {
 							(result[value.coalition] || (result[value.coalition] = [])).push(value);
 						}, {});
 						if (base.side === 1 && _.get(sideArray, [2], []).length > 0) {
-							console.log('enemy in range: ', base.name + ': enemy Blue');
+							// console.log('enemy in range: ', base.name + ': enemy Blue');
 							if (_.get(sideArray, [1], []).length === 0) {
 								console.log('BASE HAS BEEN CAPTURED: ', base.name, ' is now ', 2);
 								// console.log('Spawning Support Units', base, 2);
@@ -157,7 +157,7 @@ _.set(exports, 'checkUnitsToBaseForCapture', function (serverName) {
 							}
 						}
 						if (base.side === 2 && _.get(sideArray, [1], []).length > 0) {
-							console.log('enemy in range: ', base.name + ': enemy Red');
+							// console.log('enemy in range: ', base.name + ': enemy Red');
 							if (_.get(sideArray, [2], []).length === 0) {
 								console.log('BASE HAS BEEN CAPTURED: ', base.name, ' is now ', 1);
 								// console.log('Spawning Support Units', base, 1);
