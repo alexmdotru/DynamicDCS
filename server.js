@@ -1314,7 +1314,19 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						var curUnitName = _.get(curIUnit, 'name');
 						if (_.includes(curUnitName, '_LOGISTICS')) {
 							var bArry = _.split(curUnitName, '_LOGISTICS');
-							groupController.replenishUnits( serverName, _.get(bArry, 0), _.get(curIUnit, 'coalition'));
+							var curSide = _.get(curIUnit, 'coalition');
+							var bName = _.get(bArry, 0);
+							dbMapServiceController.baseActions('read', serverName, {_id: bName})
+								.then(function (bases) {
+									var curBase = _.get(bases, [0], {}); // does this work?
+									if (curBase.side === curSide) {
+										groupController.replenishUnits( serverName, bName, curSide);
+									}
+								})
+								.catch(function (err) {
+									console.log('err line1323: ', err);
+								})
+							;
 						}
 
 						iPlayer = _.find(curServers[serverName].serverObject.players, {name: _.get(curIUnit, 'playername')});
