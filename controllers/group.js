@@ -70,7 +70,7 @@ var countryCoObj = {
 	]
 };
 exports.curSupportPlanes = 0;
-exports.supportPlaneMax = 5;
+exports.supportPlanesMax = 5;
 
 _.set(exports, 'landPlaneRouteTemplate', function ( routes ) {
 	return 	'["route"] = {' +
@@ -386,7 +386,7 @@ _.set(exports, 'spawnSupportPlane', function (serverName, baseObj, side) {
 	var remoteLoc;
 	var grpNum = _.random(1000000, 9999999);
 
-	if (exports.curSupportPlanes <=  exports.supportPlaneMax) {
+	if (exports.curSupportPlanes <=  exports.supportPlanesMax) {
 		curSide = (side) ? _.get(countryCoObj, ['defCountrys', side]) : _.get(countryCoObj, ['defCountrys', _.get(curGrpObj, 'coalition')]);
 		curBaseName = _.get(baseObj, 'name') + '_LOGISTICS #' + grpNum;
 		baseLoc = _.get(baseObj, 'centerLoc');
@@ -526,9 +526,9 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 		dbMapServiceController.baseActions('updateSide', serverName, {name: extName, side: extSide})
 			.then(function (bases) {
 				spawnArray = _.concat(spawnArray, exports.spawnSupportBaseGrp(serverName, extName, extSide));
-				//while (spawnArray.length < curServer.replenThreshold) { //UNCOMMENT THESE
-				//	spawnArray = _.concat(spawnArray, exports.spawnBaseReinforcementGroup(serverName, extSide));
-				//}
+				while (spawnArray.length < curServer.replenThreshold) { //UNCOMMENT THESE
+					spawnArray = _.concat(spawnArray, exports.spawnBaseReinforcementGroup(serverName, extSide));
+				}
 				exports.spawnGroup(serverName, spawnArray, extName, extSide);
 			})
 			.catch(function (err) {
