@@ -193,7 +193,7 @@ protectedRouter.route('/userAccounts')
 	});
 
 //setup globals
-var epocTimeout = (5 * 60 * 1000); // 5 mins
+var epocTimeout = (1 * 60 * 1000); // 5 mins
 var outOfSyncUnitCnt = 0;
 var socketQues = ['q0', 'q1', 'q2', 'qadmin', 'leaderboard'];
 var curServers = {};
@@ -1673,30 +1673,24 @@ setInterval(function () {
 		.then(function (srvs) {
 			_.forEach(srvs, function (srv) {
 				var curServerName = _.get(srv, '_id');
-				proximityController.checkUnitsToBaseForTroops(curServerName);
-			});
-		})
-		.catch(function (err) {
-			console.log('line1491', err);
-		})
-	;
-	dbSystemServiceController.serverActions('read', {enabled: true})
-		.then(function (srvs) {
-			_.forEach(srvs, function (srv) {
-				var curServerName = _.get(srv, '_id');
-				proximityController.checkUnitsToLogisticTowers(curServerName);
-			});
-		})
-		.catch(function (err) {
-			console.log('line1491', err);
-		})
-	;
 
-	//sending updated slotblock info
-	dbSystemServiceController.serverActions('read', {enabled: true})
-		.then(function (srvs) {
-			_.forEach(srvs, function (srv) {
-				var curServerName = _.get(srv, '_id');
+				//check Prox base units
+				proximityController.checkUnitsToBaseForTroops(curServerName);
+
+				//check logi prox
+				proximityController.checkUnitsToLogisticTowers(curServerName);
+
+				//checkBaseCap
+				if (!isSpawningAllowed) {
+					if(epocToPayAttention < new Date().getTime()){
+						console.log('Spawning is now active');
+						isSpawningAllowed = true;
+					}
+				} else {
+					proximityController.checkUnitsToBaseForCapture(curServerName);
+				}
+
+				//update server client lock
 				dbMapServiceController.baseActions('getBaseSides', curServerName, {})
 					.then(function (baseSides) {
 						dbMapServiceController.cmdQueActions('save', curServerName, {

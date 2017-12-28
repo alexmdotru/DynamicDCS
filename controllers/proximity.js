@@ -6,6 +6,32 @@ const menuUpdateController = require('./menuUpdate');
 var unitsInProxLogiTowers = {};
 var unitsInProxBases = {};
 
+_.set(exports, 'getGroundUnitsInProximity', function (serverName, lonLat, kmDistance) {
+	return dbMapServiceController.unitActions(
+		'read',
+		serverName,
+		{
+			dead: false,
+			lonLatLoc: {
+				$geoWithin: {
+					$centerSphere: [
+						lonLat,
+						kmDistance / 6378.1
+					]
+				}
+			},
+			category: 'GROUND'
+		})
+		.then(function (closeUnits) {
+			// console.log('close units ' + closeUnits);
+			return closeUnits;
+		})
+		.catch(function (err) {
+			console.log('line 12: ', err);
+		})
+		;
+});
+
 _.set(exports, 'getPlayersInProximity', function (serverName, lonLat, kmDistance, inAir, coalition) {
 	return dbMapServiceController.unitActions(
 		'read',
@@ -105,6 +131,50 @@ _.set(exports, 'getTroopsInProximity', function (serverName, lonLat, kmDistance,
 		})
 		.catch(function (err) {
 			console.log('line 12: ', err);
+		})
+	;
+});
+
+_.set(exports, 'checkUnitsToBaseForCapture', function (serverName) {
+	var sideArray = {};
+	dbMapServiceController.baseActions('read', serverName, {mainBase: true, $or: [{side: 1}, {side: 2}]})
+		.then(function (bases) {
+			_.forEach(bases, function (base) {
+				exports.getGroundUnitsInProximity(serverName, base.centerLoc, 2)
+					.then(function (unitsInRange) {
+						var spawnArray = [];
+						sideArray = _.transform(unitsInRange, function (result, value) {
+							(result[value.coalition] || (result[value.coalition] = [])).push(value);
+						}, {});
+						if (base.side === 1 && _.get(sideArray, [2], []).length > 0) {
+							console.log('enemy in range: ', base.name + ': enemy Blue');
+							if (_.get(sideArray, [1], []).length === 0) {
+								console.log('BASE HAS BEEN CAPTURED: ', base.name, ' is now ', 2);
+								// console.log('Spawning Support Units', base, 2);
+								spawnArray = _.concat(spawnArray, groupController.spawnSupportBaseGrp(serverName, base.name, 2));
+								groupController.spawnGroup(serverName, spawnArray, base.name, 2);
+								dbMapServiceController.baseActions('updateSide', serverName, {name: base.name, side: 2})
+							}
+						}
+						if (base.side === 2 && _.get(sideArray, [1], []).length > 0) {
+							console.log('enemy in range: ', base.name + ': enemy Red');
+							if (_.get(sideArray, [2], []).length === 0) {
+								console.log('BASE HAS BEEN CAPTURED: ', base.name, ' is now ', 1);
+								// console.log('Spawning Support Units', base, 1);
+								spawnArray = _.concat(spawnArray, groupController.spawnSupportBaseGrp(serverName, base.name, 1));
+								groupController.spawnGroup(serverName, spawnArray, base.name, 1);
+								dbMapServiceController.baseActions('updateSide', serverName, {name: base.name, side: 1})
+							}
+						}
+					})
+					.catch(function (err) {
+						console.log('line 64: ', err);
+					})
+				;
+			});
+		})
+		.catch(function (err) {
+			console.log('line 118: ', err);
 		})
 	;
 });
