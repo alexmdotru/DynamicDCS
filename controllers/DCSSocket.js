@@ -65,22 +65,6 @@ exports.createSocket = function (serverName, serverAddress, clientPort, gameGuiP
 		});
 
 		dsock.client.on('data', function (data) {
-			/*
-			var curStr = '';
-			var isValidJSON = true;
-			var subStr = data;
-			try { JSON.parse(subStr) } catch(e) { isValidJSON = false }
-			if (isValidJSON) {
-				curStr = JSON.parse(subStr);
-			} else {
-				curStr = '{}';
-				console.log('bad substring: ', subStr);
-			}
-			dsock.callback(serverName, curStr);
-			// dsock.clientBuffer = dsock.clientBuffer.substring(i + 1);
-			dsock.client.write(JSON.stringify(_.get(dsock, ['writeQue', 'client', 0], '')) + "\n");
-			_.get(dsock, ['writeQue', 'client']).shift();
-			*/
 			dsock.clientBuffer += data;
 			while ((i = dsock.clientBuffer.indexOf("\n")) >= 0) {
 				var curStr = '';
