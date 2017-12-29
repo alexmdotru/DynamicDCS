@@ -418,6 +418,7 @@ _.set(exports, 'spawnSupportPlane', function (serverName, baseObj, side) {
 		_.set(curSpwnUnit, 'lonLatLoc', remoteLoc);
 		_.set(curSpwnUnit, 'unitId', unitNum);
 		_.set(curSpwnUnit, 'name', curUnitName);
+		_.set(curSpwnUnit, 'playerCanDrive', false);
 
 		curUnitSpawn = exports.airUnitTemplate(curSpwnUnit);
 
