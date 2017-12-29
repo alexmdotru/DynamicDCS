@@ -3,8 +3,6 @@ const net = require('net'),
 
 const dbMapServiceController = require('./dbMapService'); // reqClientArray, regGameGuiArray
 
-var combineCmds = 5;
-
 exports.createSocket = function (serverName, serverAddress, clientPort, gameGuiPort, callback, io, initClear) {
 	var dsock = this;
 	_.set(dsock, 'serverName', serverName);
