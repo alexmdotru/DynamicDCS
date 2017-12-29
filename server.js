@@ -1660,23 +1660,37 @@ setInterval(function () {
 					//check logi prox
 					proximityController.checkUnitsToLogisticTowers(curServerName);
 
-					//cleanupAI maxIdleTime
-					dbMapServiceController.unitActions('read', curServerName, {isAI: true})
-						.then(function (AICleanup) {
-							_.forEach(AICleanup, function (AIUnit) {
-								if (_.isEmpty(AIUnit.playername) && new Date(_.get(AIUnit, 'updatedAt', 0)).getTime() + maxIdleTime < new Date().getTime()) {
-									groupController.destroyUnit( curServerName, AIUnit.name );
-								}
-							});
-						})
-						.catch(function (err) {
-							console.log('err line596: ', err);
-						})
-					;
-
 					//checkBaseCap
 					proximityController.checkUnitsToBaseForCapture(curServerName);
 				}
+			});
+		})
+		.catch(function (err) {
+			console.log('line1491', err);
+		})
+	;
+}, 1000);
+
+// constant check loop (base unit replenish, etc)
+setInterval(function () {
+	dbSystemServiceController.serverActions('read', {enabled: true})
+		.then(function (srvs) {
+			_.forEach(srvs, function (srv) {
+				var curServerName = _.get(srv, '_id');
+
+				//cleanupAI maxIdleTime
+				dbMapServiceController.unitActions('read', curServerName, {isAI: true, dead:false})
+					.then(function (AICleanup) {
+						_.forEach(AICleanup, function (AIUnit) {
+							if (_.isEmpty(AIUnit.playername) && new Date(_.get(AIUnit, 'updatedAt', 0)).getTime() + maxIdleTime < new Date().getTime()) {
+								groupController.destroyUnit( curServerName, AIUnit.name );
+							}
+						});
+					})
+					.catch(function (err) {
+						console.log('err line596: ', err);
+					})
+				;
 
 				//update server client lock
 				dbMapServiceController.baseActions('getBaseSides', curServerName, {})
@@ -1693,22 +1707,8 @@ setInterval(function () {
 						console.log('line1491', err);
 					})
 				;
-			});
-		})
-		.catch(function (err) {
-			console.log('line1491', err);
-		})
-	;
-}, 1000);
 
-// constant check loop (base unit replenish, etc)
-setInterval(function () {
-	// console.log(' cur support planes: ', groupController.curSupportPlanes);
-	if (isSpawningAllowed) {
-		dbSystemServiceController.serverActions('read', {enabled: true})
-			.then(function (srvs) {
-				_.forEach(srvs, function (srv) {
-					var curServerName = _.get(srv, '_id');
+				if (isSpawningAllowed) {
 					dbMapServiceController.baseActions('read', curServerName, {mainBase: true, $or: [{side: 1}, {side: 2}]})
 						.then(function (bases) {
 							_.forEach(bases, function (base) {
@@ -1738,13 +1738,13 @@ setInterval(function () {
 							console.log('line1486', err);
 						})
 					;
-				});
-			})
-			.catch(function (err) {
-				console.log('line1491', err);
-			})
-		;
-	}
+				}
+			});
+		})
+		.catch(function (err) {
+			console.log('line1491', err);
+		})
+	;
 }, 5 * 1000);
 
 /*
