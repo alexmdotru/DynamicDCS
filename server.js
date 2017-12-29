@@ -211,6 +211,7 @@ var srvDbNotLoaded = {};
 var baseSpawnTimeout = {};
 var epocToPayAttention = new Date().getTime() + epocTimeout;
 var isSpawningAllowed = false;
+var isBaseFullyPopped = false;
 
 function abrLookup (fullName) {
  var shortNames =	{
@@ -562,24 +563,35 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						// get update sync from server
 						console.log(outOfSyncUnitCnt + ':' + serverName + ':' + update.unitCount + '=' + units.length);
 						if (outOfSyncUnitCnt > config.outOfSyncUnitThreshold) {
-							outOfSyncUnitCnt = 0;
-							console.log('reset server units');
-							initClear(serverName, 'client');
-							dbMapServiceController.cmdQueActions('save', serverName, {
-								queName: 'clientArray',
-								actionObj: {action: "INIT"}
-							});
 							dbMapServiceController.cmdQueActions('save', serverName, {
 								queName: 'clientArray',
 								actionObj: {action: "GETUNITSALIVE"}
-							});
-							// sendInit(serverName, 'all'); ?
+							})
+								.then(function () {
+									outOfSyncUnitCnt = 0;
+									console.log('reset server units');
+									initClear(serverName, 'client');
+									dbMapServiceController.cmdQueActions('save', serverName, {
+										queName: 'clientArray',
+										actionObj: {action: "INIT"}
+									})
+										.catch( function (err) {
+											console.log('err line:579 ', err);
+										})
+									;
+									// sendInit(serverName, 'all'); ?
+								})
+								.catch( function (err) {
+									console.log('err line:584 ', err);
+								})
+							;
 						} else {
 							outOfSyncUnitCnt++;
 						}
 					} else {
 						if (outOfSyncUnitCnt > 0) {
 							console.log('Units Resynced');
+							isBaseFullyPopped = true;
 							outOfSyncUnitCnt = 0;
 						}
 					}
@@ -635,7 +647,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 
 		if (queObj.action === 'unitsAlive') {
 			var upPromises = [];
-			// console.log('UNITSALIVE: ', queObj.data);
+			console.log('isBasePopped: ', isBaseFullyPopped);
 			dbMapServiceController.unitActions('chkResync', serverName, {})
 				.then(function () {
 					_.forEach(queObj.data, function (unitId) {
@@ -643,8 +655,35 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					});
 					Promise.all(upPromises)
 						.then(function (data) {
-							console.log("Marking Undead Units");
-							dbMapServiceController.unitActions('markUndead', serverName, {});
+							if(isBaseFullyPopped) {
+								dbMapServiceController.unitActions('markUndead', serverName, {});
+							} else {
+								//send units not popped yet
+								dbMapServiceController.unitActions('read', serverName, {isResync: false, dead: false})
+									.then(function (units) {
+										console.log('unitsLength: ', units.length);
+										console.log('resyncUnits');
+										//repop units at base
+										var remappedunits = {};
+										_.forEach(units, function (unit) {
+											var curDead;
+											var curGrpName = _.get(unit, 'groupName');
+											if (_.get(unit, 'category') === 'GROUND') {
+												_.set(remappedunits, [curGrpName], _.get(remappedunits, [curGrpName], []));
+												remappedunits[curGrpName].push(unit);
+											} else if (_.get(unit, 'category') === 'STRUCTURE') {
+												groupController.spawnLogisticCmdCenter(serverName, unit);
+											}
+										});
+										_.forEach(remappedunits, function (group) {
+											groupController.spawnGroup( serverName, group)
+										});
+									})
+									.catch(function (err) {
+										console.log('erroring line674: ', err);
+									})
+								;
+							}
 						})
 						.catch(function (err) {
 							console.log('err line648: ', err);
@@ -655,6 +694,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					console.log('err line653: ', err);
 				})
 			;
+
 		}
 
 		//var curUnit = _.find(curServers[serverName].serverObject.units, {'unitId': _.get(queObj, 'data.unitId')});
@@ -1829,6 +1869,7 @@ setInterval(function () {
 							curServers[server.name].DCSSocket.connectClient();
 							epocToPayAttention = new Date().getTime() + epocTimeout;
 							isSpawningAllowed = false;
+							isBaseFullyPopped = false;
 							isBasePop = false;
 						}
 						if (curServers[server.name].DCSSocket.gameGUIConnOpen === true) {
