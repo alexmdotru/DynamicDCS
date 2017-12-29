@@ -193,7 +193,7 @@ protectedRouter.route('/userAccounts')
 	});
 
 //setup globals
-var epocTimeout = (1 * 60 * 1000); // 5 mins
+var epocTimeout = (5 * 60 * 1000); // 5 mins
 var maxIdleTime = (5 * 60 * 1000); // 5 mins
 var outOfSyncUnitCnt = 0;
 var socketQues = ['q0', 'q1', 'q2', 'qadmin', 'leaderboard'];
@@ -1692,33 +1692,33 @@ setInterval(function () {
 			_.forEach(srvs, function (srv) {
 				var curServerName = _.get(srv, '_id');
 
-				//check Prox base units
-				proximityController.checkUnitsToBaseForTroops(curServerName);
-
-				//check logi prox
-				proximityController.checkUnitsToLogisticTowers(curServerName);
-
-				//cleanupAI maxIdleTime
-				dbMapServiceController.unitActions('read', curServerName, {isAI: true})
-					.then(function (AICleanup) {
-						_.forEach(AICleanup, function (AIUnit) {
-							if (_.isEmpty(AIUnit.playername) && new Date(_.get(AIUnit, 'updatedAt', 0)).getTime() + maxIdleTime < new Date().getTime()) {
-								groupController.destroyUnit( curServerName, AIUnit.name );
-							}
-						});
-					})
-					.catch(function (err) {
-						console.log('err line596: ', err);
-					})
-				;
-
-				//checkBaseCap
 				if (!isSpawningAllowed) {
 					if(epocToPayAttention < new Date().getTime()){
 						console.log('Spawning is now active');
 						isSpawningAllowed = true;
 					}
 				} else {
+					//check Prox base units
+					proximityController.checkUnitsToBaseForTroops(curServerName);
+
+					//check logi prox
+					proximityController.checkUnitsToLogisticTowers(curServerName);
+
+					//cleanupAI maxIdleTime
+					dbMapServiceController.unitActions('read', curServerName, {isAI: true})
+						.then(function (AICleanup) {
+							_.forEach(AICleanup, function (AIUnit) {
+								if (_.isEmpty(AIUnit.playername) && new Date(_.get(AIUnit, 'updatedAt', 0)).getTime() + maxIdleTime < new Date().getTime()) {
+									groupController.destroyUnit( curServerName, AIUnit.name );
+								}
+							});
+						})
+						.catch(function (err) {
+							console.log('err line596: ', err);
+						})
+					;
+
+					//checkBaseCap
 					proximityController.checkUnitsToBaseForCapture(curServerName);
 				}
 

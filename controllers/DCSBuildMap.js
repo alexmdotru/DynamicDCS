@@ -27,11 +27,15 @@ _.set(exports, 'buildDynamicMap', function (serverName) {
 							unitId: _.get(unit, 'unitId'),
 							dead: true
 						};
-						dbMapServiceController.unitActions('update', serverName, curDead);
+						dbMapServiceController.unitActions('update', serverName, curDead)
+							.catch(function (err) {
+								console.log('erroring line36: ', err);
+							})
+						;
 					}
 				});
 				_.forEach(remappedunits, function (group) {
-					groupController.spawnGroup( serverName, group);
+					groupController.spawnGroup( serverName, group)
 				});
 			} else {
 				//build map from scratch

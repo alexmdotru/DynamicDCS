@@ -423,7 +423,12 @@ _.set(exports, 'spawnSupportPlane', function (serverName, baseObj, side) {
 	var curCMD = 'mist.dynAdd(' + curGroupSpawn + ')';
 	var sendClient = {action: "CMD", cmd: [curCMD], reqID: 0};
 	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
-	dbMapServiceController.cmdQueActions('save', serverName, actionObj);
+	dbMapServiceController.cmdQueActions('save', serverName, actionObj)
+		.catch(function (err) {
+			console.log('erroring line428: ', err);
+		})
+	;
+
 });
 
 _.set(exports, 'spawnLogiGroup', function (serverName, spawnArray, side) {
@@ -466,7 +471,11 @@ _.set(exports, 'spawnLogiGroup', function (serverName, spawnArray, side) {
 		var curCMD = 'mist.dynAdd(' + curGroupSpawn + ')';
 		var sendClient = {action: "CMD", cmd: [curCMD], reqID: 0};
 		var actionObj = {actionObj: sendClient, queName: 'clientArray'};
-		dbMapServiceController.cmdQueActions('save', serverName, actionObj);
+		dbMapServiceController.cmdQueActions('save', serverName, actionObj)
+			.catch(function (err) {
+				console.log('erroring line476: ', err);
+			})
+		;
 	}
 });
 
@@ -511,7 +520,11 @@ _.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {
 		var curCMD = 'mist.dynAdd(' + curGroupSpawn + ')';
 		var sendClient = {action: "CMD", cmd: [curCMD], reqID: 0};
 		var actionObj = {actionObj: sendClient, queName: 'clientArray'};
-		dbMapServiceController.cmdQueActions('save', serverName, actionObj);
+		dbMapServiceController.cmdQueActions('save', serverName, actionObj)
+			.catch(function (err) {
+				console.log('erroring line525: ', err);
+			})
+		;
 	}
 });
 
@@ -567,6 +580,7 @@ _.set(exports, 'spawnLogisticCmdCenter', function (serverName, staticObj, baseOb
 	_.set(curGrpObj, 'category', 'Fortifications');
 	_.set(curGrpObj, 'type', '.Command Center');
 	_.set(curGrpObj, 'shape_name', 'ComCenter');
+	_.set(curGrpObj, 'coalition', _.get(curGrpObj, 'coalition', side));
 	curStaticSpawn = exports.staticTemplate(curGrpObj);
 	var curCMD = [
 		'Unit.getByName("' + curGrpObj.name + '"):destroy()',
@@ -574,8 +588,17 @@ _.set(exports, 'spawnLogisticCmdCenter', function (serverName, staticObj, baseOb
 	];
 	var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
 	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
-	dbMapServiceController.cmdQueActions('save', serverName, actionObj);
-	dbMapServiceController.unitActions('updateByName', serverName, {name: curGrpObj.name, coalition: side})
+	dbMapServiceController.cmdQueActions('save', serverName, actionObj)
+		.catch(function (err) {
+			console.log('erroring line592: ', err);
+		})
+	;
+	console.log('UBN: ', curGrpObj, side);
+	dbMapServiceController.unitActions('updateByName', serverName, {name: curGrpObj.name, coalition: curGrpObj.coalition})
+		.catch(function (err) {
+			console.log('erroring line595: ', err);
+		})
+	;
 });
 
 _.set(exports, 'replenishUnits', function ( serverName, baseName, side ) {
@@ -587,7 +610,11 @@ _.set(exports, 'destroyUnit', function ( serverName, unitName ) {
 	var curCMD = 'Unit.getByName("' + unitName + '"):destroy()';
 	var sendClient = {action: "CMD", cmd: [curCMD], reqID: 0};
 	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
-	dbMapServiceController.cmdQueActions('save', serverName, actionObj);
+	dbMapServiceController.cmdQueActions('save', serverName, actionObj)
+		.catch(function (err) {
+			console.log('erroring line613: ', err);
+		})
+	;
 });
 
 _.set(exports, 'loadOnDemandGroup', function ( groupObj ) {

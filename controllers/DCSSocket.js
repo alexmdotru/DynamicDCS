@@ -30,12 +30,18 @@ exports.createSocket = function (serverName, serverAddress, clientPort, gameGuiP
 					_.get(dsock, 'writeQue.client').push(resp.actionObj);
 				}
 			})
+			.catch(function (err) {
+				console.log('erroring line34: ', err);
+			})
 		;
 		dbMapServiceController.cmdQueActions('grabNextQue', serverName, {queName: 'GameGuiArray'})
 			.then(function (resp) {
 				if (resp) {
 					_.get(dsock, 'writeQue.gameGUI').push(resp.actionObj);
 				}
+			})
+			.catch(function (err) {
+				console.log('erroring line44: ', err);
 			})
 		;
 	}, 600);

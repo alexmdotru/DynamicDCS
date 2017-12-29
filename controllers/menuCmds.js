@@ -46,7 +46,11 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 								.then(function(delUnits){
 									_.forEach(delUnits, function (unit) {
 										dbMapServiceController.unitActions('update', pObj.serverName, {_id: unit.unitId, dead: true});
-										groupController.destroyUnit(pObj.serverName, unit.name);
+										groupController.destroyUnit(pObj.serverName, unit.name)
+											.catch(function (err) {
+												console.log('erroring line51: ', err);
+											})
+										;
 									});
 									// spawn troop type
 									curSpawnUnit = _.cloneDeep(_.first(groupController.getRndFromSpawnCat(curUnit.troopType, curUnit.coalition, true)));
@@ -59,8 +63,16 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 										category: curSpawnUnit.category,
 										playerCanDrive: false
 									};
-									groupController.spawnLogiGroup(pObj.serverName, [spawnArray], curUnit.coalition);
-									dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, troopType: null});
+									groupController.spawnLogiGroup(pObj.serverName, [spawnArray], curUnit.coalition)
+										.catch(function (err) {
+											console.log('erroring line68: ', err);
+										})
+									;
+									dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, troopType: null})
+										.catch(function (err) {
+											console.log('erroring line73: ', err);
+										})
+									;
 									DCSLuaCommands.sendMesgToGroup(
 										curUnit.groupId,
 										pObj.serverName,
@@ -80,8 +92,16 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 								var curTroop = _.get(units, [0]);
 								if(curTroop) {
 									// pickup troop
-									dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, troopType: curTroop.spawnCat});
-									groupController.destroyUnit(pObj.serverName, curTroop.name);
+									dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, troopType: curTroop.spawnCat})
+										.catch(function (err) {
+											console.log('erroring line57: ', err);
+										})
+									;
+									groupController.destroyUnit(pObj.serverName, curTroop.name)
+										.catch(function (err) {
+											console.log('erroring line102: ', err);
+										})
+									;
 									DCSLuaCommands.sendMesgToGroup(
 										curUnit.groupId,
 										pObj.serverName,
@@ -99,7 +119,7 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 								}
 							})
 							.catch(function (err) {
-								console.log('line 32: ', err);
+								console.log('line114: ', err);
 							})
 						;
 					}
@@ -127,13 +147,25 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 									cCnt = 1;
 									_.forEach(_.get(grpTypes, [curCrateType]), function (eCrate) {
 										if ( cCnt <= numCrate) {
-											dbMapServiceController.unitActions('update', pObj.serverName, {_id: eCrate.unitId, dead: true});
-											groupController.destroyUnit(pObj.serverName, eCrate.name);
+											dbMapServiceController.unitActions('update', pObj.serverName, {_id: eCrate.unitId, dead: true})
+												.catch(function (err) {
+													console.log('erroring line152: ', err);
+												})
+											;
+											groupController.destroyUnit(pObj.serverName, eCrate.name)
+												.catch(function (err) {
+													console.log('erroring line157: ', err);
+												})
+											;
 											cCnt ++;
 										}
 									});
 									exports.unpackCrate(pObj.serverName, curUnit, curCrateType, isCombo);
-									groupController.destroyUnit(pObj.serverName, curCrate.name);
+									groupController.destroyUnit(pObj.serverName, curCrate.name)
+										.catch(function (err) {
+											console.log('erroring line166: ', err);
+										})
+									;
 									DCSLuaCommands.sendMesgToGroup(
 										curUnit.groupId,
 										pObj.serverName,
@@ -172,8 +204,16 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 					.then(function(units){
 						var curCrate = _.get(units, [0]);
 						if(curCrate) {
-							dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, virtCrateType: curCrate.name});
-							groupController.destroyUnit(pObj.serverName, curCrate.name);
+							dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, virtCrateType: curCrate.name})
+								.catch(function (err) {
+									console.log('erroring line209: ', err);
+								})
+							;
+							groupController.destroyUnit(pObj.serverName, curCrate.name)
+								.catch(function (err) {
+									console.log('erroring line214: ', err);
+								})
+							;
 							DCSLuaCommands.sendMesgToGroup(
 								curUnit.groupId,
 								pObj.serverName,
@@ -198,7 +238,11 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 			if (pObj.cmd === 'dropCrate') {
 				if (!_.isEmpty(curUnit.virtCrateType)) {
 					exports.spawnCrateFromLogi(pObj.serverName, curUnit, _.split(curUnit.virtCrateType, '|')[2], _.split(curUnit.virtCrateType, '|')[3], (_.split(curUnit.virtCrateType, '|')[4] === 'true'));
-					dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, virtCrateType: null});
+					dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, virtCrateType: null})
+						.catch(function (err) {
+							console.log('erroring line243: ', err);
+						})
+					;
 				} else {
 					DCSLuaCommands.sendMesgToGroup(
 						curUnit.groupId,
@@ -338,8 +382,16 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 		.then(function(delCrates){
 			_.forEach(delCrates, function (crate) {
 				if(crateCount > maxCrates-1) {
-					dbMapServiceController.unitActions('update', serverName, {_id: crate.unitId, dead: true});
-					groupController.destroyUnit(serverName, crate.name);
+					dbMapServiceController.unitActions('update', serverName, {_id: crate.unitId, dead: true})
+						.catch(function (err) {
+							console.log('erroring line387: ', err);
+						})
+					;
+					groupController.destroyUnit(serverName, crate.name)
+						.catch(function (err) {
+							console.log('erroring line392: ', err);
+						})
+					;
 				}
 				crateCount ++;
 			});
@@ -354,7 +406,11 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 					category: "GROUND",
 					playerCanDrive: false
 				};
-				groupController.spawnLogiGroup(serverName, [spawnArray], unit.coalition);
+				groupController.spawnLogiGroup(serverName, [spawnArray], unit.coalition)
+					.catch(function (err) {
+						console.log('erroring line411: ', err);
+					})
+				;
 			} else {
 				/*
                 crateStatic = {
@@ -401,8 +457,16 @@ _.set(exports, 'unpackCrate', function (serverName, unit, type, combo) {
 			_.forEach(grpGroups, function (gUnit) {
 				if (curUnit <= tRem) {
 					_.forEach(gUnit, function(unit) {
-						dbMapServiceController.unitActions('update', serverName, {_id: unit.unitId, dead: true});
-						groupController.destroyUnit(serverName, unit.name);
+						dbMapServiceController.unitActions('update', serverName, {_id: unit.unitId, dead: true})
+							.catch(function (err) {
+								console.log('erroring line462: ', err);
+							})
+						;
+						groupController.destroyUnit(serverName, unit.name)
+							.catch(function (err) {
+								console.log('erroring line467: ', err);
+							})
+						;
 					});
 					curUnit++;
 				}
@@ -434,7 +498,11 @@ _.set(exports, 'unpackCrate', function (serverName, unit, type, combo) {
 						addHdg = addHdg + 15;
 					});
 					spawnArray = _.cloneDeep(findUnits);
-					groupController.spawnLogiGroup(serverName, spawnArray, unit.coalition);
+					groupController.spawnLogiGroup(serverName, spawnArray, unit.coalition)
+						.catch(function (err) {
+							console.log('erroring line503: ', err);
+						})
+					;
 				})
 				.catch(function (err) {
 					console.log('line 394: ', err);
@@ -451,7 +519,11 @@ _.set(exports, 'unpackCrate', function (serverName, unit, type, combo) {
 				category: "GROUND"
 			});
 			console.log('sa: ', serverName, spawnArray, unit.coalition);
-			groupController.spawnLogiGroup(serverName, spawnArray, unit.coalition);
+			groupController.spawnLogiGroup(serverName, spawnArray, unit.coalition)
+				.catch(function (err) {
+					console.log('erroring line524: ', err);
+				})
+			;
 		}
 	} else {
 		/*

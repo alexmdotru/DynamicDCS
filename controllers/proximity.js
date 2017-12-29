@@ -152,8 +152,16 @@ _.set(exports, 'checkUnitsToBaseForCapture', function (serverName) {
 								console.log('BASE HAS BEEN CAPTURED: ', base.name, ' is now ', 2);
 								// console.log('Spawning Support Units', base, 2);
 								spawnArray = _.concat(spawnArray, groupController.spawnSupportBaseGrp(serverName, base.name, 2));
-								groupController.spawnGroup(serverName, spawnArray, base.name, 2);
-								dbMapServiceController.baseActions('updateSide', serverName, {name: base.name, side: 2});
+								groupController.spawnGroup(serverName, spawnArray, base.name, 2)
+									.catch(function (err) {
+										console.log('erroring line157: ', err);
+									})
+								;
+								dbMapServiceController.baseActions('updateSide', serverName, {name: base.name, side: 2})
+									.catch(function (err) {
+										console.log('erroring line162: ', err);
+									})
+								;
 								groupController.spawnLogisticCmdCenter(serverName, {}, base, 2);
 							}
 						}
@@ -162,9 +170,21 @@ _.set(exports, 'checkUnitsToBaseForCapture', function (serverName) {
 							if (_.get(sideArray, [2], []).length === 0) {
 								console.log('BASE HAS BEEN CAPTURED: ', base.name, ' is now ', 1);
 								// console.log('Spawning Support Units', base, 1);
-								spawnArray = _.concat(spawnArray, groupController.spawnSupportBaseGrp(serverName, base.name, 1));
-								groupController.spawnGroup(serverName, spawnArray, base.name, 1);
-								dbMapServiceController.baseActions('updateSide', serverName, {name: base.name, side: 1});
+								spawnArray = _.concat(spawnArray, groupController.spawnSupportBaseGrp(serverName, base.name, 1))
+									.catch(function (err) {
+										console.log('erroring line179: ', err);
+									})
+								;
+								groupController.spawnGroup(serverName, spawnArray, base.name, 1)
+									.catch(function (err) {
+										console.log('erroring line184: ', err);
+									})
+								;
+								dbMapServiceController.baseActions('updateSide', serverName, {name: base.name, side: 1})
+									.catch(function (err) {
+										console.log('erroring line189: ', err);
+									})
+								;
 								groupController.spawnLogisticCmdCenter(serverName, {}, base, 1);
 							}
 						}
@@ -197,6 +217,10 @@ _.set(exports, 'checkUnitsToBaseForTroops', function (serverName) {
 								console.log('R baseTroops: ', curBaseName, cId);
 								//remove logi f10 menu
 								menuUpdateController.logisticsMenu('resetMenu', serverName, unit.data)
+									.catch(function (err) {
+										console.log('erroring line229: ', err);
+									})
+								;
 							}
 						});
 						_.forEach(unitsInProx, function(unit) {
@@ -209,7 +233,11 @@ _.set(exports, 'checkUnitsToBaseForTroops', function (serverName) {
 									});
 									console.log('A baseTroops: ', curBaseName, cId);
 									//update f10 radio menu
-									menuUpdateController.logisticsMenu('addTroopsMenu', serverName, unit);
+									menuUpdateController.logisticsMenu('addTroopsMenu', serverName, unit)
+										.catch(function (err) {
+											console.log('erroring line246: ', err);
+										})
+									;
 								}
 							}
 						});
@@ -261,6 +289,10 @@ _.set(exports, 'checkUnitsToLogisticTowers', function (serverName) {
 								console.log('R logiTower: ', curLogiName, cId);
 								//remove logi f10 menu
 								menuUpdateController.logisticsMenu('resetMenu', serverName, unit.data)
+									.catch(function (err) {
+										console.log('erroring line301: ', err);
+									})
+								;
 							}
 						});
 						_.forEach(unitsInProx, function(unit) {
@@ -273,7 +305,11 @@ _.set(exports, 'checkUnitsToLogisticTowers', function (serverName) {
 									});
 									console.log('A logiTower: ', curLogiName, cId);
 									//update f10 radio menu
-									menuUpdateController.logisticsMenu('addLogiCratesMenu', serverName, unit);
+									menuUpdateController.logisticsMenu('addLogiCratesMenu', serverName, unit)
+										.catch(function (err) {
+											console.log('erroring line318: ', err);
+										})
+									;
 								}
 							}
 						});

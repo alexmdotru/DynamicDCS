@@ -203,5 +203,9 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 	console.log('cmd: ', cmdArray);
 	var sendClient = {action: "CMD", cmd: cmdArray, reqID: 0};
 	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
-	dbMapServiceController.cmdQueActions('save', serverName, actionObj);
+	dbMapServiceController.cmdQueActions('save', serverName, actionObj)
+		.catch(function (err) {
+			console.log('erroring line208: ', err);
+		})
+	;
 });
