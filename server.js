@@ -1860,27 +1860,25 @@ setInterval(function () {
 }, 1 * 1 * 3000);
 
 function syncDCSData(serverName, DCSData) {
-	// if (!_.isEmpty(DCSData.que)) {
-		if (DCSData.epoc) {
-			sessionName = serverName+'_'+DCSData.epoc;
-			var newSession = {
-				_id: sessionName,
-				name: sessionName
-			};
-			if (DCSData.curAbsTime) {
-				_.set(newSession, 'startAbsTime', DCSData.startAbsTime);
-				_.set(newSession, 'curAbsTime', DCSData.curAbsTime);
-			}
-			if (sessionName !== _.get(curServers, [serverName, 'sessionName'], '') || _.get(curServers, [serverName, 'curAbsTime'], 0) > DCSData.curAbsTime) {
-				_.set(curServers, [serverName, 'sessionName'], sessionName);
-				_.set(curServers, [serverName, 'curAbsTime'], DCSData.curAbsTime);
-				dbMapServiceController.statSessionActions('save', serverName, newSession);
-			} else {
-				dbMapServiceController.statSessionActions('update', serverName, newSession);
-			}
+	if (DCSData.epoc) {
+		sessionName = serverName+'_'+DCSData.epoc;
+		var newSession = {
+			_id: sessionName,
+			name: sessionName
+		};
+		if (DCSData.curAbsTime) {
+			_.set(newSession, 'startAbsTime', DCSData.startAbsTime);
+			_.set(newSession, 'curAbsTime', DCSData.curAbsTime);
 		}
-		if (sessionName) {
-			curServers.processQue(serverName, sessionName, DCSData);
+		if (sessionName !== _.get(curServers, [serverName, 'sessionName'], '') || _.get(curServers, [serverName, 'curAbsTime'], 0) > DCSData.curAbsTime) {
+			_.set(curServers, [serverName, 'sessionName'], sessionName);
+			_.set(curServers, [serverName, 'curAbsTime'], DCSData.curAbsTime);
+			dbMapServiceController.statSessionActions('save', serverName, newSession);
+		} else {
+			dbMapServiceController.statSessionActions('update', serverName, newSession);
 		}
-	// }
+	}
+	if (sessionName) {
+		curServers.processQue(serverName, sessionName, DCSData);
+	}
 }

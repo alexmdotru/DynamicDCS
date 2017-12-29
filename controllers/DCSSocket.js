@@ -3,6 +3,8 @@ const net = require('net'),
 
 const dbMapServiceController = require('./dbMapService'); // reqClientArray, regGameGuiArray
 
+var combineCmds = 5;
+
 exports.createSocket = function (serverName, serverAddress, clientPort, gameGuiPort, callback, io, initClear) {
 	var dsock = this;
 	_.set(dsock, 'serverName', serverName);
@@ -44,7 +46,7 @@ exports.createSocket = function (serverName, serverAddress, clientPort, gameGuiP
 				console.log('erroring line44: ', err);
 			})
 		;
-	}, 600);
+	}, 100);
 
 	dsock.connectClient = function () {
 		dsock.client = net.createConnection({
