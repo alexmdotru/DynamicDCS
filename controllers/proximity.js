@@ -204,11 +204,7 @@ _.set(exports, 'checkUnitsToBaseForTroops', function (serverName) {
 								_.set(unit, 'enabled', false);
 								console.log('R baseTroops: ', curBaseName, cId);
 								//remove logi f10 menu
-								menuUpdateController.logisticsMenu('resetMenu', serverName, unit.data)
-									.catch(function (err) {
-										console.log('erroring line229: ', err);
-									})
-								;
+								menuUpdateController.logisticsMenu('resetMenu', serverName, unit.data);
 							}
 						});
 						_.forEach(unitsInProx, function(unit) {
@@ -221,11 +217,7 @@ _.set(exports, 'checkUnitsToBaseForTroops', function (serverName) {
 									});
 									console.log('A baseTroops: ', curBaseName, cId);
 									//update f10 radio menu
-									menuUpdateController.logisticsMenu('addTroopsMenu', serverName, unit)
-										.catch(function (err) {
-											console.log('erroring line246: ', err);
-										})
-									;
+									menuUpdateController.logisticsMenu('addTroopsMenu', serverName, unit);
 								}
 							}
 						});
@@ -276,11 +268,7 @@ _.set(exports, 'checkUnitsToLogisticTowers', function (serverName) {
 								_.set(unit, 'enabled', false);
 								console.log('R logiTower: ', curLogiName, cId);
 								//remove logi f10 menu
-								menuUpdateController.logisticsMenu('resetMenu', serverName, unit.data)
-									.catch(function (err) {
-										console.log('erroring line301: ', err);
-									})
-								;
+								menuUpdateController.logisticsMenu('resetMenu', serverName, unit.data);
 							}
 						});
 						_.forEach(unitsInProx, function(unit) {
@@ -293,11 +281,7 @@ _.set(exports, 'checkUnitsToLogisticTowers', function (serverName) {
 									});
 									console.log('A logiTower: ', curLogiName, cId);
 									//update f10 radio menu
-									menuUpdateController.logisticsMenu('addLogiCratesMenu', serverName, unit)
-										.catch(function (err) {
-											console.log('erroring line318: ', err);
-										})
-									;
+									menuUpdateController.logisticsMenu('addLogiCratesMenu', serverName, unit);
 								}
 							}
 						});
