@@ -170,6 +170,18 @@ exports.unitActions = function (action, serverName, obj){
 			);
 		});
 	}
+	if(action === 'updateByName') {
+		return new Promise(function(resolve, reject) {
+			Unit.findOneAndUpdate(
+				{name: obj.name},
+				{$set: obj},
+				function(err, units) {
+					if (err) { reject(err) }
+					resolve(units);
+				}
+			);
+		});
+	}
 	if(action === 'chkResync') {
 		return new Promise(function(resolve, reject) {
 			Unit.updateMany(

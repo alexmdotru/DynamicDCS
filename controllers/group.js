@@ -571,10 +571,14 @@ _.set(exports, 'spawnLogisticCmdCenter', function (serverName, staticObj, baseOb
 	_.set(curGrpObj, 'type', '.Command Center');
 	_.set(curGrpObj, 'shape_name', 'ComCenter');
 	curStaticSpawn = exports.staticTemplate(curGrpObj);
-	var curCMD = 'mist.dynAddStatic(' + curStaticSpawn + ')';
-	var sendClient = {action: "CMD", cmd: [curCMD], reqID: 0};
+	var curCMD = [
+		'Unit.getByName("' + curGrpObj.name + '"):destroy()',
+		'mist.dynAddStatic(' + curStaticSpawn + ')'
+	];
+	var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
 	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
 	dbMapServiceController.cmdQueActions('save', serverName, actionObj);
+	dbMapServiceController.unitActions('updateByName', serverName, {name: curGrpObj.name, coalition: side})
 });
 
 _.set(exports, 'replenishUnits', function ( serverName, baseName, side ) {
