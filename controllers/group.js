@@ -353,7 +353,7 @@ _.set(exports, 'spawnSupportBaseGrp', function ( serverName, baseName, side ) {
 
 	//spawn logistics
 	curBaseObj = _.find(curBases, {name: baseName});
-	exports.spawnLogistic(serverName, {}, curBaseObj, side);
+	exports.spawnLogisticCmdCenter(serverName, {}, curBaseObj, side);
 
 	return _.compact(spawnArray);
 });
@@ -558,7 +558,7 @@ _.set(exports, 'initDbs', function ( serverName ) {
 	;
 });
 
-_.set(exports, 'spawnLogistic', function (serverName, staticObj, baseObj, side) {
+_.set(exports, 'spawnLogisticCmdCenter', function (serverName, staticObj, baseObj, side) {
 	var curGrpObj = _.cloneDeep(staticObj);
 	var curStaticSpawn;
 	_.set(curGrpObj, 'unitId', _.get(curGrpObj, 'unitId', _.random(1000000, 9999999)));

@@ -46,11 +46,11 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 		'missionCommands.addCommandForGroup("' + unit.groupId + '", "Drop Crate", {"ActionMenu"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "dropCrate", ["unitId"] = ' + unit.unitId + '})',
 	];
 
-	if(_.includes(allowedTypesForTroops, unit.type)) {
+	if(_.includes(allowedTypesForTroops, unit.type) && !_.get(unit, 'inAir', true)) {
 		cmdArray = _.concat(cmdArray, aTroopMenu);
 		enableAction = true;
 	}
-	if(_.includes(allowedTypesForCrates, unit.type)) {
+	if(_.includes(allowedTypesForCrates, unit.type) && !_.get(unit, 'inAir', true)) {
 		cmdArray = _.concat(cmdArray, aUnpackMenu);
 		enableAction = true;
 	}

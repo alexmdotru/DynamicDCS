@@ -140,7 +140,7 @@ _.set(exports, 'checkUnitsToBaseForCapture', function (serverName) {
 	dbMapServiceController.baseActions('read', serverName, {mainBase: true, $or: [{side: 1}, {side: 2}]})
 		.then(function (bases) {
 			_.forEach(bases, function (base) {
-				exports.getGroundUnitsInProximity(serverName, base.centerLoc, 2)
+				exports.getGroundUnitsInProximity(serverName, base.centerLoc, 3)
 					.then(function (unitsInRange) {
 						var spawnArray = [];
 						sideArray = _.transform(unitsInRange, function (result, value) {
@@ -153,7 +153,8 @@ _.set(exports, 'checkUnitsToBaseForCapture', function (serverName) {
 								// console.log('Spawning Support Units', base, 2);
 								spawnArray = _.concat(spawnArray, groupController.spawnSupportBaseGrp(serverName, base.name, 2));
 								groupController.spawnGroup(serverName, spawnArray, base.name, 2);
-								dbMapServiceController.baseActions('updateSide', serverName, {name: base.name, side: 2})
+								dbMapServiceController.baseActions('updateSide', serverName, {name: base.name, side: 2});
+								groupController.spawnLogisticCmdCenter(serverName, {}, base, 2);
 							}
 						}
 						if (base.side === 2 && _.get(sideArray, [1], []).length > 0) {
@@ -163,7 +164,8 @@ _.set(exports, 'checkUnitsToBaseForCapture', function (serverName) {
 								// console.log('Spawning Support Units', base, 1);
 								spawnArray = _.concat(spawnArray, groupController.spawnSupportBaseGrp(serverName, base.name, 1));
 								groupController.spawnGroup(serverName, spawnArray, base.name, 1);
-								dbMapServiceController.baseActions('updateSide', serverName, {name: base.name, side: 1})
+								dbMapServiceController.baseActions('updateSide', serverName, {name: base.name, side: 1});
+								groupController.spawnLogisticCmdCenter(serverName, {}, base, 1);
 							}
 						}
 					})

@@ -1736,7 +1736,7 @@ setInterval(function () {
 
 // constant check loop (base unit replenish, etc)
 setInterval(function () {
-	console.log(' cur support planes: ', groupController.curSupportPlanes);
+	// console.log(' cur support planes: ', groupController.curSupportPlanes);
 	if (isSpawningAllowed) {
 		dbSystemServiceController.serverActions('read', {enabled: true})
 			.then(function (srvs) {
