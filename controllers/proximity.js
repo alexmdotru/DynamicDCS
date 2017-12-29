@@ -247,7 +247,7 @@ _.set(exports, 'unitInProxLogiTowers', function (unit, serverName) {
 });
 
 _.set(exports, 'checkUnitsToLogisticTowers', function (serverName) {
-	dbMapServiceController.unitActions('read', serverName, {proxChkGrp: 'logisticTowers'})
+	dbMapServiceController.unitActions('read', serverName, {proxChkGrp: 'logisticTowers', dead: false})
 		.then(function (logiUnits) {
 			_.forEach(logiUnits, function (logiUnit) {
 				var curLogiName = logiUnit.name;
