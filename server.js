@@ -780,50 +780,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					})
 				;
 			}
-
-			if (_.get(queObj, 'action') === 'airbaseU') { //timer 5 mins enable from start of script
-				/*
-				if (!isSpawningAllowed) {
-					if(epocToPayAttention < new Date().getTime()){
-						console.log('Spawning is now active');
-						isSpawningAllowed = true;
-					}
-				}
-				_.forEach(curData, function (sideObj, base) {
-					var side = _.get(sideObj, 'side');
-					dbMapServiceController.baseActions('read', serverName, {_id: base, mainBase: true})
-						.then(function (dbBaseObj) {
-							var curBase = _.first(_.cloneDeep(dbBaseObj));
-							if (curBase) {
-								if (side !== curBase.side) {
-									console.log('BASESWITCH: ', base, ':', side, ' !== ', _.get(curBase, '_id'), ':', _.get(curBase, 'side'));
-								}
-								if (side !== _.get(curBase, 'side') && (side === 1 || side === 2)) {
-									dbMapServiceController.baseActions('updateSide', serverName, {name: base, side: side})
-										.then(function (bases) {
-											if (isSpawningAllowed && _.get(baseSpawnTimeout, base, 0) < new Date().getTime()) {
-												console.log('CAPTURE BASE!!');
-												console.log('Spawning Support Units', base, side);
-												var spawnArray = [];
-												spawnArray = _.concat(spawnArray, groupController.spawnSupportBaseGrp(serverName, base, side));
-												groupController.spawnGroup(serverName, spawnArray, base, side);
-												_.set(baseSpawnTimeout, base, new Date().getTime() + epocTimeout);
-											}
-										})
-										.catch(function (err) {
-											console.log('line799', err);
-										})
-									;
-								}
-							}
-						})
-						.catch(function (err) {
-							console.log('err line:732 ', err);
-						})
-					;
-				});
-				*/
-			}
 		}
 
 		// menu Update

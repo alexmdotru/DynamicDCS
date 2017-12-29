@@ -152,11 +152,7 @@ _.set(exports, 'checkUnitsToBaseForCapture', function (serverName) {
 								console.log('BASE HAS BEEN CAPTURED: ', base.name, ' is now ', 2);
 								// console.log('Spawning Support Units', base, 2);
 								spawnArray = _.concat(spawnArray, groupController.spawnSupportBaseGrp(serverName, base.name, 2));
-								groupController.spawnGroup(serverName, spawnArray, base.name, 2)
-									.catch(function (err) {
-										console.log('erroring line157: ', err);
-									})
-								;
+								groupController.spawnGroup(serverName, spawnArray, base.name, 2);
 								dbMapServiceController.baseActions('updateSide', serverName, {name: base.name, side: 2})
 									.catch(function (err) {
 										console.log('erroring line162: ', err);
@@ -170,16 +166,8 @@ _.set(exports, 'checkUnitsToBaseForCapture', function (serverName) {
 							if (_.get(sideArray, [2], []).length === 0) {
 								console.log('BASE HAS BEEN CAPTURED: ', base.name, ' is now ', 1);
 								// console.log('Spawning Support Units', base, 1);
-								spawnArray = _.concat(spawnArray, groupController.spawnSupportBaseGrp(serverName, base.name, 1))
-									.catch(function (err) {
-										console.log('erroring line179: ', err);
-									})
-								;
-								groupController.spawnGroup(serverName, spawnArray, base.name, 1)
-									.catch(function (err) {
-										console.log('erroring line184: ', err);
-									})
-								;
+								spawnArray = _.concat(spawnArray, groupController.spawnSupportBaseGrp(serverName, base.name, 1));
+								groupController.spawnGroup(serverName, spawnArray, base.name, 1);
 								dbMapServiceController.baseActions('updateSide', serverName, {name: base.name, side: 1})
 									.catch(function (err) {
 										console.log('erroring line189: ', err);
