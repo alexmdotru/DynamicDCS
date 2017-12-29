@@ -56,7 +56,8 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 										lonLatLoc: curUnit.lonLatLoc,
 										heading: curUnit.hdg,
 										country: curUnit.country,
-										category: curSpawnUnit.category
+										category: curSpawnUnit.category,
+										playerCanDrive: false
 									};
 									groupController.spawnLogiGroup(pObj.serverName, [spawnArray], curUnit.coalition);
 									dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, troopType: null});
@@ -350,7 +351,8 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 					heading: unit.hdg,
 					country: unit.country,
 					isCrate: true,
-					category: "GROUND"
+					category: "GROUND",
+					playerCanDrive: false
 				};
 				groupController.spawnLogiGroup(serverName, [spawnArray], unit.coalition);
 			} else {
