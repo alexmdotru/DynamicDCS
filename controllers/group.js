@@ -573,14 +573,14 @@ _.set(exports, 'spawnLogisticCmdCenter', function (serverName, staticObj, baseOb
 	var curStaticSpawn;
 	_.set(curGrpObj, 'unitId', _.get(curGrpObj, 'unitId', _.random(1000000, 9999999)));
 	_.set(curGrpObj, 'name', _.get(curGrpObj, 'name', _.get(baseObj, 'name', '') + ' Logistics'));
-	_.set(curGrpObj, 'country', _.get(curGrpObj, 'country', _.get(countryCoObj, ['defCountrys', side])));
+	_.set(curGrpObj, 'coalition', _.get(curGrpObj, 'coalition', side));
+	_.set(curGrpObj, 'country', _.get(countryCoObj, ['defCountrys', curGrpObj.coalition]));
 	if (_.isUndefined(_.get(curGrpObj, 'lonLatLoc'))) {
 		_.set(curGrpObj, 'lonLatLoc',  zoneController.getLonLatFromDistanceDirection(_.get(baseObj, ['logiCenter']), 0, 0.05));
 	}
 	_.set(curGrpObj, 'category', 'Fortifications');
 	_.set(curGrpObj, 'type', '.Command Center');
 	_.set(curGrpObj, 'shape_name', 'ComCenter');
-	_.set(curGrpObj, 'coalition', _.get(curGrpObj, 'coalition', side));
 	curStaticSpawn = exports.staticTemplate(curGrpObj);
 	var curCMD = [
 		'Unit.getByName("' + curGrpObj.name + '"):destroy()',
@@ -593,8 +593,7 @@ _.set(exports, 'spawnLogisticCmdCenter', function (serverName, staticObj, baseOb
 			console.log('erroring line592: ', err);
 		})
 	;
-	console.log('UBN: ', curGrpObj, side);
-	dbMapServiceController.unitActions('updateByName', serverName, {name: curGrpObj.name, coalition: curGrpObj.coalition})
+	dbMapServiceController.unitActions('updateByName', serverName, {name: curGrpObj.name, coalition: curGrpObj.coalition, country: curGrpObj.country})
 		.catch(function (err) {
 			console.log('erroring line595: ', err);
 		})
