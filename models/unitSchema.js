@@ -100,6 +100,10 @@ const UnitSchema = new Schema({
 		type: Boolean,
 		default: true
 	},
+	isAI: {
+		type: Boolean,
+		default: false
+	},
 	troopType: {
 		type: String
 	},

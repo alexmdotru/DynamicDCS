@@ -69,8 +69,6 @@ var countryCoObj = {
 		'AGGRESSORS',
 	]
 };
-exports.curSupportPlanes = 0;
-exports.supportPlanesMax = 5;
 
 _.set(exports, 'landPlaneRouteTemplate', function ( routes ) {
 	return 	'["route"] = {' +
@@ -386,48 +384,46 @@ _.set(exports, 'spawnSupportPlane', function (serverName, baseObj, side) {
 	var remoteLoc;
 	var grpNum = _.random(1000000, 9999999);
 
-	if (exports.curSupportPlanes <=  exports.supportPlanesMax) {
-		curSide = (side) ? _.get(countryCoObj, ['defCountrys', side]) : _.get(countryCoObj, ['defCountrys', _.get(curGrpObj, 'coalition')]);
-		curBaseName = _.get(baseObj, 'name') + '_LOGISTICS #' + grpNum;
-		baseLoc = _.get(baseObj, 'centerLoc');
-		if(_.get(baseObj, 'farp')) {
-			curSpwnUnit = _.cloneDeep(_.first(exports.getRndFromSpawnCat( 'transportHeli', side, true )));
-			remoteLoc = zoneController.getLonLatFromDistanceDirection(baseLoc, _.get(baseObj, 'spawnAngle'), 40);
-		} else {
-			curSpwnUnit = _.cloneDeep(_.first(exports.getRndFromSpawnCat( 'transportAircraft', side, true )));
-			remoteLoc = zoneController.getLonLatFromDistanceDirection(baseLoc, _.get(baseObj, 'spawnAngle'), 70);
-		}
-		curGrpObj = _.cloneDeep(curSpwnUnit);
-		_.set(curGrpObj, 'groupId', grpNum);
-		_.set(curGrpObj, 'groupName', curBaseName);
-		_.set(curGrpObj, 'country', curSide);
-		curRoutes = {
-			baseId: _.get(baseObj, 'baseId'),
-			routeLocs: [
-				remoteLoc,
-				baseLoc
-			]
-		};
-		curGroupSpawn = exports.grndUnitGroup( curGrpObj, 'Transport', exports.landPlaneRouteTemplate(curRoutes));
-		unitNum = _.cloneDeep(grpNum);
-
-		unitNum += 1;
-		curUnitName = _.get(baseObj, 'name') + '_LOGISTICS';
-
-
-		_.set(curSpwnUnit, 'lonLatLoc', remoteLoc);
-		_.set(curSpwnUnit, 'unitId', unitNum);
-		_.set(curSpwnUnit, 'name', curUnitName);
-		_.set(curSpwnUnit, 'playerCanDrive', false);
-
-		curUnitSpawn = exports.airUnitTemplate(curSpwnUnit);
-
-		curGroupSpawn = _.replace(curGroupSpawn, "#UNITS", curUnitSpawn);
-		var curCMD = 'mist.dynAdd(' + curGroupSpawn + ')';
-		var sendClient = {action: "CMD", cmd: [curCMD], reqID: 0};
-		var actionObj = {actionObj: sendClient, queName: 'clientArray'};
-		dbMapServiceController.cmdQueActions('save', serverName, actionObj);
+	curSide = (side) ? _.get(countryCoObj, ['defCountrys', side]) : _.get(countryCoObj, ['defCountrys', _.get(curGrpObj, 'coalition')]);
+	curBaseName = 'AI|1010101|' + _.get(baseObj, 'name') + '|LOGISTICS|#' + grpNum + '|';
+	baseLoc = _.get(baseObj, 'centerLoc');
+	if(_.get(baseObj, 'farp')) {
+		curSpwnUnit = _.cloneDeep(_.first(exports.getRndFromSpawnCat( 'transportHeli', side, true )));
+		remoteLoc = zoneController.getLonLatFromDistanceDirection(baseLoc, _.get(baseObj, 'spawnAngle'), 40);
+	} else {
+		curSpwnUnit = _.cloneDeep(_.first(exports.getRndFromSpawnCat( 'transportAircraft', side, true )));
+		remoteLoc = zoneController.getLonLatFromDistanceDirection(baseLoc, _.get(baseObj, 'spawnAngle'), 70);
 	}
+	curGrpObj = _.cloneDeep(curSpwnUnit);
+	_.set(curGrpObj, 'groupId', grpNum);
+	_.set(curGrpObj, 'groupName', curBaseName);
+	_.set(curGrpObj, 'country', curSide);
+	curRoutes = {
+		baseId: _.get(baseObj, 'baseId'),
+		routeLocs: [
+			remoteLoc,
+			baseLoc
+		]
+	};
+	curGroupSpawn = exports.grndUnitGroup( curGrpObj, 'Transport', exports.landPlaneRouteTemplate(curRoutes));
+	unitNum = _.cloneDeep(grpNum);
+
+	unitNum += 1;
+	curUnitName = 'AI|1010101|' + _.get(baseObj, 'name') + '|LOGISTICS|#' + unitNum + '|';
+
+
+	_.set(curSpwnUnit, 'lonLatLoc', remoteLoc);
+	_.set(curSpwnUnit, 'unitId', unitNum);
+	_.set(curSpwnUnit, 'name', curUnitName);
+	_.set(curSpwnUnit, 'playerCanDrive', false);
+
+	curUnitSpawn = exports.airUnitTemplate(curSpwnUnit);
+
+	curGroupSpawn = _.replace(curGroupSpawn, "#UNITS", curUnitSpawn);
+	var curCMD = 'mist.dynAdd(' + curGroupSpawn + ')';
+	var sendClient = {action: "CMD", cmd: [curCMD], reqID: 0};
+	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
+	dbMapServiceController.cmdQueActions('save', serverName, actionObj);
 });
 
 _.set(exports, 'spawnLogiGroup', function (serverName, spawnArray, side) {

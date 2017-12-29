@@ -663,7 +663,12 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					var stParse;
 					var curUnit = _.get(unit, 0, {});
 					var curData = _.get(queObj, 'data');
-					// build out extra info on spawned items
+					// build out extra info on spawned items isAI
+					if (_.includes(curData.name, 'AI|')) {
+						stParse = _.split(curData.name, '|');
+						_.set(curData, 'playerOwnerId', stParse[1]);
+						_.set(curData, 'isAI', true);
+					}
 					if (_.includes(curData.name, 'TU|')) {
 						stParse = _.split(curData.name, '|');
 						_.set(curData, 'playerOwnerId', stParse[1]);
@@ -724,10 +729,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 							if( _.includes(curData.name, ' Logistics')) {
 								_.set(curData, 'proxChkGrp', 'logisticTowers');
 							}
-						} else {
-							if (_.includes(curData.name, '_LOGISTICS')) {
-								exports.curSupportPlanes++;
-							}
 						}
 
 						dbMapServiceController.unitActions('save', serverName, iCurObj.data)
@@ -739,9 +740,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 								console.log('save err line643: ', err);
 							});
 					} else if (_.get(queObj, 'action') === 'D') {
-						if (_.includes(curData.name, '_LOGISTICS')) {
-							exports.curSupportPlanes--;
-						}
 						iCurObj = {
 							action: 'D',
 							sessionName: sessionName,
@@ -1320,11 +1318,9 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					if (curIUnit) {
 						//landed logistic planes/helis spawn new group for area
 						var curUnitName = _.get(curIUnit, 'name');
-						if (_.includes(curUnitName, '_LOGISTICS')) {
-							var bArry = _.split(curUnitName, '_LOGISTICS');
+						if (_.includes(curUnitName, 'LOGISTICS|')) {
+							var bName = _.split(curUnitName, '|')[2];
 							var curSide = _.get(curIUnit, 'coalition');
-							var bName = _.get(bArry, 0);
-							exports.curSupportPlanes--;
 							dbMapServiceController.baseActions('read', serverName, {_id: bName})
 								.then(function (bases) {
 									var curBase = _.get(bases, [0], {}); // does this work?
