@@ -1865,14 +1865,14 @@ setInterval(function () {
 			_.forEach(resp, function (server) {
 				if (server.enabled) {
 					if (_.has(curServers, server.name) && curServers[server.name].DCSSocket) {
-						if (curServers[server.name].DCSSocket.clientConnOpen === true) {
+						if (curServers[server.name].DCSSocket.clientConnOpen) {
 							curServers[server.name].DCSSocket.connectClient();
 							epocToPayAttention = new Date().getTime() + epocTimeout;
 							isSpawningAllowed = false;
 							isBaseFullyPopped = false;
 							isBasePop = false;
 						}
-						if (curServers[server.name].DCSSocket.gameGUIConnOpen === true) {
+						if (curServers[server.name].DCSSocket.gameGUIConnOpen) {
 							curServers[server.name].DCSSocket.connectServer();
 						}
 					} else {
