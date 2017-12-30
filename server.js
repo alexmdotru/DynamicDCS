@@ -645,6 +645,11 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			;
 		}
 
+		// line of sight callback from server
+		if (queObj.action === 'LOSVisibleUnits') {
+			console.log('LOS: ', queObj);
+		}
+
 		if (queObj.action === 'unitsAlive') {
 			var upPromises = [];
 			console.log('isBasePopped: ', isBaseFullyPopped);
