@@ -228,20 +228,29 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 				;
 			}
 			if (pObj.cmd === 'dropCrate') {
-				if (!_.isEmpty(curUnit.virtCrateType)) {
-					exports.spawnCrateFromLogi(pObj.serverName, curUnit, _.split(curUnit.virtCrateType, '|')[2], _.split(curUnit.virtCrateType, '|')[3], (_.split(curUnit.virtCrateType, '|')[4] === 'true'));
-					dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, virtCrateType: null})
-						.catch(function (err) {
-							console.log('erroring line243: ', err);
-						})
-					;
-				} else {
+				if (curUnit.inAir === true) {
 					DCSLuaCommands.sendMesgToGroup(
 						curUnit.groupId,
 						pObj.serverName,
-						"G: You Have No Crates Onboard To Drop!",
+						"G: You Must Land Before You Can Drop A Crate!",
 						5
 					);
+				} else {
+					if (!_.isEmpty(curUnit.virtCrateType)) {
+						exports.spawnCrateFromLogi(pObj.serverName, curUnit, _.split(curUnit.virtCrateType, '|')[2], _.split(curUnit.virtCrateType, '|')[3], (_.split(curUnit.virtCrateType, '|')[4] === 'true'));
+						dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, virtCrateType: null})
+							.catch(function (err) {
+								console.log('erroring line243: ', err);
+							})
+						;
+					} else {
+						DCSLuaCommands.sendMesgToGroup(
+							curUnit.groupId,
+							pObj.serverName,
+							"G: You Have No Crates Onboard To Drop!",
+							5
+						);
+					}
 				}
 			}
 
