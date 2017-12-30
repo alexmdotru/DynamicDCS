@@ -370,7 +370,7 @@ _.set(exports, 'spawnBaseReinforcementGroup', function (serverName, side) {
 	return _.compact(spawnArray);
 });
 
-_.set(exports, 'spawnSupportPlane', function (serverName, baseObj, side) {
+_.set(exports, 'spawnSupportPlane', function (serverName, baseObj, side, farpBase) {
 	var unitNum;
 	var curBaseName;
 	var curUnitName;
@@ -385,8 +385,14 @@ _.set(exports, 'spawnSupportPlane', function (serverName, baseObj, side) {
 	var grpNum = _.random(1000000, 9999999);
 
 	curSide = (side) ? _.get(countryCoObj, ['defCountrys', side]) : _.get(countryCoObj, ['defCountrys', _.get(curGrpObj, 'coalition')]);
-	curBaseName = 'AI|1010101|' + _.get(baseObj, 'name') + '|LOGISTICS|#' + grpNum + '|';
-	baseLoc = _.get(baseObj, 'centerLoc');
+	curBaseName = 'AI|1010101|' + _.get(baseObj, 'name') + '|LOGISTICS|';
+	if (_.get(baseObj, 'farp', false)) {
+		baseLoc = _.get(farpBase, 'centerLoc');
+		console.log('FARP BASE: ', baseLoc);
+	} else {
+		baseLoc = _.get(baseObj, 'centerLoc');
+	}
+
 	if(_.get(baseObj, 'farp')) {
 		curSpwnUnit = _.cloneDeep(_.first(exports.getRndFromSpawnCat( 'transportHeli', side, true )));
 		remoteLoc = zoneController.getLonLatFromDistanceDirection(baseLoc, _.get(baseObj, 'spawnAngle'), 40);
@@ -409,7 +415,7 @@ _.set(exports, 'spawnSupportPlane', function (serverName, baseObj, side) {
 	unitNum = _.cloneDeep(grpNum);
 
 	unitNum += 1;
-	curUnitName = 'AI|1010101|' + _.get(baseObj, 'name') + '|LOGISTICS|#' + unitNum + '|';
+	curUnitName = 'AI|1010101|' + _.get(baseObj, 'name') + '|LOGISTICS|';
 
 
 	_.set(curSpwnUnit, 'lonLatLoc', remoteLoc);
@@ -593,7 +599,7 @@ _.set(exports, 'spawnLogisticCmdCenter', function (serverName, staticObj, baseOb
 			console.log('erroring line592: ', err);
 		})
 	;
-	dbMapServiceController.unitActions('updateByName', serverName, {name: curGrpObj.name, coalition: curGrpObj.coalition, country: curGrpObj.country})
+	dbMapServiceController.unitActions('updateByName', serverName, {name: curGrpObj.name, coalition: curGrpObj.coalition, country: curGrpObj.country, dead:false})
 		.catch(function (err) {
 			console.log('erroring line595: ', err);
 		})
@@ -610,6 +616,19 @@ _.set(exports, 'destroyUnit', function ( serverName, unitName ) {
 	var sendClient = {action: "CMD", cmd: [curCMD], reqID: 0};
 	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
 	dbMapServiceController.cmdQueActions('save', serverName, actionObj)
+		.catch(function (err) {
+			console.log('erroring line613: ', err);
+		})
+	;
+});
+
+_.set(exports, 'healBase', function ( serverName, baseName ) {
+	//respawn farp tower to 'heal' it
+	dbMapServiceController.unitActions('read', serverName, {name: baseName + ' Logistics', proxChkGrp: 'logisticTowers'})
+		.then(function (logiUnit) {
+			var curUnit = _.get(logiUnit, [0], {});
+			exports.spawnLogisticCmdCenter(serverName, curUnit);
+		})
 		.catch(function (err) {
 			console.log('erroring line613: ', err);
 		})

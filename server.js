@@ -1323,6 +1323,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 									var curBase = _.get(bases, [0], {}); // does this work?
 									if (curBase.side === curSide) {
 										groupController.replenishUnits( serverName, bName, curSide);
+										groupController.healBase(serverName, bName);
 									}
 								})
 								.catch(function (err) {
@@ -1760,7 +1761,18 @@ setInterval(function () {
 										if ((units.length < unitCnt) && replenEpoc < new Date().getTime()) { //UNCOMMENT OUT FALSE
 											dbMapServiceController.baseActions('updateReplenTimer', curServerName, {name: _.get(base, '_id'),  replenTime: new Date().getTime() + (_.get(srv, 'replenTimer') * 1000)})
 												.then(function () {
-													groupController.spawnSupportPlane(curServerName, base, _.get(base, 'side'));
+													if (base.farp) {
+														dbMapServiceController.baseActions('read', curServerName, {_id: base.name + ' #' + base.side})
+															.then(function (farpBase) {
+																groupController.spawnSupportPlane(curServerName, base, base.side, _.get(farpBase, [0], {}));
+															})
+															.catch(function (err) {
+																console.log('line 1775: ', err);
+															})
+														;
+													} else {
+														groupController.spawnSupportPlane(curServerName, base, base.side);
+													}
 												})
 												.catch(function (err) {
 													console.log('line 1487: ', err);
