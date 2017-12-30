@@ -391,6 +391,7 @@ _.set(exports, 'spawnSupportPlane', function (serverName, baseObj, side, farpBas
 		console.log('FARP BASE: ', baseLoc);
 	} else {
 		baseLoc = _.get(baseObj, 'centerLoc');
+		console.log('REG BASE: ', baseLoc);
 	}
 
 	if(_.get(baseObj, 'farp')) {
