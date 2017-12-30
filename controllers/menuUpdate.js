@@ -124,9 +124,9 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Gepard(3)", {"Acquisitions", "AntiAir"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "mobileAntiAir", ["type"] = "Gepard", ["unitId"] = ' + unit.unitId + ', ["crates"] = 3})',
 
 				'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "Infrared SAM", {"Acquisitions"})',
-				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Avenger(1)", {"Acquisitions", "Infrared SAM"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "samIR", ["type"] = "M1097 Avenger", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1})',
-				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Chaparral(2)", {"Acquisitions", "Infrared SAM"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "samIR", ["type"] = "M48 Chaparral", ["unitId"] = ' + unit.unitId + ', ["crates"] = 2})',
-				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Linebacker(2)", {"Acquisitions", "Infrared SAM"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "samIR", ["type"] = "M6 Linebacker", ["unitId"] = ' + unit.unitId + ', ["crates"] = 2})',
+				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Strela-10M3(2)", {"Acquisitions", "Infrared SAM"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "samIR", ["type"] = "Strela-10M3", ["unitId"] = ' + unit.unitId + ', ["crates"] = 2})',
+				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Strela-1 9P31(2)", {"Acquisitions", "Infrared SAM"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "samIR", ["type"] = "Strela-1 9P31", ["unitId"] = ' + unit.unitId + ', ["crates"] = 2})',
+				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Osa 9A33 ln(2)", {"Acquisitions", "Infrared SAM"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "samIR", ["type"] = "Osa 9A33 ln", ["unitId"] = ' + unit.unitId + ', ["crates"] = 2})',
 
 				'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "Radar SAM", {"Acquisitions"})',
 				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Tunguska(3)", {"Acquisitions", "Radar SAM"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "mobileSAM", ["type"] = "2S6 Tunguska", ["unitId"] = ' + unit.unitId + ', ["crates"] = 3})',
@@ -184,9 +184,9 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Gepard(3)", {"Acquisitions", "AntiAir"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "mobileAntiAir", ["type"] = "Gepard", ["unitId"] = ' + unit.unitId + ', ["crates"] = 3})',
 
 				'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "Infrared SAM", {"Acquisitions"})',
-				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Strela-10M3(2)", {"Acquisitions", "Infrared SAM"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "samIR", ["type"] = "Strela-10M3", ["unitId"] = ' + unit.unitId + ', ["crates"] = 2})',
-				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Strela-1 9P31(2)", {"Acquisitions", "Infrared SAM"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "samIR", ["type"] = "Strela-1 9P31", ["unitId"] = ' + unit.unitId + ', ["crates"] = 2})',
-				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Osa 9A33 ln(2)", {"Acquisitions", "Infrared SAM"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "samIR", ["type"] = "Osa 9A33 ln", ["unitId"] = ' + unit.unitId + ', ["crates"] = 2})',
+				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Avenger(1)", {"Acquisitions", "Infrared SAM"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "samIR", ["type"] = "M1097 Avenger", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1})',
+				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Chaparral(2)", {"Acquisitions", "Infrared SAM"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "samIR", ["type"] = "M48 Chaparral", ["unitId"] = ' + unit.unitId + ', ["crates"] = 2})',
+				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Linebacker(2)", {"Acquisitions", "Infrared SAM"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "samIR", ["type"] = "M6 Linebacker", ["unitId"] = ' + unit.unitId + ', ["crates"] = 2})',
 
 				'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "Radar SAM", {"Acquisitions"})',
 				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Tunguska(3)", {"Acquisitions", "Radar SAM"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "mobileSAM", ["type"] = "2S6 Tunguska", ["unitId"] = ' + unit.unitId + ', ["crates"] = 3})',

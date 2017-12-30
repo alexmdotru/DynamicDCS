@@ -5,8 +5,8 @@ const proximityController = require('./proximity');
 const menuUpdateController = require('./menuUpdate');
 const groupController = require('./group');
 
-var maxCrates = 7;
-var maxUnits = 5;
+var maxCrates = 10;
+var maxUnits = 10;
 
 _.set(exports, 'menuCmdProcess', function (pObj) {
 	console.log('process menu cmd: ', pObj);
