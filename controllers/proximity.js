@@ -6,6 +6,33 @@ const menuUpdateController = require('./menuUpdate');
 var unitsInProxLogiTowers = {};
 var unitsInProxBases = {};
 
+_.set(exports, 'getLogiTowersProximity', function (serverName, lonLat, kmDistance) {
+	return dbMapServiceController.unitActions(
+		'read',
+		serverName,
+		{
+			dead: false,
+			lonLatLoc: {
+				$geoWithin: {
+					$centerSphere: [
+						lonLat,
+						kmDistance / 6378.1
+					]
+				}
+			},
+			category: 'STRUCTURE',
+			proxChkGrp: 'logisticTowers'
+		})
+		.then(function (closeUnits) {
+			// console.log('close units ' + closeUnits);
+			return closeUnits;
+		})
+		.catch(function (err) {
+			console.log('line 12: ', err);
+		})
+		;
+});
+
 _.set(exports, 'getGroundUnitsInProximity', function (serverName, lonLat, kmDistance) {
 	return dbMapServiceController.unitActions(
 		'read',

@@ -117,67 +117,83 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 				exports.isTroopOnboard(curUnit, pObj.serverName, true);
 			}
 			if (pObj.cmd === 'unpackCrate') {
-				if(menuUpdateController.virtualCrates) {
-					proximityController.getVirtualCratesInProximity(pObj.serverName, curUnit.lonLatLoc, 0.4, curUnit.coalition)
-						.then(function(units){
-							var cCnt = 0;
-							var grpTypes;
-							var curCrate = _.get(units, [0], {});
-							var numCrate = _.split(curCrate.name, '|')[3];
-							var curCrateType = _.split(curCrate.name, '|')[2];
-							var isCombo = (_.split(curCrate.name, '|')[4] === 'true');
-							if(curCrate && curCrate.name) {
-								//virtual sling loading
-								grpTypes = _.transform(units, function (result, value) {
-									(result[_.get(_.split(value.name, '|'), [2])] || (result[_.get(_.split(value.name, '|'), [2])] = [])).push(value);
-								}, {});
-								if( _.get(grpTypes, [curCrateType], []).length >=  numCrate) {
-									cCnt = 1;
-									_.forEach(_.get(grpTypes, [curCrateType]), function (eCrate) {
-										if ( cCnt <= numCrate) {
-											dbMapServiceController.unitActions('update', pObj.serverName, {_id: eCrate.unitId, dead: true})
-												.catch(function (err) {
-													console.log('erroring line152: ', err);
-												})
-											;
-											groupController.destroyUnit(pObj.serverName, eCrate.name);
-											cCnt ++;
+				proximityController.getLogiTowersProximity(pObj.serverName, curUnit.lonLatLoc, 0.8)
+					.then(function (logiProx) {
+						if (logiProx.length) {
+							DCSLuaCommands.sendMesgToGroup(
+								curUnit.groupId,
+								pObj.serverName,
+								"G: You need to move farther away from Command Towers (800m)",
+								5
+							);
+						} else {
+							if(menuUpdateController.virtualCrates) {
+								proximityController.getVirtualCratesInProximity(pObj.serverName, curUnit.lonLatLoc, 0.4, curUnit.coalition)
+									.then(function(units){
+										var cCnt = 0;
+										var grpTypes;
+										var curCrate = _.get(units, [0], {});
+										var numCrate = _.split(curCrate.name, '|')[3];
+										var curCrateType = _.split(curCrate.name, '|')[2];
+										var isCombo = (_.split(curCrate.name, '|')[4] === 'true');
+										if(curCrate && curCrate.name) {
+											//virtual sling loading
+											grpTypes = _.transform(units, function (result, value) {
+												(result[_.get(_.split(value.name, '|'), [2])] || (result[_.get(_.split(value.name, '|'), [2])] = [])).push(value);
+											}, {});
+											if( _.get(grpTypes, [curCrateType], []).length >=  numCrate) {
+												cCnt = 1;
+												_.forEach(_.get(grpTypes, [curCrateType]), function (eCrate) {
+													if ( cCnt <= numCrate) {
+														dbMapServiceController.unitActions('update', pObj.serverName, {_id: eCrate.unitId, dead: true})
+															.catch(function (err) {
+																console.log('erroring line152: ', err);
+															})
+														;
+														groupController.destroyUnit(pObj.serverName, eCrate.name);
+														cCnt ++;
+													}
+												});
+												exports.unpackCrate(pObj.serverName, curUnit, curCrateType, isCombo);
+												groupController.destroyUnit(pObj.serverName, curCrate.name);
+												DCSLuaCommands.sendMesgToGroup(
+													curUnit.groupId,
+													pObj.serverName,
+													"G: Unpacking " + curCrateType + "!",
+													5
+												);
+											} else {
+												DCSLuaCommands.sendMesgToGroup(
+													curUnit.groupId,
+													pObj.serverName,
+													"G: Not Enough Crates for " + _.split(curCrate.name, '|')[2] + "!",
+													5
+												);
+											}
+										} else {
+											// no troops
+											DCSLuaCommands.sendMesgToGroup(
+												curUnit.groupId,
+												pObj.serverName,
+												"G: No Crates To Unpack!",
+												5
+											);
 										}
-									});
-									exports.unpackCrate(pObj.serverName, curUnit, curCrateType, isCombo);
-									groupController.destroyUnit(pObj.serverName, curCrate.name);
-									DCSLuaCommands.sendMesgToGroup(
-										curUnit.groupId,
-										pObj.serverName,
-										"G: Unpacking " + curCrateType + "!",
-										5
-									);
-								} else {
-									DCSLuaCommands.sendMesgToGroup(
-										curUnit.groupId,
-										pObj.serverName,
-										"G: Not Enough Crates for " + _.split(curCrate.name, '|')[2] + "!",
-										5
-									);
-								}
+									})
+									.catch(function (err) {
+										console.log('line 32: ', err);
+									})
+								;
 							} else {
-								// no troops
-								DCSLuaCommands.sendMesgToGroup(
-									curUnit.groupId,
-									pObj.serverName,
-									"G: No Crates To Unpack!",
-									5
-								);
-							}
-						})
-						.catch(function (err) {
-							console.log('line 32: ', err);
-						})
-					;
-				} else {
-					// real sling loading
+								// real sling loading
 
-				}
+							}
+						}
+					})
+					.catch(function (err) {
+						console.log('line 125: ', err);
+					})
+				;
 			}
 			if (pObj.cmd === 'loadCrate') {
 				proximityController.getVirtualCratesInProximity(pObj.serverName, curUnit.lonLatLoc, 0.4, curUnit.coalition)
