@@ -24,7 +24,7 @@ exports.userAccountActions = function (action, obj){
 	}
 	if(action === 'read') {
 		return new Promise(function(resolve, reject) {
-			UserAccount.find(function (err, useraccount) {
+			UserAccount.find(obj, function (err, useraccount) {
 				if (err) { reject(err) }
 				resolve(useraccount);
 			});

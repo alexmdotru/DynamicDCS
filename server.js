@@ -837,6 +837,26 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					var curPlyrUcid = _.get(player, 'ucid');
 					var curPlyrSide = _.get(player, 'side');
 					var curPlyrName = _.get(player, 'name');
+
+					//kick if in gamemaster slot
+					if(_.includes(_.get(player, 'slot', ''), 'instructor_')) {
+						dbSystemServiceController.userAccountActions('read', {ucid: _.get(player, 'ucid', '')})
+							.then(function (userAccount) {
+								if(!(_.get(userAccount, [0, 'permLvl'], 100) <= 5)) {
+									console.log('force out gamemaster!');
+									DCSLuaCommands.forcePlayerSpectator(
+										serverName,
+										player.id,
+										curPlyrName + ' does not have a high enough permission level to be a Gamemaster'
+									);
+								}
+							})
+							.catch(function (err) {
+								console.log('line856', err);
+							})
+						;
+					}
+
 					dbMapServiceController.unitActions('read', serverName, {_id: _.get(queObj, curPlyrUcid)})
 						.then(function (unit) {
 							var curUnit = _.get(unit, 0);
@@ -853,6 +873,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 												'You have been banned from this server, visit 16agr.com if you have questions'
 											);
 										}
+
+
 
 										// switching to spectator gets around this, fix this in future please
 										if ((curUnitSide !== curPlyrSide) && curPlyrSide !== 0 && curPlyrSide) {
