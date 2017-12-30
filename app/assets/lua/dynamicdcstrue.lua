@@ -463,19 +463,19 @@ do
 			if request.action == "GETPOLYDEF" then
 				--initAirbases()
 			end
-			if request.action == "LOSVISIBLE" then
-				tprint(request, 1)
+			if request.action == "ISLOSVISIBLE" then
+				--tprint(request, 1)
 				local jtacUnit = Unit.getByName(request.jtacUnitName)
 				if jtacUnit ~= nil then
 					local jtacPOS = jtacUnit:getPoint()
-					tprint(jtacPOS, 1)
+					--tprint(jtacPOS, 1)
 					local visableUnits = {}
 					if type(request.enemyUnitNames) == 'table' then
 						for nIndex = 1, #request.enemyUnitNames do
 							local curUnit = Unit.getByName(request.enemyUnitNames[nIndex])
 							if curUnit ~= nil then
 								local enemyPOS = curUnit:getPoint()
-								tprint(enemyPOS, 1)
+								--tprint(enemyPOS, 1)
 								local offsetEnemyPos = { x = enemyPOS.x, y = enemyPOS.y + 2.0, z = enemyPOS.z }
 								local offsetJTACPos = { x = jtacPOS.x, y = jtacPOS.y + 2.0, z = jtacPOS.z }
 								if land.isVisible(offsetEnemyPos, offsetJTACPos) then
@@ -485,7 +485,7 @@ do
 						end
 					end
 					table.insert(updateQue.que, {
-						action = 'LOSVisibleUnits',
+						action = 'LOSVISIBLEUNITS',
 						jtacUnitName = request.jtacUnitId,
 						data = visableUnits
 					})

@@ -646,7 +646,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		}
 
 		// line of sight callback from server
-		if (queObj.action === 'LOSVisibleUnits') {
+		if (queObj.action === 'LOSVISIBLEUNITS') {
 			console.log('LOS: ', queObj);
 		}
 
