@@ -6,8 +6,10 @@ const groupController = require('./group');
 
 var jtacDistance = 10;
 var laserCode = 1113;
+var fiveMins = 5 * 60 * 1000;
 
 _.set(exports, 'setLaserSmoke', function (serverName, jtUnit, enemyUnit) {
+	console.log('Setting Laser: ', jtUnit.name);
 	//laser & smoke
 	var sendClient = {
 		"action" : "SETLASERSMOKE",
@@ -19,7 +21,26 @@ _.set(exports, 'setLaserSmoke', function (serverName, jtUnit, enemyUnit) {
 	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
 	dbMapServiceController.cmdQueActions('save', serverName, actionObj)
 		.catch(function (err) {
-			console.log('erroring line525: ', err);
+			console.log('erroring line23: ', err);
+		})
+	;
+	dbMapServiceController.unitActions('update', serverName, {_id: jtUnit._id, jtacTarget: enemyUnit.name, jtacReplenTime: new Date().getTime() + fiveMins})
+		.catch(function (err) {
+			console.log('erroring line28: ', err);
+		})
+	;
+});
+
+_.set(exports, 'removeLaserIR', function (serverName, jtUnit) {
+	console.log('Removing Laser: ', jtUnit.name);
+	var sendClient = {
+		"action" : "REMOVELASERIR",
+		"jtacUnitName": jtUnit.name
+	};
+	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
+	dbMapServiceController.cmdQueActions('save', serverName, actionObj)
+		.catch(function (err) {
+			console.log('erroring line23: ', err);
 		})
 	;
 });
@@ -56,7 +77,7 @@ _.set(exports, 'jtacNewTarget', function (serverName, jtUnit) {
 _.set(exports, 'aliveJtac30SecCheck', function (serverName) {
 	console.log('jtac check');
 	//grab all jtacs
-	dbMapServiceController.unitActions('read', serverName, {proxChkGrp: 'jtac'})
+	dbMapServiceController.unitActions('read', serverName, {proxChkGrp: 'jtac', dead: false})
 		.then(function (jtacUnits) {
 			_.forEach(jtacUnits, function (jtUnit) {
 				// console.log('jtac: ', jtUnit);
@@ -71,6 +92,7 @@ _.set(exports, 'aliveJtac30SecCheck', function (serverName) {
 									exports.setLaserSmoke(serverName, jtUnit, curJtacTarget);
 								}
 							} else {
+								exports.removeLaserIR(serverName, jtUnit);
 								exports.jtacNewTarget(serverName, jtUnit);
 							}
 						})

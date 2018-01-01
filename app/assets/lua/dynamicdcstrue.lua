@@ -505,8 +505,10 @@ do
 							_oldIR:setPoint(_enemyVectorUpdated)
 						end
 					end
-					local mesg = "JTAC Has Placed Smoke And Is Now Lasing. Code: "..request.laserCode
-					trigger.action.outTextForCoalition(request.coalition, mesg, 5)
+					local elat, elon, ealt = coord.LOtoLL(_enemyVectorUpdated)
+					local MGRS = coord.LLtoMGRS(coord.LOtoLL(_enemyVectorUpdated))
+					local mesg = "JTAC Has Placed Smoke And Is Now Lasing on "..request.laserCode.." Lat:"..elat.." Lon:"..elon.." MGRS:"..MGRS.UTMZone..MGRS.MGRSDigraph.." "..MGRS.Easting.." "..MGRS.Northing
+					trigger.action.outTextForCoalition(request.coalition, mesg, 15)
 					if request.coalition == 1 then
 						trigger.action.smoke(_enemyVectorUpdated, 4 )
 					end

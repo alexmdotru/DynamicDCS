@@ -194,7 +194,7 @@ protectedRouter.route('/userAccounts')
 	});
 
 //setup globals
-var epocTimeout = (1 * 60 * 1000); // 5 mins
+var epocTimeout = (5 * 60 * 1000); // 5 mins
 var maxIdleTime = (5 * 60 * 1000); // 5 mins
 var outOfSyncUnitCnt = 0;
 var socketQues = ['q0', 'q1', 'q2', 'qadmin', 'leaderboard'];
@@ -1827,17 +1827,19 @@ setInterval(function () {
 
 //30 sec interval
 setInterval(function () {
-	dbSystemServiceController.serverActions('read', {enabled: true})
-		.then(function (srvs) {
-			_.forEach(srvs, function (srv) {
-				var curServerName = _.get(srv, '_id');
-				jtacController.aliveJtac30SecCheck(curServerName);
-			});
-		})
-		.catch(function (err) {
-			console.log('line1486', err);
-		})
-	;
+	if (isSpawningAllowed) {
+		dbSystemServiceController.serverActions('read', {enabled: true})
+			.then(function (srvs) {
+				_.forEach(srvs, function (srv) {
+					var curServerName = _.get(srv, '_id');
+					jtacController.aliveJtac30SecCheck(curServerName);
+				});
+			})
+			.catch(function (err) {
+				console.log('line1486', err);
+			})
+		;
+	}
 }, 30 * 1000);
 
 /*
