@@ -10,7 +10,7 @@ var maxUnitsMoving = 10;
 var maxUnitsStationary = 5;
 
 _.set(exports, 'menuCmdProcess', function (pObj) {
-	console.log('process menu cmd: ', pObj);
+	// console.log('process menu cmd: ', pObj);
 	dbMapServiceController.unitActions('read', pObj.serverName, {_id: pObj.unitId})
 		.then(function(units) {
 			var spawnArray;

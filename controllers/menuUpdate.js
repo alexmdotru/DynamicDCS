@@ -64,7 +64,7 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 	}
 	cmdArray.unshift(resetMenu);
 
-	console.log('der: ', unit.type, _.includes(allowedTypesForTroops, unit.type), proximityController.extractUnitsBackToBase(unit, serverName));
+	// console.log('der: ', unit.type, _.includes(allowedTypesForTroops, unit.type), proximityController.extractUnitsBackToBase(unit, serverName));
 	if (_.includes(allowedTypesForTroops, unit.type) && proximityController.extractUnitsBackToBase(unit, serverName)) {
 		cmdArray = _.concat(cmdArray, [
 			'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "Troops")',
@@ -202,7 +202,7 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 		}
 	}
 
-	console.log('cmd: ', cmdArray);
+	// console.log('cmd: ', cmdArray);
 	var sendClient = {action: "CMD", cmd: cmdArray, reqID: 0};
 	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
 	dbMapServiceController.cmdQueActions('save', serverName, actionObj)
