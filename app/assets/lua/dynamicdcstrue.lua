@@ -333,7 +333,6 @@ do
 	local function updateGroups(Init)
 		unitCnt = 0
 		checkUnitDead = {}
-		completeAliveUnitIds = {}
 
 		local redGroups = coalition.getGroups(coalition.side.RED)
 		if redGroups ~= nil then
@@ -369,6 +368,7 @@ do
 					data = {}
 				}
 				curStatic.data.unitId = tonumber(static:getID())
+				table.insert(completeAliveUnitIds, curStatic.data.unitId)
 				curStatic.data.life = static:getLife()
 				local staticPosition = static:getPosition()
 				curStatic.data.lat, curStatic.data.lon, curStatic.data.alt = coord.LOtoLL(staticPosition.p)
@@ -442,6 +442,7 @@ do
 	end
 
 	local function getDataMessage()
+		completeAliveUnitIds = {}
 		updateGroups()
 		updateStatics()
 
@@ -585,6 +586,7 @@ do
 			if request.action == "INIT" then
 				--send all unit updates
 				--initAirbases()
+				completeAliveUnitIds = {}
 				updateGroups(true)
 				updateStatics(true)
 			end
@@ -638,6 +640,7 @@ do
 			if client then
 				log("Connection established")
 				--send all unit updates
+				completeAliveUnitIds = {}
 				updateGroups(true)
 				updateStatics(true)
 			end

@@ -558,7 +558,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					// console.log('resync');
 					if (units.length !== update.unitCount) {
 						// get update sync from server
-						console.log(outOfSyncUnitCnt + ':' + serverName + ':' + update.unitCount + '=' + units.length);
+						console.log(outOfSyncUnitCnt + ':' + serverName + ':SERVER' + update.unitCount + '=DB' + units.length);
 						if (outOfSyncUnitCnt > config.outOfSyncUnitThreshold) {
 							dbMapServiceController.cmdQueActions('save', serverName, {
 								queName: 'clientArray',
@@ -654,10 +654,10 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			dbMapServiceController.unitActions('chkResync', serverName, {})
 				.then(function () {
 					_.forEach(queObj.data, function (unitId) {
-						upPromises.push(dbMapServiceController.unitActions('update', serverName, {_id: unitId, isResync: true}));
+						upPromises.push(dbMapServiceController.unitActions('update', serverName, {_id: unitId, isResync: true, dead:false}));
 					});
 					Promise.all(upPromises)
-						.then(function (data) {
+						.then(function () {
 							if(isBaseFullyPopped) {
 								dbMapServiceController.unitActions('markUndead', serverName, {});
 							} else {
@@ -675,11 +675,13 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 												_.set(remappedunits, [curGrpName], _.get(remappedunits, [curGrpName], []));
 												remappedunits[curGrpName].push(unit);
 											} else if (_.get(unit, 'category') === 'STRUCTURE') {
+												// console.log('LOGIUNIT: ', unit.name);
 												groupController.spawnLogisticCmdCenter(serverName, unit);
 											}
 										});
 										_.forEach(remappedunits, function (group) {
-											groupController.spawnGroup( serverName, group)
+											// console.log('spwned ', group);
+											groupController.spawnGroup( serverName, group);
 										});
 									})
 									.catch(function (err) {
