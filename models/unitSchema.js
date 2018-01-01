@@ -81,6 +81,12 @@ const UnitSchema = new Schema({
 	proxChkGrp: {
 		type: String
 	},
+	jtacTarget: {
+		type: String
+	},
+	jtacReplenTime: {
+		type: Date
+	},
 	inAir: {
 		type: Boolean
 	},

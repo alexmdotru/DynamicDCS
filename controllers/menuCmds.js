@@ -6,7 +6,8 @@ const menuUpdateController = require('./menuUpdate');
 const groupController = require('./group');
 
 var maxCrates = 10;
-var maxUnits = 10;
+var maxUnitsMoving = 10;
+var maxUnitsStationary = 5;
 
 _.set(exports, 'menuCmdProcess', function (pObj) {
 	console.log('process menu cmd: ', pObj);
@@ -133,9 +134,10 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 										var cCnt = 0;
 										var grpTypes;
 										var curCrate = _.get(units, [0], {});
-										var numCrate = _.split(curCrate.name, '|')[3];
+										var numCrate = _.split(curCrate.name, '|')[4];
+										var curCrateSpecial = _.split(curCrate.name, '|')[3];
 										var curCrateType = _.split(curCrate.name, '|')[2];
-										var isCombo = (_.split(curCrate.name, '|')[4] === 'true');
+										var isCombo = (_.split(curCrate.name, '|')[5] === 'true');
 										if(curCrate && curCrate.name) {
 											//virtual sling loading
 											grpTypes = _.transform(units, function (result, value) {
@@ -154,12 +156,12 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 														cCnt ++;
 													}
 												});
-												exports.unpackCrate(pObj.serverName, curUnit, curCrateType, isCombo);
+												exports.unpackCrate(pObj.serverName, curUnit, curCrateType, curCrateSpecial, isCombo);
 												groupController.destroyUnit(pObj.serverName, curCrate.name);
 												DCSLuaCommands.sendMesgToGroup(
 													curUnit.groupId,
 													pObj.serverName,
-													"G: Unpacking " + curCrateType + "!",
+													"G: Unpacking " + _.toUpper(curCrateSpecial) + " " + curCrateType + "!",
 													5
 												);
 											} else {
@@ -209,7 +211,7 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 							DCSLuaCommands.sendMesgToGroup(
 								curUnit.groupId,
 								pObj.serverName,
-								"G: Picked Up " + _.split(curCrate.name, '|')[2] + " Crate!",
+								"G: Picked Up " + _.toUpper(_.split(curCrate.name, '|')[3]) + " " + _.split(curCrate.name, '|')[2] + " Crate!",
 								5
 							);
 						} else {
@@ -237,7 +239,7 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 					);
 				} else {
 					if (!_.isEmpty(curUnit.virtCrateType)) {
-						exports.spawnCrateFromLogi(pObj.serverName, curUnit, _.split(curUnit.virtCrateType, '|')[2], _.split(curUnit.virtCrateType, '|')[3], (_.split(curUnit.virtCrateType, '|')[4] === 'true'));
+						exports.spawnCrateFromLogi(pObj.serverName, curUnit, _.split(curUnit.virtCrateType, '|')[2], _.split(curUnit.virtCrateType, '|')[4], (_.split(curUnit.virtCrateType, '|')[5] === 'true'), _.split(curUnit.virtCrateType, '|')[3]);
 						dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, virtCrateType: null})
 							.catch(function (err) {
 								console.log('erroring line243: ', err);
@@ -278,6 +280,10 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 			// Crate Menu ["action"] = "f10Menu", ["cmd"] = "EWR", ["type"] = "55G6 EWR", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1})
 			if (pObj.cmd === 'EWR') {
 				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false);
+			}
+
+			if (pObj.cmd === 'JTAC') {
+				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false, 'jtac');
 			}
 
 			if (pObj.cmd === 'unarmedFuel') {
@@ -377,7 +383,7 @@ _.set(exports, 'isTroopOnboard', function (unit, serverName, verbose) {
 	return false
 });
 
-_.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, combo) {
+_.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, combo, special) {
 	var crateCount = 0;
 	dbMapServiceController.unitActions('read', serverName, {playerOwnerId: unit.unitId, isCrate: true, dead: false})
 		.then(function(delCrates){
@@ -393,8 +399,16 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 				crateCount ++;
 			});
 			if(menuUpdateController.virtualCrates) {
-				var spawnArray = {
-					spwnName: 'CU|' + unit.unitId + '|' + type + '|' + crates + '|' + combo + '|',
+				console.log('special: ', special);
+				var spc;
+				var spawnArray;
+				if (special) {
+					spc = special;
+				} else {
+					spc = '';
+				}
+				spawnArray = {
+					spwnName: 'CU|' + unit.unitId + '|' + type + '|' + spc + '|' + crates + '|' + combo + '|',
 					type: "UAZ-469",
 					lonLatLoc: unit.lonLatLoc,
 					heading: unit.hdg,
@@ -429,7 +443,7 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 			DCSLuaCommands.sendMesgToGroup(
 				unit.groupId,
 				serverName,
-				"G: " + type + " crate has been spawned!",
+				"G: " + _.toUpper(spc) + " " + type + " crate has been spawned!",
 				5
 			);
 		})
@@ -439,14 +453,14 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 	;
 });
 
-_.set(exports, 'unpackCrate', function (serverName, unit, type, combo) {
+_.set(exports, 'unpackCrate', function (serverName, unit, type, special, combo) {
 	dbMapServiceController.unitActions('read', serverName, {playerOwnerId: unit.unitId, dead: false})
 		.then(function(delUnits){
 			var curUnit = 0;
 			var grpGroups = _.transform(delUnits, function (result, value) {
 				(result[value.groupId] || (result[value.groupId] = [])).push(value);
 			}, {});
-			var tRem = _.size(grpGroups) - maxUnits;
+			var tRem = _.size(grpGroups) - maxUnitsMoving;
 			_.forEach(grpGroups, function (gUnit) {
 				if (curUnit <= tRem) {
 					_.forEach(gUnit, function(unit) {
@@ -479,7 +493,7 @@ _.set(exports, 'unpackCrate', function (serverName, unit, type, combo) {
 						if (curUnitHdg > 359) {
 							curUnitHdg = 15;
 						}
-						_.set(cbUnit, 'spwnName', 'DU|' + unit.unitId + '|' + cbUnit.type + '|true|');
+						_.set(cbUnit, 'spwnName', 'DU|' + unit.unitId + '|' + cbUnit.type + '||true|');
 						_.set(cbUnit, 'lonLatLoc', unit.lonLatLoc);
 						_.set(cbUnit, 'heading', curUnitHdg);
 						_.set(cbUnit, 'country', unit.country);
@@ -495,7 +509,7 @@ _.set(exports, 'unpackCrate', function (serverName, unit, type, combo) {
 			;
 		} else {
 			spawnArray = _.concat(spawnArray, {
-				spwnName: 'DU|' + unit.unitId + '|' + type + '|false|',
+				spwnName: 'DU|' + unit.unitId + '|' + type + '|' + special + '|false|',
 				type: type,
 				lonLatLoc: unit.lonLatLoc,
 				heading: unit.hdg,

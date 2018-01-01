@@ -30,8 +30,12 @@ const UnitDictionarySchema = new Schema({
 			type: String
 		},
 		launcher: {
-		type: Boolean,
-		default: false
+			type: Boolean,
+			default: false
+		},
+		threatLvl: {
+			type: Number,
+			default: 0
 		},
 		enabled: {
 			type: Boolean,

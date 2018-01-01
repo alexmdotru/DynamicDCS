@@ -127,6 +127,8 @@ do
 	local checkUnitDead = {}
 	local staticCnt = 0
 	local checkStaticDead = {}
+	local laserSpots = {}
+	local IRSpots = {}
 
 	package.path = package.path .. ";.\\LuaSocket\\?.lua"
 	package.cpath = package.cpath .. ";.\\LuaSocket\\?.dll"
@@ -462,6 +464,73 @@ do
 		if request.action ~= nil then
 			if request.action == "GETPOLYDEF" then
 				--initAirbases()
+			end
+			if request.action == "SETLASERSMOKE" then
+				local curJtacUnit = Unit.getByName(request.jtacUnitName)
+				local curEnemyUnit = Unit.getByName(request.enemyUnitName)
+
+				if curJtacUnit ~= nil and curEnemyUnit ~= nil then
+					local _spots = {}
+
+					local _enemyVector = curEnemyUnit:getPoint()
+					local _enemyVectorUpdated = { x = _enemyVector.x, y = _enemyVector.y + 2.0, z = _enemyVector.z }
+
+					local _oldLase = laserSpots[request.jtacUnitName]
+					local _oldIR = IRSpots[request.jtacUnitName]
+
+					if _oldLase == nil or _oldIR == nil then
+
+						local _status, _result = pcall(function()
+							_spots['irPoint'] = Spot.createInfraRed(curJtacUnit, { x = 0, y = 2.0, z = 0 }, _enemyVectorUpdated)
+							_spots['laserPoint'] = Spot.createLaser(curJtacUnit, { x = 0, y = 2.0, z = 0 }, _enemyVectorUpdated, request.laserCode)
+							return _spots
+						end)
+
+						if not _status then
+							env.error('ERROR: ' .. _result, false)
+						else
+							if _result.irPoint then
+								IRSpots[request.jtacUnitName] = _result.irPoint
+							end
+							if _result.laserPoint then
+								laserSpots[request.jtacUnitName] = _result.laserPoint
+							end
+						end
+					else
+						if _oldLase ~= nil then
+							_oldLase:setPoint(_enemyVectorUpdated)
+						end
+
+						if _oldIR ~= nil then
+							_oldIR:setPoint(_enemyVectorUpdated)
+						end
+					end
+					local mesg = "JTAC Has Placed Smoke And Is Now Lasing. Code: "..request.laserCode
+					trigger.action.outTextForCoalition(request.coalition, mesg, 5)
+					if request.coalition == 1 then
+						trigger.action.smoke(_enemyVectorUpdated, 4 )
+					end
+					if request.coalition == 2 then
+						trigger.action.smoke(_enemyVectorUpdated, 1 )
+					end
+				end
+			end
+			if request.action == "REMOVELASERIR" then
+				local _tempLase = laserSpots[request.jtacUnitName]
+
+				if _tempLase ~= nil then
+					Spot.destroy(_tempLase)
+					laserSpots[request.jtacUnitName] = nil
+					_tempLase = nil
+				end
+
+				local _tempIR = IRSpots[request.jtacUnitName]
+
+				if _tempIR ~= nil then
+					Spot.destroy(_tempIR)
+					IRSpots[request.jtacUnitName] = nil
+					_tempIR = nil
+				end
 			end
 			if request.action == "ISLOSVISIBLE" then
 				--tprint(request, 1)

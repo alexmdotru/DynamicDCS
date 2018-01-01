@@ -82,6 +82,7 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 				'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "Acquisitions")',
 				'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "Support", {"Acquisitions"})',
 				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Early Warning Radar (1)", {"Acquisitions","Support"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "EWR", ["type"] = "55G6 EWR", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1})',
+				'missionCommands.addCommandForGroup("' + unit.groupId + '", "JTAC (1)", {"Acquisitions","Support"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "JTAC", ["type"] = "SKP-11", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1})',
 				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Fuel Tanker (1)", {"Acquisitions","Support"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "unarmedFuel", ["type"] = "ATZ-10", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1})',
 				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Ammo Truck (1)", {"Acquisitions","Support"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "unarmedAmmo", ["type"] = "Ural-375", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1})',
 
@@ -144,6 +145,7 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 				'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "Acquisitions")',
 				'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "Support", {"Acquisitions"})',
 				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Early Warning Radar(1)", {"Acquisitions","Support"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "EWR", ["type"] = "55G6 EWR", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1})',
+				'missionCommands.addCommandForGroup("' + unit.groupId + '", "JTAC (1)", {"Acquisitions","Support"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "JTAC", ["type"] = "Hummer", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1})',
 				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Fuel Tanker(1)", {"Acquisitions","Support"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "unarmedFuel", ["type"] = "M978 HEMTT Tanker", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1})',
 				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Ammo Truck(1)", {"Acquisitions","Support"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "unarmedAmmo", ["type"] = "M 818", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1})',
 

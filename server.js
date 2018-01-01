@@ -34,6 +34,7 @@ const groupController = require('./controllers/group');
 const proximityController = require('./controllers/proximity');
 const menuUpdateController = require('./controllers/menuUpdate');
 const menuCmdsController = require('./controllers/menuCmds');
+const jtacController = require('./controllers/jtac');
 
 var admin = false;
 
@@ -435,7 +436,6 @@ function setRoomSide(socket, roomObj) {
 						.catch(function (err) {
 							console.log('line392', err);
 						});
-					;
 				} else {
 					dbMapServiceController.srvPlayerActions('read', roomObj.server)
 						.then(function (srvPlayers) {
@@ -461,13 +461,11 @@ function setRoomSide(socket, roomObj) {
 						.catch(function (err) {
 							console.log('error no account detected, line404');
 						});
-					;
 				}
 			})
 			.catch(function (err) {
 				console.log('line418', err);
 			});
-		;
 	}
 }
 
@@ -537,7 +535,6 @@ io.on('connection', function (socket) {
 			.catch(function (err) {
 				console.log('line495', err);
 			});
-		;
 	}
 });
 
@@ -648,6 +645,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 		// line of sight callback from server
 		if (queObj.action === 'LOSVISIBLEUNITS') {
 			console.log('LOS: ', queObj);
+			// jtacController.processLOSEnemy(queObj);
 		}
 
 		if (queObj.action === 'unitsAlive') {
@@ -725,13 +723,14 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					if (_.includes(curData.name, 'CU|')) {
 						stParse = _.split(curData.name, '|');
 						_.set(curData, 'playerOwnerId', stParse[1]);
-						_.set(curData, 'isCombo', _.isBoolean(stParse[4]));
+						_.set(curData, 'isCombo', _.isBoolean(stParse[5]));
 						_.set(curData, 'playerCanDrive', false);
 						_.set(curData, 'isCrate', true);
 					}
 					if (_.includes(curData.name, 'DU|')) {
 						stParse = _.split(curData.name, '|');
 						_.set(curData, 'playerOwnerId', stParse[1]);
+						_.set(curData, 'proxChkGrp', stParse[3]);
 						_.set(curData, 'playerCanDrive', true);
 					}
 					if ((!_.isEmpty(curUnit) && _.get(queObj, 'action') !== 'D')) {
@@ -832,8 +831,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			_.set(queObj, 'serverName', serverName);
 			_.set(queObj, 'sessionName', sessionName);
 			menuCmdsController.menuCmdProcess(queObj);
-		};
-
+		}
 		//playerUpdate
 		if (_.get(queObj, 'action') === 'players') {
 			_.set(queObj, 'sessionName', sessionName);
@@ -1740,6 +1738,7 @@ setInterval(function () {
 }, 1000);
 
 // constant check loop (base unit replenish, etc)
+//5 sec interval
 setInterval(function () {
 	dbSystemServiceController.serverActions('read', {enabled: true})
 		.then(function (srvs) {
@@ -1825,6 +1824,21 @@ setInterval(function () {
 		})
 	;
 }, 5 * 1000);
+
+//30 sec interval
+setInterval(function () {
+	dbSystemServiceController.serverActions('read', {enabled: true})
+		.then(function (srvs) {
+			_.forEach(srvs, function (srv) {
+				var curServerName = _.get(srv, '_id');
+				jtacController.aliveJtac30SecCheck(curServerName);
+			});
+		})
+		.catch(function (err) {
+			console.log('line1486', err);
+		})
+	;
+}, 30 * 1000);
 
 /*
 	dbMapServiceController.processActions('save', 'TrueDynamicCaucasus', {firingTime: new Date().getTime() + 5000, queObj: { blah: 1, blah2: 4 }})
