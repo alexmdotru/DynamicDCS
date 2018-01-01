@@ -555,7 +555,7 @@ do
 					end
 					table.insert(updateQue.que, {
 						action = 'LOSVISIBLEUNITS',
-						jtacUnitName = request.jtacUnitId,
+						jtacUnitName = request.jtacUnitName,
 						data = visableUnits
 					})
 				end

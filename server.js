@@ -644,8 +644,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 
 		// line of sight callback from server
 		if (queObj.action === 'LOSVISIBLEUNITS') {
-			console.log('LOS: ', queObj);
-			// jtacController.processLOSEnemy(queObj);
+			//console.log('LOS: ', queObj);
+			jtacController.processLOSEnemy(serverName, queObj);
 		}
 
 		if (queObj.action === 'unitsAlive') {

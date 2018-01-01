@@ -4,10 +4,10 @@ const dbMapServiceController = require('./dbMapService');
 const proximityController = require('./proximity');
 const groupController = require('./group');
 
-var jtacDistance = 10000;
+var jtacDistance = 10;
 var laserCode = 1113;
 
-_.set(exports, 'setLaserSmoke', function (servername, jtUnit, enemyUnit) {
+_.set(exports, 'setLaserSmoke', function (serverName, jtUnit, enemyUnit) {
 	//laser & smoke
 	var sendClient = {
 		"action" : "SETLASERSMOKE",
@@ -24,24 +24,28 @@ _.set(exports, 'setLaserSmoke', function (servername, jtUnit, enemyUnit) {
 	;
 });
 
-_.set(exports, 'jtacNewTarget', function (jtUnit) {
-	var enemySide = (jtUnit === 1)? 2 : 1;
+_.set(exports, 'jtacNewTarget', function (serverName, jtUnit) {
+	var enemySide = (jtUnit.coalition === 1)? 2 : 1;
+	// console.log('jts: ', enemySide);
 	//check proximity
 	proximityController.getEnemyGroundUnitsInProximity(serverName, jtUnit.lonLatLoc, jtacDistance, enemySide)
 		.then(function (enemyUnits) {
 			//check LOS for proximity
 			var enemyUnitNameArray = _.map(enemyUnits, 'name');
-			var sendClient = {
-				"action" : "ISLOSVISIBLE",
-				"jtacUnitName": jtUnit.name,
-				"enemyUnitNames": enemyUnitNameArray
-			};
-			var actionObj = {actionObj: sendClient, queName: 'clientArray'};
-			dbMapServiceController.cmdQueActions('save', serverName, actionObj)
-				.catch(function (err) {
-					console.log('erroring line525: ', err);
-				})
-			;
+			if (enemyUnitNameArray.length > 0) {
+				var sendClient = {
+					"action" : "ISLOSVISIBLE",
+					"jtacUnitName": jtUnit.name,
+					"enemyUnitNames": enemyUnitNameArray
+				};
+				// console.log('enemysNear---: ', sendClient);
+				var actionObj = {actionObj: sendClient, queName: 'clientArray'};
+				dbMapServiceController.cmdQueActions('save', serverName, actionObj)
+					.catch(function (err) {
+						console.log('erroring line525: ', err);
+					})
+				;
+			}
 		})
 		.catch(function (err) {
 			console.log('line 118: ', err);
@@ -52,9 +56,10 @@ _.set(exports, 'jtacNewTarget', function (jtUnit) {
 _.set(exports, 'aliveJtac30SecCheck', function (serverName) {
 	console.log('jtac check');
 	//grab all jtacs
-	dbMapServiceController.baseActions('read', serverName, {proxChkGrp: 'jtac'})
+	dbMapServiceController.unitActions('read', serverName, {proxChkGrp: 'jtac'})
 		.then(function (jtacUnits) {
 			_.forEach(jtacUnits, function (jtUnit) {
+				// console.log('jtac: ', jtUnit);
 				//lookup existing unit to see if dead
 				if (jtUnit.jtacTarget) {
 					dbMapServiceController.unitActions('read', serverName, {name: jtUnit.jtacTarget})
@@ -66,7 +71,7 @@ _.set(exports, 'aliveJtac30SecCheck', function (serverName) {
 									exports.setLaserSmoke(serverName, jtUnit, curJtacTarget);
 								}
 							} else {
-								exports.jtacNewTarget(jtUnit);
+								exports.jtacNewTarget(serverName, jtUnit);
 							}
 						})
 						.catch(function (err) {
@@ -74,7 +79,7 @@ _.set(exports, 'aliveJtac30SecCheck', function (serverName) {
 						})
 					;
 				} else {
-					exports.jtacNewTarget(jtUnit);
+					exports.jtacNewTarget(serverName, jtUnit);
 				}
 			});
 		})
@@ -85,6 +90,7 @@ _.set(exports, 'aliveJtac30SecCheck', function (serverName) {
 });
 
 _.set(exports, 'processLOSEnemy', function (serverName, losReply) {
+	// console.log('PLE: ', serverName, losReply);
 	if (losReply.data.length) {
 		var enemyUnit;
 		var unitPThrArray = [];
@@ -103,20 +109,21 @@ _.set(exports, 'processLOSEnemy', function (serverName, losReply) {
 								});
 								enemyUnit = _.first(_.orderBy(unitPThrArray, 'threatLvl', 'desc'));
 								//laser & smoke
+								// console.log('lasersmoke: ', serverName, curJtacUnit, enemyUnit);
 								exports.setLaserSmoke(serverName, curJtacUnit, enemyUnit);
 							})
 							.catch(function (err) {
-								console.log('line 59: ', err);
+								console.log('line 112: ', err);
 							})
 						;
 					})
 					.catch(function (err) {
-						console.log('line 59: ', err);
+						console.log('line 117: ', err);
 					})
 				;
 			})
 			.catch(function (err) {
-					console.log('line 65: ', err);
+					console.log('line 122: ', err);
 			})
 		;
 	} else {
