@@ -117,6 +117,9 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 			if (pObj.cmd === 'isTroopOnboard') {
 				exports.isTroopOnboard(curUnit, pObj.serverName, true);
 			}
+			if (pObj.cmd === 'isCrateOnboard') {
+				exports.isCrateOnboard(curUnit, pObj.serverName, true);
+			}
 			if (pObj.cmd === 'unpackCrate') {
 				proximityController.getLogiTowersProximity(pObj.serverName, curUnit.lonLatLoc, 0.8)
 					.then(function (logiProx) {
@@ -387,6 +390,29 @@ _.set(exports, 'isTroopOnboard', function (unit, serverName, verbose) {
 			unit.groupId,
 			serverName,
 			"G: No Troops Onboard!",
+			5
+		);
+	}
+	return false
+});
+
+_.set(exports, 'isCrateOnboard', function (unit, serverName, verbose) {
+	if (unit.virtCrateType) {
+		if(verbose) {
+			DCSLuaCommands.sendMesgToGroup(
+				unit.groupId,
+				serverName,
+				"G: " + _.split(unit.virtCrateType, '|')[2] + " is Onboard!",
+				5
+			);
+		}
+		return true;
+	}
+	if(verbose) {
+		DCSLuaCommands.sendMesgToGroup(
+			unit.groupId,
+			serverName,
+			"G: No Crates Onboard!",
 			5
 		);
 	}
