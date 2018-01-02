@@ -1913,7 +1913,7 @@ setInterval(function () { //sending FULL SPEED AHEAD, 1 per milsec (watch for we
 			console.log('line1638', err);
 		})
 	;
-}, 500);
+}, 1000);
 
 //dcs socket engine connection handler
 setInterval(function () {
