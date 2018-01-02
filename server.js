@@ -733,7 +733,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						stParse = _.split(curData.name, '|');
 						_.set(curData, 'playerOwnerId', stParse[1]);
 						_.set(curData, 'proxChkGrp', stParse[3]);
-						_.set(curData, 'playerCanDrive', true);
+						_.set(curData, 'playerCanDrive', stParse[5]);
 					}
 					if ((!_.isEmpty(curUnit) && _.get(queObj, 'action') !== 'D')) {
 						if(!_.isEmpty(curData.playername) && curUnit.dead) {

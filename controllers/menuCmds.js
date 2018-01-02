@@ -6,7 +6,7 @@ const menuUpdateController = require('./menuUpdate');
 const groupController = require('./group');
 
 var maxCrates = 10;
-var maxUnitsMoving = 10;
+var maxUnitsMoving = 5;
 var maxUnitsStationary = 5;
 
 _.set(exports, 'menuCmdProcess', function (pObj) {
@@ -29,7 +29,7 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 					if(exports.isTroopOnboard(curUnit, pObj.serverName)) {
 						// console.log('should be false: ', proximityController.extractUnitsBackToBase(curUnit, pObj.serverName) );
 						if(proximityController.extractUnitsBackToBase(curUnit, pObj.serverName)) {
-							dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, troopType: null})
+						dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, troopType: null})
 								.then(function(){
 									DCSLuaCommands.sendMesgToGroup(
 										curUnit.groupId,
@@ -138,6 +138,7 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 										var curCrateSpecial = _.split(curCrate.name, '|')[3];
 										var curCrateType = _.split(curCrate.name, '|')[2];
 										var isCombo = (_.split(curCrate.name, '|')[5] === 'true');
+										var isMobile = (_.split(curCrate.name, '|')[6] === 'true');
 										if(curCrate && curCrate.name) {
 											//virtual sling loading
 											grpTypes = _.transform(units, function (result, value) {
@@ -156,7 +157,7 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 														cCnt ++;
 													}
 												});
-												exports.unpackCrate(pObj.serverName, curUnit, curCrateType, curCrateSpecial, isCombo);
+												exports.unpackCrate(pObj.serverName, curUnit, curCrateType, curCrateSpecial, isCombo, isMobile);
 												groupController.destroyUnit(pObj.serverName, curCrate.name);
 												DCSLuaCommands.sendMesgToGroup(
 													curUnit.groupId,
@@ -239,7 +240,7 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 					);
 				} else {
 					if (!_.isEmpty(curUnit.virtCrateType)) {
-						exports.spawnCrateFromLogi(pObj.serverName, curUnit, _.split(curUnit.virtCrateType, '|')[2], _.split(curUnit.virtCrateType, '|')[4], (_.split(curUnit.virtCrateType, '|')[5] === 'true'), _.split(curUnit.virtCrateType, '|')[3]);
+						exports.spawnCrateFromLogi(pObj.serverName, curUnit, _.split(curUnit.virtCrateType, '|')[2], _.split(curUnit.virtCrateType, '|')[4], (_.split(curUnit.virtCrateType, '|')[5] === 'true'), _.split(curUnit.virtCrateType, '|')[3], (_.split(curUnit.virtCrateType, '|')[6] === 'true'));
 						dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, virtCrateType: null})
 							.catch(function (err) {
 								console.log('erroring line243: ', err);
@@ -279,63 +280,63 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 
 			// Crate Menu ["action"] = "f10Menu", ["cmd"] = "EWR", ["type"] = "55G6 EWR", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1})
 			if (pObj.cmd === 'EWR') {
-				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false);
+				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile);
 			}
 
 			if (pObj.cmd === 'JTAC') {
-				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false, 'jtac');
+				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false, 'jtac', pObj.mobile);
 			}
 
 			if (pObj.cmd === 'unarmedFuel') {
-				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false);
+				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile);
 			}
 
 			if (pObj.cmd === 'unarmedAmmo') {
-				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false);
+				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile);
 			}
 
 			if (pObj.cmd === 'armoredCar') {
-				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false);
+				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile);
 			}
 
 			if (pObj.cmd === 'APC') {
-				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false);
+				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile);
 			}
 
 			if (pObj.cmd === 'tank') {
-				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false);
+				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile);
 			}
 
 			if (pObj.cmd === 'artillary') {
-				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false);
+				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile);
 			}
 
 			if (pObj.cmd === 'mlrs') {
-				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false);
+				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile);
 			}
 
 			if (pObj.cmd === 'stationaryAntiAir') {
-				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false);
+				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile);
 			}
 
 			if (pObj.cmd === 'mobileAntiAir') {
-				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false);
+				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile);
 			}
 
 			if (pObj.cmd === 'samIR') {
-				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false);
+				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile);
 			}
 
 			if (pObj.cmd === 'mobileSAM') {
-				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false);
+				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile);
 			}
 
 			if (pObj.cmd === 'MRSAM') {
-				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, true);
+				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, true, '', pObj.mobile);
 			}
 
 			if (pObj.cmd === 'LRSAM') {
-				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, true);
+				exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, true, '', pObj.mobile);
 			}
 		})
 		.catch(function (err) {
@@ -383,7 +384,7 @@ _.set(exports, 'isTroopOnboard', function (unit, serverName, verbose) {
 	return false
 });
 
-_.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, combo, special) {
+_.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, combo, special, mobile) {
 	var crateCount = 0;
 	dbMapServiceController.unitActions('read', serverName, {playerOwnerId: unit.unitId, isCrate: true, dead: false})
 		.then(function(delCrates){
@@ -408,7 +409,7 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 					spc = '';
 				}
 				spawnArray = {
-					spwnName: 'CU|' + unit.unitId + '|' + type + '|' + spc + '|' + crates + '|' + combo + '|',
+					spwnName: 'CU|' + unit.unitId + '|' + type + '|' + spc + '|' + crates + '|' + combo + '|' + mobile + '|',
 					type: "UAZ-469",
 					lonLatLoc: unit.lonLatLoc,
 					heading: unit.hdg,
@@ -453,14 +454,20 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 	;
 });
 
-_.set(exports, 'unpackCrate', function (serverName, unit, type, special, combo) {
-	dbMapServiceController.unitActions('read', serverName, {playerOwnerId: unit.unitId, dead: false})
+_.set(exports, 'unpackCrate', function (serverName, unit, type, special, combo, mobile) {
+	dbMapServiceController.unitActions('read', serverName, {playerOwnerId: unit.unitId, playerCanDrive: mobile, isCrate: false, dead: false})
 		.then(function(delUnits){
 			var curUnit = 0;
 			var grpGroups = _.transform(delUnits, function (result, value) {
 				(result[value.groupId] || (result[value.groupId] = [])).push(value);
 			}, {});
-			var tRem = _.size(grpGroups) - maxUnitsMoving;
+			console.log('grpgroups: ', grpGroups);
+			if (mobile) {
+				var tRem = _.size(grpGroups) - maxUnitsMoving;
+			} else {
+				var tRem = _.size(grpGroups) - maxUnitsStationary;
+			}
+
 			_.forEach(grpGroups, function (gUnit) {
 				if (curUnit <= tRem) {
 					_.forEach(gUnit, function(unit) {
@@ -493,11 +500,11 @@ _.set(exports, 'unpackCrate', function (serverName, unit, type, special, combo) 
 						if (curUnitHdg > 359) {
 							curUnitHdg = 15;
 						}
-						_.set(cbUnit, 'spwnName', 'DU|' + unit.unitId + '|' + cbUnit.type + '||true|');
+						_.set(cbUnit, 'spwnName', 'DU|' + unit.unitId + '|' + cbUnit.type + '||true|' + mobile + '|');
 						_.set(cbUnit, 'lonLatLoc', unit.lonLatLoc);
 						_.set(cbUnit, 'heading', curUnitHdg);
 						_.set(cbUnit, 'country', unit.country);
-						_.set(cbUnit, 'playerCanDrive', true);
+						_.set(cbUnit, 'playerCanDrive', mobile);
 						addHdg = addHdg + 15;
 					});
 					spawnArray = _.cloneDeep(findUnits);
@@ -509,12 +516,12 @@ _.set(exports, 'unpackCrate', function (serverName, unit, type, special, combo) 
 			;
 		} else {
 			spawnArray = _.concat(spawnArray, {
-				spwnName: 'DU|' + unit.unitId + '|' + type + '|' + special + '|false|',
+				spwnName: 'DU|' + unit.unitId + '|' + type + '|' + special + '|false|' + mobile + '|',
 				type: type,
 				lonLatLoc: unit.lonLatLoc,
 				heading: unit.hdg,
 				country: unit.country,
-				playerCanDrive: true,
+				playerCanDrive: mobile,
 				category: "GROUND"
 			});
 			console.log('sa: ', serverName, spawnArray, unit.coalition);
