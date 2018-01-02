@@ -199,36 +199,45 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 				;
 			}
 			if (pObj.cmd === 'loadCrate') {
-				proximityController.getVirtualCratesInProximity(pObj.serverName, curUnit.lonLatLoc, 0.4, curUnit.coalition)
-					.then(function(units){
-						var curCrate = _.get(units, [0]);
-						if(curCrate) {
-							dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, virtCrateType: curCrate.name})
-								.catch(function (err) {
-									console.log('erroring line209: ', err);
-								})
-							;
-							groupController.destroyUnit(pObj.serverName, curCrate.name);
-							DCSLuaCommands.sendMesgToGroup(
-								curUnit.groupId,
-								pObj.serverName,
-								"G: Picked Up " + _.toUpper(_.split(curCrate.name, '|')[3]) + " " + _.split(curCrate.name, '|')[2] + " Crate!",
-								5
-							);
-						} else {
-							// no troops
-							DCSLuaCommands.sendMesgToGroup(
-								curUnit.groupId,
-								pObj.serverName,
-								"G: No Crates To Load!",
-								5
-							);
-						}
-					})
-					.catch(function (err) {
-						console.log('line 32: ', err);
-					})
-				;
+				if (!curUnit.virtCrateType) {
+					proximityController.getVirtualCratesInProximity(pObj.serverName, curUnit.lonLatLoc, 0.4, curUnit.coalition)
+						.then(function(units){
+							var curCrate = _.get(units, [0]);
+							if(curCrate) {
+								dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, virtCrateType: curCrate.name})
+									.catch(function (err) {
+										console.log('erroring line209: ', err);
+									})
+								;
+								groupController.destroyUnit(pObj.serverName, curCrate.name);
+								DCSLuaCommands.sendMesgToGroup(
+									curUnit.groupId,
+									pObj.serverName,
+									"G: Picked Up " + _.toUpper(_.split(curCrate.name, '|')[3]) + " " + _.split(curCrate.name, '|')[2] + " Crate!",
+									5
+								);
+							} else {
+								// no troops
+								DCSLuaCommands.sendMesgToGroup(
+									curUnit.groupId,
+									pObj.serverName,
+									"G: No Crates To Load!",
+									5
+								);
+							}
+						})
+						.catch(function (err) {
+							console.log('line 32: ', err);
+						})
+					;
+				} else {
+					DCSLuaCommands.sendMesgToGroup(
+						curUnit.groupId,
+						pObj.serverName,
+						"G: You Have a " + _.split(curUnit.virtCrateType, '|')[2] + " Already Onboard!",
+						5
+				);
+			}
 			}
 			if (pObj.cmd === 'dropCrate') {
 				if (curUnit.inAir === true) {
