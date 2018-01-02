@@ -7,7 +7,7 @@ module.exports = {
 	outOfSyncUnitThreshold: 200,
 
 	//setup dcsgame socket connection
-	dcs_socket:	"192.168.44.61",
+	dcs_socket:	"192.168.44.60",
 	clientPort:		3001,
 	gameGuiPort:	3002,
 
