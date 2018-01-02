@@ -486,7 +486,7 @@ io.on('connection', function (socket) {
 		socket.on('clientUpd', function (data) {
 			if (data.action === 'unitINIT') {
 				if (curServers[data.name]) {
-					sendInit(data.name, socket.id, data.authId);
+					// sendInit(data.name, socket.id, data.authId);
 				}
 			}
 		});
@@ -516,7 +516,7 @@ io.on('connection', function (socket) {
 				socket.on('clientUpd', function (data) {
 					if (data.action === 'unitINIT') {
 						if (curServers[data.name]) {
-							sendInit(data.name, socket.id, data.authId);
+							// sendInit(data.name, socket.id, data.authId);
 						}
 					}
 				});
@@ -914,7 +914,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 													if(switchedPlayerSocket) {
 														if (curPlyrSide === 1 || curPlyrSide === 2) {
 															setSocketRoom(switchedPlayerSocket, serverName + '_q' + curPlyrSide);
-															sendInit(serverName, switchedPlayerSocket);
+															// sendInit(serverName, switchedPlayerSocket);
 														}
 													} else if (switchedPlayer) {
 														curSocket = io.sockets.connected[_.get(switchedPlayer, 'curSocket')];
