@@ -7,6 +7,79 @@ const zoneController = require('./zone');
 const proximityController = require('./proximity');
 
 // from my main mission object, can spawn units on both sides in this setup
+var countryId = [
+	'',
+	'RUSSIA',
+	'UKRAINE',
+	'USA',
+	'TURKEY',
+	'UK',
+	'FRANCE',
+	'GERMANY',
+	'AGGRESSORS',
+	'CANADA',
+	'SPAIN',
+	'THE_NETHERLANDS',
+	'BELGIUM',
+	'NORWAY',
+	'DENMARK',
+	'ISRAEL',
+	'GEORGIA',
+	'INSURGENTS',
+	'ABKHAZIA',
+	'SOUTH_OSETIA',
+	'ITALY',
+	'AUSTRALIA',
+	'SWITZERLAND',
+	'AUSTRIA',
+	'BELARUS',
+	'BULGARIA',
+	'CHEZH_REPUBLIC',
+	'CHINA',
+	'CROATIA',
+	'EGYPT',
+	'FINLAND',
+	'GREECE',
+	'HUNGARY',
+	'INDIA',
+	'IRAN',
+	'IRAQ',
+	'JAPAN',
+	'KAZAKHSTAN',
+	'NORTH_KOREA',
+	'PAKISTAN',
+	'POLAND',
+	'ROMANIA',
+	'SAUDI_ARABIA',
+	'SERBIA',
+	'SLOVAKIA',
+	'SOUTH_KOREA',
+	'SWEDEN',
+	'SYRIA',
+	'YEMEN',
+	'VIETNAM',
+	'VENEZUELA',
+	'TUNISIA',
+	'THAILAND',
+	'SUDAN',
+	'PHILIPPINES',
+	'MOROCCO',
+	'MEXICO',
+	'MALAYSIA',
+	'LIBYA',
+	'JORDAN',
+	'INDONESIA',
+	'HONDURAS',
+	'ETHIOPIA',
+	'CHILE',
+	'BRAZIL',
+	'BAHRAIN',
+	'THIRDREICH',
+	'YUGOSLAVIA',
+	'USSR',
+	'ITALIAN_SOCIAL_REPUBLIC'
+];
+
 var countryCoObj = {
 	defCountrys: {
 		1: 'RUSSIA',
@@ -69,6 +142,23 @@ var countryCoObj = {
 		'AGGRESSORS',
 	]
 };
+
+_.set(exports, 'spawnGrp', function (grpSpawn, country, category) {
+	return gSpawnCmd = 'coalition.addGroup(' + _.indexOf(countryId, _.get(country, [0])) + ', Group.Category.' + category + ', ' + grpSpawn + ')';
+});
+
+_.set(exports, 'spawnStatic', function (staticSpawn, country, statName, init) {
+	if (init) {
+		return sSpawnCmd = [
+			'coalition.addStaticObject(' + _.indexOf(countryId, country) + ', ' + staticSpawn + ')'
+		];
+	} else {
+		return sSpawnCmd = [
+			'Unit.getByName("' + statName + '"):destroy()',
+			'coalition.addStaticObject(' + _.indexOf(countryId, country) + ', ' + staticSpawn + ')'
+		];
+	}
+});
 
 _.set(exports, 'landPlaneRouteTemplate', function ( routes ) {
 	return 	'["route"] = {' +
@@ -320,7 +410,7 @@ _.set(exports, 'spawnSupportVehiclesOnFarp', function ( serverName, baseName, si
 	return curFarpArray;
 });
 
-_.set(exports, 'spawnSupportBaseGrp', function ( serverName, baseName, side ) {
+_.set(exports, 'spawnSupportBaseGrp', function ( serverName, baseName, side, init ) {
 	var curBaseObj = {};
 	var spawnArray = [];
 	var curBases = _.get(exports, ['servers', serverName, 'bases']);
@@ -351,7 +441,7 @@ _.set(exports, 'spawnSupportBaseGrp', function ( serverName, baseName, side ) {
 
 	//spawn logistics
 	curBaseObj = _.find(curBases, {name: baseName});
-	exports.spawnLogisticCmdCenter(serverName, {}, curBaseObj, side);
+	exports.spawnLogisticCmdCenter(serverName, {}, curBaseObj, side, init);
 
 	return _.compact(spawnArray);
 });
@@ -427,7 +517,7 @@ _.set(exports, 'spawnSupportPlane', function (serverName, baseObj, side, farpBas
 	curUnitSpawn = exports.airUnitTemplate(curSpwnUnit);
 
 	curGroupSpawn = _.replace(curGroupSpawn, "#UNITS", curUnitSpawn);
-	var curCMD = 'mist.dynAdd(' + curGroupSpawn + ')';
+	var curCMD = exports.spawnGrp(curGroupSpawn, curGrpObj.country, curGrpObj.category);
 	var sendClient = {action: "CMD", cmd: [curCMD], reqID: 0};
 	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
 	dbMapServiceController.cmdQueActions('save', serverName, actionObj)
@@ -475,7 +565,8 @@ _.set(exports, 'spawnLogiGroup', function (serverName, spawnArray, side) {
 			curUnitSpawn += exports.grndUnitTemplate(curSpwnUnit);
 		});
 		curGroupSpawn = _.replace(curGroupSpawn, "#UNITS", curUnitSpawn);
-		var curCMD = 'mist.dynAdd(' + curGroupSpawn + ')';
+		// var curCMD = 'mist.dynAdd(' + curGroupSpawn + ')';
+		var curCMD = exports.spawnGrp(curGroupSpawn, curGrpObj.country, curGrpObj.category);
 		var sendClient = {action: "CMD", cmd: [curCMD], reqID: 0};
 		var actionObj = {actionObj: sendClient, queName: 'clientArray'};
 		dbMapServiceController.cmdQueActions('save', serverName, actionObj)
@@ -524,7 +615,8 @@ _.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {
 			curUnitSpawn += exports.grndUnitTemplate(curSpwnUnit);
 		});
 		curGroupSpawn = _.replace(curGroupSpawn, "#UNITS", curUnitSpawn);
-		var curCMD = 'mist.dynAdd(' + curGroupSpawn + ')';
+		// var curCMD = 'mist.dynAdd(' + curGroupSpawn + ')';
+		var curCMD = exports.spawnGrp(curGroupSpawn, curGrpObj.country, curGrpObj.category);
 		var sendClient = {action: "CMD", cmd: [curCMD], reqID: 0};
 		var actionObj = {actionObj: sendClient, queName: 'clientArray'};
 		dbMapServiceController.cmdQueActions('save', serverName, actionObj)
@@ -542,7 +634,7 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 		var spawnArray = [];
 		dbMapServiceController.baseActions('updateSide', serverName, {name: extName, side: extSide})
 			.then(function (bases) {
-				spawnArray = _.concat(spawnArray, exports.spawnSupportBaseGrp(serverName, extName, extSide));
+				spawnArray = _.concat(spawnArray, exports.spawnSupportBaseGrp(serverName, extName, extSide, true));
 				while (spawnArray.length < curServer.replenThreshold) { //UNCOMMENT THESE
 					spawnArray = _.concat(spawnArray, exports.spawnBaseReinforcementGroup(serverName, extSide));
 				}
@@ -575,7 +667,7 @@ _.set(exports, 'initDbs', function ( serverName ) {
 	;
 });
 
-_.set(exports, 'spawnLogisticCmdCenter', function (serverName, staticObj, baseObj, side) {
+_.set(exports, 'spawnLogisticCmdCenter', function (serverName, staticObj, baseObj, side, init) {
 	var curGrpObj = _.cloneDeep(staticObj);
 	var curStaticSpawn;
 	_.set(curGrpObj, 'unitId', _.get(curGrpObj, 'unitId', _.random(1000000, 9999999)));
@@ -589,10 +681,8 @@ _.set(exports, 'spawnLogisticCmdCenter', function (serverName, staticObj, baseOb
 	_.set(curGrpObj, 'type', '.Command Center');
 	_.set(curGrpObj, 'shape_name', 'ComCenter');
 	curStaticSpawn = exports.staticTemplate(curGrpObj);
-	var curCMD = [
-		'Unit.getByName("' + curGrpObj.name + '"):destroy()',
-		'mist.dynAddStatic(' + curStaticSpawn + ')'
-	];
+
+	var curCMD = exports.spawnStatic(curStaticSpawn, curGrpObj.country, curGrpObj.name, init);
 	var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
 	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
 	dbMapServiceController.cmdQueActions('save', serverName, actionObj)
