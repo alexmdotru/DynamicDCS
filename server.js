@@ -845,6 +845,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					var curPlyrName = _.get(player, 'name');
 
 					//kick if in gamemaster slot
+					/*
 					if(_.includes(_.get(player, 'slot', ''), 'instructor_')) {
 						dbSystemServiceController.userAccountActions('read', {ucid: _.get(player, 'ucid', '')})
 							.then(function (userAccount) {
@@ -862,6 +863,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 							})
 						;
 					}
+					*/
 
 					dbMapServiceController.unitActions('read', serverName, {_id: _.get(queObj, curPlyrUcid)})
 						.then(function (unit) {
