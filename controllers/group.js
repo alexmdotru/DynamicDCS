@@ -8,7 +8,6 @@ const proximityController = require('./proximity');
 
 // from my main mission object, can spawn units on both sides in this setup
 var countryId = [
-	'',
 	'RUSSIA',
 	'UKRAINE',
 	'USA',
@@ -144,7 +143,7 @@ var countryCoObj = {
 };
 
 _.set(exports, 'spawnGrp', function (grpSpawn, country, category) {
-	return gSpawnCmd = 'coalition.addGroup(' + _.indexOf(countryId, _.get(country, [0])) + ', Group.Category.' + category + ', ' + grpSpawn + ')';
+	return gSpawnCmd = 'coalition.addGroup(' + _.indexOf(countryId, country) + ', Group.Category.' + category + ', ' + grpSpawn + ')';
 });
 
 _.set(exports, 'spawnStatic', function (staticSpawn, country, statName, init) {
@@ -517,6 +516,7 @@ _.set(exports, 'spawnSupportPlane', function (serverName, baseObj, side, farpBas
 	curUnitSpawn = exports.airUnitTemplate(curSpwnUnit);
 
 	curGroupSpawn = _.replace(curGroupSpawn, "#UNITS", curUnitSpawn);
+	console.log('count1: ', curGrpObj.country);
 	var curCMD = exports.spawnGrp(curGroupSpawn, curGrpObj.country, curGrpObj.category);
 	var sendClient = {action: "CMD", cmd: [curCMD], reqID: 0};
 	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
@@ -545,6 +545,7 @@ _.set(exports, 'spawnLogiGroup', function (serverName, spawnArray, side) {
 		grpNum = _.get(curGrpObj, 'groupId', _.random(1000000, 9999999));
 		curSide = (side) ? _.get(countryCoObj, ['defCountrys', side]) : _.get(countryCoObj, ['defCountrys', _.get(curGrpObj, 'coalition')]);
 		curBaseName = curGrpObj.spwnName + ' #' + grpNum;
+
 		_.set(curGrpObj, 'groupId', grpNum);
 		_.set(curGrpObj, 'groupName', curBaseName);
 		_.set(curGrpObj, 'country', curSide);
@@ -566,6 +567,7 @@ _.set(exports, 'spawnLogiGroup', function (serverName, spawnArray, side) {
 		});
 		curGroupSpawn = _.replace(curGroupSpawn, "#UNITS", curUnitSpawn);
 		// var curCMD = 'mist.dynAdd(' + curGroupSpawn + ')';
+		console.log('count2: ', curGrpObj.country);
 		var curCMD = exports.spawnGrp(curGroupSpawn, curGrpObj.country, curGrpObj.category);
 		var sendClient = {action: "CMD", cmd: [curCMD], reqID: 0};
 		var actionObj = {actionObj: sendClient, queName: 'clientArray'};
@@ -616,7 +618,8 @@ _.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {
 		});
 		curGroupSpawn = _.replace(curGroupSpawn, "#UNITS", curUnitSpawn);
 		// var curCMD = 'mist.dynAdd(' + curGroupSpawn + ')';
-		var curCMD = exports.spawnGrp(curGroupSpawn, curGrpObj.country, curGrpObj.category);
+		var curCMD = exports.spawnGrp(curGroupSpawn, curSide, curGrpObj.category);
+		// console.log('cmd: ', curCMD);
 		var sendClient = {action: "CMD", cmd: [curCMD], reqID: 0};
 		var actionObj = {actionObj: sendClient, queName: 'clientArray'};
 		dbMapServiceController.cmdQueActions('save', serverName, actionObj)

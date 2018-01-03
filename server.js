@@ -554,6 +554,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 	dbMapServiceController.unitActions('read', serverName, {dead: false})
 		.then(function (units) {
 			if (update.epoc) {
+				// console.log('uu: ', update.unitCount, units.length);
 				if (update.unitCount > 50 && units.length > 50) {
 					// console.log('resync');
 					if (units.length !== update.unitCount) {

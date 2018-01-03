@@ -1,7 +1,7 @@
 module.exports = {
 	//setup mongoDB connection
 	systemHost: 'localhost',
-	systemDatabase: 'TrueDynamicDCS',
+	systemDatabase: 'DynamicDCS',
 	dynamicHost: 'localhost',
-	dynamicDatabase: 'TrueDDCSMaps'
+	dynamicDatabase: 'DDCSMaps'
 };
