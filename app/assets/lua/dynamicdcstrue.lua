@@ -718,31 +718,31 @@ do
 
 	--Send Mission Events Back
 	local eventTypes = {
-		[0] = "S_EVENT_INVALID",
+		--[0] = "S_EVENT_INVALID",
 		[1] = "S_EVENT_SHOT",
 		[2] = "S_EVENT_HIT",
 		[3] = "S_EVENT_TAKEOFF",
 		[4] = "S_EVENT_LAND",
 		[5] = "S_EVENT_CRASH",
 		[6] = "S_EVENT_EJECTION",
-		[7] = "S_EVENT_REFUELING",
+		--[7] = "S_EVENT_REFUELING",
 		[8] = "S_EVENT_DEAD",
 		[9] = "S_EVENT_PILOT_DEAD",
-		[10] = "S_EVENT_BASE_CAPTURED",
-		[11] = "S_EVENT_MISSION_START",
-		[12] = "S_EVENT_MISSION_END",
-		[13] = "S_EVENT_TOOK_CONTROL",
-		[14] = "S_EVENT_REFUELING_STOP",
+		--[10] = "S_EVENT_BASE_CAPTURED",
+		--[11] = "S_EVENT_MISSION_START",
+		--[12] = "S_EVENT_MISSION_END",
+		--[13] = "S_EVENT_TOOK_CONTROL",
+		--[14] = "S_EVENT_REFUELING_STOP",
 		[15] = "S_EVENT_BIRTH",
-		[16] = "S_EVENT_HUMAN_FAILURE",
-		[17] = "S_EVENT_ENGINE_STARTUP",
-		[18] = "S_EVENT_ENGINE_SHUTDOWN",
+		--[16] = "S_EVENT_HUMAN_FAILURE",
+		--[17] = "S_EVENT_ENGINE_STARTUP",
+		--[18] = "S_EVENT_ENGINE_SHUTDOWN",
 		[19] = "S_EVENT_PLAYER_ENTER_UNIT",
 		[20] = "S_EVENT_PLAYER_LEAVE_UNIT",
 		[21] = "S_EVENT_PLAYER_COMMENT",
-		[22] = "S_EVENT_SHOOTING_START",
-		[23] = "S_EVENT_SHOOTING_END",
-		[24] = "S_EVENT_MAX"
+		--[22] = "S_EVENT_SHOOTING_START",
+		--[23] = "S_EVENT_SHOOTING_END",
+		--[24] = "S_EVENT_MAX"
 	}
 	local birthTypes = {
 		"wsBirthPlace_Air",
@@ -762,7 +762,7 @@ do
 
 	function clientEventHandler:onEvent(_event)
 		local status, err = pcall(function(_event)
-			if _event == nil or _event.initiator == nil then
+			if _event == nil or _event.initiator == nil or eventTypes[_event.id] == nil then
 				return false
 			else
 				local curEvent = {}

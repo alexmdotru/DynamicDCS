@@ -184,19 +184,19 @@ dynDCS.onSimulationFrame = function()
 	end
 end
 
-dynDCS.onChatMessage = function(message,playerID)
-	if( message ~= nil ) then
-		--log(message)
-		local curUpdate = {
-			action = 'MESG',
-			data = {
-				message = message,
-				playerID = playerID
-			}
-		}
-		table.insert(updateQue.que, curUpdate)
-	end
-end
+--dynDCS.onChatMessage = function(message,playerID)
+--	if( message ~= nil ) then
+--		--log(message)
+--		local curUpdate = {
+--			action = 'MESG',
+--			data = {
+--				message = message,
+--				playerID = playerID
+--			}
+--		}
+--		table.insert(updateQue.que, curUpdate)
+--	end
+--end
 
 dynDCS.onGameEvent = function(eventName,arg1,arg2,arg3,arg4,arg5,arg6,arg7, arg8, arg9)
 	local curUpdate = {}
@@ -220,44 +220,44 @@ dynDCS.onGameEvent = function(eventName,arg1,arg2,arg3,arg4,arg5,arg6,arg7, arg8
 		}
 		table.insert(updateQue.que, curUpdate)
 	end
-	if( eventName == "mission_end" ) then
+	--if( eventName == "mission_end" ) then
 		--"mission_end", winner, msg
-		curUpdate = {
-			action = eventName,
-			data = {
-				name = eventName,
-				arg1 = arg1,
-				arg2 = arg2,
-				arg3 = arg3,
-				arg4 = arg4,
-				arg5 = arg5,
-				arg6 = arg6,
-				arg7 = arg7,
-				arg8 = arg8,
-				arg9 = arg9
-			}
-		}
-		table.insert(updateQue.que, curUpdate)
-	end
-	if( eventName == "kill" ) then
-		--"kill", killerPlayerID, killerUnitType, killerSide, victimPlayerID, victimUnitType, victimSide, weaponName
-		curUpdate = {
-			action = eventName,
-			data = {
-				name = eventName,
-				arg1 = arg1,
-				arg2 = arg2,
-				arg3 = arg3,
-				arg4 = arg4,
-				arg5 = arg5,
-				arg6 = arg6,
-				arg7 = arg7,
-				arg8 = arg8,
-				arg9 = arg9
-			}
-		}
-		table.insert(updateQue.que, curUpdate)
-	end
+	--	curUpdate = {
+	--		action = eventName,
+	--		data = {
+	--			name = eventName,
+	--			arg1 = arg1,
+	--			arg2 = arg2,
+	--			arg3 = arg3,
+	--			arg4 = arg4,
+	--			arg5 = arg5,
+	--			arg6 = arg6,
+	--			arg7 = arg7,
+	--			arg8 = arg8,
+	--			arg9 = arg9
+	--		}
+	--	}
+	--	table.insert(updateQue.que, curUpdate)
+	--end
+	--if( eventName == "kill" ) then
+	--	--"kill", killerPlayerID, killerUnitType, killerSide, victimPlayerID, victimUnitType, victimSide, weaponName
+	--	curUpdate = {
+	--		action = eventName,
+	--		data = {
+	--			name = eventName,
+	--			arg1 = arg1,
+	--			arg2 = arg2,
+	--			arg3 = arg3,
+	--			arg4 = arg4,
+	--			arg5 = arg5,
+	--			arg6 = arg6,
+	--			arg7 = arg7,
+	--			arg8 = arg8,
+	--			arg9 = arg9
+	--		}
+	--	}
+	--	table.insert(updateQue.que, curUpdate)
+	--end
 	if( eventName == "self_kill" ) then
 		--"self_kill", playerID
 		curUpdate = {
@@ -334,101 +334,101 @@ dynDCS.onGameEvent = function(eventName,arg1,arg2,arg3,arg4,arg5,arg6,arg7, arg8
 		}
 		table.insert(updateQue.que, curUpdate)
 	end
-	if( eventName == "crash" ) then
-		--"crash", playerID, unit_missionID
-		curUpdate = {
-			action = eventName,
-			data = {
-				name = eventName,
-				arg1 = arg1,
-				arg2 = arg2,
-				arg3 = arg3,
-				arg4 = arg4,
-				arg5 = arg5,
-				arg6 = arg6,
-				arg7 = arg7,
-				arg8 = arg8,
-				arg9 = arg9
-			}
-		}
-		table.insert(updateQue.que, curUpdate)
-	end
-	if( eventName == "eject" ) then
-		--"eject", playerID, unit_missionID
-		curUpdate = {
-			action = eventName,
-			data = {
-				name = eventName,
-				arg1 = arg1,
-				arg2 = arg2,
-				arg3 = arg3,
-				arg4 = arg4,
-				arg5 = arg5,
-				arg6 = arg6,
-				arg7 = arg7,
-				arg8 = arg8,
-				arg9 = arg9
-			}
-		}
-		table.insert(updateQue.que, curUpdate)
-	end
-	if( eventName == "takeoff" ) then
-		--"takeoff", playerID, unit_missionID, airdromeName
-		curUpdate = {
-			action = eventName,
-			data = {
-				name = eventName,
-				arg1 = arg1,
-				arg2 = arg2,
-				arg3 = arg3,
-				arg4 = arg4,
-				arg5 = arg5,
-				arg6 = arg6,
-				arg7 = arg7,
-				arg8 = arg8,
-				arg9 = arg9
-			}
-		}
-		table.insert(updateQue.que, curUpdate)
-	end
-	if( eventName == "landing" ) then
-		--"landing", playerID, unit_missionID, airdromeName
-		curUpdate = {
-			action = eventName,
-			data = {
-				name = eventName,
-				arg1 = arg1,
-				arg2 = arg2,
-				arg3 = arg3,
-				arg4 = arg4,
-				arg5 = arg5,
-				arg6 = arg6,
-				arg7 = arg7,
-				arg8 = arg8,
-				arg9 = arg9
-			}
-		}
-		table.insert(updateQue.que, curUpdate)
-	end
-	if( eventName == "pilot_death" ) then
-		--"pilot_death", playerID, unit_missionID
-		curUpdate = {
-			action = eventName,
-			data = {
-				name = eventName,
-				arg1 = arg1,
-				arg2 = arg2,
-				arg3 = arg3,
-				arg4 = arg4,
-				arg5 = arg5,
-				arg6 = arg6,
-				arg7 = arg7,
-				arg8 = arg8,
-				arg9 = arg9
-			}
-		}
-		table.insert(updateQue.que, curUpdate)
-	end
+	--if( eventName == "crash" ) then
+	--	--"crash", playerID, unit_missionID
+	--	curUpdate = {
+	--		action = eventName,
+	--		data = {
+	--			name = eventName,
+	--			arg1 = arg1,
+	--			arg2 = arg2,
+	--			arg3 = arg3,
+	--			arg4 = arg4,
+	--			arg5 = arg5,
+	--			arg6 = arg6,
+	--			arg7 = arg7,
+	--			arg8 = arg8,
+	--			arg9 = arg9
+	--		}
+	--	}
+	--	table.insert(updateQue.que, curUpdate)
+	--end
+	--if( eventName == "eject" ) then
+	--	--"eject", playerID, unit_missionID
+	--	curUpdate = {
+	--		action = eventName,
+	--		data = {
+	--			name = eventName,
+	--			arg1 = arg1,
+	--			arg2 = arg2,
+	--			arg3 = arg3,
+	--			arg4 = arg4,
+	--			arg5 = arg5,
+	--			arg6 = arg6,
+	--			arg7 = arg7,
+	--			arg8 = arg8,
+	--			arg9 = arg9
+	--		}
+	--	}
+	--	table.insert(updateQue.que, curUpdate)
+	--end
+	--if( eventName == "takeoff" ) then
+	--	--"takeoff", playerID, unit_missionID, airdromeName
+	--	curUpdate = {
+	--		action = eventName,
+	--		data = {
+	--			name = eventName,
+	--			arg1 = arg1,
+	--			arg2 = arg2,
+	--			arg3 = arg3,
+	--			arg4 = arg4,
+	--			arg5 = arg5,
+	--			arg6 = arg6,
+	--			arg7 = arg7,
+	--			arg8 = arg8,
+	--			arg9 = arg9
+	--		}
+	--	}
+	--	table.insert(updateQue.que, curUpdate)
+	--end
+	--if( eventName == "landing" ) then
+	--	--"landing", playerID, unit_missionID, airdromeName
+	--	curUpdate = {
+	--		action = eventName,
+	--		data = {
+	--			name = eventName,
+	--			arg1 = arg1,
+	--			arg2 = arg2,
+	--			arg3 = arg3,
+	--			arg4 = arg4,
+	--			arg5 = arg5,
+	--			arg6 = arg6,
+	--			arg7 = arg7,
+	--			arg8 = arg8,
+	--			arg9 = arg9
+	--		}
+	--	}
+	--	table.insert(updateQue.que, curUpdate)
+	--end
+	--if( eventName == "pilot_death" ) then
+	--	--"pilot_death", playerID, unit_missionID
+	--	curUpdate = {
+	--		action = eventName,
+	--		data = {
+	--			name = eventName,
+	--			arg1 = arg1,
+	--			arg2 = arg2,
+	--			arg3 = arg3,
+	--			arg4 = arg4,
+	--			arg5 = arg5,
+	--			arg6 = arg6,
+	--			arg7 = arg7,
+	--			arg8 = arg8,
+	--			arg9 = arg9
+	--		}
+	--	}
+	--	table.insert(updateQue.que, curUpdate)
+	--end
 end
 
 --Protected call to command execute
