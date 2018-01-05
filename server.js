@@ -35,6 +35,7 @@ const proximityController = require('./controllers/proximity');
 const menuUpdateController = require('./controllers/menuUpdate');
 const menuCmdsController = require('./controllers/menuCmds');
 const jtacController = require('./controllers/jtac');
+const taskController = require('./controllers/task');
 
 var admin = false;
 
@@ -735,6 +736,13 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						_.set(curData, 'proxChkGrp', stParse[3]);
 						_.set(curData, 'playerCanDrive', stParse[5]);
 					}
+
+					//set ewr task to ewr
+					if (curUnit.type === '1L13 EWR' || curUnit.type === '55G6 EWR') {
+						console.log('tasking ewr');
+						taskController.setEWRTask(serverName, curUnit.name);
+					}
+
 					if ((!_.isEmpty(curUnit) && _.get(queObj, 'action') !== 'D')) {
 						if(!_.isEmpty(curData.playername) && curUnit.dead) {
 							menuUpdateController.logisticsMenu('resetMenu', serverName, curData);

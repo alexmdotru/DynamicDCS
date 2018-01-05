@@ -101,7 +101,6 @@ var countryCoObj = {
 		'FRANCE',
 		'ISRAEL',
 		'JAPAN',
-		'KAZAKHSTAN',
 		'NORTH_KOREA',
 		'PAKISTAN',
 		'ROMANIA',
@@ -110,8 +109,7 @@ var countryCoObj = {
 		'SERBIA',
 		'SLOVAKIA',
 		'SOUTH_OSETIA',
-		'SYRIA',
-		'UKRAINE'
+		'SYRIA'
 	],
 	blue: [
 		'AUSTRALIA',
@@ -139,6 +137,8 @@ var countryCoObj = {
 		'UK',
 		'USA',
 		'AGGRESSORS',
+		'KAZAKHSTAN',
+		'UKRAINE'
 	]
 };
 

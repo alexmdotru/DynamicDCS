@@ -466,6 +466,21 @@ do
 			if request.action == "GETPOLYDEF" then
 				--initAirbases()
 			end
+			if request.action == "ADDTASK" then
+				if request.taskType == 'EWR' then
+					local taskUnit = Unit.getByName(request.unitName)
+					if taskUnit ~= nil then
+						local _controller = taskUnit:getController();
+						local _EWR = {
+							id = 'EWR',
+							auto = true,
+							params = {
+							}
+						}
+						_controller:setTask(_EWR)
+					end
+				end
+			end
 			if request.action == "SETLASERSMOKE" then
 				local curJtacUnit = Unit.getByName(request.jtacUnitName)
 				local curEnemyUnit = Unit.getByName(request.enemyUnitName)
@@ -713,6 +728,7 @@ do
 	end
 
 	function commandExecute(s)
+		env.info(s)
 		return loadstring("return " .. s)()
 	end
 
