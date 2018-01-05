@@ -599,7 +599,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						console.log('buildDynamicMap');
 						DCSBuildMap.buildDynamicMap(serverName);
 						polyTry = 0;
-						isBasePop = true;
 					}
 					polyTry++;
 				}
@@ -1080,7 +1079,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			// "connect", playerID, name - no ucid lookup yet
 			DCSLuaCommands.sendMesgToAll(
 				serverName,
-				'curTxt', 'A: '+_.get(queObj, 'data.arg2')+' has connected',
+				'A: '+_.get(queObj, 'data.arg2')+' has connected',
 				5
 			);
 		}
