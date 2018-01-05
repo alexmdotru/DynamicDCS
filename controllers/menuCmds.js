@@ -435,7 +435,7 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 				crateCount ++;
 			});
 			if(menuUpdateController.virtualCrates) {
-				console.log('special: ', special);
+				// console.log('special: ', special);
 				var spc;
 				var spawnArray;
 				if (special) {
@@ -496,7 +496,6 @@ _.set(exports, 'unpackCrate', function (serverName, unit, type, special, combo, 
 			var grpGroups = _.transform(delUnits, function (result, value) {
 				(result[value.groupId] || (result[value.groupId] = [])).push(value);
 			}, {});
-			console.log('grpgroups: ', grpGroups);
 			if (mobile) {
 				var tRem = _.size(grpGroups) - maxUnitsMoving;
 			} else {
@@ -523,7 +522,7 @@ _.set(exports, 'unpackCrate', function (serverName, unit, type, special, combo, 
 	;
 	var spawnArray = [];
 	if(menuUpdateController.virtualCrates) {
-		console.log('combo; ', combo);
+		// console.log('combo; ', combo);
 		if (combo) {
 			groupController.getUnitDictionary()
 				.then(function (unitDic) {

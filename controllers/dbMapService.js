@@ -67,7 +67,6 @@ exports.baseActions = function (action, serverName, obj){
 		});
 	}
 	if(action === 'updateReplenTimer') {
-		console.log('urt: ', obj);
 		return new Promise(function(resolve, reject) {
 			Airfield.update(
 				{_id: obj.name},

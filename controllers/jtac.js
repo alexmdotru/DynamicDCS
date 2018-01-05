@@ -75,7 +75,7 @@ _.set(exports, 'jtacNewTarget', function (serverName, jtUnit) {
 });
 
 _.set(exports, 'aliveJtac30SecCheck', function (serverName) {
-	console.log('jtac check');
+	// console.log('jtac check');
 	//grab all jtacs
 	dbMapServiceController.unitActions('read', serverName, {proxChkGrp: 'jtac', dead: false})
 		.then(function (jtacUnits) {
@@ -156,6 +156,6 @@ _.set(exports, 'processLOSEnemy', function (serverName, losReply) {
 			})
 		;
 	} else {
-		console.log('jtac not finding anything');
+		// console.log('jtac not finding anything');
 	}
 });
