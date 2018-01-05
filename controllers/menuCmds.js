@@ -559,7 +559,7 @@ _.set(exports, 'unpackCrate', function (serverName, unit, type, special, combo, 
 				playerCanDrive: mobile,
 				category: "GROUND"
 			});
-			console.log('sa: ', serverName, spawnArray, unit.coalition);
+			// console.log('sa: ', serverName, spawnArray, unit.coalition);
 			groupController.spawnLogiGroup(serverName, spawnArray, unit.coalition);
 		}
 	} else {
