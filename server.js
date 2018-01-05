@@ -737,12 +737,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						_.set(curData, 'playerCanDrive', stParse[5]);
 					}
 
-					//set ewr task to ewr
-					if (curUnit.type === '1L13 EWR' || curUnit.type === '55G6 EWR') {
-						console.log('tasking ewr');
-						taskController.setEWRTask(serverName, curUnit.name);
-					}
-
 					if ((!_.isEmpty(curUnit) && _.get(queObj, 'action') !== 'D')) {
 						if(!_.isEmpty(curData.playername) && curUnit.dead) {
 							menuUpdateController.logisticsMenu('resetMenu', serverName, curData);
@@ -770,6 +764,12 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 								console.log('update err line626: ', err);
 							});
 					}else if (_.get(queObj, 'action') === 'C') {
+						//set ewr task to ewr if new
+						if (curUnit.type === '1L13 EWR' || curUnit.type === '55G6 EWR') {
+							console.log('tasking ewr');
+							taskController.setEWRTask(serverName, curUnit.name);
+						}
+
 						if(!_.isEmpty(curData.playername)) {
 							menuUpdateController.logisticsMenu('resetMenu', serverName, curData);
 						}
@@ -1721,125 +1721,129 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 
 // distance checker loop
 setInterval(function () {
-	dbSystemServiceController.serverActions('read', {enabled: true})
-		.then(function (srvs) {
-			_.forEach(srvs, function (srv) {
-				var curServerName = _.get(srv, '_id');
+	if (isBaseFullyPopped) {
+		dbSystemServiceController.serverActions('read', {enabled: true})
+			.then(function (srvs) {
+				_.forEach(srvs, function (srv) {
+					var curServerName = _.get(srv, '_id');
 
-				if (!isSpawningAllowed) {
-					if(epocToPayAttention < new Date().getTime()){
-						console.log('Spawning is now active');
-						isSpawningAllowed = true;
+					if (!isSpawningAllowed) {
+						if(epocToPayAttention < new Date().getTime()){
+							console.log('Spawning is now active');
+							isSpawningAllowed = true;
+						}
+					} else {
+						//check Prox base units
+						proximityController.checkUnitsToBaseForTroops(curServerName);
+
+						//check logi prox
+						proximityController.checkUnitsToLogisticTowers(curServerName);
+
+						//checkBaseCap
+						proximityController.checkUnitsToBaseForCapture(curServerName);
 					}
-				} else {
-					//check Prox base units
-					proximityController.checkUnitsToBaseForTroops(curServerName);
-
-					//check logi prox
-					proximityController.checkUnitsToLogisticTowers(curServerName);
-
-					//checkBaseCap
-					proximityController.checkUnitsToBaseForCapture(curServerName);
-				}
-			});
-		})
-		.catch(function (err) {
-			console.log('line1491', err);
-		})
-	;
+				});
+			})
+			.catch(function (err) {
+				console.log('line1491', err);
+			})
+		;
+	}
 }, 1000);
 
 // constant check loop (base unit replenish, etc)
 //5 sec interval
 setInterval(function () {
-	dbSystemServiceController.serverActions('read', {enabled: true})
-		.then(function (srvs) {
-			_.forEach(srvs, function (srv) {
-				var curServerName = _.get(srv, '_id');
+	if (isBaseFullyPopped) {
+		dbSystemServiceController.serverActions('read', {enabled: true})
+			.then(function (srvs) {
+				_.forEach(srvs, function (srv) {
+					var curServerName = _.get(srv, '_id');
 
-				//cleanupAI maxIdleTime
-				dbMapServiceController.unitActions('read', curServerName, {isAI: true, dead:false})
-					.then(function (AICleanup) {
-						_.forEach(AICleanup, function (AIUnit) {
-							if (_.isEmpty(AIUnit.playername) && new Date(_.get(AIUnit, 'updatedAt', 0)).getTime() + maxIdleTime < new Date().getTime()) {
-								groupController.destroyUnit( curServerName, AIUnit.name );
-							}
-						});
-					})
-					.catch(function (err) {
-						console.log('err line596: ', err);
-					})
-				;
-
-				//update server client lock
-				dbMapServiceController.baseActions('getBaseSides', curServerName, {})
-					.then(function (baseSides) {
-						dbMapServiceController.cmdQueActions('save', curServerName, {
-							queName: 'clientArray',
-							actionObj: {
-								action: "SETBASEFLAGS",
-								data: baseSides
-							}
-						});
-					})
-					.catch(function (err) {
-						console.log('line1491', err);
-					})
-				;
-
-				if (isSpawningAllowed) {
-					dbMapServiceController.baseActions('read', curServerName, {mainBase: true, $or: [{side: 1}, {side: 2}]})
-						.then(function (bases) {
-							_.forEach(bases, function (base) {
-								var curRegEx = '^' + _.get(base, '_id') + ' #';
-								var unitCnt = _.get(base, 'maxUnitThreshold') * ((100 - _.get(srv, 'replenThreshold')) * 0.01);
-								dbMapServiceController.unitActions('read', curServerName, {name: new RegExp(curRegEx), dead: false})
-									.then(function (units) {
-										var replenEpoc = new Date(_.get(base, 'replenTime', 0)).getTime();
-										if ((units.length < unitCnt) && replenEpoc < new Date().getTime()) { //UNCOMMENT OUT FALSE
-											dbMapServiceController.baseActions('updateReplenTimer', curServerName, {name: _.get(base, '_id'),  replenTime: new Date().getTime() + (_.get(srv, 'replenTimer') * 1000)})
-												.then(function () {
-													if (base.farp) {
-														dbMapServiceController.baseActions('read', curServerName, {_id: base.name + ' #' + base.side})
-															.then(function (farpBase) {
-																groupController.spawnSupportPlane(curServerName, base, base.side, _.get(farpBase, [0], {}));
-															})
-															.catch(function (err) {
-																console.log('line 1775: ', err);
-															})
-														;
-													} else {
-														groupController.spawnSupportPlane(curServerName, base, base.side);
-													}
-												})
-												.catch(function (err) {
-													console.log('line 1487: ', err);
-												})
-											;
-										}
-									})
-									.catch(function (err) {
-										console.log('line 1482: ', err);
-									})
-								;
+					//cleanupAI maxIdleTime
+					dbMapServiceController.unitActions('read', curServerName, {isAI: true, dead:false})
+						.then(function (AICleanup) {
+							_.forEach(AICleanup, function (AIUnit) {
+								if (_.isEmpty(AIUnit.playername) && new Date(_.get(AIUnit, 'updatedAt', 0)).getTime() + maxIdleTime < new Date().getTime()) {
+									groupController.destroyUnit( curServerName, AIUnit.name );
+								}
 							});
 						})
 						.catch(function (err) {
-							console.log('line1486', err);
+							console.log('err line596: ', err);
 						})
 					;
-				}
-			});
-		})
-		.catch(function (err) {
-			console.log('line1491', err);
-		})
-	;
+
+					//update server client lock
+					dbMapServiceController.baseActions('getBaseSides', curServerName, {})
+						.then(function (baseSides) {
+							dbMapServiceController.cmdQueActions('save', curServerName, {
+								queName: 'clientArray',
+								actionObj: {
+									action: "SETBASEFLAGS",
+									data: baseSides
+								}
+							});
+						})
+						.catch(function (err) {
+							console.log('line1491', err);
+						})
+					;
+
+					if (isSpawningAllowed) {
+						dbMapServiceController.baseActions('read', curServerName, {mainBase: true, $or: [{side: 1}, {side: 2}]})
+							.then(function (bases) {
+								_.forEach(bases, function (base) {
+									var curRegEx = '^' + _.get(base, '_id') + ' #';
+									var unitCnt = _.get(base, 'maxUnitThreshold') * ((100 - _.get(srv, 'replenThreshold')) * 0.01);
+									dbMapServiceController.unitActions('read', curServerName, {name: new RegExp(curRegEx), dead: false})
+										.then(function (units) {
+											var replenEpoc = new Date(_.get(base, 'replenTime', 0)).getTime();
+											if ((units.length < unitCnt) && replenEpoc < new Date().getTime()) { //UNCOMMENT OUT FALSE
+												dbMapServiceController.baseActions('updateReplenTimer', curServerName, {name: _.get(base, '_id'),  replenTime: new Date().getTime() + (_.get(srv, 'replenTimer') * 1000)})
+													.then(function () {
+														if (base.farp) {
+															dbMapServiceController.baseActions('read', curServerName, {_id: base.name + ' #' + base.side})
+																.then(function (farpBase) {
+																	groupController.spawnSupportPlane(curServerName, base, base.side, _.get(farpBase, [0], {}));
+																})
+																.catch(function (err) {
+																	console.log('line 1775: ', err);
+																})
+															;
+														} else {
+															groupController.spawnSupportPlane(curServerName, base, base.side);
+														}
+													})
+													.catch(function (err) {
+														console.log('line 1487: ', err);
+													})
+												;
+											}
+										})
+										.catch(function (err) {
+											console.log('line 1482: ', err);
+										})
+									;
+								});
+							})
+							.catch(function (err) {
+								console.log('line1486', err);
+							})
+						;
+					}
+				});
+			})
+			.catch(function (err) {
+				console.log('line1491', err);
+			})
+		;
+	}
 }, 5 * 1000);
 
 //30 sec interval
 setInterval(function () {
-	if (isSpawningAllowed) {
+	if (isBaseFullyPopped) {
 		dbSystemServiceController.serverActions('read', {enabled: true})
 			.then(function (srvs) {
 				_.forEach(srvs, function (srv) {
@@ -1867,26 +1871,28 @@ setInterval(function () {
 */
 // process runner from scheduled processes
 setInterval(function () {
-	dbSystemServiceController.serverActions('read', {enabled: true})
-		.then(function (srvs) {
-			_.forEach(srvs, function (srv) {
-				var curServerName = _.get(srv, '_id');
-				_.set(curServers, [curServerName, 'details'], srv);
-				dbMapServiceController.processActions('processExpired', _.get(srv, '_id'))
-					.then(function (runQues) {
-						// process scheduled events
-						// console.log('rq2: ', runQues);
-					})
-					.catch(function (err) {
-						console.log('line1486', err);
-					})
-				;
-			});
-		})
-		.catch(function (err) {
-			console.log('line1491', err);
-		})
-	;
+	if (isBaseFullyPopped) {
+		dbSystemServiceController.serverActions('read', {enabled: true})
+			.then(function (srvs) {
+				_.forEach(srvs, function (srv) {
+					var curServerName = _.get(srv, '_id');
+					_.set(curServers, [curServerName, 'details'], srv);
+					dbMapServiceController.processActions('processExpired', _.get(srv, '_id'))
+						.then(function (runQues) {
+							// process scheduled events
+							// console.log('rq2: ', runQues);
+						})
+						.catch(function (err) {
+							console.log('line1486', err);
+						})
+					;
+				});
+			})
+			.catch(function (err) {
+				console.log('line1491', err);
+			})
+		;
+	}
 }, 1000);
 
 //emit payload, every sec to start
