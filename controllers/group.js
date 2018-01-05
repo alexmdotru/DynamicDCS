@@ -516,8 +516,8 @@ _.set(exports, 'spawnSupportPlane', function (serverName, baseObj, side, farpBas
 	curUnitSpawn = exports.airUnitTemplate(curSpwnUnit);
 
 	curGroupSpawn = _.replace(curGroupSpawn, "#UNITS", curUnitSpawn);
-	console.log('count1: ', curGrpObj.country);
-	var curCMD = exports.spawnGrp(curGroupSpawn, curGrpObj.country, curGrpObj.category);
+	console.log('spawnSupportPlane: ', curGroupSpawn, curSide, curGrpObj.category);
+	var curCMD = exports.spawnGrp(curGroupSpawn, curSide, curGrpObj.category);
 	var sendClient = {action: "CMD", cmd: [curCMD], reqID: 0};
 	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
 	dbMapServiceController.cmdQueActions('save', serverName, actionObj)
@@ -525,7 +525,6 @@ _.set(exports, 'spawnSupportPlane', function (serverName, baseObj, side, farpBas
 			console.log('erroring line428: ', err);
 		})
 	;
-
 });
 
 _.set(exports, 'spawnLogiGroup', function (serverName, spawnArray, side) {

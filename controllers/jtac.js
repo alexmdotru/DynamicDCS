@@ -92,8 +92,15 @@ _.set(exports, 'aliveJtac30SecCheck', function (serverName) {
 									exports.setLaserSmoke(serverName, jtUnit, curJtacTarget);
 								}
 							} else {
-								exports.removeLaserIR(serverName, jtUnit);
-								exports.jtacNewTarget(serverName, jtUnit);
+								dbMapServiceController.unitActions('updateByName', serverName, {name: jtUnit.name, jtacTarget: null})
+									.then(function () {
+										exports.removeLaserIR(serverName, jtUnit);
+										exports.jtacNewTarget(serverName, jtUnit);
+									})
+									.catch(function (err) {
+										console.log('erroring line101: ', err);
+									})
+								;
 							}
 						})
 						.catch(function (err) {
