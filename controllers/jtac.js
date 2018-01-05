@@ -133,6 +133,7 @@ _.set(exports, 'processLOSEnemy', function (serverName, losReply) {
 							.then(function (unitDict) {
 								_.forEach(eJtacUnit, function (jtUnit) {
 									var curUnitDict = _.find(unitDict, {_id: jtUnit.type});
+									console.log('cant findUnit: ', curUnitDict, jtUnit.type);
 									_.set(jtUnit, 'threatLvl', curUnitDict.threatLvl);
 									unitPThrArray.push(jtUnit)
 								});

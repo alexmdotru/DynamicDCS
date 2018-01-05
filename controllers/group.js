@@ -543,6 +543,10 @@ _.set(exports, 'spawnLogiGroup', function (serverName, spawnArray, side) {
 	if (curGrpObj) {
 		grpNum = _.get(curGrpObj, 'groupId', _.random(1000000, 9999999));
 		curSide = (side) ? _.get(countryCoObj, ['defCountrys', side]) : _.get(countryCoObj, ['defCountrys', _.get(curGrpObj, 'coalition')]);
+		if(curGrpObj.country === 'UKRAINE') {
+			curSide = 'UKRAINE';
+		}
+
 		curBaseName = curGrpObj.spwnName + ' #' + grpNum;
 
 		_.set(curGrpObj, 'groupId', grpNum);

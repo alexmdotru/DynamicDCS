@@ -550,6 +550,9 @@ _.set(exports, 'unpackCrate', function (serverName, unit, type, special, combo, 
 				})
 			;
 		} else {
+			if ((type === '1L13 EWR' || type === '55G6 EWR') && unit.country === 'USA') {
+				_.set(unit, 'country', 'UKRAINE');
+			}
 			spawnArray = _.concat(spawnArray, {
 				spwnName: 'DU|' + unit.unitId + '|' + type + '|' + special + '|false|' + mobile + '|',
 				type: type,
@@ -559,7 +562,6 @@ _.set(exports, 'unpackCrate', function (serverName, unit, type, special, combo, 
 				playerCanDrive: mobile,
 				category: "GROUND"
 			});
-			// console.log('sa: ', serverName, spawnArray, unit.coalition);
 			groupController.spawnLogiGroup(serverName, spawnArray, unit.coalition);
 		}
 	} else {
