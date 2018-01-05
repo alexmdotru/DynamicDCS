@@ -492,14 +492,15 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 _.set(exports, 'unpackCrate', function (serverName, unit, type, special, combo, mobile) {
 	dbMapServiceController.unitActions('read', serverName, {playerOwnerId: unit.unitId, playerCanDrive: mobile, isCrate: false, dead: false})
 		.then(function(delUnits){
+			var tRem;
 			var curUnit = 0;
 			var grpGroups = _.transform(delUnits, function (result, value) {
 				(result[value.groupId] || (result[value.groupId] = [])).push(value);
 			}, {});
 			if (mobile) {
-				var tRem = _.size(grpGroups) - maxUnitsMoving;
+				tRem = _.size(grpGroups) - maxUnitsMoving;
 			} else {
-				var tRem = _.size(grpGroups) - maxUnitsStationary;
+				tRem = _.size(grpGroups) - maxUnitsStationary;
 			}
 
 			_.forEach(grpGroups, function (gUnit) {
