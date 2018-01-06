@@ -291,6 +291,12 @@ do
 					if (velocity) then
 						curUnit.data.speed = math.sqrt(velocity.x ^ 2 + velocity.z ^ 2)
 					end
+					local PlayerName = unit:getPlayerName()
+					if PlayerName ~= nil then
+						curUnit.data.playername = PlayerName
+					else
+						curUnit.data.playername = ""
+					end
 					curUnit.data.inAir = unit:inAir()
 					if unitCache[curUnit.data.unitId] ~= nil and not Init then
 						if unitCache[curUnit.data.unitId].lat ~= lat or unitCache[curUnit.data.unitId].lon ~= lon then
@@ -315,12 +321,6 @@ do
 						curUnit.data.type = unit:getTypeName()
 						curUnit.data.coalition = coalition
 						curUnit.data.country = CountryNames[unit:getCountry()]
-						local PlayerName = unit:getPlayerName()
-						if PlayerName ~= nil then
-							curUnit.data.playername = PlayerName
-						else
-							curUnit.data.playername = ""
-						end
 						curUnit.action = "C"
 						table.insert(updateQue.que, curUnit)
 					end

@@ -752,6 +752,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 								hdg: parseFloat(_.get(queObj, 'data.hdg')),
 								speed: parseFloat(_.get(queObj, 'data.speed', 0)),
 								inAir: _.get(queObj, 'data.inAir'),
+								playername: _.get(queObj, 'data.playername', ''),
 								dead: false
 							}
 						};
@@ -764,6 +765,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 								console.log('update err line626: ', err);
 							});
 					}else if (_.get(queObj, 'action') === 'C') {
+						console.log('CREATE: ', _.get(queObj, 'data'));
 						//set ewr task to ewr if new
 						if (curUnit.type === '1L13 EWR' || curUnit.type === '55G6 EWR') {
 							console.log('tasking ewr');
@@ -795,6 +797,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 								console.log('save err line643: ', err);
 							});
 					} else if (_.get(queObj, 'action') === 'D') {
+						console.log('DELETE: ', _.get(queObj, 'data'));
 						iCurObj = {
 							action: 'D',
 							sessionName: sessionName,
@@ -1721,34 +1724,32 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 
 // distance checker loop
 setInterval(function () {
-	if (isBaseFullyPopped) {
-		dbSystemServiceController.serverActions('read', {enabled: true})
-			.then(function (srvs) {
-				_.forEach(srvs, function (srv) {
-					var curServerName = _.get(srv, '_id');
+	dbSystemServiceController.serverActions('read', {enabled: true})
+		.then(function (srvs) {
+			_.forEach(srvs, function (srv) {
+				var curServerName = _.get(srv, '_id');
 
-					if (!isSpawningAllowed) {
-						if(epocToPayAttention < new Date().getTime()){
-							console.log('Spawning is now active');
-							isSpawningAllowed = true;
-						}
-					} else {
-						//check Prox base units
-						proximityController.checkUnitsToBaseForTroops(curServerName);
+				//check Prox base units
+				proximityController.checkUnitsToBaseForTroops(curServerName);
 
-						//check logi prox
-						proximityController.checkUnitsToLogisticTowers(curServerName);
+				//check logi prox
+				proximityController.checkUnitsToLogisticTowers(curServerName);
 
-						//checkBaseCap
-						proximityController.checkUnitsToBaseForCapture(curServerName);
+				if (!isSpawningAllowed) {
+					if(epocToPayAttention < new Date().getTime()){
+						console.log('Spawning is now active');
+						isSpawningAllowed = true;
 					}
-				});
-			})
-			.catch(function (err) {
-				console.log('line1491', err);
-			})
-		;
-	}
+				} else {
+					//checkBaseCap
+					proximityController.checkUnitsToBaseForCapture(curServerName);
+				}
+			});
+		})
+		.catch(function (err) {
+			console.log('line1491', err);
+		})
+	;
 }, 1000);
 
 // constant check loop (base unit replenish, etc)
