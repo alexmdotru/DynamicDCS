@@ -126,11 +126,12 @@ _.set(exports, 'getVirtualCratesInProximity', function (serverName, lonLat, kmDi
 		{
 			dead: false,
 			lonLatLoc: {
-				$geoWithin: {
-					$centerSphere: [
-						lonLat,
-						kmDistance / 6378.1
-					]
+				$near: {
+					$geometry: {
+						type: "Point",
+						coordinates: lonLat
+					},
+					$maxDistance: kmDistance * 1000
 				}
 			},
 			name : {
@@ -256,7 +257,7 @@ _.set(exports, 'checkUnitsToBaseForTroops', function (serverName) {
 							var cId = _.toNumber(key);
 							if(!_.find(unitsInProx, {_id: cId}) && unit.enabled) {
 								_.set(unit, 'enabled', false);
-								console.log('R baseTroops: ', curBaseName, cId);
+								// console.log('R baseTroops: ', curBaseName, cId);
 								//remove logi f10 menu
 								menuUpdateController.logisticsMenu('resetMenu', serverName, unit.data);
 							}
@@ -269,7 +270,7 @@ _.set(exports, 'checkUnitsToBaseForTroops', function (serverName) {
 										enabled: true,
 										data: unit
 									});
-									console.log('A baseTroops: ', curBaseName, cId);
+									// console.log('A baseTroops: ', curBaseName, cId);
 									//update f10 radio menu
 									menuUpdateController.logisticsMenu('addTroopsMenu', serverName, unit);
 								}
@@ -320,7 +321,7 @@ _.set(exports, 'checkUnitsToLogisticTowers', function (serverName) {
 							var cId = _.toNumber(key);
 							if(!_.find(unitsInProx, {_id: cId}) && unit.enabled) {
 								_.set(unit, 'enabled', false);
-								console.log('R logiTower: ', curLogiName, cId);
+								// console.log('R logiTower: ', curLogiName, cId);
 								//remove logi f10 menu
 								menuUpdateController.logisticsMenu('resetMenu', serverName, unit.data);
 							}
@@ -333,7 +334,7 @@ _.set(exports, 'checkUnitsToLogisticTowers', function (serverName) {
 										enabled: true,
 										data: unit
 									});
-									console.log('A logiTower: ', curLogiName, cId);
+									// console.log('A logiTower: ', curLogiName, cId);
 									//update f10 radio menu
 									menuUpdateController.logisticsMenu('addLogiCratesMenu', serverName, unit);
 								}

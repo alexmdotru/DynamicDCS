@@ -775,7 +775,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 								console.log('update err line626: ', err);
 							});
 					}else if (_.get(queObj, 'action') === 'C') {
-						console.log('CREATE: ', _.get(queObj, 'data'));
+						//console.log('CREATE: ', _.get(queObj, 'data'));
 
 						if(!_.isEmpty(curData.playername)) {
 							menuUpdateController.logisticsMenu('resetMenu', serverName, curData);
@@ -802,7 +802,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 								console.log('save err line643: ', err);
 							});
 					} else if (_.get(queObj, 'action') === 'D') {
-						console.log('DELETE: ', _.get(queObj, 'data'));
+						//console.log('DELETE: ', _.get(queObj, 'data'));
 						/*
 						if (_.get(ewrUnitsActivated, [curUnitName], false)) {
 							console.log('Delete ewr for: ', curUnitName );
@@ -815,6 +815,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 							data: {
 								_id: parseFloat(_.get(queObj, 'data.unitId')),
 								unitId: _.get(queObj, 'data.unitId'),
+								troopType: null,
+								virtCrateType: null,
 								dead: true
 							}
 						};
@@ -1284,8 +1286,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 									})
 								;
 							} else {
-								console.log('weapon not here');
-								console.log('weapon: ', _.get(queObj, ['data', 'arg7', 'typeName']));
+								// console.log('weapon not here');
+								// console.log('weapon: ', _.get(queObj, ['data', 'arg7', 'typeName']));
 								_.set(shootingUsers, [iUnitId, 'count'], _.get(shootingUsers, [_.get(iCurObj, 'iPlayerUnitId'), 'count'], 0)+1);
 								_.set(shootingUsers, [iUnitId, 'startTime'], new Date().getTime());
 								_.set(shootingUsers, [iUnitId, 'serverName'], serverName);
