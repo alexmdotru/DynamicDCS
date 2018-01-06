@@ -710,6 +710,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				.then(function (unit) {
 					var stParse;
 					var curUnit = _.get(unit, 0, {});
+					var curUnitName = _.get(curUnit, 'name');
 					var curData = _.get(queObj, 'data');
 					// build out extra info on spawned items isAI
 					if (_.includes(curData.name, 'AI|')) {
@@ -739,7 +740,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					}
 					//set ewr task to ewr if new
 					if (curUnit.type === '1L13 EWR' || curUnit.type === '55G6 EWR') {
-						var curUnitName = _.get(curUnit, 'name');
 						if (!_.get(ewrUnitsActivated, [curUnitName], false)) {
 							console.log('Set ewr for: ', curUnitName );
 							taskController.setEWRTask(serverName, curUnitName);
@@ -803,6 +803,12 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 							});
 					} else if (_.get(queObj, 'action') === 'D') {
 						console.log('DELETE: ', _.get(queObj, 'data'));
+						/*
+						if (_.get(ewrUnitsActivated, [curUnitName], false)) {
+							console.log('Delete ewr for: ', curUnitName );
+							_.set(ewrUnitsActivated, [curUnitName], false);
+						}
+						*/
 						iCurObj = {
 							action: 'D',
 							sessionName: sessionName,
