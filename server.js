@@ -560,6 +560,10 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				if (update.unitCount > 50 && units.length > 50) {
 					// console.log('resync');
 					if (units.length !== update.unitCount) {
+						if (((units.length *0.94) <= update.unitCount) && !isBaseFullyPopped) {
+							console.log('baseFullPopped: ', (units.length *0.93), ' <= ', update.unitCount);
+							isBaseFullyPopped = true;
+						}
 						// get update sync from server
 						console.log(outOfSyncUnitCnt + ':' + serverName + ':SERVER' + update.unitCount + '=DB' + units.length);
 						if (outOfSyncUnitCnt > config.outOfSyncUnitThreshold) {
