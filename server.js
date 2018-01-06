@@ -211,6 +211,7 @@ var polyFailCount = 0;
 var polyNotLoaded = true;
 var srvDbNotLoaded = {};
 var baseSpawnTimeout = {};
+var ewrUnitsActivated = {};
 var epocToPayAttention = new Date().getTime() + epocTimeout;
 var isSpawningAllowed = false;
 var isBaseFullyPopped = false;
@@ -736,6 +737,15 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						_.set(curData, 'proxChkGrp', stParse[3]);
 						_.set(curData, 'playerCanDrive', stParse[5]);
 					}
+					//set ewr task to ewr if new
+					if (curUnit.type === '1L13 EWR' || curUnit.type === '55G6 EWR') {
+						var curUnitName = _.get(curUnit, 'name');
+						if (!_.get(ewrUnitsActivated, [curUnitName], false)) {
+							console.log('Set ewr for: ', curUnitName );
+							taskController.setEWRTask(serverName, curUnitName);
+							_.set(ewrUnitsActivated, [curUnitName], true);
+						}
+					}
 
 					if ((!_.isEmpty(curUnit) && _.get(queObj, 'action') !== 'D')) {
 						if(!_.isEmpty(curData.playername) && curUnit.dead) {
@@ -766,11 +776,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 							});
 					}else if (_.get(queObj, 'action') === 'C') {
 						console.log('CREATE: ', _.get(queObj, 'data'));
-						//set ewr task to ewr if new
-						if (curUnit.type === '1L13 EWR' || curUnit.type === '55G6 EWR') {
-							console.log('tasking ewr');
-							taskController.setEWRTask(serverName, curUnit.name);
-						}
 
 						if(!_.isEmpty(curData.playername)) {
 							menuUpdateController.logisticsMenu('resetMenu', serverName, curData);
