@@ -570,8 +570,7 @@ _.set(exports, 'spawnLogiGroup', function (serverName, spawnArray, side) {
 		});
 		curGroupSpawn = _.replace(curGroupSpawn, "#UNITS", curUnitSpawn);
 		// var curCMD = 'mist.dynAdd(' + curGroupSpawn + ')';
-		// console.log('count2: ', curGrpObj.country);
-		var curCMD = exports.spawnGrp(curGroupSpawn, curGrpObj.country, curGrpObj.category);
+		var curCMD = exports.spawnGrp(curGroupSpawn, curSide, curGrpObj.category);
 		var sendClient = {action: "CMD", cmd: [curCMD], reqID: 0};
 		var actionObj = {actionObj: sendClient, queName: 'clientArray'};
 		dbMapServiceController.cmdQueActions('save', serverName, actionObj)
