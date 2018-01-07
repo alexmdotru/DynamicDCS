@@ -8,6 +8,7 @@ const groupController = require('./group');
 var maxCrates = 10;
 var maxUnitsMoving = 5;
 var maxUnitsStationary = 5;
+var spawnLauncherCnt = 3;
 
 _.set(exports, 'menuCmdProcess', function (pObj) {
 	// console.log('process menu cmd: ', pObj);
@@ -203,7 +204,7 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 			}
 			if (pObj.cmd === 'loadCrate') {
 				if (!curUnit.virtCrateType) {
-					proximityController.getVirtualCratesInProximity(pObj.serverName, curUnit.lonLatLoc, 0.4, curUnit.coalition)
+				proximityController.getVirtualCratesInProximity(pObj.serverName, curUnit.lonLatLoc, 0.4, curUnit.coalition)
 						.then(function(units){
 							var curCrate = _.get(units, [0]);
 							if(curCrate) {
@@ -480,7 +481,7 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 				unit.groupId,
 				serverName,
 				"G: " + _.toUpper(spc) + " " + type + " crate has been spawned!",
-				5
+			5
 			);
 		})
 		.catch(function (err) {
@@ -529,21 +530,41 @@ _.set(exports, 'unpackCrate', function (serverName, unit, type, special, combo, 
 				.then(function (unitDic) {
 					var addHdg = 0;
 					var curUnitHdg;
+					var unitStart;
+					var newSpawnArray = [];
 					var findUnits = _.filter(unitDic, {comboName: type, enabled: true});
 					_.forEach(findUnits, function (cbUnit) {
-						curUnitHdg = unit.hdg + addHdg;
-						if (curUnitHdg > 359) {
-							curUnitHdg = 15;
+						if (cbUnit.launcher) {
+							for (x=0; x < spawnLauncherCnt; x++) {
+								unitStart = _.cloneDeep(cbUnit);
+								curUnitHdg = unit.hdg + addHdg;
+								if (curUnitHdg > 359) {
+									curUnitHdg = 15;
+								}
+								_.set(unitStart, 'spwnName', 'DU|' + unit.unitId + '|' + cbUnit.type + '||true|' + mobile + '|');
+								_.set(unitStart, 'lonLatLoc', unit.lonLatLoc);
+								_.set(unitStart, 'heading', curUnitHdg);
+								_.set(unitStart, 'country', unit.country);
+								_.set(unitStart, 'playerCanDrive', mobile);
+								addHdg = addHdg + 15;
+								newSpawnArray.push(unitStart);
+							}
+						} else {
+							unitStart = _.cloneDeep(cbUnit);
+							curUnitHdg = unit.hdg + addHdg;
+							if (curUnitHdg > 359) {
+								curUnitHdg = 15;
+							}
+							_.set(unitStart, 'spwnName', 'DU|' + unit.unitId + '|' + cbUnit.type + '||true|' + mobile + '|');
+							_.set(unitStart, 'lonLatLoc', unit.lonLatLoc);
+							_.set(unitStart, 'heading', curUnitHdg);
+							_.set(unitStart, 'country', unit.country);
+							_.set(unitStart, 'playerCanDrive', mobile);
+							addHdg = addHdg + 15;
+							newSpawnArray.push(unitStart);
 						}
-						_.set(cbUnit, 'spwnName', 'DU|' + unit.unitId + '|' + cbUnit.type + '||true|' + mobile + '|');
-						_.set(cbUnit, 'lonLatLoc', unit.lonLatLoc);
-						_.set(cbUnit, 'heading', curUnitHdg);
-						_.set(cbUnit, 'country', unit.country);
-						_.set(cbUnit, 'playerCanDrive', mobile);
-						addHdg = addHdg + 15;
 					});
-					spawnArray = _.cloneDeep(findUnits);
-					groupController.spawnLogiGroup(serverName, spawnArray, unit.coalition);
+					groupController.spawnLogiGroup(serverName, newSpawnArray, unit.coalition);
 				})
 				.catch(function (err) {
 					console.log('line 394: ', err);

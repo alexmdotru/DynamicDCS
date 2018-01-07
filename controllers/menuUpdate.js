@@ -82,6 +82,8 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 			cmdArray = _.concat(cmdArray, [
 				'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "Acquisitions(Mobile)")',
 				'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "Support", {"Acquisitions(Mobile)"})',
+				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Early Warning Radar Short(1M)", {"Acquisitions(Mobile)","Support"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "EWR", ["type"] = "1L13 EWR", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1, ["mobile"] = "true"})',
+				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Early Warning Radar Long(2M)", {"Acquisitions(Mobile)","Support"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "EWR", ["type"] = "55G6 EWR", ["unitId"] = ' + unit.unitId + ', ["crates"] = 2, ["mobile"] = "true"})',
 				'missionCommands.addCommandForGroup("' + unit.groupId + '", "JTAC (1M)", {"Acquisitions(Mobile)","Support"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "JTAC", ["type"] = "SKP-11", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1, ["mobile"] = "true"})',
 				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Fuel Tanker (1M)", {"Acquisitions(Mobile)","Support"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "unarmedFuel", ["type"] = "ATZ-10", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1, ["mobile"] = "true"})',
 				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Ammo Truck (1M)", {"Acquisitions(Mobile)","Support"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "unarmedAmmo", ["type"] = "Ural-375", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1, ["mobile"] = "true"})',
@@ -118,6 +120,8 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Smerch(2M)", {"Acquisitions(Mobile)", "Artillary & MLRS"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "mlrs", ["type"] = "Smerch", ["unitId"] = ' + unit.unitId + ', ["crates"] = 2, ["mobile"] = "true"})',
 
 				'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "AntiAir", {"Acquisitions(Mobile)"})',
+				'missionCommands.addCommandForGroup("' + unit.groupId + '", "ZU-23 Emplacement(1M)", {"Acquisitions(Mobile)", "AntiAir"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "stationaryAntiAir", ["type"] = "ZU-23 Emplacement", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1, ["mobile"] = "true"})',
+				'missionCommands.addCommandForGroup("' + unit.groupId + '", "ZU-23 Emplacement Closed(1M)", {"Acquisitions(Mobile)", "AntiAir"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "stationaryAntiAir", ["type"] = "ZU-23 Emplacement Closed", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1, ["mobile"] = "true"})',
 				'missionCommands.addCommandForGroup("' + unit.groupId + '", "ZU-23 on Ural-375(2M)", {"Acquisitions(Mobile)", "AntiAir"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "mobileAntiAir", ["type"] = "Ural-375 ZU-23", ["unitId"] = ' + unit.unitId + ', ["crates"] = 2, ["mobile"] = "true"})',
 				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Shilka(2M)", {"Acquisitions(Mobile)", "AntiAir"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "mobileAntiAir", ["type"] = "ZSU-23-4 Shilka", ["unitId"] = ' + unit.unitId + ', ["crates"] = 2, ["mobile"] = "true"})',
 				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Gepard(3M)", {"Acquisitions(Mobile)", "AntiAir"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "mobileAntiAir", ["type"] = "Gepard", ["unitId"] = ' + unit.unitId + ', ["crates"] = 3, ["mobile"] = "true"})',
@@ -125,16 +129,18 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 				'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "Infrared SAM", {"Acquisitions(Mobile)"})',
 				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Strela-10M3(2M)", {"Acquisitions(Mobile)", "Infrared SAM"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "samIR", ["type"] = "Strela-10M3", ["unitId"] = ' + unit.unitId + ', ["crates"] = 2, ["mobile"] = "true"})',
 				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Strela-1 9P31(2M)", {"Acquisitions(Mobile)", "Infrared SAM"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "samIR", ["type"] = "Strela-1 9P31", ["unitId"] = ' + unit.unitId + ', ["crates"] = 2, ["mobile"] = "true"})',
-				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Osa 9A33 ln(2M)", {"Acquisitions(Mobile)", "Infrared SAM"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "samIR", ["type"] = "Osa 9A33 ln", ["unitId"] = ' + unit.unitId + ', ["crates"] = 2, ["mobile"] = "true"})',
 
 				'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "Radar SAM", {"Acquisitions(Mobile)"})',
+				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Osa 9A33 ln(2M)", {"Acquisitions(Mobile)", "Radar SAM"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "mobileSAM", ["type"] = "Osa 9A33 ln", ["unitId"] = ' + unit.unitId + ', ["crates"] = 2, ["mobile"] = "true"})',
 				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Tunguska(3M)", {"Acquisitions(Mobile)", "Radar SAM"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "mobileSAM", ["type"] = "2S6 Tunguska", ["unitId"] = ' + unit.unitId + ', ["crates"] = 3, ["mobile"] = "true"})',
 				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Tor(3M)", {"Acquisitions(Mobile)", "Radar SAM"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "mobileSAM", ["type"] = "Tor 9A331", ["unitId"] = ' + unit.unitId + ', ["crates"] = 3, ["mobile"] = "true"})',
 				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Roland(3M)", {"Acquisitions(Mobile)", "Radar SAM"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "MRSAM", ["type"] = "Roland", ["unitId"] = ' + unit.unitId + ', ["crates"] = 3, ["mobile"] = "true"})',
+				'missionCommands.addCommandForGroup("' + unit.groupId + '", "SA-3(3M)", {"Acquisitions(Stationary)", "Radar SAM"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "MRSAM", ["type"] = "SA-3", ["unitId"] = ' + unit.unitId + ', ["crates"] = 3, ["mobile"] = "true"})',
 				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Kub(3M)", {"Acquisitions(Mobile)", "Radar SAM"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "MRSAM", ["type"] = "Kub", ["unitId"] = ' + unit.unitId + ', ["crates"] = 3, ["mobile"] = "true"})',
-				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Buk(4M)", {"Acquisitions(Mobile)", "Radar SAM"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "LRSAM", ["type"] = "Buk", ["unitId"] = ' + unit.unitId + ', ["crates"] = 4, ["mobile"] = "true"})'
+				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Buk(4M)", {"Acquisitions(Mobile)", "Radar SAM"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "LRSAM", ["type"] = "Buk", ["unitId"] = ' + unit.unitId + ', ["crates"] = 4, ["mobile"] = "true"})',
+				// 'missionCommands.addCommandForGroup("' + unit.groupId + '", "SA-10(5S)", {"Acquisitions(Stationary)", "Radar SAM"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "LRSAM", ["type"] = "SA-10", ["unitId"] = ' + unit.unitId + ', ["crates"] = 5, ["mobile"] = "false"})',
 			]);
-
+/*
 			cmdArray = _.concat(cmdArray, [
 				'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "Acquisitions(Stationary)")',
 				'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "Support", {"Acquisitions(Stationary)"})',
@@ -185,9 +191,9 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 				'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "Infrared SAM", {"Acquisitions(Stationary)"})',
 				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Strela-10M3(2S)", {"Acquisitions(Stationary)", "Infrared SAM"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "samIR", ["type"] = "Strela-10M3", ["unitId"] = ' + unit.unitId + ', ["crates"] = 2, ["mobile"] = "false"})',
 				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Strela-1 9P31(2S)", {"Acquisitions(Stationary)", "Infrared SAM"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "samIR", ["type"] = "Strela-1 9P31", ["unitId"] = ' + unit.unitId + ', ["crates"] = 2, ["mobile"] = "false"})',
-				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Osa 9A33 ln(2S)", {"Acquisitions(Stationary)", "Infrared SAM"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "samIR", ["type"] = "Osa 9A33 ln", ["unitId"] = ' + unit.unitId + ', ["crates"] = 2, ["mobile"] = "false"})',
 
 				'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "Radar SAM", {"Acquisitions(Stationary)"})',
+				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Osa 9A33 ln(2S)", {"Acquisitions(Stationary)", "Infrared SAM"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "samIR", ["type"] = "Osa 9A33 ln", ["unitId"] = ' + unit.unitId + ', ["crates"] = 2, ["mobile"] = "false"})',
 				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Tunguska(3S)", {"Acquisitions(Stationary)", "Radar SAM"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "mobileSAM", ["type"] = "2S6 Tunguska", ["unitId"] = ' + unit.unitId + ', ["crates"] = 3, ["mobile"] = "false"})',
 				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Tor(3S)", {"Acquisitions(Stationary)", "Radar SAM"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "mobileSAM", ["type"] = "Tor 9A331", ["unitId"] = ' + unit.unitId + ', ["crates"] = 3, ["mobile"] = "false"})',
 				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Roland(3S)", {"Acquisitions(Stationary)", "Radar SAM"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "MRSAM", ["type"] = "Roland", ["unitId"] = ' + unit.unitId + ', ["crates"] = 3, ["mobile"] = "false"})',
@@ -196,12 +202,15 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Buk(4S)", {"Acquisitions(Stationary)", "Radar SAM"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "LRSAM", ["type"] = "Buk", ["unitId"] = ' + unit.unitId + ', ["crates"] = 4, ["mobile"] = "false"})',
 				// 'missionCommands.addCommandForGroup("' + unit.groupId + '", "SA-10(5S)", {"Acquisitions(Stationary)", "Radar SAM"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "LRSAM", ["type"] = "SA-10", ["unitId"] = ' + unit.unitId + ', ["crates"] = 5, ["mobile"] = "false"})',
 			]);
+*/
 		}
 
 		if(unit.coalition === 2) {
 			cmdArray = _.concat(cmdArray, [
 				'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "Acquisitions(Mobile)")',
 				'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "Support", {"Acquisitions(Mobile)"})',
+				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Early Warning Radar Short(1M)", {"Acquisitions(Mobile)","Support"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "EWR", ["type"] = "1L13 EWR", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1, ["mobile"] = "true"})',
+				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Early Warning Radar Long(2M)", {"Acquisitions(Mobile)","Support"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "EWR", ["type"] = "55G6 EWR", ["unitId"] = ' + unit.unitId + ', ["crates"] = 2, ["mobile"] = "true"})',
 				'missionCommands.addCommandForGroup("' + unit.groupId + '", "JTAC (1M)", {"Acquisitions(Mobile)","Support"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "JTAC", ["type"] = "Hummer", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1, ["mobile"] = "true"})',
 				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Fuel Tanker(1M)", {"Acquisitions(Mobile)","Support"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "unarmedFuel", ["type"] = "M978 HEMTT Tanker", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1, ["mobile"] = "true"})',
 				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Ammo Truck(1M)", {"Acquisitions(Mobile)","Support"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "unarmedAmmo", ["type"] = "M 818", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1, ["mobile"] = "true"})',
@@ -237,6 +246,8 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Smerch(2M)", {"Acquisitions(Mobile)", "Artillary & MLRS"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "mlrs", ["type"] = "Smerch", ["unitId"] = ' + unit.unitId + ', ["crates"] = 2, ["mobile"] = "true"})',
 
 				'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "AntiAir", {"Acquisitions(Mobile)"})',
+				'missionCommands.addCommandForGroup("' + unit.groupId + '", "ZU-23 Emplacement(1M)", {"Acquisitions(Stationary)", "AntiAir"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "stationaryAntiAir", ["type"] = "ZU-23 Emplacement", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1, ["mobile"] = "true"})',
+				'missionCommands.addCommandForGroup("' + unit.groupId + '", "ZU-23 Emplacement Closed(1M)", {"Acquisitions(Stationary)", "AntiAir"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "stationaryAntiAir", ["type"] = "ZU-23 Emplacement Closed", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1, ["mobile"] = "true"})',
 				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Vulcan(2M)", {"Acquisitions(Mobile)", "AntiAir"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "mobileAntiAir", ["type"] = "Vulcan", ["unitId"] = ' + unit.unitId + ', ["crates"] = 2, ["mobile"] = "true"})',
 				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Gepard(3M)", {"Acquisitions(Mobile)", "AntiAir"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "mobileAntiAir", ["type"] = "Gepard", ["unitId"] = ' + unit.unitId + ', ["crates"] = 3, ["mobile"] = "true"})',
 
@@ -254,7 +265,7 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Buk(4M)", {"Acquisitions(Mobile)", "Radar SAM"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "LRSAM", ["type"] = "Buk", ["unitId"] = ' + unit.unitId + ', ["crates"] = 4, ["mobile"] = "true", ["mobile"] = "true"})',
 				// 'missionCommands.addCommandForGroup("' + unit.groupId + '", "Patriot(5)", {"Acquisitions(Mobile)", "Radar SAM"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "LRSAM", ["type"] = "Patriot", ["unitId"] = ' + unit.unitId + ', ["crates"] = 5, ["mobile"] = "true"})',
 			]);
-
+/*
 			cmdArray = _.concat(cmdArray, [
 				'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "Acquisitions(Stationary)")',
 				'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "Support", {"Acquisitions(Stationary)"})',
@@ -314,6 +325,7 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 				'missionCommands.addCommandForGroup("' + unit.groupId + '", "Buk(4S)", {"Acquisitions(Stationary)", "Radar SAM"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "LRSAM", ["type"] = "Buk", ["unitId"] = ' + unit.unitId + ', ["crates"] = 4, ["mobile"] = "true", ["mobile"] = "false"})',
 				// 'missionCommands.addCommandForGroup("' + unit.groupId + '", "Patriot(5)", {"Acquisitions(Stationary)", "Radar SAM"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "LRSAM", ["type"] = "Patriot", ["unitId"] = ' + unit.unitId + ', ["crates"] = 5, ["mobile"] = "false"})',
 			]);
+*/
 		}
 	}
 
