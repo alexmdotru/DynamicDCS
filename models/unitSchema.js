@@ -68,7 +68,7 @@ const UnitSchema = new Schema({
 		type: String
 	},
 	playerOwnerId: {
-		type: Number
+		type: String
 	},
 	enabled: {
 		type: Boolean,

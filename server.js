@@ -867,9 +867,90 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			_.set(queObj, 'sessionName', sessionName);
 			_.forEach(queObj.data, function (player) {
 				if (player !== null) {
-					var curPlyrUcid = _.get(player, 'ucid');
-					var curPlyrSide = _.get(player, 'side');
-					var curPlyrName = _.get(player, 'name');
+					var curPlyrUcid = player.ucid;
+					var curPlyrSide = player.side;
+					var curPlyrName = player.name;
+
+					dbSystemServiceController.banUserActions('read', curPlyrUcid)
+						.then(function (banUser) {
+							if (!_.isEmpty(banUser)){
+								console.log('Banning User: ', _.get(player, 'name'), curPlyrUcid);
+								DCSLuaCommands.kickPlayer(
+									serverName,
+									player.id,
+									'You have been banned from this server.'
+								);
+							} else {
+								dbMapServiceController.unitActions('read', serverName, {playername: curPlyrName, dead: false})
+									.then(function (unit) {
+										var curUnit = _.get(unit, 0);
+										var curUnitSide = _.get(curUnit, 'coalition');
+										var curUnitUcid = _.get(curUnit, 'ucid');
+										if(curUnit) {
+											// switching to spectator gets around this, fix this in future please
+											if ((curUnitSide !== curPlyrSide) && curPlyrSide !== 0 && curPlyrSide) {
+												if (curUnitSide) {
+													iCurObj = {
+														sessionName: sessionName,
+														eventCode: abrLookup(_.get(queObj, 'action')),
+														iucid: curPlyrUcid,
+														iName: curPlyrName,
+														displaySide: 'A',
+														roleCode: 'I',
+														msg: 'A: '+getSide(curUnitSide)+' '+curPlyrName+' has commited Treason and switched to '+getSide(curPlyrSide)+'. Shoot on sight! -1000pts',
+														score: -1000,
+														showInChart: true
+													};
+													if(curPlyrUcid) {
+														curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
+														dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
+													}
+
+													DCSLuaCommands.sendMesgToAll(
+														serverName,
+														_.get(iCurObj, 'msg'),
+														15
+													);
+												}
+												/*
+												dbSystemServiceController.userAccountActions('read')
+													.then(function (resp) {
+														var curSocket;
+														var switchedPlayerSocket = _.get(nonaccountUsers, curPlyrUcid);
+														var switchedPlayer = _.find(resp, {ucid: curPlyrUcid});
+														if(switchedPlayerSocket) {
+															if (curPlyrSide === 1 || curPlyrSide === 2) {
+																setSocketRoom(switchedPlayerSocket, serverName + '_q' + curPlyrSide);
+																// sendInit(serverName, switchedPlayerSocket);
+															}
+														} else if (switchedPlayer) {
+															curSocket = io.sockets.connected[_.get(switchedPlayer, 'curSocket')];
+															if (switchedPlayer.permLvl < 20) {
+																setSocketRoom(curSocket, serverName + '_padmin');
+															} else if (curPlyrSide === 1 || curPlyrSide === 2) {
+																setSocketRoom(curSocket, serverName + '_q' + curPlyrSide);
+																// sendInit(serverName, curSocket);
+															}
+														}
+													})
+													.catch(function (err) {
+														console.log('line626', err);
+													})
+												;
+												*/
+											}
+										}
+									})
+									.catch(function (err) {
+										console.log('err line596: ', err);
+									})
+								;
+							}
+						})
+						.catch(function (err) {
+							console.log('line886', err);
+						})
+					;
 
 					//kick if in gamemaster slot
 					/*
@@ -891,87 +972,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						;
 					}
 					*/
-
-					dbMapServiceController.unitActions('read', serverName, {_id: _.get(queObj, curPlyrUcid)})
-						.then(function (unit) {
-							var curUnit = _.get(unit, 0);
-							var curUnitSide = _.get(curUnit, 'side');
-							var curUnitUcid = _.get(curUnit, 'ucid');
-							if(curUnit) {
-								dbSystemServiceController.banUserActions('read', curPlyrUcid)
-									.then(function (banUser) {
-										if (!_.isEmpty(banUser)){
-											console.log('Banning User: ', _.get(player, 'name'), curPlyrUcid);
-											DCSLuaCommands.kickPlayer(
-												serverName,
-												_.get(player, 'id'),
-												'You have been banned from this server, visit 16agr.com if you have questions'
-											);
-										}
-
-
-
-										// switching to spectator gets around this, fix this in future please
-										if ((curUnitSide !== curPlyrSide) && curPlyrSide !== 0 && curPlyrSide) {
-											if (curUnitSide) {
-												iCurObj = {
-													sessionName: sessionName,
-													eventCode: abrLookup(_.get(queObj, 'action')),
-													iucid: curPlyrUcid,
-													iName: curPlyrName,
-													displaySide: 'A',
-													roleCode: 'I',
-													msg: 'A: '+getSide(curUnitSide)+' '+curPlyrName+' has commited Treason and switched to '+getSide(curPlyrSide)+'. Shoot on sight! -1000pts',
-													score: -1000,
-													showInChart: true
-												};
-												if(curPlyrUcid) {
-													curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
-													dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
-												}
-
-												DCSLuaCommands.sendMesgToAll(
-													serverName,
-													_.get(iCurObj, 'msg'),
-													15
-												);
-											}
-											dbSystemServiceController.userAccountActions('read')
-												.then(function (resp) {
-													var curSocket;
-													var switchedPlayerSocket = _.get(nonaccountUsers, curPlyrUcid);
-													var switchedPlayer = _.find(resp, {ucid: curPlyrUcid});
-													if(switchedPlayerSocket) {
-														if (curPlyrSide === 1 || curPlyrSide === 2) {
-															setSocketRoom(switchedPlayerSocket, serverName + '_q' + curPlyrSide);
-															// sendInit(serverName, switchedPlayerSocket);
-														}
-													} else if (switchedPlayer) {
-														curSocket = io.sockets.connected[_.get(switchedPlayer, 'curSocket')];
-														if (switchedPlayer.permLvl < 20) {
-															setSocketRoom(curSocket, serverName + '_padmin');
-														} else if (curPlyrSide === 1 || curPlyrSide === 2) {
-															setSocketRoom(curSocket, serverName + '_q' + curPlyrSide);
-															// sendInit(serverName, curSocket);
-														}
-													}
-												})
-												.catch(function (err) {
-													console.log('line626', err);
-												})
-											;
-										}
-									})
-									.catch(function (err) {
-										console.log('line654', err);
-									})
-								;
-							}
-						})
-						.catch(function (err) {
-							console.log('err line596: ', err);
-						})
-					;
 				}
 			});
 

@@ -111,7 +111,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 	const SrvPlayer = mapdb.model(serverName+'_srvPlayer', srvPlayerSchema);
 	if (action === 'read') {
 		return new Promise(function(resolve, reject) {
-			SrvPlayer.find(function (err, srvPlayer) {
+			SrvPlayer.find(obj, function (err, srvPlayer) {
 				if (err) { reject(err) }
 				resolve(srvPlayer);
 			});

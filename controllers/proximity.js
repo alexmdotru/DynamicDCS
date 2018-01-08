@@ -323,7 +323,7 @@ _.set(exports, 'checkUnitsToLogisticTowers', function (serverName) {
 								_.set(unit, 'enabled', false);
 								// console.log('R logiTower: ', curLogiName, cId);
 								//remove logi f10 menu
-								menuUpdateController.logisticsMenu('resetMenu', serverName, unit.data);
+								menuUpdateController.logisticsMenu('resetMenu', serverName, unit.data );
 							}
 						});
 						_.forEach(unitsInProx, function(unit) {
