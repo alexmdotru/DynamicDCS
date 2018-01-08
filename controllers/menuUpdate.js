@@ -33,7 +33,7 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 	dbMapServiceController.srvPlayerActions('read', serverName, {name: unit.playername})
 		.then(function(player) {
 			var curPlayer = _.get(player, [0]);
-			dbMapServiceController.unitActions('read', serverName, {playerOwnerId: unit.unitId, dead: false})
+			dbMapServiceController.unitActions('read', serverName, {playerOwnerId: curPlayer.ucid, dead: false})
 				.then(function(unitsOwned){
 					var isTroop = (_.find(unitsOwned, {isTroop: true})) ? 1 : 0;
 					var grpGroups = _.transform(unitsOwned, function (result, value) {
