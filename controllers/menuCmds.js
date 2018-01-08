@@ -141,6 +141,7 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 											.then(function(units){
 												var cCnt = 0;
 												var grpTypes;
+												var localCrateNum;
 												var curCrate = _.get(units, [0], {});
 												var numCrate = _.split(curCrate.name, '|')[4];
 												var curCrateSpecial = _.split(curCrate.name, '|')[3];
@@ -152,7 +153,8 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 													grpTypes = _.transform(units, function (result, value) {
 														(result[_.get(_.split(value.name, '|'), [2])] || (result[_.get(_.split(value.name, '|'), [2])] = [])).push(value);
 													}, {});
-													if( _.get(grpTypes, [curCrateType], []).length >=  numCrate) {
+													localCrateNum = _.get(grpTypes, [curCrateType], []).length;
+													if( localCrateNum >=  numCrate) {
 														cCnt = 1;
 														_.forEach(_.get(grpTypes, [curCrateType]), function (eCrate) {
 															if ( cCnt <= numCrate) {
@@ -177,7 +179,7 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 														DCSLuaCommands.sendMesgToGroup(
 															curUnit.groupId,
 															pObj.serverName,
-															"G: Not Enough Crates for " + _.split(curCrate.name, '|')[2] + "!",
+															"G: Not Enough Crates for " + curCrateType + "!(" + localCrateNum + '/' + numCrate + ")",
 															5
 														);
 													}
@@ -437,7 +439,7 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 			dbMapServiceController.unitActions('read', serverName, {playerOwnerId: curPlayer.ucid, isCrate: true, dead: false})
 				.then(function(delCrates){
 					_.forEach(delCrates, function (crate) {
-						console.log('cr: ', crateCount, ' > ', exports.maxCrates-1);
+						// console.log('cr: ', crateCount, ' > ', exports.maxCrates-1);
 						if(crateCount > exports.maxCrates-2) {
 							dbMapServiceController.unitActions('update', serverName, {_id: crate.unitId, dead: true})
 								.catch(function (err) {
