@@ -39,7 +39,7 @@ _.set(exports, 'reloadSAM', function (serverName, unitCalling) {
 						;
 					} else if (samUnits.length === 1) {
 						//unit is single, respawn it
-						var curUnit = _.get(samUnit, [0]);
+						var curUnit = _.get(samUnits, [0]);
 						groupController.destroyUnit(serverName, curUnit.name);
 						groupController.spawnGroup(serverName, [curUnit]);
 					}
