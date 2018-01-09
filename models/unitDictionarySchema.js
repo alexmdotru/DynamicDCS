@@ -37,6 +37,9 @@ const UnitDictionarySchema = new Schema({
 			type: Number,
 			default: 0
 		},
+		reloadReqArray: {
+			type: Schema.Types.Mixed
+		},
 		enabled: {
 			type: Boolean,
 			default: true

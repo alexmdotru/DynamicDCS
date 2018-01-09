@@ -4,6 +4,7 @@ const dbMapServiceController = require('./dbMapService');
 const proximityController = require('./proximity');
 const menuUpdateController = require('./menuUpdate');
 const groupController = require('./group');
+const reloadController = require('./reload');
 
 exports.maxCrates = 10;
 exports.maxTroops = 1;
@@ -167,7 +168,11 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 																cCnt ++;
 															}
 														});
-														exports.unpackCrate(pObj.serverName, curUnit, curCrateType, curCrateSpecial, isCombo, isMobile);
+														if (curCrateSpecial === 'reload') {
+															reloadController.reloadSAM(pObj.serverName, curUnit);
+														} else {
+															exports.unpackCrate(pObj.serverName, curUnit, curCrateType, curCrateSpecial, isCombo, isMobile);
+														}
 														groupController.destroyUnit(pObj.serverName, curCrate.name);
 														DCSLuaCommands.sendMesgToGroup(
 															curUnit.groupId,
@@ -212,7 +217,7 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 						if (!curUnit.virtCrateType) {
 							proximityController.getVirtualCratesInProximity(pObj.serverName, curUnit.lonLatLoc, 0.4, curUnit.coalition)
 								.then(function(units){
-									var curCrate = _.get(units, [0]);
+									var curCrate = _.find(units, {playerOwnerId: curPlayer.ucid});
 									if(curCrate) {
 										dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, virtCrateType: curCrate.name})
 											.catch(function (err) {
@@ -231,7 +236,7 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 										DCSLuaCommands.sendMesgToGroup(
 											curUnit.groupId,
 											pObj.serverName,
-											"G: No Crates To Load!",
+											"G: No Crates To Load(That You Own)!",
 											5
 										);
 									}
@@ -304,6 +309,10 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 
 					if (pObj.cmd === 'JTAC') {
 						exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false, 'jtac', pObj.mobile);
+					}
+
+					if (pObj.cmd === 'reload') {
+						exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false, 'reload', pObj.mobile);
 					}
 
 					if (pObj.cmd === 'unarmedFuel') {
