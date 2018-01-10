@@ -1793,7 +1793,7 @@ setInterval(function () {
 						})
 					;
 
-					//cleanupAI maxIdleTime
+					//clean crates older than 90mins
 					dbMapServiceController.unitActions('read', curServerName, {isCrate: true, dead:false})
 						.then(function (crateCleanup) {
 							_.forEach(crateCleanup, function (crate) {
