@@ -197,6 +197,7 @@ protectedRouter.route('/userAccounts')
 //setup globals
 var epocTimeout = (5 * 60 * 1000); // 5 mins
 var maxIdleTime = (5 * 60 * 1000); // 5 mins
+var maxCrateLife = (90 * 60 * 1000); // 90 mina
 var outOfSyncUnitCnt = 0;
 var socketQues = ['q0', 'q1', 'q2', 'qadmin', 'leaderboard'];
 var curServers = {};
@@ -1784,6 +1785,20 @@ setInterval(function () {
 							_.forEach(AICleanup, function (AIUnit) {
 								if (_.isEmpty(AIUnit.playername) && new Date(_.get(AIUnit, 'updatedAt', 0)).getTime() + maxIdleTime < new Date().getTime()) {
 									groupController.destroyUnit( curServerName, AIUnit.name );
+								}
+							});
+						})
+						.catch(function (err) {
+							console.log('err line596: ', err);
+						})
+					;
+
+					//cleanupAI maxIdleTime
+					dbMapServiceController.unitActions('read', curServerName, {isCrate: true, dead:false})
+						.then(function (crateCleanup) {
+							_.forEach(crateCleanup, function (crate) {
+								if (new Date(_.get(crate, 'createdAt', 0)).getTime() + maxCrateLife < new Date().getTime()) {
+									groupController.destroyUnit( curServerName, crate.name );
 								}
 							});
 						})
