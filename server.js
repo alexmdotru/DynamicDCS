@@ -1231,6 +1231,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 							var iOwnerId = _.get(curIUnit, 'playerOwnerId');
 							var tOwnerId = _.get(curTUnit, 'playerOwnerId');
 
+							console.log('unitInfo: ', {iUnit: iunit, tUnit: tunit});
+
 							if (iOwnerId || tOwnerId) {
 								if (iOwnerId) {
 									oId.push(iOwnerId);
@@ -1271,7 +1273,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 										iPlayer = _.find(curServers[serverName].serverObject.players, {name: curIUnit.playername});
 										if (iPlayer) {
 											_.set(iCurObj, 'iucid', _.get(iPlayer, 'ucid'));
-											iPName = _.get(curIUnit, 'playername') + '(' + _.get(curIUnit, 'type') + ')';
+											iPName = _.get(curIUnit, 'type') + '(' + _.get(curIUnit, 'playername') + ')';
 										} else {
 											iPName = _.get(curIUnit, 'type') + _.get(iCurObj, 'iOwnerNamePretty', '');
 										}
@@ -1281,7 +1283,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 										tPlayer = _.find(curServers[serverName].serverObject.players, {name: curTUnit.playername});
 										if (tPlayer) {
 											_.set(iCurObj, 'tucid', _.get(tPlayer, 'ucid'));
-											tPName = _.get(curTUnit, 'playername') + '(' + _.get(curTUnit, 'type') + ')';
+											tPName = _.get(curTUnit, 'type') + '(' + _.get(curTUnit, 'playername') + ')';
 										} else {
 											tPName = _.get(curTUnit, 'type') + _.get(iCurObj, 'tOwnerNamePretty', '');
 										}
@@ -1324,14 +1326,18 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 											})
 										;
 									} else {
+										var shotCount;
 										// console.log('weapon not here');
 										// console.log('weapon: ', _.get(queObj, ['data', 'arg7', 'typeName']));
 										_.set(shootingUsers, [iUnitId, 'count'], _.get(shootingUsers, [_.get(iCurObj, 'iPlayerUnitId'), 'count'], 0)+1);
 										_.set(shootingUsers, [iUnitId, 'startTime'], new Date().getTime());
 										_.set(shootingUsers, [iUnitId, 'serverName'], serverName);
+										shotCount = _.get(shootingUsers, [iUnitId, 'count'], 0);
+										_.set(iCurObj, 'score', 1);
 										_.set(iCurObj, 'msg',
-											'A: '+ getSide(_.get(curIUnit, 'coalition'))+' '+ iPName +' has hit '+getSide(_.get(tUnit, 'coalition'))+' ' + tPName + ' '+_.get(shootingUsers, [iUnitId, 'count'], 0)+' times with ' + _.get(curIUnit, 'type') + ' - +1 each.'
+											'A: '+ getSide(_.get(curIUnit, 'coalition'))+' '+ iPName +' has hit '+getSide(_.get(curTUnit, 'coalition'))+' ' + tPName + ' '+shotCount+' times with machine gun' + _.get(curIUnit, 'type') + ' - +' + shotCount
 										);
+										dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 										_.set(shootingUsers, [iUnitId, 'iCurObj'], _.cloneDeep(iCurObj));
 									}
 								})
@@ -1375,7 +1381,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 								iName: _.get(curIUnit, 'playername'),
 								displaySide: _.get(curIUnit, 'coalition'),
 								roleCode: 'I',
-								msg: 'C: '+ _.get(curIUnit, 'playername')+ '('+_.get(curIUnit, 'type')+') has taken off' + place
+								msg: 'C: '+ _.get(curIUnit, 'type') + '('+_.get(curIUnit, 'playername')+') has taken off' + place
 							};
 							if(_.get(iCurObj, 'iucid')) {
 								// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
@@ -1437,7 +1443,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 								iName: _.get(curIUnit, 'playername'),
 								displaySide: _.get(curIUnit, 'coalition'),
 								roleCode: 'I',
-								msg: 'C: '+ _.get(curIUnit, 'playername') + '('+_.get(curIUnit, 'type') + ') has landed' + place
+								msg: 'C: '+ _.get(curIUnit, 'type') + '(' + _.get(curIUnit, 'playername') + ') has landed' + place
 							};
 							if(_.get(iCurObj, 'iucid')) {
 								// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
@@ -1473,7 +1479,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 								iName: _.get(curIUnit, 'playername'),
 								displaySide: 'A',
 								roleCode: 'I',
-								msg: 'A: '+ getSide(_.get(curIUnit, 'coalition'))+' '+ _.get(curIUnit, 'playername') + '('+_.get(curIUnit, 'type')+') has crashed'
+								msg: 'A: '+ getSide(_.get(curIUnit, 'coalition'))+' '+ _.get(curIUnit, 'type') + '(' + _.get(curIUnit, 'playername') +') has crashed'
 							};
 							if(_.get(iCurObj, 'iucid')) {
 								// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
@@ -1507,7 +1513,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 								iName: _.get(curIUnit, 'playername'),
 								displaySide: 'A',
 								roleCode: 'I',
-								msg: 'A: '+getSide(_.get(curIUnit, 'coalition'))+' '+ _.get(curIUnit, 'playername') + '('+_.get(curIUnit, 'type')+') ejected'
+								msg: 'A: '+getSide(_.get(curIUnit, 'coalition'))+' '+ _.get(curIUnit, 'type') + '('+ _.get(curIUnit, 'playername') +') ejected'
 							};
 							if(_.get(iCurObj, 'iucid')) {
 								// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
@@ -1541,7 +1547,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 								iName: _.get(curIUnit, 'playername'),
 								displaySide: _.get(curIUnit, 'coalition'),
 								roleCode: 'I',
-								msg: 'C: ' + _.get(curIUnit, 'playername') + '('+_.get(curIUnit, 'type')+') began refueling',
+								msg: 'C: ' + _.get(curIUnit, 'type') + '('+ _.get(curIUnit, 'playername') +') began refueling',
 								showInChart: true
 							};
 							if (_.get(iCurObj, 'iucid')) {
@@ -1577,7 +1583,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 								iName: _.get(curIUnit, 'playername'),
 								displaySide: 'A',
 								roleCode: 'I',
-								msg: 'A: '+getSide(_.get(curIUnit, 'playername'))+' '+ _.get(curIUnit, 'playername') + '('+_.get(curIUnit, 'type')+') is dead'
+								msg: 'A: '+getSide(_.get(curIUnit, 'playername'))+' '+ _.get(curIUnit, 'type') + '('+ _.get(curIUnit, 'playername') +') is dead'
 							};
 							if (_.get(iCurObj, 'iucid')) {
 								// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
@@ -1613,7 +1619,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 								iName: _.get(curIUnit, 'playername'),
 								displaySide: 'A',
 								roleCode: 'I',
-								msg: 'A: '+getSide(_.get(curIUnit, 'coalition'))+' '+ _.get(curIUnit, 'playername') + '('+_.get(curIUnit, 'type')+') pilot is dead'
+								msg: 'A: '+getSide(_.get(curIUnit, 'coalition'))+' '+ _.get(curIUnit, 'type') + '('+ _.get(curIUnit, 'playername') +') pilot is dead'
 							};
 							if (_.get(iCurObj, 'iucid')) {
 								// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
@@ -1647,7 +1653,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 								iName: _.get(curIUnit, 'playername'),
 								displaySide: _.get(curIUnit, 'coalition'),
 								roleCode: 'I',
-								msg: 'C: '+ _.get(curIUnit, 'playername') + '('+_.get(curIUnit, 'type')+') ended refueling',
+								msg: 'C: '+ _.get(curIUnit, 'type') + '('+ _.get(curIUnit, 'playername') + ') ended refueling',
 								showInChart: true
 							};
 							if (_.get(iCurObj, 'iucid')) {
