@@ -1335,7 +1335,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 										shotCount = _.get(shootingUsers, [iUnitId, 'count'], 0);
 										_.set(iCurObj, 'score', 1);
 										_.set(iCurObj, 'msg',
-											'A: '+ getSide(_.get(curIUnit, 'coalition'))+' '+ iPName +' has hit '+getSide(_.get(curTUnit, 'coalition'))+' ' + tPName + ' '+shotCount+' times with machine gun' + _.get(curIUnit, 'type') + ' - +' + shotCount
+											'A: '+ getSide(_.get(curIUnit, 'coalition'))+' '+ iPName +' has hit '+getSide(_.get(curTUnit, 'coalition'))+' ' + tPName + ' '+shotCount+' times with machine gun - +' + shotCount
 										);
 										dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 										_.set(shootingUsers, [iUnitId, 'iCurObj'], _.cloneDeep(iCurObj));
