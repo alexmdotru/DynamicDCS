@@ -1152,9 +1152,10 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						dbSystemServiceController.weaponScoreActions('read', _.get(queObj, ['data', 'arg7']))
 							.then(function (weaponResp) {
 								var curIPlayer = _.find(curServers[serverName].serverObject.players, {name: _.get(curUnit, 'playername')});
+								var curIPlayerOwner = _.get(curUnit, 'playerOwnerId');
 								var curIPlayerUcid =  _.get(iPlayer, 'ucid');
 								var curIPlayerSide = _.get(curUnit, 'coalition');
-								if (curIPlayer) {
+								if (curIPlayer || curIPlayerOwner) {
 									iCurObj = {
 										sessionName: sessionName,
 										eventCode: abrLookup(_.get(queObj, 'action')),
@@ -1210,6 +1211,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			var tUnitId = queObj.data.arg4;
 			var iPName;
 			var tPName;
+			var iOwnerId;
+			var tOwnerId;
 			// console.log('eventhit');
 			// Occurs whenever an object is hit by a weapon.
 			// arg1 = id
@@ -1220,87 +1223,122 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			dbMapServiceController.unitActions('read', serverName, {_id: iUnitId})
 				.then(function (iunit) {
 					var curIUnit = _.get(iunit, 0);
-					if (curIUnit) {
-						iPlayer = _.find(curServers[serverName].serverObject.players, {name: curIUnit.playername});
-						if (iPlayer) {
-							iPucid = _.get(iPlayer, 'ucid');
-							iPName = _.get(curIUnit, 'playername') + '(' + _.get(curIUnit, 'type') + ')';
-						} else {
-							iPName = _.get(curIUnit, 'type')
-						}
-					}
+
 					dbMapServiceController.unitActions('read', serverName, {_id: tUnitId})
 						.then(function (tunit) {
+							var oId = [];
 							var curTUnit = _.get(tunit, 0);
-							if (curTUnit ) {
-								tPlayer = _.find(curServers[serverName].serverObject.players, {name: curTUnit.playername});
-								if (tPlayer) {
-									tPucid = _.get(tPlayer, 'ucid');
-									tPName = _.get(curTUnit, 'playername') + '(' + _.get(curTUnit, 'type') + ')';
-								} else {
-									tPName = _.get(curTUnit, 'type')
+							var iOwnerId = _.get(curIUnit, 'playerOwnerId');
+							var tOwnerId = _.get(curTUnit, 'playerOwnerId');
+
+							if (iOwnerId || tOwnerId) {
+								if (iOwnerId) {
+									oId.push(iOwnerId);
+								}
+								if (tOwnerId) {
+									oId.push(tOwnerId);
 								}
 							}
+							dbMapServiceController.srvPlayerActions('read', serverName, {_id: {$in: oId}})
+								.then(function (ownerIds) {
 
-							iCurObj = {
-								sessionName: sessionName,
-								eventCode: abrLookup(_.get(queObj, 'action')),
-								iucid: iPucid,
-								iName: _.get(curIUnit, 'playername'),
-								tucid: tPucid,
-								tName: _.get(curTUnit, 'playername'),
-								displaySide: 'A',
-								roleCode: 'I',
-								showInChart: true
-							};
+									iCurObj = {
+										sessionName: sessionName,
+										eventCode: abrLookup(_.get(queObj, 'action')),
+										iName: _.get(curIUnit, 'playername'),
+										iOwnerId: iOwnerId,
+										tName: _.get(curTUnit, 'playername'),
+										tOwnerId: tOwnerId,
+										displaySide: 'A',
+										roleCode: 'I',
+										showInChart: true
+									};
 
-							if( _.get(queObj, ['data', 'arg7', 'typeName'])){
-								console.log('weaponhere: ', _.get(queObj, ['data', 'arg7', 'typeName']));
-								dbSystemServiceController.weaponScoreActions('read', _.get(queObj, ['data', 'arg7']))
-									.then(function (weaponResp) {
-										if (_.get(iCurObj, 'iucid') || _.get(iCurObj, 'tucid')) {
-											if (_.startsWith(_.get(weaponResp, 'name'), 'weapons.shells')){
-												_.set(shootingUsers, [iUnitId, 'count'], _.get(shootingUsers, [iUnitId, 'count'], 0)+1);
-												_.set(shootingUsers, [iUnitId, 'startTime'], new Date().getTime());
-												_.set(shootingUsers, [iUnitId, 'serverName'], serverName);
-												_.set(iCurObj, 'msg',
-													'A: '+ getSide(_.get(curIUnit, 'coalition'))+' '+ iPName +' has hit '+getSide(_.get(curTUnit, 'coalition'))+' ' + tPName + ' '+_.get(shootingUsers, [iUnitId, 'count'], 0)+' times with ' + _.get(weaponResp, 'displayName') + ' - +'+_.get(weaponResp, 'score')+' each.'
-												);
-												_.set(shootingUsers, [iUnitId, 'iCurObj'], _.cloneDeep(iCurObj));
-											} else {
-												_.set(iCurObj, 'score', _.get(weaponResp, 'score'));
-												_.set(iCurObj, 'msg', 'A: '+ getSide(_.get(curIUnit, 'coalition'))+' '+ iPName +' has hit '+getSide(_.get(curTUnit, 'coalition'))+' '+tPName + ' with ' + _.get(weaponResp, 'displayName') + ' - +'+_.get(weaponResp, 'score'));
-												if(_.get(iCurObj, 'iucid') || _.get(iCurObj, 'tucid')) {
-													curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
-													dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
+									_.forEach(ownerIds, function (ownerId) {
+										if (ownerId.ucid === iOwnerId) {
+											_.set(iCurObj, 'iOwner', ownerId);
+											_.set(iCurObj, 'iOwnerName', _.get(ownerId, 'name', ''));
+											_.set(iCurObj, 'iOwnerNamePretty', '(' + _.get(ownerId, 'name', '') + ')');
+										}
+										if (ownerId.ucid === tOwnerId) {
+											_.set(iCurObj, 'tOwner', ownerId);
+											_.set(iCurObj, 'tOwnerName', _.get(ownerId, 'name', ''));
+											_.set(iCurObj, 'tOwnerNamePretty', '(' + _.get(ownerId, 'name', '') + ')');
+										}
+									});
+
+									if (curIUnit) {
+										iPlayer = _.find(curServers[serverName].serverObject.players, {name: curIUnit.playername});
+										if (iPlayer) {
+											_.set(iCurObj, 'iucid', _.get(iPlayer, 'ucid'));
+											iPName = _.get(curIUnit, 'playername') + '(' + _.get(curIUnit, 'type') + ')';
+										} else {
+											iPName = _.get(curIUnit, 'type') + _.get(iCurObj, 'iOwnerNamePretty', '');
+										}
+									}
+
+									if (curTUnit ) {
+										tPlayer = _.find(curServers[serverName].serverObject.players, {name: curTUnit.playername});
+										if (tPlayer) {
+											_.set(iCurObj, 'tucid', _.get(tPlayer, 'ucid'));
+											tPName = _.get(curTUnit, 'playername') + '(' + _.get(curTUnit, 'type') + ')';
+										} else {
+											tPName = _.get(curTUnit, 'type') + _.get(iCurObj, 'tOwnerNamePretty', '');
+										}
+									}
+
+									if( _.get(queObj, ['data', 'arg7', 'typeName'])){
+										// console.log('weaponhere: ', _.get(queObj, ['data', 'arg7', 'typeName']));
+										dbSystemServiceController.weaponScoreActions('read', _.get(queObj, ['data', 'arg7']))
+											.then(function (weaponResp) {
+												if (_.get(iCurObj, 'iucid') || _.get(iCurObj, 'tucid')) {
+													if (_.startsWith(_.get(weaponResp, 'name'), 'weapons.shells')){
+														_.set(shootingUsers, [iUnitId, 'count'], _.get(shootingUsers, [iUnitId, 'count'], 0)+1);
+														_.set(shootingUsers, [iUnitId, 'startTime'], new Date().getTime());
+														_.set(shootingUsers, [iUnitId, 'serverName'], serverName);
+														_.set(iCurObj, 'msg',
+															'A: '+ getSide(_.get(curIUnit, 'coalition'))+' '+ iPName +' has hit '+getSide(_.get(curTUnit, 'coalition'))+' ' + tPName + ' '+_.get(shootingUsers, [iUnitId, 'count'], 0)+' times with ' + _.get(weaponResp, 'displayName') + ' - +'+_.get(weaponResp, 'score')+' each.'
+														);
+														_.set(shootingUsers, [iUnitId, 'iCurObj'], _.cloneDeep(iCurObj));
+													} else {
+														_.set(iCurObj, 'score', _.get(weaponResp, 'score'));
+														_.set(iCurObj, 'msg', 'A: '+ getSide(_.get(curIUnit, 'coalition'))+' '+ iPName +' has hit '+getSide(_.get(curTUnit, 'coalition'))+' '+tPName + ' with ' + _.get(weaponResp, 'displayName') + ' - +'+_.get(weaponResp, 'score'));
+														if(_.get(iCurObj, 'iucid') || _.get(iCurObj, 'tucid')) {
+															curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
+															dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
+														}
+														DCSLuaCommands.sendMesgToAll(
+															serverName,
+															_.get(iCurObj, 'msg'),
+															20
+														);
+													}
 												}
-												DCSLuaCommands.sendMesgToAll(
-													serverName,
-													_.get(iCurObj, 'msg'),
-													20
-												);
-											}
-										}
-									})
-									.catch(function (err) {
-										console.log('Eevent line998: ', iCurObj, err);
-										if(_.get(iCurObj, 'iPlayerUcid') || _.get(iCurObj, 'tPlayerUcid')) {
-											// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
-											// dbMapServiceController.statSrvEventActions('save', serverName, iCurObj);
-										}
-									})
-								;
-							} else {
-								// console.log('weapon not here');
-								// console.log('weapon: ', _.get(queObj, ['data', 'arg7', 'typeName']));
-								_.set(shootingUsers, [iUnitId, 'count'], _.get(shootingUsers, [_.get(iCurObj, 'iPlayerUnitId'), 'count'], 0)+1);
-								_.set(shootingUsers, [iUnitId, 'startTime'], new Date().getTime());
-								_.set(shootingUsers, [iUnitId, 'serverName'], serverName);
-								_.set(iCurObj, 'msg',
-									'A: '+ getSide(_.get(curIUnit, 'coalition'))+' '+ iPName +' has hit '+getSide(_.get(tUnit, 'coalition'))+' ' + tPName + ' '+_.get(shootingUsers, [iUnitId, 'count'], 0)+' times with ' + _.get(curIUnit, 'type') + ' - +1 each.'
-								);
-								_.set(shootingUsers, [iUnitId, 'iCurObj'], _.cloneDeep(iCurObj));
-							}
+											})
+											.catch(function (err) {
+												console.log('Eevent line998: ', iCurObj, err);
+												if(_.get(iCurObj, 'iPlayerUcid') || _.get(iCurObj, 'tPlayerUcid')) {
+													// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
+													// dbMapServiceController.statSrvEventActions('save', serverName, iCurObj);
+												}
+											})
+										;
+									} else {
+										// console.log('weapon not here');
+										// console.log('weapon: ', _.get(queObj, ['data', 'arg7', 'typeName']));
+										_.set(shootingUsers, [iUnitId, 'count'], _.get(shootingUsers, [_.get(iCurObj, 'iPlayerUnitId'), 'count'], 0)+1);
+										_.set(shootingUsers, [iUnitId, 'startTime'], new Date().getTime());
+										_.set(shootingUsers, [iUnitId, 'serverName'], serverName);
+										_.set(iCurObj, 'msg',
+											'A: '+ getSide(_.get(curIUnit, 'coalition'))+' '+ iPName +' has hit '+getSide(_.get(tUnit, 'coalition'))+' ' + tPName + ' '+_.get(shootingUsers, [iUnitId, 'count'], 0)+' times with ' + _.get(curIUnit, 'type') + ' - +1 each.'
+										);
+										_.set(shootingUsers, [iUnitId, 'iCurObj'], _.cloneDeep(iCurObj));
+									}
+								})
+								.catch(function (err) {
+									console.log('err line1300: ', err);
+								})
+							;
 						})
 						.catch(function (err) {
 							console.log('err line596: ', err);
