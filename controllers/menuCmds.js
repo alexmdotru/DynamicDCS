@@ -156,6 +156,19 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 													grpTypes = _.transform(units, function (result, value) {
 														(result[_.get(_.split(value.name, '|'), [2])] || (result[_.get(_.split(value.name, '|'), [2])] = [])).push(value);
 													}, {});
+													cCnt = 1;
+													_.forEach(_.get(grpTypes, [curCrateType]), function (eCrate) {
+														if ( cCnt <= numCrate) {
+															dbMapServiceController.unitActions('update', pObj.serverName, {_id: eCrate.unitId, dead: true})
+																.catch(function (err) {
+																	console.log('erroring line152: ', err);
+																})
+															;
+															groupController.destroyUnit(pObj.serverName, eCrate.name);
+															cCnt ++;
+														}
+													});
+
 													localCrateNum = _.get(grpTypes, [curCrateType], []).length;
 													if( localCrateNum >=  numCrate) {
 														if (curCrateSpecial === 'reloadGroup') {
@@ -163,19 +176,6 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 														} else if (curCrateSpecial === 'repairBase') {
 															repairController.repairBase(pObj.serverName, curUnit, curCrateType, curCrate);
 														} else {
-															cCnt = 1;
-															_.forEach(_.get(grpTypes, [curCrateType]), function (eCrate) {
-																if ( cCnt <= numCrate) {
-																	dbMapServiceController.unitActions('update', pObj.serverName, {_id: eCrate.unitId, dead: true})
-																		.catch(function (err) {
-																			console.log('erroring line152: ', err);
-																		})
-																	;
-																	groupController.destroyUnit(pObj.serverName, eCrate.name);
-																	cCnt ++;
-																}
-															});
-
 															msg = "G: Unpacking " + _.toUpper(curCrateSpecial) + " " + curCrateType + "!";
 															exports.unpackCrate(pObj.serverName, curUnit, curCrateType, curCrateSpecial, isCombo, isMobile);
 															groupController.destroyUnit(pObj.serverName, curCrate.name);

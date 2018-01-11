@@ -74,7 +74,9 @@ _.set(exports, 'getGroundUnitsInProximity', function (serverName, lonLat, kmDist
 					]
 				}
 			},
-			category: 'GROUND'
+			category: 'GROUND',
+			isCrate: false,
+			isTroop: false
 		})
 		.then(function (closeUnits) {
 			// console.log('close units ' + closeUnits);
