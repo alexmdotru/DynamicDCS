@@ -5,7 +5,7 @@ const dbMapServiceController = require('./dbMapService');
 const groupController = require('./group');
 const proximityController = require('./proximity');
 
-_.set(exports, 'reloadSAM', function (serverName, unitCalling) {
+_.set(exports, 'reloadSAM', function (serverName, unitCalling, crate) {
 	proximityController.getGroundUnitsInProximity(serverName, unitCalling.lonLatLoc, 0.4)
 		.then(function(units){
 			var closestUnit = _.first(_.filter(units, {coalition: unitCalling.coalition}));
@@ -26,6 +26,7 @@ _.set(exports, 'reloadSAM', function (serverName, unitCalling) {
 											groupController.destroyUnit(serverName, unit.name);
 										});
 										groupController.spawnGroup(serverName, samUnits);
+										groupController.destroyUnit(serverName, crate.name);
 									} else {
 										DCSLuaCommands.sendMesgToGroup(
 											unitCalling.groupId,
@@ -42,8 +43,8 @@ _.set(exports, 'reloadSAM', function (serverName, unitCalling) {
 						} else if (samUnits.length === 1) {
 							//unit is single, respawn it
 							var curUnit = _.get(samUnits, [0]);
-							groupController.destroyUnit(serverName, curUnit.name);
 							groupController.spawnGroup(serverName, [curUnit]);
+							groupController.destroyUnit(serverName, crate.name);
 						}
 					})
 					.catch(function (err) {

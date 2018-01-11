@@ -61,6 +61,8 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 						'missionCommands.addCommandForGroup("' + unit.groupId + '", "Load Crate", {"ActionMenu"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "loadCrate", ["unitId"] = ' + unit.unitId + '})',
 						'missionCommands.addCommandForGroup("' + unit.groupId + '", "Drop Crate", {"ActionMenu"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "dropCrate", ["unitId"] = ' + unit.unitId + '})',
 					];
+					var unitsProxBase = proximityController.extractUnitsBackToBase(unit, serverName);
+					var logiFarpName = proximityController.unitInProxLogiTowers(unit, serverName);
 
 					if(_.includes(allowedTypesForTroops, unit.type) && !_.get(unit, 'inAir', true)) {
 						cmdArray = _.concat(cmdArray, aTroopMenu);
@@ -81,7 +83,7 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 					cmdArray.unshift(resetMenu);
 
 					// console.log('der: ', unit.type, _.includes(allowedTypesForTroops, unit.type), proximityController.extractUnitsBackToBase(unit, serverName));
-					if (_.includes(allowedTypesForTroops, unit.type) && proximityController.extractUnitsBackToBase(unit, serverName)) {
+					if (_.includes(allowedTypesForTroops, unit.type) && unitsProxBase) {
 						cmdArray = _.concat(cmdArray, [
 							'missionCommands.addSubMenuForGroup("' + unit.groupId + '", ' + trpMenuTitle + ')',
 							'missionCommands.addCommandForGroup("' + unit.groupId + '", "Load Rifle Troop", {' + trpMenuTitle + '}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "Soldier", ["type"] = "combo", ["unitId"] = ' + unit.unitId + '})',
@@ -92,7 +94,7 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 
 						]);
 					}
-					if (_.includes(allowedTypesForCrates, unit.type) && proximityController.unitInProxLogiTowers(unit, serverName)) {
+					if (_.includes(allowedTypesForCrates, unit.type) && logiFarpName) {
 						if(unit.coalition === 1) {
 							cmdArray = _.concat(cmdArray, [
 								'missionCommands.addSubMenuForGroup("' + unit.groupId + '", ' + aqMenuTitle + ')',
@@ -100,12 +102,13 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 								'missionCommands.addCommandForGroup("' + unit.groupId + '", "Early Warning Radar Short(1M)", {' + aqMenuTitle + ',"Support"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "EWR", ["type"] = "1L13 EWR", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1, ["mobile"] = "true"})',
 								'missionCommands.addCommandForGroup("' + unit.groupId + '", "Early Warning Radar Long(2M)", {' + aqMenuTitle + ',"Support"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "EWR", ["type"] = "55G6 EWR", ["unitId"] = ' + unit.unitId + ', ["crates"] = 2, ["mobile"] = "true"})',
 								'missionCommands.addCommandForGroup("' + unit.groupId + '", "JTAC (1M)", {' + aqMenuTitle + ',"Support"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "JTAC", ["type"] = "SKP-11", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1, ["mobile"] = "true"})',
-								'missionCommands.addCommandForGroup("' + unit.groupId + '", "Reload Crate (1M)", {' + aqMenuTitle + ',"Support"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "reload", ["type"] = "", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1, ["mobile"] = "true"})',
-								'missionCommands.addCommandForGroup("' + unit.groupId + '", "Fuel Tanker (1M)", {' + aqMenuTitle + ',"Support"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "unarmedFuel", ["type"] = "ATZ-10", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1, ["mobile"] = "true"})',
-								'missionCommands.addCommandForGroup("' + unit.groupId + '", "Ammo Truck (1M)", {' + aqMenuTitle + ',"Support"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "unarmedAmmo", ["type"] = "Ural-375", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1, ["mobile"] = "true"})',
+								'missionCommands.addCommandForGroup("' + unit.groupId + '", "Reload Group(1M)", {' + aqMenuTitle + ',"Support"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "reloadGroup", ["type"] = "", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1, ["mobile"] = "true"})',
+								'missionCommands.addCommandForGroup("' + unit.groupId + '", "Repair Base(1M)", {' + aqMenuTitle + ',"Support"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "repairBase", ["type"] = "' + logiFarpName + '", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1, ["mobile"] = "true"})',
+								'missionCommands.addCommandForGroup("' + unit.groupId + '", "Fuel Tanker(1M)", {' + aqMenuTitle + ',"Support"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "unarmedFuel", ["type"] = "ATZ-10", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1, ["mobile"] = "true"})',
+								'missionCommands.addCommandForGroup("' + unit.groupId + '", "Ammo Truck(1M)", {' + aqMenuTitle + ',"Support"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "unarmedAmmo", ["type"] = "Ural-375", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1, ["mobile"] = "true"})',
 
 								'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "Armored Cars", {' + aqMenuTitle + '})',
-								'missionCommands.addCommandForGroup("' + unit.groupId + '", "Cobra (1M)", {' + aqMenuTitle + ', "Armored Cars"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "armoredCar", ["type"] = "Cobra", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1, ["mobile"] = "true"})',
+								'missionCommands.addCommandForGroup("' + unit.groupId + '", "Cobra(1M)", {' + aqMenuTitle + ', "Armored Cars"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "armoredCar", ["type"] = "Cobra", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1, ["mobile"] = "true"})',
 
 								'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "IFVs", {' + aqMenuTitle + '})',
 								'missionCommands.addCommandForGroup("' + unit.groupId + '", "BTR-80(1M)", {' + aqMenuTitle + ', "IFVs"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "APC", ["type"] = "BTR-80", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1, ["mobile"] = "true"})',
@@ -227,8 +230,9 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 								'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "Support", {' + aqMenuTitle + '})',
 								'missionCommands.addCommandForGroup("' + unit.groupId + '", "Early Warning Radar Short(1M)", {' + aqMenuTitle + ',"Support"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "EWR", ["type"] = "1L13 EWR", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1, ["mobile"] = "true"})',
 								'missionCommands.addCommandForGroup("' + unit.groupId + '", "Early Warning Radar Long(2M)", {' + aqMenuTitle + ',"Support"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "EWR", ["type"] = "55G6 EWR", ["unitId"] = ' + unit.unitId + ', ["crates"] = 2, ["mobile"] = "true"})',
-								'missionCommands.addCommandForGroup("' + unit.groupId + '", "JTAC (1M)", {' + aqMenuTitle + ',"Support"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "JTAC", ["type"] = "Hummer", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1, ["mobile"] = "true"})',
-								'missionCommands.addCommandForGroup("' + unit.groupId + '", "Reload Crate (1M)", {' + aqMenuTitle + ',"Support"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "reload", ["type"] = "", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1, ["mobile"] = "true"})',
+								'missionCommands.addCommandForGroup("' + unit.groupId + '", "JTAC(1M)", {' + aqMenuTitle + ',"Support"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "JTAC", ["type"] = "Hummer", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1, ["mobile"] = "true"})',
+								'missionCommands.addCommandForGroup("' + unit.groupId + '", "Reload Group(1M)", {' + aqMenuTitle + ',"Support"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "reloadGroup", ["type"] = "", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1, ["mobile"] = "true"})',
+								'missionCommands.addCommandForGroup("' + unit.groupId + '", "Repair Base(1M)", {' + aqMenuTitle + ',"Support"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "repairBase", ["type"] = "' + logiFarpName + '", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1, ["mobile"] = "true"})',
 								'missionCommands.addCommandForGroup("' + unit.groupId + '", "Fuel Tanker(1M)", {' + aqMenuTitle + ',"Support"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "unarmedFuel", ["type"] = "M978 HEMTT Tanker", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1, ["mobile"] = "true"})',
 								'missionCommands.addCommandForGroup("' + unit.groupId + '", "Ammo Truck(1M)", {' + aqMenuTitle + ',"Support"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "unarmedAmmo", ["type"] = "M 818", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1, ["mobile"] = "true"})',
 

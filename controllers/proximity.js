@@ -208,7 +208,7 @@ _.set(exports, 'checkUnitsToBaseForCapture', function (serverName) {
 								// console.log('Spawning Support Units', base, 2);
 								spawnArray = _.concat(spawnArray, groupController.spawnSupportBaseGrp(serverName, base.name, 2, false));
 								groupController.spawnGroup(serverName, spawnArray, base.name, 2);
-								dbMapServiceController.baseActions('updateSide', serverName, {name: base.name, side: 2, replenTime: null})
+								dbMapServiceController.baseActions('updateSide', serverName, {name: base.name, side: 2, replenTime: 0})
 									.catch(function (err) {
 										console.log('erroring line162: ', err);
 									})
@@ -223,7 +223,7 @@ _.set(exports, 'checkUnitsToBaseForCapture', function (serverName) {
 								// console.log('Spawning Support Units', base, 1);
 								spawnArray = _.concat(spawnArray, groupController.spawnSupportBaseGrp(serverName, base.name, 1, false));
 								groupController.spawnGroup(serverName, spawnArray, base.name, 1);
-								dbMapServiceController.baseActions('updateSide', serverName, {name: base.name, side: 1, replenTime: null})
+								dbMapServiceController.baseActions('updateSide', serverName, {name: base.name, side: 1, replenTime: 0})
 									.catch(function (err) {
 										console.log('erroring line189: ', err);
 									})
@@ -291,9 +291,9 @@ _.set(exports, 'checkUnitsToBaseForTroops', function (serverName) {
 
 _.set(exports, 'extractUnitsBackToBase', function (unit, serverName) {
 	var friendlyBase = false;
-	_.forEach(_.get(unitsInProxBases, [serverName], []), function (base) {
+	_.forEach(_.get(unitsInProxBases, [serverName], []), function (base, baseName) {
 		if(_.get(base, [unit.unitId, 'enabled'])) {
-			friendlyBase = true;
+			friendlyBase = baseName;
 		}
 	});
 	return friendlyBase;
@@ -301,9 +301,9 @@ _.set(exports, 'extractUnitsBackToBase', function (unit, serverName) {
 
 _.set(exports, 'unitInProxLogiTowers', function (unit, serverName) {
 	var friendlyLogi = false;
-	_.forEach(_.get(unitsInProxLogiTowers, [serverName], []), function (logiTower) {
+	_.forEach(_.get(unitsInProxLogiTowers, [serverName], []), function (logiTower, logiName) {
 		if(_.get(logiTower, [unit.unitId, 'enabled'])) {
-			friendlyLogi = true;
+			friendlyLogi = logiName;
 		}
 	});
 	return friendlyLogi;

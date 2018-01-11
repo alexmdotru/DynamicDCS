@@ -5,6 +5,7 @@ const proximityController = require('./proximity');
 const menuUpdateController = require('./menuUpdate');
 const groupController = require('./group');
 const reloadController = require('./reload');
+const repairController = require('./repair');
 
 exports.maxCrates = 10;
 exports.maxTroops = 1;
@@ -143,6 +144,7 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 												var cCnt = 0;
 												var grpTypes;
 												var localCrateNum;
+												var msg;
 												var curCrate = _.get(units, [0], {});
 												var numCrate = _.split(curCrate.name, '|')[4];
 												var curCrateSpecial = _.split(curCrate.name, '|')[3];
@@ -156,30 +158,35 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 													}, {});
 													localCrateNum = _.get(grpTypes, [curCrateType], []).length;
 													if( localCrateNum >=  numCrate) {
-														cCnt = 1;
-														_.forEach(_.get(grpTypes, [curCrateType]), function (eCrate) {
-															if ( cCnt <= numCrate) {
-																dbMapServiceController.unitActions('update', pObj.serverName, {_id: eCrate.unitId, dead: true})
-																	.catch(function (err) {
-																		console.log('erroring line152: ', err);
-																	})
-																;
-																groupController.destroyUnit(pObj.serverName, eCrate.name);
-																cCnt ++;
-															}
-														});
-														if (curCrateSpecial === 'reload') {
-															reloadController.reloadSAM(pObj.serverName, curUnit);
+														if (curCrateSpecial === 'reloadGroup') {
+															reloadController.reloadSAM(pObj.serverName, curUnit, curCrate);
+														} else if (curCrateSpecial === 'repairBase') {
+															repairController.repairBase(pObj.serverName, curUnit, curCrateType, curCrate);
 														} else {
+															cCnt = 1;
+															_.forEach(_.get(grpTypes, [curCrateType]), function (eCrate) {
+																if ( cCnt <= numCrate) {
+																	dbMapServiceController.unitActions('update', pObj.serverName, {_id: eCrate.unitId, dead: true})
+																		.catch(function (err) {
+																			console.log('erroring line152: ', err);
+																		})
+																	;
+																	groupController.destroyUnit(pObj.serverName, eCrate.name);
+																	cCnt ++;
+																}
+															});
+
+															msg = "G: Unpacking " + _.toUpper(curCrateSpecial) + " " + curCrateType + "!";
 															exports.unpackCrate(pObj.serverName, curUnit, curCrateType, curCrateSpecial, isCombo, isMobile);
+															groupController.destroyUnit(pObj.serverName, curCrate.name);
+															DCSLuaCommands.sendMesgToGroup(
+																curUnit.groupId,
+																pObj.serverName,
+																msg,
+																5
+															);
 														}
-														groupController.destroyUnit(pObj.serverName, curCrate.name);
-														DCSLuaCommands.sendMesgToGroup(
-															curUnit.groupId,
-															pObj.serverName,
-															"G: Unpacking " + _.toUpper(curCrateSpecial) + " " + curCrateType + "!",
-															5
-														);
+
 													} else {
 														DCSLuaCommands.sendMesgToGroup(
 															curUnit.groupId,
@@ -311,8 +318,12 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 						exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false, 'jtac', pObj.mobile);
 					}
 
-					if (pObj.cmd === 'reload') {
-						exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false, 'reload', pObj.mobile);
+					if (pObj.cmd === 'reloadGroup') {
+						exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false, 'reloadGroup', pObj.mobile);
+					}
+
+					if (pObj.cmd === 'repairBase') {
+						exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false, 'repairBase', pObj.mobile);
 					}
 
 					if (pObj.cmd === 'unarmedFuel') {
