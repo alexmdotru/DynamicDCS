@@ -1341,7 +1341,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 											shotpoints = shotCount
 										}
 										_.set(iCurObj, 'msg',
-											'A: '+ getSide(_.get(curIUnit, 'coalition'))+' '+ iPName +' has hit '+getSide(_.get(curTUnit, 'coalition'))+' ' + tPName + ' '+shotCount+' times with ?(dcsbug) - +' + shotpoints
+											'A: '+ getSide(_.get(curIUnit, 'coalition'))+' '+ iPName +' has hit '+getSide(_.get(curTUnit, 'coalition'))+' ' + tPName + ' '+shotCount+' times with ? - +' + shotpoints
 										);
 										_.set(shootingUsers, [iUnitId, 'iCurObj'], _.cloneDeep(iCurObj));
 									}
