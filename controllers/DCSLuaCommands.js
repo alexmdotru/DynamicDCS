@@ -8,7 +8,7 @@ const dbMapServiceController = require('./dbMapService');
 
 // game mission commands
 _.set(exports, 'sendMesgToAll', function (serverName, mesg, time) {
-	var curCMD = 'trigger.action.outText([["'+mesg+'"]], '+time+')';
+	var curCMD = 'trigger.action.outText([['+mesg+']], '+time+')';
 	var sendClient = {action: "CMD", cmd: [curCMD], reqID: 0};
 	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
 	dbMapServiceController.cmdQueActions('save', serverName, actionObj)
@@ -19,7 +19,7 @@ _.set(exports, 'sendMesgToAll', function (serverName, mesg, time) {
 });
 
 _.set(exports, 'sendMesgToCoalition', function (coalition, serverName, mesg, time) {
-	var curCMD = 'trigger.action.outTextForCoalition('+coalition+', [["'+mesg+'"]], '+time+')';
+	var curCMD = 'trigger.action.outTextForCoalition('+coalition+', [['+mesg+']], '+time+')';
 	var sendClient = {action: "CMD", cmd: [curCMD], reqID: 0};
 	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
 	dbMapServiceController.cmdQueActions('save', serverName, actionObj)
@@ -30,7 +30,7 @@ _.set(exports, 'sendMesgToCoalition', function (coalition, serverName, mesg, tim
 });
 
 _.set(exports, 'sendMesgToGroup', function (groupId, serverName, mesg, time) {
-	var curCMD = 'trigger.action.outTextForGroup('+groupId+', [["'+mesg+'"]], '+time+')';
+	var curCMD = 'trigger.action.outTextForGroup('+groupId+', [['+mesg+']], '+time+')';
 	var sendClient = {action: "CMD", cmd: [curCMD], reqID: 0};
 	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
 	dbMapServiceController.cmdQueActions('save', serverName, actionObj)
@@ -43,7 +43,7 @@ _.set(exports, 'sendMesgToGroup', function (groupId, serverName, mesg, time) {
 
 // GameGui commands
 _.set(exports, 'kickPlayer', function (serverName, playerId, mesg) {
-	var curCMD = 'net.kick('+playerId+', [["'+mesg+'"]])';
+	var curCMD = 'net.kick('+playerId+', [['+mesg+']])';
 	var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
 	var actionObj = {actionObj: sendClient, queName: 'GameGuiArray'};
 	dbMapServiceController.cmdQueActions('save', serverName, actionObj)
@@ -65,7 +65,7 @@ _.set(exports, 'forcePlayerSpectator', function (serverName, playerId, mesg) {
 			console.log('erroring line65: ', err);
 		})
 	;
-	curCMD = 'net.send_chat([["'+mesg+'"]], all)';
+	curCMD = 'net.send_chat([['+mesg+']], all)';
 	sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
 	actionObj = {actionObj: sendClient, queName: 'GameGuiArray'};
 	dbMapServiceController.cmdQueActions('save', serverName, actionObj)
