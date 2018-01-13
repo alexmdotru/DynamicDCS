@@ -4,7 +4,7 @@ const dbMapServiceController = require('./dbMapService');
 _.set(exports, 'setbaseSides', function (serverName) {
 	dbMapServiceController.baseActions('getBaseSides', serverName, {})
 		.then(function (baseSides) {
-			dbMapServiceController.cmdQueActions('save', curServerName, {
+			dbMapServiceController.cmdQueActions('save', serverName, {
 				queName: 'clientArray',
 				actionObj: {
 					action: "SETBASEFLAGS",
