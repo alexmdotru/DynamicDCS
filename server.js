@@ -197,8 +197,7 @@ protectedRouter.route('/userAccounts')
 	});
 
 //setup globals
-var baseFlagTimeout = (1 * 60 * 1000); // 5 mins
-var epocTimeout = (1 * 60 * 1000); // 5 mins
+var epocTimeout = (2 * 60 * 1000); // 5 mins
 var maxIdleTime = (5 * 60 * 1000); // 5 mins
 var maxCrateLife = (90 * 60 * 1000); // 90 mina
 var outOfSyncUnitCnt = 0;
@@ -601,6 +600,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 							console.log('Units Resynced');
 							isBaseFullyPopped = true;
 							outOfSyncUnitCnt = 0;
+							baseSpawnFlagsController.setbaseSides(serverName);
 						}
 					}
 				} else {
@@ -1046,9 +1046,9 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			}
 		}
 
+		/*
 		// server side events
 		if (_.get(queObj, 'action') === 'friendly_fire') {
-			/*
 			// "friendly_fire", playerID, weaponName, victimPlayerID
 			iCurObj = {
 				sessionName: sessionName,
@@ -1076,8 +1076,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					15
 				);
 			}
-			*/
 		}
+		/*
 
 		if (_.get(queObj, 'action') === 'self_kill') {
 			// "self_kill", playerID
@@ -2067,17 +2067,3 @@ function syncDCSData(serverName, DCSData) {
 		curServers.processQue(serverName, sessionName, DCSData);
 	}
 }
-
-setTimeout(function () {
-	dbSystemServiceController.serverActions('read', {enabled: true})
-		.then(function (srvs) {
-			_.forEach(srvs, function (srv) {
-				var curServerName = _.get(srv, '_id');
-				baseSpawnFlagsController.setbaseSides(curServerName);
-			});
-		})
-		.catch(function (err) {
-			console.log('line2077', err);
-		})
-	;
-}, baseFlagTimeout);
