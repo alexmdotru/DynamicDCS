@@ -216,7 +216,6 @@ _.set(exports, 'checkUnitsToBaseForCapture', function (serverName) {
 									})
 								;
 								groupController.spawnLogisticCmdCenter(serverName, {}, base, 2);
-								baseSpawnFlagsController.setbaseSides(serverName);
 							}
 						}
 						if (base.side === 2 && _.get(sideArray, [1], []).length > 0) {
@@ -232,7 +231,6 @@ _.set(exports, 'checkUnitsToBaseForCapture', function (serverName) {
 									})
 								;
 								groupController.spawnLogisticCmdCenter(serverName, {}, base, 1);
-								baseSpawnFlagsController.setbaseSides(serverName);
 							}
 						}
 					})
