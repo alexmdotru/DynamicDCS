@@ -197,9 +197,10 @@ protectedRouter.route('/userAccounts')
 	});
 
 //setup globals
+var baseFlagInitTimeout = (1 * 60 * 1000); // 5 mins
 var epocTimeout = (2 * 60 * 1000); // 5 mins
 var maxIdleTime = (5 * 60 * 1000); // 5 mins
-var maxCrateLife = (90 * 60 * 1000); // 90 mina
+var maxCrateLife = (90 * 60 * 1000); // 90 mins
 var outOfSyncUnitCnt = 0;
 var socketQues = ['q0', 'q1', 'q2', 'qadmin', 'leaderboard'];
 var curServers = {};
@@ -2067,3 +2068,17 @@ function syncDCSData(serverName, DCSData) {
 		curServers.processQue(serverName, sessionName, DCSData);
 	}
 }
+
+setTimeout(function () {
+	dbSystemServiceController.serverActions('read', {enabled: true})
+		.then(function (srvs) {
+			_.forEach(srvs, function (srv) {
+				var curServerName = _.get(srv, '_id');
+				baseSpawnFlagsController.setbaseSides(curServerName);
+			});
+		})
+		.catch(function (err) {
+			console.log('line2077', err);
+		})
+	;
+}, baseFlagInitTimeout);
