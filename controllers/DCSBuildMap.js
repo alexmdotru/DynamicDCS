@@ -39,7 +39,7 @@ _.set(exports, 'buildDynamicMap', function (serverName) {
 				});
 			} else {
 				//build map from scratch
-				console.log('popUnitsFromScratch');
+				console.log('popUnitsFromScratch: ', serverName);
 				groupController.spawnNewMapGrps( serverName );
 			}
 		})

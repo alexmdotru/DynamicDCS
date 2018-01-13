@@ -446,7 +446,8 @@ do
 		updateGroups()
 		updateStatics()
 
-		local chkSize = 500
+		env.info('paySize: '..table.getn(updateQue.que));
+		local chkSize = 100
 		local payload = {}
 		payload.que = {}
 		for i = 1, chkSize do
@@ -464,9 +465,19 @@ do
 	local function runRequest(request)
 		if request.action ~= nil then
 			if request.action == "GETPOLYDEF" then
+				env.info('GET POLY')
 				--initAirbases()
 			end
+			if request.action == "REMOVEOBJECT" then
+				env.info('REMOVE OBJECT')
+				local removeObj = Unit.getByName(request.removeObject)
+				if removeObj ~= nil then
+					env.info('Destroying '..request.removeObject)
+					removeObj:destroy()
+				end
+			end
 			if request.action == "ADDTASK" then
+				env.info('ADD TASK')
 				if request.taskType == 'EWR' then
 					local taskUnit = Unit.getByName(request.unitName)
 					if taskUnit ~= nil then
@@ -482,6 +493,7 @@ do
 				end
 			end
 			if request.action == "SETLASERSMOKE" then
+				env.info('SET LASER SMOKE')
 				local curJtacUnit = Unit.getByName(request.jtacUnitName)
 				local curEnemyUnit = Unit.getByName(request.enemyUnitName)
 
@@ -534,6 +546,7 @@ do
 				end
 			end
 			if request.action == "REMOVELASERIR" then
+				env.info('REMOVE LASER')
 				local _tempLase = laserSpots[request.jtacUnitName]
 
 				if _tempLase ~= nil then
@@ -551,6 +564,7 @@ do
 				end
 			end
 			if request.action == "ISLOSVISIBLE" then
+				env.info('IS LOS VISIBLE')
 				--tprint(request, 1)
 				local jtacUnit = Unit.getByName(request.jtacUnitName)
 				if jtacUnit ~= nil then
@@ -579,12 +593,14 @@ do
 				end
 			end
 			if request.action == "GETUNITSALIVE" then
+				env.info('GET UNITS ALIVE')
 				table.insert(updateQue.que, {
 					action = 'unitsAlive',
 					data = completeAliveUnitIds
 				})
 			end
 			if request.action == "SETBASEFLAGS" then
+				env.info('SET BASE FLAGS')
 				if type(request.data) == 'table' then
 					for rIndex = 1, #request.data do
 						local curBase = request.data[rIndex].name
@@ -599,6 +615,7 @@ do
 				end
 			end
 			if request.action == "INIT" then
+				env.info('INIT')
 				--send all unit updates
 				--initAirbases()
 				completeAliveUnitIds = {}
@@ -608,6 +625,7 @@ do
 			if request.action == "CMD" and request.reqID ~= nil then
 				if type(request.cmd) == 'table' then
 					for rIndex = 1, #request.cmd do
+						env.info('CMD: '..request.cmd[rIndex])
 						pcallCommand(request.cmd[rIndex], request.reqID)
 					end
 				end
@@ -735,7 +753,7 @@ do
 	--Send Mission Events Back
 	local eventTypes = {
 		--[0] = "S_EVENT_INVALID",
-		[1] = "S_EVENT_SHOT",
+		--[1] = "S_EVENT_SHOT",
 		[2] = "S_EVENT_HIT",
 		[3] = "S_EVENT_TAKEOFF",
 		[4] = "S_EVENT_LAND",

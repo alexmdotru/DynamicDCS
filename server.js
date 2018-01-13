@@ -195,7 +195,7 @@ protectedRouter.route('/userAccounts')
 	});
 
 //setup globals
-var epocTimeout = (5 * 60 * 1000); // 5 mins
+var epocTimeout = (1 * 60 * 1000); // 5 mins
 var maxIdleTime = (5 * 60 * 1000); // 5 mins
 var maxCrateLife = (90 * 60 * 1000); // 90 mina
 var outOfSyncUnitCnt = 0;
@@ -1137,6 +1137,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 			}
 		}
 
+		/*
 		if (_.get(queObj, 'action') === 'S_EVENT_SHOT') {
 			// Occurs whenever any unit in a mission fires a weapon.
 			// But not any machine gun or autocannon based weapon,
@@ -1183,6 +1184,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 				})
 			;
 		}
+		*/
 
 		//run each tick to see if we need to write gun event
 		if(_.keys(shootingUsers).length > 0) {
