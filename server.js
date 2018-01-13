@@ -36,6 +36,8 @@ const menuUpdateController = require('./controllers/menuUpdate');
 const menuCmdsController = require('./controllers/menuCmds');
 const jtacController = require('./controllers/jtac');
 const taskController = require('./controllers/task');
+const baseSpawnFlagsController = require('./controllers/baseSpawnFlags');
+
 
 var admin = false;
 
@@ -195,6 +197,7 @@ protectedRouter.route('/userAccounts')
 	});
 
 //setup globals
+var baseFlagTimeout = (1 * 60 * 1000); // 5 mins
 var epocTimeout = (1 * 60 * 1000); // 5 mins
 var maxIdleTime = (5 * 60 * 1000); // 5 mins
 var maxCrateLife = (90 * 60 * 1000); // 90 mina
@@ -1858,22 +1861,6 @@ setInterval(function () {
 						})
 					;
 
-					//update server client lock
-					dbMapServiceController.baseActions('getBaseSides', curServerName, {})
-						.then(function (baseSides) {
-							dbMapServiceController.cmdQueActions('save', curServerName, {
-								queName: 'clientArray',
-								actionObj: {
-									action: "SETBASEFLAGS",
-									data: baseSides
-								}
-							});
-						})
-						.catch(function (err) {
-							console.log('line1491', err);
-						})
-					;
-
 					if (isSpawningAllowed) {
 						dbMapServiceController.baseActions('read', curServerName, {mainBase: true, $or: [{side: 1}, {side: 2}]})
 							.then(function (bases) {
@@ -2080,3 +2067,17 @@ function syncDCSData(serverName, DCSData) {
 		curServers.processQue(serverName, sessionName, DCSData);
 	}
 }
+
+setTimeout(function () {
+	dbSystemServiceController.serverActions('read', {enabled: true})
+		.then(function (srvs) {
+			_.forEach(srvs, function (srv) {
+				var curServerName = _.get(srv, '_id');
+				baseSpawnFlagsController.setbaseSides(curServerName);
+			});
+		})
+		.catch(function (err) {
+			console.log('line2077', err);
+		})
+	;
+}, baseFlagTimeout);
