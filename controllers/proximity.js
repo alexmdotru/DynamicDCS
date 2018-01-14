@@ -215,7 +215,16 @@ _.set(exports, 'checkUnitsToBaseForCapture', function (serverName) {
 										console.log('erroring line162: ', err);
 									})
 								;
-								groupController.spawnLogisticCmdCenter(serverName, {}, base, 2);
+								dbMapServiceController.unitActions('read', serverName, {name: base.name + ' Logistics', dead: false})
+									.then(function (aliveLogistics) {
+										if (aliveLogistics > 0) {
+											groupController.spawnLogisticCmdCenter(serverName, {}, base, 2);
+										}
+									})
+									.catch(function (err) {
+										console.log('erroring line189: ', err);
+									})
+								;
 							}
 						}
 						if (base.side === 2 && _.get(sideArray, [1], []).length > 0) {
@@ -230,7 +239,16 @@ _.set(exports, 'checkUnitsToBaseForCapture', function (serverName) {
 										console.log('erroring line189: ', err);
 									})
 								;
-								groupController.spawnLogisticCmdCenter(serverName, {}, base, 1);
+								dbMapServiceController.unitActions('read', serverName, {name: base.name + ' Logistics', dead: false})
+									.then(function (aliveLogistics) {
+										if (aliveLogistics > 0) {
+											groupController.spawnLogisticCmdCenter(serverName, {}, base, 1);
+										}
+									})
+									.catch(function (err) {
+										console.log('erroring line189: ', err);
+									})
+								;
 							}
 						}
 					})
