@@ -148,6 +148,14 @@ exports.unitActions = function (action, serverName, obj){
 			});
 		});
 	}
+	if (action === 'readGeo') {
+		return new Promise(function(resolve, reject) {
+			Unit.find(obj).exec(function (err, dbUnits) {
+				if (err) { reject(err) }
+				resolve(dbUnits);
+			});
+		});
+	}
 	if(action === 'save') {
 		return new Promise(function(resolve, reject) {
 			const unit = new Unit(obj);

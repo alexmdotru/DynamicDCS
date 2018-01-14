@@ -28,7 +28,7 @@ _.set(exports, 'getLogiTowersProximity', function (serverName, lonLat, kmDistanc
 			return closeUnits;
 		})
 		.catch(function (err) {
-			console.log('line 12: ', err);
+			console.log('line 27: ', err);
 		})
 		;
 });
@@ -55,34 +55,36 @@ _.set(exports, 'getEnemyGroundUnitsInProximity', function (serverName, lonLat, k
 			return closeUnits;
 		})
 		.catch(function (err) {
-			console.log('line 12: ', err);
+			console.log('line 54: ', err);
 		})
 	;
 });
 
-_.set(exports, 'getGroundUnitsInProximity', function (serverName, lonLat, kmDistance) {
-	return dbMapServiceController.unitActions(
-		'read',
-		serverName,
-		{
-			dead: false,
-			lonLatLoc: {
-				$geoWithin: {
-					$centerSphere: [
-						lonLat,
-						kmDistance / 6378.1
-					]
-				}
-			},
-			category: 'GROUND',
-			isCrate: false
-		})
+_.set(exports, 'getGroundUnitsInProximity', function (serverName, lonLat, kmDistance, isTroop) {
+	var troopQuery = {
+		dead: false,
+		lonLatLoc: {
+			$near: {
+				$geometry: {
+					type: "Point",
+					coordinates: lonLat
+				},
+				$maxDistance: kmDistance * 1000
+			}
+		},
+		category: 'GROUND',
+		isCrate: false
+	};
+	if (!isTroop) {
+		_.set(troopQuery, 'isTroop', false);
+	}
+	return dbMapServiceController.unitActions('readGeo', serverName, troopQuery)
 		.then(function (closeUnits) {
 			// console.log('close units ' + closeUnits);
 			return closeUnits;
 		})
 		.catch(function (err) {
-			console.log('line 12: ', err);
+			console.log('line 81: ', err);
 		})
 		;
 });
@@ -115,14 +117,14 @@ _.set(exports, 'getPlayersInProximity', function (serverName, lonLat, kmDistance
 			return closeUnits;
 		})
 		.catch(function (err) {
-			console.log('line 12: ', err);
+			console.log('line 114: ', err);
 		})
 	;
 });
 
 _.set(exports, 'getVirtualCratesInProximity', function (serverName, lonLat, kmDistance, coalition) {
 	return dbMapServiceController.unitActions(
-		'read',
+		'readGeo',
 		serverName,
 		{
 			dead: false,
@@ -146,23 +148,24 @@ _.set(exports, 'getVirtualCratesInProximity', function (serverName, lonLat, kmDi
 			return closeUnits;
 		})
 		.catch(function (err) {
-			console.log('line 12: ', err);
+			console.log('line 140: ', err);
 		})
 	;
 });
 
 _.set(exports, 'getTroopsInProximity', function (serverName, lonLat, kmDistance, coalition) {
 	return dbMapServiceController.unitActions(
-		'read',
+		'readGeo',
 		serverName,
 		{
 			dead: false,
 			lonLatLoc: {
-				$geoWithin: {
-					$centerSphere: [
-						lonLat,
-						kmDistance / 6378.1
-					]
+				$near: {
+					$geometry: {
+						type: "Point",
+						coordinates: lonLat
+					},
+					$maxDistance: kmDistance * 1000
 				}
 			},
 			playername: {
@@ -186,7 +189,7 @@ _.set(exports, 'getTroopsInProximity', function (serverName, lonLat, kmDistance,
 			return closeUnits;
 		})
 		.catch(function (err) {
-			console.log('line 12: ', err);
+			console.log('line 176: ', err);
 		})
 	;
 });
@@ -196,7 +199,7 @@ _.set(exports, 'checkUnitsToBaseForCapture', function (serverName) {
 	dbMapServiceController.baseActions('read', serverName, {mainBase: true, $or: [{side: 1}, {side: 2}]})
 		.then(function (bases) {
 			_.forEach(bases, function (base) {
-				exports.getGroundUnitsInProximity(serverName, base.centerLoc, 3)
+				exports.getGroundUnitsInProximity(serverName, base.centerLoc, 3, true)
 					.then(function (unitsInRange) {
 						var spawnArray = [];
 						sideArray = _.transform(unitsInRange, function (result, value) {

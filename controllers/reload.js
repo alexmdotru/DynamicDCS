@@ -6,7 +6,7 @@ const groupController = require('./group');
 const proximityController = require('./proximity');
 
 _.set(exports, 'reloadSAM', function (serverName, unitCalling, crate) {
-	proximityController.getGroundUnitsInProximity(serverName, unitCalling.lonLatLoc, 0.4)
+	proximityController.getGroundUnitsInProximity(serverName, unitCalling.lonLatLoc, 0.2, false)
 		.then(function(units){
 			var closestUnit = _.first(_.filter(units, {coalition: unitCalling.coalition}));
 			if (closestUnit) {
@@ -15,14 +15,14 @@ _.set(exports, 'reloadSAM', function (serverName, unitCalling, crate) {
 						// console.log('samu: ', samUnits, closestUnit.groupName); closest unit can be the repair truck.... LOL FIX ME
 						if (samUnits.length > 1) {
 							var curSamType = _.first(samUnits).type;
-							dbSystemServiceController.unitDictionaryActions('read', {_id: curSamType})
+							dbSystemServiceController.unitDictionaryActions('read', {_id: curSamType, threatLvl: { $gt: 0 }})
 								.then(function (samUnitDict) {
+									console.log('samunit: ', curSamType, samUnitDict);
 									//unit is multi, count mins, sum them, if true,
 									var curUnitDict = _.get(samUnitDict, [0]);
 									var curReloadArray = curUnitDict.reloadReqArray;
 									// console.log('is unit fully alive: ', curReloadArray.length, ' === ', _.intersection(curReloadArray, _.map(samUnits, 'type')).length);
 									if(curReloadArray.length === _.intersection(curReloadArray, _.map(samUnits, 'type')).length) {
-										groupController.destroyUnit(serverName, crate.name);
 										_.forEach(samUnits, function (unit) {
 											groupController.destroyUnit(serverName, unit.name);
 										});
