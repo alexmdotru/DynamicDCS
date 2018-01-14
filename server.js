@@ -566,7 +566,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					if (units.length !== update.unitCount) {
 						if (((units.length *0.94) <= update.unitCount) && !isBaseFullyPopped) {
 							console.log('baseFullPopped: ', (units.length *0.93), ' <= ', update.unitCount);
-							isBaseFullyPopped = true;
+							baseSpawnFlagsController.setbaseSides(serverName); // might run this too many times... be careful
 						}
 						// get update sync from server
 						console.log(outOfSyncUnitCnt + ':' + serverName + ':SERVER' + update.unitCount + '=DB' + units.length);
@@ -2068,17 +2068,3 @@ function syncDCSData(serverName, DCSData) {
 		curServers.processQue(serverName, sessionName, DCSData);
 	}
 }
-
-setTimeout(function () {
-	dbSystemServiceController.serverActions('read', {enabled: true})
-		.then(function (srvs) {
-			_.forEach(srvs, function (srv) {
-				var curServerName = _.get(srv, '_id');
-				baseSpawnFlagsController.setbaseSides(curServerName);
-			});
-		})
-		.catch(function (err) {
-			console.log('line2077', err);
-		})
-	;
-}, baseFlagInitTimeout);
