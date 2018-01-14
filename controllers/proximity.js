@@ -208,21 +208,21 @@ _.set(exports, 'checkUnitsToBaseForCapture', function (serverName) {
 							if (_.get(sideArray, [1], []).length === 0) {
 								console.log('BASE HAS BEEN CAPTURED: ', base.name, ' is now ', 2);
 								// console.log('Spawning Support Units', base, 2);
-								dbMapServiceController.unitActions('read', serverName, {name: base.name + ' Logistics', dead: false})
-									.then(function (aliveLogistics) {
-										if (aliveLogistics > 0) {
-											groupController.spawnLogisticCmdCenter(serverName, {}, base, 2);
-										}
-									})
-									.catch(function (err) {
-										console.log('erroring line189: ', err);
-									})
-								;
 								spawnArray = _.concat(spawnArray, groupController.spawnSupportBaseGrp(serverName, base.name, 2, false));
 								groupController.spawnGroup(serverName, spawnArray, base.name, 2);
 								dbMapServiceController.baseActions('updateSide', serverName, {name: base.name, side: 2, replenTime: 0})
 									.catch(function (err) {
 										console.log('erroring line162: ', err);
+									})
+								;
+								dbMapServiceController.unitActions('read', serverName, {name: base.name + ' Logistics', dead: false})
+									.then(function (aliveLogistics) {
+										if (aliveLogistics.length > 0) {
+											groupController.spawnLogisticCmdCenter(serverName, {}, base, 2);
+										}
+									})
+									.catch(function (err) {
+										console.log('erroring line189: ', err);
 									})
 								;
 							}
@@ -232,19 +232,19 @@ _.set(exports, 'checkUnitsToBaseForCapture', function (serverName) {
 							if (_.get(sideArray, [2], []).length === 0) {
 								console.log('BASE HAS BEEN CAPTURED: ', base.name, ' is now ', 1);
 								// console.log('Spawning Support Units', base, 1);
-								dbMapServiceController.unitActions('read', serverName, {name: base.name + ' Logistics', dead: false})
-									.then(function (aliveLogistics) {
-										if (aliveLogistics > 0) {
-											groupController.spawnLogisticCmdCenter(serverName, {}, base, 1);
-										}
-									})
+								spawnArray = _.concat(spawnArray, groupController.spawnSupportBaseGrp(serverName, base.name, 1, false));
+								groupController.spawnGroup(serverName, spawnArray, base.name, 1);
+								dbMapServiceController.baseActions('updateSide', serverName, {name: base.name, side: 1, replenTime: 0})
 									.catch(function (err) {
 										console.log('erroring line189: ', err);
 									})
 								;
-								spawnArray = _.concat(spawnArray, groupController.spawnSupportBaseGrp(serverName, base.name, 1, false));
-								groupController.spawnGroup(serverName, spawnArray, base.name, 1);
-								dbMapServiceController.baseActions('updateSide', serverName, {name: base.name, side: 1, replenTime: 0})
+								dbMapServiceController.unitActions('read', serverName, {name: base.name + ' Logistics', dead: false})
+									.then(function (aliveLogistics) {
+										if (aliveLogistics.length > 0) {
+											groupController.spawnLogisticCmdCenter(serverName, {}, base, 1);
+										}
+									})
 									.catch(function (err) {
 										console.log('erroring line189: ', err);
 									})
