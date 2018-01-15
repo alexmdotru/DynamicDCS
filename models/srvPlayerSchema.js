@@ -38,6 +38,9 @@ const srvPlayerSchema = new Schema({
 		curCapLives: {
 			type: Number,
 			default: 4
+		},
+		capLifeLastAdded: {
+			type: Date
 		}
 	},
 	{

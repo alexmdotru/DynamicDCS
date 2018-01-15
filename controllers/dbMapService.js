@@ -126,6 +126,8 @@ exports.srvPlayerActions = function (action, serverName, obj){
 				}
 				if (serverObj.length === 0) {
 					const sObj = new SrvPlayer(obj);
+					sObj.capLifeLastAdded = new Date().getTime();
+					sObj.curCapLives = 4;
 					curIP = sObj.ipaddr;
 					if(sObj.ipaddr === ':10308' || sObj.ipaddr === '127.0.0.1'){
 						curIP = '127.0.0.1';
@@ -142,6 +144,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 					});
 				} else {
 					if (curPly.sessionName !== obj.sessionName) {
+						obj.capLifeLastAdded = new Date().getTime();
 						obj.curCapLives = 4;
 					}
 					curIP = obj.ipaddr;
@@ -155,14 +158,61 @@ exports.srvPlayerActions = function (action, serverName, obj){
 					SrvPlayer.update(
 						{_id: obj._id},
 						{$set: obj},
-						function(err, airfield) {
+						function(err, serObj) {
 							if (err) { reject(err) }
-							resolve(airfield);
+							resolve(serObj);
 						}
 					);
 				}
 			});
 		});
+	}
+
+	if (action === 'autoAddLife') {
+		return new Promise(function(resolve, reject) {
+			SrvPlayer.find({_id: obj._id}, function (err, serverObj) {
+				var curPly = _.get(serverObj, [0]);
+				if (err) {
+					reject(err)
+				}
+				if (serverObj.length !== 0 && _.get(serverObj, ['curCapLives'])) {
+					var curLife = _.get(serverObj, ['curCapLives'], 0) + 1;
+					if (curLife > 4) {
+						curLife = 4;
+					}
+					SrvPlayer.update(
+						{_id: obj._id},
+						{$set: {curCapLives: curLife, capLifeLastAdded: new Date()}},
+						function(err, srvPlayer) {
+							if (err) { reject(err) }
+							resolve(srvPlayer);
+						}
+					);
+				}
+			});
+		})
+	}
+
+	if (action === 'removeLife') {
+		return new Promise(function(resolve, reject) {
+			SrvPlayer.find({_id: obj._id}, function (err, serverObj) {
+				var curPly = _.get(serverObj, [0]);
+				if (err) {
+					reject(err)
+				}
+				if (serverObj.length !== 0 && _.get(curPly, ['curCapLives'])) {
+					var curLife = _.get(curPly, ['curCapLives'], 1) - 1;
+					SrvPlayer.update(
+						{_id: obj._id},
+						{$set: {curCapLives: curLife}},
+						function(err) {
+							if (err) { reject(err) }
+							resolve(curLife);
+						}
+					);
+				}
+			});
+		})
 	}
 };
 

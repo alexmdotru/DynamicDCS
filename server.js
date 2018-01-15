@@ -245,6 +245,15 @@ function abrLookup (fullName) {
 	return _.get(shortNames, [fullName]);
 }
 
+var capLivesEnabled = [
+	'F-15C',
+	'Su-27',
+	'Su-33',
+	'MiG-29A',
+	'MiG-29S',
+	'M-2000C'
+];
+
 function initClear(serverName, serverType) {
 	if (serverType === 'client') {
 		_.set(curServers, [serverName, 'serverObject', 'units'], []);
@@ -1499,6 +1508,13 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 								// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
 								dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 							}
+
+							console.log('CRASHED: ', _.includes(capLivesEnabled, curIUnit.type), curIUnit.inAir);
+							if (_.includes(capLivesEnabled, curIUnit.type) && curIUnit.inAir) {
+								//take life away
+								capLivesController.removeLife(serverName, iPlayer.ucid, curIUnit.groupId);
+							}
+
 							DCSLuaCommands.sendMesgToAll(
 								serverName,
 								_.get(iCurObj, 'msg'),
