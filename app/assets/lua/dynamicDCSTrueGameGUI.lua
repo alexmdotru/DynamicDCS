@@ -28,6 +28,15 @@ coalitionLookup = {
 	["blue"] = 2
 }
 
+capLives = {
+	['F-15C'] = 1,
+	['Su-27'] = 1,
+	['Su-33'] = 1,
+	['MiG-29A'] = 1,
+	['MiG-29S'] = 1,
+	['M-2000C'] = 1
+}
+
 function string:split( inSplitPattern, outResults )
 	if not outResults then
 		outResults = { }
@@ -127,7 +136,10 @@ local function step()
 		end
 		-- if there was no error, send it back to the client
 		if not err then
-			local dataPayload = getDataMessage()
+			local dataPayload = {}
+			if  DCS.isServer() and DCS.isMultiplayer() then
+				dataPayload = getDataMessage()
+			end
 			local success, error = pcall(checkJSON, dataPayload, 'encode')
 			if success then
 				local outMsg = JSON:encode(dataPayload)
@@ -157,6 +169,14 @@ function playerSync()
 	for key,value in pairs(curPlayers) do
 		playerTable.data[value] = net.get_player_info(value)
 		refreshPlayer[value] = 1
+		local _playerId = playerTable.data[value].id
+		local _slotId = playerTable.data[value].slot
+		local _side = playerTable.data[value].side
+		if  (_side ~=0 and  slotID ~='' and _slotId ~= nil)  then
+			if not dynDCS.shouldAllowSlot(_playerId, _slotId) then
+				dynDCS.rejectPlayer(_playerId)
+			end
+		end
 	end
 
 	for k, v in pairs( playerTable.data ) do
@@ -164,7 +184,8 @@ function playerSync()
 			playerTable.data[k] = nil
 		end
 	end
-	--log('playertable: '..JSON:encode(playerTable))
+
+	--net.log('playertable: '..JSON:encode(playerTable))
 	return playerTable
 end
 
@@ -472,7 +493,7 @@ function dynDCS.getUnitId(_slotID)
 	local _unitId = tostring(_slotID)
 	if string.find(tostring(_unitId),"_",1,true) then
 		_unitId = string.sub(_unitId,1,string.find(_unitId,"_",1,true))
-		net.log("Unit ID Substr ".._unitId)
+		--net.log("Unit ID Substr ".._unitId)
 	end
 	return tonumber(_unitId)
 end
@@ -483,10 +504,19 @@ function dynDCS.shouldAllowSlot(_playerID, _slotID)
 		return true
 	end
 	local curSide = coalitionLookup[DCS.getUnitProperty(_slotID, DCS.UNIT_COALITION)]
-	local curName = DCS.getUnitProperty(_slotID, DCS.UNIT_NAME):split(' #')[1]:split("_Extension")[1]
-	local _flag = dynDCS.getFlagValue(curName)
-	net.log(curName.."_".._unitId..' flag:'.._flag..' uSide:'..curSide)
-	if _flag == curSide then
+	local curType = DCS.getUnitProperty(_slotID, DCS.UNIT_TYPE)
+	local curBaseName = DCS.getUnitProperty(_slotID, DCS.UNIT_NAME):split(' #')[1]:split("_Extension")[1]
+	local curUcid = net.get_player_info(_playerID, 'ucid')
+	local _baseFlag = dynDCS.getFlagValue(curBaseName)
+	local _ucidFlag = dynDCS.getFlagValue(curUcid)
+	--net.log(curBaseName.."_".._unitId..' flag:'.._baseFlag..' uSide:'..curSide..' ucidFlag: '.._ucidFlag..' ucid:'..curUcid)
+	if _baseFlag == curSide then
+		--net.log('STUFFF '..capLives[curType]..' - '..curType..' ucid: '.._ucidFlag)
+		if _ucidFlag == 1 and capLives[curType] == 1 then
+			net.log('User Flagged For Cap Lives Used Up')
+			return false
+		end
+		--net.log('Base Slot Open')
 		return true
 	end
 	return false
@@ -502,24 +532,24 @@ dynDCS.rejectPlayer = function(playerID)
 
 	if _playerName ~= nil then
 		--Disable chat message to user
-		local _chatMessage = string.format("*** Sorry %s - Slot DISABLED, Please capture this airport to use this slot ***",_playerName)
+		local _chatMessage = string.format("*** Sorry %s - Slot DISABLED, Capture This Airport Or Your Modern Cap Lives Are Used Up ***",_playerName)
 		net.send_chat_to(_chatMessage, playerID)
 	end
 end
 
-dynDCS.onPlayerTryChangeSlot = function(playerID, side, slotID)
-	if  DCS.isServer() and DCS.isMultiplayer() then
-		if  (side ~=0 and  slotID ~='' and slotID ~= nil)  then
-			local _allow = dynDCS.shouldAllowSlot(playerID,slotID)
-			if not _allow then
-				dynDCS.rejectPlayer(playerID)
-				return false
-			end
-			--net.log("SLOT - allowed -  playerid: "..playerID.." side:"..side.." slot: "..slotID)
-		end
-	end
-	return true
-end
+--dynDCS.onPlayerTryChangeSlot = function(playerID, side, slotID)
+--	if  DCS.isServer() and DCS.isMultiplayer() then
+--		if  (side ~=0 and  slotID ~='' and slotID ~= nil)  then
+--			local _allow = dynDCS.shouldAllowSlot(playerID,slotID)
+--			if not _allow then
+--				dynDCS.rejectPlayer(playerID)
+--				return false
+--			end
+--			--net.log("SLOT - allowed -  playerid: "..playerID.." side:"..side.." slot: "..slotID)
+--		end
+--	end
+--	return true
+--end
 
 DCS.setUserCallbacks(dynDCS)
 

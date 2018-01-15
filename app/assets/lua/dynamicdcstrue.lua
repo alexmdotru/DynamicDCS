@@ -446,7 +446,7 @@ do
 		updateGroups()
 		updateStatics()
 
-		env.info('paySize: '..table.getn(updateQue.que));
+		--env.info('paySize: '..table.getn(updateQue.que));
 		local chkSize = 100
 		local payload = {}
 		payload.que = {}
@@ -469,7 +469,7 @@ do
 				--initAirbases()
 			end
 			if request.action == "REMOVEOBJECT" then
-				env.info('REMOVE OBJECT')
+				--env.info('REMOVE OBJECT')
 				local removeObj = Unit.getByName(request.removeObject)
 				if removeObj ~= nil then
 					env.info('Destroying '..request.removeObject)
@@ -477,7 +477,7 @@ do
 				end
 			end
 			if request.action == "ADDTASK" then
-				env.info('ADD TASK')
+				--env.info('ADD TASK')
 				if request.taskType == 'EWR' then
 					local taskUnit = Unit.getByName(request.unitName)
 					if taskUnit ~= nil then
@@ -493,7 +493,7 @@ do
 				end
 			end
 			if request.action == "SETLASERSMOKE" then
-				env.info('SET LASER SMOKE')
+				--env.info('SET LASER SMOKE')
 				local curJtacUnit = Unit.getByName(request.jtacUnitName)
 				local curEnemyUnit = Unit.getByName(request.enemyUnitName)
 
@@ -546,7 +546,7 @@ do
 				end
 			end
 			if request.action == "REMOVELASERIR" then
-				env.info('REMOVE LASER')
+				--env.info('REMOVE LASER')
 				local _tempLase = laserSpots[request.jtacUnitName]
 
 				if _tempLase ~= nil then
@@ -564,7 +564,7 @@ do
 				end
 			end
 			if request.action == "ISLOSVISIBLE" then
-				env.info('IS LOS VISIBLE')
+				--env.info('IS LOS VISIBLE')
 				--tprint(request, 1)
 				local jtacUnit = Unit.getByName(request.jtacUnitName)
 				if jtacUnit ~= nil then
@@ -593,14 +593,14 @@ do
 				end
 			end
 			if request.action == "GETUNITSALIVE" then
-				env.info('GET UNITS ALIVE')
+				--env.info('GET UNITS ALIVE')
 				table.insert(updateQue.que, {
 					action = 'unitsAlive',
 					data = completeAliveUnitIds
 				})
 			end
 			if request.action == "SETBASEFLAGS" then
-				env.info('SET BASE FLAGS')
+				--env.info('SET BASE FLAGS')
 				if type(request.data) == 'table' then
 					for rIndex = 1, #request.data do
 						local curBase = request.data[rIndex].name
@@ -614,8 +614,18 @@ do
 					end
 				end
 			end
+			if request.action == "SETCAPLIVES" then
+				env.info('SET CAP LIVES')
+				if type(request.data) == 'table' then
+					for rIndex = 1, #request.data do
+						local curUcid = request.data[rIndex]
+						env.info('SFCL: '..curUcid.ucid..':'..curUcid.val);
+						trigger.action.setUserFlag(curUcid.ucid, curUcid.val)
+					end
+				end
+			end
 			if request.action == "INIT" then
-				env.info('INIT')
+				--env.info('INIT')
 				--send all unit updates
 				--initAirbases()
 				completeAliveUnitIds = {}
@@ -746,7 +756,7 @@ do
 	end
 
 	function commandExecute(s)
-		env.info(s)
+		--env.info(s)
 		return loadstring("return " .. s)()
 	end
 
