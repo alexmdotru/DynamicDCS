@@ -37,6 +37,7 @@ const menuCmdsController = require('./controllers/menuCmds');
 const jtacController = require('./controllers/jtac');
 const taskController = require('./controllers/task');
 const baseSpawnFlagsController = require('./controllers/baseSpawnFlags');
+const capLivesController = require('./controllers/capLives');
 
 
 var admin = false;
@@ -982,28 +983,30 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 
 			//need this for current player ID lookup
 			curServers[serverName].serverObject.players = queObj.data;
-
+			var promisSrvPlayers = [];
 			_.forEach(queObj.data, function (data) {
 				if (data) {
 					if (data.ucid) {
-						var curSide = data.side;
 						_.set(data, '_id', data.ucid);
 						_.set(data, 'playerId', data.id);
+						_.set(data, 'sessionName', sessionName);
 						//update map based player table
-						dbMapServiceController.srvPlayerActions('update', serverName, data);
-						if (data.ipaddr === ':10308') {
-							data.ipaddr = '127.0.0.1';
-						}
-						var curActUpdate = {
-							ucid: _.get(data, 'ucid', ''),
-							gameName: _.get(data, 'name', ''),
-							lastIp: _.get(data, 'ipaddr', ''),
-							side: _.get(data, 'side', '')
-						};
+						promisSrvPlayers.push(dbMapServiceController.srvPlayerActions('update', serverName, data)
+							.catch(function (err) {
+								console.log('line999', err);
+							}))
+						;
 					}
 				}
 			});
-
+			Promise.all(promisSrvPlayers)
+				.then(function () {
+					capLivesController.updateServerCapLives(serverName, queObj.data);
+				})
+				.catch(function (err) {
+					console.log('erroring line1007: ', err);
+				})
+			;
 
 			curServers[serverName].updateQue.q0.push(_.cloneDeep(queObj));
 			curServers[serverName].updateQue.q1.push(_.cloneDeep(queObj));

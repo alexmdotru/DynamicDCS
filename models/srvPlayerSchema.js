@@ -22,12 +22,22 @@ const srvPlayerSchema = new Schema({
 			max: 2,
 			default: 0
 		},
+		slot: {
+			type: String
+		},
 		socketID: {
 			type: String
 		},
 		ucid: {
 			type: String,
 			required: true
+		},
+		sessionName: {
+			type: String
+		},
+		curCapLives: {
+			type: Number,
+			default: 4
 		}
 	},
 	{

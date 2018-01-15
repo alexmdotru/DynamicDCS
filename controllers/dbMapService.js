@@ -119,20 +119,48 @@ exports.srvPlayerActions = function (action, serverName, obj){
 	}
 	if (action === 'update') {
 		return new Promise(function(resolve, reject) {
-			curIP = obj.ipaddr;
-			if(obj.ipaddr === ':10308' || obj.ipaddr === '127.0.0.1'){
-				curIP = '127.0.0.1';
-			}
-			_.set(obj, 'ipaddr', curIP);
-			if(obj.side === 0){ //keep the user on the last side
-				delete obj.side
-			}
-			var query = {_id: obj._id},
-				update = {$set: obj},
-				options = {upsert: true, new: true, setDefaultsOnInsert: true};
-			SrvPlayer.findOneAndUpdate(query, update, options, function (err, srvPlayers) {
-				if (err) { reject(err) }
-				resolve(srvPlayers);
+			SrvPlayer.find({_id: obj._id}, function (err, serverObj) {
+				var curPly = _.get(serverObj, [0]);
+				if (err) {
+					reject(err)
+				}
+				if (serverObj.length === 0) {
+					const sObj = new SrvPlayer(obj);
+					curIP = sObj.ipaddr;
+					if(sObj.ipaddr === ':10308' || sObj.ipaddr === '127.0.0.1'){
+						curIP = '127.0.0.1';
+					}
+					_.set(sObj, 'ipaddr', curIP);
+					if(sObj.side === 0){ //keep the user on the last side
+						delete sObj.side
+					}
+					sObj.save(function (err, serObj) {
+						if (err) {
+							reject(err)
+						}
+						resolve(serObj);
+					});
+				} else {
+					if (curPly.sessionName !== obj.sessionName) {
+						obj.curCapLives = 4;
+					}
+					curIP = obj.ipaddr;
+					if(obj.ipaddr === ':10308' || obj.ipaddr === '127.0.0.1'){
+						curIP = '127.0.0.1';
+					}
+					_.set(obj, 'ipaddr', curIP);
+					if(obj.side === 0){ //keep the user on the last side
+						delete obj.side
+					}
+					SrvPlayer.update(
+						{_id: obj._id},
+						{$set: obj},
+						function(err, airfield) {
+							if (err) { reject(err) }
+							resolve(airfield);
+						}
+					);
+				}
 			});
 		});
 	}
