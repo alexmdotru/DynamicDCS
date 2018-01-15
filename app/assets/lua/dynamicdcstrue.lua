@@ -615,7 +615,7 @@ do
 				end
 			end
 			if request.action == "SETCAPLIVES" then
-				env.info('SET CAP LIVES')
+				--env.info('SET CAP LIVES')
 				if type(request.data) == 'table' then
 					for rIndex = 1, #request.data do
 						local curUcid = request.data[rIndex]
