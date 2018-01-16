@@ -4,7 +4,7 @@ module.exports = {
 
 	//globals for sending system
 	perSendMax: 500,
-	outOfSyncUnitThreshold: 200,
+	outOfSyncUnitThreshold: 300,
 
 	//setup dcsgame socket connection
 	dcs_socket:	"192.168.44.60",
