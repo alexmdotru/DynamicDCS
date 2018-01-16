@@ -2,7 +2,7 @@ const	_ = require('lodash');
 const dbMapServiceController = require('./dbMapService');
 const DCSLuaCommands = require('./DCSLuaCommands');
 
-exports.defaultLife = 4;
+exports.defaultLife = 2;
 exports.capLivesEnabled = [
 	'F-15C',
 	'Su-27',
@@ -29,7 +29,7 @@ _.set(exports, 'updateServerCapLives', function (serverName) {
 							var lockObj;
 							if (ePlayer) {
 								//add life if its past due
-								if (ePlayer.capLifeLastAdded.getTime() + oneHour < new Date().getTime() && ePlayer.curCapLives < 4) {
+								if (ePlayer.capLifeLastAdded.getTime() + oneHour < new Date().getTime() && ePlayer.curCapLives < exports.defaultLife) {
 									exports.autoAddLife(serverName, ePlayer.ucid);
 								}
 								// console.log('cp: ', curPlayer.curCapLives, curPlayer.capLifeLastAdded.getTime() + oneHour < new Date().getTime() && curPlayer.curCapLives < 4);
@@ -101,7 +101,7 @@ _.set(exports, 'autoAddLife', function (serverName, playerUcid) {
 							DCSLuaCommands.sendMesgToGroup(
 								curUnit.groupId,
 								serverName,
-								"G: You have a modern CAP life added, (" + (srvPlayer.curCapLives+1) + "/4)(1 added every hour)!",
+								"G: You have a modern CAP life added, (" + (srvPlayer.curCapLives+1) + "/" + exports.defaultLife + ")(1 added every hour)!",
 								5
 							);
 						})

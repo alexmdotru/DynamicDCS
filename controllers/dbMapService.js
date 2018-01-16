@@ -16,6 +16,7 @@ var statSrvEventSchema = require('../models/statSrvEventSchema');
 var simpleStatEventSchema = require('../models/simpleStatEventSchema');
 var cmdQueSchema = require('../models/cmdQueSchema');
 var processSchema = require('../models/processSchema');
+const capLivesController = require('./capLives');
 
 exports.baseActions = function (action, serverName, obj){
 	const Airfield = mapdb.model(serverName+'_airfield', airfieldSchema);
@@ -127,7 +128,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 				if (serverObj.length === 0) {
 					const sObj = new SrvPlayer(obj);
 					sObj.capLifeLastAdded = new Date().getTime();
-					sObj.curCapLives = 4;
+					sObj.curCapLives = capLivesController.defaultLife;
 					curIP = sObj.ipaddr;
 					if(sObj.ipaddr === ':10308' || sObj.ipaddr === '127.0.0.1'){
 						curIP = '127.0.0.1';
@@ -145,7 +146,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 				} else {
 					if (curPly.sessionName !== obj.sessionName) {
 						obj.capLifeLastAdded = new Date().getTime();
-						obj.curCapLives = 4;
+						obj.curCapLives = capLivesController.defaultLife;
 					}
 					curIP = obj.ipaddr;
 					if(obj.ipaddr === ':10308' || obj.ipaddr === '127.0.0.1'){
@@ -177,8 +178,8 @@ exports.srvPlayerActions = function (action, serverName, obj){
 				}
 				if (serverObj.length !== 0) {
 					var curLife = _.get(curPly, ['curCapLives'], 0) + 1;
-					if (curLife > 4) {
-						curLife = 4;
+					if (curLife > capLivesController.defaultLife) {
+						curLife = capLivesController.defaultLife;
 					}
 					SrvPlayer.findOneAndUpdate(
 						{_id: obj._id},
