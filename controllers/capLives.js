@@ -11,8 +11,8 @@ exports.capLivesEnabled = [
 	'MiG-29S',
 	'M-2000C'
 ];
-//var oneHour = 60 * 60 * 1000;
-var oneHour = 600 * 1000;
+var oneHour = 60 * 60 * 1000;
+//var oneHour = 600 * 1000;
 
 _.set(exports, 'updateServerCapLives', function (serverName, playerArray) {
 	var sendClient;
