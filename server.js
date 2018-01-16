@@ -566,7 +566,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					// console.log('resync');
 					if (units.length !== update.unitCount) {
 						if (((units.length *0.94) <= update.unitCount) && !isBaseFullyPopped) {
-							console.log('baseFullPopped: ', (units.length *0.93), ' <= ', update.unitCount);
+							//console.log('baseFullPopped: ', (units.length *0.93), ' <= ', update.unitCount);
 							baseSpawnFlagsController.setbaseSides(serverName); // might run this too many times... be careful
 						}
 						// get update sync from server
