@@ -20,8 +20,8 @@ _.set(exports, 'updateServerCapLives', function (serverName, playerArray) {
 	var playerCapTable = [];
 	var srvPromises = [];
 	//update userNames out of cap lives, locked down specific plane types from those individuals (update lua table with individual names)
+
 	_.forEach(playerArray, function (ePlayer) {
-		console.log('eplayer: ', ePlayer);
 		srvPromises.push(dbMapServiceController.srvPlayerActions('read', serverName, {_id: ePlayer.ucid})
 			.then(function (cPlayer) {
 				var lockObj;
