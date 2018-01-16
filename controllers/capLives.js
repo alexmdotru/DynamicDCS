@@ -80,6 +80,7 @@ _.set(exports, 'resetLives', function (serverName, playerUcid, groupId) {
 				"G: You have your modern CAP lives reset, total " + capLeft + " Lives Left!",
 				5
 			);
+			exports.updateServerCapLives(serverName);
 		})
 		.catch(function (err) {
 			console.log('line15', err);
@@ -96,7 +97,6 @@ _.set(exports, 'autoAddLife', function (serverName, playerUcid) {
 				if (!_.isEmpty(srvPlayer.slot)) {
 					dbMapServiceController.unitActions('read', serverName, {unitId: _.toNumber(srvPlayer.slot)})
 						.then(function(cUnit) {
-							capLivesController.updateServerCapLives(curServerName);
 							var curUnit = _.get(cUnit, [0]);
 							DCSLuaCommands.sendMesgToGroup(
 								curUnit.groupId,
@@ -104,6 +104,7 @@ _.set(exports, 'autoAddLife', function (serverName, playerUcid) {
 								"G: You have a modern CAP life added, (" + (srvPlayer.curCapLives+1) + "/" + exports.defaultLife + ")(1 added every hour)!",
 								5
 							);
+							exports.updateServerCapLives(serverName);
 						})
 						.catch(function (err) {
 							console.log('line74', err);
@@ -124,13 +125,13 @@ _.set(exports, 'removeLife', function (serverName, playerUcid, groupId) {
 	dbMapServiceController.srvPlayerActions('removeLife', serverName, {_id: playerUcid})
 		.then(function(capLeft) {
 			console.log('capLeft: ', capLeft);
-			capLivesController.updateServerCapLives(curServerName);
 			DCSLuaCommands.sendMesgToGroup(
 				groupId,
 				serverName,
 				"G: You have a modern CAP life removed, total " + capLeft + " Lives Left!",
 				5
 			);
+			exports.updateServerCapLives(serverName);
 		})
 		.catch(function (err) {
 			console.log('line92', err);
