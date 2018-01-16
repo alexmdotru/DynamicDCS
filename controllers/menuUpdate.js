@@ -2,6 +2,7 @@ const	_ = require('lodash');
 const dbMapServiceController = require('./dbMapService');
 const proximityController = require('./proximity');
 const menuCmdsController = require('./menuCmds'); //menuCmdsController.maxUnitsMoving
+const capLivesController = require('./capLives');
 
 exports.virtualCrates = true;
 var enableAction = false;
@@ -28,6 +29,8 @@ var allowedTypesForCrates = [
 	'Ka-50',
 	'Mi-8MT'
 ];
+
+var allowedTypesForModernCapLives = capLivesController.capLivesEnabled;
 
 _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 	dbMapServiceController.srvPlayerActions('read', serverName, {name: unit.playername})
@@ -84,6 +87,10 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 						cmdArray.unshift(resetMenu);
 
 						// console.log('der: ', unit.type, _.includes(allowedTypesForTroops, unit.type), proximityController.extractUnitsBackToBase(unit, serverName));
+						cmdArray = _.concat(cmdArray, [
+							'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "Lives")',
+							'missionCommands.addCommandForGroup("' + unit.groupId + '", "Modern Cap Lives", {"Lives"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "Lives", ["type"] = "Modern Lives", ["unitId"] = ' + unit.unitId + '})',
+						]);
 						if (_.includes(allowedTypesForTroops, unit.type) && unitsProxBase) {
 							cmdArray = _.concat(cmdArray, [
 								'missionCommands.addSubMenuForGroup("' + unit.groupId + '", ' + trpMenuTitle + ')',

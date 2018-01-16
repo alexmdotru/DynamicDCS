@@ -2,7 +2,15 @@ const	_ = require('lodash');
 const dbMapServiceController = require('./dbMapService');
 const DCSLuaCommands = require('./DCSLuaCommands');
 
-var defaultLife = 4;
+exports.defaultLife = 4;
+exports.capLivesEnabled = [
+	'F-15C',
+	'Su-27',
+	'Su-33',
+	'MiG-29A',
+	'MiG-29S',
+	'M-2000C'
+];
 //var oneHour = 60 * 60 * 1000;
 var oneHour = 60 * 1000;
 
@@ -63,7 +71,7 @@ _.set(exports, 'updateServerCapLives', function (serverName, playerArray) {
 
 _.set(exports, 'resetLives', function (serverName, playerUcid, groupId) {
 	// reset lives if current session != last session played
-	dbMapServiceController.srvPlayerActions('update', serverName, {_id: playerUcid, curCapLives: defaultLife})
+	dbMapServiceController.srvPlayerActions('update', serverName, {_id: playerUcid, curCapLives: exports.defaultLife})
 		.then(function(capLeft) {
 			DCSLuaCommands.sendMesgToGroup(
 				groupId,
@@ -90,7 +98,7 @@ _.set(exports, 'autoAddLife', function (serverName, playerUcid) {
 							DCSLuaCommands.sendMesgToGroup(
 								curUnit.groupId,
 								serverName,
-								"G: You have a modern CAP life added, (" + srvPlayer.curCapLives + "/4)(1 added every hour)!",
+								"G: You have a modern CAP life added, (" + (srvPlayer.curCapLives+1) + "/4)(1 added every hour)!",
 								5
 							);
 						})
@@ -129,15 +137,21 @@ _.set(exports, 'removeLife', function (serverName, playerUcid, groupId) {
 _.set(exports, 'checkLives', function (serverName, playerUcid) {
 	dbMapServiceController.srvPlayerActions('read', serverName, {_id: playerUcid})
 		.then(function(srvPlayer) {
-			if (srvPlayer) {
-				if (!_.isEmpty(srvPlayer.slot)) {
-					dbMapServiceController.unitActions('read', serverName, {unitId: _.toNumber(srvPlayer.slot)})
+			var curPlayer = _.get(srvPlayer, [0]);
+			if (curPlayer) {
+				if (!_.isEmpty(curPlayer.slot)) {
+					dbMapServiceController.unitActions('read', serverName, {unitId: _.toNumber(curPlayer.slot)})
 						.then(function(cUnit) {
 							var curUnit = _.get(cUnit, [0]);
+							var timeLeft = '';
+							console.log('time ', new Date(curPlayer.capLifeLastAdded).getTime() + oneHour, new Date().getTime());
+							if (curPlayer.curCapLives < exports.defaultLife) {
+								timeLeft = ", Gain Next Life in " + _.round((((new Date(curPlayer.capLifeLastAdded).getTime() + oneHour) -  (new Date().getTime()))/1000)/ 60, 1) + " minutes";
+							}
 							DCSLuaCommands.sendMesgToGroup(
 								curUnit.groupId,
 								serverName,
-								"G: Modern CAP Lives(" + srvPlayer.curCapLives + "/4)",
+								"G: Your Modern CAP Lives(" + curPlayer.curCapLives + "/" + exports.defaultLife + ")" + timeLeft,
 								5
 							);
 						})

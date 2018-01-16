@@ -6,6 +6,7 @@ const menuUpdateController = require('./menuUpdate');
 const groupController = require('./group');
 const reloadController = require('./reload');
 const repairController = require('./repair');
+const capLivesController = require('./capLives');
 
 exports.maxCrates = 10;
 exports.maxTroops = 1;
@@ -24,6 +25,9 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 					var spawnArray;
 					var curSpawnUnit;
 					// action menu
+					if (pObj.cmd === 'Lives') {
+						capLivesController.checkLives(pObj.serverName, curPlayer.ucid);
+					}
 					if (pObj.cmd === 'unloadExtractTroops') {
 						if(curUnit.inAir) {
 							DCSLuaCommands.sendMesgToGroup(
