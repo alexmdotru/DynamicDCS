@@ -144,7 +144,6 @@ _.set(exports, 'checkLives', function (serverName, playerUcid) {
 						.then(function(cUnit) {
 							var curUnit = _.get(cUnit, [0]);
 							var timeLeft = '';
-							console.log('time ', new Date(curPlayer.capLifeLastAdded).getTime() + oneHour, new Date().getTime());
 							if (curPlayer.curCapLives < exports.defaultLife) {
 								timeLeft = ", Gain Next Life in " + _.round((((new Date(curPlayer.capLifeLastAdded).getTime() + oneHour) -  (new Date().getTime()))/1000)/ 60, 1) + " minutes";
 							}
