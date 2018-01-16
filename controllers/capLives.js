@@ -91,7 +91,7 @@ _.set(exports, 'autoAddLife', function (serverName, playerUcid) {
 	// add cap life to player
 	dbMapServiceController.srvPlayerActions('autoAddLife', serverName, {_id: playerUcid})
 		.then(function(srvPlayer) {
-			console.log(serverName, playerUcid, srvPlayer);
+			//console.log(serverName, playerUcid, srvPlayer);
 			if (srvPlayer) {
 				if (!_.isEmpty(srvPlayer.slot)) {
 					dbMapServiceController.unitActions('read', serverName, {unitId: _.toNumber(srvPlayer.slot)})
@@ -119,7 +119,7 @@ _.set(exports, 'autoAddLife', function (serverName, playerUcid) {
 });
 
 _.set(exports, 'removeLife', function (serverName, playerUcid, groupId) {
-	console.log('remove: ', serverName, playerUcid, groupId);
+	//console.log('remove: ', serverName, playerUcid, groupId);
 	// remove cap life to player or 0 lives
 	dbMapServiceController.srvPlayerActions('removeLife', serverName, {_id: playerUcid})
 		.then(function(capLeft) {
