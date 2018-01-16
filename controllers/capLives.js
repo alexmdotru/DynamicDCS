@@ -157,6 +157,7 @@ _.set(exports, 'checkLives', function (serverName, playerUcid) {
 								"G: Your Modern CAP Lives(" + curPlayer.curCapLives + "/" + exports.defaultLife + ")" + timeLeft,
 								5
 							);
+							exports.updateServerCapLives(serverName);
 						})
 						.catch(function (err) {
 							console.log('line74', err);
