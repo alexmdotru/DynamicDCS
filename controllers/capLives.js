@@ -22,34 +22,36 @@ _.set(exports, 'updateServerCapLives', function (serverName, playerArray) {
 	//update userNames out of cap lives, locked down specific plane types from those individuals (update lua table with individual names)
 
 	_.forEach(playerArray, function (ePlayer) {
-		srvPromises.push(dbMapServiceController.srvPlayerActions('read', serverName, {_id: ePlayer.ucid})
-			.then(function (cPlayer) {
-				var lockObj;
-				var curPlayer = _.get(cPlayer, [0]);
-				if (curPlayer) {
-					//add life if its past due
-					if (curPlayer.capLifeLastAdded.getTime() + oneHour < new Date().getTime() && curPlayer.curCapLives < 4) {
-						exports.autoAddLife(serverName, curPlayer.ucid);
+		if (ePlayer) {
+			srvPromises.push(dbMapServiceController.srvPlayerActions('read', serverName, {_id: ePlayer.ucid})
+				.then(function (cPlayer) {
+					var lockObj;
+					var curPlayer = _.get(cPlayer, [0]);
+					if (curPlayer) {
+						//add life if its past due
+						if (curPlayer.capLifeLastAdded.getTime() + oneHour < new Date().getTime() && curPlayer.curCapLives < 4) {
+							exports.autoAddLife(serverName, curPlayer.ucid);
+						}
+						// console.log('cp: ', curPlayer.curCapLives, curPlayer.capLifeLastAdded.getTime() + oneHour < new Date().getTime() && curPlayer.curCapLives < 4);
+						if (curPlayer.curCapLives === 0) {
+							lockObj = {
+								ucid: curPlayer.ucid,
+								val: 1
+							};
+						} else {
+							lockObj = {
+								ucid: curPlayer.ucid,
+								val: 0
+							};
+						}
+						playerCapTable.push(lockObj);
 					}
-					// console.log('cp: ', curPlayer.curCapLives, curPlayer.capLifeLastAdded.getTime() + oneHour < new Date().getTime() && curPlayer.curCapLives < 4);
-					if (curPlayer.curCapLives === 0) {
-						lockObj = {
-							ucid: curPlayer.ucid,
-							val: 1
-						};
-					} else {
-						lockObj = {
-							ucid: curPlayer.ucid,
-							val: 0
-						};
-					}
-					playerCapTable.push(lockObj);
-				}
-			})
-			.catch(function (err) {
-				console.log('line15', err);
-			}))
-		;
+				})
+				.catch(function (err) {
+					console.log('line15', err);
+				}))
+			;
+		}
 	});
 	Promise.all(srvPromises)
 		.then(function () {
