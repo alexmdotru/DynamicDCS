@@ -12,7 +12,7 @@ exports.capLivesEnabled = [
 	'M-2000C'
 ];
 //var oneHour = 60 * 60 * 1000;
-var oneHour = 60 * 1000;
+var oneHour = 600 * 1000;
 
 _.set(exports, 'updateServerCapLives', function (serverName, playerArray) {
 	var sendClient;
@@ -30,7 +30,7 @@ _.set(exports, 'updateServerCapLives', function (serverName, playerArray) {
 					if (curPlayer.capLifeLastAdded.getTime() + oneHour < new Date().getTime() && curPlayer.curCapLives < 4) {
 						exports.autoAddLife(serverName, curPlayer.ucid);
 					}
-
+					// console.log('cp: ', curPlayer.curCapLives, curPlayer.capLifeLastAdded.getTime() + oneHour < new Date().getTime() && curPlayer.curCapLives < 4);
 					if (curPlayer.curCapLives === 0) {
 						lockObj = {
 							ucid: curPlayer.ucid,
@@ -90,6 +90,7 @@ _.set(exports, 'autoAddLife', function (serverName, playerUcid) {
 	// add cap life to player
 	dbMapServiceController.srvPlayerActions('autoAddLife', serverName, {_id: playerUcid})
 		.then(function(srvPlayer) {
+			console.log(serverName, playerUcid, srvPlayer);
 			if (srvPlayer) {
 				if (!_.isEmpty(srvPlayer.slot)) {
 					dbMapServiceController.unitActions('read', serverName, {unitId: _.toNumber(srvPlayer.slot)})

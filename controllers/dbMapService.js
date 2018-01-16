@@ -175,7 +175,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 				if (err) {
 					reject(err)
 				}
-				if (serverObj.length !== 0 && _.get(curPly, ['curCapLives'])) {
+				if (serverObj.length !== 0) {
 					var curLife = _.get(curPly, ['curCapLives'], 0) + 1;
 					if (curLife > 4) {
 						curLife = 4;
@@ -200,7 +200,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 				if (err) {
 					reject(err)
 				}
-				if (serverObj.length !== 0 && _.get(curPly, ['curCapLives'])) {
+				if (serverObj.length !== 0) {
 					var curLife = _.get(curPly, ['curCapLives'], 1) - 1;
 					SrvPlayer.update(
 						{_id: obj._id},
