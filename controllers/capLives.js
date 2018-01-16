@@ -12,15 +12,15 @@ _.set(exports, 'updateServerCapLives', function (serverName, playerArray) {
 	var playerCapTable = [];
 	var srvPromises = [];
 	//update userNames out of cap lives, locked down specific plane types from those individuals (update lua table with individual names)
-	_.forEach(playerArray, function (eplayer) {
-		srvPromises.push(dbMapServiceController.srvPlayerActions('read', serverName, {_id: eplayer.ucid})
-			.then(function (eplayer) {
+	_.forEach(playerArray, function (ePlayer) {
+		srvPromises.push(dbMapServiceController.srvPlayerActions('read', serverName, {_id: ePlayer.ucid})
+			.then(function (cPlayer) {
 				var lockObj;
-				var curPlayer = _.get(eplayer, [0]);
+				var curPlayer = _.get(cPlayer, [0]);
 				if (curPlayer) {
 					//add life if its past due
-					if (curPlayer.capLifeLastAdded + oneHour < new Date().getTime()) {
-						exports.autoAddLife(serverName, eplayer.ucid);
+					if (curPlayer.capLifeLastAdded.getTime() + oneHour < new Date().getTime() && curPlayer.curCapLives < 4) {
+						exports.autoAddLife(serverName, curPlayer.ucid);
 					}
 
 					if (curPlayer.curCapLives === 0) {
@@ -68,7 +68,7 @@ _.set(exports, 'resetLives', function (serverName, playerUcid, groupId) {
 			DCSLuaCommands.sendMesgToGroup(
 				groupId,
 				serverName,
-				"G: You have a CAP lives reset, total " + capLeft + " Lives Left!",
+				"G: You have your modern CAP lives reset, total " + capLeft + " Lives Left!",
 				5
 			);
 		})
@@ -82,30 +82,29 @@ _.set(exports, 'autoAddLife', function (serverName, playerUcid) {
 	// add cap life to player
 	dbMapServiceController.srvPlayerActions('autoAddLife', serverName, {_id: playerUcid})
 		.then(function(srvPlayer) {
-			console.log('srvplayer: ', srvPlayer);
-			var curPlayer = _.get(srvPlayer, [0]);
-			if (curPlayer) {
-				dbMapServiceController.unitActions('read', serverName, {unitId: curPlayer.unitId})
-					.then(function(curUnit) {
-						var curUnit = _.get(curUnit, [0]);
-						DCSLuaCommands.sendMesgToGroup(
-							curUnit.groupId,
-							serverName,
-							"G: You have a CAP life added, total " + curPlayer.curCapLives + " Lives Left(1 added every hour)!",
-							5
-						);
-					})
-					.catch(function (err) {
-						console.log('line74', err);
-					})
-				;
+			if (srvPlayer) {
+				if (!_.isEmpty(srvPlayer.slot)) {
+					dbMapServiceController.unitActions('read', serverName, {unitId: _.toNumber(srvPlayer.slot)})
+						.then(function(cUnit) {
+							var curUnit = _.get(cUnit, [0]);
+							DCSLuaCommands.sendMesgToGroup(
+								curUnit.groupId,
+								serverName,
+								"G: You have a modern CAP life added, (" + srvPlayer.curCapLives + "/4)(1 added every hour)!",
+								5
+							);
+						})
+						.catch(function (err) {
+							console.log('line74', err);
+						})
+					;
+				}
 			}
 		})
 		.catch(function (err) {
 			console.log('line74', err);
 		})
 	;
-
 });
 
 _.set(exports, 'removeLife', function (serverName, playerUcid, groupId) {
@@ -117,12 +116,40 @@ _.set(exports, 'removeLife', function (serverName, playerUcid, groupId) {
 			DCSLuaCommands.sendMesgToGroup(
 				groupId,
 				serverName,
-				"G: You have a CAP life removed, total " + capLeft + " Lives Left!",
+				"G: You have a modern CAP life removed, total " + capLeft + " Lives Left!",
 				5
 			);
 		})
 		.catch(function (err) {
 			console.log('line92', err);
+		})
+	;
+});
+
+_.set(exports, 'checkLives', function (serverName, playerUcid) {
+	dbMapServiceController.srvPlayerActions('read', serverName, {_id: playerUcid})
+		.then(function(srvPlayer) {
+			if (srvPlayer) {
+				if (!_.isEmpty(srvPlayer.slot)) {
+					dbMapServiceController.unitActions('read', serverName, {unitId: _.toNumber(srvPlayer.slot)})
+						.then(function(cUnit) {
+							var curUnit = _.get(cUnit, [0]);
+							DCSLuaCommands.sendMesgToGroup(
+								curUnit.groupId,
+								serverName,
+								"G: Modern CAP Lives(" + srvPlayer.curCapLives + "/4)",
+								5
+							);
+						})
+						.catch(function (err) {
+							console.log('line74', err);
+						})
+					;
+				}
+			}
+		})
+		.catch(function (err) {
+			console.log('line74', err);
 		})
 	;
 });
