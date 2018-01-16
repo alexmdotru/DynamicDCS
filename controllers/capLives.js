@@ -96,6 +96,7 @@ _.set(exports, 'autoAddLife', function (serverName, playerUcid) {
 				if (!_.isEmpty(srvPlayer.slot)) {
 					dbMapServiceController.unitActions('read', serverName, {unitId: _.toNumber(srvPlayer.slot)})
 						.then(function(cUnit) {
+							capLivesController.updateServerCapLives(curServerName);
 							var curUnit = _.get(cUnit, [0]);
 							DCSLuaCommands.sendMesgToGroup(
 								curUnit.groupId,
@@ -123,6 +124,7 @@ _.set(exports, 'removeLife', function (serverName, playerUcid, groupId) {
 	dbMapServiceController.srvPlayerActions('removeLife', serverName, {_id: playerUcid})
 		.then(function(capLeft) {
 			console.log('capLeft: ', capLeft);
+			capLivesController.updateServerCapLives(curServerName);
 			DCSLuaCommands.sendMesgToGroup(
 				groupId,
 				serverName,

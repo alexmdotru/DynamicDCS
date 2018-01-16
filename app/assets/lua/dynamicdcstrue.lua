@@ -120,6 +120,7 @@ do
 	local unitCache = {}
 	local airbaseCache = {}
 	local staticCache = {}
+	local livesCache = {}
 	local completeAliveUnitIds = {}
 	local updateQue = { ["que"] = {} }
 
@@ -601,7 +602,7 @@ do
 				})
 			end
 			if request.action == "SETBASEFLAGS" then
-				--env.info('SET BASE FLAGS')
+				env.info('SET BASE FLAGS')
 				if type(request.data) == 'table' then
 					for rIndex = 1, #request.data do
 						local curBase = request.data[rIndex].name
@@ -610,18 +611,27 @@ do
 						if airbaseCache[curBase] ~= nil then
 							airbaseCache[curBase] = {}
 						end
-						airbaseCache[curBase].side = curSide
-						trigger.action.setUserFlag(curBase, curSide)
+						if airbaseCache[curBase].side ~= curSide and airbaseCache[curBase].side ~= 0 then
+							airbaseCache[curBase].side = curSide
+							trigger.action.setUserFlag(curBase, curSide)
+						end
 					end
 				end
 			end
 			if request.action == "SETCAPLIVES" then
-				--env.info('SET CAP LIVES')
+				env.info('SET CAP LIVES')
 				if type(request.data) == 'table' then
 					for rIndex = 1, #request.data do
 						local curUcid = request.data[rIndex]
-						--env.info('SFCL: '..curUcid.ucid..':'..curUcid.val);
-						trigger.action.setUserFlag(curUcid.ucid, curUcid.val)
+						if livesCache[curUcid.ucid] ~= nil then
+							if livesCache[curUcid.ucid] ~= curUcid.val then
+								livesCache[curUcid.ucid] = curUcid.val
+								trigger.action.setUserFlag(curUcid.ucid, curUcid.val)
+							end
+						else
+							livesCache[curUcid.ucid] = curUcid.val
+							trigger.action.setUserFlag(curUcid.ucid, curUcid.val)
+						end
 					end
 				end
 			end

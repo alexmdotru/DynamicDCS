@@ -220,6 +220,7 @@ var ewrUnitsActivated = {};
 var epocToPayAttention = new Date().getTime() + epocTimeout;
 var isSpawningAllowed = false;
 var isBaseFullyPopped = false;
+var initBaseFlags = false;
 
 function abrLookup (fullName) {
  var shortNames =	{
@@ -567,7 +568,10 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					if (units.length !== update.unitCount) {
 						if (((units.length *0.94) <= update.unitCount) && !isBaseFullyPopped) {
 							//console.log('baseFullPopped: ', (units.length *0.93), ' <= ', update.unitCount);
-							baseSpawnFlagsController.setbaseSides(serverName); // might run this too many times... be careful
+							if (!initBaseFlags) {
+								baseSpawnFlagsController.setbaseSides(serverName);
+								initBaseFlags = true;
+							}
 						}
 						// get update sync from server
 						console.log(outOfSyncUnitCnt + ':' + serverName + ':SERVER' + update.unitCount + '=DB' + units.length);
@@ -758,9 +762,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 					}
 
 					if ((!_.isEmpty(curUnit) && _.get(queObj, 'action') !== 'D')) {
-						if(!_.isEmpty(curData.playername) && curUnit.dead) {
-							menuUpdateController.logisticsMenu('resetMenu', serverName, curData);
-						}
 						iCurObj = {
 							action: 'U',
 							sessionName: sessionName,
@@ -786,10 +787,6 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 							});
 					}else if (_.get(queObj, 'action') === 'C') {
 						//console.log('CREATE: ', _.get(queObj, 'data'));
-
-						if(!_.isEmpty(curData.playername)) {
-							menuUpdateController.logisticsMenu('resetMenu', serverName, curData);
-						}
 
 						_.set(curData, '_id', _.get(curData, 'unitId'));
 						iCurObj = {
@@ -1709,6 +1706,8 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 								// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
 								dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 							}
+							capLivesController.updateServerCapLives(serverName);
+							menuUpdateController.logisticsMenu('resetMenu', serverName, curIUnit);
 							DCSLuaCommands.sendMesgToCoalition(
 								_.get(iCurObj, 'displaySide'),
 								serverName,
@@ -1826,21 +1825,6 @@ setInterval(function () {
 		})
 	;
 }, 1000);
-
-setInterval(function () {
-	dbSystemServiceController.serverActions('read', {enabled: true})
-		.then(function (srvs) {
-			_.forEach(srvs, function (srv) {
-				var curServerName = _.get(srv, '_id');
-				//check cap lives
-				capLivesController.updateServerCapLives(curServerName);
-			});
-		})
-		.catch(function (err) {
-			console.log('line1491', err);
-		})
-	;
-}, 2 * 1000);
 
 // constant check loop (base unit replenish, etc)
 //5 sec interval

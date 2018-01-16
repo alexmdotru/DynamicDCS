@@ -74,7 +74,7 @@ local function runRequest(request)
 		--	cacheDB = {}
 		--end
 		if request.action == "CMD" and request.cmd ~= nil and request.reqID ~= nil then
-			net.log('RUNNING CMD')
+			--net.log('RUNNING CMD')
 			pcallCommand(request.cmd, request.reqID)
 		end
 	end
@@ -513,7 +513,7 @@ function dynDCS.shouldAllowSlot(_playerID, _slotID)
 	if _baseFlag == curSide then
 		--net.log('STUFFF '..capLives[curType]..' - '..curType..' ucid: '.._ucidFlag)
 		if _ucidFlag == 1 and capLives[curType] == 1 then
-			net.log('User Flagged For Cap Lives Used Up')
+			--net.log('User Flagged For Cap Lives Used Up')
 			return false
 		end
 		--net.log('Base Slot Open')
@@ -523,7 +523,7 @@ function dynDCS.shouldAllowSlot(_playerID, _slotID)
 end
 
 dynDCS.rejectPlayer = function(playerID)
-	net.log("Reject Slot - force spectators - "..playerID)
+	--("Reject Slot - force spectators - "..playerID)
 
 	-- put to spectators
 	net.force_player_slot(playerID, 0, '')
@@ -537,19 +537,19 @@ dynDCS.rejectPlayer = function(playerID)
 	end
 end
 
---dynDCS.onPlayerTryChangeSlot = function(playerID, side, slotID)
---	if  DCS.isServer() and DCS.isMultiplayer() then
---		if  (side ~=0 and  slotID ~='' and slotID ~= nil)  then
---			local _allow = dynDCS.shouldAllowSlot(playerID,slotID)
---			if not _allow then
---				dynDCS.rejectPlayer(playerID)
---				return false
---			end
---			--net.log("SLOT - allowed -  playerid: "..playerID.." side:"..side.." slot: "..slotID)
---		end
---	end
---	return true
---end
+dynDCS.onPlayerTryChangeSlot = function(playerID, side, slotID)
+	if  DCS.isServer() and DCS.isMultiplayer() then
+		if  (side ~=0 and  slotID ~='' and slotID ~= nil)  then
+			local _allow = dynDCS.shouldAllowSlot(playerID,slotID)
+			if not _allow then
+				dynDCS.rejectPlayer(playerID)
+				return false
+			end
+			--net.log("SLOT - allowed -  playerid: "..playerID.." side:"..side.." slot: "..slotID)
+		end
+	end
+	return true
+end
 
 DCS.setUserCallbacks(dynDCS)
 
