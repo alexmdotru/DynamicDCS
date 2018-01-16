@@ -14,60 +14,58 @@ exports.capLivesEnabled = [
 var oneHour = 60 * 60 * 1000;
 //var oneHour = 600 * 1000;
 
-_.set(exports, 'updateServerCapLives', function (serverName, playerArray) {
+_.set(exports, 'updateServerCapLives', function (serverName) {
 	var sendClient;
 	var actionObj;
 	var playerCapTable = [];
 	var srvPromises = [];
 	//update userNames out of cap lives, locked down specific plane types from those individuals (update lua table with individual names)
-
-	_.forEach(playerArray, function (ePlayer) {
-		if (ePlayer) {
-			srvPromises.push(dbMapServiceController.srvPlayerActions('read', serverName, {_id: ePlayer.ucid})
-				.then(function (cPlayer) {
-					var lockObj;
-					var curPlayer = _.get(cPlayer, [0]);
-					if (curPlayer) {
-						//add life if its past due
-						if (curPlayer.capLifeLastAdded.getTime() + oneHour < new Date().getTime() && curPlayer.curCapLives < 4) {
-							exports.autoAddLife(serverName, curPlayer.ucid);
-						}
-						// console.log('cp: ', curPlayer.curCapLives, curPlayer.capLifeLastAdded.getTime() + oneHour < new Date().getTime() && curPlayer.curCapLives < 4);
-						if (curPlayer.curCapLives === 0) {
-							lockObj = {
-								ucid: curPlayer.ucid,
-								val: 1
-							};
-						} else {
-							lockObj = {
-								ucid: curPlayer.ucid,
-								val: 0
-							};
-						}
-						playerCapTable.push(lockObj);
-					}
-				})
-				.catch(function (err) {
-					console.log('line15', err);
-				}))
-			;
-		}
-	});
-	Promise.all(srvPromises)
-		.then(function () {
-			sendClient = {
-				"action" : "SETCAPLIVES",
-				"data": playerCapTable
-			};
-			actionObj = {actionObj: sendClient, queName: 'clientArray'};
-			dbMapServiceController.cmdQueActions('save', serverName, actionObj)
-				.catch(function (err) {
-					console.log('erroring line41: ', err);
-				})
-			;
+	dbMapServiceController.statSessionActions('readLatest', serverName, {})
+		.then(function (latestSession) {
+			if (latestSession.name) {
+				dbMapServiceController.srvPlayerActions('read', serverName, {sessionName: latestSession.name})
+					.then(function (playerArray) {
+						_.forEach(playerArray, function (ePlayer) {
+							var lockObj;
+							if (ePlayer) {
+								//add life if its past due
+								if (ePlayer.capLifeLastAdded.getTime() + oneHour < new Date().getTime() && ePlayer.curCapLives < 4) {
+									exports.autoAddLife(serverName, ePlayer.ucid);
+								}
+								// console.log('cp: ', curPlayer.curCapLives, curPlayer.capLifeLastAdded.getTime() + oneHour < new Date().getTime() && curPlayer.curCapLives < 4);
+								if (ePlayer.curCapLives === 0) {
+									lockObj = {
+										ucid: ePlayer.ucid,
+										val: 1
+									};
+								} else {
+									lockObj = {
+										ucid: ePlayer.ucid,
+										val: 0
+									};
+								}
+								playerCapTable.push(lockObj);
+							}
+						});
+						sendClient = {
+							"action" : "SETCAPLIVES",
+							"data": playerCapTable
+						};
+						actionObj = {actionObj: sendClient, queName: 'clientArray'};
+						dbMapServiceController.cmdQueActions('save', serverName, actionObj)
+							.catch(function (err) {
+								console.log('erroring line41: ', err);
+							})
+						;
+					})
+					.catch(function (err) {
+						console.log('line80', err);
+					})
+				;
+			}
 		})
 		.catch(function (err) {
-			console.log('line15', err);
+			console.log('line86', err);
 		})
 	;
 });

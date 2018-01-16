@@ -991,22 +991,14 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 						_.set(data, 'playerId', data.id);
 						_.set(data, 'sessionName', sessionName);
 						//update map based player table
-						promisSrvPlayers.push(dbMapServiceController.srvPlayerActions('update', serverName, data)
+						dbMapServiceController.srvPlayerActions('update', serverName, data)
 							.catch(function (err) {
 								console.log('line999', err);
-							}))
+							})
 						;
 					}
 				}
 			});
-			Promise.all(promisSrvPlayers)
-				.then(function () {
-					capLivesController.updateServerCapLives(serverName, queObj.data);
-				})
-				.catch(function (err) {
-					console.log('erroring line1007: ', err);
-				})
-			;
 
 			curServers[serverName].updateQue.q0.push(_.cloneDeep(queObj));
 			curServers[serverName].updateQue.q1.push(_.cloneDeep(queObj));
@@ -1834,6 +1826,21 @@ setInterval(function () {
 		})
 	;
 }, 1000);
+
+setInterval(function () {
+	dbSystemServiceController.serverActions('read', {enabled: true})
+		.then(function (srvs) {
+			_.forEach(srvs, function (srv) {
+				var curServerName = _.get(srv, '_id');
+				//check cap lives
+				capLivesController.updateServerCapLives(curServerName);
+			});
+		})
+		.catch(function (err) {
+			console.log('line1491', err);
+		})
+	;
+}, 2 * 1000);
 
 // constant check loop (base unit replenish, etc)
 //5 sec interval
