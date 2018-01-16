@@ -893,6 +893,9 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 											// switching to spectator gets around this, fix this in future please
 											if ((curUnitSide !== curPlyrSide) && curPlyrSide !== 0 && curPlyrSide) {
 												if (curUnitSide) {
+
+													//fix refiring
+													/*
 													iCurObj = {
 														sessionName: sessionName,
 														eventCode: abrLookup(_.get(queObj, 'action')),
@@ -914,6 +917,7 @@ _.set(curServers, 'processQue', function (serverName, sessionName, update) {
 														_.get(iCurObj, 'msg'),
 														15
 													);
+													*/
 												}
 												/*
 												dbSystemServiceController.userAccountActions('read')
