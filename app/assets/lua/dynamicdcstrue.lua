@@ -620,7 +620,7 @@ do
 				if type(request.data) == 'table' then
 					for rIndex = 1, #request.data do
 						local curUcid = request.data[rIndex]
-						env.info('SFCL: '..curUcid.ucid..':'..curUcid.val);
+						--env.info('SFCL: '..curUcid.ucid..':'..curUcid.val);
 						trigger.action.setUserFlag(curUcid.ucid, curUcid.val)
 					end
 				end
