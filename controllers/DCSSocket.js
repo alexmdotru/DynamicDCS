@@ -1,75 +1,54 @@
-const net = require('net'),
-	_ = require('lodash');
-
+const net = require('net');
+const _ = require('lodash');
 const dbMapServiceController = require('./dbMapService'); // reqClientArray, regGameGuiArray
 
-exports.createSocket = function (serverName, serverAddress, clientPort, gameGuiPort, callback, io, initClear) {
-	var dsock = this;
-	_.set(dsock, 'serverName', serverName);
-	_.set(dsock, 'serverAddress', serverAddress);
-	_.set(dsock, 'clientPort', clientPort);
-	_.set(dsock, 'GameGuiPort', gameGuiPort);
-	_.set(dsock, 'callback', callback);
-	_.set(dsock, 'io', io);
-	_.set(dsock, 'initClear', initClear);
-	_.set(dsock, 'clientConnOpen', true);
-	_.set(dsock, 'gameGUIConnOpen', true);
-	_.set(dsock, 'client', {});
-	_.set(dsock, 'gameGUI', {});
-	_.set(dsock, 'clientBuffer', {});
-	_.set(dsock, 'gameGUIBuffer', {});
-	_.set(dsock, 'startTime', new Date().valueOf() );
-	_.set(dsock, 'sessionName', serverName+'_'+dsock.startTime+' Node Server Starttime');
-	_.set(dsock, 'writeQue.client', []);
-	_.set(dsock, 'writeQue.gameGUI', []);
+
+exports.createSocket = function (serverName, address, port, queName, callback) {
+	var sock = this;
+	var sockConn;
+	_.set(sock, 'serverName', serverName);
+	_.set(sock, 'connOpen', true);
+	_.set(sock, 'buffer', {});
+	_.set(sock, 'startTime', new Date().valueOf() );
+	_.set(sock, 'sessionName', serverName+'_'+sock.startTime+' ' + queName + ' Node Server Starttime');
 
 	setInterval(function () { //sending FULL SPEED AHEAD, 1 per milsec (watch for weird errors, etc)
-		dbMapServiceController.cmdQueActions('grabNextQue', serverName, {queName: 'clientArray'})
-			.then(function (resp) {
-				if (resp) {
-					_.get(dsock, 'writeQue.client').push(resp.actionObj);
-				}
-			})
-			.catch(function (err) {
-				console.log('erroring line34: ', err);
-			})
-		;
-		dbMapServiceController.cmdQueActions('grabNextQue', serverName, {queName: 'GameGuiArray'})
-			.then(function (resp) {
-				if (resp) {
-					_.get(dsock, 'writeQue.gameGUI').push(resp.actionObj);
-				}
-			})
-			.catch(function (err) {
-				console.log('erroring line44: ', err);
-			})
-		;
+		if (_.get(sock, 'cQue', []).length < 5) {
+			dbMapServiceController.cmdQueActions('grabNextQue', serverName, {queName: queName})
+				.then(function (resp) {
+					if (resp) {
+						sock.cQue.push(resp.actionObj);
+					}
+				})
+				.catch(function (err) {
+					console.log('erroring line34: ', err);
+				})
+			;
+		}
 	}, 100);
 
-	dsock.connectClient = function () {
-		dsock.client = net.createConnection({
-			host: dsock.serverAddress,
-			port: dsock.clientPort
+	sock.connSocket = function () {
+		sockConn = net.createConnection({
+			host: address,
+			port: port
 		}, function () {
-			console.log('sessionname: ', dsock.sessionName);
 			var time = new Date();
-			console.log(time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + ' :: Connected to DCS Client at '+dsock.serverAddress+':'+dsock.clientPort+' !');
-			dsock.clientConnOpen = false;
-			dsock.clientBuffer = [];
+			console.log('Connected to DCS Client at '+address+':'+port+' !');
+			_.set(sock, 'connOpen', false);
+			sock.buffer = [];
 		});
-		dsock.client.on('connect', function () {
-			dsock.startTime = new Date().valueOf() ;
-			dsock.sessionName = serverName+'_'+dsock.startTime;
-			dsock.initClear(serverName, 'client');
-			dsock.client.write('{"action":"NONE"}' + "\n");
+		sockConn.on('connect', function () {
+			sock.startTime = new Date().valueOf() ;
+			sock.sessionName = serverName+'_'+sock.startTime;
+			sockConn.write('{"action":"NONE"}' + "\n");
 		});
 
-		dsock.client.on('data', function (data) {
-			dsock.clientBuffer += data;
-			while ((i = dsock.clientBuffer.indexOf("\n")) >= 0) {
-				var curStr = '';
+		sockConn.on('data', function (data) {
+			sock.buffer += data;
+			while ((i = sock.buffer.indexOf("\n")) >= 0) {
+				var curStr;
 				var isValidJSON = true;
-				var subStr = dsock.clientBuffer.substring(0, i);
+				var subStr = sock.buffer.substring(0, i);
 				try { JSON.parse(subStr) } catch(e) { isValidJSON = false }
 				if (isValidJSON) {
 					curStr = JSON.parse(subStr);
@@ -77,58 +56,22 @@ exports.createSocket = function (serverName, serverAddress, clientPort, gameGuiP
 					curStr = '{}';
 					console.log('bad substring: ', subStr);
 				}
-				dsock.callback(serverName, curStr);
-				dsock.clientBuffer = dsock.clientBuffer.substring(i + 1);
-				dsock.client.write(JSON.stringify(_.get(dsock, ['writeQue', 'client', 0], '')) + "\n");
-				_.get(dsock, ['writeQue', 'client']).shift();
+				callback(serverName, curStr);
+				sock.buffer = sock.buffer.substring(i + 1);
+				sockConn.write(JSON.stringify(_.get(sock, ['cQue', 0], '')) + "\n");
+				_.get(sock, 'cQue', []).shift();
 			}
 		});
 
-		dsock.client.on('close', function () {
+		sockConn.on('close', function () {
 			time = new Date();
-			console.log(time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + ' :: Reconnecting DCS Client on '+dsock.serverAddress+':'+dsock.clientPort+'....');
-			dsock.io.emit('srvUpd', {que: [{action: 'reset'}]});
-			dsock.clientConnOpen = true;
+			console.log(' Reconnecting DCS Client on '+ address +':'+port+'....');
+			_.set(sock, 'connOpen', true);
 		});
 
-		dsock.client.on('error', function (err) {
-			dsock.clientConnOpen = true;
+		sockConn.on('error', function (err) {
+			_.set(sock, 'connOpen', true);
 			console.log('Client Error: ', err);
-		});
-	};
-	dsock.connectServer = function () {
-		dsock.gameGUI = net.createConnection({
-			host: dsock.serverAddress,
-			port: dsock.GameGuiPort
-		}, function () {
-			var time = new Date();
-			console.log(time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + ' :: Connected to DCS GameGUI at '+dsock.serverAddress+':'+dsock.GameGuiPort+'!');
-			dsock.gameGUIConnOpen = false;
-			dsock.gameGUIBuffer = "";
-		});
-		dsock.gameGUI.on('connect', function () {
-			dsock.initClear(serverName, 'server');
-			dsock.gameGUI.write('{"action":"NONE"}' + "\n");
-		});
-		dsock.gameGUI.on('data', function (data) {
-			dsock.gameGUIBuffer += data;
-			while ((i = dsock.gameGUIBuffer.indexOf("\n")) >= 0) {
-				var data = JSON.parse(dsock.gameGUIBuffer.substring(0, i));
-				dsock.callback(serverName, data);
-				dsock.gameGUIBuffer = dsock.gameGUIBuffer.substring(i + 1);
-				dsock.gameGUI.write(JSON.stringify(_.get(dsock, ['writeQue', 'gameGUI', 0], '')) + "\n");
-				_.get(dsock, ['writeQue', 'gameGUI']).shift();
-			}
-		});
-		dsock.gameGUI.on('close', function () {
-			time = new Date();
-			console.log(time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + ' :: Reconnecting DCS GameGUI at '+dsock.serverAddress+':'+dsock.GameGuiPort+'....');
-			dsock.io.emit('srvUpd', {que: [{action: 'reset'}]});
-			dsock.gameGUIConnOpen = true;
-		});
-		dsock.gameGUI.on('error', function (err) {
-			dsock.gameGUIConnOpen = true;
-			console.log('GameGUI Error: ', err);
 		});
 	};
 };

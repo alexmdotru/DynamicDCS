@@ -1,0 +1,126 @@
+const _ = require('lodash');
+const DCSSocket = require('../../../controllers/DCSSocket');
+const dbSystemServiceController = require('../../../controllers/dbSystemService');
+const dbMapServiceController = require('../../../controllers/dbMapService');
+const DCSLuaCommands = require('../../../controllers/DCSLuaCommands');
+
+_.set(exports, 'processPlayerEvent', function (serverName, sessionName, playerArray) {
+	_.forEach(playerArray, function (player) {
+		if (player !== null) {
+			var curPlyrUcid = player.ucid;
+			var curPlyrSide = player.side;
+			var curPlyrName = player.name;
+
+			dbSystemServiceController.banUserActions('read', curPlyrUcid)
+				.then(function (banUser) {
+					if (!_.isEmpty(banUser)){
+						console.log('Banning User: ', _.get(player, 'name'), curPlyrUcid);
+						DCSLuaCommands.kickPlayer(
+							serverName,
+							player.id,
+							'You have been banned from this server.'
+						);
+					} else {
+						dbMapServiceController.unitActions('read', serverName, {playername: curPlyrName, dead: false})
+							.then(function (unit) {
+								var curUnit = _.get(unit, 0);
+								var curUnitSide = _.get(curUnit, 'coalition');
+								var curUnitUcid = _.get(curUnit, 'ucid');
+								if(curUnit) {
+									// switching to spectator gets around this, fix this in future please
+									if ((curUnitSide !== curPlyrSide) && curPlyrSide !== 0 && curPlyrSide) {
+										if (curUnitSide) {
+
+											//fix refiring
+											/*
+                                            iCurObj = {
+                                                sessionName: sessionName,
+                                                eventCode: abrLookup(_.get(queObj, 'action')),
+                                                iucid: curPlyrUcid,
+                                                iName: curPlyrName,
+                                                displaySide: 'A',
+                                                roleCode: 'I',
+                                                msg: 'A: '+getSide(curUnitSide)+' '+curPlyrName+' has commited Treason and switched to '+getSide(curPlyrSide)+'. Shoot on sight! -1000pts',
+                                                score: -1000,
+                                                showInChart: true
+                                            };
+                                            if(curPlyrUcid) {
+                                                curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
+                                                dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
+                                            }
+
+                                            DCSLuaCommands.sendMesgToAll(
+                                                serverName,
+                                                _.get(iCurObj, 'msg'),
+                                                15
+                                            );
+                                            */
+										}
+										/*
+                                        dbSystemServiceController.userAccountActions('read')
+                                            .then(function (resp) {
+                                                var curSocket;
+                                                var switchedPlayerSocket = _.get(nonaccountUsers, curPlyrUcid);
+                                                var switchedPlayer = _.find(resp, {ucid: curPlyrUcid});
+                                                if(switchedPlayerSocket) {
+                                                    if (curPlyrSide === 1 || curPlyrSide === 2) {
+                                                        setSocketRoom(switchedPlayerSocket, serverName + '_q' + curPlyrSide);
+                                                        // sendInit(serverName, switchedPlayerSocket);
+                                                    }
+                                                } else if (switchedPlayer) {
+                                                    curSocket = io.sockets.connected[_.get(switchedPlayer, 'curSocket')];
+                                                    if (switchedPlayer.permLvl < 20) {
+                                                        setSocketRoom(curSocket, serverName + '_padmin');
+                                                    } else if (curPlyrSide === 1 || curPlyrSide === 2) {
+                                                        setSocketRoom(curSocket, serverName + '_q' + curPlyrSide);
+                                                        // sendInit(serverName, curSocket);
+                                                    }
+                                                }
+                                            })
+                                            .catch(function (err) {
+                                                console.log('line626', err);
+                                            })
+                                        ;
+                                        */
+									}
+								}
+							})
+							.catch(function (err) {
+								console.log('err line596: ', err);
+							})
+						;
+					}
+				})
+				.catch(function (err) {
+					console.log('line886', err);
+				})
+			;
+		}
+	});
+
+//need this for current player ID lookup
+	//curServers[serverName].serverObject.players = queObj.data;
+	var promisSrvPlayers = [];
+	_.forEach(playerArray, function (data) {
+		if (data) {
+			if (data.ucid) {
+				_.set(data, '_id', data.ucid);
+				_.set(data, 'playerId', data.id);
+				_.set(data, 'sessionName', sessionName);
+				//update map based player table
+				dbMapServiceController.srvPlayerActions('update', serverName, data)
+					.catch(function (err) {
+						console.log('line999', err);
+					})
+				;
+			}
+		}
+	});
+
+//use update socket db table
+//curServers[serverName].updateQue.q0.push(_.cloneDeep(queObj));
+//curServers[serverName].updateQue.q1.push(_.cloneDeep(queObj));
+//curServers[serverName].updateQue.q2.push(_.cloneDeep(queObj));
+//curServers[serverName].updateQue.qadmin.push(_.cloneDeep(queObj));
+});
+
