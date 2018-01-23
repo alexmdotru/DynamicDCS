@@ -49,9 +49,24 @@ _.set(DCB, 'socketCallback', function (serverName, cbArray) {
 		DCB.getLatestSession(serverName);
 	} else {
 		_.forEach(_.get(cbArray, 'que', []), function (queObj) {
-			//playerUpdate
 			if (_.get(queObj, 'action') === 'players') {
 				playersEvent.processPlayerEvent(serverName, _.get(DCB, 'sessionName'), queObj.data);
+			}
+
+			if (_.get(queObj, 'action') === 'friendly_fire') {
+
+			}
+
+			if (_.get(queObj, 'action') === 'self_kill') {
+
+			}
+
+			if (_.get(queObj, 'action') === 'connect') {
+
+			}
+
+			if (_.get(queObj, 'action') === 'disconnect') {
+
 			}
 
 		});
