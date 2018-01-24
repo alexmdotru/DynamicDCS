@@ -55,23 +55,23 @@ _.set(DCB, 'socketCallback', function (serverName, cbArray) {
 	} else {
 		_.forEach(_.get(cbArray, 'que', []), function (queObj) {
 			if (_.get(queObj, 'action') === 'players') {
-				playersEvent.processPlayerEvent(serverName, _.get(DCB, 'sessionName'), queObj.data);
+				playersEvent.processPlayerEvent(serverName, DCB.sessionName, queObj.data);
 			}
 
 			if (_.get(queObj, 'action') === 'friendly_fire') {
-				friendlyFireEvent
+				friendlyFireEvent.processFriendlyFire(serverName, DCB.sessionName, queObj.data);
 			}
 
 			if (_.get(queObj, 'action') === 'self_kill') {
-				selfKillEvent
+				selfKillEvent.processSelfKill(serverName, DCB.sessionName, queObj.data);
 			}
 
 			if (_.get(queObj, 'action') === 'connect') {
-				connectEvent
+				connectEvent.processConnect(serverName, DCB.sessionName, queObj.data);
 			}
 
 			if (_.get(queObj, 'action') === 'disconnect') {
-				disconnectEvent
+				disconnectEvent.processConnect(serverName, DCB.sessionName, queObj.data);
 			}
 
 		});

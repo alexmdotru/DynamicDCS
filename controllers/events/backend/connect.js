@@ -1,8 +1,12 @@
+const _ = require('lodash');
+const DCSLuaCommands = require('../../DCSLuaCommands');
 
+_.set(exports, 'processConnect', function (serverName, sessionName, eventObj) {
+	// "connect", playerID, name - no ucid lookup yet
+	DCSLuaCommands.sendMesgToAll(
+		serverName,
+		'A: ' + eventObj.data.arg2 + ' has connected',
+		5
+	);
+});
 
-// "connect", playerID, name - no ucid lookup yet
-DCSLuaCommands.sendMesgToAll(
-	serverName,
-	'A: '+_.get(queObj, 'data.arg2')+' has connected',
-	5
-);

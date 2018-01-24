@@ -1,24 +1,32 @@
+const _ = require('lodash');
+const constants = require('../../constants');
+const dbMapServiceController = require('../../dbMapService');
+const DCSLuaCommands = require('../../DCSLuaCommands');
+const playersEvent = require('../../events/backend/players');
 
-
-// "disconnect", playerID, name, playerSide, reason_code
-iPlayer = _.find(curServers[serverName].serverObject.players, {id: queObj.data.arg1});
-if (iPlayer) {
-	iCurObj = {
-		sessionName: sessionName,
-		eventCode: abrLookup(_.get(queObj, 'action')),
-		iucid: _.get(iPlayer, 'ucid'),
-		iName: _.get(iPlayer, 'name'),
-		displaySide: 'A',
-		roleCode: 'I',
-		msg: 'A: '+_.get(iPlayer, 'name')+' has disconnected - Ping:'+_.get(iPlayer, 'ping')+' Lang:'+_.get(iPlayer, 'lang')
-	};
-	if(_.get(iCurObj, 'iucid')) {
-		// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
-		dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
+_.set(exports, 'processDisconnect', function (serverName, sessionName, eventObj) {
+	var iPlayer;
+	var iCurObj;
+	// "disconnect", playerID, name, playerSide, reason_code
+	iPlayer = _.find(playersEvent.rtPlayerArray[serverName], {id: eventObj.data.arg1});
+	if (iPlayer) {
+		iCurObj = {
+			sessionName: sessionName,
+			eventCode: constants.shortNames[eventObj.action],
+			iucid: iPlayer.ucid,
+			iName: iPlayer.name,
+			displaySide: 'A',
+			roleCode: 'I',
+			msg: 'A: ' + iPlayer.name + ' has disconnected - Ping:' + iPlayer.ping + ' Lang:' + iPlayer.lang
+		};
+		if(iCurObj.iucid) {
+			// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
+			dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
+		}
+		DCSLuaCommands.sendMesgToAll(
+			serverName,
+			_.get(iCurObj, 'msg'),
+			5
+		);
 	}
-	DCSLuaCommands.sendMesgToAll(
-		serverName,
-		_.get(iCurObj, 'msg'),
-		5
-	);
-}
+});
