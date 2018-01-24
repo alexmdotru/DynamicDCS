@@ -3,8 +3,8 @@ const DCSSocket = require('../../../controllers/DCSSocket');
 const dbMapServiceController = require('../../../controllers/dbMapService');
 
 const playersEvent = require('../../../controllers/events/backend/players');
-const friendlyFireEvent = require('../../../controllers/events/backend/friendly_fire');
-const selfKillEvent = require('../../../controllers/events/backend/self_kill');
+const friendlyFireEvent = require('../../../controllers/events/backend/friendlyFire');
+const selfKillEvent = require('../../../controllers/events/backend/selfKill');
 const connectEvent = require('../../../controllers/events/backend/connect');
 const disconnectEvent = require('../../../controllers/events/backend/disconnect');
 
