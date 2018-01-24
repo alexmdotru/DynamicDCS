@@ -15,7 +15,7 @@ _.assign(DCB, {
 	serverName: 'TrueDynamicCaucasus',
 	serverIP: '127.0.0.1',
 	serverPort: '3002',
-	queName: 'GameGuiArray',
+	queName: 'gameGuiArray',
 	db: {
 		systemHost: 'localhost',
 		systemDatabase: 'DynamicDCS',
