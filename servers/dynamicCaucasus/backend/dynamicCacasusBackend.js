@@ -1,7 +1,12 @@
 const _ = require('lodash');
 const DCSSocket = require('../../../controllers/DCSSocket');
 const dbMapServiceController = require('../../../controllers/dbMapService');
-const playersEvent = require('../../../controllers/events/backend/players.js');
+
+const playersEvent = require('../../../controllers/events/backend/players');
+const friendlyFireEvent = require('../../../controllers/events/backend/friendly_fire');
+const selfKillEvent = require('../../../controllers/events/backend/self_kill');
+const connectEvent = require('../../../controllers/events/backend/connect');
+const disconnectEvent = require('../../../controllers/events/backend/disconnect');
 
 var DCB = {};
 
@@ -54,19 +59,19 @@ _.set(DCB, 'socketCallback', function (serverName, cbArray) {
 			}
 
 			if (_.get(queObj, 'action') === 'friendly_fire') {
-
+				friendlyFireEvent
 			}
 
 			if (_.get(queObj, 'action') === 'self_kill') {
-
+				selfKillEvent
 			}
 
 			if (_.get(queObj, 'action') === 'connect') {
-
+				connectEvent
 			}
 
 			if (_.get(queObj, 'action') === 'disconnect') {
-
+				disconnectEvent
 			}
 
 		});

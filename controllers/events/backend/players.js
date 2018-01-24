@@ -1,10 +1,10 @@
 const _ = require('lodash');
-const DCSSocket = require('../../../controllers/DCSSocket');
-const dbSystemServiceController = require('../../../controllers/dbSystemService');
-const dbMapServiceController = require('../../../controllers/dbMapService');
-const DCSLuaCommands = require('../../../controllers/DCSLuaCommands');
+const dbSystemServiceController = require('../../dbSystemService');
+const dbMapServiceController = require('../../dbMapService');
+const DCSLuaCommands = require('../../DCSLuaCommands');
 
 _.set(exports, 'processPlayerEvent', function (serverName, sessionName, playerArray) {
+	_.set(exports, ['rtPlayerArray', serverName], playerArray);
 	_.forEach(playerArray, function (player) {
 		if (player !== null) {
 			var curPlyrUcid = player.ucid;
