@@ -20,54 +20,54 @@ _.assign(CCB, {
 
 //checks to see if socket needs restarting every 3 secs
 setInterval(function () {
-	if (DCB.DCSSocket) {
-		if (DCB.DCSSocket.connOpen) {
-			console.log('Connecting to ' + DCB.serverName + ' Backend');
-			DCB.DCSSocket.connSocket();
+	if (CCB.DCSSocket) {
+		if (CCB.DCSSocket.connOpen) {
+			console.log('Connecting to ' + CCB.serverName + ' Frontend');
+			_.set(CCB, 'sessionName', '');
+			CCB.DCSSocket.connSocket();
 		}
 	} else {
-		DCB.DCSSocket = new DCSSocket.createSocket(DCB.serverName, DCB.serverIP, DCB.serverPort, DCB.queName, DCB.socketCallback);
+		CCB.DCSSocket = new DCSSocket.createSocket(CCB.serverName, CCB.serverIP, CCB.serverPort, CCB.queName, CCB.socketCallback);
 	}
 }, 3 * 1000);
 
-_.set(DCB, 'getLatestSession', function (serverName) {
-	dbMapServiceController.statSessionActions('readLatest', serverName, {})
-		.then(function (latestSession) {
-			if (latestSession) {
-				_.set(DCB, 'sessionName', latestSession.name);
-			}
-		})
-		.catch(function (err) {
-			console.log('line43', err);
-		})
-	;
+_.set(CCB, 'getLatestSession', function (serverName, serverEpoc, startAbs, curAbs) {
+	if (serverEpoc) {
+		var sessionName = serverName + '_' + serverEpoc;
+		var newSession = {
+			_id: sessionName,
+			name: sessionName
+		};
+		if (curAbs) {
+			_.set(newSession, 'startAbsTime', startAbs);
+			_.set(newSession, 'curAbsTime', curAbs);
+		}
+		if (sessionName !== _.get(CCB, ['sessionName'], '') || _.get(CCB, ['curAbsTime'], 0) > curAbs) {
+			_.set(CCB, ['sessionName'], sessionName);
+			_.set(CCB, ['curAbsTime'], curAbs);
+			console.log('set new session');
+			dbMapServiceController.statSessionActions('save', serverName, newSession)
+				.catch(function (err) {
+					console.log('line49', err);
+				})
+			;
+		} else {
+			console.log('use existing session');
+			dbMapServiceController.statSessionActions('update', serverName, newSession)
+				.catch(function (err) {
+					console.log('line55', err);
+				})
+			;
+		}
+	}
 });
 
-_.set(DCB, 'socketCallback', function (serverName, cbArray) {
-	if(!_.get(DCB, 'sessionName')) {
-		DCB.getLatestSession(serverName);
+_.set(CCB, 'socketCallback', function (serverName, cbArray) {
+	if(!_.get(CCB, 'sessionName')) {
+		CCB.getLatestSession(serverName, cbArray.epoc, cbArray.startAbsTime,  cbArray.curAbsTime);
 	} else {
 		_.forEach(_.get(cbArray, 'que', []), function (queObj) {
-			if (_.get(queObj, 'action') === 'players') {
-				playersEvent.processPlayerEvent(serverName, DCB.sessionName, queObj.data);
-			}
-
-			if (_.get(queObj, 'action') === 'friendly_fire') {
-				friendlyFireEvent.processFriendlyFire(serverName, DCB.sessionName, queObj.data);
-			}
-
-			if (_.get(queObj, 'action') === 'self_kill') {
-				selfKillEvent.processSelfKill(serverName, DCB.sessionName, queObj.data);
-			}
-
-			if (_.get(queObj, 'action') === 'connect') {
-				connectEvent.processConnect(serverName, DCB.sessionName, queObj.data);
-			}
-
-			if (_.get(queObj, 'action') === 'disconnect') {
-				disconnectEvent.processConnect(serverName, DCB.sessionName, queObj.data);
-			}
-
+			console.log('queObj: ', queObj);
 		});
 	}
 });
