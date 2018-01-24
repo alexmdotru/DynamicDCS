@@ -2,6 +2,8 @@ const _ = require('lodash');
 const DCSSocket = require('../../../controllers/DCSSocket');
 const dbMapServiceController = require('../../../controllers/dbMapService');
 
+const unitsStaticsController = require('../../../controllers/serverToDbSync/unitsStatics');
+
 var CCB = {};
 
 //config
@@ -67,6 +69,12 @@ _.set(CCB, 'socketCallback', function (serverName, cbArray) {
 		CCB.getLatestSession(serverName, cbArray.epoc, cbArray.startAbsTime,  cbArray.curAbsTime);
 	} else {
 		_.forEach(_.get(cbArray, 'que', []), function (queObj) {
+			if ((_.get(queObj, 'action') === 'C') || (_.get(queObj, 'action') === 'U') || (_.get(queObj, 'action') === 'D'))  {
+				unitsStaticsController.processUnitUpdates(serverName, CCB.sessionName, queObj);
+			}
+
+
+
 			console.log('queObj: ', queObj);
 		});
 	}

@@ -1,6 +1,7 @@
 const	_ = require('lodash');
-
 const dbMapServiceController = require('./dbMapService');
+
+exports.ewrUnitsActivated = {};
 
 _.set(exports, 'setEWRTask', function (serverName, unitName) {
 	var sendClient = {
