@@ -14,13 +14,13 @@ exports.maxUnitsMoving = 5;
 exports.maxUnitsStationary = 5;
 exports.spawnLauncherCnt = 3;
 
-_.set(exports, 'menuCmdProcess', function (pObj) {
+_.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 	// console.log('process menu cmd: ', pObj);
-	dbMapServiceController.unitActions('read', pObj.serverName, {_id: pObj.unitId})
+	dbMapServiceController.unitActions('read', serverName, {_id: pObj.unitId})
 		.then(function(units) {
 			var curUnit = _.get(units, 0);
 			if (curUnit) {
-				dbMapServiceController.srvPlayerActions('read', pObj.serverName, {name: curUnit.playername})
+				dbMapServiceController.srvPlayerActions('read', serverName, {name: curUnit.playername})
 					.then(function(player) {
 						var curPlayer = _.get(player, [0]);
 						if (curPlayer) {
@@ -28,25 +28,25 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 							var curSpawnUnit;
 							// action menu
 							if (pObj.cmd === 'Lives') {
-								capLivesController.checkLives(pObj.serverName, curPlayer.ucid);
+								capLivesController.checkLives(serverName, curPlayer.ucid);
 							}
 							if (pObj.cmd === 'unloadExtractTroops') {
 								if(curUnit.inAir) {
 									DCSLuaCommands.sendMesgToGroup(
 										curUnit.groupId,
-										pObj.serverName,
+										serverName,
 										"G: Please Land Before Attempting Logistic Commands!",
 										5
 									);
 								} else {
-									if(exports.isTroopOnboard(curUnit, pObj.serverName)) {
-										// console.log('should be false: ', proximityController.extractUnitsBackToBase(curUnit, pObj.serverName) );
-										if(proximityController.extractUnitsBackToBase(curUnit, pObj.serverName)) {
-											dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, troopType: null})
+									if(exports.isTroopOnboard(curUnit, serverName)) {
+										// console.log('should be false: ', proximityController.extractUnitsBackToBase(curUnit, serverName) );
+										if(proximityController.extractUnitsBackToBase(curUnit, serverName)) {
+											dbMapServiceController.unitActions('update', serverName, {_id: pObj.unitId, troopType: null})
 												.then(function(){
 													DCSLuaCommands.sendMesgToGroup(
 														curUnit.groupId,
-														pObj.serverName,
+														serverName,
 														"G: " + curUnit.troopType + " has been dropped off at the base!",
 														5
 													);
@@ -56,11 +56,11 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 												})
 											;
 										} else {
-											dbMapServiceController.unitActions('read', pObj.serverName, {playerOwnerId: curPlayer.ucid, isTroop: true, dead: false})
+											dbMapServiceController.unitActions('read', serverName, {playerOwnerId: curPlayer.ucid, isTroop: true, dead: false})
 												.then(function(delUnits){
 													_.forEach(delUnits, function (unit) {
-														dbMapServiceController.unitActions('update', pObj.serverName, {_id: unit.unitId, dead: true});
-														groupController.destroyUnit(pObj.serverName, unit.name);
+														dbMapServiceController.unitActions('update', serverName, {_id: unit.unitId, dead: true});
+														groupController.destroyUnit(serverName, unit.name);
 													});
 													// spawn troop type
 													curSpawnUnit = _.cloneDeep(_.first(groupController.getRndFromSpawnCat(curUnit.troopType, curUnit.coalition, true)));
@@ -73,15 +73,15 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 														category: curSpawnUnit.category,
 														playerCanDrive: false
 													};
-													groupController.spawnLogiGroup(pObj.serverName, [spawnArray], curUnit.coalition);
-													dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, troopType: null})
+													groupController.spawnLogiGroup(serverName, [spawnArray], curUnit.coalition);
+													dbMapServiceController.unitActions('update', serverName, {_id: pObj.unitId, troopType: null})
 														.catch(function (err) {
 															console.log('erroring line73: ', err);
 														})
 													;
 													DCSLuaCommands.sendMesgToGroup(
 														curUnit.groupId,
-														pObj.serverName,
+														serverName,
 														"G: " + curSpawnUnit.type + " has been deployed!",
 														5
 													);
@@ -93,20 +93,20 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 										}
 									} else {
 										//try to extract a troop
-										proximityController.getTroopsInProximity(pObj.serverName, curUnit.lonLatLoc, 0.2, curUnit.coalition)
+										proximityController.getTroopsInProximity(serverName, curUnit.lonLatLoc, 0.2, curUnit.coalition)
 											.then(function(units){
 												var curTroop = _.get(units, [0]);
 												if(curTroop) {
 													// pickup troop
-													dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, troopType: curTroop.spawnCat})
+													dbMapServiceController.unitActions('update', serverName, {_id: pObj.unitId, troopType: curTroop.spawnCat})
 														.catch(function (err) {
 															console.log('erroring line57: ', err);
 														})
 													;
-													groupController.destroyUnit(pObj.serverName, curTroop.name);
+													groupController.destroyUnit(serverName, curTroop.name);
 													DCSLuaCommands.sendMesgToGroup(
 														curUnit.groupId,
-														pObj.serverName,
+														serverName,
 														"G: Picked Up " + curTroop.type + "!",
 														5
 													);
@@ -114,7 +114,7 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 													// no troops
 													DCSLuaCommands.sendMesgToGroup(
 														curUnit.groupId,
-														pObj.serverName,
+														serverName,
 														"G: No Troops To Extract Or Unload!",
 														5
 													);
@@ -129,24 +129,24 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 							}
 						}
 						if (pObj.cmd === 'isTroopOnboard') {
-							exports.isTroopOnboard(curUnit, pObj.serverName, true);
+							exports.isTroopOnboard(curUnit, serverName, true);
 						}
 						if (pObj.cmd === 'isCrateOnboard') {
-							exports.isCrateOnboard(curUnit, pObj.serverName, true);
+							exports.isCrateOnboard(curUnit, serverName, true);
 						}
 						if (pObj.cmd === 'unpackCrate') {
-							proximityController.getLogiTowersProximity(pObj.serverName, curUnit.lonLatLoc, 0.8)
+							proximityController.getLogiTowersProximity(serverName, curUnit.lonLatLoc, 0.8)
 								.then(function (logiProx) {
 									if (logiProx.length) {
 										DCSLuaCommands.sendMesgToGroup(
 											curUnit.groupId,
-											pObj.serverName,
+											serverName,
 											"G: You need to move farther away from Command Towers (800m)",
 											5
 										);
 									} else {
 										if(menuUpdateController.virtualCrates) {
-											proximityController.getVirtualCratesInProximity(pObj.serverName, curUnit.lonLatLoc, 0.4, curUnit.coalition)
+											proximityController.getVirtualCratesInProximity(serverName, curUnit.lonLatLoc, 0.4, curUnit.coalition)
 												.then(function(units){
 													var cCnt = 0;
 													var grpTypes;
@@ -169,27 +169,27 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 															cCnt = 1;
 															_.forEach(_.get(grpTypes, [curCrateType]), function (eCrate) {
 																if ( cCnt <= numCrate) {
-																	dbMapServiceController.unitActions('update', pObj.serverName, {_id: eCrate.unitId, dead: true})
+																	dbMapServiceController.unitActions('update', serverName, {_id: eCrate.unitId, dead: true})
 																		.catch(function (err) {
 																			console.log('erroring line152: ', err);
 																		})
 																	;
-																	groupController.destroyUnit(pObj.serverName, eCrate.name);
+																	groupController.destroyUnit(serverName, eCrate.name);
 																	cCnt ++;
 																}
 															});
 
 															if (curCrateSpecial === 'reloadGroup') {
-																reloadController.reloadSAM(pObj.serverName, curUnit, curCrate);
+																reloadController.reloadSAM(serverName, curUnit, curCrate);
 															} else if (curCrateSpecial === 'repairBase') {
-																repairController.repairBase(pObj.serverName, curUnit, curCrateType, curCrate);
+																repairController.repairBase(serverName, curUnit, curCrateType, curCrate);
 															} else {
 																msg = "G: Unpacking " + _.toUpper(curCrateSpecial) + " " + curCrateType + "!";
-																exports.unpackCrate(pObj.serverName, curUnit, curCrateType, curCrateSpecial, isCombo, isMobile);
-																groupController.destroyUnit(pObj.serverName, curCrate.name);
+																exports.unpackCrate(serverName, curUnit, curCrateType, curCrateSpecial, isCombo, isMobile);
+																groupController.destroyUnit(serverName, curCrate.name);
 																DCSLuaCommands.sendMesgToGroup(
 																	curUnit.groupId,
-																	pObj.serverName,
+																	serverName,
 																	msg,
 																	5
 																);
@@ -198,7 +198,7 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 														} else {
 															DCSLuaCommands.sendMesgToGroup(
 																curUnit.groupId,
-																pObj.serverName,
+																serverName,
 																"G: Not Enough Crates for " + curCrateType + "!(" + localCrateNum + '/' + numCrate + ")",
 																5
 															);
@@ -207,7 +207,7 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 														// no troops
 														DCSLuaCommands.sendMesgToGroup(
 															curUnit.groupId,
-															pObj.serverName,
+															serverName,
 															"G: No Crates To Unpack!",
 															5
 														);
@@ -230,19 +230,19 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 						}
 						if (pObj.cmd === 'loadCrate') {
 							if (!curUnit.virtCrateType) {
-								proximityController.getVirtualCratesInProximity(pObj.serverName, curUnit.lonLatLoc, 0.4, curUnit.coalition)
+								proximityController.getVirtualCratesInProximity(serverName, curUnit.lonLatLoc, 0.4, curUnit.coalition)
 									.then(function(units){
 										var curCrate = _.find(units, {playerOwnerId: curPlayer.ucid});
 										if(curCrate) {
-											dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, virtCrateType: curCrate.name})
+											dbMapServiceController.unitActions('update', serverName, {_id: pObj.unitId, virtCrateType: curCrate.name})
 												.catch(function (err) {
 													console.log('erroring line209: ', err);
 												})
 											;
-											groupController.destroyUnit(pObj.serverName, curCrate.name);
+											groupController.destroyUnit(serverName, curCrate.name);
 											DCSLuaCommands.sendMesgToGroup(
 												curUnit.groupId,
-												pObj.serverName,
+												serverName,
 												"G: Picked Up " + _.toUpper(_.split(curCrate.name, '|')[3]) + " " + _.split(curCrate.name, '|')[2] + " Crate!",
 												5
 											);
@@ -250,7 +250,7 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 											// no troops
 											DCSLuaCommands.sendMesgToGroup(
 												curUnit.groupId,
-												pObj.serverName,
+												serverName,
 												"G: No Crates To Load(That You Own)!",
 												5
 											);
@@ -263,7 +263,7 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 							} else {
 								DCSLuaCommands.sendMesgToGroup(
 									curUnit.groupId,
-									pObj.serverName,
+									serverName,
 									"G: You Have a " + _.split(curUnit.virtCrateType, '|')[2] + " Already Onboard!",
 									5
 								);
@@ -273,14 +273,14 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 							if (curUnit.inAir === true) {
 								DCSLuaCommands.sendMesgToGroup(
 									curUnit.groupId,
-									pObj.serverName,
+									serverName,
 									"G: You Must Land Before You Can Drop A Crate!",
 									5
 								);
 							} else {
 								if (!_.isEmpty(curUnit.virtCrateType)) {
-									exports.spawnCrateFromLogi(pObj.serverName, curUnit, _.split(curUnit.virtCrateType, '|')[2], _.split(curUnit.virtCrateType, '|')[4], (_.split(curUnit.virtCrateType, '|')[5] === 'true'), _.split(curUnit.virtCrateType, '|')[3], (_.split(curUnit.virtCrateType, '|')[6] === 'true'));
-									dbMapServiceController.unitActions('update', pObj.serverName, {_id: pObj.unitId, virtCrateType: null})
+									exports.spawnCrateFromLogi(serverName, curUnit, _.split(curUnit.virtCrateType, '|')[2], _.split(curUnit.virtCrateType, '|')[4], (_.split(curUnit.virtCrateType, '|')[5] === 'true'), _.split(curUnit.virtCrateType, '|')[3], (_.split(curUnit.virtCrateType, '|')[6] === 'true'));
+									dbMapServiceController.unitActions('update', serverName, {_id: pObj.unitId, virtCrateType: null})
 										.catch(function (err) {
 											console.log('erroring line243: ', err);
 										})
@@ -288,7 +288,7 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 								} else {
 									DCSLuaCommands.sendMesgToGroup(
 										curUnit.groupId,
-										pObj.serverName,
+										serverName,
 										"G: You Have No Crates Onboard To Drop!",
 										5
 									);
@@ -298,92 +298,92 @@ _.set(exports, 'menuCmdProcess', function (pObj) {
 
 						// Troop Menu
 						if (pObj.cmd === 'Soldier') {
-							exports.loadTroops(pObj.serverName, pObj.unitId, 'Soldier');
+							exports.loadTroops(serverName, pObj.unitId, 'Soldier');
 						}
 
 						if (pObj.cmd === 'MG Soldier') {
-							exports.loadTroops(pObj.serverName, pObj.unitId, 'MG Soldier');
+							exports.loadTroops(serverName, pObj.unitId, 'MG Soldier');
 						}
 
 						if (pObj.cmd === 'MANPAD') {
-							exports.loadTroops(pObj.serverName, pObj.unitId, 'MANPAD');
+							exports.loadTroops(serverName, pObj.unitId, 'MANPAD');
 						}
 
 						if (pObj.cmd === 'RPG') {
-							exports.loadTroops(pObj.serverName, pObj.unitId, 'RPG');
+							exports.loadTroops(serverName, pObj.unitId, 'RPG');
 						}
 
 						if (pObj.cmd === 'Mortar Team') {
-							exports.loadTroops(pObj.serverName, pObj.unitId, 'Mortar Team');
+							exports.loadTroops(serverName, pObj.unitId, 'Mortar Team');
 						}
 
 						// Crate Menu ["action"] = "f10Menu", ["cmd"] = "EWR", ["type"] = "55G6 EWR", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1})
 						if (pObj.cmd === 'EWR') {
-							exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile);
+							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile);
 						}
 
 						if (pObj.cmd === 'JTAC') {
-							exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false, 'jtac', pObj.mobile);
+							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, false, 'jtac', pObj.mobile);
 						}
 
 						if (pObj.cmd === 'reloadGroup') {
-							exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false, 'reloadGroup', pObj.mobile);
+							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, false, 'reloadGroup', pObj.mobile);
 						}
 
 						if (pObj.cmd === 'repairBase') {
-							exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false, 'repairBase', pObj.mobile);
+							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, false, 'repairBase', pObj.mobile);
 						}
 
 						if (pObj.cmd === 'unarmedFuel') {
-							exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile);
+							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile);
 						}
 
 						if (pObj.cmd === 'unarmedAmmo') {
-							exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile);
+							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile);
 						}
 
 						if (pObj.cmd === 'armoredCar') {
-							exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile);
+							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile);
 						}
 
 						if (pObj.cmd === 'APC') {
-							exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile);
+							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile);
 						}
 
 						if (pObj.cmd === 'tank') {
-							exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile);
+							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile);
 						}
 
 						if (pObj.cmd === 'artillary') {
-							exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile);
+							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile);
 						}
 
 						if (pObj.cmd === 'mlrs') {
-							exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile);
+							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile);
 						}
 
 						if (pObj.cmd === 'stationaryAntiAir') {
-							exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile);
+							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile);
 						}
 
 						if (pObj.cmd === 'mobileAntiAir') {
-							exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile);
+							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile);
 						}
 
 						if (pObj.cmd === 'samIR') {
-							exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile);
+							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile);
 						}
 
 						if (pObj.cmd === 'mobileSAM') {
-							exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile);
+							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile);
 						}
 
 						if (pObj.cmd === 'MRSAM') {
-							exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, true, '', pObj.mobile);
+							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, true, '', pObj.mobile);
 						}
 
 						if (pObj.cmd === 'LRSAM') {
-							exports.spawnCrateFromLogi(pObj.serverName, curUnit, pObj.type, pObj.crates, true, '', pObj.mobile);
+							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, true, '', pObj.mobile);
 						}
 					})
 					.catch(function (err) {
