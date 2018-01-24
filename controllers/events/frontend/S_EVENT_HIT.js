@@ -7,7 +7,7 @@
 
 const _ = require('lodash');
 const constants = require('../../constants');
-const dbSystemServiceController = require('./controllers/dbSystemService');
+const dbSystemServiceController = require('../../dbSystemService');
 const dbMapServiceController = require('../../dbMapService');
 const DCSLuaCommands = require('../../DCSLuaCommands');
 

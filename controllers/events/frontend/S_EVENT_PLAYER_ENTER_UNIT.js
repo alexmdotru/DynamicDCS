@@ -3,8 +3,8 @@ const constants = require('../../constants');
 const dbMapServiceController = require('../../dbMapService');
 const DCSLuaCommands = require('../../DCSLuaCommands');
 const playersEvent = require('../../events/backend/players');
-const capLivesController = require('../../controllers/capLives');
-const menuUpdateController = require('../../controllers/menuUpdate');
+const capLivesController = require('../../capLives');
+const menuUpdateController = require('../../menuUpdate');
 
 _.set(exports, 'processEventPlayerEnterUnit', function (serverName, sessionName, eventObj) {
 	// Occurs when any player assumes direct control of a unit.
