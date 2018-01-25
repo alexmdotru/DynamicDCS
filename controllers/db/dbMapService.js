@@ -6,10 +6,6 @@ const capLivesController = require('../action/capLives');
 mongoose.Promise = require('bluebird');
 var mapdb = mongoose.createConnection();
 
-_.set(exports, 'connectMapDB', function (dynamicHost, dynamicDatabase) {
-	mapdb.open(dynamicHost, dynamicDatabase);
-});
-
 var airfieldSchema = require('./models/airfieldSchema');
 var srvPlayerSchema = require('./models/srvPlayerSchema');
 var unitSchema = require('./models/unitSchema');
@@ -18,6 +14,10 @@ var statSrvEventSchema = require('./models/statSrvEventSchema');
 var simpleStatEventSchema = require('./models/simpleStatEventSchema');
 var cmdQueSchema = require('./models/cmdQueSchema');
 var processSchema = require('./models/processSchema');
+
+_.set(exports, 'connectMapDB', function (dynamicHost, dynamicDatabase) {
+	mapdb.open(dynamicHost, dynamicDatabase);
+});
 
 exports.baseActions = function (action, serverName, obj){
 	const Airfield = mapdb.model(serverName+'_airfield', airfieldSchema);

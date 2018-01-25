@@ -6,13 +6,13 @@ mongoose.Promise = require('bluebird');
 
 var systemdb = mongoose.createConnection();
 
-_.set(exports, 'connectSystemDB', function (systemHost, systemDatabase) {
-	systemdb.open(systemHost, systemDatabase);
-});
-
 // include mongoose db schemas
 var userAccountSchema = require('./models/userAccountSchema');
 const UserAccount = systemdb.model('userAccount', userAccountSchema);
+
+_.set(exports, 'connectSystemDB', function (systemHost, systemDatabase) {
+	systemdb.open(systemHost, systemDatabase);
+});
 
 exports.userAccountActions = function (action, obj){
 	if(action === 'create') {
