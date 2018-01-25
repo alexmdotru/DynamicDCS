@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const constants = require('../../constants');
+const constants = require('../constants');
 const dbMapServiceController = require('../db/dbMapService');
 const dbSystemServiceController = require('../db/dbSystemService');
 const zoneController = require('../proxZone/zone');
@@ -334,12 +334,14 @@ _.set(exports, 'spawnSupportVehiclesOnFarp', function ( serverName, baseName, si
 });
 
 _.set(exports, 'spawnSupportBaseGrp', function ( serverName, baseName, side, init ) {
+	console.log('ssb ', serverName, baseName, side, init);
 	var curBaseObj = {};
 	var spawnArray = [];
 	var curBases = _.get(exports, ['servers', serverName, 'bases']);
 	var farpBases = _.filter(curBases, {farp: true});
 	var expBases = _.filter(curBases, {expansion: true});
 	var curEnabledCountrys = _.get(constants, [_.get(constants, ['side', side]) + 'Countrys']);
+	//console.log('ssb2 ', curEnabledCountrys);
 	if (_.includes(baseName, 'FARP')) {
 		var curFarpBases = _.filter(farpBases, function (farp) {
 			return _.first(_.split(_.get(farp, 'name'), ' #')) === baseName &&
@@ -562,25 +564,33 @@ _.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {
 });
 
 _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
-	var curServer = _.get(exports, ['servers', serverName, 'config']);
-	var defBaseSides = _.get(curServer, 'defBaseSides');
-	_.forEach(defBaseSides, function (extSide, extName) {
-		var spawnArray = [];
-		dbMapServiceController.baseActions('updateSide', serverName, {name: extName, side: extSide})
-			.then(function (bases) {
-				spawnArray = _.concat(spawnArray, exports.spawnSupportBaseGrp(serverName, extName, extSide, true));
+	exports.getUnitDictionary()
+		.then(function (unitDict) {
+			_.set(exports, 'unitDictionary', unitDict);
+			exports.getBases( serverName )
+				.then(function (bases) {
+					_.set(exports, ['servers', serverName, 'bases'], bases);
+					exports.getServer( serverName )
+						.then(function (server) {
+							_.set(exports, ['servers', serverName, 'config'], server);
+							var curServer = _.get(exports, ['servers', serverName, 'config']);
+							var defBaseSides = _.get(curServer, 'defBaseSides');
+							_.forEach(defBaseSides, function (extSide, extName) {
+								var spawnArray = [];
+								spawnArray = _.concat(spawnArray, exports.spawnSupportBaseGrp(serverName, extName, extSide, true));
+								while (spawnArray.length < curServer.replenThreshold) { //UNCOMMENT THESE
+									spawnArray = _.concat(spawnArray, exports.spawnBaseReinforcementGroup(serverName, extSide));
+								}
+								exports.spawnGroup(serverName, spawnArray, extName, extSide);
+							});
+						})
+					;
 
-				while (spawnArray.length < curServer.replenThreshold) { //UNCOMMENT THESE
-					spawnArray = _.concat(spawnArray, exports.spawnBaseReinforcementGroup(serverName, extSide));
-				}
+				})
+			;
 
-				exports.spawnGroup(serverName, spawnArray, extName, extSide);
-			})
-			.catch(function (err) {
-				console.log('line799', err);
-			})
-		;
-	});
+		})
+	;
 });
 
 _.set(exports, 'initDbs', function ( serverName ) {

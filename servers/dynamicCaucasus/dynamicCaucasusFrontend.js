@@ -135,53 +135,52 @@ _.set(CCB, 'socketCallback', function (serverName, cbArray) {
 			*/
 
 			if (_.get(queObj, 'action') === 'S_EVENT_HIT') {
-				processEventHit.processEventHit(serverName, CCB.sessionName, eventObj);
+				processEventHit.processEventHit(serverName, CCB.sessionName, queObj);
 			}
 
 			if (_.get(queObj, 'action') === 'S_EVENT_TAKEOFF') {
-				processEventTakeoff.processEventTakeoff(serverName, CCB.sessionName, eventObj);
+				processEventTakeoff.processEventTakeoff(serverName, CCB.sessionName, queObj);
 			}
 
 			if (_.get(queObj, 'action') === 'S_EVENT_LAND') {
-				processEventLand.processEventLand(serverName, CCB.sessionName, eventObj);
+				processEventLand.processEventLand(serverName, CCB.sessionName, queObj);
 			}
 
 			if (_.get(queObj, 'action') === 'S_EVENT_EJECTION') {
-				processEventEjection.processEventEjection(serverName, CCB.sessionName, eventObj);
+				processEventEjection.processEventEjection(serverName, CCB.sessionName, queObj);
 			}
 
 			if (_.get(queObj, 'action') === 'S_EVENT_CRASH') {
-				processEventCrash.processEventCrash(serverName, CCB.sessionName, eventObj);
+				processEventCrash.processEventCrash(serverName, CCB.sessionName, queObj);
 			}
 
 			if (_.get(queObj, 'action') === 'S_EVENT_DEAD') {
-				processEventDead.processEventDead(serverName, CCB.sessionName, eventObj);
+				processEventDead.processEventDead(serverName, CCB.sessionName, queObj);
 			}
 
 			if (_.get(queObj, 'action') === 'S_EVENT_PILOT_DEAD') {
-				processEventPilotDead.processEventPilotDead(serverName, CCB.sessionName, eventObj);
+				processEventPilotDead.processEventPilotDead(serverName, CCB.sessionName, queObj);
 			}
 
 			if (_.get(queObj, 'action') === 'S_EVENT_REFUELING') {
-				processEventRefueling.processEventRefueling(serverName, CCB.sessionName, eventObj);
+				processEventRefueling.processEventRefueling(serverName, CCB.sessionName, queObj);
 			}
 
 			if (_.get(queObj, 'action') === 'S_EVENT_REFUELING_STOP') {
-				processEventRefuelingStop.processEventRefuelingStop(serverName, CCB.sessionName, eventObj);
+				processEventRefuelingStop.processEventRefuelingStop(serverName, CCB.sessionName, queObj);
 			}
 
 			if (_.get(queObj, 'action') === 'S_EVENT_BIRTH') {
-				processEventBirth.processEventBirth(serverName, CCB.sessionName, eventObj);
+				processEventBirth.processEventBirth(serverName, CCB.sessionName, queObj);
 			}
 
 			if (_.get(queObj, 'action') === 'S_EVENT_PLAYER_ENTER_UNIT') {
-				processEventPlayerEnterUnit.processEventPlayerEnterUnit(serverName, CCB.sessionName, eventObj);
+				processEventPlayerEnterUnit.processEventPlayerEnterUnit(serverName, CCB.sessionName, queObj);
 			}
 
 			if (_.get(queObj, 'action') === 'S_EVENT_PLAYER_LEAVE_UNIT') {
-				processEventPlayerLeaveUnit.processEventPlayerLeaveUnit(serverName, CCB.sessionName, eventObj);
+				processEventPlayerLeaveUnit.processEventPlayerLeaveUnit(serverName, CCB.sessionName, queObj);
 			}
-			console.log('queObj: ', queObj);
 		});
 	}
 });
