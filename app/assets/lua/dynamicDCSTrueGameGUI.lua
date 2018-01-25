@@ -7,6 +7,7 @@ local PORT = 3002
 local DATA_TIMEOUT_SEC = 1
 
 local allowSpawn = false
+isCapLives = false
 
 package.path  = package.path..";.\\LuaSocket\\?.lua;"
 package.cpath = package.cpath..";.\\LuaSocket\\?.dll;"
@@ -501,6 +502,7 @@ function dynDCS.getUnitId(_slotID)
 end
 
 function dynDCS.shouldAllowSlot(_playerID, _slotID)
+	isCapLives = false
 	local _unitId = dynDCS.getUnitId(_slotID)
 	if _unitId == nil and allowSpawn then
 		return true
@@ -517,6 +519,7 @@ function dynDCS.shouldAllowSlot(_playerID, _slotID)
 		--net.log('STUFFF '..capLives[curType]..' - '..curType..' ucid: '.._ucidFlag)
 		if _ucidFlag == 1 and capLives[curType] == 1 then
 			--net.log('User Flagged For Cap Lives Used Up')
+			isCapLives = true
 			return false
 		end
 		--net.log('Base Slot Open')
@@ -526,16 +529,16 @@ function dynDCS.shouldAllowSlot(_playerID, _slotID)
 end
 
 dynDCS.rejectPlayer = function(playerID)
-	--("Reject Slot - force spectators - "..playerID)
-
-	-- put to spectators
 	net.force_player_slot(playerID, 0, '')
-
 	local _playerName = net.get_player_info(playerID, 'name')
-
 	if _playerName ~= nil then
 		--Disable chat message to user
-		local _chatMessage = string.format("*** Sorry %s - Slot DISABLED, Capture This Airport Or Your Modern Cap Lives Are Used Up ***",_playerName)
+		local _chatMessage
+		if (isCapLives) then
+			_chatMessage = "***Slot DISABLED, Your Modern Cap Lives Are Used Up***"
+		else
+			_chatMessage = "***Slot DISABLED, Capture This Airport***"
+		end
 		net.send_chat_to(_chatMessage, playerID)
 	end
 end
