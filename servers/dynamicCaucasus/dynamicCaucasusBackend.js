@@ -1,13 +1,13 @@
 const _ = require('lodash');
-const DCSSocket = require('../../../controllers/net/DCSSocket');
-const dbSystemServiceController = require('../../../controllers/db/dbSystemService');
-const dbMapServiceController = require('../../../controllers/db/dbMapService');
+const DCSSocket = require('../../controllers/net/DCSSocket');
+const dbSystemServiceController = require('../../controllers/db/dbSystemService');
+const dbMapServiceController = require('../../controllers/db/dbMapService');
 
-const playersEvent = require('../../../controllers/events/backend/players');
-const friendlyFireEvent = require('../../../controllers/events/backend/friendlyFire');
-const selfKillEvent = require('../../../controllers/events/backend/selfKill');
-const connectEvent = require('../../../controllers/events/backend/connect');
-const disconnectEvent = require('../../../controllers/events/backend/disconnect');
+const playersEvent = require('../../controllers/events/backend/players');
+const friendlyFireEvent = require('../../controllers/events/backend/friendlyFire');
+const selfKillEvent = require('../../controllers/events/backend/selfKill');
+const connectEvent = require('../../controllers/events/backend/connect');
+const disconnectEvent = require('../../controllers/events/backend/disconnect');
 
 var DCB = {};
 

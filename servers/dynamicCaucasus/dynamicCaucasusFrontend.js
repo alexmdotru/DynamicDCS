@@ -1,24 +1,24 @@
 const _ = require('lodash');
-const DCSSocket = require('../../../controllers/net/DCSSocket');
-const dbSystemServiceController = require('../../../controllers/db/dbSystemService');
-const dbMapServiceController = require('../../../controllers/db/dbMapService');
-const menuCmdsController = require('../../../controllers/menu/menuCmds');
+const DCSSocket = require('../../controllers/net/DCSSocket');
+const dbSystemServiceController = require('../../controllers/db/dbSystemService');
+const dbMapServiceController = require('../../controllers/db/dbMapService');
+const menuCmdsController = require('../../controllers/menu/menuCmds');
 
-const unitsStaticsController = require('../../../controllers/serverToDbSync/unitsStatics');
-const airbaseSyncController = require('../../../controllers/serverToDbSync/airbaseSync');
+const unitsStaticsController = require('../../controllers/serverToDbSync/unitsStatics');
+const airbaseSyncController = require('../../controllers/serverToDbSync/airbaseSync');
 
-const processEventHit = require('../../../controllers/events/frontend/S_EVENT_HIT');
-const processEventTakeoff = require('../../../controllers/events/frontend/S_EVENT_TAKEOFF');
-const processEventLand = require('../../../controllers/events/frontend/S_EVENT_LAND');
-const processEventEjection = require('../../../controllers/events/frontend/S_EVENT_EJECTION');
-const processEventCrash = require('../../../controllers/events/frontend/S_EVENT_CRASH');
-const processEventDead = require('../../../controllers/events/frontend/S_EVENT_DEAD');
-const processEventPilotDead = require('../../../controllers/events/frontend/S_EVENT_PILOT_DEAD');
-const processEventRefueling = require('../../../controllers/events/frontend/S_EVENT_REFUELING');
-const processEventRefuelingStop = require('../../../controllers/events/frontend/S_EVENT_REFUELING_STOP');
-const processEventBirth = require('../../../controllers/events/frontend/S_EVENT_BIRTH');
-const processEventPlayerEnterUnit = require('../../../controllers/events/frontend/S_EVENT_PLAYER_ENTER_UNIT');
-const processEventPlayerLeaveUnit = require('../../../controllers/events/frontend/S_EVENT_PLAYER_LEAVE_UNIT');
+const processEventHit = require('../../controllers/events/frontend/S_EVENT_HIT');
+const processEventTakeoff = require('../../controllers/events/frontend/S_EVENT_TAKEOFF');
+const processEventLand = require('../../controllers/events/frontend/S_EVENT_LAND');
+const processEventEjection = require('../../controllers/events/frontend/S_EVENT_EJECTION');
+const processEventCrash = require('../../controllers/events/frontend/S_EVENT_CRASH');
+const processEventDead = require('../../controllers/events/frontend/S_EVENT_DEAD');
+const processEventPilotDead = require('../../controllers/events/frontend/S_EVENT_PILOT_DEAD');
+const processEventRefueling = require('../../controllers/events/frontend/S_EVENT_REFUELING');
+const processEventRefuelingStop = require('../../controllers/events/frontend/S_EVENT_REFUELING_STOP');
+const processEventBirth = require('../../controllers/events/frontend/S_EVENT_BIRTH');
+const processEventPlayerEnterUnit = require('../../controllers/events/frontend/S_EVENT_PLAYER_ENTER_UNIT');
+const processEventPlayerLeaveUnit = require('../../controllers/events/frontend/S_EVENT_PLAYER_LEAVE_UNIT');
 
 var CCB = {};
 
