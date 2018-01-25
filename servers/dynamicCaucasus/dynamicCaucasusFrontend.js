@@ -20,6 +20,10 @@ const processEventBirth = require('../../controllers/events/frontend/S_EVENT_BIR
 const processEventPlayerEnterUnit = require('../../controllers/events/frontend/S_EVENT_PLAYER_ENTER_UNIT');
 const processEventPlayerLeaveUnit = require('../../controllers/events/frontend/S_EVENT_PLAYER_LEAVE_UNIT');
 
+const processTimedOneSec = require('../../controllers/timedEvents/oneSec');
+const processTimedFiveSecs = require('../../controllers/timedEvents/fiveSecs');
+const processTimedThirtySecs = require('../../controllers/timedEvents/thirtySecs');
+
 var CCB = {};
 
 //config
@@ -33,7 +37,11 @@ _.assign(CCB, {
 		systemDatabase: 'DynamicDCS',
 		dynamicHost: 'localhost',
 		dynamicDatabase: 'DDCSMaps'
-	}
+	},
+	sec: 1000,
+	fiveSecs: 5 * 1000,
+	thirtySecs: 30 * 1000,
+	fullySynced: false
 });
 
 dbSystemServiceController.connectSystemDB(CCB.db.systemHost, CCB.db.systemDatabase);
@@ -178,3 +186,15 @@ _.set(CCB, 'socketCallback', function (serverName, cbArray) {
 		});
 	}
 });
+
+setInterval(function () {
+	processTimedOneSec.processOneSecActions(CCB.serverName, CCB.fullySynced);
+}, CCB.sec);
+
+setInterval(function () {
+	processTimedFiveSecs.processFiveSecActions(CCB.serverName, CCB.fullySynced);
+}, CCB.fiveSecs);
+
+setInterval(function () {
+	processTimedThirtySecs.processThirtySecActions(CCB.serverName, CCB.fullySynced);
+}, CCB.thirtySecs);
