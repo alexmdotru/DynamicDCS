@@ -6,6 +6,8 @@ local updateQue = {["que"] = {} }
 local PORT = 3002
 local DATA_TIMEOUT_SEC = 1
 
+local allowSpawn = false
+
 package.path  = package.path..";.\\LuaSocket\\?.lua;"
 package.cpath = package.cpath..";.\\LuaSocket\\?.dll;"
 
@@ -500,7 +502,7 @@ end
 
 function dynDCS.shouldAllowSlot(_playerID, _slotID)
 	local _unitId = dynDCS.getUnitId(_slotID)
-	if _unitId == nil then
+	if _unitId == nil and allowSpawn then
 		return true
 	end
 	local curSide = coalitionLookup[DCS.getUnitProperty(_slotID, DCS.UNIT_COALITION)]
@@ -511,6 +513,7 @@ function dynDCS.shouldAllowSlot(_playerID, _slotID)
 	local _ucidFlag = dynDCS.getFlagValue(curUcid)
 	--net.log(curBaseName.."_".._unitId..' flag:'.._baseFlag..' uSide:'..curSide..' ucidFlag: '.._ucidFlag..' ucid:'..curUcid)
 	if _baseFlag == curSide then
+		allowSpawn = true
 		--net.log('STUFFF '..capLives[curType]..' - '..curType..' ucid: '.._ucidFlag)
 		if _ucidFlag == 1 and capLives[curType] == 1 then
 			--net.log('User Flagged For Cap Lives Used Up')
