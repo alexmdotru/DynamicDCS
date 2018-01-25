@@ -1,159 +1,22 @@
-const	_ = require('lodash'),
-		js2lua = require('js2lua');
-
+const _ = require('lodash');
+const constants = require('../../constants');
 const dbMapServiceController = require('../db/dbMapService');
 const dbSystemServiceController = require('../db/dbSystemService');
 const zoneController = require('../proxZone/zone');
 
-// from my main mission object, can spawn units on both sides in this setup
-var countryId = [
-	'RUSSIA',
-	'UKRAINE',
-	'USA',
-	'TURKEY',
-	'UK',
-	'FRANCE',
-	'GERMANY',
-	'AGGRESSORS',
-	'CANADA',
-	'SPAIN',
-	'THE_NETHERLANDS',
-	'BELGIUM',
-	'NORWAY',
-	'DENMARK',
-	'ISRAEL',
-	'GEORGIA',
-	'INSURGENTS',
-	'ABKHAZIA',
-	'SOUTH_OSETIA',
-	'ITALY',
-	'AUSTRALIA',
-	'SWITZERLAND',
-	'AUSTRIA',
-	'BELARUS',
-	'BULGARIA',
-	'CHEZH_REPUBLIC',
-	'CHINA',
-	'CROATIA',
-	'EGYPT',
-	'FINLAND',
-	'GREECE',
-	'HUNGARY',
-	'INDIA',
-	'IRAN',
-	'IRAQ',
-	'JAPAN',
-	'KAZAKHSTAN',
-	'NORTH_KOREA',
-	'PAKISTAN',
-	'POLAND',
-	'ROMANIA',
-	'SAUDI_ARABIA',
-	'SERBIA',
-	'SLOVAKIA',
-	'SOUTH_KOREA',
-	'SWEDEN',
-	'SYRIA',
-	'YEMEN',
-	'VIETNAM',
-	'VENEZUELA',
-	'TUNISIA',
-	'THAILAND',
-	'SUDAN',
-	'PHILIPPINES',
-	'MOROCCO',
-	'MEXICO',
-	'MALAYSIA',
-	'LIBYA',
-	'JORDAN',
-	'INDONESIA',
-	'HONDURAS',
-	'ETHIOPIA',
-	'CHILE',
-	'BRAZIL',
-	'BAHRAIN',
-	'THIRDREICH',
-	'YUGOSLAVIA',
-	'USSR',
-	'ITALIAN_SOCIAL_REPUBLIC'
-];
-
-var countryCoObj = {
-	defCountrys: {
-		1: 'RUSSIA',
-		2: 'USA'
-	},
-	side: {
-		0: 'neutral',
-		1: 'red',
-		2: 'blue'
-	},
-	red: [
-		'ABKHAZIA',
-		'BELARUS',
-		'CHINA',
-		'EGYPT',
-		'FINLAND',
-		'HUNGARY',
-		'INSURGENTS',
-		'IRAN',
-		'FRANCE',
-		'ISRAEL',
-		'JAPAN',
-		'NORTH_KOREA',
-		'PAKISTAN',
-		'ROMANIA',
-		'RUSSIA',
-		'SAUDI_ARABIA',
-		'SERBIA',
-		'SLOVAKIA',
-		'SOUTH_OSETIA',
-		'SYRIA'
-	],
-	blue: [
-		'AUSTRALIA',
-		'AUSTRIA',
-		'BELGIUM',
-		'BULGARIA',
-		'CANADA',
-		'CROATIA',
-		'CHEZH_REPUBLI',
-		'DENMARK',
-		'IRAQ',
-		'GEORGIA',
-		'GERMANY',
-		'GREECE',
-		'INDIA',
-		'ITALY',
-		'NORWAY',
-		'POLAND',
-		'SOUTH_KOREA',
-		'SPAIN',
-		'SWEDEN',
-		'SWITZERLAND',
-		'THE_NETHERLANDS',
-		'SWITZERLAND',
-		'UK',
-		'USA',
-		'AGGRESSORS',
-		'KAZAKHSTAN',
-		'UKRAINE'
-	]
-};
-
 _.set(exports, 'spawnGrp', function (grpSpawn, country, category) {
-	return gSpawnCmd = 'coalition.addGroup(' + _.indexOf(countryId, country) + ', Group.Category.' + category + ', ' + grpSpawn + ')';
+	return gSpawnCmd = 'coalition.addGroup(' + _.indexOf(constants.countryId, country) + ', Group.Category.' + category + ', ' + grpSpawn + ')';
 });
 
 _.set(exports, 'spawnStatic', function (serverName, staticSpawn, country, statName, init) {
 	if (init) {
 		return sSpawnCmd = [
-			'coalition.addStaticObject(' + _.indexOf(countryId, country) + ', ' + staticSpawn + ')'
+			'coalition.addStaticObject(' + _.indexOf(constants.countryId, country) + ', ' + staticSpawn + ')'
 		];
 	} else {
 		exports.destroyUnit( serverName, statName );
 		return sSpawnCmd = [
-			'coalition.addStaticObject(' + _.indexOf(countryId, country) + ', ' + staticSpawn + ')'
+			'coalition.addStaticObject(' + _.indexOf(constants.countryId, country) + ', ' + staticSpawn + ')'
 		];
 	}
 });
@@ -416,7 +279,7 @@ _.set(exports, 'getServer', function ( serverName ) {
 });
 
 _.set(exports, 'getRndFromSpawnCat', function (spawnCat, side, spawnAlways) {
-	var curEnabledCountrys = _.get(countryCoObj, _.get(countryCoObj, ['side', side]));
+	var curEnabledCountrys = _.get(constants, [_.get(constants, ['side', side]) + 'Countrys']);
 	var findUnits = _.filter(_.get(exports, 'unitDictionary'), {spawnCat: spawnCat, enabled: true});
 	var cPUnits = [];
 	var randomIndex;
@@ -476,7 +339,7 @@ _.set(exports, 'spawnSupportBaseGrp', function ( serverName, baseName, side, ini
 	var curBases = _.get(exports, ['servers', serverName, 'bases']);
 	var farpBases = _.filter(curBases, {farp: true});
 	var expBases = _.filter(curBases, {expansion: true});
-	var curEnabledCountrys = _.get(countryCoObj, _.get(countryCoObj, ['side', side]));
+	var curEnabledCountrys = _.get(constants, [_.get(constants, ['side', side]) + 'Countrys']);
 	if (_.includes(baseName, 'FARP')) {
 		var curFarpBases = _.filter(farpBases, function (farp) {
 			return _.first(_.split(_.get(farp, 'name'), ' #')) === baseName &&
@@ -534,7 +397,7 @@ _.set(exports, 'spawnSupportPlane', function (serverName, baseObj, side, farpBas
 	var remoteLoc;
 	var grpNum = _.random(1000000, 9999999);
 
-	curSide = (side) ? _.get(countryCoObj, ['defCountrys', side]) : _.get(countryCoObj, ['defCountrys', _.get(curGrpObj, 'coalition')]);
+	curSide = (side) ? _.get(constants, ['defCountrys', side]) : _.get(constants, ['defCountrys', _.get(curGrpObj, 'coalition')]);
 	curBaseName = 'AI|1010101|' + _.get(baseObj, 'name') + '|LOGISTICS|';
 	if (_.get(baseObj, 'farp', false)) {
 		baseLoc = _.get(farpBase, 'centerLoc');
@@ -608,7 +471,7 @@ _.set(exports, 'spawnLogiGroup', function (serverName, spawnArray, side) {
 	curGrpObj = _.get(sArray, 0);
 	if (curGrpObj) {
 		grpNum = _.get(curGrpObj, 'groupId', _.random(1000000, 9999999));
-		curSide = (side) ? _.get(countryCoObj, ['defCountrys', side]) : _.get(countryCoObj, ['defCountrys', _.get(curGrpObj, 'coalition')]);
+		curSide = (side) ? _.get(constants, ['defCountrys', side]) : _.get(constants, ['defCountrys', _.get(curGrpObj, 'coalition')]);
 		if(curGrpObj.country === 'UKRAINE') {
 			curSide = 'UKRAINE';
 		}
@@ -662,7 +525,7 @@ _.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {
 	curGrpObj = _.get(sArray, 0);
 	if (curGrpObj) {
 		grpNum = _.get(curGrpObj, 'groupId', _.random(1000000, 9999999));
-		curSide = (side) ? _.get(countryCoObj, ['defCountrys', side]) : _.get(curGrpObj, 'country', _.get(countryCoObj, ['defCountrys', _.get(curGrpObj, 'coalition')]));
+		curSide = (side) ? _.get(constants, ['defCountrys', side]) : _.get(curGrpObj, 'country', _.get(constants, ['defCountrys', _.get(curGrpObj, 'coalition')]));
 		curBaseName = (baseName) ? baseName + ' #' + grpNum : _.get(curGrpObj, 'groupName');
 		_.set(curGrpObj, 'groupId', grpNum);
 		_.set(curGrpObj, 'groupName', curBaseName);
@@ -746,7 +609,7 @@ _.set(exports, 'spawnLogisticCmdCenter', function (serverName, staticObj, baseOb
 	_.set(curGrpObj, 'unitId', _.get(curGrpObj, 'unitId', _.random(1000000, 9999999)));
 	_.set(curGrpObj, 'name', _.get(curGrpObj, 'name', _.get(baseObj, 'name', '') + ' Logistics'));
 	_.set(curGrpObj, 'coalition', _.get(curGrpObj, 'coalition', side));
-	_.set(curGrpObj, 'country', _.get(countryCoObj, ['defCountrys', curGrpObj.coalition]));
+	_.set(curGrpObj, 'country', _.get(constants, ['defCountrys', curGrpObj.coalition]));
 	if (_.isUndefined(_.get(curGrpObj, 'lonLatLoc'))) {
 		_.set(curGrpObj, 'lonLatLoc',  zoneController.getLonLatFromDistanceDirection(_.get(baseObj, ['logiCenter']), 0, 0.05));
 	}

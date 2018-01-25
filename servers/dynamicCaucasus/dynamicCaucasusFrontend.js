@@ -3,10 +3,9 @@ const DCSSocket = require('../../controllers/net/DCSSocket');
 const dbSystemServiceController = require('../../controllers/db/dbSystemService');
 const dbMapServiceController = require('../../controllers/db/dbMapService');
 const menuCmdsController = require('../../controllers/menu/menuCmds');
-
 const unitsStaticsController = require('../../controllers/serverToDbSync/unitsStatics');
 const airbaseSyncController = require('../../controllers/serverToDbSync/airbaseSync');
-
+const sychrontronController = require('../../controllers/sychronize/Sychrontron');
 const processEventHit = require('../../controllers/events/frontend/S_EVENT_HIT');
 const processEventTakeoff = require('../../controllers/events/frontend/S_EVENT_TAKEOFF');
 const processEventLand = require('../../controllers/events/frontend/S_EVENT_LAND');
@@ -19,7 +18,6 @@ const processEventRefuelingStop = require('../../controllers/events/frontend/S_E
 const processEventBirth = require('../../controllers/events/frontend/S_EVENT_BIRTH');
 const processEventPlayerEnterUnit = require('../../controllers/events/frontend/S_EVENT_PLAYER_ENTER_UNIT');
 const processEventPlayerLeaveUnit = require('../../controllers/events/frontend/S_EVENT_PLAYER_LEAVE_UNIT');
-
 const processTimedOneSec = require('../../controllers/timedEvents/oneSec');
 const processTimedFiveSecs = require('../../controllers/timedEvents/fiveSecs');
 const processTimedThirtySecs = require('../../controllers/timedEvents/thirtySecs');
@@ -92,6 +90,7 @@ _.set(CCB, 'getLatestSession', function (serverName, serverEpoc, startAbs, curAb
 });
 
 _.set(CCB, 'socketCallback', function (serverName, cbArray) {
+	_.set(CCB, 'curServerUnitCnt', cbArray.unitCount);
 	if(!_.get(CCB, 'sessionName')) {
 		CCB.getLatestSession(serverName, cbArray.epoc, cbArray.startAbsTime,  cbArray.curAbsTime);
 	} else {
@@ -188,13 +187,25 @@ _.set(CCB, 'socketCallback', function (serverName, cbArray) {
 });
 
 setInterval(function () {
-	processTimedOneSec.processOneSecActions(CCB.serverName, CCB.fullySynced);
+	if (!_.get(CCB, ['DCSSocket', 'connOpen'], true)) {
+		processTimedOneSec.processOneSecActions(CCB.serverName, CCB.fullySynced);
+	}
 }, CCB.sec);
 
 setInterval(function () {
-	processTimedFiveSecs.processFiveSecActions(CCB.serverName, CCB.fullySynced);
+	if (!_.get(CCB, ['DCSSocket', 'connOpen'], true)) {
+		processTimedFiveSecs.processFiveSecActions(CCB.serverName, CCB.fullySynced);
+	}
 }, CCB.fiveSecs);
 
 setInterval(function () {
-	processTimedThirtySecs.processThirtySecActions(CCB.serverName, CCB.fullySynced);
+	if (!_.get(CCB, ['DCSSocket', 'connOpen'], true)) {
+		processTimedThirtySecs.processThirtySecActions(CCB.serverName, CCB.fullySynced);
+	}
 }, CCB.thirtySecs);
+
+setInterval(function () {
+	if (!_.get(CCB, ['DCSSocket', 'connOpen'], true)) {
+		_.set(CCB, 'fullySynced', sychrontronController.syncType(CCB.serverName, _.get(CCB, 'curServerUnitCnt', 0)));
+	}
+}, CCB.sec);
