@@ -47,6 +47,8 @@ exports.createSocket = function (serverName, address, port, queName, callback) {
 			sock.buffer += data;
 			while ((i = sock.buffer.indexOf("\n")) >= 0) {
 				var curStr;
+				var nextInst;
+				var strJson;
 				var isValidJSON = true;
 				var subStr = sock.buffer.substring(0, i);
 				try { JSON.parse(subStr) } catch(e) { isValidJSON = false }
@@ -58,8 +60,10 @@ exports.createSocket = function (serverName, address, port, queName, callback) {
 				}
 				callback(serverName, curStr);
 				sock.buffer = sock.buffer.substring(i + 1);
-				sockConn.write(JSON.stringify(_.get(sock, ['cQue', 0],{"action":"NONE"})) + "\n");
-				if (_.get(sock, ['cQue', 0])) {
+				nextInst = _.get(sock, ['cQue', 0]);
+				strJson = (JSON.stringify(nextInst)) ? JSON.stringify(nextInst) : '{"action":"NONE"}' ;
+				sockConn.write( strJson + "\n");
+				if (nextInst) {
 					sock.cQue.shift();
 				}
 			}
