@@ -7,9 +7,9 @@
 
 const _ = require('lodash');
 const constants = require('../../constants');
-const dbSystemServiceController = require('../../dbSystemService');
-const dbMapServiceController = require('../../dbMapService');
-const DCSLuaCommands = require('../../DCSLuaCommands');
+const dbSystemServiceController = require('../../db/dbSystemService');
+const dbMapServiceController = require('../../db/dbMapService');
+const DCSLuaCommands = require('../../player/DCSLuaCommands');
 
 var shootingUsers = {};
 

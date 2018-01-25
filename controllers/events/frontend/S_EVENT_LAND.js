@@ -1,9 +1,9 @@
 const _ = require('lodash');
 const constants = require('../../constants');
-const dbMapServiceController = require('../../dbMapService');
-const DCSLuaCommands = require('../../DCSLuaCommands');
+const dbMapServiceController = require('../../db/dbMapService');
+const DCSLuaCommands = require('../../player/DCSLuaCommands');
 const playersEvent = require('../../events/backend/players');
-const groupController = require('../../group');
+const groupController = require('../../spawn/group');
 
 _.set(exports, 'processEventLand', function (serverName, sessionName, eventObj) {
 	// Occurs when an aircraft lands at an airbase, farp or ship

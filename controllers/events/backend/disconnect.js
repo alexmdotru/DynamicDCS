@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const constants = require('../../constants');
-const dbMapServiceController = require('../../dbMapService');
-const DCSLuaCommands = require('../../DCSLuaCommands');
+const dbMapServiceController = require('../../db/dbMapService');
+const DCSLuaCommands = require('../../player/DCSLuaCommands');
 const playersEvent = require('../../events/backend/players');
 
 _.set(exports, 'processDisconnect', function (serverName, sessionName, eventObj) {

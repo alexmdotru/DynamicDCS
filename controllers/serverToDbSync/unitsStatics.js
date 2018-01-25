@@ -1,6 +1,6 @@
 const _ = require('lodash');
-const dbMapServiceController = require('../dbMapService');
-const taskController = require('../task');
+const dbMapServiceController = require('../db/dbMapService');
+const taskController = require('../action/task');
 
 _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj) {
 	dbMapServiceController.unitActions('read', serverName, {_id: _.get(unitObj, 'data.unitId')})

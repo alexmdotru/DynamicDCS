@@ -1,5 +1,5 @@
 const	_ = require('lodash');
-const dbMapServiceController = require('./dbMapService');
+const dbMapServiceController = require('./db/dbMapService');
 
 _.set(exports, 'setbaseSides', function (serverName) {
 	dbMapServiceController.baseActions('getBaseSides', serverName, {})

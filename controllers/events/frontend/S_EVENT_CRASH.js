@@ -1,8 +1,8 @@
 const _ = require('lodash');
 const constants = require('../../constants');
-const dbMapServiceController = require('../../dbMapService');
-const DCSLuaCommands = require('../../DCSLuaCommands');
-const capLivesController = require('../../capLives');
+const dbMapServiceController = require('../../db/dbMapService');
+const DCSLuaCommands = require('../../player/DCSLuaCommands');
+const capLivesController = require('../../action/capLives');
 
 _.set(exports, 'processEventCrash', function (serverName, sessionName, eventObj) {
 	// Occurs when any aircraft crashes into the ground and is completely destroyed.

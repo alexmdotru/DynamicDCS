@@ -25,20 +25,19 @@ server = app.listen(config.port);
 var io = require('socket.io').listen(server);
 
 //Controllers
-const dbSystemServiceController = require('./controllers/dbSystemService');
-const dbMapServiceController = require('./controllers/dbMapService');
-const DCSSocket = require('./controllers/DCSSocket');
-const DCSLuaCommands = require('./controllers/DCSLuaCommands');
-const DCSBuildMap = require('./controllers/DCSBuildMap');
-const groupController = require('./controllers/group');
-const proximityController = require('./controllers/proximity');
-const menuUpdateController = require('./controllers/menuUpdate');
-const menuCmdsController = require('./controllers/menuCmds');
-const jtacController = require('./controllers/jtac');
-const taskController = require('./controllers/task');
-const baseSpawnFlagsController = require('./controllers/baseSpawnFlags');
-const capLivesController = require('./controllers/capLives');
-
+const dbSystemServiceController = require('./controllers/db/dbSystemService');
+const dbMapServiceController = require('./controllers/db/dbMapService');
+const DCSSocket = require('./controllers/net/DCSSocket');
+const DCSLuaCommands = require('./controllers/player/DCSLuaCommands');
+const DCSBuildMap = require('./controllers/spawn/DCSBuildMap');
+const groupController = require('./controllers/spawn/group');
+const proximityController = require('./controllers/prozZone/proximity');
+const menuUpdateController = require('./controllers/menu/menuUpdate');
+const menuCmdsController = require('./controllers/menu/menuCmds');
+const jtacController = require('./controllers/action/jtac');
+const taskController = require('./controllers/action/task');
+const baseSpawnFlagsController = require('./controllers/action/baseSpawnFlags');
+const capLivesController = require('./controllers/action/capLives');
 
 var admin = false;
 

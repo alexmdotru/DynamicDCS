@@ -1,6 +1,7 @@
-const mongoose = require('mongoose'),
-	_ = require('lodash'),
-	dbConfig = require('../config/db');
+const mongoose = require('mongoose');
+const _ = require('lodash');
+const dbConfig = require('../config/db');
+const capLivesController = require('./action/capLives');
 
 //changing promises to bluebird
 mongoose.Promise = require('bluebird');
@@ -16,7 +17,6 @@ var statSrvEventSchema = require('../models/statSrvEventSchema');
 var simpleStatEventSchema = require('../models/simpleStatEventSchema');
 var cmdQueSchema = require('../models/cmdQueSchema');
 var processSchema = require('../models/processSchema');
-const capLivesController = require('./capLives');
 
 exports.baseActions = function (action, serverName, obj){
 	const Airfield = mapdb.model(serverName+'_airfield', airfieldSchema);

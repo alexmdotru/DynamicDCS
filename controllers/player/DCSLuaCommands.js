@@ -1,10 +1,10 @@
 const	_ = require('lodash');
 
-const zoneController = require('./zone');
-const groupController = require('./group');
+const zoneController = require('./proxZone/zone');
+const groupController = require('./spawn/group');
 
-const dbSystemServiceController = require('./dbSystemService');
-const dbMapServiceController = require('./dbMapService');
+const dbSystemServiceController = require('./db/dbSystemService');
+const dbMapServiceController = require('./db/dbMapService');
 
 // game mission commands
 _.set(exports, 'sendMesgToAll', function (serverName, mesg, time) {

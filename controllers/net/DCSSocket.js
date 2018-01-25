@@ -1,11 +1,11 @@
 const net = require('net');
 const _ = require('lodash');
-const dbMapServiceController = require('./dbMapService'); // reqclientArray, reggameGuiArray
-
+const dbMapServiceController = require('./db/dbMapService'); // reqclientArray, reggameGuiArray
 
 exports.createSocket = function (serverName, address, port, queName, callback) {
 	var sock = this;
 	var sockConn;
+	_.set(sock, 'cQue', []);
 	_.set(sock, 'serverName', serverName);
 	_.set(sock, 'connOpen', true);
 	_.set(sock, 'buffer', {});
@@ -13,7 +13,7 @@ exports.createSocket = function (serverName, address, port, queName, callback) {
 	_.set(sock, 'sessionName', serverName+'_'+sock.startTime+' ' + queName + ' Node Server Starttime');
 
 	setInterval(function () { //sending FULL SPEED AHEAD, 1 per milsec (watch for weird errors, etc)
-		if (_.get(sock, 'cQue', []).length < 5) {
+		if (sock.cQue.length < 5) {
 			dbMapServiceController.cmdQueActions('grabNextQue', serverName, {queName: queName})
 				.then(function (resp) {
 					if (resp) {
@@ -58,8 +58,8 @@ exports.createSocket = function (serverName, address, port, queName, callback) {
 				}
 				callback(serverName, curStr);
 				sock.buffer = sock.buffer.substring(i + 1);
-				sockConn.write(JSON.stringify(_.get(sock, ['cQue', 0], '')) + "\n");
-				_.get(sock, 'cQue', []).shift();
+				sockConn.write(JSON.stringify(_.get(sock, ['cQue', 0],'')) + "\n");
+				sock.cQue.shift();
 			}
 		});
 

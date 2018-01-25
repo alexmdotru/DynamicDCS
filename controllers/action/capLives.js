@@ -1,6 +1,6 @@
 const	_ = require('lodash');
-const dbMapServiceController = require('./dbMapService');
-const DCSLuaCommands = require('./DCSLuaCommands');
+const dbMapServiceController = require('./db/dbMapService');
+const DCSLuaCommands = require('./player/DCSLuaCommands');
 
 exports.defaultLife = 2;
 exports.capLivesEnabled = [

@@ -1,7 +1,7 @@
 const _ = require('lodash');
-const dbSystemServiceController = require('../../dbSystemService');
-const dbMapServiceController = require('../../dbMapService');
-const DCSLuaCommands = require('../../DCSLuaCommands');
+const dbSystemServiceController = require('../../db/dbSystemService');
+const dbMapServiceController = require('../../db/dbMapService');
+const DCSLuaCommands = require('../../player/DCSLuaCommands');
 
 _.set(exports, 'processPlayerEvent', function (serverName, sessionName, playerArray) {
 	_.set(exports, ['rtPlayerArray', serverName], playerArray);

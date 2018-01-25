@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const dbMapServiceController = require('../dbMapService');
+const dbMapServiceController = require('../db/dbMapService');
 
 _.set(exports, 'processAirbaseUpdates', function (serverName, airbaseObj) {
 	var curData = _.get(airbaseObj, 'data');

@@ -1,7 +1,7 @@
 const _ = require('lodash');
-const DCSSocket = require('../../../controllers/DCSSocket');
-const dbMapServiceController = require('../../../controllers/dbMapService');
-const menuCmdsController = require('../../../controllers/menuCmds');
+const DCSSocket = require('../../../controllers/net/DCSSocket');
+const dbMapServiceController = require('../../../controllers/db/dbMapService');
+const menuCmdsController = require('../../../controllers/menu/menuCmds');
 
 const unitsStaticsController = require('../../../controllers/serverToDbSync/unitsStatics');
 const airbaseSyncController = require('../../../controllers/serverToDbSync/airbaseSync');

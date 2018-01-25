@@ -1,8 +1,8 @@
 const _ = require('lodash');
 
-const dbMapServiceController = require('./dbMapService');
-const DCSLuaCommands = require('./DCSLuaCommands');
-const groupController = require('./group');
+const dbMapServiceController = require('./db/dbMapService');
+const DCSLuaCommands = require('./player/DCSLuaCommands');
+const groupController = require('./spawn/group');
 
 _.set(exports, 'buildDynamicMap', function (serverName) {
 	console.log('build dynamic caucasus');

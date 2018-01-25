@@ -1,8 +1,8 @@
 const	_ = require('lodash');
-const dbMapServiceController = require('./dbMapService');
-const proximityController = require('./proximity');
-const menuCmdsController = require('./menuCmds'); //menuCmdsController.maxUnitsMoving
-const capLivesController = require('./capLives');
+const dbMapServiceController = require('./db/dbMapService');
+const proximityController = require('./proxZone/proximity');
+const menuCmdsController = require('./menu/menuCmds'); //menuCmdsController.maxUnitsMoving
+const capLivesController = require('./action/capLives');
 
 exports.virtualCrates = true;
 var enableAction = false;

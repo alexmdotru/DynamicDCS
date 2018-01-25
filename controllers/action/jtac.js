@@ -1,8 +1,8 @@
 const	_ = require('lodash');
-const dbSystemServiceController = require('./dbSystemService');
-const dbMapServiceController = require('./dbMapService');
-const proximityController = require('./proximity');
-const groupController = require('./group');
+const dbSystemServiceController = require('./db/dbSystemService');
+const dbMapServiceController = require('./db/dbMapService');
+const proximityController = require('./proxZone/proximity');
+const groupController = require('./spawn/group');
 
 var jtacDistance = 10;
 var laserCode = 1113;

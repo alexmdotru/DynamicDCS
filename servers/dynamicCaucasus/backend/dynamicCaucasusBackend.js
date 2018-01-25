@@ -1,6 +1,6 @@
 const _ = require('lodash');
-const DCSSocket = require('../../../controllers/DCSSocket');
-const dbMapServiceController = require('../../../controllers/dbMapService');
+const DCSSocket = require('../../../controllers/net/DCSSocket');
+const dbMapServiceController = require('../../../controllers/db/dbMapService');
 
 const playersEvent = require('../../../controllers/events/backend/players');
 const friendlyFireEvent = require('../../../controllers/events/backend/friendlyFire');
