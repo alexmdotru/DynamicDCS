@@ -1,9 +1,9 @@
 const	_ = require('lodash');
-const DCSLuaCommands = require('./player/DCSLuaCommands');
-const dbSystemServiceController = require('./db/dbSystemService');
-const dbMapServiceController = require('./db/dbMapService');
-const groupController = require('./spawn/group');
-const proximityController = require('./proxZone/proximity');
+const DCSLuaCommands = require('../player/DCSLuaCommands');
+const dbSystemServiceController = require('../db/dbSystemService');
+const dbMapServiceController = require('../db/dbMapService');
+const groupController = require('../spawn/group');
+const proximityController = require('../proxZone/proximity');
 
 _.set(exports, 'reloadSAM', function (serverName, unitCalling, crate) {
 	proximityController.getGroundUnitsInProximity(serverName, unitCalling.lonLatLoc, 0.2, false)

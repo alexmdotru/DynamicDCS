@@ -1,7 +1,7 @@
 const	_ = require('lodash');
-const dbMapServiceController = require('./db/dbMapService');
-const groupController = require('./spawn/group');
-const menuUpdateController = require('./menu/menuUpdate');
+const dbMapServiceController = require('../db/dbMapService');
+const groupController = require('../spawn/group');
+const menuUpdateController = require('../menu/menuUpdate');
 
 var unitsInProxLogiTowers = {};
 var unitsInProxBases = {};

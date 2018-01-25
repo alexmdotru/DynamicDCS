@@ -1,12 +1,12 @@
 const	_ = require('lodash');
-const DCSLuaCommands = require('./player/DCSLuaCommands');
-const dbMapServiceController = require('./db/dbMapService');
-const proximityController = require('./proxZone/proximity');
-const menuUpdateController = require('./menu/menuUpdate');
-const groupController = require('./spawn/group');
-const reloadController = require('./menu/reload');
-const repairController = require('./menu/repair');
-const capLivesController = require('./action/capLives');
+const DCSLuaCommands = require('../player/DCSLuaCommands');
+const dbMapServiceController = require('../db/dbMapService');
+const proximityController = require('../proxZone/proximity');
+const menuUpdateController = require('../menu/menuUpdate');
+const groupController = require('../spawn/group');
+const reloadController = require('../menu/reload');
+const repairController = require('../menu/repair');
+const capLivesController = require('../action/capLives');
 
 exports.maxCrates = 10;
 exports.maxTroops = 1;

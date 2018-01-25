@@ -1,7 +1,7 @@
 const	_ = require('lodash');
-const DCSLuaCommands = require('./DCSLuaCommands');
-const groupController = require('./group');
-const proximityController = require('./proximity');
+const DCSLuaCommands = require('../player/DCSLuaCommands');
+const groupController = require('../spawn/group');
+const proximityController = require('../proxZone/proximity');
 
 _.set(exports, 'repairBase', function (serverName, curUnit, crateOriginLogiName, crate) {
 	var baseClose = proximityController.extractUnitsBackToBase(curUnit, serverName);
