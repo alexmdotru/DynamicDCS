@@ -5,8 +5,10 @@ const _ = require('lodash');
 mongoose.Promise = require('bluebird');
 
 var systemdb = mongoose.createConnection();
-_.set(exports, 'dbConfig', {});
-systemdb.open(exports.dbConfig.systemHost, exports.dbConfig.systemDatabase);
+
+_.set(exports, 'connectSystemDB', function (systemHost, systemDatabase) {
+	systemdb.open(systemHost, systemDatabase);
+});
 
 // include mongoose db schemas
 var userAccountSchema = require('./models/userAccountSchema');

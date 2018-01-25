@@ -25,14 +25,8 @@ _.assign(DCB, {
 	}
 });
 
-_.set(dbSystemServiceController, 'dbConfig', {
-	systemHost: DCB.db.systemHost,
-	systemDatabase: DCB.db.systemDatabase
-});
-_.set(dbMapServiceController, 'dbConfig', {
-	dynamicHost: DCB.db.dynamicHost,
-	dynamicDatabase: DCB.db.dynamicDatabase
-});
+dbSystemServiceController.connectSystemDB(DCB.db.systemHost, DCB.db.systemDatabase);
+dbMapServiceController.connectMapDB(DCB.db.dynamicHost, DCB.db.dynamicDatabase);
 
 //checks to see if socket needs restarting every 3 secs
 setInterval(function () {

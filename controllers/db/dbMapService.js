@@ -5,8 +5,10 @@ const capLivesController = require('../action/capLives');
 //changing promises to bluebird
 mongoose.Promise = require('bluebird');
 var mapdb = mongoose.createConnection();
-_.set(exports, 'dbConfig', {});
-mapdb.open(exports.dbConfig.dynamicHost, exports.dbConfig.dynamicDatabase);
+
+_.set(exports, 'connectMapDB', function (dynamicHost, dynamicDatabase) {
+	mapdb.open(dynamicHost, dynamicDatabase);
+});
 
 var airfieldSchema = require('./models/airfieldSchema');
 var srvPlayerSchema = require('./models/srvPlayerSchema');
