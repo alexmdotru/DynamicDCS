@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const DCSSocket = require('../../../controllers/net/DCSSocket');
+const dbSystemServiceController = require('../../../controllers/db/dbSystemService');
 const dbMapServiceController = require('../../../controllers/db/dbMapService');
 
 const playersEvent = require('../../../controllers/events/backend/players');
@@ -22,6 +23,15 @@ _.assign(DCB, {
 		dynamicHost: 'localhost',
 		dynamicDatabase: 'DDCSMaps'
 	}
+});
+
+_.set(dbSystemServiceController, 'dbConfig', {
+	systemHost: DCB.db.systemHost,
+	systemDatabase: DCB.db.systemDatabase
+});
+_.set(dbMapServiceController, 'dbConfig', {
+	dynamicHost: DCB.db.dynamicHost,
+	dynamicDatabase: DCB.db.dynamicDatabase
 });
 
 //checks to see if socket needs restarting every 3 secs

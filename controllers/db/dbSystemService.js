@@ -1,15 +1,15 @@
-const mongoose = require('mongoose'),
-	_ = require('lodash'),
-	dbConfig = require('../config/db');
+const mongoose = require('mongoose');
+const _ = require('lodash');
 
 //changing promises to bluebird
 mongoose.Promise = require('bluebird');
 
 var systemdb = mongoose.createConnection();
-systemdb.open(dbConfig.systemHost, dbConfig.systemDatabase);
+_.set(exports, 'dbConfig', {});
+systemdb.open(exports.dbConfig.systemHost, exports.dbConfig.systemDatabase);
 
 // include mongoose db schemas
-var userAccountSchema = require('../models/userAccountSchema');
+var userAccountSchema = require('./models/userAccountSchema');
 const UserAccount = systemdb.model('userAccount', userAccountSchema);
 
 exports.userAccountActions = function (action, obj){
@@ -147,7 +147,7 @@ exports.userAccountActions = function (action, obj){
 };
 
 
-var serverSchema = require('../models/serverSchema');
+var serverSchema = require('./models/serverSchema');
 const Server = systemdb.model('server', serverSchema);
 
 exports.serverActions = function (action, obj){
@@ -191,7 +191,7 @@ exports.serverActions = function (action, obj){
 	}
 };
 
-var theaterSchema = require('../models/theaterSchema');
+var theaterSchema = require('./models/theaterSchema');
 const Theater = systemdb.model('theater', theaterSchema);
 
 exports.theaterActions = function (action){
@@ -205,7 +205,7 @@ exports.theaterActions = function (action){
 	}
 };
 
-var weaponScoreSchema = require('../models/weaponScoreSchema');
+var weaponScoreSchema = require('./models/weaponScoreSchema');
 const WeaponScore = systemdb.model('weaponScore', weaponScoreSchema);
 
 exports.weaponScoreActions = function (action, obj){
@@ -237,7 +237,7 @@ exports.weaponScoreActions = function (action, obj){
 	}
 };
 
-var banUserSchema = require('../models/banUserSchema');
+var banUserSchema = require('./models/banUserSchema');
 const BanUser = systemdb.model('banUser', banUserSchema);
 
 exports.banUserActions = function (action, ucid){
@@ -251,7 +251,7 @@ exports.banUserActions = function (action, ucid){
 	}
 };
 
-var unitDictionarySchema = require('../models/unitDictionarySchema');
+var unitDictionarySchema = require('./models/unitDictionarySchema');
 const UnitDictionary = systemdb.model('unitDictionary', unitDictionarySchema);
 
 exports.unitDictionaryActions = function (action, obj){

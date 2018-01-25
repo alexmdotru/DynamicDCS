@@ -1,22 +1,21 @@
 const mongoose = require('mongoose');
 const _ = require('lodash');
-const dbConfig = require('../config/db');
-const capLivesController = require('./action/capLives');
+const capLivesController = require('../action/capLives');
 
 //changing promises to bluebird
 mongoose.Promise = require('bluebird');
-
 var mapdb = mongoose.createConnection();
-mapdb.open(dbConfig.dynamicHost, dbConfig.dynamicDatabase);
+_.set(exports, 'dbConfig', {});
+mapdb.open(exports.dbConfig.dynamicHost, exports.dbConfig.dynamicDatabase);
 
-var airfieldSchema = require('../models/airfieldSchema');
-var srvPlayerSchema = require('../models/srvPlayerSchema');
-var unitSchema = require('../models/unitSchema');
-var statSessionSchema = require('../models/statSessionSchema');
-var statSrvEventSchema = require('../models/statSrvEventSchema');
-var simpleStatEventSchema = require('../models/simpleStatEventSchema');
-var cmdQueSchema = require('../models/cmdQueSchema');
-var processSchema = require('../models/processSchema');
+var airfieldSchema = require('./models/airfieldSchema');
+var srvPlayerSchema = require('./models/srvPlayerSchema');
+var unitSchema = require('./models/unitSchema');
+var statSessionSchema = require('./models/statSessionSchema');
+var statSrvEventSchema = require('./models/statSrvEventSchema');
+var simpleStatEventSchema = require('./models/simpleStatEventSchema');
+var cmdQueSchema = require('./models/cmdQueSchema');
+var processSchema = require('./models/processSchema');
 
 exports.baseActions = function (action, serverName, obj){
 	const Airfield = mapdb.model(serverName+'_airfield', airfieldSchema);

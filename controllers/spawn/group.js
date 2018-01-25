@@ -1,9 +1,9 @@
 const	_ = require('lodash'),
 		js2lua = require('js2lua');
 
-const dbMapServiceController = require('./db/dbMapService');
-const dbSystemServiceController = require('./db/dbSystemService');
-const zoneController = require('./proxZone/zone');
+const dbMapServiceController = require('../db/dbMapService');
+const dbSystemServiceController = require('../db/dbSystemService');
+const zoneController = require('../proxZone/zone');
 
 // from my main mission object, can spawn units on both sides in this setup
 var countryId = [

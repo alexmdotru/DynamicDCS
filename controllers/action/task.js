@@ -1,5 +1,5 @@
 const	_ = require('lodash');
-const dbMapServiceController = require('./db/dbMapService');
+const dbMapServiceController = require('../db/dbMapService');
 
 exports.ewrUnitsActivated = {};
 

@@ -1,6 +1,6 @@
 const net = require('net');
 const _ = require('lodash');
-const dbMapServiceController = require('./db/dbMapService'); // reqclientArray, reggameGuiArray
+const dbMapServiceController = require('../db/dbMapService'); // reqclientArray, reggameGuiArray
 
 exports.createSocket = function (serverName, address, port, queName, callback) {
 	var sock = this;
