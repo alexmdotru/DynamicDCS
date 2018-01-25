@@ -2,20 +2,20 @@ const _ = require('lodash');
 const dbMapServiceController = require('../db/dbMapService');
 const groupController = require('../spawn/group');
 
-var syncLockdownMode = false;
+var isSyncLockdownMode = false; //lock all processes out until server fully syncs
+var isFreshServer = false; //server is generating new units from scratch db empty, server empty
 
 _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 	dbMapServiceController.unitActions('read', serverName, {dead: false})
 		.then(function (units) {
-			if (serverUnitCount === 0) {
-				if (units.length === 0) {
-					if (!syncLockdownMode) {
-						console.log('DB is empty of Units, Spawn New Units');
+			if (!isSyncLockdownMode) {
+				isSyncLockdownMode = true; //lockdown until sync is complete!
+				if (serverUnitCount === 0) {
+					if (units.length === 0) {
+						console.log('DB & Server is empty of Units, Spawn New Units');
+						isFreshServer = true;
 						groupController.spawnNewMapGrps(serverName);
-					}
-					syncLockdownMode = true;
-				} else {
-					if (!syncLockdownMode) {
+					} else {
 						console.log('DB has ' + units.length + ' Units, Respawn Them');
 						_.forEach(units, function (unit) {
 							var curDead;
@@ -39,21 +39,23 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 							}
 						});
 						_.forEach(remappedunits, function (group) {
-							groupController.spawnGroup( serverName, group)
+							groupController.spawnGroup(serverName, group)
 						});
-						syncLockdownMode = true;
+					}
+				} else {
+					if (serverUnitCount !== units.length) {
+						console.log('Server has ' + serverUnitCount + ' Units, Sync DB <- SERVER');
+					} else {
+						console.log('Server is Synced');
 					}
 				}
+
 			} else {
-				if (serverUnitCount !== units.length) {
-					console.log('Server has ' + serverUnitCount + ' Units, Sync DB <- SERVER');
-				} else {
-					console.log('Server is Synced');
-				}
+				console.log('DB:' + units.length + ' Server:' + serverUnitCount);
 			}
 		})
 		.catch(function (err) {
-			console.log('erroring line29: ', err);
+			console.log('erroring line59: ', err);
 		})
 	;
 });

@@ -61,17 +61,16 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 						dead: false
 					}
 				};
-				/*
+
                 dbMapServiceController.unitActions('update', serverName, iCurObj.data)
                     .then(function () {
-                        curServers[serverName].updateQue['q' + _.get(curUnit, ['coalition'])].push(_.cloneDeep(iCurObj));
-                        curServers[serverName].updateQue.qadmin.push(_.cloneDeep(iCurObj));
+                        //curServers[serverName].updateQue['q' + _.get(curUnit, ['coalition'])].push(_.cloneDeep(iCurObj));
+                        //curServers[serverName].updateQue.qadmin.push(_.cloneDeep(iCurObj));
                     })
                     .catch(function (err) {
                         console.log('update err line626: ', err);
                     })
                 ;
-                */
 			}else if (_.get(unitObj, 'action') === 'C') {
 				//console.log('CREATE: ', _.get(unitObj, 'data'));
 
@@ -87,17 +86,17 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 					}
 				}
 
-				/*
+
                 dbMapServiceController.unitActions('save', serverName, iCurObj.data)
                     .then(function (unit) {
-                        curServers[serverName].updateQue['q' + parseFloat(_.get(unitObj, 'data.coalition'))].push(_.cloneDeep(iCurObj));
-                        curServers[serverName].updateQue.qadmin.push(_.cloneDeep(iCurObj));
+                        //curServers[serverName].updateQue['q' + parseFloat(_.get(unitObj, 'data.coalition'))].push(_.cloneDeep(iCurObj));
+                        //curServers[serverName].updateQue.qadmin.push(_.cloneDeep(iCurObj));
                     })
                     .catch(function (err) {
                         console.log('save err line95: ', err);
                     })
                 ;
-                */
+
 			} else if (_.get(unitObj, 'action') === 'D') {
 				//console.log('DELETE: ', _.get(unitObj, 'data'));
 				/*
@@ -117,18 +116,18 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 						dead: true
 					}
 				};
-				/*
+
                 dbMapServiceController.unitActions('update', serverName, iCurObj.data)
                     .then(function (unit) {
-                        curServers[serverName].updateQue.q1.push(_.cloneDeep(iCurObj));
-                        curServers[serverName].updateQue.q2.push(_.cloneDeep(iCurObj));
-                        curServers[serverName].updateQue.qadmin.push(_.cloneDeep(iCurObj));
+                        // curServers[serverName].updateQue.q1.push(_.cloneDeep(iCurObj));
+                       	// curServers[serverName].updateQue.q2.push(_.cloneDeep(iCurObj));
+                        // curServers[serverName].updateQue.qadmin.push(_.cloneDeep(iCurObj));
                     })
                     .catch(function (err) {
                         console.log('del err line123: ', err);
                     })
                 ;
-                */
+
 			}
 		})
 		.catch(function (err) {
