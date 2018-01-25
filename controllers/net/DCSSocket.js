@@ -58,8 +58,10 @@ exports.createSocket = function (serverName, address, port, queName, callback) {
 				}
 				callback(serverName, curStr);
 				sock.buffer = sock.buffer.substring(i + 1);
-				sockConn.write(JSON.stringify(_.get(sock, ['cQue', 0],'')) + "\n");
-				sock.cQue.shift();
+				sockConn.write(JSON.stringify(_.get(sock, ['cQue', 0],{"action":"NONE"})) + "\n");
+				if (_.get(sock, ['cQue', 0])) {
+					sock.cQue.shift();
+				}
 			}
 		});
 

@@ -2,14 +2,15 @@ const _ = require('lodash');
 const dbMapServiceController = require('../db/dbMapService');
 const groupController = require('../spawn/group');
 
-var isSyncLockdownMode = false; //lock all processes out until server fully syncs
+var remappedunits = {};
 var isFreshServer = false; //server is generating new units from scratch db empty, server empty
+exports.isSyncLockdownMode = false; //lock all processes out until server fully syncs
 
 _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 	dbMapServiceController.unitActions('read', serverName, {dead: false})
 		.then(function (units) {
-			if (!isSyncLockdownMode) {
-				isSyncLockdownMode = true; //lockdown until sync is complete!
+			if (!exports.isSyncLockdownMode) {
+				exports.isSyncLockdownMode = true; //lockdown until sync is complete!
 				if (serverUnitCount === 0) {
 					if (units.length === 0) {
 						console.log('DB & Server is empty of Units, Spawn New Units');

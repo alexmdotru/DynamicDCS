@@ -51,6 +51,7 @@ setInterval(function () {
 		if (CCB.DCSSocket.connOpen) {
 			console.log('Connecting to ' + CCB.serverName + ' Frontend');
 			_.set(CCB, 'sessionName', '');
+			sychrontronController.isSyncLockdownMode = false;
 			CCB.DCSSocket.connSocket();
 		}
 	} else {
