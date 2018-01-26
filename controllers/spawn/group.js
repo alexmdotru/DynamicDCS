@@ -364,10 +364,6 @@ _.set(exports, 'spawnSupportBaseGrp', function ( serverName, baseName, side, ini
 		spawnArray = _.concat(spawnArray, _.cloneDeep(exports.getRndFromSpawnCat( 'armoredCar', side )));
 	}
 
-	//spawn logistics
-	curBaseObj = _.find(curBases, {name: baseName});
-	exports.spawnLogisticCmdCenter(serverName, {}, curBaseObj, side, init);
-
 	return _.compact(spawnArray);
 });
 
@@ -564,15 +560,17 @@ _.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {
 });
 
 _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
-	exports.getUnitDictionary()
+	var totalUnitsSpawned = 0;
+	return exports.getUnitDictionary()
 		.then(function (unitDict) {
 			_.set(exports, 'unitDictionary', unitDict);
-			exports.getBases( serverName )
+			return exports.getBases( serverName )
 				.then(function (bases) {
 					_.set(exports, ['servers', serverName, 'bases'], bases);
-					exports.getServer( serverName )
+					return exports.getServer( serverName )
 						.then(function (server) {
 							_.set(exports, ['servers', serverName, 'config'], server);
+							var curBaseObj;
 							var curServer = _.get(exports, ['servers', serverName, 'config']);
 							var defBaseSides = _.get(curServer, 'defBaseSides');
 							_.forEach(defBaseSides, function (extSide, extName) {
@@ -582,7 +580,12 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 									spawnArray = _.concat(spawnArray, exports.spawnBaseReinforcementGroup(serverName, extSide));
 								}
 								exports.spawnGroup(serverName, spawnArray, extName, extSide);
+
+								curBaseObj = _.find(bases, {name: extName});
+								exports.spawnLogisticCmdCenter(serverName, {}, curBaseObj, extSide, true);
+								totalUnitsSpawned += spawnArray.length + 1;
 							});
+							return totalUnitsSpawned
 						})
 					;
 

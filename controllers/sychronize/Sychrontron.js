@@ -2,21 +2,31 @@ const _ = require('lodash');
 const dbMapServiceController = require('../db/dbMapService');
 const groupController = require('../spawn/group');
 
+var masterUnitCount;
 var remappedunits = {};
-var isFreshServer = false; //server is generating new units from scratch db empty, server empty
+var isServerFresh = false;
 exports.isSyncLockdownMode = false; //lock all processes out until server fully syncs
 
 _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 	dbMapServiceController.unitActions('read', serverName, {dead: false})
 		.then(function (units) {
-			if (!exports.isSyncLockdownMode) {
-				exports.isSyncLockdownMode = true; //lockdown until sync is complete!
-				if (serverUnitCount === 0) {
-					if (units.length === 0) {
+			if (serverUnitCount === 0) { //server is empty
+				isServerFresh = true;
+				if (!exports.isSyncLockdownMode) {
+					exports.isSyncLockdownMode = true; // lock down all traffic until sync is complete
+					if (units.length === 0) { // DB is empty
 						console.log('DB & Server is empty of Units, Spawn New Units');
-						isFreshServer = true;
-						groupController.spawnNewMapGrps(serverName);
-					} else {
+						groupController.spawnNewMapGrps(serverName) //respond with server spawned num
+							.then(function (unitsSpawned) {
+								masterUnitCount = unitsSpawned;
+							})
+							.catch(function (err) {
+								console.log('erroring line24: ', err);
+							})
+						;
+					} else { // DB is FULL
+						//might have filter units to be spawned, mark others as dead head of time
+						masterUnitCount = units.length;
 						console.log('DB has ' + units.length + ' Units, Respawn Them');
 						_.forEach(units, function (unit) {
 							var curDead;
@@ -43,16 +53,24 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 							groupController.spawnGroup(serverName, group)
 						});
 					}
-				} else {
-					if (serverUnitCount !== units.length) {
-						console.log('Server has ' + serverUnitCount + ' Units, Sync DB <- SERVER');
+				}
+			} else {
+				if (isServerFresh) { // server is fresh
+					if (masterUnitCount) {
+						if ((serverUnitCount !== masterUnitCount) ||  (units.length !== masterUnitCount)) {
+							console.log('FR T:' + masterUnitCount + ' D:' + units.length + ' S:' + serverUnitCount);
+						} else {
+							console.log('Server is Synced');
+						}
+					}
+				} else { // server has units on it
+					masterUnitCount = serverUnitCount;
+					if (units.length !== masterUnitCount) { // db doesnt match server
+						console.log('RS T:' + masterUnitCount + ' D:' + units.length + ' S:' + serverUnitCount);
 					} else {
 						console.log('Server is Synced');
 					}
 				}
-
-			} else {
-				console.log('DB:' + units.length + ' Server:' + serverUnitCount);
 			}
 		})
 		.catch(function (err) {
