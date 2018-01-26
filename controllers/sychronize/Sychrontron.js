@@ -5,6 +5,7 @@ const groupController = require('../spawn/group');
 var masterUnitCount;
 var remappedunits = {};
 var isServerFresh = false;
+exports.isServerSynced = false;
 exports.isSyncLockdownMode = false; //lock all processes out until server fully syncs
 
 _.set(exports, 'syncType', function (serverName, serverUnitCount) {
@@ -26,7 +27,9 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 						;
 					} else { // DB is FULL
 						//might have filter units to be spawned, mark others as dead head of time
-						masterUnitCount = units.length;
+						var filterStructure = _.filter(units, {category: 'STRUCTURE'});
+						var filterGround = _.filter(units, {category: 'GROUND'});
+						masterUnitCount = filterStructure.length + filterGround.length;
 						console.log('DB has ' + units.length + ' Units, Respawn Them');
 						_.forEach(units, function (unit) {
 							var curDead;
@@ -59,16 +62,24 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 					if (masterUnitCount) {
 						if ((serverUnitCount !== masterUnitCount) ||  (units.length !== masterUnitCount)) {
 							console.log('FR T:' + masterUnitCount + ' D:' + units.length + ' S:' + serverUnitCount);
+							exports.isServerSynced = false;
 						} else {
-							console.log('Server is Synced');
+							if (!exports.isServerSynced) {
+								console.log('Server is Synced');
+								exports.isServerSynced = true;
+							}
 						}
 					}
 				} else { // server has units on it
 					masterUnitCount = serverUnitCount;
 					if (units.length !== masterUnitCount) { // db doesnt match server
 						console.log('RS T:' + masterUnitCount + ' D:' + units.length + ' S:' + serverUnitCount);
+						exports.isServerSynced = false;
 					} else {
-						console.log('Server is Synced');
+						if (!exports.isServerSynced) {
+							console.log('Server is Synced');
+							exports.isServerSynced = true;
+						}
 					}
 				}
 			}
