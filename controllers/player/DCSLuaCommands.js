@@ -1,9 +1,4 @@
 const	_ = require('lodash');
-
-const zoneController = require('../proxZone/zone');
-const groupController = require('../spawn/group');
-
-const dbSystemServiceController = require('../db/dbSystemService');
 const dbMapServiceController = require('../db/dbMapService');
 
 // game mission commands
