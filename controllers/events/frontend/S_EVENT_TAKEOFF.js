@@ -4,7 +4,7 @@ const dbMapServiceController = require('../../db/dbMapService');
 const DCSLuaCommands = require('../../player/DCSLuaCommands');
 const playersEvent = require('../../events/backend/players');
 
-_.set(exports, 'processEventHit', function (serverName, sessionName, eventObj) {
+_.set(exports, 'processEventTakeoff', function (serverName, sessionName, eventObj) {
 	var place;
 	// Occurs when an aircraft takes off from an airbase, farp, or ship.
 	if (_.get(eventObj, 'data.arg6')){

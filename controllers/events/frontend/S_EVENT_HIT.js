@@ -112,9 +112,9 @@ _.set(exports, 'processEventHit', function (serverName, sessionName, eventObj) {
 										}
 									}
 
-									if( _.get(queObj, ['data', 'arg7', 'typeName'])){
-										// console.log('weaponhere: ', _.get(queObj, ['data', 'arg7', 'typeName']));
-										dbSystemServiceController.weaponScoreActions('read', _.get(queObj, ['data', 'arg7']))
+									if( _.get(eventObj, ['data', 'arg7', 'typeName'])){
+										// console.log('weaponhere: ', _.get(eventObj, ['data', 'arg7', 'typeName']));
+										dbSystemServiceController.weaponScoreActions('read', _.get(eventObj, ['data', 'arg7']))
 											.then(function (weaponResp) {
 												if (_.get(iCurObj, 'iucid') || _.get(iCurObj, 'tucid')) {
 													if (_.startsWith(_.get(weaponResp, 'name'), 'weapons.shells')){
@@ -152,7 +152,7 @@ _.set(exports, 'processEventHit', function (serverName, sessionName, eventObj) {
 										var shotCount;
 										var shotpoints;
 										// console.log('weapon not here');
-										// console.log('Weapon Unknown: ', _.get(queObj, ['data', 'arg7', 'typeName']));
+										// console.log('Weapon Unknown: ', _.get(eventObj, ['data', 'arg7', 'typeName']));
 										_.set(shootingUsers, [iUnitId, 'count'], _.get(shootingUsers, [_.get(iCurObj, 'iPlayerUnitId'), 'count'], 0)+1);
 										_.set(shootingUsers, [iUnitId, 'startTime'], new Date().getTime());
 										_.set(shootingUsers, [iUnitId, 'serverName'], serverName);

@@ -8,9 +8,9 @@ _.set(exports, 'processSelfKill', function (serverName, sessionName, eventObj) {
 	var iCurObj;
 	var iPlayer;
 	// "self_kill", playerID
-	iCurObj = {sessionName: sessionName, name: eventObj.data.name};
-	_.set(iCurObj, 'iPlayerId', _.get(eventObj, 'data.arg1'));
-	iPlayer = _.find(playersEvent.rtPlayerArray[serverName], {id: queObj.data.arg1});
+	iCurObj = {sessionName: sessionName};
+	_.set(iCurObj, 'iPlayerId', _.get(eventObj, 'arg1'));
+	iPlayer = _.find(playersEvent.rtPlayerArray[serverName], {id: eventObj.arg1});
 	if (iPlayer) {
 		iCurObj = {
 			sessionName: sessionName,

@@ -8,10 +8,11 @@ _.set(exports, 'processDisconnect', function (serverName, sessionName, eventObj)
 	var iPlayer;
 	var iCurObj;
 	// "disconnect", playerID, name, playerSide, reason_code
-	iPlayer = _.find(playersEvent.rtPlayerArray[serverName], {id: eventObj.data.arg1});
+	iPlayer = _.find(playersEvent.rtPlayerArray[serverName], {id: eventObj.arg1});
 	if (iPlayer) {
 		iCurObj = {
 			sessionName: sessionName,
+			eventCode: constants.shortNames[eventObj.action],
 			eventCode: constants.shortNames[eventObj.action],
 			iucid: iPlayer.ucid,
 			iName: iPlayer.name,
