@@ -148,9 +148,6 @@ do
 
 	log('REALTIME ' .. missionStartTime)
 
-	--lockout everyone
-	trigger.action.setUserFlag('slotLockout', '1')
-
 	local function getAllDefzone ()
 		local polyArray = {}
 		polyArray.count = 0

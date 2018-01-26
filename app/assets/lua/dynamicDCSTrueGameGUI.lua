@@ -504,13 +504,14 @@ end
 function dynDCS.shouldAllowSlot(_playerID, _slotID)
 	isCapLives = false
 	local _isOpenSlot = dynDCS.getFlagValue('isOpenSlot')
+	--net.log('io'.._playerID..' '.._slotID..' '.._isOpenSlot)
 	if _isOpenSlot ~= nil then
 		_isOpenSlot = tonumber(_isOpenSlot)
 	else
 		_isOpenSlot = 0
 	end
-	env.info('lockflag '.. _isOpenSlot)
-	if not _isOpenSlot then
+	--net.log('lockflag '.. _isOpenSlot)
+	if _isOpenSlot == 0 then
 		isLoadLock = true
 		return false
 	end
@@ -556,6 +557,7 @@ dynDCS.rejectPlayer = function(playerID)
 end
 
 dynDCS.onPlayerTryChangeSlot = function(playerID, side, slotID)
+	--net.log("SLOT - allowed -  playerid: "..playerID.." side:"..side.." slot: "..slotID)
 	if  DCS.isServer() and DCS.isMultiplayer() then
 		if  (side ~=0 and  slotID ~='' and slotID ~= nil)  then
 			local _allow = dynDCS.shouldAllowSlot(playerID,slotID)
@@ -563,10 +565,9 @@ dynDCS.onPlayerTryChangeSlot = function(playerID, side, slotID)
 				dynDCS.rejectPlayer(playerID)
 				return false
 			end
-			--net.log("SLOT - allowed -  playerid: "..playerID.." side:"..side.." slot: "..slotID)
 		end
+		return true
 	end
-	return true
 end
 
 DCS.setUserCallbacks(dynDCS)
