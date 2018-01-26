@@ -38,8 +38,7 @@ _.assign(CCB, {
 	},
 	sec: 1000,
 	fiveSecs: 5 * 1000,
-	thirtySecs: 30 * 1000,
-	fullySynced: false
+	thirtySecs: 30 * 1000
 });
 
 dbSystemServiceController.connectSystemDB(CCB.db.systemHost, CCB.db.systemDatabase);
@@ -188,24 +187,24 @@ _.set(CCB, 'socketCallback', function (serverName, cbArray) {
 
 setInterval(function () {
 	if (!_.get(CCB, ['DCSSocket', 'connOpen'], true)) {
-		processTimedOneSec.processOneSecActions(CCB.serverName, CCB.fullySynced);
+		processTimedOneSec.processOneSecActions(CCB.serverName, sychrontronController.isServerSynced);
 	}
 }, CCB.sec);
 
 setInterval(function () {
 	if (!_.get(CCB, ['DCSSocket', 'connOpen'], true)) {
-		processTimedFiveSecs.processFiveSecActions(CCB.serverName, CCB.fullySynced);
+		processTimedFiveSecs.processFiveSecActions(CCB.serverName, sychrontronController.isServerSynced);
 	}
 }, CCB.fiveSecs);
 
 setInterval(function () {
 	if (!_.get(CCB, ['DCSSocket', 'connOpen'], true)) {
-		processTimedThirtySecs.processThirtySecActions(CCB.serverName, CCB.fullySynced);
+		processTimedThirtySecs.processThirtySecActions(CCB.serverName, sychrontronController.isServerSynced);
 	}
 }, CCB.thirtySecs);
 
 setInterval(function () {
 	if (!_.get(CCB, ['DCSSocket', 'connOpen'], true)) {
-		_.set(CCB, 'fullySynced', sychrontronController.syncType(CCB.serverName, _.get(CCB, 'curServerUnitCnt', 0)));
+		sychrontronController.syncType(CCB.serverName, _.get(CCB, 'curServerUnitCnt', 0));
 	}
 }, CCB.sec);

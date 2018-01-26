@@ -35,6 +35,16 @@ _.set(exports, 'sendMesgToGroup', function (groupId, serverName, mesg, time) {
 	;
 });
 
+_.set(exports, 'setLockoutFlag', function (serverName, lockFlag) {
+	var sendClient = {action: "SETLOCKOUTFLAG", val: lockFlag};
+	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
+	dbMapServiceController.cmdQueActions('save', serverName, actionObj)
+		.catch(function (err) {
+			console.log('erroring line38: ', err);
+		})
+	;
+});
+
 // GameGui commands
 _.set(exports, 'sendMesgChatWindow', function (serverName, mesg) {
 	var curCMD = 'net.send_chat([['+mesg+']], true)';

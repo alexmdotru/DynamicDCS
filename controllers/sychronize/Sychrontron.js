@@ -73,6 +73,7 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 								DCSLuaCommands.sendMesgChatWindow(serverName, mesg);
 								exports.isServerSynced = true;
 								isServerFresh = false;
+								DCSLuaCommands.setLockoutFlag(serverName, 0);
 							}
 						}
 					}
@@ -89,6 +90,7 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 							console.log(mesg);
 							//DCSLuaCommands.sendMesgChatWindow(serverName, mesg);
 							exports.isServerSynced = true;
+							DCSLuaCommands.setLockoutFlag(serverName, 0);
 						}
 					}
 				}

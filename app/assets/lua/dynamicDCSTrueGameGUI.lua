@@ -503,7 +503,7 @@ end
 
 function dynDCS.shouldAllowSlot(_playerID, _slotID)
 	local _loadFlag = dynDCS.getFlagValue('slotLockout')
-	if _loadFlag == 1 then
+	if _loadFlag == '1' then
 		isLoadLock = true
 		return false
 	end
