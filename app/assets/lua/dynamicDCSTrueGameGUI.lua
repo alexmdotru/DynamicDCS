@@ -502,12 +502,18 @@ function dynDCS.getUnitId(_slotID)
 end
 
 function dynDCS.shouldAllowSlot(_playerID, _slotID)
-	local _loadFlag = dynDCS.getFlagValue('slotLockout')
-	if _loadFlag == '1' then
+	isCapLives = false
+	local _isOpenSlot = dynDCS.getFlagValue('isOpenSlot')
+	if _isOpenSlot ~= nil then
+		_isOpenSlot = tonumber(_isOpenSlot)
+	else
+		_isOpenSlot = 0
+	end
+	env.info('lockflag '.. _isOpenSlot)
+	if not _isOpenSlot then
 		isLoadLock = true
 		return false
 	end
-	isCapLives = false
 	local _unitId = dynDCS.getUnitId(_slotID)
 	if _unitId == nil then
 		return true

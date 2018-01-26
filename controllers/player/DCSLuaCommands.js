@@ -35,8 +35,8 @@ _.set(exports, 'sendMesgToGroup', function (groupId, serverName, mesg, time) {
 	;
 });
 
-_.set(exports, 'setLockoutFlag', function (serverName, lockFlag) {
-	var sendClient = {action: "SETLOCKOUTFLAG", val: lockFlag};
+_.set(exports, 'setIsOpenSlotFlag', function (serverName, lockFlag) {
+	var sendClient = {action: "SETISOPENSLOT", val: lockFlag};
 	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
 	dbMapServiceController.cmdQueActions('save', serverName, actionObj)
 		.catch(function (err) {

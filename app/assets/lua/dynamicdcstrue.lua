@@ -621,9 +621,9 @@ do
 					end
 				end
 			end
-			if request.action == "SETLOCKOUTFLAG" then
-				env.info('SET LOCKOUT FLAG')
-				trigger.action.setUserFlag('slotLockout', request.val)
+			if request.action == "SETISOPENSLOT" then
+				env.info('SET ISOPENSLOT FLAG')
+				trigger.action.setUserFlag('isOpenSlot', request.val)
 			end
 			if request.action == "SETCAPLIVES" then
 				env.info('SET CAP LIVES')
