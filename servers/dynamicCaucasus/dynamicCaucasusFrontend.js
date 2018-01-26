@@ -104,7 +104,7 @@ _.set(CCB, 'socketCallback', function (serverName, cbArray) {
 				airbaseSyncController.processAirbaseUpdates(serverName, queObj);
 			}
 
-			if (_.get(queObj, 'action') === 'f10Menu') {
+			if ((_.get(queObj, 'action') === 'f10Menu') && sychrontronController.isServerSynced) {
 				menuCmdsController.menuCmdProcess(serverName, CCB.sessionName, queObj);
 			}
 
@@ -134,51 +134,51 @@ _.set(CCB, 'socketCallback', function (serverName, cbArray) {
 			}
 			*/
 
-			if (_.get(queObj, 'action') === 'S_EVENT_HIT') {
+			if ((_.get(queObj, 'action') === 'S_EVENT_HIT') && sychrontronController.isServerSynced) {
 				processEventHit.processEventHit(serverName, CCB.sessionName, queObj);
 			}
 
-			if (_.get(queObj, 'action') === 'S_EVENT_TAKEOFF') {
+			if ((_.get(queObj, 'action') === 'S_EVENT_TAKEOFF') && sychrontronController.isServerSynced) {
 				processEventTakeoff.processEventTakeoff(serverName, CCB.sessionName, queObj);
 			}
 
-			if (_.get(queObj, 'action') === 'S_EVENT_LAND') {
+			if ((_.get(queObj, 'action') === 'S_EVENT_LAND') && sychrontronController.isServerSynced) {
 				processEventLand.processEventLand(serverName, CCB.sessionName, queObj);
 			}
 
-			if (_.get(queObj, 'action') === 'S_EVENT_EJECTION') {
+			if ((_.get(queObj, 'action') === 'S_EVENT_EJECTION') && sychrontronController.isServerSynced) {
 				processEventEjection.processEventEjection(serverName, CCB.sessionName, queObj);
 			}
 
-			if (_.get(queObj, 'action') === 'S_EVENT_CRASH') {
+			if ((_.get(queObj, 'action') === 'S_EVENT_CRASH') && sychrontronController.isServerSynced) {
 				processEventCrash.processEventCrash(serverName, CCB.sessionName, queObj);
 			}
 
-			if (_.get(queObj, 'action') === 'S_EVENT_DEAD') {
+			if ((_.get(queObj, 'action') === 'S_EVENT_DEAD') && sychrontronController.isServerSynced) {
 				processEventDead.processEventDead(serverName, CCB.sessionName, queObj);
 			}
 
-			if (_.get(queObj, 'action') === 'S_EVENT_PILOT_DEAD') {
+			if ((_.get(queObj, 'action') === 'S_EVENT_PILOT_DEAD') && sychrontronController.isServerSynced) {
 				processEventPilotDead.processEventPilotDead(serverName, CCB.sessionName, queObj);
 			}
 
-			if (_.get(queObj, 'action') === 'S_EVENT_REFUELING') {
+			if ((_.get(queObj, 'action') === 'S_EVENT_REFUELING') && sychrontronController.isServerSynced) {
 				processEventRefueling.processEventRefueling(serverName, CCB.sessionName, queObj);
 			}
 
-			if (_.get(queObj, 'action') === 'S_EVENT_REFUELING_STOP') {
+			if ((_.get(queObj, 'action') === 'S_EVENT_REFUELING_STOP') && sychrontronController.isServerSynced) {
 				processEventRefuelingStop.processEventRefuelingStop(serverName, CCB.sessionName, queObj);
 			}
 
-			if (_.get(queObj, 'action') === 'S_EVENT_BIRTH') {
+			if ((_.get(queObj, 'action') === 'S_EVENT_BIRTH') && sychrontronController.isServerSynced) {
 				processEventBirth.processEventBirth(serverName, CCB.sessionName, queObj);
 			}
 
-			if (_.get(queObj, 'action') === 'S_EVENT_PLAYER_ENTER_UNIT') {
+			if ((_.get(queObj, 'action') === 'S_EVENT_PLAYER_ENTER_UNIT') && sychrontronController.isServerSynced) {
 				processEventPlayerEnterUnit.processEventPlayerEnterUnit(serverName, CCB.sessionName, queObj);
 			}
 
-			if (_.get(queObj, 'action') === 'S_EVENT_PLAYER_LEAVE_UNIT') {
+			if ((_.get(queObj, 'action') === 'S_EVENT_PLAYER_LEAVE_UNIT') && sychrontronController.isServerSynced) {
 				processEventPlayerLeaveUnit.processEventPlayerLeaveUnit(serverName, CCB.sessionName, queObj);
 			}
 		});
