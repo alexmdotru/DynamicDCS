@@ -13,7 +13,6 @@ _.set(exports, 'processDisconnect', function (serverName, sessionName, eventObj)
 		iCurObj = {
 			sessionName: sessionName,
 			eventCode: constants.shortNames[eventObj.action],
-			eventCode: constants.shortNames[eventObj.action],
 			iucid: iPlayer.ucid,
 			iName: iPlayer.name,
 			displaySide: 'A',
