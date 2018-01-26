@@ -357,6 +357,7 @@ exports.statSessionActions = function (action, serverName, obj){
 	}
 };
 
+/*
 exports.statSrvEventActions = function (action, serverName, obj){
 	var newObjArray = [];
 	const StatSrvEvent = mapdb.model(serverName+'_statSrvEvent', statSrvEventSchema);
@@ -386,6 +387,7 @@ exports.statSrvEventActions = function (action, serverName, obj){
 		});
 	}
 };
+*/
 
 exports.simpleStatEventActions = function (action, serverName, obj){
 	var newObjArray = [];

@@ -28,15 +28,20 @@ _.set(exports, 'processFriendlyFire', function (serverName, sessionName, eventOb
 		_.set(iCurObj, 'tucid', tPlayer.ucid);
 		_.set(iCurObj, 'tName', tPlayer.name);
 	}
+
+
 	if(iCurObj.iucid || iCurObj.tucid) {
 		// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
+		/*
 		dbMapServiceController.statSrvEventActions('save', serverName, iCurObj)
 			.catch(function (err) {
 				console.log('err line45: ', err);
 			})
 		;
+		*/
 
-		mesg = 'A: ' + constants.side[iPlayer.side] +' ' + iPlayer.name + ' has accidentally hit ' + tPlayer.name + ' with a ' + _.get(eventObj, 'arg2', '?') + ' - 100pts';
+		console.log('tplayer: ', tPlayer, eventObj);
+		mesg = 'A: ' + constants.side[iPlayer.side] +' ' + iPlayer.name + ' has accidentally hit ' + _.get(tPlayer, 'name', 'friendly unit') + ' with a ' + _.get(eventObj, 'arg2', '?') + ' - 100pts';
 		DCSLuaCommands.sendMesgToAll(
 			serverName,
 			mesg,
