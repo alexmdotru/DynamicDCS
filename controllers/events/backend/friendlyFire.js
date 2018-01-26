@@ -36,7 +36,7 @@ _.set(exports, 'processFriendlyFire', function (serverName, sessionName, eventOb
 		;
 		DCSLuaCommands.sendMesgToAll(
 			serverName,
-			'A: ' + constants.side[iPlayer.side] +' ' + iPlayer.name + ' has accidentally killed ' + tPlayer.name + ' with a ' + eventObj.arg2 + ' - 100pts',
+			'A: ' + constants.side[iPlayer.side] +' ' + iPlayer.name + ' has accidentally hit ' + tPlayer.name + ' with a ' + (eventObj.arg2) ? eventObj.arg2 : '?' + ' - 100pts',
 			15
 		);
 	}

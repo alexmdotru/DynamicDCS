@@ -83,7 +83,7 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 						var mesg = 'SYNCING|R|' + masterUnitCount + ':' + units.length + ':' + serverUnitCount;
 						console.log(mesg);
 						//DCSLuaCommands.sendMesgChatWindow(serverName, mesg);
-						exports.isServerSynced = false;
+						// exports.isServerSynced = false;
 					} else {
 						if (!exports.isServerSynced) {
 							var mesg = 'Server units Synced';
