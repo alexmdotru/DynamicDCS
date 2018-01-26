@@ -75,7 +75,7 @@ _.set(DCB, 'socketCallback', function (serverName, cbArray) {
 			}
 
 			if (_.get(queObj, 'action') === 'disconnect') {
-				disconnectEvent.processConnect(serverName, DCB.sessionName, queObj.data);
+				disconnectEvent.processDisconnect(serverName, DCB.sessionName, queObj.data);
 			}
 
 		});

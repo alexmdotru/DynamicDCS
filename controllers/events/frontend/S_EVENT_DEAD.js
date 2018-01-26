@@ -2,6 +2,7 @@ const _ = require('lodash');
 const constants = require('../../constants');
 const dbMapServiceController = require('../../db/dbMapService');
 const DCSLuaCommands = require('../../player/DCSLuaCommands');
+const unitsStaticsController = require('../../serverToDbSync/unitsStatics');
 
 _.set(exports, 'processEventDead', function (serverName, sessionName, eventObj) {
 	// Occurs when an object is completely destroyed.
@@ -13,6 +14,9 @@ _.set(exports, 'processEventDead', function (serverName, sessionName, eventObj) 
 					var iCurObj;
 					var curIUnit = _.get(iunit, 0);
 					if (curIUnit) {
+
+						unitsStaticsController.processUnitUpdates(serverName, sessionName, {action: 'D', data: {unitId: curIUnit.unitId}});
+
 						iPlayer = _.find(playerArray, {name: _.get(curIUnit, 'playername')});
 						if (iPlayer) {
 							iCurObj = {

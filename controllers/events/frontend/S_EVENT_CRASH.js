@@ -3,6 +3,7 @@ const constants = require('../../constants');
 const dbMapServiceController = require('../../db/dbMapService');
 const DCSLuaCommands = require('../../player/DCSLuaCommands');
 const capLivesController = require('../../action/capLives');
+const unitsStaticsController = require('../../serverToDbSync/unitsStatics');
 
 _.set(exports, 'processEventCrash', function (serverName, sessionName, eventObj) {
 	// Occurs when any aircraft crashes into the ground and is completely destroyed.
@@ -14,6 +15,9 @@ _.set(exports, 'processEventCrash', function (serverName, sessionName, eventObj)
 					var iCurObj;
 					var curIUnit = _.get(iunit, 0);
 					if (curIUnit) {
+
+						unitsStaticsController.processUnitUpdates(serverName, sessionName, {action: 'D', data: {unitId: curIUnit.unitId}});
+
 						iPlayer = _.find(playerArray, {name: _.get(curIUnit, 'playername')});
 						if (iPlayer) {
 							iCurObj = {

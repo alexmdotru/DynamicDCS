@@ -8,6 +8,7 @@ _.set(exports, 'processFriendlyFire', function (serverName, sessionName, eventOb
 	var iCurObj;
 	var iPlayer;
 	var tPlayer;
+	var mesg;
 	// "friendly_fire", playerID, weaponName, victimPlayerID
 	iCurObj = {
 		sessionName: sessionName,
@@ -34,9 +35,11 @@ _.set(exports, 'processFriendlyFire', function (serverName, sessionName, eventOb
 				console.log('err line45: ', err);
 			})
 		;
+
+		mesg = 'A: ' + constants.side[iPlayer.side] +' ' + iPlayer.name + ' has accidentally hit ' + tPlayer.name + ' with a ' + _.get(eventObj, 'arg2', '?') + ' - 100pts';
 		DCSLuaCommands.sendMesgToAll(
 			serverName,
-			'A: ' + constants.side[iPlayer.side] +' ' + iPlayer.name + ' has accidentally hit ' + tPlayer.name + ' with a ' + (eventObj.arg2) ? eventObj.arg2 : '?' + ' - 100pts',
+			mesg,
 			15
 		);
 	}

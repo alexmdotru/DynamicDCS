@@ -5,6 +5,7 @@ const DCSLuaCommands = require('../../player/DCSLuaCommands');
 const playersEvent = require('../../events/backend/players');
 const capLivesController = require('../../action/capLives');
 const menuUpdateController = require('../../menu/menuUpdate');
+const unitsStaticsController = require('../../serverToDbSync/unitsStatics');
 
 _.set(exports, 'processEventPlayerEnterUnit', function (serverName, sessionName, eventObj) {
 	// Occurs when any player assumes direct control of a unit.
@@ -16,6 +17,9 @@ _.set(exports, 'processEventPlayerEnterUnit', function (serverName, sessionName,
 					var iCurObj;
 					var curIUnit = _.get(iunit, 0);
 					if (curIUnit) {
+
+						unitsStaticsController.processUnitUpdates(serverName, sessionName, {action: 'D', data: {unitId: curIUnit.unitId}});
+
 						iPlayer = _.find(playerArray, {name: _.get(curIUnit, 'playername')});
 						if (iPlayer) {
 							iCurObj = {
