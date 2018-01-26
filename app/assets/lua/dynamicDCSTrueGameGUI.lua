@@ -503,6 +503,7 @@ end
 
 function dynDCS.shouldAllowSlot(_playerID, _slotID)
 	isCapLives = false
+	isLoadLock = false
 	local _isOpenSlot = dynDCS.getFlagValue('isOpenSlot')
 	--net.log('io'.._playerID..' '.._slotID..' '.._isOpenSlot)
 	if _isOpenSlot ~= nil then

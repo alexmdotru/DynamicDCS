@@ -3,6 +3,7 @@ const dbMapServiceController = require('../db/dbMapService');
 const groupController = require('../spawn/group');
 const DCSLuaCommands = require('../player/DCSLuaCommands');
 
+var mesg;
 var masterUnitCount;
 var remappedunits = {};
 var isServerFresh = false;
@@ -62,13 +63,13 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 				if (isServerFresh) { // server is fresh
 					if (masterUnitCount) {
 						if ((serverUnitCount !== masterUnitCount) ||  (units.length !== masterUnitCount)) {
-							var mesg = 'SYNCING|F|' + masterUnitCount + ':' + units.length + ':' + serverUnitCount;
+							mesg = 'SYNCING|F|' + masterUnitCount + ':' + units.length + ':' + serverUnitCount;
 							console.log(mesg);
 							DCSLuaCommands.sendMesgChatWindow(serverName, mesg);
 							exports.isServerSynced = false;
 						} else {
 							if (!exports.isServerSynced) {
-								var mesg = 'Server units are Synced, Slots Now Open!';
+								mesg = 'Server units are Synced, Slots Now Open!';
 								console.log(mesg);
 								DCSLuaCommands.sendMesgChatWindow(serverName, mesg);
 								exports.isServerSynced = true;
@@ -80,13 +81,13 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 				} else { // server has units on it
 					masterUnitCount = serverUnitCount;
 					if (units.length !== masterUnitCount) { // db doesnt match server
-						var mesg = 'SYNCING|R|' + masterUnitCount + ':' + units.length + ':' + serverUnitCount;
+						mesg = 'SYNCING|R|' + masterUnitCount + ':' + units.length + ':' + serverUnitCount;
 						console.log(mesg);
 						//DCSLuaCommands.sendMesgChatWindow(serverName, mesg);
 						// exports.isServerSynced = false;
 					} else {
 						if (!exports.isServerSynced) {
-							var mesg = 'Server units Synced';
+							mesg = 'Server units Synced';
 							console.log(mesg);
 							//DCSLuaCommands.sendMesgChatWindow(serverName, mesg);
 							exports.isServerSynced = true;
