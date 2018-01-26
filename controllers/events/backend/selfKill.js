@@ -23,7 +23,11 @@ _.set(exports, 'processSelfKill', function (serverName, sessionName, eventObj) {
 		};
 		if(_.get(iCurObj, 'iucid')) {
 			// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
-			dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
+			dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj)
+				.catch(function (err) {
+					console.log('err line45: ', err);
+				})
+			;
 		}
 
 		DCSLuaCommands.sendMesgToAll(

@@ -21,7 +21,11 @@ _.set(exports, 'processDisconnect', function (serverName, sessionName, eventObj)
 		};
 		if(iCurObj.iucid) {
 			// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
-			dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
+			dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj)
+				.catch(function (err) {
+					console.log('err line45: ', err);
+				})
+			;
 		}
 		DCSLuaCommands.sendMesgToAll(
 			serverName,

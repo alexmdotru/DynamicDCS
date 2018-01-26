@@ -29,7 +29,11 @@ _.set(exports, 'processFriendlyFire', function (serverName, sessionName, eventOb
 	}
 	if(iCurObj.iucid || iCurObj.tucid) {
 		// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
-		dbMapServiceController.statSrvEventActions('save', serverName, iCurObj);
+		dbMapServiceController.statSrvEventActions('save', serverName, iCurObj)
+			.catch(function (err) {
+				console.log('err line45: ', err);
+			})
+		;
 		DCSLuaCommands.sendMesgToAll(
 			serverName,
 			'A: ' + constants.side[iPlayer.side] +' ' + iPlayer.name + ' has accidentally killed ' + tPlayer.name + ' with a ' + eventObj.arg2 + ' - 100pts',
