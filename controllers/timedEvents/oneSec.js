@@ -1,15 +1,15 @@
 const _ = require('lodash');
 const proximityController = require('../proxZone/proximity');
 
-_.set(exports, 'processOneSecActions', function (servername, fullySynced) {
+_.set(exports, 'processOneSecActions', function (serverName, fullySynced) {
 	//check Prox base units
-	proximityController.checkUnitsToBaseForTroops(servername);
+	proximityController.checkUnitsToBaseForTroops(serverName);
 
 	//check logi prox
-	proximityController.checkUnitsToLogisticTowers(servername);
+	proximityController.checkUnitsToLogisticTowers(serverName);
 
 	if (fullySynced) {
-		proximityController.checkUnitsToBaseForCapture(servername);
+		proximityController.checkUnitsToBaseForCapture(serverName);
 	}
 });
 
