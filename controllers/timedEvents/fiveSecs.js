@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const dbMapServiceController = require('../db/dbMapService');
 const groupController = require('../spawn/group');
-const baseSpawnFlagsController = require('./action/baseSpawnFlags');
+const baseSpawnFlagsController = require('../action/baseSpawnFlags');
 
 var replenThreshold = 20; // percentage under max
 var replenTimer = 3600; // 1 hour
