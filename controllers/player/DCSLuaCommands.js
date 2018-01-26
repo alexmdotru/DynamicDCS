@@ -35,15 +35,25 @@ _.set(exports, 'sendMesgToGroup', function (groupId, serverName, mesg, time) {
 	;
 });
 
-
 // GameGui commands
+_.set(exports, 'sendMesgChatWindow', function (serverName, mesg) {
+	var curCMD = 'net.send_chat([['+mesg+']], true)';
+	var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
+	var actionObj = {actionObj: sendClient, queName: 'gameGuiArray'};
+	dbMapServiceController.cmdQueActions('save', serverName, actionObj)
+		.catch(function (err) {
+			console.log('erroring line45: ', err);
+		})
+	;
+});
+
 _.set(exports, 'kickPlayer', function (serverName, playerId, mesg) {
 	var curCMD = 'net.kick('+playerId+', [['+mesg+']])';
 	var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
 	var actionObj = {actionObj: sendClient, queName: 'gameGuiArray'};
 	dbMapServiceController.cmdQueActions('save', serverName, actionObj)
 		.catch(function (err) {
-			console.log('erroring line51: ', err);
+			console.log('erroring line56: ', err);
 		})
 	;
 });
