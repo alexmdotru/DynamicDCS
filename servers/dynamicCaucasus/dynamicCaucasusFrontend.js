@@ -3,6 +3,7 @@ const DCSSocket = require('../../controllers/net/DCSSocket');
 const dbSystemServiceController = require('../../controllers/db/dbSystemService');
 const dbMapServiceController = require('../../controllers/db/dbMapService');
 const menuCmdsController = require('../../controllers/menu/menuCmds');
+const groupController = require('../../controllers/spawn/group');
 const unitsStaticsController = require('../../controllers/serverToDbSync/unitsStatics');
 const airbaseSyncController = require('../../controllers/serverToDbSync/airbaseSync');
 const sychrontronController = require('../../controllers/sychronize/Sychrontron');
@@ -40,6 +41,8 @@ _.assign(CCB, {
 	fiveSecs: 5 * 1000,
 	thirtySecs: 30 * 1000
 });
+
+groupController.initDbs(CCB.serverName);
 
 dbSystemServiceController.connectSystemDB(CCB.db.systemHost, CCB.db.systemDatabase);
 dbMapServiceController.connectMapDB(CCB.db.dynamicHost, CCB.db.dynamicDatabase);
