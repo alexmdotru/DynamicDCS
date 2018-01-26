@@ -18,12 +18,12 @@ _.set(exports, 'processFriendlyFire', function (serverName, sessionName, eventOb
 		showInChart: true
 	};
 
-	iPlayer = _.find(playersEvent.rtPlayerArray[serverName], {id: eventObj.arg1});
+	iPlayer = _.find(playersEvent.rtPlayerArray[serverName], {id: eventObj.data.arg1});
 	if (iPlayer) {
 		_.set(iCurObj, 'iucid', iPlayer.ucid);
 		_.set(iCurObj, 'iName', iPlayer.name);
 	}
-	tPlayer = _.find(playersEvent.rtPlayerArray[serverName], {id: eventObj.arg3});
+	tPlayer = _.find(playersEvent.rtPlayerArray[serverName], {id: eventObj.data.arg3});
 	if (tPlayer) {
 		_.set(iCurObj, 'tucid', tPlayer.ucid);
 		_.set(iCurObj, 'tName', tPlayer.name);
@@ -41,7 +41,7 @@ _.set(exports, 'processFriendlyFire', function (serverName, sessionName, eventOb
 		*/
 
 		console.log('tplayer: ', tPlayer, eventObj);
-		mesg = 'A: ' + constants.side[iPlayer.side] +' ' + iPlayer.name + ' has accidentally hit ' + _.get(tPlayer, 'name', 'friendly unit') + ' with a ' + _.get(eventObj, 'arg2', '?') + ' - 100pts';
+		mesg = 'A: ' + constants.side[iPlayer.side] +' ' + iPlayer.name + ' has accidentally hit ' + _.get(tPlayer, 'name', 'friendly unit') + ' with a ' + _.get(eventObj, 'data.arg2', '?') + ' - 100pts';
 		DCSLuaCommands.sendMesgToAll(
 			serverName,
 			mesg,
