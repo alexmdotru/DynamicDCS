@@ -6,7 +6,7 @@ local updateQue = {["que"] = {} }
 local PORT = 3002
 local DATA_TIMEOUT_SEC = 1
 
-local allowSpawn = false
+isLoadLock = false
 isCapLives = false
 
 package.path  = package.path..";.\\LuaSocket\\?.lua;"
@@ -502,9 +502,14 @@ function dynDCS.getUnitId(_slotID)
 end
 
 function dynDCS.shouldAllowSlot(_playerID, _slotID)
+	local _loadFlag = dynDCS.getFlagValue('slotLockout')
+	if _loadFlag == 1 then
+		isLoadLock = true
+		return false
+	end
 	isCapLives = false
 	local _unitId = dynDCS.getUnitId(_slotID)
-	if _unitId == nil and allowSpawn then
+	if _unitId == nil then
 		return true
 	end
 	local curSide = coalitionLookup[DCS.getUnitProperty(_slotID, DCS.UNIT_COALITION)]
@@ -515,7 +520,6 @@ function dynDCS.shouldAllowSlot(_playerID, _slotID)
 	local _ucidFlag = dynDCS.getFlagValue(curUcid)
 	--net.log(curBaseName.."_".._unitId..' flag:'.._baseFlag..' uSide:'..curSide..' ucidFlag: '.._ucidFlag..' ucid:'..curUcid)
 	if _baseFlag == curSide then
-		allowSpawn = true
 		--net.log('STUFFF '..capLives[curType]..' - '..curType..' ucid: '.._ucidFlag)
 		if _ucidFlag == 1 and capLives[curType] == 1 then
 			--net.log('User Flagged For Cap Lives Used Up')
@@ -534,7 +538,9 @@ dynDCS.rejectPlayer = function(playerID)
 	if _playerName ~= nil then
 		--Disable chat message to user
 		local _chatMessage
-		if (isCapLives) then
+		if(isLoadLock) then
+			_chatMessage = "***Slot DISABLED, Server Is Syncing Units***"
+		elseif (isCapLives) then
 			_chatMessage = "***Slot DISABLED, Your Modern Cap Lives Are Used Up***"
 		else
 			_chatMessage = "***Slot DISABLED, Capture This Airport***"

@@ -148,6 +148,9 @@ do
 
 	log('REALTIME ' .. missionStartTime)
 
+	--lockout everyone
+	trigger.action.setUserFlag('slotLockout', "1")
+
 	local function getAllDefzone ()
 		local polyArray = {}
 		polyArray.count = 0
@@ -617,6 +620,10 @@ do
 						end
 					end
 				end
+			end
+			if request.action == "SETLOCKOUTFLAG" then
+				env.info('SET LOCKOUT FLAG')
+				trigger.action.setUserFlag('slotLockout', request.val)
 			end
 			if request.action == "SETCAPLIVES" then
 				env.info('SET CAP LIVES')
