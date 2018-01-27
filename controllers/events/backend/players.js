@@ -102,14 +102,15 @@ _.set(exports, 'processPlayerEvent', function (serverName, sessionName, playerAr
 	//curServers[serverName].serverObject.players = queObj.data;
 	var promisSrvPlayers = [];
 	_.forEach(playerArray, function (data) {
-		console.log('PA1: ', data);
-		if (!_.isEmpty(data.ucid)) {
-			_.set(data, '_id', data.ucid);
-			_.set(data, 'playerId', data.id);
-			_.set(data, 'sessionName', sessionName);
-			console.log('PA2: ', data);
+		var curData = _.cloneDeep(data);
+		if (!_.isEmpty(curData.ucid)) {
+			console.log('PA1: ', curData);
+			_.set(curData, '_id', curData.ucid);
+			_.set(curData, 'playerId', curData.id);
+			_.set(curData, 'sessionName', sessionName);
+			console.log('PA2: ', curData);
 			//update map based player table
-			dbMapServiceController.srvPlayerActions('update', serverName, data)
+			dbMapServiceController.srvPlayerActions('update', serverName, curData)
 				.catch(function (err) {
 					console.log('line999', err);
 				})
