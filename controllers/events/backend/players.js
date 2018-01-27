@@ -103,11 +103,11 @@ _.set(exports, 'processPlayerEvent', function (serverName, sessionName, playerAr
 	var promisSrvPlayers = [];
 	_.forEach(playerArray, function (data) {
 		if (data) {
-			console.log('PA2: ', data);
 			if (data.ucid) {
 				_.set(data, '_id', data.ucid);
 				_.set(data, 'playerId', data.id);
 				_.set(data, 'sessionName', sessionName);
+				console.log('PA2: ', data);
 				//update map based player table
 				dbMapServiceController.srvPlayerActions('update', serverName, data)
 					.catch(function (err) {
