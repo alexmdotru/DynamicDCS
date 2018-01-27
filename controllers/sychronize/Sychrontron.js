@@ -82,6 +82,7 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 					masterUnitCount = serverUnitCount;
 					if (units.length !== masterUnitCount) { // db doesnt match server
 						mesg = 'SYNCING|R|' + masterUnitCount + ':' + units.length + ':' + serverUnitCount;
+						exports.isServerSynced = true;
 						console.log(mesg);
 						//DCSLuaCommands.sendMesgChatWindow(serverName, mesg);
 						// exports.isServerSynced = false;
