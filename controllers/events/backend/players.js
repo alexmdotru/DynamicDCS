@@ -101,11 +101,9 @@ _.set(exports, 'processPlayerEvent', function (serverName, sessionName, playerAr
 //need this for current player ID lookup
 	//curServers[serverName].serverObject.players = queObj.data;
 	var promisSrvPlayers = [];
-	_.forEach(playerArray, function (data) {
+	_.forEach(playerArray.data, function (data) {
 		var curData = _.cloneDeep(data);
-		console.log('NO: ', curData, playerArray);
 		if (!_.isEmpty(curData.ucid)) {
-			console.log('PA1: ', curData);
 			_.set(curData, '_id', curData.ucid);
 			_.set(curData, 'playerId', curData.id);
 			_.set(curData, 'sessionName', sessionName);
