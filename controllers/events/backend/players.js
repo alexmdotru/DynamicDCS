@@ -102,6 +102,7 @@ _.set(exports, 'processPlayerEvent', function (serverName, sessionName, playerAr
 	//curServers[serverName].serverObject.players = queObj.data;
 	var promisSrvPlayers = [];
 	_.forEach(playerArray, function (data) {
+		console.log('PA1: ', data);
 		if (data) {
 			if (data.ucid) {
 				_.set(data, '_id', data.ucid);
