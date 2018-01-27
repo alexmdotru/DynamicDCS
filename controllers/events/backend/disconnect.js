@@ -35,8 +35,7 @@ _.set(exports, 'processDisconnect', function (serverName, sessionName, eventObj)
 				console.log('Disconnected: ', _.includes(capLivesController.capLivesEnabled, curUnit.type), curUnit.inAir);
 				if (_.includes(capLivesController.capLivesEnabled, curUnit.type) && curUnit.inAir) {
 					//take life away
-					console.log('take unit away');
-					//capLivesController.removeLife(serverName, iPlayer.ucid, curUnit.groupId);
+					capLivesController.removeLife(serverName, iPlayer.ucid, curUnit.groupId);
 				}
 			})
 			.catch(function (err) {
