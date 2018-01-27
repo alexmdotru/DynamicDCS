@@ -43,6 +43,7 @@ setInterval(function () {
 _.set(DCB, 'getLatestSession', function (serverName) {
 	dbMapServiceController.statSessionActions('readLatest', serverName, {})
 		.then(function (latestSession) {
+			console.log('latestsession: ', latestSession);
 			if (latestSession) {
 				_.set(DCB, 'sessionName', latestSession.name);
 			}
