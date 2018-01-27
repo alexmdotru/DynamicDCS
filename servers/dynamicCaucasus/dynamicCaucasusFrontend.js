@@ -38,6 +38,7 @@ _.assign(CCB, {
 		dynamicDatabase: 'DDCSMaps'
 	},
 	sec: 1000,
+	twoSec: 2 * 1000,
 	fiveSecs: 5 * 1000,
 	thirtySecs: 30 * 1000
 });
@@ -212,4 +213,4 @@ setInterval(function () {
 	if (!_.get(CCB, ['DCSSocket', 'connOpen'], true)) {
 		sychrontronController.syncType(CCB.serverName, _.get(CCB, 'curServerUnitCnt', 0));
 	}
-}, CCB.sec);
+}, CCB.twoSec);
