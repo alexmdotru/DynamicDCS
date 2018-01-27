@@ -92,7 +92,6 @@ _.set(exports, 'processEventHit', function (serverName, sessionName, eventObj) {
 										}
 									});
 
-									console.log('pa: ', iUnitId, tUnitId, playerArray, serverName, sessionName);
 									if (curIUnit) {
 										iPlayer = _.find(playerArray, {name: curIUnit.playername});
 										if (iPlayer) {
