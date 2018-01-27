@@ -2,7 +2,7 @@ const _ = require('lodash');
 const DCSSocket = require('../../controllers/net/DCSSocket');
 const dbSystemServiceController = require('../../controllers/db/dbSystemService');
 const dbMapServiceController = require('../../controllers/db/dbMapService');
-
+const sychrontronController = require('../../controllers/sychronize/Sychrontron');
 const playersEvent = require('../../controllers/events/backend/players');
 const friendlyFireEvent = require('../../controllers/events/backend/friendlyFire');
 const selfKillEvent = require('../../controllers/events/backend/selfKill');
@@ -55,6 +55,7 @@ _.set(DCB, 'getLatestSession', function (serverName) {
 });
 
 _.set(DCB, 'socketCallback', function (serverName, cbArray) {
+	console.log('syncstuff: ', sychrontronController.isServerSynced);
 	if(!_.get(DCB, 'sessionName')) {
 		DCB.getLatestSession(serverName);
 	} else {
