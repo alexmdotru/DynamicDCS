@@ -29,12 +29,15 @@ _.set(exports, 'processDisconnect', function (serverName, sessionName, eventObj)
 			;
 		}
 
+		console.log('1 ');
 		dbMapServiceController.unitActions('read', serverName, {playername: iPlayer.name})
 			.then(function (iunit) {
 				var curUnit = _.get(iunit, [0]);
+				console.log('2 ', curUnit);
 				console.log('Disconnected: ', _.includes(capLivesController.capLivesEnabled, curUnit.type), curUnit.inAir);
 				if (_.includes(capLivesController.capLivesEnabled, curUnit.type) && curUnit.inAir) {
 					//take life away
+					console.log('3 ', curUnit);
 					capLivesController.removeLife(serverName, iPlayer.ucid, curUnit.groupId);
 				}
 			})
