@@ -3,6 +3,7 @@ const constants = require('../../constants');
 const dbMapServiceController = require('../../db/dbMapService');
 const DCSLuaCommands = require('../../player/DCSLuaCommands');
 const playersEvent = require('../../events/backend/players');
+const capLivesController = require('../../action/capLives');
 
 _.set(exports, 'processDisconnect', function (serverName, sessionName, eventObj) {
 	var iPlayer;
@@ -27,6 +28,21 @@ _.set(exports, 'processDisconnect', function (serverName, sessionName, eventObj)
 				})
 			;
 		}
+
+		dbMapServiceController.unitActions('read', serverName, {playername: iPlayer.name})
+			.then(function (iunit) {
+				var curUnit = _.get(iunit, [0]);
+				console.log('Disconnected: ', _.includes(capLivesController.capLivesEnabled, curUnit.type), curUnit.inAir);
+				if (_.includes(capLivesController.capLivesEnabled, curUnit.type) && curUnit.inAir) {
+					//take life away
+					console.log('take unit away');
+					//capLivesController.removeLife(serverName, iPlayer.ucid, curUnit.groupId);
+				}
+			})
+			.catch(function (err) {
+				console.log('err line45: ', err);
+			})
+		;
 
 		DCSLuaCommands.sendMesgToAll(
 			serverName,
