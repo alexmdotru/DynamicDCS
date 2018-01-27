@@ -55,7 +55,6 @@ _.set(DCB, 'getLatestSession', function (serverName) {
 });
 
 _.set(DCB, 'socketCallback', function (serverName, cbArray) {
-	console.log('syncstuff: ', sychrontronController.isServerSynced);
 	if(!_.get(DCB, 'sessionName')) {
 		DCB.getLatestSession(serverName);
 	} else {
