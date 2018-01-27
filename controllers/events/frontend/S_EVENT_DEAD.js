@@ -26,7 +26,7 @@ _.set(exports, 'processEventDead', function (serverName, sessionName, eventObj) 
 								iName: _.get(curIUnit, 'playername'),
 								displaySide: 'A',
 								roleCode: 'I',
-								msg: 'A: ' + constants.side[_.get(curIUnit, 'playername')] + ' '+ _.get(curIUnit, 'type') + '('+ _.get(curIUnit, 'playername') +') is dead'
+								msg: 'A: ' + constants.side[_.get(curIUnit, 'coalition')] + ' '+ _.get(curIUnit, 'type') + '('+ _.get(curIUnit, 'playername') +') is dead'
 							};
 							if (_.get(iCurObj, 'iucid')) {
 								// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));

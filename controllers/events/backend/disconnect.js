@@ -27,6 +27,7 @@ _.set(exports, 'processDisconnect', function (serverName, sessionName, eventObj)
 				})
 			;
 		}
+
 		DCSLuaCommands.sendMesgToAll(
 			serverName,
 			_.get(iCurObj, 'msg'),
