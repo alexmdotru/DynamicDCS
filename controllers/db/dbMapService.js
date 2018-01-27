@@ -228,9 +228,9 @@ exports.unitActions = function (action, serverName, obj){
 			});
 		});
 	}
-	if (action === 'readRev') {
+	if (action === 'readStd') {
 		return new Promise(function(resolve, reject) {
-			Unit.find(obj).sort( { createdAt: 1 } ).exec(function (err, dbUnits) {
+			Unit.find(obj).exec(function (err, dbUnits) {
 				if (err) { reject(err) }
 				resolve(dbUnits);
 			});
