@@ -103,6 +103,7 @@ _.set(exports, 'processPlayerEvent', function (serverName, sessionName, playerAr
 	var promisSrvPlayers = [];
 	_.forEach(playerArray, function (data) {
 		if (data) {
+			console.log('PA2: ', data);
 			if (data.ucid) {
 				_.set(data, '_id', data.ucid);
 				_.set(data, 'playerId', data.id);
