@@ -228,6 +228,14 @@ exports.unitActions = function (action, serverName, obj){
 			});
 		});
 	}
+	if (action === 'readRev') {
+		return new Promise(function(resolve, reject) {
+			Unit.find(obj).sort( { createdAt: 1 } ).exec(function (err, dbUnits) {
+				if (err) { reject(err) }
+				resolve(dbUnits);
+			});
+		});
+	}
 	if (action === 'readGeo') {
 		return new Promise(function(resolve, reject) {
 			Unit.find(obj).exec(function (err, dbUnits) {
