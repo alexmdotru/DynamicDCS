@@ -62,7 +62,7 @@ setInterval(function () {
 }, 3 * 1000);
 
 _.set(CCB, 'getLatestSession', function (serverName, serverEpoc, startAbs, curAbs) {
-	console.log('sn: ', sessionName, serverEpoc, startAbs, curAbs, _.get(CCB, 'sessionName'));
+	console.log('sn: ', serverEpoc, startAbs, curAbs, _.get(CCB, 'sessionName'));
 	if (serverEpoc) {
 		var sessionName = serverName + '_' + serverEpoc;
 		var newSession = {
@@ -74,6 +74,7 @@ _.set(CCB, 'getLatestSession', function (serverName, serverEpoc, startAbs, curAb
 			_.set(newSession, 'curAbsTime', curAbs);
 		}
 		if (sessionName !== _.get(CCB, ['sessionName'], '') || _.get(CCB, ['curAbsTime'], 0) > curAbs) {
+			console.log('set new session: ', sessionName);
 			_.set(CCB, ['sessionName'], sessionName);
 			_.set(CCB, ['curAbsTime'], curAbs);
 			console.log('set new session');
@@ -83,7 +84,7 @@ _.set(CCB, 'getLatestSession', function (serverName, serverEpoc, startAbs, curAb
 				})
 			;
 		} else {
-			console.log('use existing session');
+			console.log('use existing session: ', sessionName);
 			dbMapServiceController.statSessionActions('update', serverName, newSession)
 				.catch(function (err) {
 					console.log('line55', err);
