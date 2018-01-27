@@ -60,6 +60,7 @@ _.set(DCB, 'socketCallback', function (serverName, cbArray) {
 	} else {
 		_.forEach(_.get(cbArray, 'que', []), function (queObj) {
 			if (_.get(queObj, 'action') === 'players') {
+				console.log('players');
 				playersEvent.processPlayerEvent(serverName, DCB.sessionName, queObj);
 			}
 
