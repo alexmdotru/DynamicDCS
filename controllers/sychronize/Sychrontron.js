@@ -12,7 +12,7 @@ exports.isServerSynced = false;
 exports.isSyncLockdownMode = false; //lock all processes out until server fully syncs
 
 _.set(exports, 'syncType', function (serverName, serverUnitCount) {
-	dbMapServiceController.unitActions('read', serverName, {dead: false})
+	dbMapServiceController.unitActions('read', serverName, {dead: false, type: {$ne: 'UAZ-469'}})
 		.then(function (units) {
 			delay++;
 			if (serverUnitCount === 0 && delay > 10) { //server is empty
@@ -38,7 +38,7 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 						_.forEach(units, function (unit) {
 							var curDead;
 							var curGrpName = _.get(unit, 'groupName');
-							if (_.get(unit, 'category') === 'GROUND' && _.get(unit, 'type') !== 'UAZ-469') {
+							if (_.get(unit, 'category') === 'GROUND') {
 								_.set(remappedunits, [curGrpName], _.get(remappedunits, [curGrpName], []));
 								remappedunits[curGrpName].push(unit);
 							} else if (_.get(unit, 'category') === 'STRUCTURE') {
