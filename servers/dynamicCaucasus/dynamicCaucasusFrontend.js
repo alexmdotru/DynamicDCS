@@ -64,6 +64,7 @@ setInterval(function () {
 _.set(CCB, 'getLatestSession', function (serverName, serverEpoc, startAbs, curAbs) {
 	if (serverEpoc) {
 		var sessionName = serverName + '_' + serverEpoc;
+		console.log('sn: ', sessionName, serverEpoc, startAbs, curAbs);
 		var newSession = {
 			_id: sessionName,
 			name: sessionName
