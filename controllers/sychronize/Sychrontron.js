@@ -7,13 +7,15 @@ var mesg;
 var masterUnitCount;
 var remappedunits = {};
 var isServerFresh = false;
+var delay = 0;
 exports.isServerSynced = false;
 exports.isSyncLockdownMode = false; //lock all processes out until server fully syncs
 
 _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 	dbMapServiceController.unitActions('read', serverName, {dead: false})
 		.then(function (units) {
-			if (serverUnitCount === 0) { //server is empty
+			delay++;
+			if (serverUnitCount === 0 && delay > 10) { //server is empty
 				isServerFresh = true;
 				if (!exports.isSyncLockdownMode) {
 					exports.isSyncLockdownMode = true; // lock down all traffic until sync is complete
