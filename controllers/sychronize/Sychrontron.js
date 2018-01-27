@@ -38,7 +38,7 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 						_.forEach(units, function (unit) {
 							var curDead;
 							var curGrpName = _.get(unit, 'groupName');
-							if (_.get(unit, 'category') === 'GROUND') {
+							if (_.get(unit, 'category') === 'GROUND' && _.get(unit, 'type') !== 'UAZ-469') {
 								_.set(remappedunits, [curGrpName], _.get(remappedunits, [curGrpName], []));
 								remappedunits[curGrpName].push(unit);
 							} else if (_.get(unit, 'category') === 'STRUCTURE') {
