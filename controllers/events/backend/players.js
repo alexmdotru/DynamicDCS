@@ -103,7 +103,7 @@ _.set(exports, 'processPlayerEvent', function (serverName, sessionName, playerAr
 	var promisSrvPlayers = [];
 	_.forEach(playerArray.data, function (data) {
 		var curData = _.cloneDeep(data);
-		if (!_.isEmpty(curData.ucid)) {
+		if (_.get(curData, 'ucid')) {
 			_.set(curData, '_id', curData.ucid);
 			_.set(curData, 'playerId', curData.id);
 			_.set(curData, 'sessionName', sessionName);
