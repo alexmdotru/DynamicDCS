@@ -61,10 +61,10 @@ setInterval(function () {
 	}
 }, 3 * 1000);
 
+console.log('sn: ', sessionName, serverEpoc, startAbs, curAbs, _.get(CCB, 'sessionName'));
 _.set(CCB, 'getLatestSession', function (serverName, serverEpoc, startAbs, curAbs) {
 	if (serverEpoc) {
 		var sessionName = serverName + '_' + serverEpoc;
-		console.log('sn: ', sessionName, serverEpoc, startAbs, curAbs);
 		var newSession = {
 			_id: sessionName,
 			name: sessionName
