@@ -28,6 +28,9 @@ const srvPlayerSchema = new Schema({
 		socketID: {
 			type: String
 		},
+		playerId: {
+			type: String
+		},
 		ucid: {
 			type: String,
 			required: true

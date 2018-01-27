@@ -103,19 +103,17 @@ _.set(exports, 'processPlayerEvent', function (serverName, sessionName, playerAr
 	var promisSrvPlayers = [];
 	_.forEach(playerArray, function (data) {
 		console.log('PA1: ', data);
-		if (data) {
-			if (data.ucid) {
-				_.set(data, '_id', data.ucid);
-				_.set(data, 'playerId', data.id);
-				_.set(data, 'sessionName', sessionName);
-				console.log('PA2: ', data);
-				//update map based player table
-				dbMapServiceController.srvPlayerActions('update', serverName, data)
-					.catch(function (err) {
-						console.log('line999', err);
-					})
-				;
-			}
+		if (!_.isEmpty(data.ucid)) {
+			_.set(data, '_id', data.ucid);
+			_.set(data, 'playerId', data.id);
+			_.set(data, 'sessionName', sessionName);
+			console.log('PA2: ', data);
+			//update map based player table
+			dbMapServiceController.srvPlayerActions('update', serverName, data)
+				.catch(function (err) {
+					console.log('line999', err);
+				})
+			;
 		}
 	});
 
