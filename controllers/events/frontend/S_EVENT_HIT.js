@@ -92,10 +92,9 @@ _.set(exports, 'processEventHit', function (serverName, sessionName, eventObj) {
 										}
 									});
 
-									console.log('pa: ', iUnitId, tUnitId);
+									console.log('pa: ', iUnitId, tUnitId, playerArray);
 									if (curIUnit) {
 										iPlayer = _.find(playerArray, {name: curIUnit.playername});
-										console.log('ip: ', curIUnit.playername, iPlayer);
 										if (iPlayer) {
 											_.set(iCurObj, 'iucid', _.get(iPlayer, 'ucid'));
 											iPName = _.get(curIUnit, 'type') + '(' + _.get(curIUnit, 'playername') + ')';
@@ -106,7 +105,6 @@ _.set(exports, 'processEventHit', function (serverName, sessionName, eventObj) {
 
 									if (curTUnit ) {
 										tPlayer = _.find(playerArray, {name: curTUnit.playername});
-										console.log('tp: ', curTUnit.playername, tPlayer);
 										if (tPlayer) {
 											_.set(iCurObj, 'tucid', _.get(tPlayer, 'ucid'));
 											tPName = _.get(curTUnit, 'type') + '(' + _.get(curTUnit, 'playername') + ')';
