@@ -107,7 +107,7 @@ _.set(exports, 'processPlayerEvent', function (serverName, sessionName, playerAr
 			_.set(curData, '_id', curData.ucid);
 			_.set(curData, 'playerId', curData.id);
 			_.set(curData, 'sessionName', sessionName);
-			console.log('PA2: ', curData);
+			// console.log('PA2: ', curData);
 			//update map based player table
 			dbMapServiceController.srvPlayerActions('update', serverName, curData)
 				.catch(function (err) {
