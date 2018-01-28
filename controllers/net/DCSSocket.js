@@ -1,7 +1,6 @@
 const net = require('net');
 const _ = require('lodash');
 const dbMapServiceController = require('../db/dbMapService'); // reqclientArray, reggameGuiArray
-const sychrontronController = require('../sychronize/Sychrontron');
 
 exports.createSocket = function (serverName, address, port, queName, callback) {
 	var sock = this;
@@ -36,9 +35,6 @@ exports.createSocket = function (serverName, address, port, queName, callback) {
 			var time = new Date();
 			console.log('Connected to DCS Client at '+address+':'+port+' !');
 			_.set(sock, 'connOpen', false);
-			if (queName === 'clientArray') {
-				sychrontronController.delay = 0
-			}
 			sock.buffer = [];
 		});
 		sockConn.on('connect', function () {
