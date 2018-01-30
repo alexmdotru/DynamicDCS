@@ -4,7 +4,7 @@ const dbMapServiceController = require('../db/dbMapService');
 const dbSystemServiceController = require('../db/dbSystemService');
 const zoneController = require('../proxZone/zone');
 
-var maxSizeNewGroups = 20;
+var maxSizeNewGroups = 12;
 
 _.set(exports, 'spawnGrp', function (grpSpawn, country, category) {
 	return gSpawnCmd = 'coalition.addGroup(' + _.indexOf(constants.countryId, country) + ', Group.Category.' + category + ', ' + grpSpawn + ')';
