@@ -73,7 +73,7 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 										queName: 'gameGuiArray',
 										actionObj: {
 											action: "CMD",
-											cmd: 'net.load_next_mission()'
+											cmd: 'net.load_mission("C:\\Users\\MegaServer\\Dropbox\\DCS\\16AGR\\Missions\\DynamicCaucasus_1.00.21CAPLIVESMATTER.miz")'
 										}
 									});
 									console.log('reload mission');
