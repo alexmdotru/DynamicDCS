@@ -4,6 +4,8 @@ const dbMapServiceController = require('../db/dbMapService');
 const dbSystemServiceController = require('../db/dbSystemService');
 const zoneController = require('../proxZone/zone');
 
+var maxSizeNewGroups = 30;
+
 _.set(exports, 'spawnGrp', function (grpSpawn, country, category) {
 	return gSpawnCmd = 'coalition.addGroup(' + _.indexOf(constants.countryId, country) + ', Group.Category.' + category + ', ' + grpSpawn + ')';
 });
@@ -561,39 +563,28 @@ _.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {
 
 _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 	var totalUnitsSpawned = 0;
-	return exports.getUnitDictionary()
-		.then(function (unitDict) {
-			_.set(exports, 'unitDictionary', unitDict);
-			return exports.getBases( serverName )
-				.then(function (bases) {
-					_.set(exports, ['servers', serverName, 'bases'], bases);
-					return exports.getServer( serverName )
-						.then(function (server) {
-							_.set(exports, ['servers', serverName, 'config'], server);
-							var curBaseObj;
-							var curServer = _.get(exports, ['servers', serverName, 'config']);
-							var defBaseSides = _.get(curServer, 'defBaseSides');
-							_.forEach(defBaseSides, function (extSide, extName) {
-								var spawnArray = [];
-								spawnArray = _.concat(spawnArray, exports.spawnSupportBaseGrp(serverName, extName, extSide, true));
-								while (spawnArray.length < curServer.replenThreshold) { //UNCOMMENT THESE
-									spawnArray = _.concat(spawnArray, exports.spawnBaseReinforcementGroup(serverName, extSide));
-								}
-								exports.spawnGroup(serverName, spawnArray, extName, extSide);
+	var curBaseObj;
+	var curServer = _.get(exports, ['servers', serverName, 'config']);
+	var defBaseSides = _.get(curServer, 'defBaseSides');
+	_.forEach(defBaseSides, function (extSide, extName) {
+		var spawnArray;
+		var spawnArray = [];
+		spawnArray = _.concat(spawnArray, exports.spawnSupportBaseGrp(serverName, extName, extSide, true));
+		while (spawnArray.length < curServer.replenThreshold) { //UNCOMMENT THESE
+			spawnArray = _.concat(spawnArray, exports.spawnBaseReinforcementGroup(serverName, extSide));
+			if (spawnArray.length > maxSizeNewGroups) {
+				exports.spawnGroup(serverName, spawnArray, extName, extSide);
+				totalUnitsSpawned += spawnArray.length;
+				spawnArray = [];
+			}
+		}
+		exports.spawnGroup(serverName, spawnArray, extName, extSide);
 
-								curBaseObj = _.find(bases, {name: extName});
-								exports.spawnLogisticCmdCenter(serverName, {}, curBaseObj, extSide, true);
-								totalUnitsSpawned += spawnArray.length + 1;
-							});
-							return totalUnitsSpawned
-						})
-					;
-
-				})
-			;
-
-		})
-	;
+		curBaseObj = _.find(bases, {name: extName});
+		exports.spawnLogisticCmdCenter(serverName, {}, curBaseObj, extSide, true);
+		totalUnitsSpawned += spawnArray.length + 1;
+	});
+	return totalUnitsSpawned
 });
 
 _.set(exports, 'initDbs', function ( serverName ) {
