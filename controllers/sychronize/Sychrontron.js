@@ -57,6 +57,7 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 					}
 				}
 			} else {
+				console.log('sync running: ', serverUnitCount, units.length, isServerFresh, masterUnitCount);
 				if (isServerFresh) { // server is fresh
 					if (masterUnitCount) {
 						if ((serverUnitCount !== masterUnitCount) ||  (units.length !== masterUnitCount)) {
