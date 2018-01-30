@@ -62,6 +62,7 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 						if ((serverUnitCount !== masterUnitCount) ||  (units.length !== masterUnitCount)) {
 							if (lastUnitCount === units.length) {
 								mesg = 'STUCKDETECT|F|' + masterUnitCount + ':' + units.length + ':' + serverUnitCount;
+								console.log('stuckDetect: ', stuckDetect);:
 								if (stuckDetect > stuckThreshold) {
 									dbMapServiceController.cmdQueActions('save', serverName, {
 										queName: 'clientArray',
