@@ -575,7 +575,6 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 		totalBaseUnits += sbArray.length;
 		while (totalBaseUnits < curServer.replenThreshold) { //UNCOMMENT THESE
 			buArray = exports.spawnBaseReinforcementGroup(serverName, extSide);
-			console.log('bua: ', buArray);
 			exports.spawnGroup(serverName, buArray, extName, extSide);
 			totalUnitsSpawned += buArray.length;
 			totalBaseUnits += buArray.length;

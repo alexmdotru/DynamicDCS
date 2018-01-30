@@ -78,7 +78,7 @@ _.set(exports, 'isLatLonInZone', function (lonLat, polyZone) {
 });
 
 _.set(exports, 'getRandomLatLonFromBase', function (serverName, baseName) {
-	var baseInfo = _.find(_.get(groupController, ['servers', serverName, 'bases']), {_id: baseName});
+	var baseInfo = _.find(_.get(groupController, ['bases']), {_id: baseName});
 	var pArray = _.get(baseInfo, 'polygonLoc');
 	if (pArray) {
 		var lonLatFound = false;
