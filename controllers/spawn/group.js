@@ -566,12 +566,11 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 	var curBaseObj;
 	var curServer = _.get(exports, ['config']);
 	var defBaseSides = _.get(curServer, 'defBaseSides');
-	console.log('curSer: ', curServer);
 	_.forEach(defBaseSides, function (extSide, extName) {
 		var totalBaseUnits = 0;
 		var spawnArray = [];
 		spawnArray = _.concat(spawnArray, exports.spawnSupportBaseGrp(serverName, extName, extSide, true));
-		while (totalBaseUnits < exports.config.replenThreshold) { //UNCOMMENT THESE
+		while (totalBaseUnits < curServer.replenThreshold) { //UNCOMMENT THESE
 			spawnArray = _.concat(spawnArray, exports.spawnBaseReinforcementGroup(serverName, extSide));
 			if (spawnArray.length > maxSizeNewGroups) {
 				exports.spawnGroup(serverName, spawnArray, extName, extSide);
