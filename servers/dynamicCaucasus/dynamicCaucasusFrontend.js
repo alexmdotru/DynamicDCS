@@ -7,6 +7,7 @@ const groupController = require('../../controllers/spawn/group');
 const unitsStaticsController = require('../../controllers/serverToDbSync/unitsStatics');
 const airbaseSyncController = require('../../controllers/serverToDbSync/airbaseSync');
 const sychrontronController = require('../../controllers/sychronize/Sychrontron');
+const jtacController = require('../../controllers/action/jtac');
 const processEventHit = require('../../controllers/events/frontend/S_EVENT_HIT');
 const processEventTakeoff = require('../../controllers/events/frontend/S_EVENT_TAKEOFF');
 const processEventLand = require('../../controllers/events/frontend/S_EVENT_LAND');
@@ -22,7 +23,6 @@ const processEventPlayerLeaveUnit = require('../../controllers/events/frontend/S
 const processTimedOneSec = require('../../controllers/timedEvents/oneSec');
 const processTimedFiveSecs = require('../../controllers/timedEvents/fiveSecs');
 const processTimedThirtySecs = require('../../controllers/timedEvents/thirtySecs');
-const processRecovery = require('../../controllers/sychronize/recovery');
 
 var CCB = {};
 
@@ -194,8 +194,9 @@ _.set(CCB, 'socketCallback', function (serverName, cbArray) {
 				processEventPlayerLeaveUnit.processEventPlayerLeaveUnit(serverName, CCB.sessionName, queObj);
 			}
 
-			if (queObj.action === 'unitsAlive') {
-				processRecovery.sendMissingUnits(serverName, queObj.data);
+			// line of sight callback from server
+			if (queObj.action === 'LOSVISIBLEUNITS') {
+				jtacController.processLOSEnemy(serverName, queObj);
 			}
 
 		});
