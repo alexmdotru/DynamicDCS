@@ -61,7 +61,7 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 					if (masterUnitCount) {
 						if ((serverUnitCount !== masterUnitCount) ||  (units.length !== masterUnitCount)) {
 							// console.log(lastUnitCount,' === ', serverUnitCount);
-							if (lastUnitCount === serverUnitCount && ) {
+							if (lastUnitCount === serverUnitCount) {
 								if (stuckDetect > 5) {
 									mesg = 'STUCK|' + stuckDetect + '|F|' + masterUnitCount + ':' + units.length + ':' + serverUnitCount;
 								} else {
