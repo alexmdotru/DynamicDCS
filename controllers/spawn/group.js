@@ -566,6 +566,7 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 	var curBaseObj;
 	var curServer = _.get(exports, ['config']);
 	var defBaseSides = _.get(curServer, 'defBaseSides');
+	console.log('curSer: ', curServer);
 	_.forEach(defBaseSides, function (extSide, extName) {
 		var totalBaseUnits = 0;
 		var spawnArray = [];
