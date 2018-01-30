@@ -572,15 +572,15 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 		spawnArray = exports.spawnSupportBaseGrp(serverName, extName, extSide, true);
 		while (totalBaseUnits < curServer.replenThreshold) { //UNCOMMENT THESE
 			spawnArray = _.concat(spawnArray, exports.spawnBaseReinforcementGroup(serverName, extSide));
-			/*
 			if (spawnArray.length > maxSizeNewGroups) {
-				exports.spawnGroup(serverName, spawnArray, extName, extSide);
+				console.log('spawn group: ', spawnArray.length);
+				//exports.spawnGroup(serverName, spawnArray, extName, extSide);
 				totalBaseUnits += spawnArray.length;
 				totalUnitsSpawned += totalBaseUnits;
 				spawnArray = [];
 			}
-			*/
 		}
+		console.log('spawn group: ', spawnArray.length);
 		//exports.spawnGroup(serverName, spawnArray, extName, extSide);
 		//exports.spawnLogisticCmdCenter(serverName, {}, _.find(exports.bases, {name: extName}, extSide, true);
 		totalUnitsSpawned += spawnArray.length + 1;
