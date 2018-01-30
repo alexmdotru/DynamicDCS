@@ -111,12 +111,11 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 						}
 					}
 				} else { // server has units on it
-					masterUnitCount = serverUnitCount;
-					if (units.length !== masterUnitCount) { // db doesnt match server
-						mesg = 'SYNCING|R|' + masterUnitCount + ':' + units.length + ':' + serverUnitCount;
+					if (units.length !== serverUnitCount) { // db doesnt match server
+						mesg = 'SYNCING|R|' + units.length + ':' + serverUnitCount;
 						exports.isServerSynced = true;
 						console.log(mesg);
-						//DCSLuaCommands.sendMesgChatWindow(serverName, mesg);
+						DCSLuaCommands.sendMesgChatWindow(serverName, mesg);
 						// exports.isServerSynced = false;
 					} else {
 						if (!exports.isServerSynced) {
