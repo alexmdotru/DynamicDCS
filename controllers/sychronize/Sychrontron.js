@@ -61,7 +61,7 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 					if (masterUnitCount) {
 						if ((serverUnitCount !== masterUnitCount) ||  (units.length !== masterUnitCount)) {
 							console.log(lastUnitCount,' === ', units.length);
-							if (lastUnitCount === units.length) {
+							if (lastUnitCount === serverUnitCount) {
 								mesg = 'STUCKDETECT|F|' + masterUnitCount + ':' + units.length + ':' + serverUnitCount;
 								console.log('stuckDetect: ', stuckDetect);
 								if (stuckDetect > stuckThreshold) {
@@ -76,7 +76,7 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 								}
 							} else {
 								stuckDetect = 0;
-								lastUnitCount = units.length;
+								lastUnitCount = serverUnitCount;
 								mesg = 'SYNCING|F|' + masterUnitCount + ':' + units.length + ':' + serverUnitCount;
 							}
 
