@@ -4,7 +4,7 @@ local cacheDB = {}
 local updateQue = {["que"] = {} }
 
 local PORT = 3002
-local DATA_TIMEOUT_SEC = 1
+local DATA_TIMEOUT_SEC = 0.5
 
 isLoadLock = false
 isCapLives = false
@@ -196,7 +196,7 @@ local _lastSent = 0
 dynDCS.onSimulationFrame = function()
 	local _now = DCS.getRealTime()
 	-- send every 1 second
-	if _now > _lastSent + 1.0 then
+	if _now > _lastSent + DATA_TIMEOUT_SEC then
 		_lastSent = _now
 		local success, error = pcall(step)
 		if not success then
