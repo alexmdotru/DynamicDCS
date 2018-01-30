@@ -15,7 +15,6 @@ exports.isSyncLockdownMode = false; //lock all processes out until server fully 
 
 
 _.set(exports, 'syncType', function (serverName, serverUnitCount) {
-	console.log('sync running: ', serverUnitCount);
 	dbMapServiceController.unitActions('readStd', serverName, {dead: false, type: {$ne: 'UAZ-469'}})
 		.then(function (units) {
 			if (serverUnitCount === 0) { //server is empty
@@ -112,6 +111,7 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 						}
 					}
 				} else { // server has units on it
+					console.log('sync running: ', serverUnitCount, units.length);
 					if (units.length !== serverUnitCount) { // db doesnt match server
 						mesg = 'SYNCING|R|' + units.length + ':' + serverUnitCount;
 						exports.isServerSynced = true;
