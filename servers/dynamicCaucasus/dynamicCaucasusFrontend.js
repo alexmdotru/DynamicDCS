@@ -43,8 +43,6 @@ _.assign(CCB, {
 	thirtySecs: 30 * 1000
 });
 
-groupController.initDbs(CCB.serverName);
-
 dbSystemServiceController.connectSystemDB(CCB.db.systemHost, CCB.db.systemDatabase);
 dbMapServiceController.connectMapDB(CCB.db.dynamicHost, CCB.db.dynamicDatabase);
 
@@ -210,7 +208,11 @@ setInterval(function () {
 }, CCB.thirtySecs);
 
 setInterval(function () {
-	if (!_.get(CCB, ['DCSSocket', 'connOpen'], true) && exports.bases) {
-		sychrontronController.syncType(CCB.serverName, _.get(CCB, 'curServerUnitCnt', 0));
+	if (groupController.bases) {
+		if (!_.get(CCB, ['DCSSocket', 'connOpen'], true)) {
+			sychrontronController.syncType(CCB.serverName, _.get(CCB, 'curServerUnitCnt', 0));
+		}
+	} else {
+		groupController.initDbs(CCB.serverName);
 	}
 }, CCB.twoSec);
