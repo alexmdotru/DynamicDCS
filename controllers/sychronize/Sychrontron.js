@@ -60,6 +60,7 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 				if (isServerFresh) { // server is fresh
 					if (masterUnitCount) {
 						if ((serverUnitCount !== masterUnitCount) ||  (units.length !== masterUnitCount)) {
+							console.log(lastUnitCount,' === ', units.length);
 							if (lastUnitCount === units.length) {
 								mesg = 'STUCKDETECT|F|' + masterUnitCount + ':' + units.length + ':' + serverUnitCount;
 								console.log('stuckDetect: ', stuckDetect);
