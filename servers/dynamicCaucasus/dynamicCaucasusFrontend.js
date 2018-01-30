@@ -210,7 +210,7 @@ setInterval(function () {
 }, CCB.thirtySecs);
 
 setInterval(function () {
-	if (!_.get(CCB, ['DCSSocket', 'connOpen'], true)) {
+	if (!_.get(CCB, ['DCSSocket', 'connOpen'], true) && exports.bases) {
 		sychrontronController.syncType(CCB.serverName, _.get(CCB, 'curServerUnitCnt', 0));
 	}
 }, CCB.twoSec);
