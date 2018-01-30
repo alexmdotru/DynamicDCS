@@ -68,13 +68,15 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 									mesg = 'SYNCING|F|' + masterUnitCount + ':' + units.length + ':' + serverUnitCount;
 								}
 								// console.log('stuckDetect: ', stuckDetect);
+
 								if (stuckDetect > stuckThreshold) {
+									/*
 									dbMapServiceController.cmdQueActions('save', serverName, {
 										queName: 'gameGuiArray',
 										actionObj: {
 											action: "CMD",
-											cmd: 'net.load_mission("C:\Users\MegaServer\Dropbox\DCS\16AGR\Missions\DynamicCaucasus_1.00.21CAPLIVESMATTER.miz")',
-											reqID: 0
+											cmd: 'net.load_mission(C:\Users\MegaServer\Dropbox\DCS\16AGR\Missions\DynamicCaucasus_1.00.21CAPLIVESMATTER.miz)',
+											reqID: 2
 										}
 									});
 									console.log('reload mission');
