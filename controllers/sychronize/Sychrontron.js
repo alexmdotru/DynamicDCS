@@ -8,7 +8,7 @@ var masterUnitCount;
 var remappedunits = {};
 var isServerFresh = true;
 var stuckDetect = 0;
-var stuckThreshold = 100;
+var stuckThreshold = 30;
 var lastUnitCount;
 exports.isServerSynced = false;
 exports.isSyncLockdownMode = false; //lock all processes out until server fully syncs
@@ -73,7 +73,7 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 										queName: 'gameGuiArray',
 										actionObj: {
 											action: "CMD",
-											cmd: 'net.load_mission("C:\\Users\\MegaServer\\Dropbox\\DCS\\16AGR\\Missions\\DynamicCaucasus_1.00.21CAPLIVESMATTER.miz")'
+											cmd: 'net.load_mission("DynamicCaucasus_1.00.21CAPLIVESMATTER.miz")'
 										}
 									});
 									console.log('reload mission');
