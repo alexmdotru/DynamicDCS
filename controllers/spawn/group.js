@@ -563,20 +563,21 @@ _.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {
 
 _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 	var totalUnitsSpawned = 0;
+	var sbArray;
+	var buArray;
 	var curServer = _.get(exports, ['config']);
 	var defBaseSides = _.get(curServer, 'defBaseSides');
 	_.forEach(defBaseSides, function (extSide, extName) {
 		var totalBaseUnits = 0;
-		var spawnArray;
-		spawnArray = exports.spawnSupportBaseGrp(serverName, extName, extSide, true);
-		exports.spawnGroup(serverName, spawnArray, extName, extSide);
-		totalUnitsSpawned += spawnArray.length;
-		totalBaseUnits += spawnArray.length;
+		sbArray = exports.spawnSupportBaseGrp(serverName, extName, extSide, true);
+		exports.spawnGroup(serverName, sbArray, extName, extSide);
+		totalUnitsSpawned += sbArray.length;
+		totalBaseUnits += sbArray.length;
 		while (totalBaseUnits < curServer.replenThreshold) { //UNCOMMENT THESE
-			spawnArray = exports.spawnBaseReinforcementGroup(serverName, extSide);
-			exports.spawnGroup(serverName, spawnArray, extName, extSide);
-			totalUnitsSpawned += spawnArray.length;
-			totalBaseUnits += spawnArray.length;
+			buArray = exports.spawnBaseReinforcementGroup(serverName, extSide);
+			exports.spawnGroup(serverName, buArray, extName, extSide);
+			totalUnitsSpawned += buArray.length;
+			totalBaseUnits += buArray.length;
 		}
 		exports.spawnLogisticCmdCenter(serverName, {}, _.find(exports.bases, {name: extName}), extSide, true);
 		totalUnitsSpawned += 1;
