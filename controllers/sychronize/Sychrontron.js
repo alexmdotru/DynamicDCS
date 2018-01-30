@@ -7,8 +7,12 @@ var mesg;
 var masterUnitCount;
 var remappedunits = {};
 var isServerFresh = true;
+var stuckDetect = 0;
+var stuckThreshold = 100;
+var lastUnitCount;
 exports.isServerSynced = false;
 exports.isSyncLockdownMode = false; //lock all processes out until server fully syncs
+
 
 _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 	dbMapServiceController.unitActions('readStd', serverName, {dead: false, type: {$ne: 'UAZ-469'}})
@@ -56,7 +60,23 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 				if (isServerFresh) { // server is fresh
 					if (masterUnitCount) {
 						if ((serverUnitCount !== masterUnitCount) ||  (units.length !== masterUnitCount)) {
-							mesg = 'SYNCING|F|' + masterUnitCount + ':' + units.length + ':' + serverUnitCount;
+							if (lastUnitCount === units.length) {
+								mesg = 'STUCKDETECT|F|' + masterUnitCount + ':' + units.length + ':' + serverUnitCount;
+								if (stuckDetect > stuckThreshold) {
+									dbMapServiceController.cmdQueActions('save', serverName, {
+										queName: 'clientArray',
+										actionObj: {action: "GETUNITSALIVE"}
+									});
+									console.log('GET UNITS ALIVE');
+									stuckDetect = 0;
+								} else {
+									stuckDetect++;
+								}
+							} else {
+								lastUnitCount = units.length;
+								mesg = 'SYNCING|F|' + masterUnitCount + ':' + units.length + ':' + serverUnitCount;
+							}
+
 							console.log(mesg);
 							DCSLuaCommands.sendMesgChatWindow(serverName, mesg);
 							exports.isServerSynced = false;

@@ -22,6 +22,7 @@ const processEventPlayerLeaveUnit = require('../../controllers/events/frontend/S
 const processTimedOneSec = require('../../controllers/timedEvents/oneSec');
 const processTimedFiveSecs = require('../../controllers/timedEvents/fiveSecs');
 const processTimedThirtySecs = require('../../controllers/timedEvents/thirtySecs');
+const processRecovery = require('../../controllers/sychronize/recovery');
 
 var CCB = {};
 
@@ -185,6 +186,11 @@ _.set(CCB, 'socketCallback', function (serverName, cbArray) {
 			if ((_.get(queObj, 'action') === 'S_EVENT_PLAYER_LEAVE_UNIT') && sychrontronController.isServerSynced) {
 				processEventPlayerLeaveUnit.processEventPlayerLeaveUnit(serverName, CCB.sessionName, queObj);
 			}
+
+			if (queObj.action === 'unitsAlive') {
+				processRecovery.sendMissingUnits(queObj.data);
+			}
+
 		});
 	}
 });
