@@ -195,7 +195,7 @@ _.set(exports, 'grndUnitTemplate', function ( unitObj ) {
 		'["y"] = coord.LLtoLO(' + _.get(unitObj, ['lonLatLoc', 1]) + ', ' +  _.get(unitObj, ['lonLatLoc', 0]) + ').z, ' +
 		'["type"] = "' + _.get(unitObj, 'type') +'",' +
 		'["name"] = "' + _.get(unitObj, 'name') + '",' +
-		//'["unitId"] = ' + _.get(unitObj, 'unitId') + ',' +
+		'["unitId"] = ' + _.get(unitObj, 'unitId') + ',' +
 		'["heading"] = ' + _.get(unitObj, 'heading', 0) + ',' +
 		'["playerCanDrive"] = ' + _.get(unitObj, 'playerCanDrive', false) + ',' +
 		'["skill"] = "' + _.get(unitObj, 'skill', "Excellent") + '",' +
@@ -209,7 +209,7 @@ _.set(exports, 'airUnitTemplate', function ( unitObj ) {
 		'["y"] = coord.LLtoLO(' + _.get(unitObj, ['lonLatLoc', 1]) + ', ' +  _.get(unitObj, ['lonLatLoc', 0]) + ').z, ' +
 		'["type"] = "' + _.get(unitObj, 'type') +'",' +
 		'["name"] = "' + _.get(unitObj, 'name') + '",' +
-		//'["unitId"] = ' + _.get(unitObj, 'unitId') + ',' +
+		'["unitId"] = ' + _.get(unitObj, 'unitId') + ',' +
 		'["heading"] = ' + _.get(unitObj, 'heading', 0) + ',' +
 		'["skill"] = "' + _.get(unitObj, 'skill', "Excellent") + '",' +
 		'["payload"]={' +
@@ -230,7 +230,7 @@ _.set(exports, 'staticTemplate', function (staticObj) {
 		'["country"] = "' + _.get(staticObj, 'country') + '",' +
 		'["type"] = "' + _.get(staticObj, 'type') +'",' +
 		'["name"] = "' + _.get(staticObj, 'name') + '",' +
-		//'["unitId"] = ' + _.get(staticObj, 'unitId') + ',' +
+		'["unitId"] = ' + _.get(staticObj, 'unitId') + ',' +
 		'["heading"] = ' + _.get(staticObj, 'heading', 0) + ',' +
 		'["shape_name"] = "' + _.get(staticObj, 'shape_name') + '",' +
 		'["canCargo"] = ' + _.get(staticObj, 'canCargo', false) + ',';
