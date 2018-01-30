@@ -73,7 +73,7 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 										queName: 'gameGuiArray',
 										actionObj: {
 											action: "CMD",
-											cmd: 'net.load_mission("DynamicCaucasus_1.00.21CAPLIVESMATTER.miz")'
+											cmd: 'net.load_next_mission()'
 										}
 									});
 									console.log('reload mission');
