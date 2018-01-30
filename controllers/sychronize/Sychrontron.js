@@ -73,6 +73,7 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 									stuckDetect++;
 								}
 							} else {
+								stuckDetect = 0;
 								lastUnitCount = units.length;
 								mesg = 'SYNCING|F|' + masterUnitCount + ':' + units.length + ':' + serverUnitCount;
 							}
