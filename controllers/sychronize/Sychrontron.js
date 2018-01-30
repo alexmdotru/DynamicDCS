@@ -62,7 +62,7 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 					if (masterUnitCount !== units.length) {
 						if (lastUnitCount === serverUnitCount) {
 							if (stuckDetect > 5) {
-								mesg = 'STUCK|' + stuckDetect + '|F|' + masterUnitCount + ':' + units.length + ':' + serverUnitCount;
+								mesg = 'STUCK|' + stuckDetect + '|F|' + units.length + ':' + serverUnitCount;
 							} else {
 								mesg = 'SYNCING|F|' + masterUnitCount + ':' + units.length + ':' + serverUnitCount;
 							}
@@ -92,7 +92,7 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 						} else {
 							stuckDetect = 0;
 							lastUnitCount = serverUnitCount;
-							mesg = 'SYNCING|F|' + masterUnitCount + ':' + units.length + ':' + serverUnitCount;
+							mesg = 'SYNCING|F|' + units.length + ':' + serverUnitCount;
 						}
 						console.log(mesg);
 						DCSLuaCommands.sendMesgChatWindow(serverName, mesg);
