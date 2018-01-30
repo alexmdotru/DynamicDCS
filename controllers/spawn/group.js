@@ -313,7 +313,7 @@ _.set(exports, 'getRndFromSpawnCat', function (spawnCat, side, spawnAlways) {
 });
 
 _.set(exports, 'spawnSupportVehiclesOnFarp', function ( serverName, baseName, side ) {
-	var curBase = _.find(_.get(exports, ['servers', serverName, 'bases']), {name: baseName});
+	var curBase = _.find(_.get(exports, ['bases']), {name: baseName});
 	var curFarpArray = [];
 	var sptArray = [
 		"unarmedAmmo",
@@ -339,7 +339,7 @@ _.set(exports, 'spawnSupportBaseGrp', function ( serverName, baseName, side, ini
 	console.log('ssb ', serverName, baseName, side, init);
 	var curBaseObj = {};
 	var spawnArray = [];
-	var curBases = _.get(exports, ['servers', serverName, 'bases']);
+	var curBases = _.get(exports, ['bases']);
 	var farpBases = _.filter(curBases, {farp: true});
 	var expBases = _.filter(curBases, {expansion: true});
 	var curEnabledCountrys = _.get(constants, [_.get(constants, ['side', side]) + 'Countrys']);
@@ -370,7 +370,7 @@ _.set(exports, 'spawnSupportBaseGrp', function ( serverName, baseName, side, ini
 });
 
 _.set(exports, 'spawnBaseReinforcementGroup', function (serverName, side) {
-	var curServer = _.get(exports, ['servers', serverName, 'config']);
+	var curServer = _.get(exports, ['config']);
 	var spawnArray = [];
 	var curBaseSpawnCats = _.get(curServer, 'spwnLimitsPerTick');
 	_.forEach(curBaseSpawnCats, function (tickVal, name) {
@@ -564,7 +564,7 @@ _.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {
 _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 	var totalUnitsSpawned = 0;
 	var curBaseObj;
-	var curServer = _.get(exports, ['servers', serverName, 'config']);
+	var curServer = _.get(exports, ['config']);
 	var defBaseSides = _.get(curServer, 'defBaseSides');
 	_.forEach(defBaseSides, function (extSide, extName) {
 		var spawnArray;
@@ -580,7 +580,7 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 		}
 		exports.spawnGroup(serverName, spawnArray, extName, extSide);
 
-		curBaseObj = _.find(bases, {name: extName});
+		curBaseObj = _.find(exports.bases, {name: extName});
 		exports.spawnLogisticCmdCenter(serverName, {}, curBaseObj, extSide, true);
 		totalUnitsSpawned += spawnArray.length + 1;
 	});
@@ -593,10 +593,10 @@ _.set(exports, 'initDbs', function ( serverName ) {
 			_.set(exports, 'unitDictionary', unitDict);
 			exports.getBases( serverName )
 				.then(function (bases) {
-					_.set(exports, ['servers', serverName, 'bases'], bases);
+					_.set(exports, ['bases'], bases);
 					exports.getServer( serverName )
 						.then(function (server) {
-							_.set(exports, ['servers', serverName, 'config'], server);
+							_.set(exports, ['config'], server);
 						})
 					;
 
