@@ -456,6 +456,9 @@ exports.cmdQueActions = function (action, serverName, obj){
 			});
 		});
 	}
+	if(action === 'removeall') {
+		return CmdQue.remove({});
+	}
 	if(action === 'dropall') {
 		return CmdQue.collection.drop();
 	}
