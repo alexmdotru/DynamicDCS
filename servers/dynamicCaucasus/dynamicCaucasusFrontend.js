@@ -54,7 +54,14 @@ setInterval(function () {
 			console.log('Connecting to ' + CCB.serverName + ' Frontend');
 			_.set(CCB, 'sessionName', '');
 			sychrontronController.isSyncLockdownMode = false;
-			CCB.DCSSocket.connSocket();
+			dbMapServiceController.cmdQueActions('dropall', CCB.serverName, {})
+				.then(function () {
+					CCB.DCSSocket.connSocket();
+				})
+				.catch(function (err) {
+					console.log('line55', err);
+				})
+			;
 		}
 	} else {
 		CCB.DCSSocket = new DCSSocket.createSocket(CCB.serverName, CCB.serverIP, CCB.serverPort, CCB.queName, CCB.socketCallback);
