@@ -19,14 +19,7 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 					exports.isSyncLockdownMode = true; // lock down all traffic until sync is complete
 					if (units.length === 0) { // DB is empty
 						console.log('DB & Server is empty of Units, Spawn New Units');
-						groupController.spawnNewMapGrps(serverName) //respond with server spawned num
-							.then(function (unitsSpawned) {
-								masterUnitCount = unitsSpawned;
-							})
-							.catch(function (err) {
-								console.log('erroring line24: ', err);
-							})
-						;
+						masterUnitCount = groupController.spawnNewMapGrps(serverName) //respond with server spawned num
 					} else { // DB is FULL
 						//might have filter units to be spawned, mark others as dead head of time
 						var filterStructure = _.filter(units, {category: 'STRUCTURE'});

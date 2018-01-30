@@ -567,7 +567,6 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 	var curServer = _.get(exports, ['config']);
 	var defBaseSides = _.get(curServer, 'defBaseSides');
 	_.forEach(defBaseSides, function (extSide, extName) {
-		var spawnArray;
 		var spawnArray = [];
 		spawnArray = _.concat(spawnArray, exports.spawnSupportBaseGrp(serverName, extName, extSide, true));
 		while (spawnArray.length < curServer.replenThreshold) { //UNCOMMENT THESE
@@ -579,7 +578,6 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 			}
 		}
 		exports.spawnGroup(serverName, spawnArray, extName, extSide);
-
 		curBaseObj = _.find(exports.bases, {name: extName});
 		exports.spawnLogisticCmdCenter(serverName, {}, curBaseObj, extSide, true);
 		totalUnitsSpawned += spawnArray.length + 1;
