@@ -59,7 +59,7 @@ setInterval(function () {
 					CCB.DCSSocket.connSocket();
 				})
 				.catch(function (err) {
-					console.log('line55', err);
+					console.log('line62', err);
 				})
 			;
 		}

@@ -457,7 +457,7 @@ exports.cmdQueActions = function (action, serverName, obj){
 		});
 	}
 	if(action === 'dropall') {
-		CmdQue.collection.drop();
+		return CmdQue.collection.drop();
 	}
 };
 
