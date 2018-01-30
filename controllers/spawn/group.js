@@ -573,6 +573,7 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 		while (totalBaseUnits < curServer.replenThreshold) { //UNCOMMENT THESE
 			console.log(totalBaseUnits, ' - ', curServer.replenThreshold);
 			spawnArray = _.concat(spawnArray, exports.spawnBaseReinforcementGroup(serverName, extSide));
+			console.log('SAS: ', spawnArray.length);
 			if (spawnArray.length > maxSizeNewGroups) {
 				exports.spawnGroup(serverName, spawnArray, extName, extSide);
 				totalBaseUnits += spawnArray.length;
