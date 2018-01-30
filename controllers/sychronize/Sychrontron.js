@@ -116,7 +116,7 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 						exports.isServerSynced = true;
 						console.log(mesg);
 						// DCSLuaCommands.sendMesgChatWindow(serverName, mesg);
-						// exports.isServerSynced = false;
+						exports.isServerSynced = true;
 					} else {
 						if (!exports.isServerSynced) {
 							mesg = 'Server units Synced';
