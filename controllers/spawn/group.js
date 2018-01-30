@@ -594,6 +594,7 @@ _.set(exports, 'initDbs', function ( serverName ) {
 			exports.getBases( serverName )
 				.then(function (bases) {
 					_.set(exports, ['bases'], bases);
+					console.log('inidb', exports.bases);
 					exports.getServer( serverName )
 						.then(function (server) {
 							_.set(exports, ['config'], server);
