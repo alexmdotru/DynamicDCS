@@ -57,14 +57,13 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 					}
 				}
 			} else {
-				console.log('sync running: ', serverUnitCount, units.length, isServerFresh, masterUnitCount);
 				if (isServerFresh) { // server is fresh
-					if (masterUnitCount !== units.length) {
+					if (serverUnitCount !== units.length) {
 						if (lastUnitCount === serverUnitCount) {
 							if (stuckDetect > 5) {
 								mesg = 'STUCK|' + stuckDetect + '|F|' + units.length + ':' + serverUnitCount;
 							} else {
-								mesg = 'SYNCING|F|' + masterUnitCount + ':' + units.length + ':' + serverUnitCount;
+								mesg = 'SYNCING|F|' + units.length + ':' + serverUnitCount;
 							}
 							// console.log('stuckDetect: ', stuckDetect);
 
