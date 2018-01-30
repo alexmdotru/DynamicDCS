@@ -195,7 +195,6 @@ end
 local _lastSent = 0
 dynDCS.onSimulationFrame = function()
 	local _now = DCS.getRealTime()
-	-- send every 1 second
 	if _now > _lastSent + DATA_TIMEOUT_SEC then
 		_lastSent = _now
 		local success, error = pcall(step)
