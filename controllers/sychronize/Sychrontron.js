@@ -61,15 +61,28 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 					if (masterUnitCount) {
 						if ((serverUnitCount !== masterUnitCount) ||  (units.length !== masterUnitCount)) {
 							// console.log(lastUnitCount,' === ', serverUnitCount);
-							if (lastUnitCount === serverUnitCount) {
-								mesg = 'STUCK|' + stuckDetect + '|F|' + masterUnitCount + ':' + units.length + ':' + serverUnitCount;
+							if (lastUnitCount === serverUnitCount && ) {
+								if (stuckDetect > 5) {
+									mesg = 'STUCK|' + stuckDetect + '|F|' + masterUnitCount + ':' + units.length + ':' + serverUnitCount;
+								} else {
+									mesg = 'SYNCING|F|' + masterUnitCount + ':' + units.length + ':' + serverUnitCount;
+								}
 								// console.log('stuckDetect: ', stuckDetect);
 								if (stuckDetect > stuckThreshold) {
 									dbMapServiceController.cmdQueActions('save', serverName, {
+										queName: 'gameGuiArray',
+										actionObj: {
+											action: "CMD",
+											cmd: 'net.load_mission("C:\\Users\\MegaServer\\Dropbox\\DCS\\16AGR\\Missions\\DynamicCaucasus_1.00.21CAPLIVESMATTER.miz")'
+										}
+									});
+									console.log('reload mission');
+									/*
+									dbMapServiceController.cmdQueActions('save', serverName, {
 										queName: 'clientArray',
 										actionObj: {action: "GETUNITSALIVE"}
-									});
-									console.log('GET UNITS ALIVE');
+										console.log('GET UNITS ALIVE');
+									});*/
 									stuckDetect = 0;
 								} else {
 									stuckDetect++;
