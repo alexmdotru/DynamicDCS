@@ -188,7 +188,7 @@ _.set(CCB, 'socketCallback', function (serverName, cbArray) {
 			}
 
 			if (queObj.action === 'unitsAlive') {
-				processRecovery.sendMissingUnits(queObj.data);
+				processRecovery.sendMissingUnits(serverName, queObj.data);
 			}
 
 		});

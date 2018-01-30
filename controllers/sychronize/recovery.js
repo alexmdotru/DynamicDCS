@@ -3,7 +3,7 @@ const dbMapServiceController = require('../db/dbMapService');
 const groupController = require('../spawn/group');
 const DCSLuaCommands = require('../player/DCSLuaCommands');
 
-_.set(exports, 'sendMissingUnits', function (serverUnitArray) {
+_.set(exports, 'sendMissingUnits', function (serverName, serverUnitArray) {
 	var upPromises = [];
 	dbMapServiceController.unitActions('chkResync', serverName, {})
 		.then(function () {
