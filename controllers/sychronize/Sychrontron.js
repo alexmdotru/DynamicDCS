@@ -107,7 +107,6 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 						}
 					}
 				} else { // server has units on it
-					console.log('sync running: ', serverUnitCount, units.length);
 					if (units.length !== serverUnitCount) { // db doesnt match server
 						mesg = 'SYNCING|R|' + units.length + ':' + serverUnitCount;
 						exports.isServerSynced = true;
