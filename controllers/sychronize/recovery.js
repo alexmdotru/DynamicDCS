@@ -14,9 +14,10 @@ _.set(exports, 'sendMissingUnits', function (serverName, serverUnitArray) {
 				.then(function () {
 					dbMapServiceController.unitActions('read', serverName, {isResync: false, dead: false})
 						.then(function (units) {
-							var filterStructure = _.filter(units, {category: 'STRUCTURE'});
-							var filterGround = _.filter(units, {category: 'GROUND'});
-							//var masterUnitCount = filterStructure.length + filterGround.length;
+							var remappedunits = {};
+							// var filterStructure = _.filter(units, {category: 'STRUCTURE'});
+							// var filterGround = _.filter(units, {category: 'GROUND'});
+							// var masterUnitCount = filterStructure.length + filterGround.length;
 							console.log('DB resync has ' + units.length + ' Units, Respawn Them');
 							_.forEach(units, function (unit) {
 								var curDead;
