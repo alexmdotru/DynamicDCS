@@ -215,4 +215,4 @@ setInterval(function () {
 	} else {
 		groupController.initDbs(CCB.serverName);
 	}
-}, CCB.sec);
+}, CCB.twoSec);
