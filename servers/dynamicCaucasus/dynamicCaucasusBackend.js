@@ -55,31 +55,28 @@ _.set(DCB, 'getLatestSession', function (serverName) {
 });
 
 _.set(DCB, 'socketCallback', function (serverName, cbArray) {
-	if(!_.get(DCB, 'sessionName')) {
-		DCB.getLatestSession(serverName);
-	} else {
-		_.forEach(_.get(cbArray, 'que', []), function (queObj) {
-			if (_.get(queObj, 'action') === 'players') {
-				playersEvent.processPlayerEvent(serverName, DCB.sessionName, queObj);
-			}
+	DCB.getLatestSession(serverName);
+	_.forEach(_.get(cbArray, 'que', []), function (queObj) {
+		if (_.get(queObj, 'action') === 'players') {
+			playersEvent.processPlayerEvent(serverName, DCB.sessionName, queObj);
+		}
 
-			if (_.get(queObj, 'action') === 'friendly_fire') {
-				friendlyFireEvent.processFriendlyFire(serverName, DCB.sessionName, queObj);
-			}
+		if (_.get(queObj, 'action') === 'friendly_fire') {
+			friendlyFireEvent.processFriendlyFire(serverName, DCB.sessionName, queObj);
+		}
 
-			if (_.get(queObj, 'action') === 'self_kill') {
-				selfKillEvent.processSelfKill(serverName, DCB.sessionName, queObj);
-			}
+		if (_.get(queObj, 'action') === 'self_kill') {
+			selfKillEvent.processSelfKill(serverName, DCB.sessionName, queObj);
+		}
 
-			if (_.get(queObj, 'action') === 'connect') {
-				connectEvent.processConnect(serverName, DCB.sessionName, queObj);
-			}
+		if (_.get(queObj, 'action') === 'connect') {
+			connectEvent.processConnect(serverName, DCB.sessionName, queObj);
+		}
 
-			if (_.get(queObj, 'action') === 'disconnect') {
-				disconnectEvent.processDisconnect(serverName, DCB.sessionName, queObj);
-			}
+		if (_.get(queObj, 'action') === 'disconnect') {
+			disconnectEvent.processDisconnect(serverName, DCB.sessionName, queObj);
+		}
 
-		});
-	}
+	});
 });
 
