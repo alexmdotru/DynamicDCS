@@ -3,6 +3,6 @@ const jtacController = require('../action/jtac');
 
 _.set(exports, 'processThirtySecActions', function (serverName, fullySynced) {
 	if (fullySynced) {
-		jtacController.aliveJtac30SecCheck(serverName);
+		// jtacController.aliveJtac30SecCheck(serverName);
 	}
 });
