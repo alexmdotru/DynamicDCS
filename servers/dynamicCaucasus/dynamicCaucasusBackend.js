@@ -44,8 +44,10 @@ _.set(DCB, 'getLatestSession', function (serverName) {
 	dbMapServiceController.statSessionActions('readLatest', serverName, {})
 		.then(function (latestSession) {
 			if (latestSession) {
-				console.log('latestsession: ', latestSession);
-				_.set(DCB, 'sessionName', latestSession.name);
+				if (_.get(DCB, 'sessionName') !== latestSession.name) {
+					console.log('New Session: ', latestSession);
+					_.set(DCB, 'sessionName', latestSession.name);
+				}
 			}
 		})
 		.catch(function (err) {
