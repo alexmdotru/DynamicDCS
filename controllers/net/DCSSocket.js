@@ -25,7 +25,7 @@ exports.createSocket = function (serverName, address, port, queName, callback) {
 				})
 			;
 		}
-	}, 100);
+	}, 500);
 
 	sock.connSocket = function () {
 		sockConn = net.createConnection({
