@@ -118,6 +118,7 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 						dead: true
 					}
 				};
+				console.log('unitDEL: ', unitObj, iCurObj);
 
                 dbMapServiceController.unitActions('update', serverName, iCurObj.data)
                     .then(function (unit) {
