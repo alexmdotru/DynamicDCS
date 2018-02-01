@@ -10,6 +10,7 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 			var curUnit = _.get(unit, 0, {});
 			var curUnitName = _.get(curUnit, 'name');
 			var curData = _.get(unitObj, 'data');
+			console.log('cd: ', curData);
 			// build out extra info on spawned items isAI
 			if (_.includes(curData.name, 'AI|')) {
 				stParse = _.split(curData.name, '|');
