@@ -500,6 +500,7 @@ _.set(exports, 'spawnLogiGroup', function (serverName, spawnArray, side) {
 		var curCMD = exports.spawnGrp(curGroupSpawn, curSide, curGrpObj.category);
 		var sendClient = {action: "CMD", cmd: [curCMD], reqID: 0};
 		var actionObj = {actionObj: sendClient, queName: 'clientArray'};
+		console.log('spawnC: ', actionObj);
 		dbMapServiceController.cmdQueActions('save', serverName, actionObj)
 			.catch(function (err) {
 				console.log('erroring line476: ', err);

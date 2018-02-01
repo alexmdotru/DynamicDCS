@@ -498,6 +498,7 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 							category: "GROUND",
 							playerCanDrive: false
 						};
+						console.log('crateTest: ', spawnArray, unit);
 						groupController.spawnLogiGroup(serverName, [spawnArray], unit.coalition);
 					} else {
 						/*
