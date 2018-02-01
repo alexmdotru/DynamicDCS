@@ -107,30 +107,32 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
                     _.set(ewrUnitsActivated, [curUnitName], false);
                 }
                 */
-				iCurObj = {
-					action: 'D',
-					sessionName: sessionName,
-					data: {
-						_id: parseFloat(_.get(unitObj, 'data.unitId')),
-						unitId: _.get(unitObj, 'data.unitId'),
-						troopType: null,
-						virtCrateType: null,
-						dead: true
-					}
-				};
-				console.log('unitDEL: ', unitObj, iCurObj);
+				if (_.isNumber(parseFloat(_.get(unitObj, 'data.unitId')))) {
+					iCurObj = {
+						action: 'D',
+						sessionName: sessionName,
+						data: {
+							_id: parseFloat(_.get(unitObj, 'data.unitId')),
+							unitId: _.get(unitObj, 'data.unitId'),
+							troopType: null,
+							virtCrateType: null,
+							dead: true
+						}
+					};
 
-                dbMapServiceController.unitActions('update', serverName, iCurObj.data)
-                    .then(function (unit) {
-                        // curServers[serverName].updateQue.q1.push(_.cloneDeep(iCurObj));
-                       	// curServers[serverName].updateQue.q2.push(_.cloneDeep(iCurObj));
-                        // curServers[serverName].updateQue.qadmin.push(_.cloneDeep(iCurObj));
-                    })
-                    .catch(function (err) {
-                        console.log('del err line123: ', err);
-                    })
-                ;
-
+					dbMapServiceController.unitActions('update', serverName, iCurObj.data)
+						.then(function (unit) {
+							// curServers[serverName].updateQue.q1.push(_.cloneDeep(iCurObj));
+							// curServers[serverName].updateQue.q2.push(_.cloneDeep(iCurObj));
+							// curServers[serverName].updateQue.qadmin.push(_.cloneDeep(iCurObj));
+						})
+						.catch(function (err) {
+							console.log('del err line123: ', err);
+						})
+					;
+				} else {
+					console.log('is not a number: ', _.get(unitObj, 'data.unitId'));
+				}
 			}
 		})
 		.catch(function (err) {
