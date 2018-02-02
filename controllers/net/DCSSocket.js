@@ -4,7 +4,7 @@ const dbMapServiceController = require('../db/dbMapService'); // reqclientArray,
 const sychrontronController = require('../sychronize/Sychrontron');
 
 var lastSyncTime = new Date().getTime();
-var syncSpawnTimer = 10000;
+var syncSpawnTimer = 20000;
 
 exports.createSocket = function (serverName, address, port, queName, callback) {
 	var sock = this;
