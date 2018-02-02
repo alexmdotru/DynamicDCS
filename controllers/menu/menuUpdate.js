@@ -41,7 +41,7 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 					.then(function(unitsOwned){
 						var isTroop = (_.find(unitsOwned, {isTroop: true})) ? 1 : 0;
 						var grpGroups = _.transform(unitsOwned, function (result, value) {
-							(result[value.groupId] || (result[value.groupId] = [])).push(value);
+							(result[value.groupName] || (result[value.groupName] = [])).push(value);
 						}, {});
 
 						var cmdArray = [];

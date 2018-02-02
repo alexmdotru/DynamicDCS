@@ -548,7 +548,7 @@ _.set(exports, 'unpackCrate', function (serverName, unit, type, special, combo, 
 					var tRem;
 					var curUnit = 0;
 					var grpGroups = _.transform(delUnits, function (result, value) {
-						(result[value.groupId] || (result[value.groupId] = [])).push(value);
+						(result[value.groupName] || (result[value.groupName] = [])).push(value);
 					}, {});
 					if (mobile) {
 						tRem = _.size(grpGroups) - exports.maxUnitsMoving;
