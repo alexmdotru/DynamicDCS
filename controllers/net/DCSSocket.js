@@ -1,6 +1,10 @@
 const net = require('net');
 const _ = require('lodash');
 const dbMapServiceController = require('../db/dbMapService'); // reqclientArray, reggameGuiArray
+const sychrontronController = require('../sychronize/Sychrontron');
+
+var lastSyncTime = new Date().getTime();
+var syncSpawnTimer = 5000;
 
 exports.createSocket = function (serverName, address, port, queName, callback) {
 	var sock = this;
@@ -13,17 +17,33 @@ exports.createSocket = function (serverName, address, port, queName, callback) {
 	_.set(sock, 'sessionName', serverName+'_'+sock.startTime+' ' + queName + ' Node Server Starttime');
 
 	setInterval(function () { //sending FULL SPEED AHEAD, 1 per milsec (watch for weird errors, etc)
+		var curTime = new Date().getTime();
 		if (sock.cQue.length < 5) {
-			dbMapServiceController.cmdQueActions('grabNextQue', serverName, {queName: queName})
-				.then(function (resp) {
-					if (resp) {
-						sock.cQue.push(resp.actionObj);
-					}
-				})
-				.catch(function (err) {
-					console.log('erroring line34: ', err);
-				})
-			;
+			if (sychrontronController.isSyncLockdownMode && !sychrontronController.isServerSynced){
+				if (lastSyncTime + syncSpawnTimer < curTime) {
+					dbMapServiceController.cmdQueActions('grabNextQue', serverName, {queName: queName})
+						.then(function (resp) {
+							if (resp) {
+								sock.cQue.push(resp.actionObj);
+							}
+						})
+						.catch(function (err) {
+							console.log('erroring line34: ', err);
+						})
+					;
+				}
+			} else {
+				dbMapServiceController.cmdQueActions('grabNextQue', serverName, {queName: queName})
+					.then(function (resp) {
+						if (resp) {
+							sock.cQue.push(resp.actionObj);
+						}
+					})
+					.catch(function (err) {
+						console.log('erroring line34: ', err);
+					})
+				;
+			}
 		}
 	}, 500);
 

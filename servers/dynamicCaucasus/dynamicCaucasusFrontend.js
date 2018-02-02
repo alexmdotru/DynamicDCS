@@ -230,4 +230,4 @@ setInterval(function () {
 	} else {
 		groupController.initDbs(CCB.serverName);
 	}
-}, 10 * 1000);
+}, 1 * 1000);
