@@ -3,7 +3,6 @@ const dbMapServiceController = require('../db/dbMapService');
 const taskController = require('../action/task');
 
 _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj) {
-	console.log('IN: ', unitObj);
 	dbMapServiceController.unitActions('read', serverName, {_id: _.get(unitObj, 'data.name')})
 		.then(function (unit) {
 			var stParse;
