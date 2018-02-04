@@ -131,7 +131,7 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 							})
 						;
 					} else {
-						console.log('is not a number: ', _.get(curData, 'unitId'));
+						console.log('is not a number: ', _.get(curData, 'unitId'), curData);
 					}
 				}
 			}

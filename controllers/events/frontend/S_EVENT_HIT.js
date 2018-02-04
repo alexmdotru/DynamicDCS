@@ -43,7 +43,7 @@ _.set(exports, 'processEventHit', function (serverName, sessionName, eventObj) {
 			}
 		});
 	}
-
+console.log('unit id: ', iUnitId, tUnitId);
 	dbMapServiceController.unitActions('read', serverName, {unitId: iUnitId})
 		.then(function (iunit) {
 			var curIUnit = _.get(iunit, 0);
@@ -124,10 +124,12 @@ _.set(exports, 'processEventHit', function (serverName, sessionName, eventObj) {
 														_.set(iCurObj, 'msg',
 															'A: ' + constants.side[_.get(curIUnit, 'coalition')] + ' '+ iPName +' has hit ' + constants.side[_.get(curTUnit, 'coalition')]+' ' + tPName + ' '+_.get(shootingUsers, [iUnitId, 'count'], 0)+' times with ' + _.get(weaponResp, 'displayName') + ' - +'+_.get(weaponResp, 'score')+' each.'
 														);
+														console.log('2: ', iCurObj.msg);
 														_.set(shootingUsers, [iUnitId, 'iCurObj'], _.cloneDeep(iCurObj));
 													} else {
 														_.set(iCurObj, 'score', _.get(weaponResp, 'score'));
 														_.set(iCurObj, 'msg', 'A: ' + constants.side[_.get(curIUnit, 'coalition')] + ' '+ iPName +' has hit ' + constants.side[_.get(curTUnit, 'coalition')] + ' '+tPName + ' with ' + _.get(weaponResp, 'displayName') + ' - +'+_.get(weaponResp, 'score'));
+														console.log('3: ', iCurObj.msg);
 														if(_.get(iCurObj, 'iucid') || _.get(iCurObj, 'tucid')) {
 															//curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
 															dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
@@ -165,6 +167,7 @@ _.set(exports, 'processEventHit', function (serverName, sessionName, eventObj) {
 										_.set(iCurObj, 'msg',
 											'A: '+ constants.side[_.get(curIUnit, 'coalition')] + ' '+ iPName +' has hit ' + constants.side[_.get(curTUnit, 'coalition')] + ' ' + tPName + ' '+shotCount+' times with ? - +' + shotpoints
 										);
+										console.log('4: ', iCurObj.msg);
 										_.set(shootingUsers, [iUnitId, 'iCurObj'], _.cloneDeep(iCurObj));
 									}
 								})
