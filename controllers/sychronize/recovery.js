@@ -7,7 +7,7 @@ _.set(exports, 'sendMissingUnits', function (serverName, serverUnitArray) {
 	dbMapServiceController.unitActions('chkResync', serverName, {})
 		.then(function () {
 			_.forEach(serverUnitArray, function (unitId) {
-				upPromises.push(dbMapServiceController.unitActions('update', serverName, {unitId: unitId, isResync: true, dead:false})
+				upPromises.push(dbMapServiceController.unitActions('updateByUnitId', serverName, {unitId: unitId, isResync: true, dead:false})
 					.then(function (unit) {
 						console.log('unitE: ', unitId, unit)
 					})

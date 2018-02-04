@@ -40,8 +40,8 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 								groupController.spawnLogisticCmdCenter(serverName, unit);
 							} else {
 								curDead = {
-									_id: parseFloat(_.get(unit, 'unitId')),
-									unitId: _.get(unit, 'unitId'),
+									_id: _.get(unit, 'name'),
+									name: _.get(unit, 'name'),
 									dead: true
 								};
 								dbMapServiceController.unitActions('update', serverName, curDead)

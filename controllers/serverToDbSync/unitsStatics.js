@@ -53,7 +53,7 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 						action: 'U',
 						sessionName: sessionName,
 						data: {
-							_id: parseFloat(_.get(unitObj, 'data.name')),
+							_id: _.get(unitObj, 'data.name'),
 							name: _.get(unitObj, 'data.name'),
 							lonLatLoc: _.get(unitObj, 'data.lonLatLoc'),
 							alt: parseFloat(_.get(unitObj, 'data.alt')),
@@ -113,7 +113,7 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 							action: 'D',
 							sessionName: sessionName,
 							data: {
-								_id: parseFloat(_.get(unitObj, 'data.name')),
+								_id: _.get(unitObj, 'data.name'),
 								name: _.get(unitObj, 'data.name'),
 								troopType: null,
 								virtCrateType: null,

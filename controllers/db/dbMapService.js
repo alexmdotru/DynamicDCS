@@ -277,6 +277,18 @@ exports.unitActions = function (action, serverName, obj){
 			);
 		});
 	}
+	if(action === 'updateByUnitId') {
+		return new Promise(function(resolve, reject) {
+			Unit.findOneAndUpdate(
+				{unitId: obj.unitId},
+				{$set: obj},
+				function(err, units) {
+					if (err) { reject(err) }
+					resolve(units);
+				}
+			);
+		});
+	}
 	if(action === 'chkResync') {
 		return new Promise(function(resolve, reject) {
 			Unit.updateMany(
