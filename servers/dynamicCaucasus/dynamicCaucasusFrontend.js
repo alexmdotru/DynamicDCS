@@ -110,10 +110,6 @@ _.set(CCB, 'socketCallback', function (serverName, cbArray) {
 		_.forEach(_.get(cbArray, 'que', []), function (queObj) {
 
 			if ((_.get(queObj, 'action') === 'C') || (_.get(queObj, 'action') === 'U') || (_.get(queObj, 'action') === 'D'))  {
-				console.log('UG: ', queObj.data.groupId, queObj.data.unitId);
-				if(_.isUndefined(queObj.data.groupId) || _.isUndefined(queObj.data.unitId)) {
-					console.log('UNDEF: ', queObj);
-				}
 				unitsStaticsController.processUnitUpdates(serverName, CCB.sessionName, queObj);
 			}
 
