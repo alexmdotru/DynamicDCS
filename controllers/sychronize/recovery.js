@@ -11,7 +11,10 @@ _.set(exports, 'sendMissingUnits', function (serverName, serverUnitArray) {
 					.then(function (unit) {
 						console.log('unitE: ', unitId, unit)
 					})
-				);
+					.catch(function (err) {
+						console.log('err line15: ', err);
+					})
+				;
 			});
 			Promise.all(upPromises)
 				.then(function () {

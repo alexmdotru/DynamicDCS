@@ -101,7 +101,6 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 					;
 
 				} else if (_.get(unitObj, 'action') === 'D') {
-					console.log('DELETE: ', _.get(unitObj));
 					/*
                     if (_.get(ewrUnitsActivated, [curUnitName], false)) {
                         console.log('Delete ewr for: ', curUnitName );
