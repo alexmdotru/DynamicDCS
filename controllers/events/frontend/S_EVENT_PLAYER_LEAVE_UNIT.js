@@ -3,6 +3,7 @@ const constants = require('../../constants');
 const dbMapServiceController = require('../../db/dbMapService');
 const DCSLuaCommands = require('../../player/DCSLuaCommands');
 const playersEvent = require('../../events/backend/players');
+const unitsStaticsController = require('../../serverToDbSync/unitsStatics');
 
 _.set(exports, 'processEventPlayerLeaveUnit', function (serverName, sessionName, eventObj) {
 	// Occurs when any player relieves control of a unit to the AI.
@@ -14,6 +15,9 @@ _.set(exports, 'processEventPlayerLeaveUnit', function (serverName, sessionName,
 					var iCurObj;
 					var curIUnit = _.get(iunit, 0);
 					if (curIUnit) {
+
+						unitsStaticsController.processUnitUpdates(serverName, sessionName, {action: 'D', data: {name: curIUnit.name}});
+
 						iPlayer = _.find(playerArray, {name: _.get(curIUnit, 'playername')});
 						if (iPlayer) {
 							iCurObj = {

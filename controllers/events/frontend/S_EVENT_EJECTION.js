@@ -15,7 +15,7 @@ _.set(exports, 'processEventEjection', function (serverName, sessionName, eventO
 					var curIUnit = _.get(iunit, 0);
 					if (curIUnit) {
 
-						unitsStaticsController.processUnitUpdates(serverName, sessionName, {action: 'D', data: {unitId: curIUnit.unitId}});
+						unitsStaticsController.processUnitUpdates(serverName, sessionName, {action: 'D', data: {name: curIUnit.name}});
 
 						iPlayer = _.find(playerArray, {name: _.get(curIUnit, 'playername')});
 						if (iPlayer) {
