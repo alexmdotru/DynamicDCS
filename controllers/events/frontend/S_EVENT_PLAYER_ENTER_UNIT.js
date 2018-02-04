@@ -9,7 +9,7 @@ const unitsStaticsController = require('../../serverToDbSync/unitsStatics');
 
 _.set(exports, 'processEventPlayerEnterUnit', function (serverName, sessionName, eventObj) {
 	// Occurs when any player assumes direct control of a unit.
-	dbMapServiceController.unitActions('read', serverName, {_id: _.get(eventObj, ['data', 'arg3'])})
+	dbMapServiceController.unitActions('read', serverName, {unitId: _.get(eventObj, ['data', 'arg3'])})
 		.then(function (iunit) {
 			dbMapServiceController.srvPlayerActions('read', serverName, {sessionName: sessionName})
 				.then(function (playerArray) {

@@ -23,7 +23,7 @@ _.set(exports, 'setLaserSmoke', function (serverName, jtUnit, enemyUnit) {
 			console.log('erroring line23: ', err);
 		})
 	;
-	dbMapServiceController.unitActions('update', serverName, {_id: jtUnit._id, jtacTarget: enemyUnit.name, jtacReplenTime: new Date().getTime() + fiveMins})
+	dbMapServiceController.unitActions('update', serverName, {_id: jtUnit.name, jtacTarget: enemyUnit.name, jtacReplenTime: new Date().getTime() + fiveMins})
 		.catch(function (err) {
 			console.log('erroring line28: ', err);
 		})

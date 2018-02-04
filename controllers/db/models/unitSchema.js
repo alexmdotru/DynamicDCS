@@ -3,7 +3,11 @@ const mongoose = require('mongoose'),
 
 // Schema defines how chat messages will be stored in MongoDB
 const UnitSchema = new Schema({
-	_id: Number,
+	_id: String,
+	name: {
+		type: String,
+		required: true
+	},
 	unitId: {
 		type: Number,
 		required: true
@@ -53,9 +57,6 @@ const UnitSchema = new Schema({
 	},
 	speed: {
 		type: Number
-	},
-	name: {
-		type: String
 	},
 	playerCanDrive: {
 		type: Boolean,

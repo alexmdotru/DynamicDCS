@@ -44,11 +44,11 @@ _.set(exports, 'processEventHit', function (serverName, sessionName, eventObj) {
 		});
 	}
 
-	dbMapServiceController.unitActions('read', serverName, {_id: iUnitId})
+	dbMapServiceController.unitActions('read', serverName, {unitId: iUnitId})
 		.then(function (iunit) {
 			var curIUnit = _.get(iunit, 0);
 
-			dbMapServiceController.unitActions('read', serverName, {_id: tUnitId})
+			dbMapServiceController.unitActions('read', serverName, {unitId: tUnitId})
 				.then(function (tunit) {
 					dbMapServiceController.srvPlayerActions('read', serverName, {sessionName: sessionName})
 						.then(function (playerArray) {

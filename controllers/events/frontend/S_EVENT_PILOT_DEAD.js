@@ -8,7 +8,7 @@ _.set(exports, 'processEventPilotDead', function (serverName, sessionName, event
 	// Occurs when the pilot of an aircraft is killed.
 	// Can occur either if the player is alive and crashes or
 	// if a weapon kills the pilot without completely destroying the plane.
-	dbMapServiceController.unitActions('read', serverName, {_id: _.get(eventObj, ['data', 'arg3'])})
+	dbMapServiceController.unitActions('read', serverName, {unitId: _.get(eventObj, ['data', 'arg3'])})
 		.then(function (iunit) {
 			dbMapServiceController.srvPlayerActions('read', serverName, {sessionName: sessionName})
 				.then(function (playerArray) {

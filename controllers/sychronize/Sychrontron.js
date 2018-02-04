@@ -61,29 +61,15 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 					if (serverUnitCount !== units.length) {
 						if (lastUnitCount === serverUnitCount) {
 							if (stuckDetect > 5) {
-								mesg = 'STUCK|' + stuckDetect + '|F|' + units.length + ':' + serverUnitCount;
+								mesg = 'STUCK|' + stuckDetect + '|F|' + units.length + ':' + serverUnitCount + ':' + exports.isServerSynced + ':' + exports.isSyncLockdownMode;
 							} else {
 								mesg = 'SYNCING|F|' + units.length + ':' + serverUnitCount;
 							}
-							// console.log('stuckDetect: ', stuckDetect);
-
 							if (stuckDetect > stuckThreshold) {
-								/*
-                                dbMapServiceController.cmdQueActions('save', serverName, {
-                                    queName: 'gameGuiArray',
-                                    actionObj: {
-                                        action: "CMD",
-                                        cmd: 'net.load_mission(C:\Users\MegaServer\Dropbox\DCS\16AGR\Missions\DynamicCaucasus_1.00.21CAPLIVESMATTER.miz)',
-                                        reqID: 2
-                                    }
-                                });
-                                console.log('reload mission');
-                                /*
                                 dbMapServiceController.cmdQueActions('save', serverName, {
                                     queName: 'clientArray',
-                                    actionObj: {action: "GETUNITSALIVE"}
-                                    console.log('GET UNITS ALIVE');
-                                });*/
+                                    actionObj: {action: "GETUNITSALIVE"},
+                                });
 								stuckDetect = 0;
 							} else {
 								stuckDetect++;
@@ -97,7 +83,7 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 						DCSLuaCommands.sendMesgChatWindow(serverName, mesg);
 						exports.isServerSynced = false;
 					} else {
-						if (!exports.isServerSynced) {
+						if (!exports.isServerSynced && !exports.isSyncLockdownMode) {
 							mesg = 'Server units are Synced, Slots Now Open!';
 							console.log(mesg);
 							DCSLuaCommands.sendMesgChatWindow(serverName, mesg);
@@ -108,7 +94,26 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 					}
 				} else { // server has units on it
 					if (units.length !== serverUnitCount) { // db doesnt match server
-						mesg = 'SYNCING|R|' + units.length + ':' + serverUnitCount;
+						if (lastUnitCount === serverUnitCount) {
+							if (stuckDetect > 5) {
+								mesg = 'STUCK|' + stuckDetect + '|F|' + units.length + ':' + serverUnitCount + ':' + exports.isServerSynced + ':' + exports.isSyncLockdownMode;
+							} else {
+								mesg = 'SYNCING|R|' + units.length + ':' + serverUnitCount;
+							}
+							if (stuckDetect > stuckThreshold) {
+								dbMapServiceController.cmdQueActions('save', serverName, {
+									queName: 'clientArray',
+									actionObj: {action: "GETUNITSALIVE"},
+								});
+								stuckDetect = 0;
+							} else {
+								stuckDetect++;
+							}
+						} else {
+							stuckDetect = 0;
+							lastUnitCount = serverUnitCount;
+							mesg = 'SYNCING|R|' + units.length + ':' + serverUnitCount;
+						}
 						exports.isServerSynced = true;
 						console.log(mesg);
 						// DCSLuaCommands.sendMesgChatWindow(serverName, mesg);

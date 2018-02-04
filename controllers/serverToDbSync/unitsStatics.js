@@ -3,7 +3,7 @@ const dbMapServiceController = require('../db/dbMapService');
 const taskController = require('../action/task');
 
 _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj) {
-	dbMapServiceController.unitActions('read', serverName, {_id: _.get(unitObj, 'data.unitId')})
+	dbMapServiceController.unitActions('read', serverName, {_id: _.get(unitObj, 'data.name')})
 		.then(function (unit) {
 			var stParse;
 			var iCurObj;
@@ -53,8 +53,8 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 						action: 'U',
 						sessionName: sessionName,
 						data: {
-							_id: parseFloat(_.get(unitObj, 'data.unitId')),
-							unitId: _.get(unitObj, 'data.unitId'),
+							_id: parseFloat(_.get(unitObj, 'data.name')),
+							name: _.get(unitObj, 'data.name'),
 							lonLatLoc: _.get(unitObj, 'data.lonLatLoc'),
 							alt: parseFloat(_.get(unitObj, 'data.alt')),
 							hdg: parseFloat(_.get(unitObj, 'data.hdg')),
@@ -77,7 +77,7 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 				}else if (_.get(unitObj, 'action') === 'C') {
 					//console.log('CREATE: ', _.get(unitObj, 'data'));
 
-					_.set(curData, '_id', _.get(curData, 'unitId'));
+					_.set(curData, '_id', _.get(curData, 'name'));
 					iCurObj = {
 						action: 'C',
 						sessionName: sessionName,
@@ -108,13 +108,13 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
                         _.set(ewrUnitsActivated, [curUnitName], false);
                     }
                     */
-					if (_.isNumber(parseFloat(_.get(unitObj, 'data.unitId')))) {
+					if (_.get(unitObj, 'data.name')) {
 						iCurObj = {
 							action: 'D',
 							sessionName: sessionName,
 							data: {
-								_id: parseFloat(_.get(unitObj, 'data.unitId')),
-								unitId: _.get(unitObj, 'data.unitId'),
+								_id: parseFloat(_.get(unitObj, 'data.name')),
+								name: _.get(unitObj, 'data.name'),
 								troopType: null,
 								virtCrateType: null,
 								dead: true

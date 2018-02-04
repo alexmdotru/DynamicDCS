@@ -6,7 +6,7 @@ const playersEvent = require('../../events/backend/players');
 
 _.set(exports, 'processEventPlayerLeaveUnit', function (serverName, sessionName, eventObj) {
 	// Occurs when any player relieves control of a unit to the AI.
-	dbMapServiceController.unitActions('read', serverName, {_id: _.get(eventObj, ['data', 'arg3'])})
+	dbMapServiceController.unitActions('read', serverName, {unitId: _.get(eventObj, ['data', 'arg3'])})
 		.then(function (iunit) {
 			dbMapServiceController.srvPlayerActions('read', serverName, {sessionName: sessionName})
 				.then(function (playerArray) {

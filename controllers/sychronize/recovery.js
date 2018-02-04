@@ -1,28 +1,24 @@
 const _ = require('lodash');
 const dbMapServiceController = require('../db/dbMapService');
 const groupController = require('../spawn/group');
-const DCSLuaCommands = require('../player/DCSLuaCommands');
-
-_.set(exports, 'reloadMission', function () {
-
-});
 
 _.set(exports, 'sendMissingUnits', function (serverName, serverUnitArray) {
 	var upPromises = [];
 	dbMapServiceController.unitActions('chkResync', serverName, {})
 		.then(function () {
 			_.forEach(serverUnitArray, function (unitId) {
-				upPromises.push(dbMapServiceController.unitActions('update', serverName, {_id: unitId, isResync: true, dead:false}));
+				upPromises.push(dbMapServiceController.unitActions('update', serverName, {unitId: unitId, isResync: true, dead:false})
+					.then(function (unit) {
+						console.log('unitE: ', unitId, unit)
+					})
+				);
 			});
 			Promise.all(upPromises)
 				.then(function () {
 					dbMapServiceController.unitActions('read', serverName, {isResync: false, dead: false})
 						.then(function (units) {
 							var remappedunits = {};
-							// var filterStructure = _.filter(units, {category: 'STRUCTURE'});
-							// var filterGround = _.filter(units, {category: 'GROUND'});
-							// var masterUnitCount = filterStructure.length + filterGround.length;
-							console.log('DB resync has ' + units.length + ' Units, Respawn Them');
+							console.log('DB RECOVERY: ' + units.length + ' Units, Respawn Them');
 							_.forEach(units, function (unit) {
 								var curDead;
 								var curGrpName = _.get(unit, 'groupName');
@@ -32,6 +28,8 @@ _.set(exports, 'sendMissingUnits', function (serverName, serverUnitArray) {
 								} else if (_.get(unit, 'category') === 'STRUCTURE') {
 									groupController.spawnLogisticCmdCenter(serverName, unit);
 								} else {
+									// dont remove units, only add
+									/*
 									curDead = {
 										_id: parseFloat(_.get(unit, 'unitId')),
 										unitId: _.get(unit, 'unitId'),
@@ -42,6 +40,7 @@ _.set(exports, 'sendMissingUnits', function (serverName, serverUnitArray) {
 											console.log('erroring line36: ', err);
 										})
 									;
+									*/
 								}
 							});
 							_.forEach(remappedunits, function (group) {

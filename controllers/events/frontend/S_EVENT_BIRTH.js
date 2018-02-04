@@ -5,7 +5,7 @@ const DCSLuaCommands = require('../../player/DCSLuaCommands');
 
 _.set(exports, 'processEventBirth', function (serverName, sessionName, eventObj) {
 	// Occurs when any object is spawned into the mission.
-	dbMapServiceController.unitActions('read', serverName, {_id: _.get(eventObj, ['data', 'arg3'])})
+	dbMapServiceController.unitActions('read', serverName, {unitId: _.get(eventObj, ['data', 'arg3'])})
 		.then(function (iunit) {
 			dbMapServiceController.srvPlayerActions('read', serverName, {sessionName: sessionName})
 				.then(function (playerArray) {

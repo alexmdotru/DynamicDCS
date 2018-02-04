@@ -7,6 +7,7 @@ const groupController = require('../../controllers/spawn/group');
 const unitsStaticsController = require('../../controllers/serverToDbSync/unitsStatics');
 const airbaseSyncController = require('../../controllers/serverToDbSync/airbaseSync');
 const sychrontronController = require('../../controllers/sychronize/Sychrontron');
+const recoveryController = require('../../controllers/sychronize/recovery');
 const jtacController = require('../../controllers/action/jtac');
 const processEventHit = require('../../controllers/events/frontend/S_EVENT_HIT');
 const processEventTakeoff = require('../../controllers/events/frontend/S_EVENT_TAKEOFF');
@@ -109,6 +110,10 @@ _.set(CCB, 'socketCallback', function (serverName, cbArray) {
 		_.forEach(_.get(cbArray, 'que', []), function (queObj) {
 
 			if ((_.get(queObj, 'action') === 'C') || (_.get(queObj, 'action') === 'U') || (_.get(queObj, 'action') === 'D'))  {
+				console.log('UG: ', queObj.data.groupId, queObj.data.unitId);
+				if(_.isUndefined(queObj.data.groupId) || _.isUndefined(queObj.data.unitId)) {
+					console.log('UNDEF: ', queObj);
+				}
 				unitsStaticsController.processUnitUpdates(serverName, CCB.sessionName, queObj);
 			}
 
@@ -200,6 +205,10 @@ _.set(CCB, 'socketCallback', function (serverName, cbArray) {
 				// jtacController.processLOSEnemy(serverName, queObj);
 			}
 
+			if (_.get(queObj, 'action') === 'unitsAlive') {
+				console.log('incoming recovery: ', queObj);
+				recoveryController.sendMissingUnits(serverName, _.get(queObj, 'data'))
+			}
 		});
 	}
 });

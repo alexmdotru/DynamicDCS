@@ -93,6 +93,7 @@ _.set(exports, 'autoAddLife', function (serverName, playerUcid) {
 	dbMapServiceController.srvPlayerActions('autoAddLife', serverName, {_id: playerUcid})
 		.then(function(srvPlayer) {
 			//console.log(serverName, playerUcid, srvPlayer);
+			/* wasnt working
 			if (srvPlayer) {
 				if (!_.isEmpty(srvPlayer.slot)) {
 					dbMapServiceController.unitActions('read', serverName, {unitId: _.toNumber(srvPlayer.slot)})
@@ -112,6 +113,7 @@ _.set(exports, 'autoAddLife', function (serverName, playerUcid) {
 					;
 				}
 			}
+			*/
 		})
 		.catch(function (err) {
 			console.log('line74', err);

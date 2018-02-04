@@ -121,7 +121,7 @@ do
 	local airbaseCache = {}
 	local staticCache = {}
 	local livesCache = {}
-	local completeAliveUnitIds = {}
+	local completeAliveNames = {}
 	local updateQue = { ["que"] = {} }
 
 	local unitCnt = 0
@@ -271,8 +271,8 @@ do
 						uType = "unit",
 						data = {}
 					}
-					curUnit.data.unitId = tonumber(unit:getID())
-					table.insert(completeAliveUnitIds, curUnit.data.unitId)
+					curUnit.data.name = unit:getName()
+					table.insert(completeAliveNames, curUnit.data.name)
 					curUnit.data.life = tonumber(unit:getLife())
 					local unitPosition = unit:getPosition()
 					local lat, lon, alt = coord.LOtoLL(unitPosition.p)
@@ -299,23 +299,24 @@ do
 						curUnit.data.playername = ""
 					end
 					curUnit.data.inAir = unit:inAir()
-					if unitCache[curUnit.data.unitId] ~= nil and not Init then
-						if unitCache[curUnit.data.unitId].lat ~= lat or unitCache[curUnit.data.unitId].lon ~= lon then
-							unitCache[curUnit.data.unitId] = {}
-							unitCache[curUnit.data.unitId].lat = lat
-							unitCache[curUnit.data.unitId].lon = lon
+					if unitCache[curUnit.data.name] ~= nil and not Init then
+						if unitCache[curUnit.data.name].lat ~= lat or unitCache[curUnit.data.name].lon ~= lon then
+							unitCache[curUnit.data.name] = {}
+							unitCache[curUnit.data.name].lat = lat
+							unitCache[curUnit.data.name].lon = lon
 							curUnit.action = "U"
 							table.insert(updateQue.que, curUnit)
 						end
 					else
-						unitCache[curUnit.data.unitId] = {}
-						unitCache[curUnit.data.unitId].lat = lat
-						unitCache[curUnit.data.unitId].lon = lon
+						unitCache[curUnit.data.name] = {}
+						unitCache[curUnit.data.name].lat = lat
+						unitCache[curUnit.data.name].lon = lon
 						local maxLife = unit:getLife0()
 						if maxLife ~= nil then
 							curUnit.data.maxLife = tonumber(maxLife)
 						end
 						curUnit.data.groupId = group:getID()
+						curUnit.data.unitId = tonumber(unit:getID())
 						curUnit.data.groupName = group:getName()
 						curUnit.data.name = unit:getName()
 						curUnit.data.category = CategoryNames[unit:getDesc().category]
@@ -325,7 +326,7 @@ do
 						curUnit.action = "C"
 						table.insert(updateQue.que, curUnit)
 					end
-					checkUnitDead[curUnit.data.unitId] = 1
+					checkUnitDead[curUnit.data.name] = 1
 				end
 			end
 		end
@@ -350,7 +351,7 @@ do
 					action = "D",
 					uType = "unit",
 					data = {
-						unitId = k
+						name = k
 					}
 				}
 				table.insert(updateQue.que, curUnit)
@@ -368,8 +369,8 @@ do
 					uType = "static",
 					data = {}
 				}
-				curStatic.data.unitId = tonumber(static:getID())
-				table.insert(completeAliveUnitIds, curStatic.data.unitId)
+				curStatic.data.name = static:getName()
+				table.insert(completeAliveNames, curStatic.data.name)
 				curStatic.data.life = static:getLife()
 				local staticPosition = static:getPosition()
 				curStatic.data.lat, curStatic.data.lon, curStatic.data.alt = coord.LOtoLL(staticPosition.p)
@@ -387,20 +388,19 @@ do
 					heading = heading + 2 * math.pi
 				end
 				curStatic.data.hdg = math.floor(heading / math.pi * 180);
-				if staticCache[curStatic.data.unitId] ~= nil and not Init then
-					if staticCache[curStatic.data.unitId].lat ~= lat or staticCache[curStatic.data.unitId].lon ~= lon then
-						staticCache[curStatic.data.unitId] = {}
-						staticCache[curStatic.data.unitId].lat = lat
-						staticCache[curStatic.data.unitId].lon = lon
+				if staticCache[curStatic.data.name] ~= nil and not Init then
+					if staticCache[curStatic.data.name].lat ~= lat or staticCache[curStatic.data.name].lon ~= lon then
+						staticCache[curStatic.data.name] = {}
+						staticCache[curStatic.data.name].lat = lat
+						staticCache[curStatic.data.name].lon = lon
 						curStatic.action = "U"
 						table.insert(updateQue.que, curStatic)
 					end
 				else
-					staticCache[curStatic.data.unitId] = {}
-					staticCache[curStatic.data.unitId].lat = lat
-					staticCache[curStatic.data.unitId].lon = lon
-					curStatic.data.name = static:getName()
-					curStatic.data.groupId = curStatic.data.unitId
+					staticCache[curStatic.data.name] = {}
+					staticCache[curStatic.data.name].lat = lat
+					staticCache[curStatic.data.name].lon = lon
+					curStatic.data.unitId = tonumber(static:getID())
 					curStatic.data.groupName = curStatic.data.name
 					curStatic.data.maxLife = tonumber(static:getLife())
 					curStatic.data.category = CategoryNames[static:getDesc().category]
@@ -410,7 +410,7 @@ do
 					curStatic.action = "C"
 					table.insert(updateQue.que, curStatic)
 				end
-				checkStaticDead[curStatic.data.unitId] = 1
+				checkStaticDead[curStatic.data.name] = 1
 			end
 		end
 	end
@@ -432,7 +432,7 @@ do
 					action = "D",
 					uType = "static",
 					data = {
-						staticId = k
+						name = k
 					}
 				}
 				table.insert(updateQue.que, curStatic)
@@ -443,7 +443,7 @@ do
 	end
 
 	local function getDataMessage()
-		completeAliveUnitIds = {}
+		completeAliveNames = {}
 		updateGroups()
 		updateStatics()
 
@@ -598,9 +598,17 @@ do
 				--env.info('GET UNITS ALIVE')
 				table.insert(updateQue.que, {
 					action = 'unitsAlive',
-					data = completeAliveUnitIds
+					data = completeAliveNames
 				})
 			end
+			--if request.action == "SENDUNITSINFO" then
+			--	if type(request.unitIds) == 'table' then
+			--		for rIndex = 1, #request.unitIds do
+			--			local curUnitId = request.unitIds[rIndex]
+			--			env.info('SendUnits: '..curUnitId)
+			--		end
+			--	end
+			--end
 			if request.action == "SETBASEFLAGS" then
 				env.info('SET BASE FLAGS')
 				if type(request.data) == 'table' then
@@ -643,7 +651,7 @@ do
 				--env.info('INIT')
 				--send all unit updates
 				--initAirbases()
-				completeAliveUnitIds = {}
+				completeAliveNames = {}
 				updateGroups(true)
 				updateStatics(true)
 			end
@@ -698,7 +706,7 @@ do
 			if client then
 				log("Connection established")
 				--send all unit updates
-				completeAliveUnitIds = {}
+				completeAliveNames = {}
 				updateGroups(true)
 				updateStatics(true)
 			end

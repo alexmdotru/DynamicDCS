@@ -16,7 +16,7 @@ exports.spawnLauncherCnt = 3;
 
 _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 	// console.log('process menu cmd: ', pObj);
-	dbMapServiceController.unitActions('read', serverName, {_id: pObj.unitId})
+	dbMapServiceController.unitActions('read', serverName, {unitId: pObj.unitId})
 		.then(function(units) {
 			var curUnit = _.get(units, 0);
 			if (curUnit) {
@@ -42,7 +42,7 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 									if(exports.isTroopOnboard(curUnit, serverName)) {
 										// console.log('should be false: ', proximityController.extractUnitsBackToBase(curUnit, serverName) );
 										if(proximityController.extractUnitsBackToBase(curUnit, serverName)) {
-											dbMapServiceController.unitActions('update', serverName, {_id: pObj.unitId, troopType: null})
+											dbMapServiceController.unitActions('update', serverName, {unitId: pObj.unitId, troopType: null})
 												.then(function(){
 													DCSLuaCommands.sendMesgToGroup(
 														curUnit.groupId,
@@ -59,7 +59,7 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 											dbMapServiceController.unitActions('read', serverName, {playerOwnerId: curPlayer.ucid, isTroop: true, dead: false})
 												.then(function(delUnits){
 													_.forEach(delUnits, function (unit) {
-														dbMapServiceController.unitActions('update', serverName, {_id: unit.unitId, dead: true});
+														dbMapServiceController.unitActions('update', serverName, {unitId: unit.unitId, dead: true});
 														groupController.destroyUnit(serverName, unit.name);
 													});
 													// spawn troop type
@@ -74,7 +74,7 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 														playerCanDrive: false
 													};
 													groupController.spawnLogiGroup(serverName, [spawnArray], curUnit.coalition);
-													dbMapServiceController.unitActions('update', serverName, {_id: pObj.unitId, troopType: null})
+													dbMapServiceController.unitActions('update', serverName, {unitId: pObj.unitId, troopType: null})
 														.catch(function (err) {
 															console.log('erroring line73: ', err);
 														})
@@ -98,7 +98,7 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 												var curTroop = _.get(units, [0]);
 												if(curTroop) {
 													// pickup troop
-													dbMapServiceController.unitActions('update', serverName, {_id: pObj.unitId, troopType: curTroop.spawnCat})
+													dbMapServiceController.unitActions('update', serverName, {unitId: pObj.unitId, troopType: curTroop.spawnCat})
 														.catch(function (err) {
 															console.log('erroring line57: ', err);
 														})
@@ -169,7 +169,7 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 															cCnt = 1;
 															_.forEach(_.get(grpTypes, [curCrateType]), function (eCrate) {
 																if ( cCnt <= numCrate) {
-																	dbMapServiceController.unitActions('update', serverName, {_id: eCrate.unitId, dead: true})
+																	dbMapServiceController.unitActions('update', serverName, {unitId: eCrate.unitId, dead: true})
 																		.catch(function (err) {
 																			console.log('erroring line152: ', err);
 																		})
@@ -234,7 +234,7 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 									.then(function(units){
 										var curCrate = _.find(units, {playerOwnerId: curPlayer.ucid});
 										if(curCrate) {
-											dbMapServiceController.unitActions('update', serverName, {_id: pObj.unitId, virtCrateType: curCrate.name})
+											dbMapServiceController.unitActions('update', serverName, {unitId: pObj.unitId, virtCrateType: curCrate.name})
 												.catch(function (err) {
 													console.log('erroring line209: ', err);
 												})
@@ -280,7 +280,7 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 							} else {
 								if (!_.isEmpty(curUnit.virtCrateType)) {
 									exports.spawnCrateFromLogi(serverName, curUnit, _.split(curUnit.virtCrateType, '|')[2], _.split(curUnit.virtCrateType, '|')[4], (_.split(curUnit.virtCrateType, '|')[5] === 'true'), _.split(curUnit.virtCrateType, '|')[3], (_.split(curUnit.virtCrateType, '|')[6] === 'true'));
-									dbMapServiceController.unitActions('update', serverName, {_id: pObj.unitId, virtCrateType: null})
+									dbMapServiceController.unitActions('update', serverName, {unitId: pObj.unitId, virtCrateType: null})
 										.catch(function (err) {
 											console.log('erroring line243: ', err);
 										})
@@ -399,7 +399,7 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 });
 
 _.set(exports, 'loadTroops', function(serverName, unitId, troopType) {
-	dbMapServiceController.unitActions('update', serverName, {_id: unitId, troopType: troopType})
+	dbMapServiceController.unitActions('update', serverName, {unitId: unitId, troopType: troopType})
 		.then(function(unit) {
 			DCSLuaCommands.sendMesgToGroup(
 				unit.groupId,
@@ -470,7 +470,7 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 					_.forEach(delCrates, function (crate) {
 						// console.log('cr: ', crateCount, ' > ', exports.maxCrates-1);
 						if(crateCount > exports.maxCrates-2) {
-							dbMapServiceController.unitActions('update', serverName, {_id: crate.unitId, dead: true})
+							dbMapServiceController.unitActions('update', serverName, {unitId: crate.unitId, dead: true})
 								.catch(function (err) {
 									console.log('erroring line387: ', err);
 								})
@@ -559,7 +559,7 @@ _.set(exports, 'unpackCrate', function (serverName, unit, type, special, combo, 
 					_.forEach(grpGroups, function (gUnit) {
 						if (curUnit <= tRem) {
 							_.forEach(gUnit, function(unit) {
-								dbMapServiceController.unitActions('update', serverName, {_id: unit.unitId, dead: true})
+								dbMapServiceController.unitActions('update', serverName, {unitId: unit.unitId, dead: true})
 									.catch(function (err) {
 										console.log('erroring line462: ', err);
 									})

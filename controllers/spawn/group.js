@@ -193,7 +193,7 @@ _.set(exports, 'grndUnitTemplate', function ( unitObj ) {
 		'["y"] = coord.LLtoLO(' + _.get(unitObj, ['lonLatLoc', 1]) + ', ' +  _.get(unitObj, ['lonLatLoc', 0]) + ').z, ' +
 		'["type"] = "' + _.get(unitObj, 'type') +'",' +
 		'["name"] = "' + _.get(unitObj, 'name') + '",' +
-		'["unitId"] = ' + _.get(unitObj, 'unitId') + ',' +
+		// '["unitId"] = ' + _.get(unitObj, 'unitId') + ',' +
 		'["heading"] = ' + _.get(unitObj, 'heading', 0) + ',' +
 		'["playerCanDrive"] = ' + _.get(unitObj, 'playerCanDrive', false) + ',' +
 		'["skill"] = "' + _.get(unitObj, 'skill', "Excellent") + '",' +
@@ -207,7 +207,7 @@ _.set(exports, 'airUnitTemplate', function ( unitObj ) {
 		'["y"] = coord.LLtoLO(' + _.get(unitObj, ['lonLatLoc', 1]) + ', ' +  _.get(unitObj, ['lonLatLoc', 0]) + ').z, ' +
 		'["type"] = "' + _.get(unitObj, 'type') +'",' +
 		'["name"] = "' + _.get(unitObj, 'name') + '",' +
-		'["unitId"] = ' + _.get(unitObj, 'unitId') + ',' +
+		// '["unitId"] = ' + _.get(unitObj, 'unitId') + ',' +
 		'["heading"] = ' + _.get(unitObj, 'heading', 0) + ',' +
 		'["skill"] = "' + _.get(unitObj, 'skill', "Excellent") + '",' +
 		'["payload"]={' +
@@ -228,7 +228,7 @@ _.set(exports, 'staticTemplate', function (staticObj) {
 		'["country"] = "' + _.get(staticObj, 'country') + '",' +
 		'["type"] = "' + _.get(staticObj, 'type') +'",' +
 		'["name"] = "' + _.get(staticObj, 'name') + '",' +
-		'["unitId"] = ' + _.get(staticObj, 'unitId') + ',' +
+		// '["unitId"] = ' + _.get(staticObj, 'unitId') + ',' +
 		'["heading"] = ' + _.get(staticObj, 'heading', 0) + ',' +
 		'["shape_name"] = "' + _.get(staticObj, 'shape_name') + '",' +
 		'["canCargo"] = ' + _.get(staticObj, 'canCargo', false) + ',';
@@ -436,7 +436,7 @@ _.set(exports, 'spawnSupportPlane', function (serverName, baseObj, side, farpBas
 
 
 	_.set(curSpwnUnit, 'lonLatLoc', remoteLoc);
-	_.set(curSpwnUnit, 'unitId', unitNum);
+	// _.set(curSpwnUnit, 'unitId', unitNum);
 	_.set(curSpwnUnit, 'name', curUnitName);
 	_.set(curSpwnUnit, 'playerCanDrive', false);
 
@@ -490,7 +490,7 @@ _.set(exports, 'spawnLogiGroup', function (serverName, spawnArray, side) {
 			curUnitName = curSpwnUnit.spwnName + ' #' + unitNum;
 
 			_.set(curSpwnUnit, 'lonLatLoc', zoneController.getLonLatFromDistanceDirection(curSpwnUnit.lonLatLoc, curSpwnUnit.heading, 0.05));
-			_.set(curSpwnUnit, 'unitId', _.get(curSpwnUnit, 'unitId', unitNum));
+			// _.set(curSpwnUnit, 'unitId', _.get(curSpwnUnit, 'unitId', unitNum));
 			_.set(curSpwnUnit, 'name', curUnitName);
 			_.set(curSpwnUnit, 'playerCanDrive', _.get(curSpwnUnit, 'playerCanDrive', true));
 			curUnitSpawn += exports.grndUnitTemplate(curSpwnUnit);
@@ -541,7 +541,7 @@ _.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {
 			if (_.isUndefined(_.get(curSpwnUnit, 'lonLatLoc'))) {
 				_.set(curSpwnUnit, 'lonLatLoc', zoneController.getRandomLatLonFromBase(serverName, baseName));
 			}
-			_.set(curSpwnUnit, 'unitId', _.get(curSpwnUnit, 'unitId', unitNum));
+			// _.set(curSpwnUnit, 'unitId', _.get(curSpwnUnit, 'unitId', unitNum));
 			_.set(curSpwnUnit, 'name', _.get(curSpwnUnit, 'name', curUnitName));
 			curUnitSpawn += exports.grndUnitTemplate(curSpwnUnit);
 		});
@@ -600,7 +600,7 @@ _.set(exports, 'initDbs', function ( serverName ) {
 _.set(exports, 'spawnLogisticCmdCenter', function (serverName, staticObj, baseObj, side, init) {
 	var curGrpObj = _.cloneDeep(staticObj);
 	var curStaticSpawn;
-	_.set(curGrpObj, 'unitId', _.get(curGrpObj, 'unitId', _.random(1000000, 9999999)));
+	// _.set(curGrpObj, 'unitId', _.get(curGrpObj, 'unitId', _.random(1000000, 9999999)));
 	_.set(curGrpObj, 'name', _.get(curGrpObj, 'name', _.get(baseObj, 'name', '') + ' Logistics'));
 	_.set(curGrpObj, 'coalition', _.get(curGrpObj, 'coalition', side));
 	_.set(curGrpObj, 'country', _.get(constants, ['defCountrys', curGrpObj.coalition]));
