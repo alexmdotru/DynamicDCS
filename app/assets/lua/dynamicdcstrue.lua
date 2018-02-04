@@ -306,8 +306,6 @@ do
 							unitCache[curUnit.data.name] = {}
 							unitCache[curUnit.data.name].lat = lat
 							unitCache[curUnit.data.name].lon = lon
-							unitCache[curUnit.data.name].groupId = curUnit.data.groupId
-							unitCache[curUnit.data.name].unitId = curUnit.data.unitId
 							curUnit.action = "U"
 							table.insert(updateQue.que, curUnit)
 						end
