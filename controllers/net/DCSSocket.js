@@ -18,7 +18,7 @@ exports.createSocket = function (serverName, address, port, queName, callback) {
 
 	setInterval(function () { //sending FULL SPEED AHEAD, 1 per milsec (watch for weird errors, etc)
 		var curTime = new Date().getTime();
-		if (sock.cQue.length < 5) {
+		if (sock.cQue.length < 1) {
 			if (sychrontronController.isSyncLockdownMode && !sychrontronController.isServerSynced){
 				if (lastSyncTime + syncSpawnTimer < curTime) {
 					dbMapServiceController.cmdQueActions('grabNextQue', serverName, {queName: queName})
