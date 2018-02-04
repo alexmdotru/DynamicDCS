@@ -271,6 +271,8 @@ do
 						uType = "unit",
 						data = {}
 					}
+					curUnit.data.groupId = group:getID()
+					curUnit.data.unitId = tonumber(unit:getID())
 					curUnit.data.name = unit:getName()
 					table.insert(completeAliveNames, curUnit.data.name)
 					curUnit.data.life = tonumber(unit:getLife())
@@ -304,6 +306,8 @@ do
 							unitCache[curUnit.data.name] = {}
 							unitCache[curUnit.data.name].lat = lat
 							unitCache[curUnit.data.name].lon = lon
+							unitCache[curUnit.data.name].groupId = curUnit.data.groupId
+							unitCache[curUnit.data.name].unitId = curUnit.data.unitId
 							curUnit.action = "U"
 							table.insert(updateQue.que, curUnit)
 						end
@@ -315,8 +319,6 @@ do
 						if maxLife ~= nil then
 							curUnit.data.maxLife = tonumber(maxLife)
 						end
-						curUnit.data.groupId = group:getID()
-						curUnit.data.unitId = tonumber(unit:getID())
 						curUnit.data.groupName = group:getName()
 						curUnit.data.name = unit:getName()
 						curUnit.data.category = CategoryNames[unit:getDesc().category]
