@@ -9,12 +9,10 @@ const UnitSchema = new Schema({
 		required: true
 	},
 	unitId: {
-		type: Number,
-		required: true
+		type: Number
 	},
 	groupId: {
-		type: Number,
-		required: true
+		type: Number
 	},
 	type: {
 		type: String,
