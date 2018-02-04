@@ -202,7 +202,6 @@ _.set(CCB, 'socketCallback', function (serverName, cbArray) {
 			}
 
 			if (_.get(queObj, 'action') === 'unitsAlive') {
-				console.log('incoming recovery: ', queObj);
 				recoveryController.sendMissingUnits(serverName, _.get(queObj, 'data'))
 			}
 		});
