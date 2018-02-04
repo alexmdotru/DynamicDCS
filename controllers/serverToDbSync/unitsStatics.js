@@ -53,14 +53,14 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 						action: 'U',
 						sessionName: sessionName,
 						data: {
-							_id: _.get(unitObj, 'data.name'),
-							name: _.get(unitObj, 'data.name'),
-							lonLatLoc: _.get(unitObj, 'data.lonLatLoc'),
-							alt: parseFloat(_.get(unitObj, 'data.alt')),
-							hdg: parseFloat(_.get(unitObj, 'data.hdg')),
-							speed: parseFloat(_.get(unitObj, 'data.speed', 0)),
-							inAir: _.get(unitObj, 'data.inAir'),
-							playername: _.get(unitObj, 'data.playername', ''),
+							_id: _.get(curData, 'name'),
+							name: _.get(curData, 'name'),
+							lonLatLoc: _.get(curData, 'lonLatLoc'),
+							alt: parseFloat(_.get(curData, 'alt')),
+							hdg: parseFloat(_.get(curData, 'hdg')),
+							speed: parseFloat(_.get(curData, 'speed', 0)),
+							inAir: _.get(curData, 'inAir'),
+							playername: _.get(curData, 'playername', ''),
 							dead: false
 						}
 					};
@@ -101,20 +101,20 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 					;
 
 				} else if (_.get(unitObj, 'action') === 'D') {
-					//console.log('DELETE: ', _.get(unitObj, 'data'));
+					console.log('DELETE: ', _.get(unitObj));
 					/*
                     if (_.get(ewrUnitsActivated, [curUnitName], false)) {
                         console.log('Delete ewr for: ', curUnitName );
                         _.set(ewrUnitsActivated, [curUnitName], false);
                     }
                     */
-					if (_.get(unitObj, 'data.name')) {
+					if (_.get(curData, 'name')) {
 						iCurObj = {
 							action: 'D',
 							sessionName: sessionName,
 							data: {
-								_id: _.get(unitObj, 'data.name'),
-								name: _.get(unitObj, 'data.name'),
+								_id: _.get(curData, 'name'),
+								name: _.get(curData, 'name'),
 								troopType: null,
 								virtCrateType: null,
 								dead: true
@@ -132,7 +132,7 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 							})
 						;
 					} else {
-						console.log('is not a number: ', _.get(unitObj, 'data.unitId'));
+						console.log('is not a number: ', _.get(curData, 'unitId'));
 					}
 				}
 			}
