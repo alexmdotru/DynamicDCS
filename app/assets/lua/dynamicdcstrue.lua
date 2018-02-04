@@ -401,7 +401,6 @@ do
 					staticCache[curStatic.data.name] = {}
 					staticCache[curStatic.data.name].lat = lat
 					staticCache[curStatic.data.name].lon = lon
-					curStatic.data.unitId = tonumber(static:getID())
 					curStatic.data.groupName = curStatic.data.name
 					curStatic.data.maxLife = tonumber(static:getLife())
 					curStatic.data.category = CategoryNames[static:getDesc().category]
@@ -841,11 +840,18 @@ do
 				if _event.time ~= nil then
 					curEvent.arg2 = _event.time
 				end
-				if _event.initiator ~= nil and _event.initiator:getID() ~= nil then
-					curEvent.arg3 = tonumber(_event.initiator:getID())
+				if _event.initiator ~= nil then
+					local getIId = _event.initiator:getID()
+					if getIId ~= nil then
+						curEvent.arg3 = tonumber(getIId)
+					end
+
 				end
-				if _event.target ~= nil and _event.target:getID() ~= nil then
-					curEvent.arg4 = tonumber(_event.target:getID())
+				if _event.target ~= nil then
+					local getTId = _event.target:getID()
+					if getTId ~= nil then
+						curEvent.arg4 = tonumber(getTId)
+					end
 				end
 				if _event.place ~= nil then
 					curEvent.arg5 = _event.place:getName()
