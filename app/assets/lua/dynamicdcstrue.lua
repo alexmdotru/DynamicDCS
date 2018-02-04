@@ -354,6 +354,7 @@ do
 						name = k
 					}
 				}
+				env.info('DCU: '..k)
 				table.insert(updateQue.que, curUnit)
 				unitCache[k] = nil
 			end
@@ -840,10 +841,10 @@ do
 				if _event.time ~= nil then
 					curEvent.arg2 = _event.time
 				end
-				if _event.initiator ~= nil then
+				if _event.initiator ~= nil and _event.initiator:getID() ~= nil then
 					curEvent.arg3 = tonumber(_event.initiator:getID())
 				end
-				if _event.target ~= nil then
+				if _event.target ~= nil and _event.target:getID() ~= nil then
 					curEvent.arg4 = tonumber(_event.target:getID())
 				end
 				if _event.place ~= nil then
