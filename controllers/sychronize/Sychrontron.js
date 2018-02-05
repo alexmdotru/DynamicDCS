@@ -5,19 +5,20 @@ const DCSLuaCommands = require('../player/DCSLuaCommands');
 
 var mesg;
 var masterUnitCount;
-var remappedunits = {};
+var lastUnitCount;
 var isServerFresh = true;
 var stuckDetect = 0;
 var stuckThreshold = 30;
-var lastUnitCount;
 exports.isServerSynced = false;
 exports.isSyncLockdownMode = false; //lock all processes out until server fully syncs
 
 
 _.set(exports, 'syncType', function (serverName, serverUnitCount) {
+	var remappedunits = {};
 	dbMapServiceController.unitActions('readStd', serverName, {dead: false, type: {$ne: 'UAZ-469'}})
 		.then(function (units) {
 			if (serverUnitCount === 0) { //server is empty
+				exports.isServerSynced = false;
 				isServerFresh = true;
 				if (!exports.isSyncLockdownMode) {
 					exports.isSyncLockdownMode = true; // lock down all traffic until sync is complete
