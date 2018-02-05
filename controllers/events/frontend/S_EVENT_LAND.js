@@ -6,6 +6,7 @@ const playersEvent = require('../../events/backend/players');
 const groupController = require('../../spawn/group');
 
 _.set(exports, 'processEventLand', function (serverName, sessionName, eventObj) {
+	console.log('LAND: ', serverName, sessionName, eventObj);
 	// Occurs when an aircraft lands at an airbase, farp or ship
 	if (_.get(eventObj, 'data.arg6')){
 		place = ' at '+_.get(eventObj, 'data.arg6');
@@ -17,21 +18,27 @@ _.set(exports, 'processEventLand', function (serverName, sessionName, eventObj) 
 
 	dbMapServiceController.unitActions('read', serverName, {unitId: _.get(eventObj, ['data', 'arg3'])})
 		.then(function (iunit) {
+			console.log('lu: ', iunit);
 			dbMapServiceController.srvPlayerActions('read', serverName, {sessionName: sessionName})
 				.then(function (playerArray) {
+					console.log('pa: ', playerArray);
 					var iPlayer;
 					var iCurObj;
 					var curIUnit = _.get(iunit, 0);
 					if (curIUnit) {
+						console.log('cu: ', curIUnit);
 						//landed logistic planes/helis spawn new group for area
 						var curUnitName = _.get(curIUnit, 'name');
+						console.log('cun: ', _.includes(curUnitName, 'LOGISTICS|'), curUnitName);
 						if (_.includes(curUnitName, 'LOGISTICS|')) {
 							var bName = _.split(curUnitName, '|')[2];
 							var curSide = _.get(curIUnit, 'coalition');
 							dbMapServiceController.baseActions('read', serverName, {_id: bName})
 								.then(function (bases) {
 									var curBase = _.get(bases, [0], {}); // does this work?
+									console.log('cb: ', curBase);
 									if (curBase.side === curSide) {
+										console.log('ru: ', serverName, bName, curSide);
 										groupController.replenishUnits( serverName, bName, curSide);
 										groupController.healBase(serverName, bName);
 									}
