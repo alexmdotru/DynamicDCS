@@ -197,8 +197,7 @@ _.set(CCB, 'socketCallback', function (serverName, cbArray) {
 
 			// line of sight callback from server
 			if ((_.get(queObj, 'action') === 'LOSVISIBLEUNITS') && sychrontronController.isServerSynced) {
-				console.log('jtacCallback');
-				// jtacController.processLOSEnemy(serverName, queObj);
+				jtacController.processLOSEnemy(serverName, queObj);
 			}
 
 			if (_.get(queObj, 'action') === 'unitsAlive') {
