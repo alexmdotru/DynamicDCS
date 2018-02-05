@@ -67,7 +67,7 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 						}
 					};
 
-					if(curData.isAI) {
+					if(curData.name === 'AI|1010101|Gelendzhik|LOGISTICS|') {
 						console.log('AIU: ', iCurObj);
 					}
 
