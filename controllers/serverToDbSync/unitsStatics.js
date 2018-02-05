@@ -63,13 +63,12 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 							playername: _.get(curData, 'playername', ''),
 							groupId: _.get(curData, 'groupId', 0),
 							unitId: _.get(curData, 'unitId', 0),
+							type: _.get(curData, 'type'),
+							coalition: _.get(curData, 'coalition'),
+							country: _.get(curData, 'country'),
 							dead: false
 						}
 					};
-
-					if(curData.name === 'AI|1010101|Gelendzhik|LOGISTICS|') {
-						console.log('AIU: ', iCurObj);
-					}
 
 					dbMapServiceController.unitActions('update', serverName, iCurObj.data)
 						.then(function () {
@@ -95,6 +94,9 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 						}
 					}
 
+					if(curData.name === 'AI|1010101|Gelendzhik|LOGISTICS|') {
+						console.log('AIU: ', iCurObj);
+					}
 
 					dbMapServiceController.unitActions('save', serverName, iCurObj.data)
 						.then(function (unit) {
