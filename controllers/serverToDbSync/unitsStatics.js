@@ -63,9 +63,6 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 							playername: _.get(curData, 'playername', ''),
 							groupId: _.get(curData, 'groupId', 0),
 							unitId: _.get(curData, 'unitId', 0),
-							type: _.get(curData, 'type'),
-							coalition: _.get(curData, 'coalition'),
-							country: _.get(curData, 'country'),
 							dead: false
 						}
 					};
