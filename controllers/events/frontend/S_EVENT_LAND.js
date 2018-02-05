@@ -33,7 +33,7 @@ _.set(exports, 'processEventLand', function (serverName, sessionName, eventObj) 
 							dbMapServiceController.baseActions('read', serverName, {_id: bName})
 								.then(function (bases) {
 									var curBase = _.get(bases, [0], {}); // does this work?
-									console.log('cb: ', curBase);
+									console.log('cb: ', curBase.side, curSide, curBase);
 									if (curBase.side === curSide) {
 										console.log('ru: ', serverName, bName, curSide);
 										groupController.replenishUnits( serverName, bName, curSide);
