@@ -647,10 +647,19 @@ _.set(exports, 'healBase', function ( serverName, baseName ) {
 	dbMapServiceController.unitActions('read', serverName, {name: baseName + ' Logistics', proxChkGrp: 'logisticTowers'})
 		.then(function (logiUnit) {
 			var curUnit = _.get(logiUnit, [0], {});
-			exports.spawnLogisticCmdCenter(serverName, curUnit);
+			dbMapServiceController.baseActions('read', serverName, {name: baseName, $or: [{side: 1}, {side: 2}]})
+				.then(function (baseUnit) {
+					var curBase = _.get(baseUnit, [0], {});
+					_.set(curUnit, 'coalition', _.get(curBase, 'side'));
+					exports.spawnLogisticCmdCenter(serverName, curUnit);
+				})
+				.catch(function (err) {
+						console.log('erroring line655: ', err);
+				})
+			;
 		})
 		.catch(function (err) {
-			console.log('erroring line613: ', err);
+			console.log('erroring line660: ', err);
 		})
 	;
 });
