@@ -67,6 +67,10 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 						}
 					};
 
+					if(curData.isAI) {
+						console.log('AIU: ', iCurObj);
+					}
+
 					dbMapServiceController.unitActions('update', serverName, iCurObj.data)
 						.then(function () {
 							//curServers[serverName].updateQue['q' + _.get(curUnit, ['coalition'])].push(_.cloneDeep(iCurObj));
