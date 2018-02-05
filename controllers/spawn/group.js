@@ -654,12 +654,12 @@ _.set(exports, 'healBase', function ( serverName, baseName ) {
 					exports.spawnLogisticCmdCenter(serverName, curUnit);
 				})
 				.catch(function (err) {
-						console.log('erroring line655: ', err);
+						console.log('erroring line657: ', err);
 				})
 			;
 		})
 		.catch(function (err) {
-			console.log('erroring line660: ', err);
+			console.log('erroring line662: ', err);
 		})
 	;
 });
