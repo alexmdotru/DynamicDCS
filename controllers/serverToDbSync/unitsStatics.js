@@ -70,7 +70,6 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 						_.set(iCurObj, 'data.type', _.get(curData, 'type'));
 					}
 					if(_.get(curData, 'coalition')) {
-						console.log('DC: ', _.get(curData, 'coalition'));
 						_.set(iCurObj, 'data.coalition', _.get(curData, 'coalition'));
 					}
 					if(_.get(curData, 'country')) {
@@ -99,10 +98,6 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 						if( _.includes(curData.name, ' Logistics')) {
 							_.set(curData, 'proxChkGrp', 'logisticTowers');
 						}
-					}
-
-					if(curData.name === 'AI|1010101|Gelendzhik|LOGISTICS|') {
-						console.log('AIU: ', iCurObj);
 					}
 
 					dbMapServiceController.unitActions('save', serverName, iCurObj.data)
