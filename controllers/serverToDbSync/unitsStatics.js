@@ -66,6 +66,16 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 							dead: false
 						}
 					};
+					if(_.get(curData, 'type')) {
+						_.set(iCurObj, 'data.type', _.get(curData, 'type'));
+					}
+					if(_.get(curData, 'coalition')) {
+						console.log('DC: ', _.get(curData, 'coalition'));
+						_.set(iCurObj, 'data.coalition', _.get(curData, 'coalition'));
+					}
+					if(_.get(curData, 'country')) {
+						_.set(iCurObj, 'data.country', _.get(curData, 'country'));
+					}
 
 					dbMapServiceController.unitActions('update', serverName, iCurObj.data)
 						.then(function () {
