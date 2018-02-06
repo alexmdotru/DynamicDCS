@@ -15,7 +15,7 @@ exports.isSyncLockdownMode = false; //lock all processes out until server fully 
 
 _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 	var remappedunits = {};
-	dbMapServiceController.unitActions('readStd', serverName, {dead: false, type: {$ne: 'UAZ-469'}})
+	dbMapServiceController.unitActions('readStd', serverName, {dead: false})
 		.then(function (units) {
 			if (serverUnitCount === 0) { //server is empty
 				exports.isServerSynced = false;
