@@ -4,13 +4,12 @@ const dbMapServiceController = require('../../db/dbMapService');
 const DCSLuaCommands = require('../../player/DCSLuaCommands');
 
 _.set(exports, 'processPlayerEvent', function (serverName, sessionName, playerArray) {
-	_.set(exports, ['rtPlayerArray', serverName], playerArray);
+	_.set(exports, ['rtPlayerArray', serverName], playerArray.data);
 	_.forEach(playerArray.data, function (player) {
 		if (player !== null) {
 			var curPlyrUcid = player.ucid;
 			var curPlyrSide = player.side;
 			var curPlyrName = player.name;
-			console.log('PL: ', curPlyrUcid, playerArray);
 			dbSystemServiceController.banUserActions('read', curPlyrUcid)
 				.then(function (banUser) {
 					console.log('BU: ', banUser);
