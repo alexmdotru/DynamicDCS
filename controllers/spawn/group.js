@@ -510,7 +510,6 @@ _.set(exports, 'spawnLogiGroup', function (serverName, spawnArray, side) {
 });
 
 _.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {
-	console.log('SGRUN: ', serverName, spawnArray, baseName, side);
 	var grpNum = 0;
 	var unitNum = 0;
 	var unitVec2;
@@ -568,9 +567,11 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 	_.forEach(defBaseSides, function (extSide, extName) {
 		var spawnArray = [];
 		spawnArray = _.concat(spawnArray, exports.spawnSupportBaseGrp(serverName, extName, extSide, true));
+		/*
 		while (spawnArray.length < curServer.replenThreshold) { //UNCOMMENT THESE
 			spawnArray = _.concat(spawnArray, exports.spawnBaseReinforcementGroup(serverName, extSide));
 		}
+		*/
 		exports.spawnGroup(serverName, spawnArray, extName, extSide);
 
 		exports.spawnLogisticCmdCenter(serverName, {}, _.find(exports.bases, {name: extName}), extSide, true);
