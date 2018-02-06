@@ -11,22 +11,14 @@ const dbSystemServiceController = require('../../db/dbSystemService');
 const dbMapServiceController = require('../../db/dbMapService');
 const DCSLuaCommands = require('../../player/DCSLuaCommands');
 
-var shootingUsers = {};
+exports.shootingUsers = {};
 
-_.set(exports, 'processEventHit', function (serverName, sessionName, eventObj) {
-	var iUnitId = _.get(eventObj, 'data.arg3');
-	var tUnitId = _.get(eventObj, 'data.arg4');
-	var iPName;
-	var tPName;
-	var iCurObj;
-	var iPlayer;
-	var tPlayer;
-
-	if(_.keys(shootingUsers).length > 0) {
-		_.forEach(shootingUsers, function (user, key) {
+_.set(exports, 'checkShootingUsers', function (serverName) {
+	if(_.keys(exports.shootingUsers).length > 0) {
+		_.forEach(exports.shootingUsers, function (user, key) {
 			if(_.get(user, ['startTime']) + 1500 < new Date().getTime()){
 				var shootObj = _.get(user, ['iCurObj']);
-				_.set(shootObj, 'score', _.get(shootingUsers, [iUnitId, 'count'], 1));
+				_.set(shootObj, 'score', _.get(exports.shootingUsers, [key, 'count'], 1));
 				if (shootObj.score === 1) {
 					_.set(shootObj, 'score', 10);
 				}
@@ -39,11 +31,20 @@ _.set(exports, 'processEventHit', function (serverName, sessionName, eventObj) {
 					_.get(shootObj, 'msg'),
 					20
 				);
-				delete shootingUsers[key];
+				delete exports.shootingUsers[key];
 			}
 		});
 	}
-console.log('unit id: ', iUnitId, tUnitId);
+});
+
+_.set(exports, 'processEventHit', function (serverName, sessionName, eventObj) {
+	var iUnitId = _.get(eventObj, 'data.arg3');
+	var tUnitId = _.get(eventObj, 'data.arg4');
+	var iPName;
+	var tPName;
+	var iCurObj;
+	var iPlayer;
+	var tPlayer;
 	dbMapServiceController.unitActions('read', serverName, {unitId: iUnitId})
 		.then(function (iunit) {
 			var curIUnit = _.get(iunit, 0);
@@ -118,14 +119,14 @@ console.log('unit id: ', iUnitId, tUnitId);
 											.then(function (weaponResp) {
 												if (_.get(iCurObj, 'iucid') || _.get(iCurObj, 'tucid')) {
 													if (_.startsWith(_.get(weaponResp, 'name'), 'weapons.shells')){
-														_.set(shootingUsers, [iUnitId, 'count'], _.get(shootingUsers, [iUnitId, 'count'], 0)+1);
-														_.set(shootingUsers, [iUnitId, 'startTime'], new Date().getTime());
-														_.set(shootingUsers, [iUnitId, 'serverName'], serverName);
+														_.set(exports.shootingUsers, [iUnitId, 'count'], _.get(exports.shootingUsers, [iUnitId, 'count'], 0)+1);
+														_.set(exports.shootingUsers, [iUnitId, 'startTime'], new Date().getTime());
+														_.set(exports.shootingUsers, [iUnitId, 'serverName'], serverName);
 														_.set(iCurObj, 'msg',
-															'A: ' + constants.side[_.get(curIUnit, 'coalition')] + ' '+ iPName +' has hit ' + constants.side[_.get(curTUnit, 'coalition')]+' ' + tPName + ' '+_.get(shootingUsers, [iUnitId, 'count'], 0)+' times with ' + _.get(weaponResp, 'displayName') + ' - +'+_.get(weaponResp, 'score')+' each.'
+															'A: ' + constants.side[_.get(curIUnit, 'coalition')] + ' '+ iPName +' has hit ' + constants.side[_.get(curTUnit, 'coalition')]+' ' + tPName + ' '+_.get(exports.shootingUsers, [iUnitId, 'count'], 0)+' times with ' + _.get(weaponResp, 'displayName') + ' - +'+_.get(weaponResp, 'score')+' each.'
 														);
 														console.log('2: ', iCurObj.msg);
-														_.set(shootingUsers, [iUnitId, 'iCurObj'], _.cloneDeep(iCurObj));
+														_.set(exports.shootingUsers, [iUnitId, 'iCurObj'], _.cloneDeep(iCurObj));
 													} else {
 														_.set(iCurObj, 'score', _.get(weaponResp, 'score'));
 														_.set(iCurObj, 'msg', 'A: ' + constants.side[_.get(curIUnit, 'coalition')] + ' '+ iPName +' has hit ' + constants.side[_.get(curTUnit, 'coalition')] + ' '+tPName + ' with ' + _.get(weaponResp, 'displayName') + ' - +'+_.get(weaponResp, 'score'));
@@ -155,10 +156,10 @@ console.log('unit id: ', iUnitId, tUnitId);
 										var shotpoints;
 										// console.log('weapon not here');
 										// console.log('Weapon Unknown: ', _.get(eventObj, ['data', 'arg7', 'typeName']));
-										_.set(shootingUsers, [iUnitId, 'count'], _.get(shootingUsers, [_.get(iCurObj, 'iPlayerUnitId'), 'count'], 0)+1);
-										_.set(shootingUsers, [iUnitId, 'startTime'], new Date().getTime());
-										_.set(shootingUsers, [iUnitId, 'serverName'], serverName);
-										shotCount = _.get(shootingUsers, [iUnitId, 'count'], 1);
+										_.set(exports.shootingUsers, [iUnitId, 'count'], _.get(exports.shootingUsers, [_.get(iCurObj, 'iPlayerUnitId'), 'count'], 0)+1);
+										_.set(exports.shootingUsers, [iUnitId, 'startTime'], new Date().getTime());
+										_.set(exports.shootingUsers, [iUnitId, 'serverName'], serverName);
+										shotCount = _.get(exports.shootingUsers, [iUnitId, 'count'], 1);
 										if (shotCount === 1) {
 											shotpoints = 10;
 										} else {
@@ -168,7 +169,7 @@ console.log('unit id: ', iUnitId, tUnitId);
 											'A: '+ constants.side[_.get(curIUnit, 'coalition')] + ' '+ iPName +' has hit ' + constants.side[_.get(curTUnit, 'coalition')] + ' ' + tPName + ' '+shotCount+' times with ? - +' + shotpoints
 										);
 										console.log('4: ', iCurObj.msg);
-										_.set(shootingUsers, [iUnitId, 'iCurObj'], _.cloneDeep(iCurObj));
+										_.set(exports.shootingUsers, [iUnitId, 'iCurObj'], _.cloneDeep(iCurObj));
 									}
 								})
 								.catch(function (err) {
