@@ -5,7 +5,6 @@ const DCSLuaCommands = require('../../player/DCSLuaCommands');
 
 _.set(exports, 'processPlayerEvent', function (serverName, sessionName, playerArray) {
 	_.set(exports, ['rtPlayerArray', serverName], playerArray);
-	console.log('PA: ', playerArray);
 	_.forEach(playerArray, function (player) {
 		if (player !== null) {
 			var curPlyrUcid = player.ucid;
