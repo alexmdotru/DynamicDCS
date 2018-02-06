@@ -378,6 +378,7 @@ _.set(exports, 'spawnBaseReinforcementGroup', function (serverName, side) {
 			}
 		}
 	});
+	console.log('SBRG: ', spawnArray);
 	return _.compact(spawnArray);
 });
 
@@ -509,6 +510,7 @@ _.set(exports, 'spawnLogiGroup', function (serverName, spawnArray, side) {
 });
 
 _.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {
+	console.log('SGRUN: ', serverName, spawnArray, baseName, side);
 	var grpNum = 0;
 	var unitNum = 0;
 	var unitVec2;
@@ -628,6 +630,7 @@ _.set(exports, 'spawnLogisticCmdCenter', function (serverName, staticObj, baseOb
 });
 
 _.set(exports, 'replenishUnits', function ( serverName, baseName, side ) {
+	console.log('RUN: ', serverName, baseName, side);
 	exports.spawnGroup(serverName, exports.spawnBaseReinforcementGroup(serverName, side), baseName, side);
 });
 
