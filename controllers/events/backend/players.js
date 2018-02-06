@@ -13,6 +13,7 @@ _.set(exports, 'processPlayerEvent', function (serverName, sessionName, playerAr
 
 			dbSystemServiceController.banUserActions('read', curPlyrUcid)
 				.then(function (banUser) {
+					console.log('BU: ', banUser);
 					if (!_.isEmpty(banUser)){
 						console.log('Banning User: ', _.get(player, 'name'), curPlyrUcid);
 						DCSLuaCommands.kickPlayer(
