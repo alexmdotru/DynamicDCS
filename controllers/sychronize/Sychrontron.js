@@ -17,7 +17,7 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 	var remappedunits = {};
 	dbMapServiceController.unitActions('readStd', serverName, {dead: false, type: {$ne: 'UAZ-469'}})
 		.then(function (units) {
-			if (serverUnitCount === 1) { //server is empty
+			if (serverUnitCount === 0) { //server is empty
 				exports.isServerSynced = false;
 				isServerFresh = true;
 				if (!exports.isSyncLockdownMode) {
