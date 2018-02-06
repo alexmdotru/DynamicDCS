@@ -156,7 +156,6 @@ _.set(exports, 'processEventHit', function (serverName, sessionName, eventObj) {
 										var shotpoints;
 										// console.log('weapon not here');
 										// console.log('Weapon Unknown: ', _.get(eventObj, ['data', 'arg7', 'typeName']));
-										console.log('ESU: ', exports.shootingUsers);
 										_.set(exports.shootingUsers, [iUnitId, 'count'], _.get(exports.shootingUsers, [iUnitId, 'count'], 0)+1);
 										_.set(exports.shootingUsers, [iUnitId, 'startTime'], new Date().getTime());
 										_.set(exports.shootingUsers, [iUnitId, 'serverName'], serverName);
