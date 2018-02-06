@@ -10,7 +10,7 @@ _.set(exports, 'processPlayerEvent', function (serverName, sessionName, playerAr
 			var curPlyrUcid = player.ucid;
 			var curPlyrSide = player.side;
 			var curPlyrName = player.name;
-			console.log('PL: ', curPlyrUcid);
+			console.log('PL: ', curPlyrUcid, playerArray);
 			dbSystemServiceController.banUserActions('read', curPlyrUcid)
 				.then(function (banUser) {
 					console.log('BU: ', banUser);
