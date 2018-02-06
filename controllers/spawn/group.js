@@ -334,7 +334,6 @@ _.set(exports, 'spawnSupportVehiclesOnFarp', function ( serverName, baseName, si
 });
 
 _.set(exports, 'spawnSupportBaseGrp', function ( serverName, baseName, side, init ) {
-	console.log('ssb ', serverName, baseName, side, init);
 	var curBaseObj = {};
 	var spawnArray = [];
 	var curBases = _.get(exports, ['bases']);
@@ -378,7 +377,6 @@ _.set(exports, 'spawnBaseReinforcementGroup', function (serverName, side) {
 			}
 		}
 	});
-	console.log('SBRG: ', spawnArray);
 	return _.compact(spawnArray);
 });
 
@@ -629,7 +627,6 @@ _.set(exports, 'spawnLogisticCmdCenter', function (serverName, staticObj, baseOb
 });
 
 _.set(exports, 'replenishUnits', function ( serverName, baseName, side ) {
-	console.log('RUN: ', serverName, baseName, side);
 	exports.spawnGroup(serverName, exports.spawnBaseReinforcementGroup(serverName, side), baseName, side);
 });
 
