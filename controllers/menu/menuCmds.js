@@ -543,7 +543,7 @@ _.set(exports, 'unpackCrate', function (serverName, unit, type, special, combo, 
 	dbMapServiceController.srvPlayerActions('read', serverName, {name: unit.playername})
 		.then(function(player) {
 			var curPlayer = _.get(player, [0]);
-			dbMapServiceController.unitActions('read', serverName, {playerOwnerId: curPlayer.ucid, playerCanDrive: mobile, isCrate: false, dead: false})
+			dbMapServiceController.unitActions('readStd', serverName, {playerOwnerId: curPlayer.ucid, playerCanDrive: mobile, isCrate: false, dead: false})
 				.then(function(delUnits){
 					var tRem;
 					var curUnit = 0;
