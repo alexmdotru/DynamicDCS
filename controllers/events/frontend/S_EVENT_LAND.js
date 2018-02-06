@@ -15,7 +15,7 @@ _.set(exports, 'processEventLand', function (serverName, sessionName, eventObj) 
 		place = '';
 	}
 
-	dbMapServiceController.unitActions('read', serverName, {unitId: _.get(eventObj, ['data', 'arg3']), isAI: true})
+	dbMapServiceController.unitActions('read', serverName, {unitId: _.get(eventObj, ['data', 'arg3']), isCrate: false})
 		.then(function (iunit) {
 			dbMapServiceController.srvPlayerActions('read', serverName, {sessionName: sessionName})
 				.then(function (playerArray) {
