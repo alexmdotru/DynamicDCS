@@ -32,6 +32,8 @@
 				eventMsgs: []
 			});
 			_.set($scope, 'map', _.get(gmapService, 'gmapObj'));
+
+
 		});
 		dmCtrl.resetMap();
 

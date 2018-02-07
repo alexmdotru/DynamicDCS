@@ -170,6 +170,32 @@ router.route('/srvEvents/:serverName/:sessionName')
 		;
 	});
 
+router.route('/unitStatics/:serverName')
+	.get(function (req, res) {
+		var uObj = {ipaddr: req.connection.remoteAddress};
+		if(req.connection.remoteAddress === '::ffff:127.0.0.1') {
+			uObj = {_id: 'd124b99273260cf876203cb63e3d7791'};
+		}
+		dbMapServiceController.srvPlayerActions('read', req.params.serverName, uObj)
+			.then(function (srvPlayer) {
+				var curPlayer = _.get(srvPlayer, 0);
+				dbMapServiceController.unitActions('readStd', req.params.serverName, {dead: false, coalition: curPlayer.side})
+					.then(function (resp) {
+						res.json(resp);
+					})
+					.catch(function (err) {
+						console.log('line184: ', err);
+					})
+				;
+			})
+			.catch(function (err) {
+				console.log('line189: ', err);
+			})
+		;
+
+	})
+;
+
 //start of protected endpoints, must have auth token
 protectedRouter.use(checkJwt);
 //past this point must have permission value less than 10

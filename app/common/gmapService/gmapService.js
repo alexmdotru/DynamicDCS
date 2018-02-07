@@ -1,7 +1,7 @@
 (function (angular) {
 	'use strict';
 
-	function controlService ($rootScope, $window, $http, userAccountService, uiGmapIsReady, uiGmapGoogleMapApi) {
+	function controlService ($window, $http, userAccountService, uiGmapIsReady, uiGmapGoogleMapApi) {
 		var gSrv = this;
 
 		_.set(gSrv, 'init', function (theaterObj) {
@@ -370,7 +370,7 @@
 			gSrv.addOverlay(base, side);
 		});
 	}
-	controlService.$inject = ['$rootScope', '$window', '$http', 'userAccountService', 'uiGmapIsReady', 'uiGmapGoogleMapApi'];
+	controlService.$inject = ['$window', '$http', 'userAccountService', 'uiGmapIsReady', 'uiGmapGoogleMapApi'];
 
 	angular
 		.module('dynamic-dcs.gmapService',[
