@@ -213,7 +213,6 @@
 				longitude: unit.lonLatLoc[0],
 				zIndex: unit.unitId
 			});
-			console.log('cm: ', curMarker);
 			_.get(gSrv, 'gmapObj.markers').push(curMarker);
 		});
 
