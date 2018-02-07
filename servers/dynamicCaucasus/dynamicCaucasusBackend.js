@@ -13,7 +13,7 @@ var DCB = {};
 
 //config
 _.assign(DCB, {
-	serverName: 'TrueDynamicCaucasus',
+	serverName: 'DynamicCaucasus',
 	serverIP: '127.0.0.1',
 	serverPort: '3002',
 	queName: 'gameGuiArray',

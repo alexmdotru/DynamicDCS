@@ -29,7 +29,7 @@ var CCB = {};
 
 //config
 _.assign(CCB, {
-	serverName: 'TrueDynamicCaucasus',
+	serverName: 'DynamicCaucasus',
 	serverIP: '127.0.0.1',
 	serverPort: '3001',
 	queName: 'clientArray',
