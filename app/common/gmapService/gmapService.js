@@ -279,7 +279,6 @@
 
 		//process inbound Unit Stream
 		_.set(gSrv, 'buildSIDC', function (unit) {
-			console.log('U: ', unit);
 			var _sidcObject = {};
 			_sidcObject["codingScheme"] = 'S';
 			_sidcObject["affiliation"] = 'U';
