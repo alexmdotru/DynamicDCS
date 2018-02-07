@@ -74,11 +74,21 @@ const checkJwt = jwt({
 	algorithms: ['RS256']
 });
 
-router.route('/srvPlayers/:name')
+router.route('/srvPlayers/:serverName')
 	.get(function (req, res) {
-		dbMapServiceController.srvPlayerActions('read', req.params.name)
-			.then(function (resp) {
-				res.json(resp);
+		dbMapServiceController.statSessionActions('readLatest', req.params.serverName)
+			.then(function(sesResp) {
+				dbMapServiceController.srvPlayerActions('read', req.params.serverName, {sessionName: sesResp.name})
+					.then(function (resp) {
+						res.json(resp);
+					})
+					.catch(function (err) {
+						console.log('line87: ', err);
+					})
+				;
+			})
+			.catch(function (err) {
+				console.log('line92: ', err);
 			})
 		;
 	});
@@ -98,9 +108,9 @@ router.route('/servers')
 			})
 		;
 	});
-router.route('/servers/:server_name')
+router.route('/servers/:serverName')
 	.get(function (req, res) {
-		_.set(req, 'body.server_name', req.params.server_name);
+		_.set(req, 'body.server_name', req.params.serverName);
 		dbSystemServiceController.serverActions('read', req.body)
 			.then(function (resp) {
 				res.json(resp);
