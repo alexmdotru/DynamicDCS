@@ -203,7 +203,38 @@
 
 		_.set(gSrv, 'createMarker', function (unit) {
 			var curSymbol = gSrv.buildSIDC(unit);
+			var curMarker = curSymbol;
+			_.assign(curMarker, {
+				id: unit._id,
+				anchorPoint: curSymbol.getAnchor(),
+				icon: curSymbol.asCanvas().toDataURL(),
+				coords: unit.lonLatLoc,
+				latitude: unit.lonLatLoc[1],
+				longitude: unit.lonLatLoc[0],
+				zIndex: unit.unitId
+			});
+			console.log('cm: ', curMarker);
+			_.get(gSrv, 'gmapObj.markers').push(curMarker);
+		});
+
+		_.set(gSrv, 'updateMarker', function (unit) {
+			var curSymbol = gSrv.buildSIDC(unit);
 			console.log('csy: ', curSymbol);
+			var curMarker = curSymbol;
+			_.assign(curMarker, {
+				id: unit._id,
+				anchorPoint: curSymbol.getAnchor(),
+				icon: curSymbol.asCanvas().toDataURL(),
+				coords: unit.lonLatLoc,
+				latitude: unit.lonLatLoc[1],
+				longitude: unit.lonLatLoc[0],
+				zIndex: unit.unitId
+			});
+			_.get(gSrv, 'gmapObj.markers').push(curMarker);
+		});
+
+		_.set(gSrv, 'delMarker', function (unit) {
+			var curSymbol = gSrv.buildSIDC(unit);
 			var curMarker = curSymbol;
 			_.assign(curMarker, {
 				id: unit._id,
