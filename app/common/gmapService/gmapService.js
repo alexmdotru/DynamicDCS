@@ -193,6 +193,30 @@
 			_.set(userAccountService, 'localAccount.headerInfo', 'Right Click Map For Point Info');
 		});
 
+
+		_.set(gSrv, 'processAPICall', function (unitArray) {
+			_.set(gSrv, 'gmapObj.markers', []);
+			_.forEach(unitArray, function (unit) {
+				gSrv.createMarker(unit);
+			});
+		});
+
+		_.set(gSrv, 'createMarker', function (unit) {
+			var curSymbol = gSrv.buildSIDC(unit);
+			console.log('csy: ', curSymbol);
+			var curMarker = curSymbol;
+			_.assign(curMarker, {
+				id: unit._id,
+				anchorPoint: curSymbol.getAnchor(),
+				icon: curSymbol.asCanvas().toDataURL(),
+				coords: unit.lonLatLoc,
+				latitude: unit.lonLatLoc[1],
+				longitude: unit.lonLatLoc[0],
+				zIndex: unit.unitId
+			});
+			_.get(gSrv, 'gmapObj.markers').push(curMarker);
+		});
+
 		//process inbound Unit Stream
 		_.set(gSrv, 'processUnitStream', function (update) {
 			var curMarker;
@@ -250,6 +274,7 @@
 
 		//process inbound Unit Stream
 		_.set(gSrv, 'buildSIDC', function (unit) {
+			console.log('U: ', unit);
 			var _sidcObject = {};
 			_sidcObject["codingScheme"] = 'S';
 			_sidcObject["affiliation"] = 'U';

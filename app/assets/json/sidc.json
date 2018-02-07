@@ -890,6 +890,15 @@
     "modifier1": "-",
     "modifier2": "H"
   },
+  ".Command Center": {
+    "codingScheme": "S",
+    "affiliation": "U",
+    "battleDimension": "G",
+    "status": "-",
+    "functionID": "IT---",
+    "modifier1": "-",
+    "modifier2": "H"
+  },
   "Cobra": {
     "codingScheme": "S",
     "affiliation": "U",

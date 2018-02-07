@@ -6,10 +6,11 @@
 	}
 	getTheaters.$inject=['theaterService'];
 
-	function dynMapController($scope, $state, $stateParams, userAccountService, gmapService, DCSUserAccountsAPI, srvPlayerAPI, mySocket, srvService, theaters) {
+	function dynMapController($scope, $state, $stateParams, userAccountService, unitStaticAPI, gmapService, DCSUserAccountsAPI, srvPlayerAPI, mySocket, srvService, theaters) {
 		var dmCtrl = this;
 		var pSide;
-		var curTheater = _.get(_.find(_.get(srvService, 'servers'), {name: _.get($stateParams, 'name')}), 'theater');
+		var serverName = $stateParams.name;
+		var curTheater = _.get(_.find(_.get(srvService, 'servers'), {name: serverName}), 'theater');
 		var theaterObj = _.find(theaters, {name: curTheater});
 		var expireRetrySecs = 2000;
 		var expireInitSecs = 5000;
@@ -32,6 +33,8 @@
 				eventMsgs: []
 			});
 			_.set($scope, 'map', _.get(gmapService, 'gmapObj'));
+
+			unitStaticAPI.initUnitStatics(serverName);
 
 
 		});
@@ -188,7 +191,7 @@
 		});
 	}
 
-	dynMapController.$inject = ['$scope', '$state', '$stateParams', 'userAccountService', 'gmapService', 'dynamic-dcs.api.userAccounts', 'dynamic-dcs.api.srvPlayer', 'mySocket', 'srvService', 'theaters'];
+	dynMapController.$inject = ['$scope', '$state', '$stateParams', 'userAccountService', 'unitStaticService', 'gmapService', 'dynamic-dcs.api.userAccounts', 'dynamic-dcs.api.srvPlayer', 'mySocket', 'srvService', 'theaters'];
 
 	function configFunction($stateProvider) {
 		$stateProvider
@@ -208,6 +211,7 @@
 		.module('state.dynMap', [
 			'ui.router',
 			'dynamic-dcs.gmapService',
+			'dynamic-dcs.unitStaticService',
 			'dynamic-dcs.api.srvPlayer',
 			'dynamic-dcs.api.userAccounts'
 		])

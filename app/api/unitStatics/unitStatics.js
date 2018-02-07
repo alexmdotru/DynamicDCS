@@ -5,11 +5,11 @@
 		var resourceUrl = '/api/unitStatics';
 		return $resource(
 			resourceUrl,
-			{},
+			{name: '@serverName'},
 			{
 				query: {
 					method: 'GET',
-					url: resourceUrl,
+					url: resourceUrl + '/:serverName',
 					isArray:true
 				}
 			}
