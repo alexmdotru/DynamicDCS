@@ -275,7 +275,7 @@ do
 					curUnit.data.unitId = tonumber(unit:getID())
 					curUnit.data.name = unit:getName()
 					table.insert(completeAliveNames, curUnit.data.name)
-					curUnit.data.life = tonumber(unit:getLife())
+					--curUnit.data.life = tonumber(unit:getLife())
 					local unitPosition = unit:getPosition()
 					local lat, lon, alt = coord.LOtoLL(unitPosition.p)
 					curUnit.data.lonLatLoc = {
@@ -313,10 +313,10 @@ do
 						unitCache[curUnit.data.name] = {}
 						unitCache[curUnit.data.name].lat = lat
 						unitCache[curUnit.data.name].lon = lon
-						local maxLife = unit:getLife0()
-						if maxLife ~= nil then
-							curUnit.data.maxLife = tonumber(maxLife)
-						end
+						--local maxLife = unit:getLife0()
+						--if maxLife ~= nil then
+						--	curUnit.data.maxLife = tonumber(maxLife)
+						--end
 						curUnit.data.groupName = group:getName()
 						curUnit.data.name = unit:getName()
 						curUnit.data.category = CategoryNames[unit:getDesc().category]
@@ -354,7 +354,6 @@ do
 						name = k
 					}
 				}
-				env.info('DCU: '..k)
 				table.insert(updateQue.que, curUnit)
 				unitCache[k] = nil
 			end
@@ -372,7 +371,7 @@ do
 				}
 				curStatic.data.name = static:getName()
 				table.insert(completeAliveNames, curStatic.data.name)
-				curStatic.data.life = static:getLife()
+				--curStatic.data.life = static:getLife()
 				local staticPosition = static:getPosition()
 				curStatic.data.lat, curStatic.data.lon, curStatic.data.alt = coord.LOtoLL(staticPosition.p)
 				local lat, lon, alt = coord.LOtoLL(staticPosition.p)
@@ -402,7 +401,7 @@ do
 					staticCache[curStatic.data.name].lat = lat
 					staticCache[curStatic.data.name].lon = lon
 					curStatic.data.groupName = curStatic.data.name
-					curStatic.data.maxLife = tonumber(static:getLife())
+					--curStatic.data.maxLife = tonumber(static:getLife())
 					curStatic.data.category = CategoryNames[static:getDesc().category]
 					curStatic.data.type = static:getTypeName()
 					curStatic.data.coalition = coalition
