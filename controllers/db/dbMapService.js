@@ -481,17 +481,18 @@ exports.webPushActions = function (action, serverName, obj){
 	const WebPush = mapdb.model(serverName+'_webpush', webPushSchema);
 	if (action === 'grabNextQue') {
 		return new Promise(function(resolve, reject) {
-			WebPush.findOneAndRemove({serverName: serverName}, function (err,clientQue){
+			WebPush.findOneAndRemove({serverName: serverName}, function (err, wpush){
 				if(err) {
 					reject(err);
 				}
-				resolve(clientQue);
+				resolve(wpush);
 			});
 		});
 	}
 	if(action === 'save') {
+		console.log(action, serverName, obj);
 		return new Promise(function(resolve, reject) {
-			const webpush = new CmdQue(obj);
+			const webpush = new WebPush(obj);
 			webpush.save(function (err, wpush) {
 				if (err) { reject(err) }
 				resolve(wpush);

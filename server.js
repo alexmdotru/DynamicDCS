@@ -27,7 +27,8 @@ _.assign(DDCS, {
 		systemDatabase: 'DynamicDCS',
 		dynamicHost: '192.168.44.60',
 		dynamicDatabase: 'DDCSMaps'
-	}
+	},
+	perSendMax: 50
 });
 
 //main server ip
@@ -261,3 +262,53 @@ protectedRouter.route('/userAccounts')
 	});
 
 var socketQues = ['q0', 'q1', 'q2', 'qadmin', 'leaderboard'];
+
+setInterval(function () {
+	var webPay = {
+		payload: {derp: 'haha'},
+		serverName: 'dynamicdaucasus',
+		side: 2
+	};
+	dbMapServiceController.webPushActions('save', 'dynamiccaucasus', webPay)
+		.then(function () {
+
+		})
+		.catch(function (err) {
+			console.log('line274: ', err);
+		})
+	;
+
+}, 1000);
+
+setInterval(function () {
+	dbSystemServiceController.serverActions('read', {enabled: true})
+		.then(function (srvs) {
+			_.forEach(srvs, function (srv) {
+				var curServerName = _.get(srv, '_id');
+				var sendQue = [];
+				for(x=0; x < DDCS.perSendMax; x++) {
+					dbMapServiceController.webPushActions('grabNextQue', curServerName)
+						.then(function (webPush) {
+							if (webPush) {
+								console.log('wp: ', webPush);
+								_.set(sendQue, [webPush.serverName + '_' + webPush.side], _.get(sendQue, [webPush.serverName + '_' + webPush.side], []));
+								_.get(sendQue, [webPush.serverName + '_' + webPush.side]).push(webPush);
+							}
+						})
+						.catch(function (err) {
+							console.log('line273: ', err);
+						})
+					;
+				}
+				_.forEach(sendQue, function (value, key) {
+					console.log('sendIO: ', key, value);
+					io.to(key).emit('srvUpd', value);
+				});
+			})
+		})
+		.catch(function (err) {
+			console.log('line273: ', err);
+		})
+	;
+}, 1000);
+

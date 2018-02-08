@@ -10,6 +10,12 @@ const WebPushSchema = new Schema({
 		serverName: {
 			type: String,
 			required: true
+		},
+		side: {
+			type: Number,
+			min: 0,
+			max: 2,
+			required: true
 		}
 	},
 	{
