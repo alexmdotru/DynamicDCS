@@ -47,8 +47,7 @@ const UnitSchema = new Schema({
 		required: true
 	},
 	life: {
-		type: Number,
-		required: true
+		type: Number
 	},
 	maxLife: {
 		type: Number
