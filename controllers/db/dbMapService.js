@@ -13,6 +13,7 @@ var statSessionSchema = require('./models/statSessionSchema');
 var statSrvEventSchema = require('./models/statSrvEventSchema');
 var simpleStatEventSchema = require('./models/simpleStatEventSchema');
 var cmdQueSchema = require('./models/cmdQueSchema');
+var webPushSchema = require('./models/webPushSchema');
 var processSchema = require('./models/processSchema');
 
 _.set(exports, 'connectMapDB', function (dynamicHost, dynamicDatabase) {
@@ -476,6 +477,43 @@ exports.cmdQueActions = function (action, serverName, obj){
 	}
 };
 
+exports.webPushActions = function (action, serverName, obj){
+	const WebPush = mapdb.model(serverName+'_webpush', webPushSchema);
+	if (action === 'grabNextQue') {
+		return new Promise(function(resolve, reject) {
+			WebPush.findOneAndRemove({serverName: serverName}, function (err,clientQue){
+				if(err) {
+					reject(err);
+				}
+				resolve(clientQue);
+			});
+		});
+	}
+	if(action === 'save') {
+		return new Promise(function(resolve, reject) {
+			const webpush = new CmdQue(obj);
+			webpush.save(function (err, wpush) {
+				if (err) { reject(err) }
+				resolve(wpush);
+			});
+		});
+	}
+	if(action === 'delete') {
+		return new Promise(function(resolve, reject) {
+			WebPush.findByIdAndRemove(obj._id, function (err, wpush) {
+				if (err) { reject(err) }
+				resolve(wpush);
+			});
+		});
+	}
+	if(action === 'removeall') {
+		return WebPush.remove({});
+	}
+	if(action === 'dropall') {
+		return WebPush.collection.drop();
+	}
+};
+
 exports.processActions = function (action, serverName, obj){
 	const ProcessQue = mapdb.model(serverName+'_processque', processSchema);
 	if (action === 'read') {
@@ -536,3 +574,5 @@ exports.processActions = function (action, serverName, obj){
 		ProcessQue.collection.drop();
 	}
 };
+
+
