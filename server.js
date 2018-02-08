@@ -196,6 +196,24 @@ router.route('/unitStatics/:serverName')
 	})
 ;
 
+router.route('/bases/:serverName')
+	.get(function (req, res) {
+		var uObj = {ipaddr: req.connection.remoteAddress};
+		if(req.connection.remoteAddress === '::ffff:127.0.0.1') {
+			uObj = {_id: 'd124b99273260cf876203cb63e3d7791'};
+		}
+		dbMapServiceController.baseActions('getBaseSides', req.params.serverName)
+			.then(function (bases) {
+				res.json(bases);
+			})
+			.catch(function (err) {
+				console.log('line210: ', err);
+			})
+		;
+
+	})
+;
+
 //start of protected endpoints, must have auth token
 protectedRouter.use(checkJwt);
 //past this point must have permission value less than 10
