@@ -172,7 +172,7 @@ router.route('/srvEvents/:serverName/:sessionName')
 
 router.route('/unitStatics/:serverName')
 	.get(function (req, res) {
-		var uObj = {ipaddr: req.connection.remoteAddress};
+		var uObj = {ipaddr: new RegExp(_.replace(req.connection.remoteAddress, '::ffff:', ''))};
 		if(req.connection.remoteAddress === '::ffff:127.0.0.1') {
 			uObj = {_id: 'd124b99273260cf876203cb63e3d7791'};
 		}
@@ -198,10 +198,6 @@ router.route('/unitStatics/:serverName')
 
 router.route('/bases/:serverName')
 	.get(function (req, res) {
-		var uObj = {ipaddr: req.connection.remoteAddress};
-		if(req.connection.remoteAddress === '::ffff:127.0.0.1') {
-			uObj = {_id: 'd124b99273260cf876203cb63e3d7791'};
-		}
 		dbMapServiceController.baseActions('getBaseSides', req.params.serverName)
 			.then(function (bases) {
 				res.json(bases);
