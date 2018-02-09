@@ -366,10 +366,10 @@ _.set(DDCS, 'setSocketRoom', function setSocketRoom(socket, room) {
 
 io.on('connection', function (socket) {
 
-	socket.on('room', function (serverName) {
+	socket.on('room', function (rObj) {
+		var curServerName = _.toLower(rObj.server);
 		var curIP = socket.conn.remoteAddress.replace("::ffff:", "");
 		var authId = socket.handshake.query.authId;
-		console.log('serverName: ', serverName);
 
 		console.log(socket.id + ' connected on ' + curIP + ' with ID: ' + authId);
 		if (authId !== 'null') {
@@ -381,8 +381,8 @@ io.on('connection', function (socket) {
 			})
 				.then(function (curAcct) {
 					if (curAcct) {
-						if (serverName) {
-							dbMapServiceController.srvPlayerActions('read', serverName, {_id: curAcct.ucid})
+						if (curServerName) {
+							dbMapServiceController.srvPlayerActions('read', curServerName, {_id: curAcct.ucid})
 								.then(function (srvPlayer) {
 									var side;
 									var curSrvPlayer = _.get(srvPlayer, 0);
@@ -391,7 +391,8 @@ io.on('connection', function (socket) {
 									} else {
 										side = _.get(curSrvPlayer, 'side', 0);
 									}
-									DDCS.setSocketRoom(socket, serverName + '_' + side);
+
+									DDCS.setSocketRoom(socket, curServerName + '_' + side);
 								})
 								.catch(function (err) {
 									console.log('line210: ', err);
@@ -411,15 +412,15 @@ io.on('connection', function (socket) {
 		} else {
 			console.log('NOT LOGGED IN');
 			srvPlayerObj = {ipaddr: new RegExp(curIP)};
-			dbMapServiceController.srvPlayerActions('read', serverName, srvPlayerObj)
+			dbMapServiceController.srvPlayerActions('read', curServerName, srvPlayerObj)
 				.then(function (srvPlayer) {
 					var curSrvPlayer = _.get(srvPlayer, 0);
 					if (curSrvPlayer) {
-						DDCS.setSocketRoom(socket, serverName + '_' + _.get(curSrvPlayer, 'side', 0));
+						DDCS.setSocketRoom(socket, curServerName + '_' + _.get(curSrvPlayer, 'side', 0));
 					}
 				})
 				.catch(function (err) {
-					console.log('line210: ', err);
+					console.log('line423: ', err);
 				})
 			;
 		}
