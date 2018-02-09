@@ -34,7 +34,6 @@
 				var bases = basesAPI.query({serverName: serverName})
 					.$promise
 					.then(function(response) {
-						console.log('rp1: ', response);
 						_.set(us, 'bases', response);
 						return response;
 					})
@@ -42,7 +41,6 @@
 				var unitsStatics = unitStaticAPI.query({serverName: serverName})
 					.$promise
 					.then(function(response) {
-						console.log('rp2: ', response);
 						_.set(us, 'unitStatics', response);
 						return response;
 					})
