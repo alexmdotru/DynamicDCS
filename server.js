@@ -187,7 +187,7 @@ router.route('/unitStatics/:serverName')
 						.then(function (userAcct) {
 							var curAcct = _.get(userAcct, 0);
 							if (curAcct) {
-								dbSystemServiceController.userAccountActions('updateSingleUCID', {ucid: curSrvPlayer._id, lastServer: serverName, gameName: curSrvPlayer.playername})
+								dbSystemServiceController.userAccountActions('updateSingleUCID', {ucid: curSrvPlayer._id, lastServer: serverName, gameName: curSrvPlayer.name})
 									.then(function () {
 										var unitObj = {
 											dead: false,
@@ -214,7 +214,7 @@ router.route('/unitStatics/:serverName')
 							} else {
 								var curSrvIP = _.first(_.split(curSrvPlayer.ipaddr, ':'));
 								console.log('Cur Account Doesnt Exist line, matching IP: ', curSrvIP);
-								dbSystemServiceController.userAccountActions('updateSingleIP', {ipaddr: curSrvIP, ucid: curSrvPlayer.ucid, lastServer: serverName, gameName: curSrvPlayer.playername})
+								dbSystemServiceController.userAccountActions('updateSingleIP', {ipaddr: curSrvIP, ucid: curSrvPlayer.ucid, lastServer: serverName, gameName: curSrvPlayer.name})
 									.then(function () {
 										dbSystemServiceController.userAccountActions('read', {ucid: curSrvPlayer.ucid})
 											.then(function (userAcct) {
