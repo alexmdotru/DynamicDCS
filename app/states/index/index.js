@@ -11,7 +11,7 @@
 		});
 
 		mySocket.emit('room', {
-			server: 'DynamicCaucasus_leaderboard'
+			server: 'Leaderboard'
 		});
 
 		mySocket.on('srvUpd', function (data) {

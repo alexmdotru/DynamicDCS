@@ -19,6 +19,10 @@
 		dmCtrl.resetMap();
 
 		//socket.io connectors
+		mySocket.emit('room', {
+			server: serverName
+		});
+
 		mySocket.on('srvUpd', function (data) {
 			console.log('sockSrvUpd', data);
 		});

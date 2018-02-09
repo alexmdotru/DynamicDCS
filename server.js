@@ -365,64 +365,66 @@ _.set(DDCS, 'setSocketRoom', function setSocketRoom(socket, room) {
 
 
 io.on('connection', function (socket) {
-	var curIP = socket.conn.remoteAddress.replace("::ffff:", "");
-	var authId = socket.handshake.query.authId;
 
-	console.log(socket.id + ' connected on ' + curIP + ' with ID: ' + authId);
-	if (authId !== 'null') {
-		console.log('LOGGED IN', authId);
-		dbSystemServiceController.userAccountActions('updateSocket', {
-			authId: authId,
-			curSocket: socket.id,
-			lastIp: curIP
-		})
-			.then(function (curAcct) {
-				if (curAcct) {
-					if (curAcct.lastServer) {
-						dbMapServiceController.srvPlayerActions('read', curAcct.lastServer, {_id: curAcct.ucid})
-							.then(function (srvPlayer) {
-								var side;
-								var curSrvPlayer = _.get(srvPlayer, 0);
-								if (curAcct.permLvl <= DDCS.serverAdminLvl) {
-									side = 3;
-								} else {
-									side = _.get(curSrvPlayer, 'side', 0);
-								}
+	socket.on('room', function (serverName) {
+		var curIP = socket.conn.remoteAddress.replace("::ffff:", "");
+		var authId = socket.handshake.query.authId;
+		console.log('serverName: ', serverName);
 
-								DDCS.setSocketRoom(socket, curAcct.lastServer + '_' + side);
-							})
-							.catch(function (err) {
-								console.log('line210: ', err);
-							})
-						;
+		console.log(socket.id + ' connected on ' + curIP + ' with ID: ' + authId);
+		if (authId !== 'null') {
+			console.log('LOGGED IN', authId);
+			dbSystemServiceController.userAccountActions('updateSocket', {
+				authId: authId,
+				curSocket: socket.id,
+				lastIp: curIP
+			})
+				.then(function (curAcct) {
+					if (curAcct) {
+						if (serverName) {
+							dbMapServiceController.srvPlayerActions('read', serverName, {_id: curAcct.ucid})
+								.then(function (srvPlayer) {
+									var side;
+									var curSrvPlayer = _.get(srvPlayer, 0);
+									if (curAcct.permLvl <= DDCS.serverAdminLvl) {
+										side = 3;
+									} else {
+										side = _.get(curSrvPlayer, 'side', 0);
+									}
+									DDCS.setSocketRoom(socket, serverName + '_' + side);
+								})
+								.catch(function (err) {
+									console.log('line210: ', err);
+								})
+							;
+						} else {
+							console.log('No serverName for ' + curAcct);
+						}
 					} else {
-
-						console.log('No last server for ' + curAcct);
+						console.log('no account in DB for ' + authId);
 					}
-				} else {
-					console.log('no account in DB for ' + authId);
-				}
-			})
-			.catch(function (err) {
-				console.log('line339', err);
-			})
-		;
-	} else {
-		console.log('NOT LOGGED IN');
-		var serverName = 'DynamicCaucasus';
-		srvPlayerObj = {ipaddr: new RegExp(curIP)};
-		dbMapServiceController.srvPlayerActions('read', serverName, srvPlayerObj)
-			.then(function (srvPlayer) {
-				var curSrvPlayer = _.get(srvPlayer, 0);
-				if (curSrvPlayer) {
-					DDCS.setSocketRoom(socket, serverName + '_' + _.get(curSrvPlayer, 'side', 0));
-				}
-			})
-			.catch(function (err) {
-				console.log('line210: ', err);
-			})
-		;
-	}
+				})
+				.catch(function (err) {
+					console.log('line339', err);
+				})
+			;
+		} else {
+			console.log('NOT LOGGED IN');
+			srvPlayerObj = {ipaddr: new RegExp(curIP)};
+			dbMapServiceController.srvPlayerActions('read', serverName, srvPlayerObj)
+				.then(function (srvPlayer) {
+					var curSrvPlayer = _.get(srvPlayer, 0);
+					if (curSrvPlayer) {
+						DDCS.setSocketRoom(socket, serverName + '_' + _.get(curSrvPlayer, 'side', 0));
+					}
+				})
+				.catch(function (err) {
+					console.log('line210: ', err);
+				})
+			;
+		}
+
+	});
 
 	socket.on('disconnect', function () {
 		console.log(socket.id + ' user disconnected');
