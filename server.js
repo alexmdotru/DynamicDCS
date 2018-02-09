@@ -272,8 +272,10 @@ router.route('/unitStatics/:serverName')
 						})
 					;
 				} else {
-					console.log(clientIP + ' Has never played on the server');
-					res.json([{}]);
+					var mesg = clientIP + ' Has never played on the server';
+					console.log(mesg);
+					res.status(404);
+					res.send(mesg);
 				}
 			})
 			.catch(function (err) {
