@@ -327,23 +327,27 @@ io.on('connection', function (socket) {
 			lastIp: curIP
 		})
 			.then(function (curAcct) {
-				if (curAcct && curAcct.lastServer) {
-					dbMapServiceController.srvPlayerActions('read', curAcct.lastServer, {_id: curAcct.ucid})
-						.then(function (srvPlayer) {
-							var side;
-							var curSrvPlayer = _.get(srvPlayer, 0);
-							if (curAcct.permLvl <= DDCS.serverAdminLvl) {
-								side = 3;
-							} else {
-								side = _.get(curSrvPlayer, 'side', 0);
-							}
+				if (curAcct) {
+					if (curAcct.lastServer) {
+						dbMapServiceController.srvPlayerActions('read', curAcct.lastServer, {_id: curAcct.ucid})
+							.then(function (srvPlayer) {
+								var side;
+								var curSrvPlayer = _.get(srvPlayer, 0);
+								if (curAcct.permLvl <= DDCS.serverAdminLvl) {
+									side = 3;
+								} else {
+									side = _.get(curSrvPlayer, 'side', 0);
+								}
 
-							DDCS.setSocketRoom(socket, curAcct.lastServer + '_' + side);
-						})
-						.catch(function (err) {
+								DDCS.setSocketRoom(socket, curAcct.lastServer + '_' + side);
+							})
+							.catch(function (err) {
 								console.log('line210: ', err);
 							})
 						;
+					} else {
+						console.log('No last server for ' + curAcct);
+					}
 				} else {
 					console.log('no account in DB for ' + authId);
 				}

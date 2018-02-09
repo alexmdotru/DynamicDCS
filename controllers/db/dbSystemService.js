@@ -120,10 +120,8 @@ exports.userAccountActions = function (action, obj){
 		});
 	}
 	if(action === 'checkAccount') {
-		// console.log('UA check account socket line131: ', _.get(obj, 'body'));
 		var curBody = _.get(obj, 'body');
 		return new Promise(function(resolve, reject) {
-			// console.log('check account: ', curBody.sub);
 			UserAccount.find({authId: curBody.sub}, function (err, userAccount) {
 				if (err) { reject(err); }
 				if (userAccount.length === 0) {
