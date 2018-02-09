@@ -355,7 +355,7 @@ if(req.connection.remoteAddress === '::ffff:127.0.0.1') {
 */
 
 _.set(DDCS, 'setSocketRoom', function setSocketRoom(socket, room) {
-	console.log('si: ', socket.id, room);
+	console.log('Joining Room: ', socket.id, room);
 	if (_.get(socket, 'room')) {
 		socket.leave(socket.room);
 	}
@@ -369,7 +369,7 @@ io.on('connection', function (socket) {
 	var authId = socket.handshake.query.authId;
 
 	console.log(socket.id + ' connected on ' + curIP + ' with ID: ' + authId);
-	if (authId) {
+	if (authId !== 'null') {
 		console.log('LOGGED IN', authId);
 		dbSystemServiceController.userAccountActions('updateSocket', {
 			authId: authId,
@@ -409,6 +409,19 @@ io.on('connection', function (socket) {
 		;
 	} else {
 		console.log('NOT LOGGED IN');
+		var serverName = 'DynamicCaucasus';
+		srvPlayerObj = {ipaddr: new RegExp(curIP)};
+		dbMapServiceController.srvPlayerActions('read', serverName, srvPlayerObj)
+			.then(function (srvPlayer) {
+				var curSrvPlayer = _.get(srvPlayer, 0);
+				if (curSrvPlayer) {
+					DDCS.setSocketRoom(socket, serverName + '_' + _.get(curSrvPlayer, 'side', 0));
+				}
+			})
+			.catch(function (err) {
+				console.log('line210: ', err);
+			})
+		;
 	}
 
 	socket.on('disconnect', function () {

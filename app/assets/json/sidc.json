@@ -737,6 +737,15 @@
     "modifier1": "-",
     "modifier2": "-"
   },
+  "SA342L": {
+    "codingScheme": "S",
+    "affiliation": "U",
+    "battleDimension": "A",
+    "status": "-",
+    "functionID": "MHA--",
+    "modifier1": "-",
+    "modifier2": "-"
+  },
   "SH-60B": {
     "codingScheme": "S",
     "affiliation": "U",
