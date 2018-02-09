@@ -179,9 +179,6 @@ router.route('/unitStatics/:serverName')
 		var serverName = req.params.serverName;
 		var clientIP = _.replace(req.connection.remoteAddress, '::ffff:', '');
 		srvPlayerObj = {ipaddr: new RegExp(clientIP)};
-		if(clientIP === '127.0.0.1') {
-			srvPlayerObj = {_id: 'd124b99273260cf876203cb63e3d7791'};
-		}
 		dbMapServiceController.srvPlayerActions('read', serverName, srvPlayerObj)
 			.then(function (srvPlayer) {
 				var curSrvPlayer = _.get(srvPlayer, 0);
@@ -214,15 +211,16 @@ router.route('/unitStatics/:serverName')
 								})
 							;
 						} else {
-							var curIP = _.first(_.split(curSrvPlayer.ipaddr, ':'));
-							console.log('Cur Account Doesnt Exist line, matching IP: ', curIP);
-							dbSystemServiceController.userAccountActions('updateSingleIP', {ipaddr: curIP, ucid: curSrvPlayer.ucid, lastServer: serverName})
+							var curSrvIP = _.first(_.split(curSrvPlayer.ipaddr, ':'));
+							console.log('Cur Account Doesnt Exist line, matching IP: ', curSrvIP);
+							dbSystemServiceController.userAccountActions('updateSingleIP', {ipaddr: curSrvIP, ucid: curSrvPlayer.ucid, lastServer: serverName})
 								.then(function () {
 									dbSystemServiceController.userAccountActions('read', {ucid: curSrvPlayer.ucid})
 										.then(function (userAcct) {
+											var unitObj;
 											var curAcct = _.get(userAcct, 0);
 											if (curAcct) {
-												var unitObj = {
+												unitObj = {
 													dead: false,
 													coalition: 0
 												};
@@ -231,6 +229,21 @@ router.route('/unitStatics/:serverName')
 												} else {
 													_.set(unitObj, 'coalition', _.get(curSrvPlayer, 'side', 0));
 												}
+												dbMapServiceController.unitActions('readStd', serverName, unitObj)
+													.then(function (resp) {
+														res.json(resp);
+													})
+													.catch(function (err) {
+														console.log('line184: ', err);
+													})
+												;
+											} else {
+												console.log('go by pure IP');
+												unitObj = {
+													dead: false,
+													coalition: 0
+												};
+												_.set(unitObj, 'coalition', _.get(curSrvPlayer, 'side', 0));
 												dbMapServiceController.unitActions('readStd', serverName, unitObj)
 													.then(function (resp) {
 														res.json(resp);
