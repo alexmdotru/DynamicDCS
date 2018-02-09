@@ -185,12 +185,12 @@ router.route('/unitStatics/:serverName')
 		dbMapServiceController.srvPlayerActions('read', serverName, srvPlayerObj)
 			.then(function (srvPlayer) {
 				var curSrvPlayer = _.get(srvPlayer, 0);
-				dbSystemServiceController.userAccountActions('updateSingle', {ucid: curSrvPlayer._id, lastServer: serverName})
-					.then(function () {
-						dbSystemServiceController.userAccountActions('read', {ucid: curSrvPlayer._id})
-							.then(function (userAcct) {
-								var curAcct = _.get(userAcct, 0);
-								if (curAcct) {
+				dbSystemServiceController.userAccountActions('read', {ucid: curSrvPlayer._id})
+					.then(function (userAcct) {
+						var curAcct = _.get(userAcct, 0);
+						if (curAcct) {
+							dbSystemServiceController.userAccountActions('updateSingleUCID', {ucid: curSrvPlayer._id, lastServer: serverName})
+								.then(function () {
 									var unitObj = {
 										dead: false,
 										coalition: 0
@@ -200,7 +200,7 @@ router.route('/unitStatics/:serverName')
 									} else {
 										_.set(unitObj, 'coalition', _.get(curSrvPlayer, 'side', 0));
 									}
-									dbMapServiceController.unitActions('readStd', req.params.serverName, unitObj)
+									dbMapServiceController.unitActions('readStd', serverName, unitObj)
 										.then(function (resp) {
 											res.json(resp);
 										})
@@ -208,22 +208,54 @@ router.route('/unitStatics/:serverName')
 											console.log('line184: ', err);
 										})
 									;
-								} else {
-									//no user account use IP
-									console.log('Cur Account Doesnt Exist line:213');
-									res.json({});
-								}
-							})
-							.catch(function (err) {
-								console.log('line213: ', err);
-							})
-						;
+								})
+								.catch(function (err) {
+									console.log('line221: ', err);
+								})
+							;
+						} else {
+							var curIP = _.first(_.split(curSrvPlayer.ipaddr, ':'));
+							console.log('Cur Account Doesnt Exist line, matching IP: ', curIP);
+							dbSystemServiceController.userAccountActions('updateSingleIP', {ipaddr: curIP, ucid: curSrvPlayer.ucid, lastServer: serverName})
+								.then(function () {
+									dbSystemServiceController.userAccountActions('read', {ucid: curSrvPlayer.ucid})
+										.then(function (userAcct) {
+											var curAcct = _.get(userAcct, 0);
+											if (curAcct) {
+												var unitObj = {
+													dead: false,
+													coalition: 0
+												};
+												if (curAcct.permLvl <= DDCS.serverAdminLvl) {
+													delete unitObj.coalition;
+												} else {
+													_.set(unitObj, 'coalition', _.get(curSrvPlayer, 'side', 0));
+												}
+												dbMapServiceController.unitActions('readStd', serverName, unitObj)
+													.then(function (resp) {
+														res.json(resp);
+													})
+													.catch(function (err) {
+														console.log('line184: ', err);
+													})
+												;
+											}
+										})
+										.catch(function (err) {
+											console.log('line221: ', err);
+										})
+									;
+								})
+								.catch(function (err) {
+									console.log('line221: ', err);
+								})
+							;
+						}
 					})
 					.catch(function (err) {
-						console.log('line221: ', err);
+						console.log('line213: ', err);
 					})
 				;
-
 			})
 			.catch(function (err) {
 				console.log('line227: ', err);
@@ -346,6 +378,7 @@ io.on('connection', function (socket) {
 							})
 						;
 					} else {
+
 						console.log('No last server for ' + curAcct);
 					}
 				} else {

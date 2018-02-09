@@ -40,10 +40,23 @@ exports.userAccountActions = function (action, obj){
 			});
 		});
 	}
-	if(action === 'updateSingle') {
+	if(action === 'updateSingleUCID') {
 		return new Promise(function(resolve, reject) {
 			UserAccount.findOneAndUpdate(
 				{ucid: obj.ucid},
+				{$set: obj},
+				{new: true},
+				function(err, uaccount) {
+					if (err) { reject(err) }
+					resolve(uaccount);
+				}
+			);
+		});
+	}
+	if(action === 'updateSingleIP') {
+		return new Promise(function(resolve, reject) {
+			UserAccount.findOneAndUpdate(
+				{lastIp: obj.ipaddr},
 				{$set: obj},
 				{new: true},
 				function(err, uaccount) {
