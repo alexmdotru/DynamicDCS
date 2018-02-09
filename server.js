@@ -28,7 +28,8 @@ _.assign(DDCS, {
 		dynamicHost: '192.168.44.60',
 		dynamicDatabase: 'DDCSMaps'
 	},
-	perSendMax: 50
+	perSendMax: 50,
+	serverAdminLvl: 10
 });
 
 //main server ip
@@ -43,6 +44,8 @@ dbMapServiceController.connectMapDB(DDCS.db.dynamicHost, DDCS.db.dynamicDatabase
 //secure sockets
 var io = require('socket.io').listen(server);
 var admin = false;
+
+var srvPlayerObj;
 
 // app.use/routes/etc...
 app.use(bodyParser.json());
@@ -173,27 +176,48 @@ router.route('/srvEvents/:serverName/:sessionName')
 
 router.route('/unitStatics/:serverName')
 	.get(function (req, res) {
-		var uObj = {ipaddr: new RegExp(_.replace(req.connection.remoteAddress, '::ffff:', ''))};
+		var serverName = req.params.serverName;
+		srvPlayerObj = {ipaddr: new RegExp(_.replace(req.connection.remoteAddress, '::ffff:', ''))};
 		if(req.connection.remoteAddress === '::ffff:127.0.0.1') {
-			uObj = {_id: 'd124b99273260cf876203cb63e3d7791'};
+			srvPlayerObj = {_id: 'd124b99273260cf876203cb63e3d7791'};
 		}
-		dbMapServiceController.srvPlayerActions('read', req.params.serverName, uObj)
+		dbMapServiceController.srvPlayerActions('read', serverName, srvPlayerObj)
 			.then(function (srvPlayer) {
-				var curPlayer = _.get(srvPlayer, 0);
-				dbMapServiceController.unitActions('readStd', req.params.serverName, {dead: false, coalition: curPlayer.side})
-					.then(function (resp) {
-						res.json(resp);
-					})
-					.catch(function (err) {
-						console.log('line184: ', err);
-					})
-				;
+				var curSrvPlayer = _.get(srvPlayer, 0);
+				if (curSrvPlayer) {
+					dbSystemServiceController.userAccountActions('read', {ucid: curSrvPlayer._id})
+						.then(function (userAcct) {
+							var curAcct = _.get(userAcct, 0);
+							var unitObj = {
+								dead: false,
+								coalition: 0
+							};
+							if (curAcct.permLvl <= DDCS.serverAdminLvl) {
+								delete unitObj.coalition;
+							} else {
+								_.set(unitObj, 'coalition', _.get(curSrvPlayer, 'side', 0));
+							}
+							dbMapServiceController.unitActions('readStd', req.params.serverName, unitObj)
+								.then(function (resp) {
+									res.json(resp);
+								})
+								.catch(function (err) {
+									console.log('line184: ', err);
+								})
+							;
+						})
+						.catch(function (err) {
+							console.log('line184: ', err);
+						})
+					;
+				} else {
+					//no user account use IP
+				}
 			})
 			.catch(function (err) {
 				console.log('line189: ', err);
 			})
 		;
-
 	})
 ;
 
@@ -259,9 +283,72 @@ protectedRouter.route('/userAccounts')
 				res.json(resp);
 			})
 		;
-	});
+	})
+;
+/*
+srvPlayerObj = {ipaddr: new RegExp(_.replace(req.connection.remoteAddress, '::ffff:', ''))};
+if(req.connection.remoteAddress === '::ffff:127.0.0.1') {
+	srvPlayerObj = {_id: 'd124b99273260cf876203cb63e3d7791'};
+}
 
-var socketQues = ['q0', 'q1', 'q2', 'qadmin', 'leaderboard'];
+_.set(DDCS, 'setSocketRoom', function setSocketRoom(socket, room) {
+	if (_.get(socket, 'room')) {
+		socket.leave(socket.room);
+	}
+	_.set(socket, 'room', room);
+	socket.join(room);
+});
+
+io.on('connection', function (socket) {
+	console.log(socket.id + ' connected on ' + curIP + ' with ID: ' + socket.handshake.query.authId);
+	if (socket.handshake.query.authId === 'null') {
+		console.log('NOT LOGGED IN', socket.handshake.query.authId);
+		socket.on('disconnect', function () {
+			console.log(socket.id + ' user disconnected');
+		});
+		socket.on('error', function (err) {
+			if (err === 'handshake error') {
+				console.log('handshake error', err);
+			} else {
+				console.log('io error', err);
+			}
+		});
+	} else {
+		console.log('LOGGED IN', socket.handshake.query.authId);
+		dbSystemServiceController.userAccountActions('updateSocket', {
+			authId: socket.handshake.query.authId,
+			curSocket: socket.id,
+			lastIp: curIP
+		})
+			.then(function (data) {
+				socket.on('room', function (roomObj) {
+					setRoomSide(socket, roomObj);
+				});
+
+				socket.on('clientUpd', function (data) {
+					if (data.action === 'unitINIT') {
+						if (curServers[data.name]) {
+							// sendInit(data.name, socket.id, data.authId);
+						}
+					}
+				});
+
+				socket.on('disconnect', function () {
+					console.log(socket.id + ' user disconnected');
+				});
+				socket.on('error', function (err) {
+					if (err === 'handshake error') {
+						console.log('handshake error', err);
+					} else {
+						console.log('io error', err);
+					}
+				});
+			})
+			.catch(function (err) {
+				console.log('line495', err);
+			});
+	}
+});
 
 setInterval(function () {
 	var webPay = {
@@ -279,6 +366,7 @@ setInterval(function () {
 	;
 
 }, 1000);
+*/
 
 setInterval(function () {
 	dbSystemServiceController.serverActions('read', {enabled: true})
