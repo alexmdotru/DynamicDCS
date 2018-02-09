@@ -490,7 +490,6 @@ exports.webPushActions = function (action, serverName, obj){
 		});
 	}
 	if(action === 'save') {
-		console.log(action, serverName, obj);
 		return new Promise(function(resolve, reject) {
 			const webpush = new WebPush(obj);
 			webpush.save(function (err, wpush) {

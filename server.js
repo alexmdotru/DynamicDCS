@@ -28,8 +28,9 @@ _.assign(DDCS, {
 		dynamicHost: '192.168.44.60',
 		dynamicDatabase: 'DDCSMaps'
 	},
-	perSendMax: 50,
-	serverAdminLvl: 10
+	perSendMax: 100,
+	serverAdminLvl: 10,
+	socketQue: []
 });
 
 //main server ip
@@ -272,7 +273,7 @@ router.route('/unitStatics/:serverName')
 					;
 				} else {
 					console.log(clientIP + ' Has never played on the server');
-					res.json({});
+					res.json([{}]);
 				}
 			})
 			.catch(function (err) {
@@ -439,12 +440,12 @@ io.on('connection', function (socket) {
 	});
 });
 
-/*
+
 setInterval(function () {
 	var webPay = {
 		payload: {derp: 'haha'},
-		serverName: 'dynamicdaucasus',
-		side: 2
+		serverName: 'dynamiccaucasus',
+		side: 3
 	};
 	dbMapServiceController.webPushActions('save', 'dynamiccaucasus', webPay)
 		.then(function () {
@@ -455,38 +456,43 @@ setInterval(function () {
 		})
 	;
 
-}, 1000);
-*/
+}, 100);
 
 setInterval(function () {
 	dbSystemServiceController.serverActions('read', {enabled: true})
 		.then(function (srvs) {
 			_.forEach(srvs, function (srv) {
-				var curServerName = _.get(srv, '_id');
-				var sendQue = [];
-				for(x=0; x < DDCS.perSendMax; x++) {
-					dbMapServiceController.webPushActions('grabNextQue', curServerName)
-						.then(function (webPush) {
-							if (webPush) {
-								console.log('wp: ', webPush);
-								_.set(sendQue, [webPush.serverName + '_' + webPush.side], _.get(sendQue, [webPush.serverName + '_' + webPush.side], []));
-								_.get(sendQue, [webPush.serverName + '_' + webPush.side]).push(webPush);
-							}
-						})
-						.catch(function (err) {
-							console.log('line273: ', err);
-						})
-					;
-				}
-				_.forEach(sendQue, function (value, key) {
-					console.log('sendIO: ', key, value);
-					io.to(key).emit('srvUpd', value);
-				});
+				var curServerName = _.toLower(_.get(srv, '_id'));
+				dbMapServiceController.webPushActions('grabNextQue', curServerName)
+					.then(function (webPush) {
+						if (webPush) {
+							var rName = webPush.serverName + '_' + webPush.side;
+							_.set(DDCS, ['socketQue', rName], _.get(DDCS, ['socketQue', rName], []));
+							_.get(DDCS, ['socketQue', rName]).push(webPush.payload);
+						}
+					})
+					.catch(function (err) {
+						console.log('line273: ', err);
+					})
+				;
 			})
 		})
 		.catch(function (err) {
 			console.log('line273: ', err);
 		})
 	;
-}, 1000);
+}, 100);
 
+setInterval(function () {
+	console.log('isA: ', _.isArray(DDCS.socketQue), DDCS.socketQue);
+	_.forEach(DDCS.socketQue, function (sQue, skey) {
+		console.log('qk: ', sQue, sKey);
+		var sendArray = [];
+		for(x=0; x < DDCS.perSendMax; x++) {
+			sendArray.push(sQue[x]);
+			sQue[x].shift();
+		}
+		console.log('PUSH: ', sendArray.length);
+		io.to(key).emit('srvUpd', sendArray);
+	});
+}, 5000);

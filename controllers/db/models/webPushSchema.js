@@ -14,7 +14,7 @@ const WebPushSchema = new Schema({
 		side: {
 			type: Number,
 			min: 0,
-			max: 2,
+			max: 3,
 			required: true
 		}
 	},

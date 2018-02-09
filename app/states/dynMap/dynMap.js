@@ -26,6 +26,7 @@
 		mySocket.on('srvUpd', function (data) {
 			console.log('sockSrvUpd', data);
 		});
+
 		mySocket.on('error', function (err) {
 			console.log('sockErr', err);
 		});

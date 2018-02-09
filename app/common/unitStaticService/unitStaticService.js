@@ -30,9 +30,11 @@
 				;
 			},
 			init: function (serverName) {
+				console.log('sn: ', serverName);
 				var bases = basesAPI.query({serverName: serverName})
 					.$promise
 					.then(function(response) {
+						console.log('rp1: ', response);
 						_.set(us, 'bases', response);
 						return response;
 					})
@@ -40,6 +42,7 @@
 				var unitsStatics = unitStaticAPI.query({serverName: serverName})
 					.$promise
 					.then(function(response) {
+						console.log('rp2: ', response);
 						_.set(us, 'unitStatics', response);
 						return response;
 					})
@@ -48,12 +51,13 @@
 					bases,
 					unitsStatics
 				])
-				.catch(function(err){
-					console.log('line52', err);
-				})
-				.finally(function () {
-					_.set(us, 'loaded', true);
-				})
+					.catch(function(err){
+						console.log('line52', err);
+					})
+					.finally(function () {
+						_.set(us, 'loaded', true);
+					})
+				;
 			}
 		});
 	}
