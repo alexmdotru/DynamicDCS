@@ -10,11 +10,9 @@
 
 		function handleAuthentication() {
 			angularAuth0.parseHash(function(err, authResult) {
-				//console.log('CONSOLE AUTH: ',authResult, authResult.idToken);
 				if (authResult && authResult.idToken) {
 					setSession(authResult);
 					getProfile();
-					//location.reload();
 				} else if (err) {
 					$timeout(function() {
 						location.reload();
@@ -35,14 +33,12 @@
 					if (profile) {
 						setUserProfile(profile);
 					}
-					//cb(err, profile);
 				});
 			}
 		}
 
 		function setUserProfile(profile) {
 			userProfile = profile;
-			//send payload to server
 			userAccountService.checkUserAccount(profile);
 		}
 

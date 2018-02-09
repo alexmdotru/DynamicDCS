@@ -177,47 +177,59 @@ router.route('/srvEvents/:serverName/:sessionName')
 router.route('/unitStatics/:serverName')
 	.get(function (req, res) {
 		var serverName = req.params.serverName;
-		srvPlayerObj = {ipaddr: new RegExp(_.replace(req.connection.remoteAddress, '::ffff:', ''))};
-		if(req.connection.remoteAddress === '::ffff:127.0.0.1') {
+		var clientIP = _.replace(req.connection.remoteAddress, '::ffff:', '');
+		srvPlayerObj = {ipaddr: new RegExp(clientIP)};
+		if(clientIP === '127.0.0.1') {
 			srvPlayerObj = {_id: 'd124b99273260cf876203cb63e3d7791'};
 		}
 		dbMapServiceController.srvPlayerActions('read', serverName, srvPlayerObj)
 			.then(function (srvPlayer) {
 				var curSrvPlayer = _.get(srvPlayer, 0);
-				if (curSrvPlayer) {
-					dbSystemServiceController.userAccountActions('read', {ucid: curSrvPlayer._id})
-						.then(function (userAcct) {
-							var curAcct = _.get(userAcct, 0);
-							var unitObj = {
-								dead: false,
-								coalition: 0
-							};
-							if (curAcct.permLvl <= DDCS.serverAdminLvl) {
-								delete unitObj.coalition;
-							} else {
-								_.set(unitObj, 'coalition', _.get(curSrvPlayer, 'side', 0));
-							}
-							dbMapServiceController.unitActions('readStd', req.params.serverName, unitObj)
-								.then(function (resp) {
-									res.json(resp);
-								})
-								.catch(function (err) {
-									console.log('line184: ', err);
-								})
-							;
-						})
-						.catch(function (err) {
-							console.log('line184: ', err);
-						})
-					;
-				} else {
-					//no user account use IP
-				}
+				dbSystemServiceController.userAccountActions('updateSingle', {ucid: curSrvPlayer._id, lastServer: serverName})
+					.then(function () {
+						dbSystemServiceController.userAccountActions('read', {ucid: curSrvPlayer._id})
+							.then(function (userAcct) {
+								var curAcct = _.get(userAcct, 0);
+								if (curAcct) {
+									var unitObj = {
+										dead: false,
+										coalition: 0
+									};
+									if (curAcct.permLvl <= DDCS.serverAdminLvl) {
+										delete unitObj.coalition;
+									} else {
+										_.set(unitObj, 'coalition', _.get(curSrvPlayer, 'side', 0));
+									}
+									dbMapServiceController.unitActions('readStd', req.params.serverName, unitObj)
+										.then(function (resp) {
+											res.json(resp);
+										})
+										.catch(function (err) {
+											console.log('line184: ', err);
+										})
+									;
+								} else {
+									//no user account use IP
+									console.log('Cur Account Doesnt Exist line:213');
+									res.json({});
+								}
+							})
+							.catch(function (err) {
+								console.log('line213: ', err);
+							})
+						;
+					})
+					.catch(function (err) {
+						console.log('line221: ', err);
+					})
+				;
+
 			})
 			.catch(function (err) {
-				console.log('line189: ', err);
+				console.log('line227: ', err);
 			})
 		;
+
 	})
 ;
 
@@ -290,8 +302,10 @@ srvPlayerObj = {ipaddr: new RegExp(_.replace(req.connection.remoteAddress, '::ff
 if(req.connection.remoteAddress === '::ffff:127.0.0.1') {
 	srvPlayerObj = {_id: 'd124b99273260cf876203cb63e3d7791'};
 }
+*/
 
 _.set(DDCS, 'setSocketRoom', function setSocketRoom(socket, room) {
+	console.log('si: ', socket.id, room);
 	if (_.get(socket, 'room')) {
 		socket.leave(socket.room);
 	}
@@ -299,57 +313,62 @@ _.set(DDCS, 'setSocketRoom', function setSocketRoom(socket, room) {
 	socket.join(room);
 });
 
+
 io.on('connection', function (socket) {
-	console.log(socket.id + ' connected on ' + curIP + ' with ID: ' + socket.handshake.query.authId);
-	if (socket.handshake.query.authId === 'null') {
-		console.log('NOT LOGGED IN', socket.handshake.query.authId);
-		socket.on('disconnect', function () {
-			console.log(socket.id + ' user disconnected');
-		});
-		socket.on('error', function (err) {
-			if (err === 'handshake error') {
-				console.log('handshake error', err);
-			} else {
-				console.log('io error', err);
-			}
-		});
-	} else {
-		console.log('LOGGED IN', socket.handshake.query.authId);
+	var curIP = socket.conn.remoteAddress.replace("::ffff:", "");
+	var authId = socket.handshake.query.authId;
+
+	console.log(socket.id + ' connected on ' + curIP + ' with ID: ' + authId);
+	if (authId) {
+		console.log('LOGGED IN', authId);
 		dbSystemServiceController.userAccountActions('updateSocket', {
-			authId: socket.handshake.query.authId,
+			authId: authId,
 			curSocket: socket.id,
 			lastIp: curIP
 		})
-			.then(function (data) {
-				socket.on('room', function (roomObj) {
-					setRoomSide(socket, roomObj);
-				});
+			.then(function (curAcct) {
+				if (curAcct && curAcct.lastServer) {
+					dbMapServiceController.srvPlayerActions('read', curAcct.lastServer, {_id: curAcct.ucid})
+						.then(function (srvPlayer) {
+							var side;
+							var curSrvPlayer = _.get(srvPlayer, 0);
+							if (curAcct.permLvl <= DDCS.serverAdminLvl) {
+								side = 3;
+							} else {
+								side = _.get(curSrvPlayer, 'side', 0);
+							}
 
-				socket.on('clientUpd', function (data) {
-					if (data.action === 'unitINIT') {
-						if (curServers[data.name]) {
-							// sendInit(data.name, socket.id, data.authId);
-						}
-					}
-				});
-
-				socket.on('disconnect', function () {
-					console.log(socket.id + ' user disconnected');
-				});
-				socket.on('error', function (err) {
-					if (err === 'handshake error') {
-						console.log('handshake error', err);
-					} else {
-						console.log('io error', err);
-					}
-				});
+							DDCS.setSocketRoom(socket, curAcct.lastServer + '_' + side);
+						})
+						.catch(function (err) {
+								console.log('line210: ', err);
+							})
+						;
+				} else {
+					console.log('no account in DB for ' + authId);
+				}
 			})
 			.catch(function (err) {
-				console.log('line495', err);
-			});
+				console.log('line339', err);
+			})
+		;
+	} else {
+		console.log('NOT LOGGED IN');
 	}
+
+	socket.on('disconnect', function () {
+		console.log(socket.id + ' user disconnected');
+	});
+	socket.on('error', function (err) {
+		if (err === 'handshake error') {
+			console.log('handshake error', err);
+		} else {
+			console.log('io error', err);
+		}
+	});
 });
 
+/*
 setInterval(function () {
 	var webPay = {
 		payload: {derp: 'haha'},

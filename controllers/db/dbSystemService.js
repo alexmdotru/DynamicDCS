@@ -40,17 +40,26 @@ exports.userAccountActions = function (action, obj){
 			});
 		});
 	}
-	if(action === 'update') {
-		// console.log('UA reg updateobj line42: ', obj);
+	if(action === 'updateSingle') {
 		return new Promise(function(resolve, reject) {
-			//console.log('userAccountActionsUCID: ', obj.ucid);
+			UserAccount.findOneAndUpdate(
+				{ucid: obj.ucid},
+				{$set: obj},
+				{new: true},
+				function(err, uaccount) {
+					if (err) { reject(err) }
+					resolve(uaccount);
+				}
+			);
+		});
+	}
+	if(action === 'update') {
+		return new Promise(function(resolve, reject) {
 			UserAccount.find({ucid: obj.ucid}, function (err, ucidUser) {
 				if (err) {
 					reject(err);
 				}
-				//console.log('ucidUser.length: ', ucidUser.length);
 				if (ucidUser.length === 0) {
-					//console.log('ip user', obj.lastIp);
 					UserAccount.find({lastIp: obj.lastIp}, function (err, ipUser) {
 						if (err) {
 							reject(err);
@@ -58,7 +67,6 @@ exports.userAccountActions = function (action, obj){
 						if (ipUser.length !== 0) {
 							ipUser = ipUser[0];
 							_.set(ipUser, 'gameName', _.get(obj, 'gameName'));
-							// _.set(ipUser, 'ucid', _.get(obj, 'ucid'));
 							if(typeof obj.curSocket !== 'undefined'){
 								_.set(ipUser, 'curSocket', _.get(obj, 'curSocket'));
 							}
@@ -66,26 +74,21 @@ exports.userAccountActions = function (action, obj){
 								if (err) {
 									reject(err);
 								}
-								//console.log('ipuser1: ', ipUser);
 								resolve(ipUser);
 							});
 						}
 					});
 				} else {
-					//console.log('ucid user', obj);
 					ucidUser = ucidUser[0];
 					_.set(ucidUser, 'gameName', _.get(obj, 'gameName'));
 					_.set(ucidUser, 'lastIp', _.get(obj, 'lastIp'));
 					if(typeof obj.curSocket !== 'undefined'){
-						//console.log('UPDATE CUR SOCKET: ', obj,curSocket);
 						_.set(ucidUser, 'curSocket', _.get(obj, 'curSocket'));
 					}
-					//console.log('fulucidobj: ', ucidUser);
 					ucidUser.save(function (err) {
 						if (err) {
 							reject(err);
 						}
-						//console.log('ucidUser1: ', ucidUser);
 						resolve(ucidUser);
 					});
 				}

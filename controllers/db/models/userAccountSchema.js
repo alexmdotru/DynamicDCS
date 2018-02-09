@@ -21,6 +21,9 @@ const UserAccountSchema = new Schema({
 		lastIp: {
 			type: String
 		},
+		lastServer: {
+			type: String
+		},
 		curSocket: {
 			type: String
 		},
