@@ -182,96 +182,101 @@ router.route('/unitStatics/:serverName')
 		dbMapServiceController.srvPlayerActions('read', serverName, srvPlayerObj)
 			.then(function (srvPlayer) {
 				var curSrvPlayer = _.get(srvPlayer, 0);
-				dbSystemServiceController.userAccountActions('read', {ucid: curSrvPlayer._id})
-					.then(function (userAcct) {
-						var curAcct = _.get(userAcct, 0);
-						if (curAcct) {
-							dbSystemServiceController.userAccountActions('updateSingleUCID', {ucid: curSrvPlayer._id, lastServer: serverName})
-								.then(function () {
-									var unitObj = {
-										dead: false,
-										coalition: 0
-									};
-									if (curAcct.permLvl <= DDCS.serverAdminLvl) {
-										delete unitObj.coalition;
-									} else {
-										_.set(unitObj, 'coalition', _.get(curSrvPlayer, 'side', 0));
-									}
-									dbMapServiceController.unitActions('readStd', serverName, unitObj)
-										.then(function (resp) {
-											res.json(resp);
-										})
-										.catch(function (err) {
-											console.log('line184: ', err);
-										})
-									;
-								})
-								.catch(function (err) {
-									console.log('line221: ', err);
-								})
-							;
-						} else {
-							var curSrvIP = _.first(_.split(curSrvPlayer.ipaddr, ':'));
-							console.log('Cur Account Doesnt Exist line, matching IP: ', curSrvIP);
-							dbSystemServiceController.userAccountActions('updateSingleIP', {ipaddr: curSrvIP, ucid: curSrvPlayer.ucid, lastServer: serverName})
-								.then(function () {
-									dbSystemServiceController.userAccountActions('read', {ucid: curSrvPlayer.ucid})
-										.then(function (userAcct) {
-											var unitObj;
-											var curAcct = _.get(userAcct, 0);
-											if (curAcct) {
-												unitObj = {
-													dead: false,
-													coalition: 0
-												};
-												if (curAcct.permLvl <= DDCS.serverAdminLvl) {
-													delete unitObj.coalition;
+				if (curSrvPlayer) {
+					dbSystemServiceController.userAccountActions('read', {ucid: curSrvPlayer._id})
+						.then(function (userAcct) {
+							var curAcct = _.get(userAcct, 0);
+							if (curAcct) {
+								dbSystemServiceController.userAccountActions('updateSingleUCID', {ucid: curSrvPlayer._id, lastServer: serverName})
+									.then(function () {
+										var unitObj = {
+											dead: false,
+											coalition: 0
+										};
+										if (curAcct.permLvl <= DDCS.serverAdminLvl) {
+											delete unitObj.coalition;
+										} else {
+											_.set(unitObj, 'coalition', _.get(curSrvPlayer, 'side', 0));
+										}
+										dbMapServiceController.unitActions('readStd', serverName, unitObj)
+											.then(function (resp) {
+												res.json(resp);
+											})
+											.catch(function (err) {
+												console.log('line184: ', err);
+											})
+										;
+									})
+									.catch(function (err) {
+										console.log('line211: ', err);
+									})
+								;
+							} else {
+								var curSrvIP = _.first(_.split(curSrvPlayer.ipaddr, ':'));
+								console.log('Cur Account Doesnt Exist line, matching IP: ', curSrvIP);
+								dbSystemServiceController.userAccountActions('updateSingleIP', {ipaddr: curSrvIP, ucid: curSrvPlayer.ucid, lastServer: serverName})
+									.then(function () {
+										dbSystemServiceController.userAccountActions('read', {ucid: curSrvPlayer.ucid})
+											.then(function (userAcct) {
+												var unitObj;
+												var curAcct = _.get(userAcct, 0);
+												if (curAcct) {
+													unitObj = {
+														dead: false,
+														coalition: 0
+													};
+													if (curAcct.permLvl <= DDCS.serverAdminLvl) {
+														delete unitObj.coalition;
+													} else {
+														_.set(unitObj, 'coalition', _.get(curSrvPlayer, 'side', 0));
+													}
+													dbMapServiceController.unitActions('readStd', serverName, unitObj)
+														.then(function (resp) {
+															res.json(resp);
+														})
+														.catch(function (err) {
+															console.log('line238: ', err);
+														})
+													;
 												} else {
+													console.log('go by pure IP');
+													unitObj = {
+														dead: false,
+														coalition: 0
+													};
 													_.set(unitObj, 'coalition', _.get(curSrvPlayer, 'side', 0));
+													dbMapServiceController.unitActions('readStd', serverName, unitObj)
+														.then(function (resp) {
+															res.json(resp);
+														})
+														.catch(function (err) {
+															console.log('line253: ', err);
+														})
+													;
 												}
-												dbMapServiceController.unitActions('readStd', serverName, unitObj)
-													.then(function (resp) {
-														res.json(resp);
-													})
-													.catch(function (err) {
-														console.log('line184: ', err);
-													})
-												;
-											} else {
-												console.log('go by pure IP');
-												unitObj = {
-													dead: false,
-													coalition: 0
-												};
-												_.set(unitObj, 'coalition', _.get(curSrvPlayer, 'side', 0));
-												dbMapServiceController.unitActions('readStd', serverName, unitObj)
-													.then(function (resp) {
-														res.json(resp);
-													})
-													.catch(function (err) {
-														console.log('line184: ', err);
-													})
-												;
-											}
-										})
-										.catch(function (err) {
-											console.log('line221: ', err);
-										})
-									;
-								})
-								.catch(function (err) {
-									console.log('line221: ', err);
-								})
-							;
-						}
-					})
-					.catch(function (err) {
-						console.log('line213: ', err);
-					})
-				;
+											})
+											.catch(function (err) {
+												console.log('line259: ', err);
+											})
+										;
+									})
+									.catch(function (err) {
+										console.log('line264: ', err);
+									})
+								;
+							}
+						})
+						.catch(function (err) {
+							console.log('line270: ', err);
+						})
+					;
+				} else {
+					console.log(clientIP + ' Has never played on the server');
+					res.json({});
+				}
 			})
 			.catch(function (err) {
-				console.log('line227: ', err);
+				console.log('line279: ', err);
 			})
 		;
 
