@@ -3,6 +3,7 @@ const constants = require('../../constants');
 const dbMapServiceController = require('../../db/dbMapService');
 const DCSLuaCommands = require('../../player/DCSLuaCommands');
 const playersEvent = require('../../events/backend/players');
+const webPushCommands = require('../../socketIO/webPush');
 
 _.set(exports, 'processSelfKill', function (serverName, sessionName, eventObj) {
 	var iCurObj;
@@ -22,7 +23,7 @@ _.set(exports, 'processSelfKill', function (serverName, sessionName, eventObj) {
 			msg: 'A: ' + constants.side[iPlayer.side] + ' ' + iPlayer.name + ' has killed himself'
 		};
 		if(_.get(iCurObj, 'iucid')) {
-			// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
+			webPushCommands.sendToAll(serverName, {payload: iCurObj});
 			dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj)
 				.catch(function (err) {
 					console.log('err line45: ', err);

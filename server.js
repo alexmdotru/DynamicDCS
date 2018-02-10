@@ -502,4 +502,4 @@ setInterval(function () {
 		console.log('PUSH: ', sKey, sendArray.length);
 		io.to(sKey).emit('srvUpd', sendArray);
 	});
-}, 5000);
+}, 250);
