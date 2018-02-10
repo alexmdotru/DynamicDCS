@@ -135,6 +135,12 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 							}
 						};
 
+						if(_.get(curData, 'coalition')) {
+							_.set(iCurObj, 'data.coalition', _.get(curData, 'coalition'));
+						} else {
+							_.set(iCurObj, 'data.coalition', curUnit.coalition);
+						}
+
 						dbMapServiceController.unitActions('update', serverName, iCurObj.data)
 							.then(function (unit) {
 								webPushCommands.sendToCoalition(serverName, {payload: _.cloneDeep(iCurObj)});
