@@ -168,7 +168,7 @@
 
 		_.set(gSrv, 'createMarker', function (unit) {
 			var curSymbol = gSrv.buildSIDC(unit);
-			if (curSymbol.getAnchor()) {
+			if (!curSymbol.getAnchor()) {
 				console.log('u: ', unit);
 			}
 			var curMarker = _.cloneDeep(unit);
