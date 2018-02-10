@@ -23,13 +23,13 @@ _.set(exports, 'sendToCoalition', function (serverName, pData) {
 	;
 
 	_.set(pData, 'side', _.get(pData, ['payload', 'data', 3]));
-	dbMapServiceController.webPushActions('save', serverName, payload)
+	dbMapServiceController.webPushActions('save', serverName, pData)
 		.catch(function (err) {
 			console.log('line274: ', err);
 		})
 	;
 });
 
-_.set(exports, 'sendToIndividual', function (serverName, socketId, payload) {
+_.set(exports, 'sendToIndividual', function (serverName, socketId, pData) {
 
 });
