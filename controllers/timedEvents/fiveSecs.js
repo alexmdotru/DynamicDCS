@@ -41,6 +41,7 @@ _.set(exports, 'processFiveSecActions', function (serverName, fullySynced) {
 			})
 		;
 
+		/*
 		dbMapServiceController.baseActions('read', serverName, {mainBase: true, $or: [{side: 1}, {side: 2}]})
 			.then(function (bases) {
 				_.forEach(bases, function (base) {
@@ -81,5 +82,6 @@ _.set(exports, 'processFiveSecActions', function (serverName, fullySynced) {
 				console.log('line74', err);
 			})
 		;
+		*/
 	}
 });
