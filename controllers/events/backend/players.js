@@ -2,8 +2,10 @@ const _ = require('lodash');
 const dbSystemServiceController = require('../../db/dbSystemService');
 const dbMapServiceController = require('../../db/dbMapService');
 const DCSLuaCommands = require('../../player/DCSLuaCommands');
+const webPushCommands = require('../../socketIO/webPush');
 
 _.set(exports, 'processPlayerEvent', function (serverName, sessionName, playerArray) {
+	webPushCommands.sendToAll(serverName, {payload: playerArray, serverName: serverName});
 	_.set(exports, ['rtPlayerArray', serverName], playerArray.data);
 	_.forEach(playerArray.data, function (player) {
 		if (player !== null) {
