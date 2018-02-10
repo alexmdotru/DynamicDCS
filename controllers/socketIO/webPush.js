@@ -16,6 +16,7 @@ _.set(exports, 'sendToAll', function (serverName, pData) {
 _.set(exports, 'sendToCoalition', function (serverName, pData) {
 	_.set(pData, 'serverName', _.toLower(serverName));
 	_.set(pData, 'side', _.get(pData, ['payload', 'data', 'displaySide']));
+	console.log('pd: ', pData);
 	dbMapServiceController.webPushActions('save', serverName, pData)
 		.catch(function (err) {
 			console.log('line274: ', err);
