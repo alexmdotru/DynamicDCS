@@ -143,7 +143,18 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 
 						dbMapServiceController.unitActions('update', serverName, iCurObj.data)
 							.then(function (unit) {
-								webPushCommands.sendToCoalition(serverName, {payload: _.cloneDeep(iCurObj)});
+								var sObj = {
+									action: 'U',
+									data: {
+										_id: iCurObj.data._id,
+										lat: iCurObj.data.lonLatLoc[1],
+										long: iCurObj.data.lonLatLoc[0],
+										alt: iCurObj.data.alt,
+										hdg: iCurObj.data.hdg,
+										speed: iCurObj.data.speed
+									}
+								};
+								webPushCommands.sendToCoalition(serverName, {payload: sObj});
 								// curServers[serverName].updateQue.q1.push(_.cloneDeep(iCurObj));
 								// curServers[serverName].updateQue.q2.push(_.cloneDeep(iCurObj));
 								// curServers[serverName].updateQue.qadmin.push(_.cloneDeep(iCurObj));
