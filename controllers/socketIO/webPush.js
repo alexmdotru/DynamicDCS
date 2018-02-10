@@ -25,6 +25,10 @@ _.set(exports, 'sendToCoalition', function (serverName, pData) {
 		console.log('no sendToCoalition side for ', pData);
 	}
 
+	if (pData.payload.action === 'U') {
+		console.log('U2', pData);
+	}
+
 	dbMapServiceController.webPushActions('save', serverName, pData)
 		.catch(function (err) {
 			console.log('line274: ', err);

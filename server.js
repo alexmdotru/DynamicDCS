@@ -471,6 +471,9 @@ setInterval(function () {
 					.then(function (webPush) {
 						if (webPush) {
 							var rName = webPush.serverName + '_' + webPush.side;
+							if (webPush.payload.action === 'U') {
+								console.log('U: ', webPush.payload);
+							}
 							_.set(DDCS, ['socketQue', rName], _.get(DDCS, ['socketQue', rName], []));
 							_.get(DDCS, ['socketQue', rName]).push(webPush.payload);
 						}
@@ -490,12 +493,10 @@ setInterval(function () {
 
 setInterval(function () {
 	_.forEach(DDCS.socketQue, function (sQue, sKey) {
-		console.log('qk: ', sQue.length, sKey, sQue);
 		var sendArray = [];
 		for(x=0; x < DDCS.perSendMax; x++) {
 			if ( sQue[x]) {
 				sendArray.push(sQue[x]);
-				console.log('sq: ', sQue[x]);
 				sQue.shift();
 			}
 		}
