@@ -14,8 +14,17 @@ _.set(exports, 'sendToAll', function (serverName, pData) {
 });
 
 _.set(exports, 'sendToCoalition', function (serverName, pData) {
-	_.set(pData, 'serverName', _.toLower(serverName));
-	_.set(pData, 'side', _.get(pData, ['payload', 'data', 'displaySide']));
+	var coalition = _.get(pData, ['payload', 'data', 'coalition']);
+	var displaySide = _.get(pData, ['payload', 'data', 'displaySide']);
+	var serverName =  _.set(pData, 'serverName', _.toLower(serverName));
+	if(coalition) {
+		_.set(pData, 'side', coalition);
+	} else if (displaySide) {
+		_.set(pData, 'side', displaySide);
+	} else {
+		console.log('no sendToCoalition side for ', pData);
+	}
+
 	dbMapServiceController.webPushActions('save', serverName, pData)
 		.catch(function (err) {
 			console.log('line274: ', err);

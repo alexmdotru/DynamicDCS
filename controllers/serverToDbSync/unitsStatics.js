@@ -78,6 +78,7 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 
 					dbMapServiceController.unitActions('update', serverName, iCurObj.data)
 						.then(function () {
+							webPushCommands.sendToCoalition(serverName, {payload: _.cloneDeep(iCurObj)});
 							//curServers[serverName].updateQue['q' + _.get(curUnit, ['coalition'])].push(_.cloneDeep(iCurObj));
 							//curServers[serverName].updateQue.qadmin.push(_.cloneDeep(iCurObj));
 						})
@@ -102,6 +103,7 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 
 					dbMapServiceController.unitActions('save', serverName, iCurObj.data)
 						.then(function (unit) {
+							webPushCommands.sendToCoalition(serverName, {payload: _.cloneDeep(iCurObj)});
 							//curServers[serverName].updateQue['q' + parseFloat(_.get(unitObj, 'data.coalition'))].push(_.cloneDeep(iCurObj));
 							//curServers[serverName].updateQue.qadmin.push(_.cloneDeep(iCurObj));
 						})
@@ -132,6 +134,7 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 
 						dbMapServiceController.unitActions('update', serverName, iCurObj.data)
 							.then(function (unit) {
+								webPushCommands.sendToCoalition(serverName, {payload: _.cloneDeep(iCurObj)});
 								// curServers[serverName].updateQue.q1.push(_.cloneDeep(iCurObj));
 								// curServers[serverName].updateQue.q2.push(_.cloneDeep(iCurObj));
 								// curServers[serverName].updateQue.qadmin.push(_.cloneDeep(iCurObj));
