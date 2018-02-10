@@ -22,7 +22,7 @@ _.set(exports, 'sendToCoalition', function (serverName, pData) {
 		})
 	;
 
-	_.set(payload, 'side', 3);
+	_.set(pData, 'side', _.get(pData, ['payload', 'data', 3]));
 	dbMapServiceController.webPushActions('save', serverName, payload)
 		.catch(function (err) {
 			console.log('line274: ', err);

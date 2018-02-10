@@ -491,7 +491,6 @@ exports.webPushActions = function (action, serverName, obj){
 	}
 	if(action === 'save') {
 		return new Promise(function(resolve, reject) {
-			console.log('sp: ', obj);
 			const webpush = new WebPush(obj);
 			webpush.save(function (err, wpush) {
 				if (err) { reject(err) }
