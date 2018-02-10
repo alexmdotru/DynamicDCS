@@ -2,7 +2,7 @@ const _ = require('lodash');
 const dbMapServiceController = require('../db/dbMapService');
 
 _.set(exports, 'sendToAll', function (serverName, payload) {
-	for(x=0; x <= '3', x++;) {
+	for(var x=0; x <= '3'; x++) {
 		_.set(payload, 'side', x);
 		console.log('sta: ', serverName, payload);
 		dbMapServiceController.webPushActions('save', serverName, payload)
