@@ -16,7 +16,6 @@ _.set(exports, 'sendToAll', function (serverName, pData) {
 _.set(exports, 'sendToCoalition', function (serverName, pData) {
 	var coalition = _.get(pData, ['payload', 'data', 'coalition']);
 	var displaySide = _.get(pData, ['payload', 'data', 'displaySide']);
-	var serverName =  _.set(pData, 'serverName', _.toLower(serverName));
 	if(coalition) {
 		_.set(pData, 'side', coalition);
 	} else if (displaySide) {
