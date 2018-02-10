@@ -85,8 +85,7 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 								action: 'U',
 								data: {
 									_id: iCurObj.data._id,
-									lat: iCurObj.data.lonLatLoc[1],
-									long: iCurObj.data.lonLatLoc[0],
+									lonLatLoc: iCurObj.data.lonLatLoc,
 									alt: iCurObj.data.alt,
 									hdg: iCurObj.data.hdg,
 									speed: iCurObj.data.speed,
