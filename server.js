@@ -471,9 +471,6 @@ setInterval(function () {
 					.then(function (webPush) {
 						if (webPush) {
 							var rName = webPush.serverName + '_' + webPush.side;
-							if (webPush.payload.action === 'U') {
-								console.log('U: ', webPush.payload);
-							}
 							_.set(DDCS, ['socketQue', rName], _.get(DDCS, ['socketQue', rName], []));
 							_.get(DDCS, ['socketQue', rName]).push(webPush.payload);
 						}
@@ -500,7 +497,6 @@ setInterval(function () {
 				sQue.shift();
 			}
 		}
-		console.log('PUSH: ', sKey, sendArray.length);
 		io.to(sKey).emit('srvUpd', sendArray);
 	});
 }, 250);
