@@ -19,7 +19,7 @@ _.set(exports, 'sendToCoalition', function (serverName, payload) {
 	dbMapServiceController.webPushActions('save', serverName, payload)
 		.catch(function (err) {
 			console.log('line274: ', err);
-			console.log('errSide: ', payload);:
+			console.log('errSide: ', payload);
 		})
 	;
 
