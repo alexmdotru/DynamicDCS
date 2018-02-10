@@ -654,7 +654,7 @@ _.set(exports, 'healBase', function ( serverName, baseName ) {
 					exports.spawnLogisticCmdCenter(serverName, curUnit);
 				})
 				.catch(function (err) {
-						console.log('erroring line657: ', err);
+						console.log('erroring line657: ', err, serverName, curUnit);
 				})
 			;
 		})
