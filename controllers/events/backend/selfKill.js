@@ -23,7 +23,7 @@ _.set(exports, 'processSelfKill', function (serverName, sessionName, eventObj) {
 			msg: 'A: ' + constants.side[iPlayer.side] + ' ' + iPlayer.name + ' has killed himself'
 		};
 		if(_.get(iCurObj, 'iucid')) {
-			webPushCommands.sendToAll(serverName, {payload: iCurObj});
+			webPushCommands.sendToAll(serverName, {payload: {action: eventObj.action, data: _.cloneDeep(iCurObj)}});
 			dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj)
 				.catch(function (err) {
 					console.log('err line45: ', err);

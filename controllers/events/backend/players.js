@@ -5,7 +5,7 @@ const DCSLuaCommands = require('../../player/DCSLuaCommands');
 const webPushCommands = require('../../socketIO/webPush');
 
 _.set(exports, 'processPlayerEvent', function (serverName, sessionName, playerArray) {
-	webPushCommands.sendToAll(serverName, {payload: playerArray});
+	webPushCommands.sendToAll(serverName, {payload: _.cloneDeep(playerArray)});
 	_.set(exports, ['rtPlayerArray', serverName], playerArray.data);
 	_.forEach(playerArray.data, function (player) {
 		if (player !== null) {

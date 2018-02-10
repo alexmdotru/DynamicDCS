@@ -21,7 +21,7 @@ _.set(exports, 'processDisconnect', function (serverName, sessionName, eventObj)
 			msg: 'A: ' + iPlayer.name + ' has disconnected - Ping:' + iPlayer.ping + ' Lang:' + iPlayer.lang
 		};
 		if(iCurObj.iucid) {
-			webPushCommands.sendToAll(serverName, {payload: iCurObj});
+			webPushCommands.sendToAll(serverName, {payload: {action: eventObj.action, data: _.cloneDeep(iCurObj)}});
 			dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj)
 				.catch(function (err) {
 					console.log('err line45: ', err);
