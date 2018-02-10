@@ -72,6 +72,8 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 					}
 					if(_.get(curData, 'coalition')) {
 						_.set(iCurObj, 'data.coalition', _.get(curData, 'coalition'));
+					} else {
+						_.set(iCurObj, 'data.coalition', curUnit.coalition);
 					}
 					if(_.get(curData, 'country')) {
 						_.set(iCurObj, 'data.country', _.get(curData, 'country'));
