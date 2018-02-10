@@ -485,7 +485,7 @@ setInterval(function () {
 			console.log('line273: ', err);
 		})
 	;
-}, 1);
+}, 50);
 
 
 setInterval(function () {
@@ -499,4 +499,4 @@ setInterval(function () {
 		}
 		io.to(sKey).emit('srvUpd', sendArray);
 	});
-}, 100);
+}, 300);
