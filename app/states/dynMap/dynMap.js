@@ -32,7 +32,6 @@
 		});
 
 		mySocket.on('reconnect', function () {
-			console.log('sockSrvUpd', data);
 			setTimeout(function(){
 				dmCtrl.resetMap();
 			}, 1000);

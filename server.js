@@ -30,7 +30,7 @@ _.assign(DDCS, {
 	},
 	perSendMax: 100,
 	serverAdminLvl: 10,
-	socketQue: []
+	socketQue: {}
 });
 
 //main server ip
@@ -442,10 +442,11 @@ io.on('connection', function (socket) {
 	});
 });
 
-
+/*
+var i = 0;
 setInterval(function () {
 	var webPay = {
-		payload: {derp: 'haha'},
+		payload: {derp: 'haha'+ i},
 		serverName: 'dynamiccaucasus',
 		side: 3
 	};
@@ -457,8 +458,9 @@ setInterval(function () {
 			console.log('line274: ', err);
 		})
 	;
-
+	i++;
 }, 100);
+*/
 
 setInterval(function () {
 	dbSystemServiceController.serverActions('read', {enabled: true})
@@ -486,15 +488,17 @@ setInterval(function () {
 }, 100);
 
 setInterval(function () {
-	console.log('isA: ', _.isArray(DDCS.socketQue), DDCS.socketQue);
-	_.forEach(DDCS.socketQue, function (sQue, skey) {
-		console.log('qk: ', sQue, sKey);
+	_.forEach(DDCS.socketQue, function (sQue, sKey) {
+		console.log('qk: ', sQue.length, sKey, sQue);
 		var sendArray = [];
 		for(x=0; x < DDCS.perSendMax; x++) {
-			sendArray.push(sQue[x]);
-			sQue[x].shift();
+			if ( sQue[x]) {
+				sendArray.push(sQue[x]);
+				console.log('sq: ', sQue[x]);
+				sQue.shift();
+			}
 		}
-		console.log('PUSH: ', sendArray.length);
-		io.to(key).emit('srvUpd', sendArray);
+		console.log('PUSH: ', sKey, sendArray.length);
+		io.to(sKey).emit('srvUpd', sendArray);
 	});
 }, 5000);
