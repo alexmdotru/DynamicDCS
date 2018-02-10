@@ -89,7 +89,8 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 									long: iCurObj.data.lonLatLoc[0],
 									alt: iCurObj.data.alt,
 									hdg: iCurObj.data.hdg,
-									speed: iCurObj.data.speed
+									speed: iCurObj.data.speed,
+									coalition: iCurObj.data.coalition
 								}
 							};
 							webPushCommands.sendToCoalition(serverName, {payload: sObj});
