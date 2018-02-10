@@ -31,7 +31,7 @@ _.set(exports, 'processEventPlayerEnterUnit', function (serverName, sessionName,
 								msg: 'C: '+ _.get(curIUnit, 'playername') +' enters a brand new ' + _.get(curIUnit, 'type')
 							};
 							if (_.get(iCurObj, 'iucid')) {
-								webPushCommands.sendToCoalition(serverName, {payload: _.cloneDeep(iCurObj)});
+								webPushCommands.sendToCoalition(serverName, {payload: {action: eventObj.action, data: _.cloneDeep(iCurObj)}});
 								dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 							}
 							capLivesController.updateServerCapLives(serverName);

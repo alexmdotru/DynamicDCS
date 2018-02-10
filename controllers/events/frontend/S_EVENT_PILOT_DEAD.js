@@ -29,7 +29,7 @@ _.set(exports, 'processEventPilotDead', function (serverName, sessionName, event
 								msg: 'A: ' + constants.side[_.get(curIUnit, 'coalition')] + ' '+ _.get(curIUnit, 'type') + '('+ _.get(curIUnit, 'playername') +') pilot is dead'
 							};
 							if (_.get(iCurObj, 'iucid')) {
-								webPushCommands.sendToAll(serverName, {payload: _.cloneDeep(iCurObj)});
+								webPushCommands.sendToAll(serverName, {payload: {action: eventObj.action, data: _.cloneDeep(iCurObj)}});
 								dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 							}
 							DCSLuaCommands.sendMesgToAll(

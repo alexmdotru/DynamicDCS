@@ -28,7 +28,7 @@ _.set(exports, 'processEventRefuelingStop', function (serverName, sessionName, e
 								showInChart: true
 							};
 							if (_.get(iCurObj, 'iucid')) {
-								webPushCommands.sendToCoalition(serverName, {payload: _.cloneDeep(iCurObj)});
+								webPushCommands.sendToCoalition(serverName, {payload: {action: eventObj.action, data: _.cloneDeep(iCurObj)}});
 								dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 							}
 							DCSLuaCommands.sendMesgToCoalition(

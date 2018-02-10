@@ -31,7 +31,7 @@ _.set(exports, 'processEventPlayerLeaveUnit', function (serverName, sessionName,
 								msg: 'C: '+ _.get(curIUnit, 'playername') +' leaves his ' + _.get(curIUnit, 'type')
 							};
 							if (_.get(iCurObj, 'iucid')) {
-								webPushCommands.sendToCoalition(serverName, {payload: _.cloneDeep(iCurObj)});
+								webPushCommands.sendToCoalition(serverName, {payload: {action: eventObj.action, data: _.cloneDeep(iCurObj)}});
 								dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 							}
 							DCSLuaCommands.sendMesgToCoalition(

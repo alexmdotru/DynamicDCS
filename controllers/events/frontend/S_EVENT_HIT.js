@@ -24,7 +24,7 @@ _.set(exports, 'checkShootingUsers', function (serverName) {
 					_.set(shootObj, 'score', 10);
 				}
 				if(_.get(shootObj, 'iucid') || _.get(shootObj, 'tucid')) {
-					webPushCommands.sendToAll(serverName, {payload: _.cloneDeep(shootObj)});
+					webPushCommands.sendToAll(serverName, {payload: {action: 'S_EVENT_HIT', data: _.cloneDeep(shootObj)}});
 					dbMapServiceController.simpleStatEventActions('save', serverName, shootObj);
 				}
 				DCSLuaCommands.sendMesgToAll(
@@ -132,7 +132,7 @@ _.set(exports, 'processEventHit', function (serverName, sessionName, eventObj) {
 														_.set(iCurObj, 'msg', 'A: ' + constants.side[_.get(curIUnit, 'coalition')] + ' '+ iPName +' has hit ' + constants.side[_.get(curTUnit, 'coalition')] + ' '+tPName + ' with ' + _.get(weaponResp, 'displayName') + ' - +'+_.get(weaponResp, 'score'));
 														// console.log('3: ', iCurObj.msg);
 														if(_.get(iCurObj, 'iucid') || _.get(iCurObj, 'tucid')) {
-															webPushCommands.sendToAll(serverName, {payload: _.cloneDeep(iCurObj)});
+															webPushCommands.sendToAll(serverName, {payload: {action: eventObj.action, data: _.cloneDeep(iCurObj)}});
 															dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 														}
 														DCSLuaCommands.sendMesgToAll(
