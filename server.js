@@ -490,10 +490,19 @@ setInterval(function () {
 
 setInterval(function () {
 	_.forEach(DDCS.socketQue, function (sQue, sKey) {
+		var sObj;
 		var sendArray = [];
 		for(x=0; x < DDCS.perSendMax; x++) {
 			if (sQue[x]) {
-				sendArray.push(sQue[x]);
+				sObj = {
+					_id: sQue[x].data._id,
+					lat: sQue[x].data.lonLatLoc[1],
+					long: sQue[x].data.lonLatLoc[2],
+					alt: sQue[x].data.alt,
+					hdg: sQue[x].data.hdg,
+					speed: sQue[x].data.speed
+				};
+				sendArray.push(sObj);
 				sQue.shift();
 			}
 		}
