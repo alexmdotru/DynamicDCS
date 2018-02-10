@@ -168,7 +168,7 @@
 
 		_.set(gSrv, 'createMarker', function (unit) {
 			var curSymbol = gSrv.buildSIDC(unit);
-			if (!curSymbol.getAnchor()) {
+			if (!curSymbol) {
 				console.log('u: ', unit);
 			}
 			var curMarker = _.cloneDeep(unit);
@@ -205,13 +205,13 @@
 		//process inbound Unit Stream
 		_.set(gSrv, 'processUnitStream', function (update) {
 			if(update.action === 'C') {
-				gSrv.createMarker(unit);
+				gSrv.createMarker(update.data);
 			}
 			if(update.action === 'U') {
-				gSrv.updateMarker(unit);
+				gSrv.updateMarker(update.data);
 			}
 			if(update.action === 'D') {
-				gSrv.delMarker(unit);
+				gSrv.delMarker(update.data);
 			}
 		});
 

@@ -28,7 +28,7 @@ _.assign(DDCS, {
 		dynamicHost: '192.168.44.60',
 		dynamicDatabase: 'DDCSMaps'
 	},
-	perSendMax: 100,
+	perSendMax: 500,
 	serverAdminLvl: 10,
 	socketQue: {}
 });
@@ -485,7 +485,7 @@ setInterval(function () {
 			console.log('line273: ', err);
 		})
 	;
-}, 100);
+}, 30);
 
 
 setInterval(function () {
@@ -499,4 +499,4 @@ setInterval(function () {
 		}
 		io.to(sKey).emit('srvUpd', sendArray);
 	});
-}, 250);
+}, 100);

@@ -24,7 +24,12 @@
 		});
 
 		mySocket.on('srvUpd', function (data) {
-			console.log('sockSrvUpd', data);
+			_.forEach(data, function (queObj) {
+				if ((_.get(queObj, 'action') === 'C') || (_.get(queObj, 'action') === 'U') || (_.get(queObj, 'action') === 'D'))  {
+					gmapService.processUnitStream(queObj);
+				}
+			});
+			// console.log('sockSrvUpd', data);
 		});
 
 		mySocket.on('error', function (err) {
