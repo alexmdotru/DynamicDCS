@@ -4,6 +4,7 @@ const dbMapServiceController = require('../../db/dbMapService');
 const DCSLuaCommands = require('../../player/DCSLuaCommands');
 const capLivesController = require('../../action/capLives');
 const unitsStaticsController = require('../../serverToDbSync/unitsStatics');
+const webPushCommands = require('../../socketIO/webPush');
 
 _.set(exports, 'processEventCrash', function (serverName, sessionName, eventObj) {
 	// Occurs when any aircraft crashes into the ground and is completely destroyed.
@@ -30,7 +31,7 @@ _.set(exports, 'processEventCrash', function (serverName, sessionName, eventObj)
 								msg: 'A: '+ constants.side[_.get(curIUnit, 'coalition')] + ' '+ _.get(curIUnit, 'type') + '(' + _.get(curIUnit, 'playername') +') has crashed'
 							};
 							if(_.get(iCurObj, 'iucid')) {
-								// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
+								webPushCommands.sendToAll(serverName, {payload: _.cloneDeep(iCurObj)});
 								dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 							}
 

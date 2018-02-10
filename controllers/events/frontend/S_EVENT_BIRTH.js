@@ -2,6 +2,7 @@ const _ = require('lodash');
 const constants = require('../../constants');
 const dbMapServiceController = require('../../db/dbMapService');
 const DCSLuaCommands = require('../../player/DCSLuaCommands');
+const webPushCommands = require('../../socketIO/webPush');
 
 _.set(exports, 'processEventBirth', function (serverName, sessionName, eventObj) {
 	// Occurs when any object is spawned into the mission.
@@ -25,7 +26,7 @@ _.set(exports, 'processEventBirth', function (serverName, sessionName, eventObj)
 								msg: 'C: '+ _.get(curIUnit, 'playername') +' enters a brand new ' + _.get(curIUnit, 'type')
 							};
 							if (_.get(iCurObj, 'iucid')) {
-								// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
+								webPushCommands.sendToCoalition(serverName, {payload: _.cloneDeep(iCurObj)});
 								dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 							}
 							DCSLuaCommands.sendMesgToCoalition(

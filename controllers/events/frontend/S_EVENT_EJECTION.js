@@ -3,6 +3,7 @@ const constants = require('../../constants');
 const dbMapServiceController = require('../../db/dbMapService');
 const DCSLuaCommands = require('../../player/DCSLuaCommands');
 const unitsStaticsController = require('../../serverToDbSync/unitsStatics');
+const webPushCommands = require('../../socketIO/webPush');
 
 _.set(exports, 'processEventEjection', function (serverName, sessionName, eventObj) {
 	// Occurs when a pilot ejects from an aircraft

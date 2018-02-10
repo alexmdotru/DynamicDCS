@@ -6,6 +6,7 @@ const playersEvent = require('../../events/backend/players');
 const capLivesController = require('../../action/capLives');
 const menuUpdateController = require('../../menu/menuUpdate');
 const unitsStaticsController = require('../../serverToDbSync/unitsStatics');
+const webPushCommands = require('../../socketIO/webPush');
 
 _.set(exports, 'processEventPlayerEnterUnit', function (serverName, sessionName, eventObj) {
 	// Occurs when any player assumes direct control of a unit.
@@ -30,7 +31,7 @@ _.set(exports, 'processEventPlayerEnterUnit', function (serverName, sessionName,
 								msg: 'C: '+ _.get(curIUnit, 'playername') +' enters a brand new ' + _.get(curIUnit, 'type')
 							};
 							if (_.get(iCurObj, 'iucid')) {
-								// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
+								webPushCommands.sendToCoalition(serverName, {payload: _.cloneDeep(iCurObj)});
 								dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 							}
 							capLivesController.updateServerCapLives(serverName);

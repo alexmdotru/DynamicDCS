@@ -10,6 +10,7 @@ const constants = require('../../constants');
 const dbSystemServiceController = require('../../db/dbSystemService');
 const dbMapServiceController = require('../../db/dbMapService');
 const DCSLuaCommands = require('../../player/DCSLuaCommands');
+const webPushCommands = require('../../socketIO/webPush');
 
 exports.shootingUsers = {};
 
@@ -23,7 +24,7 @@ _.set(exports, 'checkShootingUsers', function (serverName) {
 					_.set(shootObj, 'score', 10);
 				}
 				if(_.get(shootObj, 'iucid') || _.get(shootObj, 'tucid')) {
-					// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
+					webPushCommands.sendToAll(serverName, {payload: _.cloneDeep(shootObj)});
 					dbMapServiceController.simpleStatEventActions('save', serverName, shootObj);
 				}
 				DCSLuaCommands.sendMesgToAll(
@@ -48,7 +49,6 @@ _.set(exports, 'processEventHit', function (serverName, sessionName, eventObj) {
 	dbMapServiceController.unitActions('read', serverName, {unitId: iUnitId})
 		.then(function (iunit) {
 			var curIUnit = _.get(iunit, 0);
-
 			dbMapServiceController.unitActions('read', serverName, {unitId: tUnitId})
 				.then(function (tunit) {
 					dbMapServiceController.srvPlayerActions('read', serverName, {sessionName: sessionName})
@@ -125,14 +125,14 @@ _.set(exports, 'processEventHit', function (serverName, sessionName, eventObj) {
 														_.set(iCurObj, 'msg',
 															'A: ' + constants.side[_.get(curIUnit, 'coalition')] + ' '+ iPName +' has hit ' + constants.side[_.get(curTUnit, 'coalition')]+' ' + tPName + ' '+_.get(exports.shootingUsers, [iUnitId, 'count'], 0)+' times with ' + _.get(weaponResp, 'displayName') + ' - +'+_.get(weaponResp, 'score')+' each.'
 														);
-														console.log('2: ', iCurObj.msg);
+														// console.log('2: ', iCurObj.msg);
 														_.set(exports.shootingUsers, [iUnitId, 'iCurObj'], _.cloneDeep(iCurObj));
 													} else {
 														_.set(iCurObj, 'score', _.get(weaponResp, 'score'));
 														_.set(iCurObj, 'msg', 'A: ' + constants.side[_.get(curIUnit, 'coalition')] + ' '+ iPName +' has hit ' + constants.side[_.get(curTUnit, 'coalition')] + ' '+tPName + ' with ' + _.get(weaponResp, 'displayName') + ' - +'+_.get(weaponResp, 'score'));
 														// console.log('3: ', iCurObj.msg);
 														if(_.get(iCurObj, 'iucid') || _.get(iCurObj, 'tucid')) {
-															//curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
+															webPushCommands.sendToAll(serverName, {payload: _.cloneDeep(iCurObj)});
 															dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 														}
 														DCSLuaCommands.sendMesgToAll(

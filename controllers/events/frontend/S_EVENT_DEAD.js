@@ -3,6 +3,7 @@ const constants = require('../../constants');
 const dbMapServiceController = require('../../db/dbMapService');
 const DCSLuaCommands = require('../../player/DCSLuaCommands');
 const unitsStaticsController = require('../../serverToDbSync/unitsStatics');
+const webPushCommands = require('../../socketIO/webPush');
 
 _.set(exports, 'processEventDead', function (serverName, sessionName, eventObj) {
 	// Occurs when an object is completely destroyed.

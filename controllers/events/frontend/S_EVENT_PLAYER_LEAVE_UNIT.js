@@ -4,6 +4,7 @@ const dbMapServiceController = require('../../db/dbMapService');
 const DCSLuaCommands = require('../../player/DCSLuaCommands');
 const playersEvent = require('../../events/backend/players');
 const unitsStaticsController = require('../../serverToDbSync/unitsStatics');
+const webPushCommands = require('../../socketIO/webPush');
 
 _.set(exports, 'processEventPlayerLeaveUnit', function (serverName, sessionName, eventObj) {
 	// Occurs when any player relieves control of a unit to the AI.
@@ -30,7 +31,7 @@ _.set(exports, 'processEventPlayerLeaveUnit', function (serverName, sessionName,
 								msg: 'C: '+ _.get(curIUnit, 'playername') +' leaves his ' + _.get(curIUnit, 'type')
 							};
 							if (_.get(iCurObj, 'iucid')) {
-								// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
+								webPushCommands.sendToCoalition(serverName, {payload: _.cloneDeep(iCurObj)});
 								dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 							}
 							DCSLuaCommands.sendMesgToCoalition(

@@ -3,6 +3,7 @@ const constants = require('../../constants');
 const dbMapServiceController = require('../../db/dbMapService');
 const DCSLuaCommands = require('../../player/DCSLuaCommands');
 const playersEvent = require('../../events/backend/players');
+const webPushCommands = require('../../socketIO/webPush');
 
 _.set(exports, 'processEventTakeoff', function (serverName, sessionName, eventObj) {
 	var place;
@@ -35,7 +36,7 @@ _.set(exports, 'processEventTakeoff', function (serverName, sessionName, eventOb
 								msg: 'C: '+ _.get(curIUnit, 'type') + '('+_.get(curIUnit, 'playername')+') has taken off' + place
 							};
 							if(_.get(iCurObj, 'iucid')) {
-								// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
+								webPushCommands.sendToCoalition(serverName, {payload: _.cloneDeep(iCurObj)});
 								dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 							}
 							DCSLuaCommands.sendMesgToCoalition(

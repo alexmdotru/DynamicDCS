@@ -3,6 +3,7 @@ const constants = require('../../constants');
 const dbMapServiceController = require('../../db/dbMapService');
 const DCSLuaCommands = require('../../player/DCSLuaCommands');
 const playersEvent = require('../../events/backend/players');
+const webPushCommands = require('../../socketIO/webPush');
 
 _.set(exports, 'processEventRefueling', function (serverName, sessionName, eventObj) {
 	// Occurs when an aircraft connects with a tanker and begins taking on fuel.
@@ -27,7 +28,7 @@ _.set(exports, 'processEventRefueling', function (serverName, sessionName, event
 								showInChart: true
 							};
 							if (_.get(iCurObj, 'iucid')) {
-								// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
+								webPushCommands.sendToCoalition(serverName, {payload: _.cloneDeep(iCurObj)});
 								dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 							}
 							DCSLuaCommands.sendMesgToCoalition(

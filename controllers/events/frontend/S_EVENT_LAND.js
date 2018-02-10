@@ -4,6 +4,7 @@ const dbMapServiceController = require('../../db/dbMapService');
 const DCSLuaCommands = require('../../player/DCSLuaCommands');
 const playersEvent = require('../../events/backend/players');
 const groupController = require('../../spawn/group');
+const webPushCommands = require('../../socketIO/webPush');
 
 _.set(exports, 'processEventLand', function (serverName, sessionName, eventObj) {
 	// Occurs when an aircraft lands at an airbase, farp or ship
@@ -54,7 +55,7 @@ _.set(exports, 'processEventLand', function (serverName, sessionName, eventObj) 
 								msg: 'C: '+ _.get(curIUnit, 'type') + '(' + _.get(curIUnit, 'playername') + ') has landed' + place
 							};
 							if(_.get(iCurObj, 'iucid')) {
-								// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
+								webPushCommands.sendToCoalition(serverName, {payload: _.cloneDeep(iCurObj)});
 								dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 							}
 

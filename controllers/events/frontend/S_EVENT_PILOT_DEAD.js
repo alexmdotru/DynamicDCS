@@ -3,6 +3,7 @@ const constants = require('../../constants');
 const dbMapServiceController = require('../../db/dbMapService');
 const DCSLuaCommands = require('../../player/DCSLuaCommands');
 const playersEvent = require('../../events/backend/players');
+const webPushCommands = require('../../socketIO/webPush');
 
 _.set(exports, 'processEventPilotDead', function (serverName, sessionName, eventObj) {
 	// Occurs when the pilot of an aircraft is killed.
@@ -28,7 +29,7 @@ _.set(exports, 'processEventPilotDead', function (serverName, sessionName, event
 								msg: 'A: ' + constants.side[_.get(curIUnit, 'coalition')] + ' '+ _.get(curIUnit, 'type') + '('+ _.get(curIUnit, 'playername') +') pilot is dead'
 							};
 							if (_.get(iCurObj, 'iucid')) {
-								// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
+								webPushCommands.sendToAll(serverName, {payload: _.cloneDeep(iCurObj)});
 								dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 							}
 							DCSLuaCommands.sendMesgToAll(
