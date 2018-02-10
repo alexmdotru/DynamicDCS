@@ -485,18 +485,18 @@ setInterval(function () {
 			console.log('line273: ', err);
 		})
 	;
-}, 30);
+}, 200);
 
 
 setInterval(function () {
 	_.forEach(DDCS.socketQue, function (sQue, sKey) {
 		var sendArray = [];
 		for(x=0; x < DDCS.perSendMax; x++) {
-			if ( sQue[x]) {
+			if (sQue[x]) {
 				sendArray.push(sQue[x]);
 				sQue.shift();
 			}
 		}
 		io.to(sKey).emit('srvUpd', sendArray);
 	});
-}, 100);
+}, 500);
