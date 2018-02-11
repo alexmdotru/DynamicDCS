@@ -468,7 +468,7 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 			dbMapServiceController.unitActions('read', serverName, {playerOwnerId: curPlayer.ucid, isCrate: true, dead: false})
 				.then(function(delCrates){
 					var spc;
-					var spawnArray;
+					var crateObj;
 					if (special) {
 						spc = special;
 					} else {
@@ -489,7 +489,7 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 					});
 
 					if(menuUpdateController.virtualCrates) {
-						spawnArray = {
+						crateObj = {
 							spwnName: 'CU|' + curPlayer.ucid + '|' + type + '|' + spc + '|' + crates + '|' + combo + '|' + mobile + '|',
 							type: "UAZ-469",
 							lonLatLoc: unit.lonLatLoc,
@@ -499,28 +499,23 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 							category: "GROUND",
 							playerCanDrive: false
 						};
-						groupController.spawnLogiGroup(serverName, [spawnArray], unit.coalition);
+						groupController.spawnLogiGroup(serverName, [crateObj], unit.coalition);
 					} else {
-						/*
-                        crateStatic = {
-
-                        };
-                        _crate = {
-                            ["category"] = "Cargo",
-                            ["shape_name"] = "iso_container_small_cargo",
-                            ["type"] = "iso_container_small",
-                            ["unitId"] = _unitId,
-                            ["y"] = _point.z,
-                            ["x"] = _point.x,
-                            ["mass"] = _weight,
-                            ["name"] = _name,
-                            ["canCargo"] = true,
-                            ["heading"] = 0
-                        }
-                        _crate["country"] = _country
-                        --env.info("info1: ctry: ".._crate["country"]..'unitId: '.._crate["unitId"]..' name: '.._crate["name"]..' category: '.._crate["category"]..' type: '.._crate["type"]..' mass '.._crate["mass"])
-                        mist.dynAddStatic(_crate)
-                        */
+						crateObj = {
+							category: 'Cargo',
+							shape_name: 'iso_container_small_cargo',
+							type: 'iso_container_small',
+							unitLonLatLoc: unit.lonLatLoc,
+							mass: 150,
+							name: 'CU|' + curPlayer.ucid + '|' + type + '|' + spc + '|' + crates + '|' + combo + '|' + mobile + '|',
+							canCargo: true,
+							heading: unit.hdg,
+							playerCanDrive: false,
+							country: unit.country,
+							side: unit.side,
+							coalition: unit.side
+						};
+						groupController.spawnLogiCrate(serverName, crateObj, unit.coalition)
 					}
 					DCSLuaCommands.sendMesgToGroup(
 						unit.groupId,

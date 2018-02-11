@@ -280,7 +280,7 @@ _.set(exports, 'staticTemplate', function (staticObj) {
 		'["shape_name"] = "' + _.get(staticObj, 'shape_name') + '",' +
 		'["canCargo"] = ' + _.get(staticObj, 'canCargo', false) + ',';
 		if (_.get(staticObj, 'canCargo', false)) {
-			retObj += '["mass"] = "' + _.get(staticObj, 'weight') + '",';
+			retObj += '["mass"] = "' + _.get(staticObj, 'mass') + '",';
 		}
 	retObj += '}';
 	return retObj;
@@ -554,6 +554,19 @@ _.set(exports, 'spawnLogiGroup', function (serverName, spawnArray, side) {
 	}
 });
 
+
+_.set(exports, 'spawnLogiCrate', function (serverName, crateObj) {
+	_.set(crateObj, 'lonLatLoc',  zoneController.getLonLatFromDistanceDirection(_.get(crateObj, ['unitLonLatLoc']), crateObj.heading, 0.05));
+	var curCMD = exports.spawnStatic(serverName, exports.staticTemplate(crateObj), crateObj.country, crateObj.name, true);
+	var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
+	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
+	dbMapServiceController.cmdQueActions('save', serverName, actionObj)
+		.catch(function (err) {
+			console.log('erroring line592: ', err);
+		})
+	;
+});
+
 _.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {
 	var grpNum = 0;
 	var unitNum = 0;
@@ -645,8 +658,6 @@ _.set(exports, 'initDbs', function ( serverName ) {
 
 _.set(exports, 'spawnLogisticCmdCenter', function (serverName, staticObj, baseObj, side, init) {
 	var curGrpObj = _.cloneDeep(staticObj);
-	var curStaticSpawn;
-	// _.set(curGrpObj, 'unitId', _.get(curGrpObj, 'unitId', _.random(1000000, 9999999)));
 	_.set(curGrpObj, 'name', _.get(curGrpObj, 'name', _.get(baseObj, 'name', '') + ' Logistics'));
 	_.set(curGrpObj, 'coalition', _.get(curGrpObj, 'coalition', side));
 	_.set(curGrpObj, 'country', _.get(constants, ['defCountrys', curGrpObj.coalition]));
@@ -657,9 +668,8 @@ _.set(exports, 'spawnLogisticCmdCenter', function (serverName, staticObj, baseOb
 	_.set(curGrpObj, 'category', 'Fortifications');
 	_.set(curGrpObj, 'type', '.Command Center');
 	_.set(curGrpObj, 'shape_name', 'ComCenter');
-	curStaticSpawn = exports.staticTemplate(curGrpObj);
 
-	var curCMD = exports.spawnStatic(serverName, curStaticSpawn, curGrpObj.country, curGrpObj.name, init);
+	var curCMD = exports.spawnStatic(serverName, exports.staticTemplate(curGrpObj), curGrpObj.country, curGrpObj.name, init);
 	var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
 	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
 	dbMapServiceController.cmdQueActions('save', serverName, actionObj)
