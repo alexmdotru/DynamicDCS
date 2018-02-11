@@ -606,6 +606,7 @@ _.set(exports, 'spawnLogisticCmdCenter', function (serverName, staticObj, baseOb
 	_.set(curGrpObj, 'country', _.get(constants, ['defCountrys', curGrpObj.coalition]));
 	if (_.isUndefined(_.get(curGrpObj, 'lonLatLoc'))) {
 		_.set(curGrpObj, 'lonLatLoc',  zoneController.getLonLatFromDistanceDirection(_.get(baseObj, ['logiCenter']), 0, 0.05));
+		console.log('SLC: ', serverName, staticObj, baseObj, side, init);
 	}
 	_.set(curGrpObj, 'category', 'Fortifications');
 	_.set(curGrpObj, 'type', '.Command Center');
