@@ -195,8 +195,8 @@ _.set(exports, 'grndUnitTemplate', function ( unitObj ) {
 		'["name"] = "' + _.get(unitObj, 'name') + '",' +
 		// '["unitId"] = ' + _.get(unitObj, 'unitId') + ',' +
 		'["heading"] = ' + _.get(unitObj, 'heading', 0) + ',' +
-		// '["playerCanDrive"] = ' + _.get(unitObj, 'playerCanDrive', false) + ',' +
-		'["playerCanDrive"] = false,' +
+		'["playerCanDrive"] = ' + _.get(unitObj, 'playerCanDrive', false) + ',' +
+		// '["playerCanDrive"] = false,' +
 		'["skill"] = "' + _.get(unitObj, 'skill', "Excellent") + '",' +
 		'}'
 	;
