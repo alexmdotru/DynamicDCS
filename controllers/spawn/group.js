@@ -21,6 +21,50 @@ _.set(exports, 'spawnStatic', function (serverName, staticSpawn, country, statNa
 	}
 });
 
+_.set(exports, 'turnOffDisperseUnderFire', function () {
+	return '' +
+		'["route"] = {' +
+			'["spans"] = {},' +
+			'["points"] = {' +
+				'[1] = {' +
+					// '["alt"] = 252,' +
+					'["type"] = "Turning Point",' +
+					'["ETA"] = 0,' +
+					'["alt_type"] = "BARO",' +
+					'["formation_template"] = "",' +
+					// '["y"] = 440640.41085714,' +
+					// '["x"] = -60694.918271202,' +
+					'["name"] = "dontdisperse",' +
+					'["ETA_locked"] = true,' +
+					'["speed"] = 0,' +
+					'["action"] = "Off Road",' +
+					'["task"] = {' +
+						'["id"] = "ComboTask",' +
+						'["params"] = {' +
+							'["tasks"] = {' +
+								'[1] = {' +
+									'["enabled"] = true,' +
+									'["auto"] = false,' +
+									'["id"] = "WrappedAction",' +
+									'["number"] = 1,' +
+									'["params"] = {' +
+										'["action"] = {' +
+											'["id"] = "Option",' +
+											'["params"] = {' +
+												'["name"] = 8,' +
+											'},' +
+										'},' +
+									'},' +
+								'},' +
+							'},' +
+						'},' +
+					'},' +
+					'["speed_locked"] = true,' +
+				'},' +
+			'},' +
+		'},';
+});
+
 _.set(exports, 'landPlaneRouteTemplate', function (routes) {
 	return '' +
 		'["route"] = {' +
@@ -167,6 +211,8 @@ _.set(exports, 'grndUnitGroup', function ( groupObj, task, routes ) {
 
 	if (routes) {
 		curRoute = routes;
+	} else {
+		curRoute = exports.turnOffDisperseUnderFire();
 	}
 
 	if (task) {

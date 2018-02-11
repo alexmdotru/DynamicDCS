@@ -467,6 +467,14 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 			var curPlayer = _.get(player, [0]);
 			dbMapServiceController.unitActions('read', serverName, {playerOwnerId: curPlayer.ucid, isCrate: true, dead: false})
 				.then(function(delCrates){
+					var spc;
+					var spawnArray;
+					if (special) {
+						spc = special;
+					} else {
+						spc = '';
+					}
+
 					_.forEach(delCrates, function (crate) {
 						// console.log('cr: ', crateCount, ' > ', exports.maxCrates-1);
 						if(crateCount > exports.maxCrates-2) {
@@ -479,15 +487,8 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 						}
 						crateCount ++;
 					});
+
 					if(menuUpdateController.virtualCrates) {
-						// console.log('special: ', special);
-						var spc;
-						var spawnArray;
-						if (special) {
-							spc = special;
-						} else {
-							spc = '';
-						}
 						spawnArray = {
 							spwnName: 'CU|' + curPlayer.ucid + '|' + type + '|' + spc + '|' + crates + '|' + combo + '|' + mobile + '|',
 							type: "UAZ-469",
