@@ -2,6 +2,7 @@ const _ = require('lodash');
 const dbMapServiceController = require('../db/dbMapService');
 const groupController = require('../spawn/group');
 const DCSLuaCommands = require('../player/DCSLuaCommands');
+const menuUpdateController = require('../menu/menuUpdate');
 
 var mesg;
 var masterUnitCount;
@@ -55,6 +56,18 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 						_.forEach(remappedunits, function (group) {
 							groupController.spawnGroup(serverName, group)
 						});
+						if(!menuUpdateController.virtualCrates) {
+							dbMapServiceController.staticCrateActions('read', serverName, {})
+								.then(function(staticCrates) {
+									_.forEach(staticCrates, function (crateObj) {
+										crateController.spawnLogiCrate(serverName, crateObj);
+									});
+								})
+								.catch(function (err) {
+									console.log('line 358: ', err);
+								})
+							;
+						}
 					}
 				}
 			} else {

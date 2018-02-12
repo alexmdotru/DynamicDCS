@@ -61,8 +61,19 @@ const StaticCrateSchema = new Schema({
 		playerCanDrive: {
 			type: Boolean,
 			default: true
+		},
+		country: {
+			type: String,
+			required: true
+		},
+		side: {
+			type: String,
+			required: true
+		},
+		coalition: {
+			type: String,
+			required: true
 		}
-
 	},
 	{
 		timestamps: true, // Saves createdAt and updatedAt as dates. createdAt will be our timestamp.
