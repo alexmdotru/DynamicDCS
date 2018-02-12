@@ -9,6 +9,7 @@ var mapdb = mongoose.createConnection();
 var airfieldSchema = require('./models/airfieldSchema');
 var srvPlayerSchema = require('./models/srvPlayerSchema');
 var unitSchema = require('./models/unitSchema');
+var staticCratesSchema = require('./models/staticCratesSchema');
 var statSessionSchema = require('./models/statSessionSchema');
 var statSrvEventSchema = require('./models/statSrvEventSchema');
 var simpleStatEventSchema = require('./models/simpleStatEventSchema');
@@ -316,6 +317,106 @@ exports.unitActions = function (action, serverName, obj){
 	}
 	if(action === 'dropall') {
 		Unit.collection.drop();
+	}
+};
+
+exports.staticCrateActions = function (action, serverName, obj){
+	const StaticCrates = mapdb.model(serverName+'_crate', staticCratesSchema);
+	if (action === 'read') {
+		return new Promise(function(resolve, reject) {
+			StaticCrates.find(obj).sort( { createdAt: -1 } ).exec(function (err, dbUnits) {
+				if (err) { reject(err) }
+				resolve(dbUnits);
+			});
+		});
+	}
+	if (action === 'readStd') {
+		return new Promise(function(resolve, reject) {
+			StaticCrates.find(obj).exec(function (err, dbUnits) {
+				if (err) { reject(err) }
+				resolve(dbUnits);
+			});
+		});
+	}
+	if(action === 'save') {
+		return new Promise(function(resolve, reject) {
+			const crate = new StaticCrates(obj);
+			crate.save(function (err, units) {
+				if (err) { reject(err) }
+				resolve(units);
+			});
+		});
+	}
+	if(action === 'update') {
+		return new Promise(function(resolve, reject) {
+			StaticCrates.findOneAndUpdate(
+				{_id: obj._id},
+				{$set: obj},
+				function(err, units) {
+					if (err) { reject(err) }
+					resolve(units);
+				}
+			);
+		});
+	}
+	if(action === 'updateByName') {
+		return new Promise(function(resolve, reject) {
+			StaticCrates.findOneAndUpdate(
+				{name: obj.name},
+				{$set: obj},
+				function(err, units) {
+					if (err) { reject(err) }
+					resolve(units);
+				}
+			);
+		});
+	}
+	if(action === 'updateByUnitId') {
+		return new Promise(function(resolve, reject) {
+			StaticCrates.findOneAndUpdate(
+				{unitId: obj.unitId},
+				{$set: obj},
+				function(err, units) {
+					if (err) { reject(err) }
+					resolve(units);
+				}
+			);
+		});
+	}
+	if(action === 'chkResync') {
+		return new Promise(function(resolve, reject) {
+			StaticCrates.updateMany(
+				{},
+				{$set: {isResync: false}},
+				function(err, units) {
+					if (err) { reject(err) }
+					resolve(units);
+				}
+			);
+		});
+	}
+	if(action === 'markUndead') {
+		return new Promise(function(resolve, reject) {
+			StaticCrates.updateMany(
+				{isResync: false},
+				{$set: {dead: true}},
+				function(err, units) {
+					if (err) { reject(err) }
+					resolve(units);
+				}
+			);
+		});
+	}
+	if(action === 'delete') {
+		return new Promise(function(resolve, reject) {
+			StaticCrates.findByIdAndRemove(obj._id, function (err, units) {
+				if (err) { reject(err) }
+				resolve(units);
+			});
+		});
+	}
+	if(action === 'dropall') {
+		StaticCrates.collection.drop();
 	}
 };
 
