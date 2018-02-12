@@ -427,28 +427,36 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 });
 
 _.set(exports, 'loadTroops', function(serverName, unitId, troopType) {
-	if(curUnit.inAir) {
-		DCSLuaCommands.sendMesgToGroup(
-			curUnit.groupId,
-			serverName,
-			"G: Please Land Before Attempting Logistic Commands!",
-			5
-		);
-	} else {
-		dbMapServiceController.unitActions('updateByUnitId', serverName, {unitId: unitId, troopType: troopType})
-			.then(function(unit) {
+	dbMapServiceController.unitActions('read', serverName, {unitId: unitId})
+		.then(function(units) {
+			var curUnit = _.get(units, 0);
+			if(curUnit.inAir) {
 				DCSLuaCommands.sendMesgToGroup(
-					unit.groupId,
+					curUnit.groupId,
 					serverName,
-					"G: " + troopType + " Has Been Loaded!",
+					"G: Please Land Before Attempting Logistic Commands!",
 					5
 				);
-			})
-			.catch(function (err) {
-				console.log('line 13: ', err);
-			})
-		;
-	}
+			} else {
+				dbMapServiceController.unitActions('updateByUnitId', serverName, {unitId: unitId, troopType: troopType})
+					.then(function(unit) {
+						DCSLuaCommands.sendMesgToGroup(
+							unit.groupId,
+							serverName,
+							"G: " + troopType + " Has Been Loaded!",
+							5
+						);
+					})
+					.catch(function (err) {
+						console.log('line 13: ', err);
+					})
+				;
+			}
+		})
+		.catch(function (err) {
+			console.log('line 13: ', err);
+		})
+	;
 });
 
 _.set(exports, 'isTroopOnboard', function (unit, serverName, verbose) {
@@ -499,7 +507,7 @@ _.set(exports, 'isCrateOnboard', function (unit, serverName, verbose) {
 
 _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, combo, special, mobile) {
 	var crateCount = 0;
-	if(curUnit.inAir) {
+	if(unit.inA4ir) {
 		DCSLuaCommands.sendMesgToGroup(
 			curUnit.groupId,
 			serverName,
@@ -582,7 +590,7 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 });
 
 _.set(exports, 'unpackCrate', function (serverName, unit, type, special, combo, mobile) {
-	if(curUnit.inAir) {
+	if(unit.inAir) {
 		DCSLuaCommands.sendMesgToGroup(
 			curUnit.groupId,
 			serverName,
