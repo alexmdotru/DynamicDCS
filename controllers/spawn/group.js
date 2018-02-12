@@ -554,19 +554,6 @@ _.set(exports, 'spawnLogiGroup', function (serverName, spawnArray, side) {
 	}
 });
 
-
-_.set(exports, 'spawnLogiCrate', function (serverName, crateObj) {
-	_.set(crateObj, 'lonLatLoc',  zoneController.getLonLatFromDistanceDirection(_.get(crateObj, ['unitLonLatLoc']), crateObj.heading, 0.05));
-	var curCMD = exports.spawnStatic(serverName, exports.staticTemplate(crateObj), crateObj.country, crateObj.name, true);
-	var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
-	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
-	dbMapServiceController.cmdQueActions('save', serverName, actionObj)
-		.catch(function (err) {
-			console.log('erroring line592: ', err);
-		})
-	;
-});
-
 _.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {
 	var grpNum = 0;
 	var unitNum = 0;
