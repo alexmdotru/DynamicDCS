@@ -560,7 +560,7 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 								type: 'iso_container_small',
 								unitLonLatLoc: unit.lonLatLoc,
 								mass: 150,
-								name: 'CU|' + curPlayer.ucid + '|' + type + '|' + spc + '|' + crates + '|' + combo + '|' + mobile + '|',
+								name: 'CU|' + curPlayer.ucid + '|' + type + '|' + spc + '|' + crates + '|' + combo + '|' + mobile + '|#' + _.random(1000000, 9999999),
 								canCargo: true,
 								heading: unit.hdg,
 								playerCanDrive: false,
