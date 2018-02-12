@@ -78,7 +78,7 @@ _.set(exports, 'getGroundUnitsInProximity', function (serverName, lonLat, kmDist
 	if (!isTroop) {
 		_.set(troopQuery, 'isTroop', false);
 	}
-	return dbMapServiceController.unitActions('readGeo', serverName, troopQuery)
+	return dbMapServiceController.unitActions('readStd', serverName, troopQuery)
 		.then(function (closeUnits) {
 			// console.log('close units ' + closeUnits);
 			return closeUnits;
@@ -124,7 +124,7 @@ _.set(exports, 'getPlayersInProximity', function (serverName, lonLat, kmDistance
 
 _.set(exports, 'getVirtualCratesInProximity', function (serverName, lonLat, kmDistance, coalition) {
 	return dbMapServiceController.unitActions(
-		'readGeo',
+		'readStd',
 		serverName,
 		{
 			dead: false,
@@ -155,7 +155,7 @@ _.set(exports, 'getVirtualCratesInProximity', function (serverName, lonLat, kmDi
 
 _.set(exports, 'getTroopsInProximity', function (serverName, lonLat, kmDistance, coalition) {
 	return dbMapServiceController.unitActions(
-		'readGeo',
+		'readStd',
 		serverName,
 		{
 			dead: false,

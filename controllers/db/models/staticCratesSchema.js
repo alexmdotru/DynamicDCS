@@ -17,15 +17,32 @@ const StaticCrateSchema = new Schema({
 		},
 		shapeName: {
 			type: String,
-			required: true
+			default: 'iso_container_small_cargo'
 		},
 		category: {
 			type: String,
+			default: 'Cargo'
+		},
+		type: {
+			type: String,
+			default: 'iso_container_small'
+		},
+		hdg: {
+			type: Number,
+			min: 0,
+			max: 359,
 			required: true
+		},
+		canCargo: {
+			type: Boolean,
+			default: true
 		},
 		mass: {
 			type: String,
 			required: true
+		},
+		unitId: {
+			type: Number
 		}
 	},
 	{
@@ -34,8 +51,4 @@ const StaticCrateSchema = new Schema({
 	}
 );
 
-TheaterSchema.static('findByName', function (name, callback) {
-	return this.find({ name: name }, callback);
-});
-
-module.exports = TheaterSchema;
+module.exports = StaticCrateSchema;
