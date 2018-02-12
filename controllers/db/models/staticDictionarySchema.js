@@ -15,34 +15,17 @@ const StaticDictionarySchema = new Schema({
 			type: Array,
 			required: true
 		},
+		shape_name: {
+			type: String,
+			required: true
+		},
 		category: {
 			type: String,
 			required: true
 		},
-		spawnCat: {
-			type: String,
-			required: true
-		},
-		spawnCatSec: {
-			type: String
-		},
-		comboName: {
-			type: String
-		},
-		launcher: {
+		canCargo: {
 			type: Boolean,
 			default: false
-		},
-		threatLvl: {
-			type: Number,
-			default: 0
-		},
-		reloadReqArray: {
-			type: Schema.Types.Mixed
-		},
-		enabled: {
-			type: Boolean,
-			default: true
 		}
 	},
 	{
