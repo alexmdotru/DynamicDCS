@@ -708,7 +708,7 @@ _.set(exports, 'healBase', function ( serverName, baseName ) {
 				.then(function (baseUnit) {
 					var curBase = _.get(baseUnit, [0], {});
 					_.set(curUnit, 'coalition', _.get(curBase, 'side'));
-					exports.spawnLogisticCmdCenter(serverName, curUnit);
+					exports.spawnLogisticCmdCenter(serverName, curUnit, curBase);
 				})
 				.catch(function (err) {
 						console.log('erroring line657: ', err, serverName, curUnit);

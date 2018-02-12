@@ -4,7 +4,7 @@ const proximityController = require('../proxZone/proximity');
 const menuCmdsController = require('../menu/menuCmds'); //menuCmdsController.maxUnitsMoving
 const capLivesController = require('../action/capLives');
 
-exports.virtualCrates = false;
+exports.virtualCrates = true;
 var enableAction = false;
 var allowedTypesForTroops = [
 	'UH-1H',
