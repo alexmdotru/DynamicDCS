@@ -6,7 +6,6 @@ const webPushCommands = require('../socketIO/webPush');
 _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj) {
 	dbMapServiceController.unitActions('read', serverName, {_id: _.get(unitObj, 'data.name')})
 		.then(function (unit) {
-			console.log('ut: ', unit);
 			var stParse;
 			var iCurObj;
 			var curUnit = _.get(unit, 0, {});
