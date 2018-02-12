@@ -506,7 +506,15 @@ _.set(exports, 'isCrateOnboard', function (unit, serverName, verbose) {
 });
 
 _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, combo, special, mobile, mass) {
+	var spc;
+	var crateObj;
 	var crateCount = 0;
+	if (special) {
+		spc = special;
+	} else {
+		spc = '';
+	}
+
 	if(unit.inA4ir) {
 		DCSLuaCommands.sendMesgToGroup(
 			curUnit.groupId,
@@ -518,30 +526,24 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 		dbMapServiceController.srvPlayerActions('read', serverName, {name: unit.playername})
 			.then(function(player) {
 				var curPlayer = _.get(player, [0]);
-				dbMapServiceController.unitActions('read', serverName, {playerOwnerId: curPlayer.ucid, isCrate: true, dead: false})
-					.then(function(delCrates){
-						var spc;
-						var crateObj;
-						if (special) {
-							spc = special;
-						} else {
-							spc = '';
-						}
-
-						_.forEach(delCrates, function (crate) {
-							// console.log('cr: ', crateCount, ' > ', exports.maxCrates-1);
-							if(crateCount > exports.maxCrates-2) {
-								dbMapServiceController.unitActions('updateByUnitId', serverName, {unitId: crate.unitId, dead: true})
-									.catch(function (err) {
-										console.log('erroring line387: ', err);
+				if(menuUpdateController.virtualCrates) {
+					dbMapServiceController.unitActions('read', serverName, {playerOwnerId: curPlayer.ucid, isCrate: true, dead: false})
+						.then(function(delCrates) {
+							_.forEach(delCrates, function (crate) {
+								// console.log('cr: ', crateCount, ' > ', exports.maxCrates-1);
+								if (crateCount > exports.maxCrates - 2) {
+									dbMapServiceController.unitActions('updateByUnitId', serverName, {
+										unitId: crate.unitId,
+										dead: true
 									})
-								;
-								groupController.destroyUnit(serverName, crate.name);
-							}
-							crateCount ++;
-						});
-
-						if(menuUpdateController.virtualCrates) {
+										.catch(function (err) {
+											console.log('erroring line387: ', err);
+										})
+									;
+									groupController.destroyUnit(serverName, crate.name);
+								}
+								crateCount++;
+							});
 							crateObj = {
 								spwnName: 'CU|' + curPlayer.ucid + '|' + type + '|' + spc + '|' + crates + '|' + combo + '|' + mobile + '|',
 								type: "UAZ-469",
@@ -553,7 +555,28 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 								playerCanDrive: false
 							};
 							groupController.spawnLogiGroup(serverName, [crateObj], unit.coalition);
-						} else {
+						})
+						.catch(function (err) {
+							console.log('line 358: ', err);
+						})
+					;
+				} else {
+					dbMapServiceController.staticCrateActions('read', serverName, {playerOwnerId: curPlayer.ucid})
+						.then(function(delCrates) {
+							_.forEach(delCrates, function (crate) {
+								// console.log('cr: ', crateCount, ' > ', exports.maxCrates-1);
+								if (crateCount > exports.maxCrates - 2) {
+									dbMapServiceController.staticCrateActions('delete', serverName, {
+										_id: crate._id
+									})
+										.catch(function (err) {
+											console.log('erroring line573: ', err);
+										})
+									;
+									groupController.destroyUnit(serverName, crate._id);
+								}
+								crateCount++;
+							});
 							crateObj = {
 								name: (spc) ? spc + '|#' + _.random(1000000, 9999999) : type + '|#' + _.random(1000000, 9999999),
 								unitLonLatLoc: unit.lonLatLoc,
@@ -573,22 +596,19 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 								side: unit.side,
 								coalition: unit.side
 							};
-
-
-
-							crateController.spawnLogiCrate(serverName, crateObj)
-						}
-						DCSLuaCommands.sendMesgToGroup(
-							unit.groupId,
-							serverName,
-							"G: " + _.toUpper(spc) + " " + type + " crate has been spawned!",
-							5
-						);
-					})
-					.catch(function (err) {
-						console.log('line 358: ', err);
-					})
-				;
+							crateController.spawnLogiCrate(serverName, crateObj);
+						})
+						.catch(function (err) {
+							console.log('line 358: ', err);
+						})
+					;
+				}
+				DCSLuaCommands.sendMesgToGroup(
+					unit.groupId,
+					serverName,
+					"G: " + _.toUpper(spc) + " " + type + " crate has been spawned!",
+					5
+				);
 			})
 			.catch(function (err) {
 				console.log('line 13: ', err);
