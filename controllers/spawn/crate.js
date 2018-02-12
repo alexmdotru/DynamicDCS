@@ -7,6 +7,7 @@ const groupController = require('../spawn/group');
 
 
 _.set(exports, 'spawnLogiCrate', function (serverName, crateObj) {
+	_.set(crateObj, '_id', crateObj.name);
 	_.set(crateObj, 'lonLatLoc',  zoneController.getLonLatFromDistanceDirection(_.get(crateObj, ['unitLonLatLoc']), crateObj.heading, 0.05));
 	dbMapServiceController.staticCrateActions('save', serverName, crateObj)
 		.then(function () {

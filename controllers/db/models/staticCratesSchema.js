@@ -27,7 +27,7 @@ const StaticCrateSchema = new Schema({
 			type: String,
 			default: 'iso_container_small'
 		},
-		hdg: {
+		heading: {
 			type: Number,
 			min: 0,
 			max: 359,
