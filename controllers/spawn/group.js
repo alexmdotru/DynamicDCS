@@ -286,6 +286,19 @@ _.set(exports, 'staticTemplate', function (staticObj) {
 	return retObj;
 });
 
+_.set(exports, 'getStaticDictionary', function () {
+	return dbSystemServiceController.staticDictionaryActions('read')
+		.then(function (staticDic) {
+			return new Promise(function (resolve) {
+				resolve(staticDic);
+			});
+		})
+		.catch(function (err) {
+			console.log('err line297: ', err);
+		})
+		;
+});
+
 _.set(exports, 'getUnitDictionary', function () {
 	return dbSystemServiceController.unitDictionaryActions('read')
 		.then(function (unitsDic) {
@@ -294,7 +307,7 @@ _.set(exports, 'getUnitDictionary', function () {
 			});
 		})
 		.catch(function (err) {
-			console.log('err line103: ', err);
+			console.log('err line310: ', err);
 		})
 	;
 });
@@ -624,21 +637,26 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 });
 
 _.set(exports, 'initDbs', function ( serverName ) {
-	exports.getUnitDictionary()
-		.then(function (unitDict) {
-			_.set(exports, 'unitDictionary', unitDict);
-			exports.getBases( serverName )
-				.then(function (bases) {
-					_.set(exports, ['bases'], bases);
-					exports.getServer( serverName )
-						.then(function (server) {
-							_.set(exports, ['config'], server);
+	exports.getStaticDictionary()
+		.then(function (staticDict) {
+			_.set(exports, 'staticDictionary', staticDict);
+			exports.getUnitDictionary()
+				.then(function (unitDict) {
+					_.set(exports, 'unitDictionary', unitDict);
+					exports.getBases(serverName)
+						.then(function (bases) {
+							_.set(exports, ['bases'], bases);
+							exports.getServer(serverName)
+								.then(function (server) {
+									_.set(exports, ['config'], server);
+								})
+							;
+
 						})
 					;
 
 				})
 			;
-
 		})
 	;
 });

@@ -267,6 +267,20 @@ exports.banUserActions = function (action, ucid){
 	}
 };
 
+var staticDictionarySchema = require('./models/staticDictionarySchema');
+const StaticDictionary = systemdb.model('staticDictionary', staticDictionarySchema);
+
+exports.staticDictionaryActions = function (action, obj){
+	if(action === 'read') {
+		return new Promise(function(resolve, reject) {
+			StaticDictionary.find(obj, function (err, staticDictionary) {
+				if (err) { reject(err) }
+				resolve(staticDictionary);
+			});
+		});
+	}
+};
+
 var unitDictionarySchema = require('./models/unitDictionarySchema');
 const UnitDictionary = systemdb.model('unitDictionary', unitDictionarySchema);
 

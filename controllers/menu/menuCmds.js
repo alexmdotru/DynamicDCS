@@ -347,71 +347,71 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 
 						// Crate Menu ["action"] = "f10Menu", ["cmd"] = "EWR", ["type"] = "55G6 EWR", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1})
 						if (pObj.cmd === 'EWR') {
-							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile, pObj.mass);
+							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile, pObj.mass, 'iso_container_small');
 						}
 
 						if (pObj.cmd === 'JTAC') {
-							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, false, 'jtac', pObj.mobile, pObj.mass);
+							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, false, 'jtac', pObj.mobile, pObj.mass, 'iso_container_small');
 						}
 
 						if (pObj.cmd === 'reloadGroup') {
-							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, false, 'reloadGroup', pObj.mobile, pObj.mass);
+							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, false, 'reloadGroup', pObj.mobile, pObj.mass, 'ammo_cargo');
 						}
 
 						if (pObj.cmd === 'repairBase') {
-							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, false, 'repairBase', pObj.mobile, pObj.mass);
+							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, false, 'repairBase', pObj.mobile, pObj.mass, 'container_cargo');
 						}
 
 						if (pObj.cmd === 'unarmedFuel') {
-							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile, pObj.mass);
+							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile, pObj.mass, 'iso_container_small');
 						}
 
 						if (pObj.cmd === 'unarmedAmmo') {
-							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile, pObj.mass);
+							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile, pObj.mass, 'iso_container_small');
 						}
 
 						if (pObj.cmd === 'armoredCar') {
-							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile, pObj.mass);
+							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile, pObj.mass, 'iso_container_small');
 						}
 
 						if (pObj.cmd === 'APC') {
-							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile, pObj.mass);
+							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile, pObj.mass, 'iso_container_small');
 						}
 
 						if (pObj.cmd === 'tank') {
-							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile, pObj.mass);
+							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile, pObj.mass, 'iso_container_small');
 						}
 
 						if (pObj.cmd === 'artillary') {
-							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile, pObj.mass);
+							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile, pObj.mass, 'iso_container_small');
 						}
 
 						if (pObj.cmd === 'mlrs') {
-							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile, pObj.mass);
+							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile, pObj.mass, 'iso_container_small');
 						}
 
 						if (pObj.cmd === 'stationaryAntiAir') {
-							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile, pObj.mass);
+							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile, pObj.mass, 'iso_container_small');
 						}
 
 						if (pObj.cmd === 'mobileAntiAir') {
-							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile, pObj.mass);
+							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile, pObj.mass, 'iso_container_small');
 						}
 
 						if (pObj.cmd === 'samIR') {
-							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile, pObj.mass);
+							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile, pObj.mass, 'iso_container_small');
 						}
 
 						if (pObj.cmd === 'mobileSAM') {
-							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile, pObj.mass);
+							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile, pObj.mass, 'iso_container_small');
 						}
 
 						if (pObj.cmd === 'MRSAM') {
-							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, true, '', pObj.mobile, pObj.mass);
+							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, true, '', pObj.mobile, pObj.mass, 'iso_container_small');
 						}
 
 						if (pObj.cmd === 'LRSAM') {
-							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, true, '', pObj.mobile, pObj.mass);
+							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, true, '', pObj.mobile, pObj.mass, 'iso_container_small');
 						}
 					})
 					.catch(function (err) {
@@ -505,7 +505,7 @@ _.set(exports, 'isCrateOnboard', function (unit, serverName, verbose) {
 	return false
 });
 
-_.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, combo, special, mobile, mass) {
+_.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, combo, special, mobile, mass, crateType) {
 	var spc;
 	var crateObj;
 	var crateCount = 0;
@@ -579,9 +579,9 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 							crateObj = {
 								name: (spc) ? spc + '|#' + _.random(1000000, 9999999) : type + '|#' + _.random(1000000, 9999999),
 								unitLonLatLoc: unit.lonLatLoc,
-								shape_name: 'iso_container_small_cargo',
+								shape_name: _.get(_.find(groupController.staticDictionary, {_id: crateType}), 'shape_name', 'iso_container_small_cargo'),
 								category: 'Cargo',
-								type: 'iso_container_small',
+								type: crateType,
 								heading: unit.hdg,
 								canCargo: true,
 								mass: mass,
