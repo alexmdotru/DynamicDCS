@@ -659,6 +659,7 @@ _.set(exports, 'spawnLogisticCmdCenter', function (serverName, staticObj, baseOb
 	var curCMD = exports.spawnStatic(serverName, exports.staticTemplate(curGrpObj), curGrpObj.country, curGrpObj.name, init);
 	var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
 	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
+	console.log('aos: ', sendClient);
 	dbMapServiceController.cmdQueActions('save', serverName, actionObj)
 		.catch(function (err) {
 			console.log('erroring line592: ', err);
@@ -679,6 +680,7 @@ _.set(exports, 'destroyUnit', function ( serverName, unitName ) {
 	// DONT USE ON CLIENT AIRCRAFT
 	var sendClient = {action: "REMOVEOBJECT", removeObject: unitName, reqID: 0};
 	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
+	console.log('AO: ', actionObj);
 	dbMapServiceController.cmdQueActions('save', serverName, actionObj)
 		.catch(function (err) {
 			console.log('erroring line613: ', err);

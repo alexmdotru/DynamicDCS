@@ -493,9 +493,13 @@ do
 			if request.action == "REMOVEOBJECT" then
 				--env.info('REMOVE OBJECT')
 				local removeObj = Unit.getByName(request.removeObject)
+				local removeObjStat = StaticObject.getByName(request.removeObject)
 				if removeObj ~= nil then
 					env.info('Destroying '..request.removeObject)
 					removeObj:destroy()
+				elseif removeObjStat ~= nil then
+					env.info('Destroying Static '..request.removeObject)
+					removeObjStat:destroy()
 				end
 			end
 			if request.action == "ADDTASK" then
