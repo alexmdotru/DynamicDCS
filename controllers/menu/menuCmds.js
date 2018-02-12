@@ -564,7 +564,6 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 					dbMapServiceController.staticCrateActions('read', serverName, {playerOwnerId: curPlayer.ucid})
 						.then(function(delCrates) {
 							_.forEach(delCrates, function (crate) {
-								console.log('cr: ', crateCount, ' > ', exports.maxCrates-2, crate);
 								if (crateCount > exports.maxCrates - 2) {
 									dbMapServiceController.staticCrateActions('delete', serverName, {
 										_id: crate._id
@@ -593,10 +592,10 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 								isCombo: combo,
 								playerCanDrive: mobile,
 								country: unit.country,
-								side: unit.side,
-								coalition: unit.side
+								side: unit.coalition,
+								coalition: unit.coalition
 							};
-							crateController.spawnLogiCrate(serverName, crateObj);
+							crateController.spawnLogiCrate(serverName, crateObj, true);
 						})
 						.catch(function (err) {
 							console.log('line 358: ', err);

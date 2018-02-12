@@ -3,6 +3,7 @@ const dbMapServiceController = require('../db/dbMapService');
 const groupController = require('../spawn/group');
 const DCSLuaCommands = require('../player/DCSLuaCommands');
 const menuUpdateController = require('../menu/menuUpdate');
+const crateController = require('../spawn/crate');
 
 var mesg;
 var masterUnitCount;
@@ -60,7 +61,7 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 							dbMapServiceController.staticCrateActions('read', serverName, {})
 								.then(function(staticCrates) {
 									_.forEach(staticCrates, function (crateObj) {
-										crateController.spawnLogiCrate(serverName, crateObj);
+										crateController.spawnLogiCrate(serverName, crateObj, false);
 									});
 								})
 								.catch(function (err) {
