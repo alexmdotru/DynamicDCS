@@ -468,6 +468,28 @@ do
 				env.info('GET POLY')
 				--initAirbases()
 			end
+			if request.action == "CRATEUPDATE" then
+				if type(request.crateNames) == 'table' then
+					local crateObjs = {};
+					for nIndex = 1, #request.crateNames do
+						local curCrateName = request.crateNames[nIndex]
+						crateObjs[curCrateName] = {}
+						local crate = Unit.getByName(curCrateName)
+						if crate ~= nil and crate:getLife() > 0 then
+							local cratePosition = crate:getPosition()
+							crateObjs[curCrateName].lat, crateObjs[curCrateName].lon, crateObjs[curCrateName].lat = coord.LOtoLL(cratePosition.p)
+							crateObjs[curCrateName].alive = true
+						else
+							crateObjs[curCrateName].alive = false
+						end
+					end
+					table.insert(updateQue.que, {
+						action = 'CRATEOBJUPDATE',
+						callback = request.callback,
+						data = crateObjs
+					})
+				end
+			end
 			if request.action == "REMOVEOBJECT" then
 				--env.info('REMOVE OBJECT')
 				local removeObj = Unit.getByName(request.removeObject)

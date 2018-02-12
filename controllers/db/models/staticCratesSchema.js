@@ -38,12 +38,31 @@ const StaticCrateSchema = new Schema({
 			default: true
 		},
 		mass: {
+			type: Number,
+			default: 100
+		},
+		playerOwnerId: {
 			type: String,
 			required: true
 		},
-		unitId: {
-			type: Number
+		templateName: {
+			type: String
+		},
+		special: {
+			type: String
+		},
+		crateAmt: {
+			type: Number,
+		},
+		isCombo: {
+			type: Boolean,
+			default: false
+		},
+		playerCanDrive: {
+			type: Boolean,
+			default: true
 		}
+
 	},
 	{
 		timestamps: true, // Saves createdAt and updatedAt as dates. createdAt will be our timestamp.

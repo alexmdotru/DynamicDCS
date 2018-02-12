@@ -505,7 +505,7 @@ _.set(exports, 'isCrateOnboard', function (unit, serverName, verbose) {
 	return false
 });
 
-_.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, combo, special, mobile) {
+_.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, combo, special, mobile, mass) {
 	var crateCount = 0;
 	if(unit.inA4ir) {
 		DCSLuaCommands.sendMesgToGroup(
@@ -555,19 +555,27 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 							groupController.spawnLogiGroup(serverName, [crateObj], unit.coalition);
 						} else {
 							crateObj = {
-								category: 'Cargo',
-								shape_name: 'iso_container_small_cargo',
-								type: 'iso_container_small',
+								name: (spc) ? spc + '|#' + _.random(1000000, 9999999) : type + '|#' + _.random(1000000, 9999999),
 								unitLonLatLoc: unit.lonLatLoc,
-								mass: 150,
-								name: 'CU|' + curPlayer.ucid + '|' + type + '|' + spc + '|' + crates + '|' + combo + '|' + mobile + '|#' + _.random(1000000, 9999999),
-								canCargo: true,
+								shape_name: 'iso_container_small_cargo',
+								category: 'Cargo',
+								type: 'iso_container_small',
 								heading: unit.hdg,
-								playerCanDrive: false,
+								canCargo: true,
+								mass: mass,
+								playerOwnerId: curPlayer.ucid,
+								templateName: type,
+								special: spc,
+								crateAmt: crates,
+								isCombo: combo,
+								playerCanDrive: mobile,
 								country: unit.country,
 								side: unit.side,
 								coalition: unit.side
 							};
+
+
+
 							crateController.spawnLogiCrate(serverName, crateObj)
 						}
 						DCSLuaCommands.sendMesgToGroup(
