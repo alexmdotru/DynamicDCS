@@ -150,7 +150,33 @@ _.set(exports, 'getVirtualCratesInProximity', function (serverName, lonLat, kmDi
 		.catch(function (err) {
 			console.log('line 140: ', err);
 		})
-	;
+		;
+});
+
+_.set(exports, 'getStaticCratesInProximity', function (serverName, lonLat, kmDistance, coalition) {
+	return dbMapServiceController.unitActions(
+		'readStd',
+		serverName,
+		{
+			lonLatLoc: {
+				$near: {
+					$geometry: {
+						type: "Point",
+						coordinates: lonLat
+					},
+					$maxDistance: kmDistance * 1000
+				}
+			},
+			coalition: coalition
+		})
+		.then(function (closeUnits) {
+			// console.log('close units ' + closeUnits);
+			return closeUnits;
+		})
+		.catch(function (err) {
+			console.log('line 140: ', err);
+		})
+		;
 });
 
 _.set(exports, 'getTroopsInProximity', function (serverName, lonLat, kmDistance, coalition) {
