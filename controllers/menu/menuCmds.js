@@ -138,7 +138,7 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 						if (pObj.cmd === 'unpackCrate') {
 							proximityController.getLogiTowersProximity(serverName, curUnit.lonLatLoc, 0.8)
 								.then(function (logiProx) {
-									if (!logiProx.length) {
+									if (logiProx.length) {
 										DCSLuaCommands.sendMesgToGroup(
 											curUnit.groupId,
 											serverName,
