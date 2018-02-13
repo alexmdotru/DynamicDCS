@@ -17,7 +17,6 @@ _.set(exports, 'reloadSAM', function (serverName, unitCalling, crate) {
 							var curSamType = _.first(samUnits).type;
 							dbSystemServiceController.unitDictionaryActions('read', {_id: curSamType, threatLvl: { $gt: 0 }})
 								.then(function (samUnitDict) {
-									console.log('samunit: ', curSamType, samUnitDict);
 									//unit is multi, count mins, sum them, if true,
 									var curUnitDict = _.get(samUnitDict, [0]);
 									var curReloadArray = curUnitDict.reloadReqArray;
