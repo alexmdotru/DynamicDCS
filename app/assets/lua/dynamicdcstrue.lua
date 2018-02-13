@@ -120,6 +120,7 @@ do
 	local unitCache = {}
 	local airbaseCache = {}
 	local staticCache = {}
+	local crateCache = {}
 	local livesCache = {}
 	local completeAliveNames = {}
 	local updateQue = { ["que"] = {} }
@@ -473,11 +474,23 @@ do
 					local crateObjs = {};
 					for nIndex = 1, #request.crateNames do
 						local curCrateName = request.crateNames[nIndex]
-						crateObjs[curCrateName] = {}
 						local crate = StaticObject.getByName(curCrateName)
 						if crate ~= nil and crate:getLife() > 0 then
 							local cratePosition = crate:getPosition()
-							crateObjs[curCrateName].lat, crateObjs[curCrateName].lon, crateObjs[curCrateName].lat = coord.LOtoLL(cratePosition.p)
+							local lat, lon, alt = coord.LOtoLL(cratePosition.p)
+							crateObjs[curCrateName] = {}
+							if crateCache[curCrateName] == nil then
+								crateCache[curCrateName] = {}
+								crateCache[curCrateName].lat = lat
+								crateCache[curCrateName].lon = lon
+								crateObjs[curCrateName].lat = lat
+								crateObjs[curCrateName].lon = lon
+							elseif crateCache[curCrateName].lat ~= lat or crateCache[curCrateName].lon ~= lon then
+								crateCache[curCrateName].lat = lat
+								crateCache[curCrateName].lon = lon
+								crateObjs[curCrateName].lat = lat
+								crateObjs[curCrateName].lon = lon
+							end
 							crateObjs[curCrateName].alive = true
 						else
 							crateObjs[curCrateName].alive = false
