@@ -12,7 +12,7 @@ _.set(exports, 'processStaticCrate', function (serverName, crateObj) {
 	var cPromise = [];
 	_.forEach(_.get(crateObj, 'data', {}), function (crate, name) {
 		if(crate.alive) {
-			cPromise.push(dbMapServiceController.staticCrateActions('update', serverName, {id: name, lonLatLoc: [crate.lon, crate.lat]}));
+			cPromise.push(dbMapServiceController.staticCrateActions('update', serverName, {id: name, lonLatLoc: [_.toNumber(crate.lon), _.toNumber(crate.lat)]}));
 		} else {
 			cPromise.push(dbMapServiceController.staticCrateActions('delete', serverName, {id: name}));
 		}
