@@ -62,11 +62,16 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 							speed: parseFloat(_.get(curData, 'speed', 0)),
 							inAir: _.get(curData, 'inAir'),
 							playername: _.get(curData, 'playername', ''),
-							groupId: _.get(curData, 'groupId'),
-							unitId: _.get(curData, 'unitId'),
 							dead: false
 						}
 					};
+
+					if(_.get(curData, 'groupId')) {
+						_.set(iCurObj, 'data.groupId', _.get(curData, 'groupId'));
+					}
+					if(_.get(curData, 'unitId')) {
+						_.set(iCurObj, 'data.unitId', _.get(curData, 'unitId'));
+					}
 					if(_.get(curData, 'type')) {
 						_.set(iCurObj, 'data.type', _.get(curData, 'type'));
 					}

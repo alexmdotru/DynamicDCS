@@ -200,6 +200,10 @@ _.set(CCB, 'socketCallback', function (serverName, cbArray) {
 				jtacController.processLOSEnemy(serverName, queObj);
 			}
 
+			if ((_.get(queObj, 'action') === 'CRATEOBJUPDATE') && sychrontronController.isServerSynced) {
+				console.log('crateupdate: ', queObj);
+			}
+
 			if (_.get(queObj, 'action') === 'unitsAlive') {
 				recoveryController.sendMissingUnits(serverName, _.get(queObj, 'data'))
 			}

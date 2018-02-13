@@ -236,7 +236,34 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 														5
 													);
 												} else {
-
+													dbMapServiceController.srvPlayerActions('read', serverName, {name: curUnit.playername})
+														.then(function(player) {
+															var curPlayer = _.get(player, [0]);
+															if (curPlayer) {
+																dbMapServiceController.staticCrateActions('read', serverName, {playerOwnerId: curPlayer.ucid})
+																	.then(function(crateUpdate) {
+																		var sendClient = {
+																			"action" : "CRATEUPDATE",
+																			"crateNames": _.map(crateUpdate, '_id'),
+																			"callback": 'unpackCrate'
+																		};
+																		var actionObj = {actionObj: sendClient, queName: 'clientArray'};
+																		dbMapServiceController.cmdQueActions('save', serverName, actionObj)
+																			.catch(function (err) {
+																				console.log('erroring line23: ', err);
+																			})
+																		;
+																	})
+																	.catch(function (err) {
+																		console.log('line 244: ', err);
+																	})
+																;
+															}
+														})
+														.catch(function (err) {
+															console.log('line 244: ', err);
+														})
+													;
 												}
 											}
 										}

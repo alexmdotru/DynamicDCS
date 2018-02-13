@@ -474,7 +474,7 @@ do
 					for nIndex = 1, #request.crateNames do
 						local curCrateName = request.crateNames[nIndex]
 						crateObjs[curCrateName] = {}
-						local crate = Unit.getByName(curCrateName)
+						local crate = StaticObject.getByName(curCrateName)
 						if crate ~= nil and crate:getLife() > 0 then
 							local cratePosition = crate:getPosition()
 							crateObjs[curCrateName].lat, crateObjs[curCrateName].lon, crateObjs[curCrateName].lat = coord.LOtoLL(cratePosition.p)
