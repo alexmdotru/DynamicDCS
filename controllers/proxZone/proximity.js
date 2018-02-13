@@ -220,7 +220,7 @@ _.set(exports, 'checkUnitsToBaseForCapture', function (serverName) {
 								dbMapServiceController.unitActions('read', serverName, {name: base.name + ' Logistics', dead: false})
 									.then(function (aliveLogistics) {
 										if (aliveLogistics.length > 0) {
-											groupController.spawnLogisticCmdCenter(serverName, {}, base, 2);
+											groupController.spawnLogisticCmdCenter(serverName, {}, false, base, 2);
 										}
 									})
 									.catch(function (err) {
@@ -244,7 +244,7 @@ _.set(exports, 'checkUnitsToBaseForCapture', function (serverName) {
 								dbMapServiceController.unitActions('read', serverName, {name: base.name + ' Logistics', dead: false})
 									.then(function (aliveLogistics) {
 										if (aliveLogistics.length > 0) {
-											groupController.spawnLogisticCmdCenter(serverName, {}, base, 1);
+											groupController.spawnLogisticCmdCenter(serverName, {}, false, base, 1);
 										}
 									})
 									.catch(function (err) {

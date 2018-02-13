@@ -630,7 +630,7 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 		}
 		exports.spawnGroup(serverName, spawnArray, extName, extSide);
 
-		exports.spawnLogisticCmdCenter(serverName, {}, _.find(exports.bases, {name: extName}), extSide, true);
+		exports.spawnLogisticCmdCenter(serverName, {}, true, _.find(exports.bases, {name: extName}), extSide);
 		totalUnitsSpawned += spawnArray.length + 1;
 	});
 	return totalUnitsSpawned
@@ -661,7 +661,7 @@ _.set(exports, 'initDbs', function ( serverName ) {
 	;
 });
 
-_.set(exports, 'spawnLogisticCmdCenter', function (serverName, staticObj, baseObj, side, init) {
+_.set(exports, 'spawnLogisticCmdCenter', function (serverName, staticObj, init, baseObj, side) {
 	var curGrpObj = _.cloneDeep(staticObj);
 	_.set(curGrpObj, 'name', _.get(curGrpObj, 'name', _.get(baseObj, 'name', '') + ' Logistics'));
 	_.set(curGrpObj, 'coalition', _.get(curGrpObj, 'coalition', side));
@@ -712,7 +712,7 @@ _.set(exports, 'healBase', function ( serverName, baseName ) {
 				.then(function (baseUnit) {
 					var curBase = _.get(baseUnit, [0], {});
 					_.set(curUnit, 'coalition', _.get(curBase, 'side'));
-					exports.spawnLogisticCmdCenter(serverName, curUnit, curBase);
+					exports.spawnLogisticCmdCenter(serverName, curUnit, false, curBase);
 				})
 				.catch(function (err) {
 						console.log('erroring line657: ', err, serverName, curUnit);

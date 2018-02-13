@@ -40,7 +40,7 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 								_.set(remappedunits, [curGrpName], _.get(remappedunits, [curGrpName], []));
 								remappedunits[curGrpName].push(unit);
 							} else if (_.get(unit, 'category') === 'STRUCTURE') {
-								groupController.spawnLogisticCmdCenter(serverName, unit);
+								groupController.spawnLogisticCmdCenter(serverName, unit, true);
 							} else {
 								curDead = {
 									_id: _.get(unit, 'name'),
