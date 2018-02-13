@@ -202,7 +202,7 @@ _.set(CCB, 'socketCallback', function (serverName, cbArray) {
 			}
 
 			if ((_.get(queObj, 'action') === 'CRATEOBJUPDATE') && sychrontronController.isServerSynced) {
-				staticCratesController.processStaticCrate(queObj);
+				staticCratesController.processStaticCrate(serverName, queObj);
 			}
 
 			if (_.get(queObj, 'action') === 'unitsAlive') {
