@@ -62,8 +62,8 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 							speed: parseFloat(_.get(curData, 'speed', 0)),
 							inAir: _.get(curData, 'inAir'),
 							playername: _.get(curData, 'playername', ''),
-							groupId: _.get(curData, 'groupId', 0),
-							unitId: _.get(curData, 'unitId', 0),
+							groupId: _.get(curData, 'groupId'),
+							unitId: _.get(curData, 'unitId'),
 							dead: false
 						}
 					};
