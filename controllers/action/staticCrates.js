@@ -8,6 +8,7 @@ const DCSLuaCommands = require('../player/DCSLuaCommands');
 const menuCmdsController = require('../menu/menuCmds');
 
 _.set(exports, 'processStaticCrate', function (serverName, crateObj) {
+	console.log('CO: ', crateObj);
 	var cPromise = [];
 	_.forEach(_.get(crateObj, 'data', {}), function (crate, name) {
 		if(crate.alive) {
