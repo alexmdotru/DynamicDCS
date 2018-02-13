@@ -12,9 +12,17 @@ _.set(exports, 'processStaticCrate', function (serverName, crateObj) {
 	var cPromise = [];
 	_.forEach(_.get(crateObj, 'data', {}), function (crate, name) {
 		if(crate.alive) {
-			cPromise.push(dbMapServiceController.staticCrateActions('update', serverName, {id: name, lonLatLoc: [_.toNumber(crate.lon), _.toNumber(crate.lat)]}));
+			cPromise.push(dbMapServiceController.staticCrateActions('update', serverName, {id: name, lonLatLoc: [_.toNumber(crate.lon), _.toNumber(crate.lat)]})
+				.catch(function (err) {
+					console.log('line 17: ', err);
+				})
+			);
 		} else {
-			cPromise.push(dbMapServiceController.staticCrateActions('delete', serverName, {id: name}));
+			cPromise.push(dbMapServiceController.staticCrateActions('delete', serverName, {id: name})
+				.catch(function (err) {
+					console.log('line 23: ', err);
+				})
+			);
 		}
 	});
 	Promise.all(cPromise)
