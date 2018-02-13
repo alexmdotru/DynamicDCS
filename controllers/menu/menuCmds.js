@@ -138,7 +138,7 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 						if (pObj.cmd === 'unpackCrate') {
 							proximityController.getLogiTowersProximity(serverName, curUnit.lonLatLoc, 0.8)
 								.then(function (logiProx) {
-									if (logiProx.length) {
+									if (!logiProx.length) {
 										DCSLuaCommands.sendMesgToGroup(
 											curUnit.groupId,
 											serverName,
@@ -245,7 +245,8 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 																		var sendClient = {
 																			"action" : "CRATEUPDATE",
 																			"crateNames": _.map(crateUpdate, '_id'),
-																			"callback": 'unpackCrate'
+																			"callback": 'unpackCrate',
+																			"unitId": pObj.unitId
 																		};
 																		var actionObj = {actionObj: sendClient, queName: 'clientArray'};
 																		dbMapServiceController.cmdQueActions('save', serverName, actionObj)
@@ -644,6 +645,7 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 });
 
 _.set(exports, 'unpackCrate', function (serverName, unit, type, special, combo, mobile) {
+	console.log('UC: ', serverName, unit, type, special, combo, mobile);
 	if(unit.inAir) {
 		DCSLuaCommands.sendMesgToGroup(
 			curUnit.groupId,
@@ -655,64 +657,49 @@ _.set(exports, 'unpackCrate', function (serverName, unit, type, special, combo, 
 		dbMapServiceController.srvPlayerActions('read', serverName, {name: unit.playername})
 			.then(function(player) {
 				var curPlayer = _.get(player, [0]);
-				if(menuUpdateController.virtualCrates) {
-					dbMapServiceController.unitActions('readStd', serverName, {playerOwnerId: curPlayer.ucid, playerCanDrive: mobile, isCrate: false, dead: false})
-						.then(function(delUnits){
-							var tRem;
-							var curUnit = 0;
-							var grpGroups = _.transform(delUnits, function (result, value) {
-								(result[value.groupName] || (result[value.groupName] = [])).push(value);
-							}, {});
-							if (mobile) {
-								tRem = _.size(grpGroups) - exports.maxUnitsMoving;
-							} else {
-								tRem = _.size(grpGroups) - exports.maxUnitsStationary;
-							}
+				dbMapServiceController.unitActions('readStd', serverName, {playerOwnerId: curPlayer.ucid, playerCanDrive: mobile, isCrate: false, dead: false})
+					.then(function(delUnits){
+						var tRem;
+						var curUnit = 0;
+						var grpGroups = _.transform(delUnits, function (result, value) {
+							(result[value.groupName] || (result[value.groupName] = [])).push(value);
+						}, {});
+						if (mobile) {
+							tRem = _.size(grpGroups) - exports.maxUnitsMoving;
+						} else {
+							tRem = _.size(grpGroups) - exports.maxUnitsStationary;
+						}
 
-							_.forEach(grpGroups, function (gUnit) {
-								if (curUnit <= tRem) {
-									_.forEach(gUnit, function(unit) {
-										dbMapServiceController.unitActions('updateByUnitId', serverName, {unitId: unit.unitId, dead: true})
-											.catch(function (err) {
-												console.log('erroring line462: ', err);
-											})
-										;
-										groupController.destroyUnit(serverName, unit.name);
-									});
-									curUnit++;
-								}
-							});
-						})
-						.catch(function (err) {
-							console.log('line 390: ', err);
-						})
-					;
-					var spawnArray = [];
-					if (combo) {
-						groupController.getUnitDictionary()
-							.then(function (unitDic) {
-								var addHdg = 0;
-								var curUnitHdg;
-								var unitStart;
-								var newSpawnArray = [];
-								var findUnits = _.filter(unitDic, {comboName: type, enabled: true});
-								_.forEach(findUnits, function (cbUnit) {
-									if (cbUnit.launcher) {
-										for (x=0; x < exports.spawnLauncherCnt; x++) {
-											unitStart = _.cloneDeep(cbUnit);
-											curUnitHdg = unit.hdg + addHdg;
-											if (curUnitHdg > 359) {
-												curUnitHdg = 15;
-											}
-											_.set(unitStart, 'spwnName', 'DU|' + curPlayer.ucid + '|' + cbUnit.type + '||true|' + mobile + '|');
-											_.set(unitStart, 'lonLatLoc', unit.lonLatLoc);
-											_.set(unitStart, 'heading', curUnitHdg);
-											_.set(unitStart, 'country', unit.country);
-											_.set(unitStart, 'playerCanDrive', mobile);
-											addHdg = addHdg + 15;
-											newSpawnArray.push(unitStart);
-										}
-									} else {
+						_.forEach(grpGroups, function (gUnit) {
+							if (curUnit <= tRem) {
+								_.forEach(gUnit, function(unit) {
+									dbMapServiceController.unitActions('updateByUnitId', serverName, {unitId: unit.unitId, dead: true})
+										.catch(function (err) {
+											console.log('erroring line462: ', err);
+										})
+									;
+									groupController.destroyUnit(serverName, unit.name);
+								});
+								curUnit++;
+							}
+						});
+					})
+					.catch(function (err) {
+						console.log('line 390: ', err);
+					})
+				;
+				var spawnArray = [];
+				if (combo) {
+					groupController.getUnitDictionary()
+						.then(function (unitDic) {
+							var addHdg = 0;
+							var curUnitHdg;
+							var unitStart;
+							var newSpawnArray = [];
+							var findUnits = _.filter(unitDic, {comboName: type, enabled: true});
+							_.forEach(findUnits, function (cbUnit) {
+								if (cbUnit.launcher) {
+									for (x=0; x < exports.spawnLauncherCnt; x++) {
 										unitStart = _.cloneDeep(cbUnit);
 										curUnitHdg = unit.hdg + addHdg;
 										if (curUnitHdg > 359) {
@@ -726,49 +713,41 @@ _.set(exports, 'unpackCrate', function (serverName, unit, type, special, combo, 
 										addHdg = addHdg + 15;
 										newSpawnArray.push(unitStart);
 									}
-								});
-								groupController.spawnLogiGroup(serverName, newSpawnArray, unit.coalition);
-							})
-							.catch(function (err) {
-								console.log('line 394: ', err);
-							})
-						;
-					} else {
-						if ((type === '1L13 EWR' || type === '55G6 EWR') && unit.country === 'USA') {
-							_.set(unit, 'country', 'UKRAINE');
-						}
-						spawnArray = _.concat(spawnArray, {
-							spwnName: 'DU|' + curPlayer.ucid + '|' + type + '|' + special + '|false|' + mobile + '|',
-							type: type,
-							lonLatLoc: unit.lonLatLoc,
-							heading: unit.hdg,
-							country: unit.country,
-							playerCanDrive: mobile,
-							category: "GROUND"
-						});
-						groupController.spawnLogiGroup(serverName, spawnArray, unit.coalition);
-					}
+								} else {
+									unitStart = _.cloneDeep(cbUnit);
+									curUnitHdg = unit.hdg + addHdg;
+									if (curUnitHdg > 359) {
+										curUnitHdg = 15;
+									}
+									_.set(unitStart, 'spwnName', 'DU|' + curPlayer.ucid + '|' + cbUnit.type + '||true|' + mobile + '|');
+									_.set(unitStart, 'lonLatLoc', unit.lonLatLoc);
+									_.set(unitStart, 'heading', curUnitHdg);
+									_.set(unitStart, 'country', unit.country);
+									_.set(unitStart, 'playerCanDrive', mobile);
+									addHdg = addHdg + 15;
+									newSpawnArray.push(unitStart);
+								}
+							});
+							groupController.spawnLogiGroup(serverName, newSpawnArray, unit.coalition);
+						})
+						.catch(function (err) {
+							console.log('line 394: ', err);
+						})
+					;
 				} else {
-					/*
-                    crateStatic = {
-
-                    };
-                    _crate = {
-                        ["category"] = "Cargo",
-                        ["shape_name"] = "iso_container_small_cargo",
-                        ["type"] = "iso_container_small",
-                        ["unitId"] = _unitId,
-                        ["y"] = _point.z,
-                        ["x"] = _point.x,
-                        ["mass"] = _weight,
-                        ["name"] = _name,
-                        ["canCargo"] = true,
-                        ["heading"] = 0
-                    }
-                    _crate["country"] = _country
-                    --env.info("info1: ctry: ".._crate["country"]..'unitId: '.._crate["unitId"]..' name: '.._crate["name"]..' category: '.._crate["category"]..' type: '.._crate["type"]..' mass '.._crate["mass"])
-                    mist.dynAddStatic(_crate)
-                    */
+					if ((type === '1L13 EWR' || type === '55G6 EWR') && unit.country === 'USA') {
+						_.set(unit, 'country', 'UKRAINE');
+					}
+					spawnArray = _.concat(spawnArray, {
+						spwnName: 'DU|' + curPlayer.ucid + '|' + type + '|' + special + '|false|' + mobile + '|',
+						type: type,
+						lonLatLoc: unit.lonLatLoc,
+						heading: unit.hdg,
+						country: unit.country,
+						playerCanDrive: mobile,
+						category: "GROUND"
+					});
+					groupController.spawnLogiGroup(serverName, spawnArray, unit.coalition);
 				}
 			})
 			.catch(function (err) {

@@ -502,6 +502,7 @@ do
 					table.insert(updateQue.que, {
 						action = 'CRATEOBJUPDATE',
 						callback = request.callback,
+						unitId = request.unitId,
 						data = crateObjs
 					})
 				end

@@ -154,7 +154,7 @@ _.set(exports, 'getVirtualCratesInProximity', function (serverName, lonLat, kmDi
 });
 
 _.set(exports, 'getStaticCratesInProximity', function (serverName, lonLat, kmDistance, coalition) {
-	return dbMapServiceController.unitActions(
+	return dbMapServiceController.staticCrateActions(
 		'readStd',
 		serverName,
 		{
