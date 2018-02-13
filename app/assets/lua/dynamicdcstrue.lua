@@ -478,21 +478,24 @@ do
 						if crate ~= nil and crate:getLife() > 0 then
 							local cratePosition = crate:getPosition()
 							local lat, lon, alt = coord.LOtoLL(cratePosition.p)
-							crateObjs[curCrateName] = {}
 							if crateCache[curCrateName] == nil then
 								crateCache[curCrateName] = {}
 								crateCache[curCrateName].lat = lat
 								crateCache[curCrateName].lon = lon
+								crateObjs[curCrateName] = {}
 								crateObjs[curCrateName].lat = lat
 								crateObjs[curCrateName].lon = lon
+								crateObjs[curCrateName].alive = true
 							elseif crateCache[curCrateName].lat ~= lat or crateCache[curCrateName].lon ~= lon then
 								crateCache[curCrateName].lat = lat
 								crateCache[curCrateName].lon = lon
+								crateObjs[curCrateName] = {}
 								crateObjs[curCrateName].lat = lat
 								crateObjs[curCrateName].lon = lon
+								crateObjs[curCrateName].alive = true
 							end
-							crateObjs[curCrateName].alive = true
 						else
+							crateObjs[curCrateName] = {}
 							crateObjs[curCrateName].alive = false
 						end
 					end

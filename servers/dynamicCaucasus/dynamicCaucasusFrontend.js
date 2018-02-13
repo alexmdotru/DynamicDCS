@@ -5,6 +5,7 @@ const dbMapServiceController = require('../../controllers/db/dbMapService');
 const menuCmdsController = require('../../controllers/menu/menuCmds');
 const groupController = require('../../controllers/spawn/group');
 const unitsStaticsController = require('../../controllers/serverToDbSync/unitsStatics');
+const staticCratesController = require('../../controllers/action/staticCrates');
 const airbaseSyncController = require('../../controllers/serverToDbSync/airbaseSync');
 const sychrontronController = require('../../controllers/sychronize/Sychrontron');
 const recoveryController = require('../../controllers/sychronize/recovery');
@@ -201,7 +202,7 @@ _.set(CCB, 'socketCallback', function (serverName, cbArray) {
 			}
 
 			if ((_.get(queObj, 'action') === 'CRATEOBJUPDATE') && sychrontronController.isServerSynced) {
-				console.log('crateupdate: ', queObj);
+				staticCratesController.processStaticCrate(queObj);
 			}
 
 			if (_.get(queObj, 'action') === 'unitsAlive') {
