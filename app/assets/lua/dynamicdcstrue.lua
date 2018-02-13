@@ -481,7 +481,7 @@ do
 							crateObjs[curCrateName] = {}
 							crateObjs[curCrateName].lat = lat
 							crateObjs[curCrateName].lon = lon
-						crateObjs[curCrateName].alive = true
+							crateObjs[curCrateName].alive = true
 						else
 							crateObjs[curCrateName] = {}
 							crateObjs[curCrateName].alive = false
