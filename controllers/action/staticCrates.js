@@ -9,7 +9,6 @@ const menuCmdsController = require('../menu/menuCmds');
 
 _.set(exports, 'processStaticCrate', function (serverName, crateObj) {
 	var cPromise = [];
-	console.log('CO: ', crateObj);
 	_.forEach(_.get(crateObj, 'data', {}), function (crate, name) {
 		if(crate.alive) {
 			cPromise.push(dbMapServiceController.staticCrateActions('update', serverName, {id: name, lonLatLoc: [crate.lon, crate.lat]}));

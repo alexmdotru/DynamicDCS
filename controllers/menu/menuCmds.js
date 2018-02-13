@@ -645,7 +645,6 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 });
 
 _.set(exports, 'unpackCrate', function (serverName, unit, type, special, combo, mobile) {
-	console.log('UC: ', serverName, unit, type, special, combo, mobile);
 	if(unit.inAir) {
 		DCSLuaCommands.sendMesgToGroup(
 			curUnit.groupId,
@@ -705,7 +704,7 @@ _.set(exports, 'unpackCrate', function (serverName, unit, type, special, combo, 
 										if (curUnitHdg > 359) {
 											curUnitHdg = 15;
 										}
-										_.set(unitStart, 'spwnName', 'DU|' + curPlayer.ucid + '|' + cbUnit.type + '||true|' + mobile + '|');
+										_.set(unitStart, 'spwnName', 'DU|' + curPlayer.ucid + '|' + cbUnit.type + '||true|' + mobile + '|' + _.random(1000000, 9999999));
 										_.set(unitStart, 'lonLatLoc', unit.lonLatLoc);
 										_.set(unitStart, 'heading', curUnitHdg);
 										_.set(unitStart, 'country', unit.country);
