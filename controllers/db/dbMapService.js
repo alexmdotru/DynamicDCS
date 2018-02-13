@@ -349,7 +349,6 @@ exports.staticCrateActions = function (action, serverName, obj){
 	}
 	if(action === 'update') {
 		return new Promise(function(resolve, reject) {
-			console.log('upoL ', obj);
 			StaticCrates.findOneAndUpdate(
 				{_id: obj._id},
 				{$set: obj},
