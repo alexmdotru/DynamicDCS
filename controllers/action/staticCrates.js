@@ -18,7 +18,7 @@ _.set(exports, 'processStaticCrate', function (serverName, crateObj) {
 				})
 			);
 		} else {
-			console.log('DCHK: ', name, );
+			console.log('DCHK: ', name);
 			cPromise.push(dbMapServiceController.staticCrateActions('delete', serverName, {_id: name})
 				.catch(function (err) {
 					console.log('line 23: ', err);
