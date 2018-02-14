@@ -11,7 +11,7 @@ _.set(exports, 'processStaticCrate', function (serverName, crateObj) {
 	var cPromise = [];
 	_.forEach(_.get(crateObj, 'data', {}), function (crate, name) {
 		if(crate.alive) {
-			console.log('ACHK: ', name, );
+			console.log('ACHK: ', name);
 			cPromise.push(dbMapServiceController.staticCrateActions('update', serverName, {_id: name, lonLatLoc: [crate.lon, crate.lat]})
 				.catch(function (err) {
 					console.log('line 17: ', err);
