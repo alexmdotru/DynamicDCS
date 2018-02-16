@@ -185,7 +185,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 						curLife = capLivesController.defaultLife;
 						capLifeLastAdded = 0;
 					} else {
-						new Date().getTime();
+						capLifeLastAdded = new Date().getTime();
 					}
 					SrvPlayer.findOneAndUpdate(
 						{_id: obj._id},
