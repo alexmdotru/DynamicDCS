@@ -84,7 +84,6 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 					;
 				}
 			} else {
-				console.log('isf: ', isServerFresh);
 				if (isServerFresh) { // server is fresh
 					if (exports.processInstructions) {
 						if (serverUnitCount !== units.length) {
