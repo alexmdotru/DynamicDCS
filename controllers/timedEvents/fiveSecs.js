@@ -2,6 +2,7 @@ const _ = require('lodash');
 const dbMapServiceController = require('../db/dbMapService');
 const groupController = require('../spawn/group');
 const baseSpawnFlagsController = require('../action/baseSpawnFlags');
+const menuUpdateController = require('../menu/menuUpdate');
 
 var replenThreshold = 20; // percentage under max
 var replenTimer = 3600; // 1 hour
@@ -28,18 +29,41 @@ _.set(exports, 'processFiveSecActions', function (serverName, fullySynced) {
 		;
 
 		//clean crates older than 90mins
-		dbMapServiceController.unitActions('read', serverName, {isCrate: true, dead:false})
-			.then(function (crateCleanup) {
-				_.forEach(crateCleanup, function (crate) {
-					if (new Date(_.get(crate, 'createdAt', 0)).getTime() + maxCrateLife < new Date().getTime()) {
-						groupController.destroyUnit( serverName, crate.name );
-					}
-				});
-			})
-			.catch(function (err) {
-				console.log('err line34: ', err);
-			})
-		;
+		if (menuUpdateController.virtualCrates) {
+			dbMapServiceController.unitActions('read', serverName, {isCrate: true, dead:false})
+				.then(function (crateCleanup) {
+					_.forEach(crateCleanup, function (crate) {
+						if (new Date(_.get(crate, 'createdAt', 0)).getTime() + maxCrateLife < new Date().getTime()) {
+							groupController.destroyUnit( serverName, crate.name );
+						}
+					});
+				})
+				.catch(function (err) {
+					console.log('err line42: ', err);
+				})
+			;
+		} else {
+			dbMapServiceController.unitActions('readStd', serverName, {})
+				.then(function (crateCleanup) {
+					_.forEach(crateCleanup, function (crate) {
+						if (new Date(_.get(crate, 'createdAt', 0)).getTime() + maxCrateLife < new Date().getTime()) {
+							dbMapServiceController.staticCrateActions('delete', serverName, {_id: crate._id})
+								.then(function () {
+									console.log('destroy crate: ', crate.name);
+									groupController.destroyUnit( serverName, crate.name );
+								})
+								.catch(function (err) {
+									console.log('line 56: ', err);
+								})
+							;
+						}
+					});
+				})
+				.catch(function (err) {
+					console.log('err line63: ', err);
+				})
+			;
+		}
 
 		dbMapServiceController.baseActions('read', serverName, {mainBase: true, $or: [{side: 1}, {side: 2}]})
 			.then(function (bases) {
