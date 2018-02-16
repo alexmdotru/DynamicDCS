@@ -29,7 +29,7 @@ _.set(exports, 'updateServerCapLives', function (serverName) {
 							var lockObj;
 							if (ePlayer) {
 								//add life if its past due
-								if (ePlayer.capLifeLastAdded.getTime() + oneHour < new Date().getTime() && ePlayer.curCapLives < exports.defaultLife) {
+								if (new Date(ePlayer.capLifeLastAdded).getTime() + oneHour < new Date().getTime() && ePlayer.curCapLives < exports.defaultLife) {
 									exports.autoAddLife(serverName, ePlayer.ucid);
 								}
 								// console.log('cp: ', curPlayer.curCapLives, curPlayer.capLifeLastAdded.getTime() + oneHour < new Date().getTime() && curPlayer.curCapLives < 4);

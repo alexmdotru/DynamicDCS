@@ -130,7 +130,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 				}
 				if (serverObj.length === 0) {
 					const sObj = new SrvPlayer(obj);
-					sObj.capLifeLastAdded = new Date().getTime();
+					sObj.capLifeLastAdded = 0;
 					sObj.curCapLives = capLivesController.defaultLife;
 					curIP = sObj.ipaddr;
 					if(sObj.ipaddr === ':10308' || sObj.ipaddr === '127.0.0.1'){
@@ -148,7 +148,6 @@ exports.srvPlayerActions = function (action, serverName, obj){
 					});
 				} else {
 					if (curPly.sessionName !== obj.sessionName) {
-						obj.capLifeLastAdded = new Date().getTime();
 						obj.curCapLives = capLivesController.defaultLife;
 					}
 					curIP = obj.ipaddr;
@@ -180,13 +179,17 @@ exports.srvPlayerActions = function (action, serverName, obj){
 					reject(err)
 				}
 				if (serverObj.length !== 0) {
+					var capLifeLastAdded;
 					var curLife = _.get(curPly, ['curCapLives'], 0) + 1;
-					if (curLife > capLivesController.defaultLife) {
+					if (curLife >= capLivesController.defaultLife) {
 						curLife = capLivesController.defaultLife;
+						capLifeLastAdded = 0;
+					} else {
+						new Date().getTime();
 					}
 					SrvPlayer.findOneAndUpdate(
 						{_id: obj._id},
-						{$set: {curCapLives: curLife, capLifeLastAdded: new Date()}},
+						{$set: {curCapLives: curLife, capLifeLastAdded: capLifeLastAdded}},
 						function(err, srvPlayer) {
 							if (err) { reject(err) }
 							resolve(srvPlayer);
@@ -206,9 +209,13 @@ exports.srvPlayerActions = function (action, serverName, obj){
 				}
 				if (serverObj.length !== 0) {
 					var curLife = _.get(curPly, ['curCapLives'], 1) - 1;
+					console.log('caplifedate: ', curPly.capLifeLastAdded);
+					if(0 ===  curPly.capLifeLastAdded) {
+						curPly.capLifeLastAdded = new Date().getTime();
+					}
 					SrvPlayer.update(
 						{_id: obj._id},
-						{$set: {curCapLives: curLife}},
+						{$set: {curCapLives: curLife, capLifeLastAdded: curPly.capLifeLastAdded}},
 						function(err) {
 							if (err) { reject(err) }
 							resolve(curLife);

@@ -19,17 +19,19 @@ exports.createSocket = function (serverName, address, port, queName, callback) {
 	setInterval(function () { //sending FULL SPEED AHEAD, 1 per milsec (watch for weird errors, etc)
 		var curTime = new Date().getTime();
 		if (sychrontronController.isSyncLockdownMode && !sychrontronController.isServerSynced){
-			if (lastSyncTime + syncSpawnTimer < curTime) {
-				dbMapServiceController.cmdQueActions('grabNextQue', serverName, {queName: queName})
-					.then(function (resp) {
-						if (resp) {
-							sock.cQue.push(resp.actionObj);
-						}
-					})
-					.catch(function (err) {
-						console.log('erroring line34: ', err);
-					})
-				;
+			if (sychrontronController.processInstructions) {
+				if (lastSyncTime + syncSpawnTimer < curTime) {
+					dbMapServiceController.cmdQueActions('grabNextQue', serverName, {queName: queName})
+						.then(function (resp) {
+							if (resp) {
+								sock.cQue.push(resp.actionObj);
+							}
+						})
+						.catch(function (err) {
+							console.log('erroring line34: ', err);
+						})
+					;
+				}
 			}
 		} else {
 			dbMapServiceController.cmdQueActions('grabNextQue', serverName, {queName: queName})
