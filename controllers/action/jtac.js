@@ -85,10 +85,22 @@ _.set(exports, 'aliveJtac30SecCheck', function (serverName) {
 					dbMapServiceController.unitActions('read', serverName, {name: jtUnit.jtacTarget})
 						.then(function (jtacTarget) {
 							var curJtacTarget = _.get(jtacTarget, [0]);
-							if (!curJtacTarget.dead){
-								if (jtUnit.jtacReplenTime < new Date().getTime()) {
-									//replenish laser smoke, reset timer
-									exports.setLaserSmoke(serverName, jtUnit, curJtacTarget);
+							if (curJtacTarget) {
+								if (!curJtacTarget.dead){
+									if (jtUnit.jtacReplenTime < new Date().getTime()) {
+										//replenish laser smoke, reset timer
+										exports.setLaserSmoke(serverName, jtUnit, curJtacTarget);
+									}
+								} else {
+									dbMapServiceController.unitActions('updateByName', serverName, {name: jtUnit.name, jtacTarget: null})
+										.then(function () {
+											exports.removeLaserIR(serverName, jtUnit);
+											exports.jtacNewTarget(serverName, jtUnit);
+										})
+										.catch(function (err) {
+											console.log('erroring line101: ', err);
+										})
+									;
 								}
 							} else {
 								dbMapServiceController.unitActions('updateByName', serverName, {name: jtUnit.name, jtacTarget: null})
