@@ -307,6 +307,16 @@ exports.unitActions = function (action, serverName, obj){
 			);
 		});
 	}
+	if(action === 'removeAllDead') {
+		return new Promise(function(resolve, reject) {
+			Unit.remove({dead: true},
+				function(err, units) {
+					if (err) { reject(err) }
+					resolve(units);
+				}
+			);
+		});
+	}
 	if(action === 'delete') {
 		return new Promise(function(resolve, reject) {
 			Unit.findByIdAndRemove(obj._id, function (err, units) {
