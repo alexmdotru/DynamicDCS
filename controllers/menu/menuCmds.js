@@ -214,7 +214,7 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 																);
 															}
 														} else {
-															// no troops
+															// no crates
 															DCSLuaCommands.sendMesgToGroup(
 																curUnit.groupId,
 																serverName,
