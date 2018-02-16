@@ -27,7 +27,7 @@ _.set(exports, 'processFiveSecActions', function (serverName, fullySynced) {
 				console.log('err line20: ', err);
 			})
 		;
-
+/*
 		//clean crates older than 90mins
 		if (menuUpdateController.virtualCrates) {
 			dbMapServiceController.unitActions('read', serverName, {isCrate: true, dead:false})
@@ -64,7 +64,7 @@ _.set(exports, 'processFiveSecActions', function (serverName, fullySynced) {
 				})
 			;
 		}
-
+*/
 		dbMapServiceController.baseActions('read', serverName, {mainBase: true, $or: [{side: 1}, {side: 2}]})
 			.then(function (bases) {
 				_.forEach(bases, function (base) {
