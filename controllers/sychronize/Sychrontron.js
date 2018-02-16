@@ -138,7 +138,6 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 								});
 								stuckDetect = 0;
 							} else {
-								console.log('stuck d');
 								stuckDetect++;
 							}
 						} else {
