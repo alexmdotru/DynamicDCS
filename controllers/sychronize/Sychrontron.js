@@ -33,11 +33,10 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 								exports.processInstructions = true;
 								console.log('processed Instructons 1: ', exports.processInstructions);
 							} else { // DB is FULL
-								//might have filter units to be spawned, mark others as dead head of time
+								console.log('DB has ' + units.length + ' Units, Respawn Them');
 								var filterStructure = _.filter(units, {category: 'STRUCTURE'});
 								var filterGround = _.filter(units, {category: 'GROUND'});
 								masterUnitCount = filterStructure.length + filterGround.length;
-								console.log('DB has ' + units.length + ' Units, Respawn Them');
 								_.forEach(units, function (unit) {
 									var curDead;
 									var curGrpName = _.get(unit, 'groupName');
@@ -82,6 +81,8 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 							console.log('line 77: ', err);
 						})
 					;
+				} else {
+					console.log('syncro mode ia on lockdown: ', exports.isSyncLockdownMode);
 				}
 			} else {
 				if (isServerFresh) { // server is fresh
@@ -118,12 +119,15 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 								exports.isServerSynced = true;
 								isServerFresh = false;
 								DCSLuaCommands.setIsOpenSlotFlag(serverName, 1);
+							} else {
+								console.log('failing  !exports.isServerSynced && units.length > 500', !exports.isServerSynced, ' && ', units.length > 500);
 							}
 						}
 					} else {
-						console.log('Not Processed Instructons 1: ', exports.processInstructions);
+						console.log('No Sync Instructions to be processed', exports.processInstructions);
 					}
 				} else { // server has units on it
+					console.log('Server is not fresh');
 					if (units.length !== serverUnitCount) { // db doesnt match server
 						if (lastUnitCount === serverUnitCount) {
 							if (stuckDetect > 5) {
