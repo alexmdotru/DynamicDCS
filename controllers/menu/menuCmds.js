@@ -648,7 +648,7 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 _.set(exports, 'unpackCrate', function (serverName, unit, type, special, combo, mobile) {
 	if(unit.inAir) {
 		DCSLuaCommands.sendMesgToGroup(
-			curUnit.groupId,
+			unit.groupId,
 			serverName,
 			"G: Please Land Before Attempting Logistic Commands!",
 			5
