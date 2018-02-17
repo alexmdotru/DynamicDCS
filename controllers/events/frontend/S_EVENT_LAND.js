@@ -39,7 +39,7 @@ _.set(exports, 'processEventLand', function (serverName, sessionName, eventObj) 
 									}
 								})
 								.catch(function (err) {
-									console.log('err line1323: ', err);
+								console.log('err line1323: ', err);4
 								})
 							;
 						}
