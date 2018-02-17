@@ -39,6 +39,7 @@ _.set(exports, 'updateServerCapLives', function (serverName, playrUnit) {
 										ucid: ePlayer.ucid,
 										val: 1
 									};
+									exports.autoAddLife(serverName, ePlayer.ucid);
 								} else {
 									lockObj = {
 										ucid: ePlayer.ucid,
