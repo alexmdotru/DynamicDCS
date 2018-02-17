@@ -85,7 +85,7 @@ _.set(exports, 'resetLives', function (serverName, playerUcid, unit) {
 		.catch(function (err) {
 			console.log('line15', err);
 		})
-	;-
+	;
 });
 
 _.set(exports, 'autoAddLife', function (serverName, playerUcid) {
