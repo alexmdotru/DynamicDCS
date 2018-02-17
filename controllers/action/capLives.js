@@ -33,8 +33,8 @@ _.set(exports, 'updateServerCapLives', function (serverName, playrUnit, callback
 									exports.autoAddLife(serverName, ePlayer.ucid);
 								}
 								// console.log('cp: ', curPlayer.curCapLives, curPlayer.capLifeLastAdded.getTime() + oneHour < new Date().getTime() && curPlayer.curCapLives < 4);
-								console.log('kick user: ', ePlayer.curCapLives, playrUnit.speed, playrUnit.inAir);
-								if (ePlayer.curCapLives <= 0 && !playrUnit.inAir) {
+								console.log('kick user: ', ePlayer.curCapLives, playrUnit.speed, !playrUnit.inAir);
+								if (ePlayer.curCapLives <= 0) {
 									lockObj = {
 										ucid: ePlayer.ucid,
 										val: 1
