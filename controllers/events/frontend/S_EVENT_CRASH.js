@@ -35,12 +35,6 @@ _.set(exports, 'processEventCrash', function (serverName, sessionName, eventObj)
 								dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 							}
 
-							console.log('CRASHED: ', _.includes(capLivesController.capLivesEnabled, curIUnit.type), curIUnit.inAir);
-							if (_.includes(capLivesController.capLivesEnabled, curIUnit.type) && curIUnit.inAir) {
-								//take life away
-								capLivesController.removeLife(serverName, iPlayer.ucid, curIUnit.groupId);
-							}
-
 							DCSLuaCommands.sendMesgToAll(
 								serverName,
 								_.get(iCurObj, 'msg'),

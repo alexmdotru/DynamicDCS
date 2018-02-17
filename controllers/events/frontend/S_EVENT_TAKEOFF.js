@@ -36,6 +36,11 @@ _.set(exports, 'processEventTakeoff', function (serverName, sessionName, eventOb
 								msg: 'C: '+ _.get(curIUnit, 'type') + '('+_.get(curIUnit, 'playername')+') has taken off' + place
 							};
 							if(_.get(iCurObj, 'iucid')) {
+								console.log('takeoff, remove life: ', _.includes(capLivesController.capLivesEnabled, curIUnit.type), curIUnit.inAir);
+								if (_.includes(capLivesController.capLivesEnabled, curIUnit.type)) {
+									//take life away
+									capLivesController.removeLife(serverName, iPlayer.ucid, curIUnit);
+								}
 								webPushCommands.sendToCoalition(serverName, {payload: {action: eventObj.action, data: _.cloneDeep(iCurObj)}});
 								dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 							}

@@ -34,7 +34,7 @@ _.set(exports, 'processEventPlayerEnterUnit', function (serverName, sessionName,
 								webPushCommands.sendToCoalition(serverName, {payload: {action: eventObj.action, data: _.cloneDeep(iCurObj)}});
 								dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 							}
-							capLivesController.updateServerCapLives(serverName);
+							capLivesController.updateServerCapLives(serverName, curIUnit);
 							menuUpdateController.logisticsMenu('resetMenu', serverName, curIUnit);
 							DCSLuaCommands.sendMesgToCoalition(
 								_.get(iCurObj, 'displaySide'),
