@@ -57,7 +57,7 @@ _.set(exports, 'processEventLand', function (serverName, sessionName, eventObj) 
 							};
 							if(_.get(iCurObj, 'iucid')) {
 								console.log('land, add life: ', _.includes(capLivesController.capLivesEnabled, curIUnit.type), !curIUnit.dead, !curIUnit.inAir, place !== '');
-								if (_.includes(capLivesController.capLivesEnabled, curIUnit.type) && !curIUnit.dead && !curIUnit.inAir && place !== '') {
+								if (_.includes(capLivesController.capLivesEnabled, curIUnit.type)) {
 									console.log('landed add life');
 									capLivesController.autoAddLife(serverName, iPlayer.ucid);
 								}
