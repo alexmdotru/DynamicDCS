@@ -4,6 +4,7 @@ const dbMapServiceController = require('../../db/dbMapService');
 const DCSLuaCommands = require('../../player/DCSLuaCommands');
 const unitsStaticsController = require('../../serverToDbSync/unitsStatics');
 const webPushCommands = require('../../socketIO/webPush');
+const capLivesController = require('../../action/capLives');
 
 _.set(exports, 'processEventEjection', function (serverName, sessionName, eventObj) {
 	// Occurs when a pilot ejects from an aircraft

@@ -4,6 +4,7 @@ const dbMapServiceController = require('../../db/dbMapService');
 const DCSLuaCommands = require('../../player/DCSLuaCommands');
 const unitsStaticsController = require('../../serverToDbSync/unitsStatics');
 const webPushCommands = require('../../socketIO/webPush');
+const capLivesController = require('../../action/capLives');
 
 _.set(exports, 'processEventCrash', function (serverName, sessionName, eventObj) {
 	// Occurs when any aircraft crashes into the ground and is completely destroyed.
