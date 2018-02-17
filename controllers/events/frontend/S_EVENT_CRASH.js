@@ -32,7 +32,6 @@ _.set(exports, 'processEventCrash', function (serverName, sessionName, eventObj)
 							};
 							if(_.get(iCurObj, 'iucid')) {
 								console.log('crash');
-								capLivesController.updateServerCapLives(serverName, curIUnit);
 								webPushCommands.sendToAll(serverName, {payload: {action: eventObj.action, data: _.cloneDeep(iCurObj)}});
 								dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 							}

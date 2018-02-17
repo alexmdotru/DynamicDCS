@@ -32,7 +32,6 @@ _.set(exports, 'processEventEjection', function (serverName, sessionName, eventO
 							};
 							if(_.get(iCurObj, 'iucid')) {
 								console.log('eject');
-								capLivesController.updateServerCapLives(serverName, curIUnit);
 								webPushCommands.sendToAll(serverName, {payload: {action: eventObj.action, data: _.cloneDeep(iCurObj)}});
 								dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 							}
