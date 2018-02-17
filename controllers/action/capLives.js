@@ -33,7 +33,7 @@ _.set(exports, 'updateServerCapLives', function (serverName, playrUnit) {
 									exports.autoAddLife(serverName, ePlayer.ucid);
 								}
 								// console.log('cp: ', curPlayer.curCapLives, curPlayer.capLifeLastAdded.getTime() + oneHour < new Date().getTime() && curPlayer.curCapLives < 4);
-								if (ePlayer.curCapLives === 0 && !playrUnit.inAir && playrUnit.speed < 10) {
+								if (ePlayer.curCapLives === 0 && !playrUnit.inAir && playrUnit.speed < 20) {
 									lockObj = {
 										ucid: ePlayer.ucid,
 										val: 1
