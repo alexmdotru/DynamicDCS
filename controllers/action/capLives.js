@@ -124,9 +124,9 @@ _.set(exports, 'autoAddLife', function (serverName, playerUcid) {
 _.set(exports, 'removeLife', function (serverName, playerUcid, groupId) {
 	//console.log('remove: ', serverName, playerUcid, groupId);
 	// remove cap life to player or 0 lives
+	console.log('capLeft: ', capLeft, playerUcid, serverName);
 	dbMapServiceController.srvPlayerActions('removeLife', serverName, {_id: playerUcid})
 		.then(function(capLeft) {
-			console.log('capLeft: ', capLeft, playerUcid, serverName);
 			DCSLuaCommands.sendMesgToGroup(
 				groupId,
 				serverName,
