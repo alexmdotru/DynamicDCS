@@ -58,7 +58,7 @@ _.set(exports, 'processEventLand', function (serverName, sessionName, eventObj) 
 							if(_.get(iCurObj, 'iucid')) {
 								console.log('land, add life: ', _.includes(capLivesController.capLivesEnabled, curIUnit.type), !curIUnit.dead, !curIUnit.inAir, place !== '');
 								if (_.includes(capLivesController.capLivesEnabled, curIUnit.type)) {
-									console.log('landed add life');
+									console.log('landed add life: ', iPlayer.ucid);
 									capLivesController.autoAddLife(serverName, iPlayer.ucid);
 								}
 								webPushCommands.sendToCoalition(serverName, {payload: {action: eventObj.action, data: _.cloneDeep(iCurObj)}});

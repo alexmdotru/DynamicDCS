@@ -14,7 +14,7 @@ exports.capLivesEnabled = [
 var oneHour = 60 * 60 * 1000;
 //var oneHour = 600 * 1000;
 
-_.set(exports, 'updateServerCapLives', function (serverName, playrUnit, callback) {
+_.set(exports, 'updateServerCapLives', function (serverName, playrUnit) {
 	var sendClient;
 	var actionObj;
 	var playerCapTable = [];
@@ -34,7 +34,7 @@ _.set(exports, 'updateServerCapLives', function (serverName, playrUnit, callback
 								}
 								// console.log('cp: ', curPlayer.curCapLives, curPlayer.capLifeLastAdded.getTime() + oneHour < new Date().getTime() && curPlayer.curCapLives < 4);
 								console.log('kick user: ', ePlayer.curCapLives, playrUnit.speed, !playrUnit.inAir);
-								if (ePlayer.curCapLives <= 0) {
+								if (ePlayer.curCapLives < 0) {
 									lockObj = {
 										ucid: ePlayer.ucid,
 										val: 1
