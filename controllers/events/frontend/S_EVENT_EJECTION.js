@@ -31,6 +31,7 @@ _.set(exports, 'processEventEjection', function (serverName, sessionName, eventO
 								msg: 'A: ' + constants.side[_.get(curIUnit, 'coalition')] + ' '+ _.get(curIUnit, 'type') + '('+ _.get(curIUnit, 'playername') +') ejected'
 							};
 							if(_.get(iCurObj, 'iucid')) {
+								console.log('eject');
 								capLivesController.updateServerCapLives(serverName, curIUnit);
 								webPushCommands.sendToAll(serverName, {payload: {action: eventObj.action, data: _.cloneDeep(iCurObj)}});
 								dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
