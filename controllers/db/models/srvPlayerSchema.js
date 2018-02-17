@@ -43,7 +43,8 @@ const srvPlayerSchema = new Schema({
 			default: 4
 		},
 		capLifeLastAdded: {
-			type: Number
+			type: Number,
+			default: 0
 		}
 	},
 	{
