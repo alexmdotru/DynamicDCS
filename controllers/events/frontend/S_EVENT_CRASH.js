@@ -2,7 +2,6 @@ const _ = require('lodash');
 const constants = require('../../constants');
 const dbMapServiceController = require('../../db/dbMapService');
 const DCSLuaCommands = require('../../player/DCSLuaCommands');
-const capLivesController = require('../../action/capLives');
 const unitsStaticsController = require('../../serverToDbSync/unitsStatics');
 const webPushCommands = require('../../socketIO/webPush');
 

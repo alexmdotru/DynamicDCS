@@ -4,6 +4,7 @@ const dbMapServiceController = require('../../db/dbMapService');
 const DCSLuaCommands = require('../../player/DCSLuaCommands');
 const playersEvent = require('../../events/backend/players');
 const webPushCommands = require('../../socketIO/webPush');
+const capLivesController = require('../../action/capLives');
 
 _.set(exports, 'processEventTakeoff', function (serverName, sessionName, eventObj) {
 	var place;

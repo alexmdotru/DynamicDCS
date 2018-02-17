@@ -5,6 +5,7 @@ const DCSLuaCommands = require('../../player/DCSLuaCommands');
 const playersEvent = require('../../events/backend/players');
 const groupController = require('../../spawn/group');
 const webPushCommands = require('../../socketIO/webPush');
+const capLivesController = require('../../action/capLives');
 
 _.set(exports, 'processEventLand', function (serverName, sessionName, eventObj) {
 	// Occurs when an aircraft lands at an airbase, farp or ship
