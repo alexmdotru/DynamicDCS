@@ -56,8 +56,9 @@ _.set(exports, 'processEventLand', function (serverName, sessionName, eventObj) 
 								msg: 'C: '+ _.get(curIUnit, 'type') + '(' + _.get(curIUnit, 'playername') + ') has landed' + place
 							};
 							if(_.get(iCurObj, 'iucid')) {
-								console.log('land, add life: ', _.includes(capLivesController.capLivesEnabled, curIUnit.type), curIUnit.inAir);
-								if (_.includes(capLivesController.capLivesEnabled, curIUnit.type)) {
+								console.log('land, add life: ', _.includes(capLivesController.capLivesEnabled, curIUnit.type), !curIUnit.dead, !curIUnit.inAir, place !== '');
+								if (_.includes(capLivesController.capLivesEnabled, curIUnit.type) && !curIUnit.dead && !curIUnit.inAir && place !== '') {
+									console.log('landed add life');
 									capLivesController.autoAddLife(serverName, iPlayer.ucid);
 								}
 								webPushCommands.sendToCoalition(serverName, {payload: {action: eventObj.action, data: _.cloneDeep(iCurObj)}});

@@ -14,7 +14,7 @@ exports.capLivesEnabled = [
 var oneHour = 60 * 60 * 1000;
 //var oneHour = 600 * 1000;
 
-_.set(exports, 'updateServerCapLives', function (serverName, playrUnit) {
+_.set(exports, 'updateServerCapLives', function (serverName, playrUnit, callback) {
 	var sendClient;
 	var actionObj;
 	var playerCapTable = [];
@@ -33,7 +33,8 @@ _.set(exports, 'updateServerCapLives', function (serverName, playrUnit) {
 									exports.autoAddLife(serverName, ePlayer.ucid);
 								}
 								// console.log('cp: ', curPlayer.curCapLives, curPlayer.capLifeLastAdded.getTime() + oneHour < new Date().getTime() && curPlayer.curCapLives < 4);
-								if (ePlayer.curCapLives === 0 && !playrUnit.inAir && playrUnit.speed < 20) {
+								console.log('kick user: ', ePlayer.curCapLives, playrUnit.speed, playrUnit.inAir);
+								if (ePlayer.curCapLives <= 0 && !playrUnit.inAir) {
 									lockObj = {
 										ucid: ePlayer.ucid,
 										val: 1
@@ -124,7 +125,6 @@ _.set(exports, 'autoAddLife', function (serverName, playerUcid) {
 _.set(exports, 'removeLife', function (serverName, playerUcid, curIUnit) {
 	//console.log('remove: ', serverName, playerUcid, groupId);
 	// remove cap life to player or 0 lives
-	console.log('capL: ', playerUcid, serverName);
 	dbMapServiceController.srvPlayerActions('removeLife', serverName, {_id: playerUcid})
 		.then(function(capLeft) {
 			DCSLuaCommands.sendMesgToGroup(
