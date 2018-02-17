@@ -711,8 +711,12 @@ _.set(exports, 'healBase', function ( serverName, baseName ) {
 			dbMapServiceController.baseActions('read', serverName, {name: baseName, $or: [{side: 1}, {side: 2}]})
 				.then(function (baseUnit) {
 					var curBase = _.get(baseUnit, [0], {});
-					_.set(curUnit, 'coalition', _.get(curBase, 'side'));
-					exports.spawnLogisticCmdCenter(serverName, curUnit, false, curBase);
+					if (curUnit) {
+						_.set(curUnit, 'coalition', _.get(curBase, 'side'));
+						exports.spawnLogisticCmdCenter(serverName, curUnit, false, curBase);
+					} else {
+						exports.spawnLogisticCmdCenter(serverName, {}, false, curBase, curBase.side);
+					}
 				})
 				.catch(function (err) {
 						console.log('erroring line657: ', err, serverName, curUnit);
