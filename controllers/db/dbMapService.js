@@ -187,6 +187,8 @@ exports.srvPlayerActions = function (action, serverName, obj){
 					} else {
 						if(0 ===  curPly.capLifeLastAdded) {
 							curPly.capLifeLastAdded = new Date().getTime();
+						} else {
+							capLifeLastAdded = curPly.capLifeLastAdded;
 						}
 					}
 					SrvPlayer.findOneAndUpdate(
