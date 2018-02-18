@@ -320,7 +320,7 @@ exports.unitActions = function (action, serverName, obj){
 	}
 	if(action === 'removeAllDead') {
 		return new Promise(function(resolve, reject) {
-			Unit.remove({dead: true},
+			Unit.remove({dead: true, category: {$ne: 'STRUCTURE'}},
 				function(err, units) {
 					if (err) { reject(err) }
 					resolve(units);
