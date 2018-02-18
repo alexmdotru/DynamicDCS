@@ -159,7 +159,7 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 							.then(function (unit) {
 								_.set(iCurObj, 'data.coalition', _.get(iCurObj, 'data.coalition', curUnit.coalition));
 								if (_.get(iCurObj, 'data.coalition')) {
-									console.log('get side: ', _.get(iCurObj, 'data.coalition'));
+									// console.log('get side: ', _.get(iCurObj, 'data.coalition'));
 									webPushCommands.sendToCoalition(serverName, {payload: _.cloneDeep(iCurObj)});
 								}
 								// curServers[serverName].updateQue.q1.push(_.cloneDeep(iCurObj));

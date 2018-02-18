@@ -6,7 +6,7 @@ _.set(exports, 'processThirtySecActions', function (serverName, fullySynced) {
 	if (fullySynced) {
 		dbMapServiceController.unitActions('removeAllDead', serverName, {})
 			.then(function (response) {
-				console.log('removeAllDead: ', response.result);
+				// console.log('removeAllDead: ', response.result);
 			})
 			.catch(function (err) {
 				console.log('err line12: ', err);
