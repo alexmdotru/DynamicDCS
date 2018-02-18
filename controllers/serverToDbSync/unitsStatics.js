@@ -166,6 +166,7 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 							})
 							.catch(function (err) {
 								console.log('del err line123: ', err);
+								console.log('TRYING TO DELETE: ', iCurObj.data);
 							})
 						;
 					} else {
