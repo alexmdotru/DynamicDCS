@@ -714,7 +714,7 @@ _.set(exports, 'healBase', function ( serverName, baseName ) {
 					if (curUnit) {
 						_.set(curUnit, 'coalition', _.get(curBase, 'side'));
 						// console.log('creating logistics from existing: ', serverName, curUnit, false, curBase);
-						exports.spawnLogisticCmdCenter(serverName, curUnit, false, curBase);
+						exports.spawnLogisticCmdCenter(serverName, curUnit, false, curBase, curBase.side);
 					} else {
 						exports.spawnLogisticCmdCenter(serverName, {}, false, curBase, curBase.side);
 					}
