@@ -1,3 +1,5 @@
+exports.discordToken = 'NDE2MDg4NDU4OTE0ODI0MTky.DW_Yow.iFoJ53gRt49pElbgduS-NVdK3II';
+
 exports.shortNames =	{
 	players: 'TR',
 	friendly_fire: 'FF',

@@ -37,6 +37,7 @@ _.assign(DDCS, {
 server = app.listen(DDCS.port);
 
 //Controllers
+const discordBotController = require('./controllers/discordBot/discordBot');
 const dbSystemServiceController = require('./controllers/db/dbSystemService');
 const dbMapServiceController = require('./controllers/db/dbMapService');
 dbSystemServiceController.connectSystemDB(DDCS.db.systemHost, DDCS.db.systemDatabase);
