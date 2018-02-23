@@ -15,13 +15,22 @@ _.set(exports, 'processPlayerEvent', function (serverName, sessionName, playerAr
 			dbSystemServiceController.banUserActions('read', curPlyrUcid)
 				.then(function (banUser) {
 					if (!_.isEmpty(banUser)){
-						console.log('Banning User: ', _.get(player, 'name'), curPlyrUcid);
+						console.log('Banning User: ', curPlyrName, curPlyrUcid);
 						DCSLuaCommands.kickPlayer(
 							serverName,
 							player.id,
 							'You have been banned from this server.'
 						);
 					} else {
+						if (curPlyrName === '') {
+							console.log('Banning User for blank name: ', curPlyrName, curPlyrUcid);
+							DCSLuaCommands.kickPlayer(
+								serverName,
+								player.id,
+								'You have been kicked from this server for having a blank name.'
+							);
+						}
+
 						dbMapServiceController.unitActions('read', serverName, {playername: curPlyrName, dead: false})
 							.then(function (unit) {
 								var curUnit = _.get(unit, 0);

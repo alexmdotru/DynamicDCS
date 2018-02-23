@@ -14,13 +14,18 @@ client.on('ready', () => {
 	console.log('Ready!');
 	setInterval (function (){
 		var discordUserNames = [];
-		var curGuild = _.first(client.guilds.array());
-		var userArray = curGuild.members.array();
-		var onlineUsers = _.map(curGuild._rawVoiceStates.array(), 'user_id');
-		_.forEach(onlineUsers, function (userId) {
-			var curUser = _.find(userArray, {id: userId});
-			discordUserNames.push(_.toLower((curUser.nickname) ? curUser.nickname : curUser.user.username));
+		var curGuild = client.guilds.get('389682718033707008');
+		var voiceChans = curGuild.channels.filter(ch => ch.type === 'voice');
+		_.forEach(voiceChans.array(), function (voiceChan) {
+			_.forEach(voiceChan.members.array(), function (vcUser) {
+				if (vcUser.nickname) {
+					discordUserNames.push(vcUser.nickname);
+				} else {
+					discordUserNames.push(_.get(vcUser, 'user.username'));
+				}
+			});
 		});
+
 		dbSystemServiceController.serverActions('read', {enabled: true})
 			.then(function (srvs) {
 				_.forEach(srvs, function (srv) {
@@ -28,9 +33,25 @@ client.on('ready', () => {
 					dbMapServiceController.statSessionActions('readLatest', curServerName, {})
 						.then(function (latestSession) {
 							if (latestSession.name) {
-								dbMapServiceController.srvPlayerActions('read', curServerName, {sessionName: latestSession.name, updatedAt: {$gt: new Date().getTime() - (exports.oldestAllowedUser * 1000)}})
+								dbMapServiceController.srvPlayerActions('read', curServerName, {playerId: {$ne: '1'}, playername: {$ne: ''}, sessionName: latestSession.name})
 									.then(function (playerArray) {
-										console.log('dif: ', _.difference(_.map(playerArray, function (player) {return _.toLower(player.name); }), discordUserNames));
+										var pNIC = _.reject(playerArray, function (player) {
+											return _.includes(discordUserNames, player.name);
+										});
+										// console.log('pn: ', _.compact( _.map(pNIC, 'name')));
+										dbMapServiceController.unitActions('read', curServerName, {playername: {$in: _.compact( _.map(pNIC, 'name'))}})
+											.then(function (pUnits) {
+												console.log('----------------------');
+												_.forEach(pUnits, function (pUnit) {
+													var mesg = "SERVER REQUIREMENT:You are currently not logged into a discord voice channel or your discord nickname and player name does not match(Case Sensitive!). Please join DDCS discord https://discord.gg/NSzajs7";
+													console.log('GIComms:', pUnit.playername);
+													DCSLuaCommands.sendMesgToGroup(pUnit.groupId, curServerName, mesg, '60')
+												})
+											})
+											.catch(function (err) {
+												console.log('line37', err);
+											})
+										;
 									})
 									.catch(function (err) {
 										console.log('line37', err);
@@ -48,7 +69,7 @@ client.on('ready', () => {
 				console.log('line49', err);
 			})
 		;
-	}, 5000);
+	}, 60 * 1000);
 });
 
 client.on('message', message => {
