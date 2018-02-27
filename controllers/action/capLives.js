@@ -15,6 +15,10 @@ var oneHour = 60 * 60 * 1000;
 //var oneHour = 600 * 1000;
 
 _.set(exports, 'updateServerCapLives', function (serverName, playrUnit) {
+	var underDog = {
+		side: 0,
+		percent: 1
+	};
 	var sendClient;
 	var actionObj;
 	var playerCapTable = [];
@@ -30,7 +34,26 @@ _.set(exports, 'updateServerCapLives', function (serverName, playrUnit) {
 							_.set(serverAlloc, [_.get(ePlayer, 'side')], _.get(serverAlloc, [_.get(ePlayer, 'side')], []));
 							serverAlloc[_.get(ePlayer, 'side')].push(ePlayer);
 						});
-						console.log('R:' + _.size(_.get(serverAlloc, 1)), ' verse B:', _.size(_.get(serverAlloc, 2)));
+						var redAll = _.size(_.get(serverAlloc, 1));
+						var blueAll = _.size(_.get(serverAlloc, 2));
+						if(redAll < blueAll) {
+							underDog = {
+								side: 1,
+								percent: 1-(redAll/blueAll)
+							}
+						} else if (redAll > blueAll) {
+							underDog = {
+								side: 2,
+								percent: 1-(blueAll/redAll)
+							};
+						} else {
+							underDog = {
+								side: 0,
+								percent: 1
+							}
+						}
+
+						console.log('R:' + redAll, ' verse B:', blueAll, underDog);
 
 						_.forEach(playerArray, function (ePlayer) {
 							var lockObj;
