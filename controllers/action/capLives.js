@@ -39,12 +39,12 @@ _.set(exports, 'updateServerCapLives', function (serverName, playrUnit) {
 						if(redAll < blueAll) {
 							underDog = {
 								side: 1,
-								percent: 1-(redAll/blueAll)
+								percent: (redAll/blueAll)
 							}
 						} else if (redAll > blueAll) {
 							underDog = {
 								side: 2,
-								percent: 1-(blueAll/redAll)
+								percent: (blueAll/redAll)
 							};
 						} else {
 							underDog = {
