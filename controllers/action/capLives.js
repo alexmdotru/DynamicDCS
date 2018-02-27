@@ -186,7 +186,7 @@ _.set(exports, 'checkLives', function (serverName, playerUcid) {
 							var curUnit = _.get(cUnit, [0]);
 							var timeLeft = '';
 							if (curPlayer.curCapLives < exports.defaultLife) {
-								timeLeft = ", Gain Next Life in " + _.round((((new Date().getTime()) - (new Date(curPlayer.nextCapLife).getTime()))/1000)/ 60, 1) + " minutes";
+								timeLeft = ", Gain Next Life in " + _.round((((new Date(curPlayer.nextCapLife).getTime()) - (new Date().getTime()))/1000)/ 60, 1) + " minutes";
 							}
 							DCSLuaCommands.sendMesgToGroup(
 								curUnit.groupId,
