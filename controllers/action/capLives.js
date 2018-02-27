@@ -36,12 +36,12 @@ _.set(exports, 'updateServerCapLives', function (serverName, playrUnit) {
 						});
 						var redAll = _.size(_.get(serverAlloc, 1));
 						var blueAll = _.size(_.get(serverAlloc, 2));
-						if(redAll < blueAll) {
+						if(redAll < blueAll && redAll !== 0) {
 							exports.underDog = {
 								side: 1,
 								percent: (redAll/blueAll)
 							}
-						} else if (redAll > blueAll) {
+						} else if (redAll > blueAll && blueAll !== 0) {
 							exports.underDog = {
 								side: 2,
 								percent: (blueAll/redAll)
@@ -53,7 +53,7 @@ _.set(exports, 'updateServerCapLives', function (serverName, playrUnit) {
 							}
 						}
 
-						console.log('R:' + redAll, ' verse B:', blueAll, underDog);
+						console.log('R:' + redAll, ' verse B:', blueAll, exports.underDog);
 
 						_.forEach(playerArray, function (ePlayer) {
 							var lockObj;
