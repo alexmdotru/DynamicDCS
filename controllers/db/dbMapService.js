@@ -17,6 +17,8 @@ var cmdQueSchema = require('./models/cmdQueSchema');
 var webPushSchema = require('./models/webPushSchema');
 var processSchema = require('./models/processSchema');
 
+var oneHour = 60 * 60 * 1000;
+
 _.set(exports, 'connectMapDB', function (dynamicHost, dynamicDatabase) {
 	mapdb.open(dynamicHost, dynamicDatabase);
 });
@@ -130,7 +132,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 				}
 				if (serverObj.length === 0) {
 					const sObj = new SrvPlayer(obj);
-					sObj.capLifeLastAdded = 0;
+					sObj.nextCapLife = 0;
 					sObj.curCapLives = capLivesController.defaultLife;
 					curIP = sObj.ipaddr;
 					if(sObj.ipaddr === ':10308' || sObj.ipaddr === '127.0.0.1'){
@@ -174,26 +176,30 @@ exports.srvPlayerActions = function (action, serverName, obj){
 	if (action === 'autoAddLife') {
 		return new Promise(function(resolve, reject) {
 			SrvPlayer.find({_id: obj._id}, function (err, serverObj) {
+				var respawnTime = oneHour;
 				var curPly = _.get(serverObj, [0]);
+				if(curPly.side === _.get(capLivesController, ['underDog', 'side'])) {
+					respawnTime = respawnTime * _.get(capLivesController, ['underDog', 'percent']);
+				}
 				if (err) {
 					reject(err)
 				}
 				if (serverObj.length !== 0) {
-					var capLifeLastAdded;
+					var nextCapLife;
 					var curLife = _.get(curPly, ['curCapLives'], 0) + 1;
 					if (curLife >= capLivesController.defaultLife) {
 						curLife = capLivesController.defaultLife;
-						capLifeLastAdded = 0;
+						nextCapLife = 0;
 					} else {
-						if(0 ===  curPly.capLifeLastAdded) {
-							curPly.capLifeLastAdded = new Date().getTime();
+						if(0 ===  curPly.nextCapLife) {
+							curPly.nextCapLife = new Date().getTime() + respawnTime;
 						} else {
-							capLifeLastAdded = curPly.capLifeLastAdded;
+							nextCapLife = curPly.nextCapLife;
 						}
 					}
 					SrvPlayer.findOneAndUpdate(
 						{_id: obj._id},
-						{$set: {curCapLives: curLife, capLifeLastAdded: capLifeLastAdded}},
+						{$set: {curCapLives: curLife, nextCapLife: nextCapLife}},
 						function(err, srvPlayer) {
 							if (err) { reject(err) }
 							resolve(srvPlayer);
@@ -207,19 +213,23 @@ exports.srvPlayerActions = function (action, serverName, obj){
 	if (action === 'removeLife') {
 		return new Promise(function(resolve, reject) {
 			SrvPlayer.find({_id: obj._id}, function (err, serverObj) {
+				var respawnTime = oneHour;
 				var curPly = _.get(serverObj, [0]);
+				if(curPly.side === _.get(capLivesController, ['underDog', 'side'])) {
+					respawnTime = respawnTime * _.get(capLivesController, ['underDog', 'percent']);
+				}
 				if (err) {
 					reject(err)
 				}
 				if (serverObj.length !== 0) {
 					var curLife = _.get(curPly, ['curCapLives'], 1) - 1;
-					console.log('caplifedate: ', curPly.capLifeLastAdded);
-					if(0 ===  curPly.capLifeLastAdded) {
-						curPly.capLifeLastAdded = new Date().getTime();
+					console.log('caplifedate: ', curPly.nextCapLife);
+					if(0 ===  curPly.nextCapLife) {
+						curPly.nextCapLife = new Date().getTime() + respawnTime;
 					}
 					SrvPlayer.update(
 						{_id: obj._id},
-						{$set: {curCapLives: curLife, capLifeLastAdded: curPly.capLifeLastAdded}},
+						{$set: {curCapLives: curLife, nextCapLife: curPly.nextCapLife}},
 						function(err) {
 							if (err) { reject(err) }
 							resolve(curLife);

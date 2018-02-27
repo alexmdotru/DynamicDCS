@@ -11,14 +11,14 @@ exports.capLivesEnabled = [
 	'MiG-29S',
 	'M-2000C'
 ];
-var oneHour = 60 * 60 * 1000;
+exports.underDog = {
+	side: 0,
+	percent: 1
+};
+
 //var oneHour = 600 * 1000;
 
 _.set(exports, 'updateServerCapLives', function (serverName, playrUnit) {
-	var underDog = {
-		side: 0,
-		percent: 1
-	};
 	var sendClient;
 	var actionObj;
 	var playerCapTable = [];
@@ -37,17 +37,17 @@ _.set(exports, 'updateServerCapLives', function (serverName, playrUnit) {
 						var redAll = _.size(_.get(serverAlloc, 1));
 						var blueAll = _.size(_.get(serverAlloc, 2));
 						if(redAll < blueAll) {
-							underDog = {
+							exports.underDog = {
 								side: 1,
 								percent: (redAll/blueAll)
 							}
 						} else if (redAll > blueAll) {
-							underDog = {
+							exports.underDog = {
 								side: 2,
 								percent: (blueAll/redAll)
 							};
 						} else {
-							underDog = {
+							exports.underDog = {
 								side: 0,
 								percent: 1
 							}
@@ -59,10 +59,10 @@ _.set(exports, 'updateServerCapLives', function (serverName, playrUnit) {
 							var lockObj;
 							if (ePlayer) {
 								//add life if its past due
-								if (new Date(ePlayer.capLifeLastAdded).getTime() + oneHour < new Date().getTime() && ePlayer.curCapLives < exports.defaultLife) {
+								if (new Date(ePlayer.nextCapLife).getTime() < new Date().getTime() && (ePlayer.curCapLives < exports.defaultLife)) {
 									exports.autoAddLife(serverName, ePlayer.ucid);
 								}
-								// console.log('cp: ', curPlayer.curCapLives, curPlayer.capLifeLastAdded.getTime() + oneHour < new Date().getTime() && curPlayer.curCapLives < 4);
+								// console.log('cp: ', curPlayer.curCapLives, curPlayer.nextCapLife.getTime() + oneHour < new Date().getTime() && curPlayer.curCapLives < 4);
 								if (ePlayer.curCapLives < exports.defaultLife) {
 									console.log('User: ', ePlayer.name, ePlayer.curCapLives);
 								}
@@ -186,7 +186,7 @@ _.set(exports, 'checkLives', function (serverName, playerUcid) {
 							var curUnit = _.get(cUnit, [0]);
 							var timeLeft = '';
 							if (curPlayer.curCapLives < exports.defaultLife) {
-								timeLeft = ", Gain Next Life in " + _.round((((new Date(curPlayer.capLifeLastAdded).getTime() + oneHour) -  (new Date().getTime()))/1000)/ 60, 1) + " minutes";
+								timeLeft = ", Gain Next Life in " + _.round((((new Date().getTime()) - (new Date(curPlayer.nextCapLife).getTime()))/1000)/ 60, 1) + " minutes";
 							}
 							DCSLuaCommands.sendMesgToGroup(
 								curUnit.groupId,
