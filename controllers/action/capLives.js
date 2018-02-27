@@ -19,12 +19,19 @@ _.set(exports, 'updateServerCapLives', function (serverName, playrUnit) {
 	var actionObj;
 	var playerCapTable = [];
 	var srvPromises = [];
+	var serverAlloc = {};
 	//update userNames out of cap lives, locked down specific plane types from those individuals (update lua table with individual names)
 	dbMapServiceController.statSessionActions('readLatest', serverName, {})
 		.then(function (latestSession) {
 			if (latestSession.name) {
 				dbMapServiceController.srvPlayerActions('read', serverName, {sessionName: latestSession.name})
 					.then(function (playerArray) {
+						_.forEach(playerArray, function (ePlayer) {
+							_.set(serverAlloc, [_.get(ePlayer, 'side')], _.get(serverAlloc, [_.get(ePlayer, 'side')], []));
+							serverAlloc[_.get(ePlayer, 'side')].push(ePlayer);
+						});
+						console.log('R:' + _.size(_.get(serverAlloc, 1)), ' verse B:', _.size(_.get(serverAlloc, 2)));
+
 						_.forEach(playerArray, function (ePlayer) {
 							var lockObj;
 							if (ePlayer) {
