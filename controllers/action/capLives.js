@@ -21,7 +21,7 @@ exports.underDog = {
 _.set(exports, 'updateServerCapLives', function (serverName, playrUnit) {
 	var sendClient;
 	var actionObj;
-	var fiveMins = 5 * 60 * 1000;
+	var oneMin = 60 * 1000;
 	var playerCapTable = [];
 	var serverAlloc = {};
 	//update userNames out of cap lives, locked down specific plane types from those individuals (update lua table with individual names)
@@ -31,7 +31,7 @@ _.set(exports, 'updateServerCapLives', function (serverName, playrUnit) {
 				dbMapServiceController.srvPlayerActions('read', serverName, {sessionName: latestSession.name})
 					.then(function (playerArray) {
 						_.forEach(playerArray, function (ePlayer) {
-							if (new Date(_.get(ePlayer, 'updatedAt', 0)).getTime() + fiveMins > new Date().getTime()) {
+							if (new Date(_.get(ePlayer, 'updatedAt', 0)).getTime() + oneMin > new Date().getTime()) {
 								_.set(serverAlloc, [_.get(ePlayer, 'side')], _.get(serverAlloc, [_.get(ePlayer, 'side')], []));
 								serverAlloc[_.get(ePlayer, 'side')].push(ePlayer);
 							}
