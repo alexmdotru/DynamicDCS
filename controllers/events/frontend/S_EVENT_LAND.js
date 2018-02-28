@@ -8,11 +8,18 @@ const webPushCommands = require('../../socketIO/webPush');
 const capLivesController = require('../../action/capLives');
 
 _.set(exports, 'processEventLand', function (serverName, sessionName, eventObj) {
+	var place = '';
+	var baseLand;
+
 	// Occurs when an aircraft lands at an airbase, farp or ship
 	if (_.get(eventObj, 'data.arg6')){
-		place = ' at '+_.get(eventObj, 'data.arg6');
+		baseLand = _.get(eventObj, 'data.arg6');
 	} else if (_.get(eventObj, 'data.arg5')) {
-		place = ' at '+_.get(eventObj, 'data.arg5');
+		baseLand = _.get(eventObj, 'data.arg5');
+	}
+
+	if (baseLand) {
+		place = ' at ' + baseLand;
 	} else {
 		place = '';
 	}
@@ -33,7 +40,8 @@ _.set(exports, 'processEventLand', function (serverName, sessionName, eventObj) 
 							dbMapServiceController.baseActions('read', serverName, {_id: bName})
 								.then(function (bases) {
 									var curBase = _.get(bases, [0], {}); // does this work?
-									if (curBase.side === curSide) {
+									console.log('LANDINGCARGO: ', curBase.side === curSide, baseLand === bName, baseLand, ' = ', bName);
+									if (curBase.side === curSide && baseLand === bName) {
 										groupController.replenishUnits( serverName, bName, curSide);
 										groupController.healBase(serverName, bName);
 									}
