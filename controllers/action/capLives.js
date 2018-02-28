@@ -31,7 +31,7 @@ _.set(exports, 'updateServerCapLives', function (serverName, playrUnit) {
 				dbMapServiceController.srvPlayerActions('read', serverName, {sessionName: latestSession.name})
 					.then(function (playerArray) {
 						_.forEach(playerArray, function (ePlayer) {
-							if (new Date(_.get(ePlayer, 'updatedAt', 0)).getTime() + oneMin > new Date().getTime()) {
+							if ((new Date(_.get(ePlayer, 'updatedAt', 0)).getTime() + oneMin > new Date().getTime()) && ePlayer.slot) {
 								_.set(serverAlloc, [_.get(ePlayer, 'side')], _.get(serverAlloc, [_.get(ePlayer, 'side')], []));
 								serverAlloc[_.get(ePlayer, 'side')].push(ePlayer);
 							}
