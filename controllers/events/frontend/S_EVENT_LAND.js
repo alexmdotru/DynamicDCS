@@ -40,10 +40,17 @@ _.set(exports, 'processEventLand', function (serverName, sessionName, eventObj) 
 							dbMapServiceController.baseActions('read', serverName, {_id: bName})
 								.then(function (bases) {
 									var curBase = _.get(bases, [0], {}); // does this work?
-									console.log('LANDINGCARGO: ', curBase.side === curSide, baseLand === bName, baseLand, ' = ', bName);
-									if (curBase.side === curSide && baseLand === bName) {
-										groupController.replenishUnits( serverName, bName, curSide);
-										groupController.healBase(serverName, bName);
+									console.log('LANDINGCARGO: ', curBase.side === curSide, baseLand === bName, baseLand, ' = ', bName, curIUnit.category);
+									if (curBase.side === curSide) {
+										if (curIUnit.category === 'AIRPLANE') {
+											if (baseLand === bName) {
+												groupController.replenishUnits( serverName, bName, curSide);
+												groupController.healBase(serverName, bName);
+											}
+										} else {
+											groupController.replenishUnits( serverName, bName, curSide);
+											groupController.healBase(serverName, bName);
+										}
 									}
 								})
 								.catch(function (err) {
