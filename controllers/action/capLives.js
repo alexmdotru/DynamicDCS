@@ -38,6 +38,7 @@ _.set(exports, 'updateServerCapLives', function (serverName, playrUnit) {
 						});
 						var redAll = _.size(_.get(serverAlloc, 1));
 						var blueAll = _.size(_.get(serverAlloc, 2));
+						console.log('rp: ', redAll);
 						if(redAll < blueAll && redAll !== 0) {
 							exports.underDog = {
 								side: 1,
