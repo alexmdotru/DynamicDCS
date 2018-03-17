@@ -9,6 +9,7 @@ const webPushCommands = require('../socketIO/webPush');
 const client = new Discord.Client();
 
 exports.oldestAllowedUser = 300;
+exports.timeToCorrect = 10;
 
 client.on('ready', () => {
 	console.log('Ready!');
@@ -33,9 +34,12 @@ client.on('ready', () => {
 					dbMapServiceController.statSessionActions('readLatest', curServerName, {})
 						.then(function (latestSession) {
 							if (latestSession.name) {
-								dbMapServiceController.srvPlayerActions('read', curServerName, {playerId: {$ne: '1'}, playername: {$ne: ''}, sessionName: latestSession.name})
+								dbMapServiceController.srvPlayerActions('read', curServerName, {playerId: {$ne: '1'}, name: {$ne: ''}, sessionName: latestSession.name})
 									.then(function (playerArray) {
 										var pNIC = _.reject(playerArray, function (player) {
+											if (!_.includes(discordUserNames, player.name)) {
+												console.log('match: ', _.includes(discordUserNames, player.name), player.name);
+											}
 											return _.includes(discordUserNames, player.name);
 										});
 										// console.log('pn: ', _.compact( _.map(pNIC, 'name')));
@@ -43,9 +47,31 @@ client.on('ready', () => {
 											.then(function (pUnits) {
 												console.log('----------------------');
 												_.forEach(pUnits, function (pUnit) {
-													var mesg = "SERVER REQUIREMENT:You are currently not logged into a discord voice channel or your discord nickname and player name does not match(Case Sensitive!). Please join DDCS discord https://discord.gg/NSzajs7";
-													console.log('GIComms:', pUnit.playername);
-													DCSLuaCommands.sendMesgToGroup(pUnit.groupId, curServerName, mesg, '60')
+													var curPlayer = _.find(playerArray, {name: pUnit.playername});
+													if (curPlayer) {
+														var newLifeCount = (curPlayer.gicTimeLeft === 0)? exports.timeToCorrect : curPlayer.gicTimeLeft - 1 ;
+														if (curPlayer.gicTimeLeft !== 0) {
+															var mesg = "SERVER REQUIREMENT(you have " + newLifeCount + " mins left to fix):You are currently not logged into a discord voice channel or your discord nickname and player name does not match(Case Sensitive!). Please join DDCS discord https://discord.gg/NSzajs7";
+															console.log('GIComms:', pUnit);
+															DCSLuaCommands.sendMesgToGroup(pUnit.groupId, curServerName, mesg, '60');
+															dbMapServiceController.srvPlayerActions('update', curServerName, {_id: curPlayer._id, gicTimeLeft: newLifeCount})
+																.catch(function (err) {
+																	console.log('line58', err);
+																})
+															;
+														} else {
+															dbMapServiceController.srvPlayerActions('update', curServerName, {_id: curPlayer._id, gicTimeLeft: newLifeCount})
+																.then(function () {
+																	var mesg = "YOU HAVE BEEN KICKED TO SPECTATOR FOR NOT BEING IN COMMS, You are currently not logged into a discord voice channel or your discord nickname and player name does not match(Case Sensitive!). Please join DDCS discord https://discord.gg/NSzajs7";
+																	DCSLuaCommands.sendMesgToGroup(pUnit.groupId, curServerName, mesg, '60');
+																	//DCSLuaCommands.forcePlayerSpectator(curServerName, curPlayer._id, mesg);
+																})
+																.catch(function (err) {
+																	console.log('line58', err);
+																})
+															;
+														}
+													}
 												})
 											})
 											.catch(function (err) {

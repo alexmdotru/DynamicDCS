@@ -45,6 +45,10 @@ const srvPlayerSchema = new Schema({
 		nextCapLife: {
 			type: Number,
 			default: 0
+		},
+		gicTimeLeft: {
+			type: Number,
+			default: 0
 		}
 	},
 	{
