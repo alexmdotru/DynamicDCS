@@ -16,8 +16,8 @@ client.on('ready', () => {
 		var discordUserNames = [];
 		var curGuild = client.guilds.get('389682718033707008');
 		var voiceChans = curGuild.channels.filter(ch => ch.type === 'voice');
-		_.forEach(voiceChans.array(), function (voiceChan) {
-			_.forEach(voiceChan.members.array(), function (vcUser) {
+		_.forEach(Array.from(voiceChans.values()), function (voiceChan) {
+			_.forEach(Array.from(voiceChan.members.values()), function (vcUser) {
 				if (vcUser.nickname) {
 					discordUserNames.push(vcUser.nickname);
 				} else {
@@ -25,6 +25,7 @@ client.on('ready', () => {
 				}
 			});
 		});
+		console.log('discord: ');
 
 		dbSystemServiceController.serverActions('read', {enabled: true})
 			.then(function (srvs) {
