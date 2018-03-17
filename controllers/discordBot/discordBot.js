@@ -25,7 +25,6 @@ client.on('ready', () => {
 				}
 			});
 		});
-		console.log('discord: ');
 
 		dbSystemServiceController.serverActions('read', {enabled: true})
 			.then(function (srvs) {
