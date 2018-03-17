@@ -64,7 +64,7 @@ client.on('ready', () => {
 																.then(function () {
 																	var mesg = "YOU HAVE BEEN KICKED TO SPECTATOR FOR NOT BEING IN COMMS, You are currently not logged into a discord voice channel or your discord nickname and player name does not match(Case Sensitive!). Please join DDCS discord https://discord.gg/NSzajs7";
 																	DCSLuaCommands.sendMesgToGroup(pUnit.groupId, curServerName, mesg, '60');
-																	//DCSLuaCommands.forcePlayerSpectator(curServerName, curPlayer._id, mesg);
+																	DCSLuaCommands.forcePlayerSpectator(curServerName, curPlayer._id, mesg);
 																})
 																.catch(function (err) {
 																	console.log('line58', err);
