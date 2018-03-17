@@ -39,7 +39,7 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 					_.set(curData, 'playerCanDrive', stParse[5]);
 				}
 				//set ewr task to ewr if new
-                if (curUnit.type === '1L13 EWR' || curUnit.type === '55G6 EWR') {
+                if (curUnit.type === '1L13 EWR' || curUnit.type === '55G6 EWR' || curUnit.type === 'Dog Ear radar') {
                     if (!_.get(taskController, ['ewrUnitsActivated', curUnitName], false)) {
                         console.log('Set ewr for: ', curUnitName );
                         taskController.setEWRTask(serverName, curUnitName);

@@ -735,7 +735,7 @@ _.set(exports, 'unpackCrate', function (serverName, unit, type, special, combo, 
 						})
 					;
 				} else {
-					if ((type === '1L13 EWR' || type === '55G6 EWR') && unit.country === 'USA') {
+					if ((type === '1L13 EWR' || type === '55G6 EWR' || type === 'Dog Ear radar') && unit.country === 'USA') {
 						_.set(unit, 'country', 'UKRAINE');
 					}
 					spawnArray = _.concat(spawnArray, {
