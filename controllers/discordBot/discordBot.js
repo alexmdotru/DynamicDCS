@@ -50,7 +50,7 @@ client.on('ready', () => {
 													var curPlayer = _.find(playerArray, {name: pUnit.playername});
 													if (curPlayer) {
 														var newLifeCount = (curPlayer.gicTimeLeft === 0)? exports.timeToCorrect : curPlayer.gicTimeLeft - 1 ;
-														if (curPlayer.gicTimeLeft !== 0) {
+														if (newLifeCount !== 0) {
 															var mesg = "SERVER REQUIREMENT(you have " + newLifeCount + " mins left to fix):You are currently not logged into a discord voice channel or your discord nickname and player name does not match(Case Sensitive!). Please join DDCS discord https://discord.gg/NSzajs7";
 															console.log('GIComms:', pUnit);
 															DCSLuaCommands.sendMesgToGroup(pUnit.groupId, curServerName, mesg, '60');
