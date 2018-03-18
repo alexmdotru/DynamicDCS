@@ -9,7 +9,7 @@ const webPushCommands = require('../socketIO/webPush');
 const client = new Discord.Client();
 
 exports.oldestAllowedUser = 300;
-exports.timeToCorrect = 10;
+exports.timeToCorrect = 20;
 
 client.on('ready', () => {
 	console.log('Ready!');
