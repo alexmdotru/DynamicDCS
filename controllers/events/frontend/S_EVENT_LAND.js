@@ -32,7 +32,7 @@ _.set(exports, 'processEventLand', function (serverName, sessionName, eventObj) 
 					var iCurObj;
 					var curIUnit = _.get(iunit, 0);
 					if (curIUnit) {
-						console.log('takeoff: ', _.get(curIUnit, 'playername'));
+						console.log('land: ', _.get(curIUnit, 'playername'));
 						//landed logistic planes/helis spawn new group for area
 						var curUnitName = _.get(curIUnit, 'name');
 						if (_.includes(curUnitName, 'LOGISTICS|')) {
