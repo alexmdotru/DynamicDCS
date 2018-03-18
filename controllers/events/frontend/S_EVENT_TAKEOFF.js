@@ -26,6 +26,7 @@ _.set(exports, 'processEventTakeoff', function (serverName, sessionName, eventOb
 					var curIUnit = _.get(iunit, 0);
 					if (curIUnit) {
 						iPlayer = _.find(playerArray, {name: _.get(curIUnit, 'playername')});
+						console.log('takeoff: ', _.get(curIUnit, 'playername'));
 						if (iPlayer) {
 							iCurObj = {
 								sessionName: sessionName,

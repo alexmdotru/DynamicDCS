@@ -49,6 +49,14 @@ const srvPlayerSchema = new Schema({
 		gicTimeLeft: {
 			type: Number,
 			default: 10
+		},
+		rsPoints: {
+			type: Number,
+			default: 0
+		},
+		tmpRSPoints: {
+			type: Number,
+			default: 0
 		}
 	},
 	{
