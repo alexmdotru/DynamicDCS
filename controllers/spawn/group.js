@@ -386,6 +386,7 @@ _.set(exports, 'spawnSupportVehiclesOnFarp', function ( serverName, baseName, si
 	}
 	_.forEach(sptArray, function (val) {
 		var sptUnit = _.cloneDeep(_.first(exports.getRndFromSpawnCat(val, side, true)));
+		_.set(sptUnit, 'name', baseName + '_' + val);
 		_.set(sptUnit, 'lonLatLoc', zoneController.getLonLatFromDistanceDirection(_.get(curBase, ['centerLoc']), curAng, 0.05));
 		curAng += 15;
 		curFarpArray.push(sptUnit);
@@ -718,6 +719,9 @@ _.set(exports, 'healBase', function ( serverName, baseName ) {
 					} else {
 						exports.spawnLogisticCmdCenter(serverName, {}, false, curBase, curBase.side);
 					}
+
+					//rebuild farp support vehicles
+					exports.spawnGroup(serverName, exports.spawnSupportBaseGrp( serverName, curBase.name, curBase.side ), curBase.name, curBase.side);
 				})
 				.catch(function (err) {
 						console.log('erroring line657: ', err, serverName, curUnit);
