@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const _ = require('lodash');
 const capLivesController = require('../action/capLives');
+const DCSLuaCommands = require('../../player/DCSLuaCommands');
 
 //changing promises to bluebird
 mongoose.Promise = require('bluebird');
@@ -232,6 +233,55 @@ exports.srvPlayerActions = function (action, serverName, obj){
 						{$set: {curCapLives: curLife, nextCapLife: curPly.nextCapLife}},
 						function(err) {
 							if (err) { reject(err) }
+							resolve(curLife);
+						}
+					);
+				}
+			});
+		})
+	}
+	if (action === 'addTempScore') {
+		return new Promise(function(resolve, reject) {
+			SrvPlayer.find({_id: obj._id}, function (err, serverObj) {
+				if (err) {
+					reject(err)
+				}
+				if (serverObj.length !== 0) {
+					console.log('tmpscr: ', obj);
+					var curPly = _.get(serverObj, [0]);
+					var newTmpScore = _.get(curPly, 'tmpRSPoints', 0) + _.get(obj, 'score', 0);
+					SrvPlayer.update(
+						{_id: obj._id},
+						{$set: {tmpRSPoints: newTmpScore}},
+						function(err) {
+							if (err) { reject(err) }
+							console.log(_.get(curPly, 'name'), ' Has Tmp Score: ', newTmpScore);
+							var mesg = 'TmpScore: ' + newTmpScore + ', Land at a friendly base/farp to receive these points';
+							DCSLuaCommands.sendMesgToGroup(obj.groupId, serverName, mesg, '15');
+							resolve(curLife);
+						}
+					);
+				}
+			});
+		})
+	}
+	if (action === 'applyTempToRealScore') {
+		return new Promise(function(resolve, reject) {
+			SrvPlayer.find({_id: obj._id}, function (err, serverObj) {
+				if (err) {
+					reject(err)
+				}
+				if (serverObj.length !== 0) {
+					var curPly = _.get(serverObj, [0]);
+					var newScore = _.get(curPly, 'rsPoints', 0) + _.get(curPly, 'tmpRSPoints', 0);
+					SrvPlayer.update(
+						{_id: obj._id},
+						{$set: {rsPoints: newScore}},
+						function(err) {
+							if (err) { reject(err) }
+							console.log(_.get(curPly, 'name') + ' Has Locked In ' + _.get(curPly, 'tmpRSPoints', 0) + '+ Points: ');
+							var mesg = 'You have been awarded: ' + _.get(curPly, 'tmpRSPoints', 0) + ' Points, Total RS Points: ' + newScore;
+							DCSLuaCommands.sendMesgToGroup(obj.groupId, serverName, mesg, '15');
 							resolve(curLife);
 						}
 					);

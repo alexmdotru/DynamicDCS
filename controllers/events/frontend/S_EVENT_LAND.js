@@ -18,12 +18,6 @@ _.set(exports, 'processEventLand', function (serverName, sessionName, eventObj) 
 		baseLand = _.get(eventObj, 'data.arg5');
 	}
 
-	if (baseLand) {
-		place = ' at ' + baseLand;
-	} else {
-		place = '';
-	}
-
 	dbMapServiceController.unitActions('read', serverName, {unitId: _.get(eventObj, ['data', 'arg3']), isCrate: false})
 		.then(function (iunit) {
 			dbMapServiceController.srvPlayerActions('read', serverName, {sessionName: sessionName})
@@ -62,6 +56,17 @@ _.set(exports, 'processEventLand', function (serverName, sessionName, eventObj) 
 
 						iPlayer = _.find(playerArray, {name: _.get(curIUnit, 'playername')});
 						if(iPlayer) {
+							if (baseLand) {
+								place = ' at ' + baseLand;
+								dbMapServiceController.srvPlayerActions('applyTempToRealScore', serverName, {_id: iPlayer._id, groupId: curIUnit.groupId})
+									.catch(function (err) {
+										console.log('line70', err);
+									})
+								;
+							} else {
+								place = '';
+							}
+
 							iCurObj = {
 								sessionName: sessionName,
 								eventCode: constants.shortNames[eventObj.action],

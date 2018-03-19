@@ -27,6 +27,11 @@ _.set(exports, 'checkShootingUsers', function (serverName) {
 					webPushCommands.sendToAll(serverName, {payload: {action: 'S_EVENT_HIT', data: _.cloneDeep(shootObj)}});
 					dbMapServiceController.simpleStatEventActions('save', serverName, shootObj);
 				}
+				dbMapServiceController.srvPlayerActions('addTempScore', serverName, {_id: _.get(shootObj, 'iucid'), groupId: _.get(shootObj, 'groupId'), score: _.get(shootObj, 'score')})
+					.catch(function (err) {
+						console.log('line33', err);
+					})
+				;
 				DCSLuaCommands.sendMesgToAll(
 					serverName,
 					_.get(shootObj, 'msg'),
@@ -77,7 +82,8 @@ _.set(exports, 'processEventHit', function (serverName, sessionName, eventObj) {
 										tOwnerId: tOwnerId,
 										displaySide: 'A',
 										roleCode: 'I',
-										showInChart: true
+										showInChart: true,
+										groupId: _.get(curIUnit, 'groupId')
 									};
 
 									_.forEach(ownerIds, function (ownerId) {
@@ -135,6 +141,11 @@ _.set(exports, 'processEventHit', function (serverName, sessionName, eventObj) {
 															webPushCommands.sendToAll(serverName, {payload: {action: eventObj.action, data: _.cloneDeep(iCurObj)}});
 															dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 														}
+														dbMapServiceController.srvPlayerActions('addTempScore', serverName, {_id: _.get(iCurObj, 'iucid'), groupId: _.get(iCurObj, 'groupId'), score: _.get(iCurObj, 'score')})
+															.catch(function (err) {
+																console.log('line147', err);
+															})
+														;
 														DCSLuaCommands.sendMesgToAll(
 															serverName,
 															_.get(iCurObj, 'msg'),
