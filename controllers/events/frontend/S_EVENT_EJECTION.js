@@ -28,12 +28,18 @@ _.set(exports, 'processEventEjection', function (serverName, sessionName, eventO
 								iName: _.get(curIUnit, 'playername'),
 								displaySide: 'A',
 								roleCode: 'I',
-								msg: 'A: ' + constants.side[_.get(curIUnit, 'coalition')] + ' '+ _.get(curIUnit, 'type') + '('+ _.get(curIUnit, 'playername') +') ejected'
+								msg: 'A: ' + constants.side[_.get(curIUnit, 'coalition')] + ' '+ _.get(curIUnit, 'type') + '('+ _.get(curIUnit, 'playername') +') ejected',
+								groupId: _.get(curIUnit, 'groupId')
 							};
 							if(_.get(iCurObj, 'iucid')) {
 								webPushCommands.sendToAll(serverName, {payload: {action: eventObj.action, data: _.cloneDeep(iCurObj)}});
 								dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 							}
+							dbMapServiceController.srvPlayerActions('clearTempScore', serverName, {_id: _.get(iCurObj, 'iucid'), groupId: _.get(iCurObj, 'groupId')})
+								.catch(function (err) {
+									console.log('line35', err);
+								})
+							;
 							DCSLuaCommands.sendMesgToAll(
 								serverName,
 								_.get(iCurObj, 'msg'),
