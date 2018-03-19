@@ -241,7 +241,8 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 														.then(function(player) {
 															var curPlayer = _.get(player, [0]);
 															if (curPlayer) {
-																dbMapServiceController.staticCrateActions('read', serverName, {playerOwnerId: curPlayer.ucid})
+																// dbMapServiceController.staticCrateActions('read', serverName, {playerOwnerId: curPlayer.ucid})
+																dbMapServiceController.staticCrateActions('read', serverName, {})
 																	.then(function(crateUpdate) {
 																		var sendClient = {
 																			"action" : "CRATEUPDATE",
