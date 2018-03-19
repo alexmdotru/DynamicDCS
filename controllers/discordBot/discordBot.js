@@ -38,7 +38,7 @@ client.on('ready', () => {
 									.then(function (playerArray) {
 										var pNIC = _.reject(playerArray, function (player) {
 											if (!_.includes(discordUserNames, player.name)) {
-												console.log('match: ', _.includes(discordUserNames, player.name), player.name);
+												console.log('match: ', _.includes(discordUserNames, player.name), player.name, discordUserNames);
 											}
 											return _.includes(discordUserNames, player.name);
 										});
