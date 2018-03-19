@@ -56,10 +56,10 @@ _.set(exports, 'processEventHit', function (serverName, sessionName, eventObj) {
 			var curIUnit = _.get(iunit, 0);
 			dbMapServiceController.unitActions('read', serverName, {unitId: tUnitId})
 				.then(function (tunit) {
+					var curTUnit = _.get(tunit, 0);
 					dbMapServiceController.srvPlayerActions('read', serverName, {sessionName: sessionName})
 						.then(function (playerArray) {
 							var oId = [];
-							var curTUnit = _.get(tunit, 0);
 							var iOwnerId = _.get(curIUnit, 'playerOwnerId');
 							var tOwnerId = _.get(curTUnit, 'playerOwnerId');
 
@@ -119,68 +119,70 @@ _.set(exports, 'processEventHit', function (serverName, sessionName, eventObj) {
 										}
 									}
 
-									if( _.get(eventObj, ['data', 'arg7', 'typeName'])){
-										// console.log('weaponhere: ', _.get(eventObj, ['data', 'arg7', 'typeName']));
-										dbSystemServiceController.weaponScoreActions('read', _.get(eventObj, ['data', 'arg7']))
-											.then(function (weaponResp) {
-												if (_.get(iCurObj, 'iucid') || _.get(iCurObj, 'tucid')) {
-													if (_.startsWith(_.get(weaponResp, 'name'), 'weapons.shells')){
-														_.set(exports.shootingUsers, [iUnitId, 'count'], _.get(exports.shootingUsers, [iUnitId, 'count'], 0)+1);
-														_.set(exports.shootingUsers, [iUnitId, 'startTime'], new Date().getTime());
-														_.set(exports.shootingUsers, [iUnitId, 'serverName'], serverName);
-														_.set(iCurObj, 'msg',
-															'A: ' + constants.side[_.get(curIUnit, 'coalition')] + ' '+ iPName +' has hit ' + constants.side[_.get(curTUnit, 'coalition')]+' ' + tPName + ' '+_.get(exports.shootingUsers, [iUnitId, 'count'], 0)+' times with ' + _.get(weaponResp, 'displayName') + ' - +'+_.get(weaponResp, 'score')+' each.'
-														);
-														// console.log('2: ', iCurObj.msg);
-														_.set(exports.shootingUsers, [iUnitId, 'iCurObj'], _.cloneDeep(iCurObj));
-													} else {
-														_.set(iCurObj, 'score', _.get(weaponResp, 'score'));
-														_.set(iCurObj, 'msg', 'A: ' + constants.side[_.get(curIUnit, 'coalition')] + ' '+ iPName +' has hit ' + constants.side[_.get(curTUnit, 'coalition')] + ' '+tPName + ' with ' + _.get(weaponResp, 'displayName') + ' - +'+_.get(weaponResp, 'score'));
-														// console.log('3: ', iCurObj.msg);
-														if(_.get(iCurObj, 'iucid') || _.get(iCurObj, 'tucid')) {
-															webPushCommands.sendToAll(serverName, {payload: {action: eventObj.action, data: _.cloneDeep(iCurObj)}});
-															dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
+									if (_.get(curIUnit, 'coalition', 0) !== _.get(curTUnit, 'coalition', 0)) {
+										if( _.get(eventObj, ['data', 'arg7', 'typeName'])){
+											// console.log('weaponhere: ', _.get(eventObj, ['data', 'arg7', 'typeName']));
+											dbSystemServiceController.weaponScoreActions('read', _.get(eventObj, ['data', 'arg7']))
+												.then(function (weaponResp) {
+													if (_.get(iCurObj, 'iucid') || _.get(iCurObj, 'tucid')) {
+														if (_.startsWith(_.get(weaponResp, 'name'), 'weapons.shells')){
+															_.set(exports.shootingUsers, [iUnitId, 'count'], _.get(exports.shootingUsers, [iUnitId, 'count'], 0)+1);
+															_.set(exports.shootingUsers, [iUnitId, 'startTime'], new Date().getTime());
+															_.set(exports.shootingUsers, [iUnitId, 'serverName'], serverName);
+															_.set(iCurObj, 'msg',
+																'A: ' + constants.side[_.get(curIUnit, 'coalition')] + ' '+ iPName +' has hit ' + constants.side[_.get(curTUnit, 'coalition')]+' ' + tPName + ' '+_.get(exports.shootingUsers, [iUnitId, 'count'], 0)+' times with ' + _.get(weaponResp, 'displayName') + ' - +'+_.get(weaponResp, 'score')+' each.'
+															);
+															// console.log('2: ', iCurObj.msg);
+															_.set(exports.shootingUsers, [iUnitId, 'iCurObj'], _.cloneDeep(iCurObj));
+														} else {
+															_.set(iCurObj, 'score', _.get(weaponResp, 'score'));
+															_.set(iCurObj, 'msg', 'A: ' + constants.side[_.get(curIUnit, 'coalition')] + ' '+ iPName +' has hit ' + constants.side[_.get(curTUnit, 'coalition')] + ' '+tPName + ' with ' + _.get(weaponResp, 'displayName') + ' - +'+_.get(weaponResp, 'score'));
+															// console.log('3: ', iCurObj.msg);
+															if(_.get(iCurObj, 'iucid') || _.get(iCurObj, 'tucid')) {
+																webPushCommands.sendToAll(serverName, {payload: {action: eventObj.action, data: _.cloneDeep(iCurObj)}});
+																dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
+															}
+															dbMapServiceController.srvPlayerActions('addTempScore', serverName, {_id: _.get(iCurObj, 'iucid'), groupId: _.get(iCurObj, 'groupId'), score: _.get(iCurObj, 'score')})
+																.catch(function (err) {
+																	console.log('line147', err);
+																})
+															;
+															DCSLuaCommands.sendMesgToAll(
+																serverName,
+																_.get(iCurObj, 'msg'),
+																20
+															);
 														}
-														dbMapServiceController.srvPlayerActions('addTempScore', serverName, {_id: _.get(iCurObj, 'iucid'), groupId: _.get(iCurObj, 'groupId'), score: _.get(iCurObj, 'score')})
-															.catch(function (err) {
-																console.log('line147', err);
-															})
-														;
-														DCSLuaCommands.sendMesgToAll(
-															serverName,
-															_.get(iCurObj, 'msg'),
-															20
-														);
 													}
-												}
-											})
-											.catch(function (err) {
-												console.log('Eevent line142: ', iCurObj, err);
-												if(_.get(iCurObj, 'iPlayerUcid') || _.get(iCurObj, 'tPlayerUcid')) {
-													// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
-													// dbMapServiceController.statSrvEventActions('save', serverName, iCurObj);
-												}
-											})
-										;
-									} else {
-										var shotCount;
-										var shotpoints;
-										// console.log('weapon not here');
-										// console.log('Weapon Unknown: ', _.get(eventObj, ['data', 'arg7', 'typeName']));
-										_.set(exports.shootingUsers, [iUnitId, 'count'], _.get(exports.shootingUsers, [iUnitId, 'count'], 0)+1);
-										_.set(exports.shootingUsers, [iUnitId, 'startTime'], new Date().getTime());
-										_.set(exports.shootingUsers, [iUnitId, 'serverName'], serverName);
-										shotCount = _.get(exports.shootingUsers, [iUnitId, 'count'], 1);
-										if (shotCount === 1) {
-											shotpoints = 10;
+												})
+												.catch(function (err) {
+													console.log('Eevent line142: ', iCurObj, err);
+													if(_.get(iCurObj, 'iPlayerUcid') || _.get(iCurObj, 'tPlayerUcid')) {
+														// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
+														// dbMapServiceController.statSrvEventActions('save', serverName, iCurObj);
+													}
+												})
+											;
 										} else {
-											shotpoints = shotCount
+											var shotCount;
+											var shotpoints;
+											// console.log('weapon not here');
+											// console.log('Weapon Unknown: ', _.get(eventObj, ['data', 'arg7', 'typeName']));
+											_.set(exports.shootingUsers, [iUnitId, 'count'], _.get(exports.shootingUsers, [iUnitId, 'count'], 0)+1);
+											_.set(exports.shootingUsers, [iUnitId, 'startTime'], new Date().getTime());
+											_.set(exports.shootingUsers, [iUnitId, 'serverName'], serverName);
+											shotCount = _.get(exports.shootingUsers, [iUnitId, 'count'], 1);
+											if (shotCount === 1) {
+												shotpoints = 10;
+											} else {
+												shotpoints = shotCount
+											}
+											_.set(iCurObj, 'msg',
+												'A: '+ constants.side[_.get(curIUnit, 'coalition')] + ' '+ iPName +' has hit ' + constants.side[_.get(curTUnit, 'coalition')] + ' ' + tPName + ' '+shotCount+' times with ? - +' + shotpoints
+											);
+											// console.log('4: ', iCurObj.msg);
+											_.set(exports.shootingUsers, [iUnitId, 'iCurObj'], _.cloneDeep(iCurObj));
 										}
-										_.set(iCurObj, 'msg',
-											'A: '+ constants.side[_.get(curIUnit, 'coalition')] + ' '+ iPName +' has hit ' + constants.side[_.get(curTUnit, 'coalition')] + ' ' + tPName + ' '+shotCount+' times with ? - +' + shotpoints
-										);
-										// console.log('4: ', iCurObj.msg);
-										_.set(exports.shootingUsers, [iUnitId, 'iCurObj'], _.cloneDeep(iCurObj));
 									}
 								})
 								.catch(function (err) {
