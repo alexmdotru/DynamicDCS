@@ -309,6 +309,31 @@ exports.srvPlayerActions = function (action, serverName, obj){
 			});
 		})
 	}
+	if (action === 'unitAddToRealScore') {
+		return new Promise(function(resolve, reject) {
+			console.log('uatrs: ', obj);
+			SrvPlayer.find({_id: obj._id}, function (err, serverObj) {
+				if (err) { reject(err) }
+				if (serverObj.length !== 0) {
+					var curPly = _.get(serverObj, [0]);
+					var addScore = _.get(obj, 'score', 0);
+					var curType = _.get(obj, 'unitType', '');
+					var newScore = _.get(curPly, 'rsPoints', 0) + addScore;
+					SrvPlayer.update(
+						{_id: obj._id},
+						{$set: {rsPoints: newScore}},
+						function(err) {
+							if (err) { reject(err) }
+							console.log(_.get(obj, 'unitType', '') + ' has given ' + addScore + ' to ' + _.get(curPly, 'name') + ', Total: ' + newScore);
+							var mesg = 'You have been awarded ' + addScore + ' from your ' + curType;
+							DCSLuaCommands.sendMesgToGroup(obj.groupId, serverName, mesg, '15');
+							resolve();
+						}
+					);
+				}
+			});
+		})
+	}
 };
 
 exports.unitActions = function (action, serverName, obj){
