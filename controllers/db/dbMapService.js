@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const _ = require('lodash');
 const capLivesController = require('../action/capLives');
-const DCSLuaCommands = require('../../player/DCSLuaCommands');
+const DCSLuaCommands = require('../player/DCSLuaCommands');
 
 //changing promises to bluebird
 mongoose.Promise = require('bluebird');
@@ -245,6 +245,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 			SrvPlayer.find({_id: obj._id}, function (err, serverObj) {
 				if (err) { reject(err) }
 				if (serverObj.length !== 0) {
+					console.log('clearTempScore: ', obj);
 					var curPly = _.get(serverObj, [0]);
 					var newTmpScore = 0;
 					SrvPlayer.update(
@@ -253,6 +254,8 @@ exports.srvPlayerActions = function (action, serverName, obj){
 						function(err) {
 							if (err) { reject(err) }
 							console.log(_.get(curPly, 'name'), ' Has Tmp Score(cleared): ', newTmpScore);
+							var mesg = 'Your Tmp Score Has Been Cleared, You did not make it back to base/farp safely';
+							DCSLuaCommands.sendMesgToGroup(obj.groupId, serverName, mesg, '15');
 							resolve();
 						}
 					);
@@ -265,7 +268,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 			SrvPlayer.find({_id: obj._id}, function (err, serverObj) {
 				if (err) { reject(err) }
 				if (serverObj.length !== 0) {
-					console.log('tmpscr: ', obj);
+					console.log('addTempScore: ', obj);
 					var curPly = _.get(serverObj, [0]);
 					var newTmpScore = _.get(curPly, 'tmpRSPoints', 0) + _.get(obj, 'score', 0);
 					SrvPlayer.update(
@@ -288,6 +291,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 			SrvPlayer.find({_id: obj._id}, function (err, serverObj) {
 				if (err) { reject(err) }
 				if (serverObj.length !== 0) {
+					console.log('applyTempToRealScore: ', obj);
 					var curPly = _.get(serverObj, [0]);
 					var newScore = _.get(curPly, 'rsPoints', 0) + _.get(curPly, 'tmpRSPoints', 0);
 					SrvPlayer.update(
