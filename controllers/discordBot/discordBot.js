@@ -19,6 +19,7 @@ client.on('ready', () => {
 		var voiceChans = curGuild.channels.filter(ch => ch.type === 'voice');
 		_.forEach(Array.from(voiceChans.values()), function (voiceChan) {
 			_.forEach(Array.from(voiceChan.members.values()), function (vcUser) {
+				console.log('n: ', vcUser.nickname, _.get(vcUser, 'user.username'));
 				if (vcUser.nickname) {
 					discordUserNames.push(vcUser.nickname);
 				} else {
@@ -38,7 +39,7 @@ client.on('ready', () => {
 									.then(function (playerArray) {
 										var pNIC = _.reject(playerArray, function (player) {
 											if (!_.includes(discordUserNames, player.name)) {
-												console.log('match: ', _.includes(discordUserNames, player.name), player.name, discordUserNames);
+												// console.log('match: ', _.includes(discordUserNames, player.name), player.name, discordUserNames);
 											}
 											return _.includes(discordUserNames, player.name);
 										});
