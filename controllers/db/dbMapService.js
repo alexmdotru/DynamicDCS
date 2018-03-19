@@ -242,7 +242,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 	}
 	if (action === 'clearTempScore') {
 		return new Promise(function(resolve, reject) {
-			console.log('clearTempScore: ', obj);
+			// console.log('clearTempScore: ', obj);
 			SrvPlayer.find({_id: obj._id}, function (err, serverObj) {
 				if (err) { reject(err) }
 				if (serverObj.length !== 0) {
@@ -253,7 +253,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 						{$set: {tmpRSPoints: newTmpScore}},
 						function(err) {
 							if (err) { reject(err) }
-							console.log(_.get(curPly, 'name'), ' Has Tmp Score(cleared): ', newTmpScore);
+							console.log(_.get(curPly, 'name'), ' Has Tmp Score(cleared): ');
 							var mesg = 'Your Tmp Score Has Been Cleared';
 							DCSLuaCommands.sendMesgToGroup(obj.groupId, serverName, mesg, '15');
 							resolve();
@@ -265,7 +265,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 	}
 	if (action === 'addTempScore') {
 		return new Promise(function(resolve, reject) {
-			console.log('addTempScore: ', obj);
+			// console.log('addTempScore: ', obj);
 			SrvPlayer.find({_id: obj._id}, function (err, serverObj) {
 				if (err) { reject(err) }
 				if (serverObj.length !== 0) {
@@ -288,7 +288,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 	}
 	if (action === 'applyTempToRealScore') {
 		return new Promise(function(resolve, reject) {
-			console.log('applyTempToRealScore: ', obj);
+			// console.log('applyTempToRealScore: ', obj);
 			SrvPlayer.find({_id: obj._id}, function (err, serverObj) {
 				if (err) { reject(err) }
 				if (serverObj.length !== 0) {
