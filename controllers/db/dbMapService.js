@@ -253,7 +253,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 						{$set: {tmpRSPoints: newTmpScore}},
 						function(err) {
 							if (err) { reject(err) }
-							console.log(_.get(curPly, 'name'), ' Has Tmp Score(cleared): ');
+							console.log(_.get(curPly, 'name'), ' Has Tmp Score(cleared)');
 							var mesg = 'Your Tmp Score Has Been Cleared';
 							DCSLuaCommands.sendMesgToGroup(obj.groupId, serverName, mesg, '15');
 							resolve();
