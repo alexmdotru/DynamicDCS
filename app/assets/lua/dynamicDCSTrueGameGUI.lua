@@ -533,7 +533,7 @@ function dynDCS.shouldAllowSlot(_playerID, _slotID)
 	local curBaseName = DCS.getUnitProperty(_slotID, DCS.UNIT_NAME):split(' #')[1]:split("_Extension")[1]
 	local curUcid = net.get_player_info(_playerID, 'ucid')
 	local _baseFlag = dynDCS.getFlagValue(curBaseName)
-	local _ucidFlagCap = dynDCS.getFlagValue(curUcid..'CAP')
+	local _ucidFlagCap = dynDCS.getFlagValue(curUcid..'_CAP')
 	local _ucidFlagCas = dynDCS.getFlagValue(curUcid..'_CAS')
 	--net.log(curBaseName.."_".._unitId..' flag:'.._baseFlag..' uSide:'..curSide..' ucidFlag: '.._ucidFlag..' ucid:'..curUcid)
 	if _baseFlag == curSide then
