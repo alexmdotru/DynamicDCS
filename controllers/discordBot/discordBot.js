@@ -19,7 +19,7 @@ client.on('ready', () => {
 		var voiceChans = curGuild.channels.filter(ch => ch.type === 'voice');
 		_.forEach(Array.from(voiceChans.values()), function (voiceChan) {
 			_.forEach(Array.from(voiceChan.members.values()), function (vcUser) {
-				console.log('nick: ', vcUser.nickname, 'un: ', _.get(vcUser, 'user.username'));
+				// console.log('nick: ', vcUser.nickname, 'un: ', _.get(vcUser, 'user.username'));
 				if (vcUser.nickname) {
 					discordUserNames.push(vcUser.nickname);
 				} else {
