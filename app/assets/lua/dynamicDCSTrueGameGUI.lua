@@ -8,6 +8,7 @@ local DATA_TIMEOUT_SEC = 0.5
 
 isLoadLock = false
 isCapLives = false
+isCasLives = false
 
 package.path  = package.path..";.\\LuaSocket\\?.lua;"
 package.cpath = package.cpath..";.\\LuaSocket\\?.dll;"
@@ -38,6 +39,13 @@ capLives = {
 	['MiG-29A'] = 1,
 	['MiG-29S'] = 1,
 	['M-2000C'] = 1
+}
+
+casLives = {
+	['A-10A'] = 1,
+	['A-10C'] = 1,
+	['Su-25T'] = 1,
+	['AV8BNA'] = 1
 }
 
 function string:split( inSplitPattern, outResults )
@@ -502,6 +510,7 @@ end
 
 function dynDCS.shouldAllowSlot(_playerID, _slotID)
 	isCapLives = false
+	isCasLives = false
 	isLoadLock = false
 	local _isOpenSlot = dynDCS.getFlagValue('isOpenSlot')
 	--net.log('io'.._playerID..' '.._slotID..' '.._isOpenSlot)
@@ -524,13 +533,19 @@ function dynDCS.shouldAllowSlot(_playerID, _slotID)
 	local curBaseName = DCS.getUnitProperty(_slotID, DCS.UNIT_NAME):split(' #')[1]:split("_Extension")[1]
 	local curUcid = net.get_player_info(_playerID, 'ucid')
 	local _baseFlag = dynDCS.getFlagValue(curBaseName)
-	local _ucidFlag = dynDCS.getFlagValue(curUcid)
+	local _ucidFlagCap = dynDCS.getFlagValue(curUcid..'CAP')
+	local _ucidFlagCas = dynDCS.getFlagValue(curUcid..'_CAS')
 	--net.log(curBaseName.."_".._unitId..' flag:'.._baseFlag..' uSide:'..curSide..' ucidFlag: '.._ucidFlag..' ucid:'..curUcid)
 	if _baseFlag == curSide then
 		--net.log('STUFFF '..capLives[curType]..' - '..curType..' ucid: '.._ucidFlag)
-		if _ucidFlag == 1 and capLives[curType] == 1 then
+		if _ucidFlagCap == 1 and capLives[curType] == 1 then
 			--net.log('User Flagged For Cap Lives Used Up')
 			isCapLives = true
+			return false
+		end
+		if _ucidFlagCas == 1 and casLives[curType] == 1 then
+			--net.log('User Flagged For Cap Lives Used Up')
+			isCasLives = true
 			return false
 		end
 		--net.log('Base Slot Open')
@@ -548,7 +563,9 @@ dynDCS.rejectPlayer = function(playerID)
 		if(isLoadLock) then
 			_chatMessage = "***Slot DISABLED, Server Is Syncing Units***"
 		elseif (isCapLives) then
-			_chatMessage = "***Slot DISABLED, Your Modern Cap Lives Are Used Up***"
+			_chatMessage = "***Slot DISABLED, Your Modern CAS Lives Are Used Up***"
+		elseif (isCasLives) then
+			_chatMessage = "***Slot DISABLED, Your Modern CAS Lives Are Used Up***"
 		else
 			_chatMessage = "***Slot DISABLED, Capture This Airport***"
 		end

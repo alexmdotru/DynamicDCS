@@ -5,7 +5,7 @@ const DCSLuaCommands = require('../../player/DCSLuaCommands');
 const playersEvent = require('../../events/backend/players');
 const groupController = require('../../spawn/group');
 const webPushCommands = require('../../socketIO/webPush');
-const capLivesController = require('../../action/capLives');
+const userLivesController = require('../../action/userLives');
 
 _.set(exports, 'processEventLand', function (serverName, sessionName, eventObj) {
 	var place = '';
@@ -77,9 +77,13 @@ _.set(exports, 'processEventLand', function (serverName, sessionName, eventObj) 
 								msg: 'C: '+ _.get(curIUnit, 'type') + '(' + _.get(curIUnit, 'playername') + ') has landed' + place
 							};
 							if(_.get(iCurObj, 'iucid')) {
-								if (_.includes(capLivesController.capLivesEnabled, curIUnit.type)) {
+								if (_.includes(userLivesController.capLivesEnabled, curIUnit.type)) {
 									console.log(' add cap life: ', _.get(curIUnit, 'playername'));
-									capLivesController.autoAddLife(serverName, iPlayer.ucid);
+									userLivesController.autoAddLife(serverName, iPlayer.ucid, 'Cap');
+								}
+								if (_.includes(userLivesController.casLivesEnabled, curIUnit.type)) {
+									console.log(' add cas life: ', _.get(curIUnit, 'playername'));
+									userLivesController.autoAddLife(serverName, iPlayer.ucid, 'Cas');
 								}
 								webPushCommands.sendToCoalition(serverName, {payload: {action: eventObj.action, data: _.cloneDeep(iCurObj)}});
 								dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);

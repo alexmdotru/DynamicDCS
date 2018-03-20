@@ -3,7 +3,7 @@ const constants = require('../../constants');
 const dbMapServiceController = require('../../db/dbMapService');
 const DCSLuaCommands = require('../../player/DCSLuaCommands');
 const playersEvent = require('../../events/backend/players');
-const capLivesController = require('../../action/capLives');
+const userLivesController = require('../../action/userLives');
 const menuUpdateController = require('../../menu/menuUpdate');
 const unitsStaticsController = require('../../serverToDbSync/unitsStatics');
 const webPushCommands = require('../../socketIO/webPush');
@@ -34,7 +34,7 @@ _.set(exports, 'processEventPlayerEnterUnit', function (serverName, sessionName,
 								webPushCommands.sendToCoalition(serverName, {payload: {action: eventObj.action, data: _.cloneDeep(iCurObj)}});
 								dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 							}
-							capLivesController.updateServerCapLives(serverName, curIUnit);
+							userLivesController.updateServerLives(serverName, curIUnit);
 							menuUpdateController.logisticsMenu('resetMenu', serverName, curIUnit);
 							DCSLuaCommands.sendMesgToCoalition(
 								_.get(iCurObj, 'displaySide'),

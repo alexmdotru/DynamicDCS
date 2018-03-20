@@ -4,7 +4,7 @@ const dbMapServiceController = require('../../db/dbMapService');
 const DCSLuaCommands = require('../../player/DCSLuaCommands');
 const playersEvent = require('../../events/backend/players');
 const webPushCommands = require('../../socketIO/webPush');
-const capLivesController = require('../../action/capLives');
+const userLivesController = require('../../action/userLives');
 
 _.set(exports, 'processEventTakeoff', function (serverName, sessionName, eventObj) {
 	var place;
@@ -38,9 +38,13 @@ _.set(exports, 'processEventTakeoff', function (serverName, sessionName, eventOb
 								msg: 'C: '+ _.get(curIUnit, 'type') + '('+_.get(curIUnit, 'playername')+') has taken off' + place
 							};
 							if(_.get(iCurObj, 'iucid')) {
-								if (_.includes(capLivesController.capLivesEnabled, curIUnit.type)) {
+								if (_.includes(userLivesController.capLivesEnabled, curIUnit.type)) {
 									console.log(' remove cap life: ', _.get(curIUnit, 'playername'));
-									capLivesController.removeLife(serverName, iPlayer.ucid, curIUnit);
+									userLivesController.removeLife(serverName, iPlayer.ucid, curIUnit, 'Cap');
+								}
+								if (_.includes(userLivesController.casLivesEnabled, curIUnit.type)) {
+									console.log(' remove cap life: ', _.get(curIUnit, 'playername'));
+									userLivesController.removeLife(serverName, iPlayer.ucid, curIUnit, 'Cas');
 								}
 								webPushCommands.sendToCoalition(serverName, {payload: {action: eventObj.action, data: _.cloneDeep(iCurObj)}});
 								dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);

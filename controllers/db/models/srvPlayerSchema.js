@@ -40,9 +40,17 @@ const srvPlayerSchema = new Schema({
 		},
 		curCapLives: {
 			type: Number,
-			default: 4
+			default: 2
 		},
 		nextCapLife: {
+			type: Number,
+			default: 0
+		},
+		curCasLives: {
+			type: Number,
+			default: 4
+		},
+		nextCasLife: {
 			type: Number,
 			default: 0
 		},

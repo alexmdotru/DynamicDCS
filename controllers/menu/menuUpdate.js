@@ -2,7 +2,7 @@ const	_ = require('lodash');
 const dbMapServiceController = require('../db/dbMapService');
 const proximityController = require('../proxZone/proximity');
 const menuCmdsController = require('../menu/menuCmds'); //menuCmdsController.maxUnitsMoving
-const capLivesController = require('../action/capLives');
+const userLivesController = require('../action/userLives');
 
 exports.virtualCrates = false;
 var enableAction = false;
@@ -35,7 +35,8 @@ var allowedTypesForCratesHeavy = [
 	'Mi-8MT'
 ];
 
-var allowedTypesForModernCapLives = capLivesController.capLivesEnabled;
+var allowedTypesForModernCapLives = userLivesController.capLivesEnabled;
+var allowedTypesForModernCasLives = userLivesController.casLivesEnabled;
 
 _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 	dbMapServiceController.srvPlayerActions('read', serverName, {name: unit.playername})
@@ -95,7 +96,8 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 						// console.log('der: ', unit.type, _.includes(allowedTypesForTroops, unit.type), proximityController.extractUnitsBackToBase(unit, serverName));
 						cmdArray = _.concat(cmdArray, [
 							'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "Lives")',
-							'missionCommands.addCommandForGroup("' + unit.groupId + '", "Modern Cap Lives", {"Lives"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "Lives", ["type"] = "Modern Lives", ["unitId"] = ' + unit.unitId + '})',
+							'missionCommands.addCommandForGroup("' + unit.groupId + '", "Modern CAP Lives", {"Lives"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "checkCapLives", ["type"] = "Modern CAP Lives", ["unitId"] = ' + unit.unitId + '})',
+							'missionCommands.addCommandForGroup("' + unit.groupId + '", "Modern CAS Lives", {"Lives"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "checkCasLives", ["type"] = "Modern CAS Lives", ["unitId"] = ' + unit.unitId + '})',
 						]);
 						if (_.includes(allowedTypesForTroops, unit.type) && unitsProxBase) {
 							cmdArray = _.concat(cmdArray, [

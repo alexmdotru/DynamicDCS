@@ -7,7 +7,7 @@ const groupController = require('../spawn/group');
 const crateController = require('../spawn/crate');
 const reloadController = require('../menu/reload');
 const repairController = require('../menu/repair');
-const capLivesController = require('../action/capLives');
+const userLivesController = require('../action/userLives');
 
 exports.maxCrates = 10;
 exports.maxTroops = 1;
@@ -29,8 +29,11 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 							var spawnArray;
 							var curSpawnUnit;
 							// action menu
-							if (pObj.cmd === 'Lives') {
-								capLivesController.checkLives(serverName, curPlayer.ucid);
+							if (pObj.cmd === 'checkCapLives') {
+								userLivesController.checkCapLives(serverName, curPlayer.ucid);
+							}
+							if (pObj.cmd === 'checkCasLives') {
+								userLivesController.checkCasLives(serverName, curPlayer.ucid);
 							}
 							if (pObj.cmd === 'unloadExtractTroops') {
 								if(curUnit.inAir) {
