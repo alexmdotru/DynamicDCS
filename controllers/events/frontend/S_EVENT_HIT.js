@@ -28,15 +28,15 @@ _.set(exports, 'checkShootingUsers', function (serverName) {
 					dbMapServiceController.simpleStatEventActions('save', serverName, shootObj);
 				}
 				if (_.get(exports.shootingUsers, [key, 'isOwnedUnit'], false)) {
-					dbMapServiceController.srvPlayerActions('unitAddToRealScore', serverName, {_id: _.get(shootObj, 'iucid'), groupId: _.get(shootObj, 'groupId'), score: _.get(shootObj, 'score')})
+					dbMapServiceController.srvPlayerActions('unitAddToRealScore', serverName, {_id: _.get(shootObj, 'iOwnerId'), groupId: _.get(shootObj, 'groupId'), score: _.get(shootObj, 'score'), unitType: _.get(shootObj, 'iType')})
 						.catch(function (err) {
-							console.log('line147', err);
+							console.log('line33', err);
 						})
 					;
 				} else {
 					dbMapServiceController.srvPlayerActions('addTempScore', serverName, {_id: _.get(shootObj, 'iucid'), groupId: _.get(shootObj, 'groupId'), score: _.get(shootObj, 'score')})
 						.catch(function (err) {
-							console.log('line33', err);
+							console.log('line39', err);
 						})
 					;
 				}
@@ -86,6 +86,7 @@ _.set(exports, 'processEventHit', function (serverName, sessionName, eventObj) {
 										sessionName: sessionName,
 										eventCode: constants.shortNames[eventObj.action],
 										iName: _.get(curIUnit, 'playername'),
+										iType: _.get(curIUnit, 'type'),
 										iOwnerId: iOwnerId,
 										tName: _.get(curTUnit, 'playername'),
 										tOwnerId: tOwnerId,
@@ -140,6 +141,7 @@ _.set(exports, 'processEventHit', function (serverName, sessionName, eventObj) {
 															_.set(exports.shootingUsers, [iUnitId, 'startTime'], new Date().getTime());
 															_.set(exports.shootingUsers, [iUnitId, 'serverName'], serverName);
 															_.set(exports.shootingUsers, [iUnitId, 'isOwnedUnit'], isOwnedUnit);
+															_.set(exports.shootingUsers, [iUnitId, 'iUnitType'], _.get(iCurObj, 'iType'));
 															_.set(iCurObj, 'msg',
 																'A: ' + constants.side[_.get(curIUnit, 'coalition')] + ' '+ iPName +' has hit ' + constants.side[_.get(curTUnit, 'coalition')]+' ' + tPName + ' '+_.get(exports.shootingUsers, [iUnitId, 'count'], 0)+' times with ' + _.get(weaponResp, 'displayName') + ' - +'+_.get(weaponResp, 'score')+' each.'
 															);
@@ -154,7 +156,7 @@ _.set(exports, 'processEventHit', function (serverName, sessionName, eventObj) {
 																dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 															}
 															if (isOwnedUnit) {
-																dbMapServiceController.srvPlayerActions('unitAddToRealScore', serverName, {_id: _.get(iCurObj, 'iucid'), groupId: _.get(iCurObj, 'groupId'), score: _.get(iCurObj, 'score')})
+																dbMapServiceController.srvPlayerActions('unitAddToRealScore', serverName, {_id: _.get(iCurObj, 'iOwnerId'), groupId: _.get(iCurObj, 'groupId'), score: _.get(iCurObj, 'score'), unitType: _.get(iCurObj, 'iType')})
 																	.catch(function (err) {
 																		console.log('line147', err);
 																	})
@@ -191,6 +193,7 @@ _.set(exports, 'processEventHit', function (serverName, sessionName, eventObj) {
 											_.set(exports.shootingUsers, [iUnitId, 'startTime'], new Date().getTime());
 											_.set(exports.shootingUsers, [iUnitId, 'serverName'], serverName);
 											_.set(exports.shootingUsers, [iUnitId, 'isOwnedUnit'], isOwnedUnit);
+											_.set(exports.shootingUsers, [iUnitId, 'iUnitType'], _.get(iCurObj, 'iType'));
 											shotCount = _.get(exports.shootingUsers, [iUnitId, 'count'], 1);
 											if (shotCount === 1) {
 												shotpoints = 10;
