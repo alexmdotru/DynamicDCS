@@ -93,7 +93,7 @@ _.set(exports, 'updateServerLives', function (serverName, playrUnit) {
 									};
 								}
 
-								playerCapTable.push(lockObj);\
+								playerCapTable.push(lockObj);
 
 								//cas
 								//add life if its past due
