@@ -27,7 +27,7 @@ client.on('ready', () => {
 				}
 			});
 		});
-
+/*
 		dbSystemServiceController.serverActions('read', {enabled: true})
 			.then(function (srvs) {
 				_.forEach(srvs, function (srv) {
@@ -97,8 +97,23 @@ client.on('ready', () => {
 				console.log('line49', err);
 			})
 		;
+*/
 	}, 60 * 1000);
 });
+
+_.set(exports, 'sendSoundBite', function (vcArray, songFile) {
+	vcArray[0].join().then(function (connection) {
+		const dispatcher = connection.playFile(songFile);
+		dispatcher.on("end", function (end) {
+			vcArray[0].leave();
+			if (vcArray.length !== 1) {
+				vcArray.shift();
+				exports.sendSoundBite(vcArray, songFile);
+			}
+		});
+	}).catch(err => console.log(err));
+});
+
 
 client.on('message', message => {
 	console.log(message.content);
@@ -108,6 +123,29 @@ client.on('message', message => {
 	}
 	if (message.content === '!paypal') {
 		message.channel.send('https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=HSRWLCYNXQB4N');
+	}
+	if (message.content === '!playSound') {
+		var channelsToPlay = [
+			'Here But Coding',
+			'Group 1',
+			// 'Red Gen Chat(Relaxed GCI)',
+			// 'Blue Gen Chat(Relaxed GCI)',
+		];
+		var vcArray = [];
+		var songFile = 'C:/Users/andre/IdeaProjects/DynamicDCS/sndBites/AMERICAshort.mp3';
+		var curGuild = client.guilds.get('389682718033707008');
+
+		_.forEach(channelsToPlay, function (channel) {
+			vcArray.push(_.first(curGuild.channels.filter(ch => ch.type === 'voice' && ch.name === channel).array()));
+		});
+
+		//vcArray.push(_.first(curGuild.channels.filter(ch => ch.type === 'voice' && ch.name === 'Here But Coding').array()));
+		//vcArray.push(_.first(curGuild.channels.filter(ch => ch.type === 'voice' && ch.name === 'Group 1').array()));
+		// vcArray = curGuild.channels.filter(ch => ch.type === 'voice').array();
+
+		exports.sendSoundBite(vcArray, songFile);
+
+		message.channel.send('testPlay');
 	}
 });
 
