@@ -2,6 +2,7 @@ const	_ = require('lodash');
 const dbMapServiceController = require('../db/dbMapService');
 const groupController = require('../spawn/group');
 const menuUpdateController = require('../menu/menuUpdate');
+const DCSLuaCommands = require('../player/DCSLuaCommands');
 
 var unitsInProxLogiTowers = {};
 var unitsInProxBases = {};
@@ -235,6 +236,12 @@ _.set(exports, 'checkUnitsToBaseForCapture', function (serverName) {
 							// console.log('enemy in range: ', base.name + ': enemy Blue');
 							if (_.get(sideArray, [1], []).length === 0) {
 								console.log('BASE HAS BEEN CAPTURED: ', base.name, ' is now ', 2);
+								var msg = base.name + " HAS BEEN CAPTURED BY BLUE";
+								DCSLuaCommands.sendMesgToAll(
+									serverName,
+									msg,
+									60
+								);
 								// console.log('Spawning Support Units', base, 2);
 								spawnArray = _.concat(spawnArray, groupController.spawnSupportBaseGrp(serverName, base.name, 2, false));
 								groupController.spawnGroup(serverName, spawnArray, base.name, 2);
@@ -259,6 +266,12 @@ _.set(exports, 'checkUnitsToBaseForCapture', function (serverName) {
 							// console.log('enemy in range: ', base.name + ': enemy Red');
 							if (_.get(sideArray, [2], []).length === 0) {
 								console.log('BASE HAS BEEN CAPTURED: ', base.name, ' is now ', 1);
+								var msg = base.name + " HAS BEEN CAPTURED BY RED";
+								DCSLuaCommands.sendMesgToAll(
+									serverName,
+									msg,
+									60
+								);
 								// console.log('Spawning Support Units', base, 1);
 								spawnArray = _.concat(spawnArray, groupController.spawnSupportBaseGrp(serverName, base.name, 1, false));
 								groupController.spawnGroup(serverName, spawnArray, base.name, 1);
