@@ -27,7 +27,7 @@ client.on('ready', () => {
 				}
 			});
 		});
-/*
+
 		dbSystemServiceController.serverActions('read', {enabled: true})
 			.then(function (srvs) {
 				_.forEach(srvs, function (srv) {
@@ -97,7 +97,6 @@ client.on('ready', () => {
 				console.log('line49', err);
 			})
 		;
-*/
 	}, 60 * 1000);
 });
 
