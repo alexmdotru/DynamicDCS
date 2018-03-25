@@ -4,6 +4,7 @@ const groupController = require('../spawn/group');
 const DCSLuaCommands = require('../player/DCSLuaCommands');
 const menuUpdateController = require('../menu/menuUpdate');
 const crateController = require('../spawn/crate');
+const taskController = require('../action/task');
 
 var mesg;
 var masterUnitCount;
@@ -21,6 +22,7 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 	dbMapServiceController.unitActions('readStd', serverName, {dead: false})
 		.then(function (units) {
 			if (serverUnitCount === 0) { //server is empty
+				taskController.ewrUnitsActivated = {};
 				exports.isServerSynced = false;
 				isServerFresh = true;
 				if (!exports.isSyncLockdownMode) {
@@ -82,10 +84,11 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 						})
 					;
 				} else {
-					console.log('syncro mode ia on lockdown: ', exports.isSyncLockdownMode);
+					console.log('syncro mode is on lockdown: ', exports.isSyncLockdownMode);
 				}
 			} else {
 				if (isServerFresh) { // server is fresh
+					taskController.ewrUnitsActivated = {};
 					if (exports.processInstructions) {
 						if (serverUnitCount !== units.length) {
 							if (lastUnitCount === serverUnitCount) {
