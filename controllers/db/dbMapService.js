@@ -192,7 +192,8 @@ exports.srvPlayerActions = function (action, serverName, obj){
 				}
 				if ((serverObj.length !== 0) && ((curPly.lastLifeAction !== curAction) || (new Date(curPly.safeLifeActionTime).getTime() < nowTime))) {
 					var nextCapLife;
-					var curLife = _.get(curPly, ['curCapLives'], 0) + 1;
+					var curCapLives = _.get(curPly, ['curCapLives'], 0);
+					var curLife = (curCapLives < 0)? 1 : curCapLives + 1;
 					if (curLife >= userLivesController.capDefaultLife) {
 						curLife = userLivesController.capDefaultLife;
 						nextCapLife = 0;
@@ -236,7 +237,8 @@ exports.srvPlayerActions = function (action, serverName, obj){
 				}
 				if ((serverObj.length !== 0) && ((curPly.lastLifeAction !== curAction) || (new Date(curPly.safeLifeActionTime).getTime() < nowTime))) {
 					var nextCasLife;
-					var curLife = _.get(curPly, ['curCasLives'], 0) + 1;
+					var curCasLives = _.get(curPly, ['curCasLives'], 0);
+					var curLife = (curCasLives < 0)? 1 : curCasLives + 1;
 					if (curLife >= userLivesController.casDefaultLife) {
 						curLife = userLivesController.casDefaultLife;
 						nextCasLife = 0;
@@ -279,7 +281,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 					reject(err)
 				}
 				if ((serverObj.length !== 0) && ((curPly.lastLifeAction !== curAction) || (new Date(curPly.safeLifeActionTime).getTime() < nowTime))) {
-					var curLife = ((_.get(curPly, ['curCapLives'], 1) - 1) < 0)? 0 : _.get(curPly, ['curCapLives'], 1) - 1;
+					var curLife = _.get(curPly, ['curCapLives'], 1) - 1;
 					if(0 ===  curPly.nextCapLife) {
 						curPly.nextCapLife = new Date().getTime() + respawnTime;
 					}
@@ -316,10 +318,14 @@ exports.srvPlayerActions = function (action, serverName, obj){
 					reject(err)
 				}
 				if ((serverObj.length !== 0) && ((curPly.lastLifeAction !== curAction) || (new Date(curPly.safeLifeActionTime).getTime() < nowTime))) {
-					var curLife = ((_.get(curPly, ['curCasLives'], 1) - 1) < 0)? 0 : _.get(curPly, ['curCasLives'], 1) - 1;
+					var curLife = _.get(curPly, ['curCasLives'], 1) - 1;
 					if(0 ===  curPly.nextCasLife) {
 						curPly.nextCasLife = new Date().getTime() + respawnTime;
 					}
+					if (curLife < 0) {
+
+					}
+
 					SrvPlayer.update(
 						{_id: obj._id},
 						{$set:
