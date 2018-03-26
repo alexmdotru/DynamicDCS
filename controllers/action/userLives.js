@@ -71,13 +71,9 @@ _.set(exports, 'updateServerLives', function (serverName, playrUnit) {
 							var lockObj;
 							if (ePlayer) {
 								//cap
-								//add life if its past due
 								if (new Date(ePlayer.nextCapLife).getTime() < new Date().getTime() && (ePlayer.curCapLives < exports.capDefaultLife)) {
+									console.log(ePlayer.name, ' gets 1 CAP life back');
 									exports.autoAddLife(serverName, ePlayer.ucid, 'Cap');
-								}
-								// console.log('cp: ', curPlayer.curCapLives, curPlayer.nextCapLife.getTime() + oneHour < new Date().getTime() && curPlayer.curCapLives < 4);
-								if (ePlayer.curCapLives < exports.capDefaultLife) {
-									console.log('User: ', ePlayer.name, ePlayer.curCapLives);
 								}
 
 								if (ePlayer.curCapLives < 0) {
@@ -85,7 +81,6 @@ _.set(exports, 'updateServerLives', function (serverName, playrUnit) {
 										ucid: ePlayer.ucid + '_CAP',
 										val: 1
 									};
-									exports.autoAddLife(serverName, ePlayer.ucid, 'Cap');
 								} else {
 									lockObj = {
 										ucid: ePlayer.ucid + '_CAP',
@@ -96,14 +91,9 @@ _.set(exports, 'updateServerLives', function (serverName, playrUnit) {
 								playerCapTable.push(lockObj);
 
 								//cas
-								//add life if its past due
-								//add life if its past due
 								if (new Date(ePlayer.nextCasLife).getTime() < new Date().getTime() && (ePlayer.curCasLives < exports.casDefaultLife)) {
+									console.log(ePlayer.name, ' gets 1 CAS life back');
 									exports.autoAddLife(serverName, ePlayer.ucid, 'Cas');
-								}
-								// console.log('cp: ', curPlayer.curCapLives, curPlayer.nextCapLife.getTime() + oneHour < new Date().getTime() && curPlayer.curCapLives < 4);
-								if (ePlayer.curCasLives < exports.casDefaultLife) {
-									console.log('User: ', ePlayer.name, ePlayer.curCasLives);
 								}
 
 								if (ePlayer.curCasLives < 0) {
@@ -111,7 +101,6 @@ _.set(exports, 'updateServerLives', function (serverName, playrUnit) {
 										ucid: ePlayer.ucid + '_CAS',
 										val: 1
 									};
-									exports.autoAddLife(serverName, ePlayer.ucid, 'Cas');
 								} else {
 									lockObj = {
 										ucid: ePlayer.ucid + '_CAS',
@@ -167,12 +156,34 @@ _.set(exports, 'autoAddLife', function (serverName, playerUcid, type) {
 	// add cap life to player
 	if (type === 'Cap') {
 		dbMapServiceController.srvPlayerActions('autoCapAddLife', serverName, {_id: playerUcid})
+			.then(function(capLeft) {
+				/*
+				DCSLuaCommands.sendMesgToGroup(
+					curIUnit.groupId,
+					serverName,
+					"G: +1 Modern CAP Life, Total " + capLeft,
+					5
+				);
+				exports.updateServerLives(serverName, curIUnit);
+				*/
+			})
 			.catch(function (err) {
 				console.log('line74', err);
 			})
 		;
 	} else if (type === 'Cas') {
 		dbMapServiceController.srvPlayerActions('autoCasAddLife', serverName, {_id: playerUcid})
+			.then(function(casLeft) {
+				/*
+				DCSLuaCommands.sendMesgToGroup(
+					curIUnit.groupId,
+					serverName,
+					"G: +1 Modern CAP Life, Total " + casLeft,
+					5
+				);
+				exports.updateServerLives(serverName, curIUnit);
+				*/
+			})
 			.catch(function (err) {
 				console.log('line74', err);
 			})
@@ -187,7 +198,7 @@ _.set(exports, 'removeLife', function (serverName, playerUcid, curIUnit, type) {
 				DCSLuaCommands.sendMesgToGroup(
 					curIUnit.groupId,
 					serverName,
-					"G: You have a modern CAP life removed, total " + capLeft + " Lives Left!",
+					"G: -1 Modern CAP Life, Total " + capLeft,
 					5
 				);
 				exports.updateServerLives(serverName, curIUnit);
@@ -202,7 +213,7 @@ _.set(exports, 'removeLife', function (serverName, playerUcid, curIUnit, type) {
 				DCSLuaCommands.sendMesgToGroup(
 					curIUnit.groupId,
 					serverName,
-					"G: You have a modern CAS life removed, total " + casLeft + " Lives Left!",
+					"G: -1 Modern CAP Life, Total " + casLeft,
 					5
 				);
 				exports.updateServerLives(serverName, curIUnit);

@@ -18,7 +18,8 @@ var cmdQueSchema = require('./models/cmdQueSchema');
 var webPushSchema = require('./models/webPushSchema');
 var processSchema = require('./models/processSchema');
 
-var oneHour = 60 * 60 * 1000;
+var oneMin = 60 * 1000;
+var oneHour = 60 * oneMin;
 
 _.set(exports, 'connectMapDB', function (dynamicHost, dynamicDatabase) {
 	mapdb.open(dynamicHost, dynamicDatabase);
@@ -116,6 +117,7 @@ exports.baseActions = function (action, serverName, obj){
 
 exports.srvPlayerActions = function (action, serverName, obj){
 	const SrvPlayer = mapdb.model(serverName+'_srvPlayer', srvPlayerSchema);
+	var nowTime = new Date().getTime();
 	if (action === 'read') {
 		return new Promise(function(resolve, reject) {
 			SrvPlayer.find(obj, function (err, srvPlayer) {
@@ -179,6 +181,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 	if (action === 'autoCapAddLife') {
 		return new Promise(function(resolve, reject) {
 			SrvPlayer.find({_id: obj._id}, function (err, serverObj) {
+				var curAction = 'addCapLife';
 				var respawnTime = oneHour;
 				var curPly = _.get(serverObj, [0]);
 				if(curPly.side === _.get(userLivesController, ['underDog', 'side'])) {
@@ -187,22 +190,72 @@ exports.srvPlayerActions = function (action, serverName, obj){
 				if (err) {
 					reject(err)
 				}
-				if (serverObj.length !== 0) {
+				if ((serverObj.length !== 0) && ((curPly.lastLifeAction !== curAction) || (new Date(curPly.safeLifeActionTime).getTime() < nowTime))) {
 					var nextCapLife;
 					var curLife = _.get(curPly, ['curCapLives'], 0) + 1;
 					if (curLife >= userLivesController.capDefaultLife) {
 						curLife = userLivesController.capDefaultLife;
 						nextCapLife = 0;
 					} else {
+						nextCapLife = curPly.nextCapLife;
 						if(0 ===  curPly.nextCapLife) {
-							curPly.nextCapLife = new Date().getTime() + respawnTime;
-						} else {
-							nextCapLife = curPly.nextCapLife;
+							nextCapLife = new Date().getTime() + respawnTime;
 						}
 					}
 					SrvPlayer.findOneAndUpdate(
 						{_id: obj._id},
-						{$set: {curCapLives: curLife, nextCapLife: nextCapLife}},
+						{$set:
+							{
+								curCapLives: curLife,
+								nextCapLife: nextCapLife,
+								lastLifeAction: curAction,
+								safeLifeActionTime: (nowTime + oneMin)
+							}
+						},
+						function(err, srvPlayer) {
+							if (err) { reject(err) }
+							resolve(srvPlayer);
+						}
+					)
+				}
+			});
+		})
+	}
+
+	if (action === 'autoCasAddLife') {
+		return new Promise(function(resolve, reject) {
+			SrvPlayer.find({_id: obj._id}, function (err, serverObj) {
+				var curAction = 'addCasLife';
+				var respawnTime = oneHour;
+				var curPly = _.get(serverObj, [0]);
+				if(curPly.side === _.get(userLivesController, ['underDog', 'side'])) {
+					respawnTime = respawnTime * _.get(userLivesController, ['underDog', 'percent']);
+				}
+				if (err) {
+					reject(err)
+				}
+				if ((serverObj.length !== 0) && ((curPly.lastLifeAction !== curAction) || (new Date(curPly.safeLifeActionTime).getTime() < nowTime))) {
+					var nextCasLife;
+					var curLife = _.get(curPly, ['curCasLives'], 0) + 1;
+					if (curLife >= userLivesController.casDefaultLife) {
+						curLife = userLivesController.casDefaultLife;
+						nextCasLife = 0;
+					} else {
+						nextCasLife = curPly.nextCasLife;
+						if(0 ===  curPly.nextCasLife) {
+							nextCasLife = new Date().getTime() + respawnTime;
+						}
+					}
+					SrvPlayer.findOneAndUpdate(
+						{_id: obj._id},
+						{$set:
+							{
+								curCasLives: curLife,
+								nextCasLife: nextCasLife,
+								lastLifeAction: curAction,
+								safeLifeActionTime: (nowTime + oneMin)
+							}
+						},
 						function(err, srvPlayer) {
 							if (err) { reject(err) }
 							resolve(srvPlayer);
@@ -216,6 +269,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 	if (action === 'removeCapLife') {
 		return new Promise(function(resolve, reject) {
 			SrvPlayer.find({_id: obj._id}, function (err, serverObj) {
+				var curAction = 'removeCapLife';
 				var respawnTime = oneHour;
 				var curPly = _.get(serverObj, [0]);
 				if(curPly.side === _.get(userLivesController, ['underDog', 'side'])) {
@@ -224,14 +278,21 @@ exports.srvPlayerActions = function (action, serverName, obj){
 				if (err) {
 					reject(err)
 				}
-				if (serverObj.length !== 0) {
+				if ((serverObj.length !== 0) && ((curPly.lastLifeAction !== curAction) || (new Date(curPly.safeLifeActionTime).getTime() < nowTime))) {
 					var curLife = _.get(curPly, ['curCapLives'], 1) - 1;
 					if(0 ===  curPly.nextCapLife) {
 						curPly.nextCapLife = new Date().getTime() + respawnTime;
 					}
 					SrvPlayer.update(
 						{_id: obj._id},
-						{$set: {curCapLives: curLife, nextCapLife: curPly.nextCapLife}},
+						{$set:
+							{
+								curCapLives: curLife,
+								nextCapLife: curPly.nextCapLife,
+								lastLifeAction: curAction,
+								safeLifeActionTime: (nowTime + oneMin)
+							}
+						},
 						function(err) {
 							if (err) { reject(err) }
 							resolve(curLife);
@@ -242,46 +303,10 @@ exports.srvPlayerActions = function (action, serverName, obj){
 		})
 	}
 
-	if (action === 'autoCasAddLife') {
-		return new Promise(function(resolve, reject) {
-			SrvPlayer.find({_id: obj._id}, function (err, serverObj) {
-				var respawnTime = oneHour;
-				var curPly = _.get(serverObj, [0]);
-				if(curPly.side === _.get(userLivesController, ['underDog', 'side'])) {
-					respawnTime = respawnTime * _.get(userLivesController, ['underDog', 'percent']);
-				}
-				if (err) {
-					reject(err)
-				}
-				if (serverObj.length !== 0) {
-					var nextCasLife;
-					var curLife = _.get(curPly, ['curCasLives'], 0) + 1;
-					if (curLife >= userLivesController.casDefaultLife) {
-						curLife = userLivesController.casDefaultLife;
-						nextCasLife = 0;
-					} else {
-						if(0 ===  curPly.nextCasLife) {
-							curPly.nextCasLife = new Date().getTime() + respawnTime;
-						} else {
-							nextCasLife = curPly.nextCasLife;
-						}
-					}
-					SrvPlayer.findOneAndUpdate(
-						{_id: obj._id},
-						{$set: {curCasLives: curLife, nextCasLife: nextCasLife}},
-						function(err, srvPlayer) {
-							if (err) { reject(err) }
-							resolve(srvPlayer);
-						}
-					);
-				}
-			});
-		})
-	}
-
 	if (action === 'removeCasLife') {
 		return new Promise(function(resolve, reject) {
 			SrvPlayer.find({_id: obj._id}, function (err, serverObj) {
+				var curAction = 'removeCasLife';
 				var respawnTime = oneHour;
 				var curPly = _.get(serverObj, [0]);
 				if(curPly.side === _.get(userLivesController, ['underDog', 'side'])) {
@@ -290,14 +315,21 @@ exports.srvPlayerActions = function (action, serverName, obj){
 				if (err) {
 					reject(err)
 				}
-				if (serverObj.length !== 0) {
+				if ((serverObj.length !== 0) && ((curPly.lastLifeAction !== curAction) || (new Date(curPly.safeLifeActionTime).getTime() < nowTime))) {
 					var curLife = _.get(curPly, ['curCasLives'], 1) - 1;
 					if(0 ===  curPly.nextCasLife) {
 						curPly.nextCasLife = new Date().getTime() + respawnTime;
 					}
 					SrvPlayer.update(
 						{_id: obj._id},
-						{$set: {curCasLives: curLife, nextCasLife: curPly.nextCasLife}},
+						{$set:
+							{
+								curCasLives: curLife,
+								nextCasLife: curPly.nextCasLife,
+								lastLifeAction: curAction,
+								safeLifeActionTime: (nowTime + oneMin)
+							}
+						},
 						function(err) {
 							if (err) { reject(err) }
 							resolve(curLife);
