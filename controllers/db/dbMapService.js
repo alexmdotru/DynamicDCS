@@ -198,7 +198,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 						nextCapLife = 0;
 					} else {
 						nextCapLife = curPly.nextCapLife;
-						if(0 ===  curPly.nextCapLife) {
+						if(0 ===  nextCapLife || (new Date(nextCapLife).getTime() < nowTime)) {
 							nextCapLife = new Date().getTime() + respawnTime;
 						}
 					}
@@ -242,7 +242,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 						nextCasLife = 0;
 					} else {
 						nextCasLife = curPly.nextCasLife;
-						if(0 ===  curPly.nextCasLife) {
+						if(0 ===  nextCasLife || (new Date(nextCasLife).getTime() < nowTime)) {
 							nextCasLife = new Date().getTime() + respawnTime;
 						}
 					}
