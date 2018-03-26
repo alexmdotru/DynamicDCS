@@ -279,7 +279,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 					reject(err)
 				}
 				if ((serverObj.length !== 0) && ((curPly.lastLifeAction !== curAction) || (new Date(curPly.safeLifeActionTime).getTime() < nowTime))) {
-					var curLife = _.get(curPly, ['curCapLives'], 1) - 1;
+					var curLife = ((_.get(curPly, ['curCapLives'], 1) - 1) < 0)? 0 : _.get(curPly, ['curCapLives'], 1) - 1;
 					if(0 ===  curPly.nextCapLife) {
 						curPly.nextCapLife = new Date().getTime() + respawnTime;
 					}
@@ -316,7 +316,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 					reject(err)
 				}
 				if ((serverObj.length !== 0) && ((curPly.lastLifeAction !== curAction) || (new Date(curPly.safeLifeActionTime).getTime() < nowTime))) {
-					var curLife = _.get(curPly, ['curCasLives'], 1) - 1;
+					var curLife = ((_.get(curPly, ['curCasLives'], 1) - 1) < 0)? 0 : _.get(curPly, ['curCasLives'], 1) - 1;
 					if(0 ===  curPly.nextCasLife) {
 						curPly.nextCasLife = new Date().getTime() + respawnTime;
 					}
