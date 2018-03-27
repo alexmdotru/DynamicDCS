@@ -213,7 +213,7 @@ _.set(exports, 'removeLife', function (serverName, playerUcid, curIUnit, type) {
 				DCSLuaCommands.sendMesgToGroup(
 					curIUnit.groupId,
 					serverName,
-					"G: -1 Modern CAP Life, Total " + casLeft,
+					"G: -1 Modern CAS Life, Total " + casLeft,
 					5
 				);
 				exports.updateServerLives(serverName, curIUnit);
