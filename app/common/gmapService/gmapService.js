@@ -162,7 +162,7 @@
 		_.set(gSrv, 'processUnitsStatics', function (unitArray) {
 			_.set(gSrv, 'gmapObj.markers', []);
 			_.forEach(unitArray, function (unit) {
-				gSrv.createMarker(unit);
+				// gSrv.createMarker(unit);
 			});
 		});
 

@@ -26,7 +26,7 @@
 		mySocket.on('srvUpd', function (data) {
 			_.forEach(data, function (queObj) {
 				if ((_.get(queObj, 'action') === 'C') || (_.get(queObj, 'action') === 'U') || (_.get(queObj, 'action') === 'D'))  {
-					gmapService.processUnitStream(queObj);
+					// gmapService.processUnitStream(queObj);
 				}
 			});
 			// console.log('sockSrvUpd', data);
