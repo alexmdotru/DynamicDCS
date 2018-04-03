@@ -11,8 +11,8 @@ const userLivesController = require('../action/userLives');
 
 exports.maxCrates = 10;
 exports.maxTroops = 1;
-exports.maxUnitsMoving = 6;
-exports.maxUnitsStationary = 6;
+exports.maxUnitsMoving = 7;
+exports.maxUnitsStationary = 7;
 exports.spawnLauncherCnt = 3;
 
 _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
