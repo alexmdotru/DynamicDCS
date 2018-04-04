@@ -408,6 +408,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 					if (curPly.side === 2) {
 						_.set(rsTotal, [2], _.get(curPly, ['blueRSTotal'], 0) + _.get(curPly, 'tmpRSPoints', 0));
 					}
+					console.log('APLY: ', rsTotal, curPly);
 					SrvPlayer.update(
 						{_id: obj._id},
 						{$set: {redRSPoints: _.get(rsTotal, [1], 0), blueRSPoints: _.get(rsTotal, [2], 0), tmpRSPoints: 0}},
