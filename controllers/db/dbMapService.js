@@ -423,7 +423,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 						{$set: rsTotals},
 						function(err) {
 							if (err) { reject(err) }
-							console.log(_.get(curPly, 'name') + ' Has Locked In ' + _.get(constants, ['side', curPly.side]) + ' ' + _.get(curPly, 'tmpRSPoints', 0) + '+ Points: ');
+							console.log(_.get(curPly, 'name') + ' ' + mesg);
 							DCSLuaCommands.sendMesgToGroup(obj.groupId, serverName, mesg, '15');
 							resolve();
 						}
