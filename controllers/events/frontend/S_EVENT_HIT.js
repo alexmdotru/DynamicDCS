@@ -17,18 +17,18 @@ exports.shootingUsers = {};
 _.set(exports, 'checkShootingUsers', function (serverName) {
 	if(_.keys(exports.shootingUsers).length > 0) {
 		_.forEach(exports.shootingUsers, function (user, key) {
-			if(_.get(user, ['startTime']) + 1500 < new Date().getTime()){
+			if(_.get(user, ['startTime']) + 3000 < new Date().getTime()){
 				var shootObj = _.get(user, ['iCurObj']);
-				_.set(shootObj, 'score', _.get(exports.shootingUsers, [key, 'count'], 1));
-				if (shootObj.score === 1) {
+				//_.set(shootObj, 'score', _.get(exports.shootingUsers, [key, 'count'], 1));
+				//if (shootObj.score === 1) {
 					_.set(shootObj, 'score', 10);
-				}
+				//}
 				if(_.get(shootObj, 'iucid') || _.get(shootObj, 'tucid')) {
 					webPushCommands.sendToAll(serverName, {payload: {action: 'S_EVENT_HIT', data: _.cloneDeep(shootObj)}});
 					dbMapServiceController.simpleStatEventActions('save', serverName, shootObj);
 				}
 				if (_.get(exports.shootingUsers, [key, 'isOwnedUnit'], false)) {
-					dbMapServiceController.srvPlayerActions('unitAddToRealScore', serverName, {_id: _.get(shootObj, 'iOwnerId'), groupId: _.get(shootObj, 'groupId'), score: _.get(shootObj, 'score'), unitType: _.get(shootObj, 'iType')})
+					dbMapServiceController.srvPlayerActions('unitAddToRealScore', serverName, {_id: _.get(shootObj, 'iOwnerId'), groupId: _.get(shootObj, 'groupId'), score: _.get(shootObj, 'score'), unitType: _.get(shootObj, 'iType'), unitCoalition: _.get(shootObj, 'iUnitCoalition')})
 						.catch(function (err) {
 							console.log('line33', err);
 						})
@@ -93,7 +93,8 @@ _.set(exports, 'processEventHit', function (serverName, sessionName, eventObj) {
 										displaySide: 'A',
 										roleCode: 'I',
 										showInChart: true,
-										groupId: _.get(curIUnit, 'groupId')
+										groupId: _.get(curIUnit, 'groupId'),
+										iCoalition: _.get(curIUnit, 'coalition')
 									};
 
 									_.forEach(ownerIds, function (ownerId) {
@@ -142,10 +143,11 @@ _.set(exports, 'processEventHit', function (serverName, sessionName, eventObj) {
 															_.set(exports.shootingUsers, [iUnitId, 'serverName'], serverName);
 															_.set(exports.shootingUsers, [iUnitId, 'isOwnedUnit'], isOwnedUnit);
 															_.set(exports.shootingUsers, [iUnitId, 'iUnitType'], _.get(iCurObj, 'iType'));
+															_.set(exports.shootingUsers, [iUnitId, 'iUnitCoalition'], _.get(iCurObj, 'iCoalition'));
 															_.set(iCurObj, 'msg',
-																'A: ' + constants.side[_.get(curIUnit, 'coalition')] + ' '+ iPName +' has hit ' + constants.side[_.get(curTUnit, 'coalition')]+' ' + tPName + ' '+_.get(exports.shootingUsers, [iUnitId, 'count'], 0)+' times with ' + _.get(weaponResp, 'displayName') + ' - +'+_.get(weaponResp, 'score')+' each.'
+																'A: ' + constants.side[_.get(curIUnit, 'coalition')] + ' '+ iPName +' has hit ' + constants.side[_.get(curTUnit, 'coalition')]+' ' + tPName + ' '+_.get(exports.shootingUsers, [iUnitId, 'count'], 0)+' times with ' + _.get(weaponResp, 'displayName') + ' - +10'
 															);
-															// console.log('2: ', iCurObj.msg);
+															// console.log('2: ', iCurObj.msg); //'+_.get(weaponResp, 'score')+'
 															_.set(exports.shootingUsers, [iUnitId, 'iCurObj'], _.cloneDeep(iCurObj));
 														} else {
 															_.set(iCurObj, 'score', _.get(weaponResp, 'score'));
@@ -156,7 +158,7 @@ _.set(exports, 'processEventHit', function (serverName, sessionName, eventObj) {
 																dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 															}
 															if (isOwnedUnit) {
-																dbMapServiceController.srvPlayerActions('unitAddToRealScore', serverName, {_id: _.get(iCurObj, 'iOwnerId'), groupId: _.get(iCurObj, 'groupId'), score: _.get(iCurObj, 'score'), unitType: _.get(iCurObj, 'iType')})
+																dbMapServiceController.srvPlayerActions('unitAddToRealScore', serverName, {_id: _.get(iCurObj, 'iOwnerId'), groupId: _.get(iCurObj, 'groupId'), score: _.get(iCurObj, 'score'), unitType: _.get(iCurObj, 'iType'), unitCoalition: _.get(iCurObj, 'iCoalition')})
 																	.catch(function (err) {
 																		console.log('line147', err);
 																	})
@@ -194,6 +196,7 @@ _.set(exports, 'processEventHit', function (serverName, sessionName, eventObj) {
 											_.set(exports.shootingUsers, [iUnitId, 'serverName'], serverName);
 											_.set(exports.shootingUsers, [iUnitId, 'isOwnedUnit'], isOwnedUnit);
 											_.set(exports.shootingUsers, [iUnitId, 'iUnitType'], _.get(iCurObj, 'iType'));
+											_.set(exports.shootingUsers, [iUnitId, 'iUnitCoalition'], _.get(iCurObj, 'iCoalition'));
 											shotCount = _.get(exports.shootingUsers, [iUnitId, 'count'], 1);
 											if (shotCount === 1) {
 												shotpoints = 10;
@@ -201,9 +204,9 @@ _.set(exports, 'processEventHit', function (serverName, sessionName, eventObj) {
 												shotpoints = shotCount
 											}
 											_.set(iCurObj, 'msg',
-												'A: '+ constants.side[_.get(curIUnit, 'coalition')] + ' '+ iPName +' has hit ' + constants.side[_.get(curTUnit, 'coalition')] + ' ' + tPName + ' '+shotCount+' times with ? - +' + shotpoints
+												'A: '+ constants.side[_.get(curIUnit, 'coalition')] + ' '+ iPName +' has hit ' + constants.side[_.get(curTUnit, 'coalition')] + ' ' + tPName + ' '+shotCount+' times with ? - +10'
 											);
-											// console.log('4: ', iCurObj.msg);
+											// console.log('4: ', iCurObj.msg); // + shotpoints
 											_.set(exports.shootingUsers, [iUnitId, 'iCurObj'], _.cloneDeep(iCurObj));
 										}
 									}

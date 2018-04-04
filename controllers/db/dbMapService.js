@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const _ = require('lodash');
+const constants = require('../constants');
 const userLivesController = require('../action/userLives');
 const DCSLuaCommands = require('../player/DCSLuaCommands');
 
@@ -400,14 +401,20 @@ exports.srvPlayerActions = function (action, serverName, obj){
 				if (err) { reject(err) }
 				if (serverObj.length !== 0) {
 					var curPly = _.get(serverObj, [0]);
-					var newScore = _.get(curPly, 'rsPoints', 0) + _.get(curPly, 'tmpRSPoints', 0);
+					var rsTotal = [];
+					if (curPly.side === 1) {
+						_.set(rsTotal, 1, _.get(curPly, ['redRSTotal'], 0) + _.get(curPly, 'tmpRSPoints', 0));
+					}
+					if (curPly.side === 2) {
+						_.set(rsTotal, 2, _.get(curPly, ['blueRSTotal'], 0) + _.get(curPly, 'tmpRSPoints', 0));
+					}
 					SrvPlayer.update(
 						{_id: obj._id},
-						{$set: {rsPoints: newScore, tmpRSPoints: 0}},
+						{$set: {redRSPoints: _.get(rsTotal, [1], 0), blueRSPoints: _.get(rsTotal, [2], 0), tmpRSPoints: 0}},
 						function(err) {
 							if (err) { reject(err) }
-							console.log(_.get(curPly, 'name') + ' Has Locked In ' + _.get(curPly, 'tmpRSPoints', 0) + '+ Points: ');
-							var mesg = 'You have been awarded: ' + _.get(curPly, 'tmpRSPoints', 0) + ' Points, Total RS Points: ' + newScore;
+							console.log(_.get(curPly, 'name') + ' Has Locked In ' + _.get(constants, ['side', curPly.side]) + ' ' + _.get(curPly, 'tmpRSPoints', 0) + '+ Points: ');
+							var mesg = 'You have been awarded: ' + _.get(curPly, 'tmpRSPoints', 0) + ' Points, Total ' + _.get(constants, ['side', curPly.side]) + ' RS Points: ' + _.get(rsTotal, [curPly.side], 0);
 							DCSLuaCommands.sendMesgToGroup(obj.groupId, serverName, mesg, '15');
 							resolve();
 						}
@@ -422,21 +429,31 @@ exports.srvPlayerActions = function (action, serverName, obj){
 				SrvPlayer.find({_id: obj._id}, function (err, serverObj) {
 					if (err) { reject(err) }
 					if (serverObj.length !== 0) {
+						var mesg;
 						var curPly = _.get(serverObj, [0]);
 						var addScore = _.get(obj, 'score', 0);
 						var curType = _.get(obj, 'unitType', '');
-						var newScore = _.get(curPly, 'rsPoints', 0) + addScore;
-						SrvPlayer.update(
-							{_id: obj._id},
-							{$set: {rsPoints: newScore}},
-							function(err) {
-								if (err) { reject(err) }
-								console.log(_.get(obj, 'unitType', '') + ' has given ' + addScore + ' to ' + _.get(curPly, 'name') + ', Total: ' + newScore);
-								var mesg = 'You have been awarded ' + addScore + ' from your ' + curType;
-								DCSLuaCommands.sendMesgToGroup(obj.groupId, serverName, mesg, '15');
-								resolve();
+						var tObj = {};
+						if (_.get(obj, 'unitCoalition') === curPly.side) {
+							if (curPly.side === 1) {
+								mesg = 'You have been awarded ' + addScore + ' from your ' + curType + ' for red';
+								_.set(tObj, redRSPoints, _.get(curPly, ['redRSTotal'], 0) + addScore);
 							}
-						);
+							if (curPly.side === 2) {
+								mesg = 'You have been awarded ' + addScore + ' from your ' + curType + ' for blue';
+								_.set(tObj, blueRSPoints, _.get(curPly, ['blueRSTotal'], 0) + addScore);
+							}
+							SrvPlayer.update(
+								{_id: obj._id},
+								{$set: tObj},
+								function(err) {
+									if (err) { reject(err) }
+									console.log(_.get(obj, 'unitType', '') + ' has given ' + addScore + ' to ' + _.get(curPly, 'name') + ' on ' + curPly.side + ', Total: ', tObj);
+									DCSLuaCommands.sendMesgToGroup(obj.groupId, serverName, mesg, '15');
+									resolve();
+								}
+							);
+						}
 					}
 				});
 			}

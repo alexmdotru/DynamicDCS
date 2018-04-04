@@ -58,7 +58,11 @@ const srvPlayerSchema = new Schema({
 			type: Number,
 			default: 20
 		},
-		rsPoints: {
+		redRSPoints: {
+			type: Number,
+			default: 0
+		},
+		blueRSPoints: {
 			type: Number,
 			default: 0
 		},
