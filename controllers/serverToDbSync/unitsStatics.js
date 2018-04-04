@@ -125,7 +125,7 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 							//curServers[serverName].updateQue.qadmin.push(_.cloneDeep(iCurObj));
 						})
 						.catch(function (err) {
-							console.log('save err line95: ', err);
+							console.log('save err line95: ', err, iCurObj.data);
 						})
 					;
 
