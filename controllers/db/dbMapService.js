@@ -437,11 +437,11 @@ exports.srvPlayerActions = function (action, serverName, obj){
 						if (_.get(obj, 'unitCoalition') === curPly.side) {
 							if (curPly.side === 1) {
 								mesg = 'You have been awarded ' + addScore + ' from your ' + curType + ' for red';
-								_.set(tObj, 'redRSPoints', _.get(curPly, ['redRSTotal'], 0) + addScore);
+								_.set(tObj, 'redRSPoints', _.get(curPly, ['redRSPoints'], 0) + addScore);
 							}
 							if (curPly.side === 2) {
 								mesg = 'You have been awarded ' + addScore + ' from your ' + curType + ' for blue';
-								_.set(tObj, 'blueRSPoints', _.get(curPly, ['blueRSTotal'], 0) + addScore);
+								_.set(tObj, 'blueRSPoints', _.get(curPly, ['blueRSPoints'], 0) + addScore);
 							}
 							SrvPlayer.update(
 								{_id: obj._id},
