@@ -38,7 +38,7 @@ _.set(exports, 'processStaticCrate', function (serverName, crateObj) {
 	;
 });
 
-_.set(exports, 'unpackCrate', function (serverName, crateObj) {
+_.set(exports, 'unpackCrate', function (serverName, crateObj) { //crateObj is every alive crate on the server
 	dbMapServiceController.unitActions('read', serverName, {unitId: crateObj.unitId})
 		.then(function(pUnit) {
 			var curPlayerUnit = _.get(pUnit, 0);
@@ -54,6 +54,7 @@ _.set(exports, 'unpackCrate', function (serverName, crateObj) {
 					var curCrateType = curCrate.templateName;
 					var isCombo = curCrate.isCombo;
 					var isMobile = curCrate.playerCanDrive;
+					console.log('cratesInProx: ', serverName, curPlayerUnit.lonLatLoc, 0.4, curPlayerUnit.coalition, crates);
 					if(curCrate && curCrate.name) {
 						//virtual sling loading
 						grpTypes = _.transform(crates, function (result, value) {
