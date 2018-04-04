@@ -403,8 +403,8 @@ exports.srvPlayerActions = function (action, serverName, obj){
 				if (serverObj.length !== 0) {
 					var curPly = _.get(serverObj, [0]);
 					var rsTotals = {
-						redRSPoints: _.get(curPly, 'redRSTotal', 0),
-						blueRSPoints: _.get(curPly, 'blueRSTotal', 0),
+						redRSPoints: _.get(curPly, 'redRSPoints', 0),
+						blueRSPoints: _.get(curPly, 'blueRSPoints', 0),
 						tmpRSPoints: _.get(curPly, 'tmpRSPoints', 0)
 					};
 					if (curPly.side === 1) {
