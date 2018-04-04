@@ -34,6 +34,7 @@ _.set(exports, 'updateServerLives', function (serverName, playrUnit) {
 	var oneMin = 60 * 1000;
 	var playerCapTable = [];
 	var serverAlloc = {};
+	var nowTime = new Date().getTime();
 	//update userNames out of cap lives, locked down specific plane types from those individuals (update lua table with individual names)
 	dbMapServiceController.statSessionActions('readLatest', serverName, {})
 		.then(function (latestSession) {
@@ -41,7 +42,7 @@ _.set(exports, 'updateServerLives', function (serverName, playrUnit) {
 				dbMapServiceController.srvPlayerActions('read', serverName, {sessionName: latestSession.name})
 					.then(function (playerArray) {
 						_.forEach(playerArray, function (ePlayer) {
-							if ((new Date(_.get(ePlayer, 'updatedAt', 0)).getTime() + oneMin > new Date().getTime()) && ePlayer.slot) {
+							if ((new Date(_.get(ePlayer, 'updatedAt', 0)).getTime() + oneMin > nowTime) && ePlayer.slot) {
 								_.set(serverAlloc, [_.get(ePlayer, 'side')], _.get(serverAlloc, [_.get(ePlayer, 'side')], []));
 								serverAlloc[_.get(ePlayer, 'side')].push(ePlayer);
 							}
@@ -71,7 +72,7 @@ _.set(exports, 'updateServerLives', function (serverName, playrUnit) {
 							var lockObj;
 							if (ePlayer) {
 								//cap
-								if (new Date(ePlayer.nextCapLife).getTime() < new Date().getTime() && (ePlayer.curCapLives < exports.capDefaultLife)) {
+								if (new Date(ePlayer.nextCapLife).getTime() < nowTime && (ePlayer.curCapLives < exports.capDefaultLife)) {
 									console.log(ePlayer.name, ' gets 1 CAP life back');
 									exports.autoAddLife(serverName, ePlayer.ucid, 'Cap');
 								}
@@ -91,7 +92,7 @@ _.set(exports, 'updateServerLives', function (serverName, playrUnit) {
 								playerCapTable.push(lockObj);
 
 								//cas
-								if (new Date(ePlayer.nextCasLife).getTime() < new Date().getTime() && (ePlayer.curCasLives < exports.casDefaultLife)) {
+								if (new Date(ePlayer.nextCasLife).getTime() < nowTime && (ePlayer.curCasLives < exports.casDefaultLife)) {
 									console.log(ePlayer.name, ' gets 1 CAS life back');
 									exports.autoAddLife(serverName, ePlayer.ucid, 'Cas');
 								}
