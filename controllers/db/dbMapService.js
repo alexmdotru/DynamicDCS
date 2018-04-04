@@ -200,7 +200,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 					} else {
 						nextCapLife = curPly.nextCapLife;
 						if(0 ===  nextCapLife || nextCapLife < nowTime) {
-							console.log('resetTime: ', nextCapLife, ' < ', nowTime, respawnTime);
+							console.log('addCapResetTime: ', nextCapLife, ' < ', nowTime, respawnTime);
 							nextCapLife = nowTime + respawnTime;
 						}
 					}
@@ -246,7 +246,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 					} else {
 						nextCasLife = curPly.nextCasLife;
 						if(0 ===  nextCasLife || nextCasLife < nowTime) {
-							console.log('resetTime: ', nextCasLife, ' < ', nowTime, respawnTime);
+							console.log('addCasResetTime: ', nextCasLife, ' < ', nowTime, respawnTime);
 							nextCasLife = nowTime + respawnTime;
 						}
 					}
@@ -285,7 +285,8 @@ exports.srvPlayerActions = function (action, serverName, obj){
 				if ((serverObj.length !== 0) && ((curPly.lastLifeAction !== curAction) || (new Date(curPly.safeLifeActionTime).getTime() < nowTime))) {
 					var curLife = _.get(curPly, ['curCapLives'], 1) - 1;
 					if(0 ===  curPly.nextCapLife) {
-						curPly.nextCapLife = new Date().getTime() + respawnTime;
+						console.log('rmCapResetTimer: ', nowTime, respawnTime );
+						curPly.nextCapLife = nowTime + respawnTime;
 					}
 					SrvPlayer.update(
 						{_id: obj._id},
@@ -322,10 +323,8 @@ exports.srvPlayerActions = function (action, serverName, obj){
 				if ((serverObj.length !== 0) && ((curPly.lastLifeAction !== curAction) || (new Date(curPly.safeLifeActionTime).getTime() < nowTime))) {
 					var curLife = _.get(curPly, ['curCasLives'], 1) - 1;
 					if(0 ===  curPly.nextCasLife) {
-						curPly.nextCasLife = new Date().getTime() + respawnTime;
-					}
-					if (curLife < 0) {
-
+						console.log('rmCasResetTimer: ', nowTime, respawnTime );
+						curPly.nextCasLife = nowTime + respawnTime;
 					}
 
 					SrvPlayer.update(
