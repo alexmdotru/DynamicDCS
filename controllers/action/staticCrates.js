@@ -54,7 +54,7 @@ _.set(exports, 'unpackCrate', function (serverName, crateObj) { //crateObj is ev
 					var curCrateType = curCrate.templateName;
 					var isCombo = curCrate.isCombo;
 					var isMobile = curCrate.playerCanDrive;
-					console.log('cratesInProx: ', serverName, curPlayerUnit.lonLatLoc, 0.4, curPlayerUnit.coalition, crates);
+					// console.log('cratesInProx: ', serverName, curPlayerUnit.lonLatLoc, 0.4, curPlayerUnit.coalition, crates);
 					if(curCrate && curCrate.name) {
 						//virtual sling loading
 						grpTypes = _.transform(crates, function (result, value) {

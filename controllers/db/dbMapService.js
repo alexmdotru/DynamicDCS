@@ -201,7 +201,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 					} else {
 						nextCapLife = curPly.nextCapLife;
 						if(0 ===  nextCapLife || nextCapLife < nowTime) {
-							console.log('addCapResetTime: ', nextCapLife, ' < ', nowTime, respawnTime);
+							console.log('addCapResetTime: ', nextCapLife, ' < ', nowTime, respawnTime, curLife, new Date(nowTime + respawnTime));
 							nextCapLife = nowTime + respawnTime;
 						}
 					}
@@ -247,7 +247,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 					} else {
 						nextCasLife = curPly.nextCasLife;
 						if(0 ===  nextCasLife || nextCasLife < nowTime) {
-							console.log('addCasResetTime: ', nextCasLife, ' < ', nowTime, respawnTime);
+							console.log('addCasResetTime: ', nextCasLife, ' < ', nowTime, respawnTime, curLife, new Date(nowTime + respawnTime));
 							nextCasLife = nowTime + respawnTime;
 						}
 					}
@@ -286,7 +286,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 				if ((serverObj.length !== 0) && ((curPly.lastLifeAction !== curAction) || (new Date(curPly.safeLifeActionTime).getTime() < nowTime))) {
 					var curLife = _.get(curPly, ['curCapLives'], 1) - 1;
 					if(0 ===  curPly.nextCapLife) {
-						console.log('rmCapResetTimer: ', nowTime, respawnTime );
+						console.log('rmCapResetTimer: ', nowTime, respawnTime, curLife, new Date(nowTime + respawnTime));
 						curPly.nextCapLife = nowTime + respawnTime;
 					}
 					SrvPlayer.update(
@@ -324,7 +324,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 				if ((serverObj.length !== 0) && ((curPly.lastLifeAction !== curAction) || (new Date(curPly.safeLifeActionTime).getTime() < nowTime))) {
 					var curLife = _.get(curPly, ['curCasLives'], 1) - 1;
 					if(0 ===  curPly.nextCasLife) {
-						console.log('rmCasResetTimer: ', nowTime, respawnTime );
+						console.log('rmCasResetTimer: ', nowTime, respawnTime, curLife, new Date(nowTime + respawnTime));
 						curPly.nextCasLife = nowTime + respawnTime;
 					}
 
