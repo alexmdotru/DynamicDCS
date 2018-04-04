@@ -199,8 +199,9 @@ exports.srvPlayerActions = function (action, serverName, obj){
 						nextCapLife = 0;
 					} else {
 						nextCapLife = curPly.nextCapLife;
-						if(0 ===  nextCapLife || (new Date(nextCapLife).getTime() < nowTime)) {
-							nextCapLife = new Date().getTime() + respawnTime;
+						if(0 ===  nextCapLife || nextCapLife < nowTime) {
+							console.log('resetTime: ', nextCapLife, ' < ', nowTime, respawnTime);
+							nextCapLife = nowTime + respawnTime;
 						}
 					}
 					SrvPlayer.findOneAndUpdate(
@@ -244,8 +245,9 @@ exports.srvPlayerActions = function (action, serverName, obj){
 						nextCasLife = 0;
 					} else {
 						nextCasLife = curPly.nextCasLife;
-						if(0 ===  nextCasLife || (new Date(nextCasLife).getTime() < nowTime)) {
-							nextCasLife = new Date().getTime() + respawnTime;
+						if(0 ===  nextCasLife || nextCasLife < nowTime) {
+							console.log('resetTime: ', nextCasLife, ' < ', nowTime, respawnTime);
+							nextCasLife = nowTime + respawnTime;
 						}
 					}
 					SrvPlayer.findOneAndUpdate(
