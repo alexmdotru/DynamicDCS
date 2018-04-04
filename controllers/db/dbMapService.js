@@ -401,14 +401,12 @@ exports.srvPlayerActions = function (action, serverName, obj){
 				if (err) { reject(err) }
 				if (serverObj.length !== 0) {
 					var curPly = _.get(serverObj, [0]);
-					var rsTotal = [10];
+					var rsTotal = ['first'];
 					if (curPly.side === 1) {
 						rsTotal.push(_.get(curPly, ['redRSTotal'], 0) + _.get(curPly, 'tmpRSPoints', 0));
-					)
 					}
 					if (curPly.side === 2) {
 						rsTotal.push(_.get(curPly, ['blueRSTotal'], 0) + _.get(curPly, 'tmpRSPoints', 0));
-					)
 					}
 					console.log('APLY: ', rsTotal, curPly);
 					SrvPlayer.update(
