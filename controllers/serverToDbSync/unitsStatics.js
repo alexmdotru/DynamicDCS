@@ -105,30 +105,30 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 					;
 				}else if (_.get(unitObj, 'action') === 'C') {
 					//console.log('CREATE: ', _.get(unitObj, 'data'));
-
-					_.set(curData, '_id', _.get(curData, 'name'));
-					iCurObj = {
-						action: 'C',
-						sessionName: sessionName,
-						data: curData
-					};
-					if (curData.category === 'STRUCTURE') {
-						if( _.includes(curData.name, ' Logistics')) {
-							_.set(curData, 'proxChkGrp', 'logisticTowers');
+					if (_.get(curData, 'name')) {
+						_.set(curData, '_id', _.get(curData, 'name'));
+						iCurObj = {
+							action: 'C',
+							sessionName: sessionName,
+							data: curData
+						};
+						if (curData.category === 'STRUCTURE') {
+							if( _.includes(curData.name, ' Logistics')) {
+								_.set(curData, 'proxChkGrp', 'logisticTowers');
+							}
 						}
+
+						dbMapServiceController.unitActions('save', serverName, iCurObj.data)
+							.then(function (unit) {
+								webPushCommands.sendToCoalition(serverName, {payload: _.cloneDeep(iCurObj)});
+								//curServers[serverName].updateQue['q' + parseFloat(_.get(unitObj, 'data.coalition'))].push(_.cloneDeep(iCurObj));
+								//curServers[serverName].updateQue.qadmin.push(_.cloneDeep(iCurObj));
+							})
+							.catch(function (err) {
+								console.log('save err line95: ', err, iCurObj.data);
+							})
+						;
 					}
-
-					dbMapServiceController.unitActions('save', serverName, iCurObj.data)
-						.then(function (unit) {
-							webPushCommands.sendToCoalition(serverName, {payload: _.cloneDeep(iCurObj)});
-							//curServers[serverName].updateQue['q' + parseFloat(_.get(unitObj, 'data.coalition'))].push(_.cloneDeep(iCurObj));
-							//curServers[serverName].updateQue.qadmin.push(_.cloneDeep(iCurObj));
-						})
-						.catch(function (err) {
-							console.log('save err line95: ', err, iCurObj.data);
-						})
-					;
-
 				} else if (_.get(unitObj, 'action') === 'D') {
 					/*
                     if (_.get(ewrUnitsActivated, [curUnitName], false)) {
