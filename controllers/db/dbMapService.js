@@ -398,6 +398,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 		return new Promise(function(resolve, reject) {
 			// console.log('applyTempToRealScore: ', obj);
 			SrvPlayer.find({_id: obj._id}, function (err, serverObj) {
+				var mesg;
 				if (err) { reject(err) }
 				if (serverObj.length !== 0) {
 					var curPly = _.get(serverObj, [0]);
@@ -409,10 +410,12 @@ exports.srvPlayerActions = function (action, serverName, obj){
 					if (curPly.side === 1) {
 						_.set(rsTotals, 'redRSPoints', rsTotals.redRSPoints + rsTotals.tmpRSPoints);
 						_.set(rsTotals, 'tmpRSPoints', 0);
+						mesg = 'You have been awarded: ' + _.get(curPly, 'tmpRSPoints', 0) + ' Points, Total Red RS Points: ' + rsTotals.redRSPoints;
 					}
 					if (curPly.side === 2) {
 						_.set(rsTotals, 'blueRSPoints', rsTotals.blueRSPoints + rsTotals.tmpRSPoints);
 						_.set(rsTotals, 'tmpRSPoints', 0);
+						mesg = 'You have been awarded: ' + _.get(curPly, 'tmpRSPoints', 0) + ' Points, Total Red RS Points: ' + rsTotals.blueRSPoints;
 					}
 					console.log('APLY: ', rsTotals);
 					SrvPlayer.update(
@@ -421,7 +424,6 @@ exports.srvPlayerActions = function (action, serverName, obj){
 						function(err) {
 							if (err) { reject(err) }
 							console.log(_.get(curPly, 'name') + ' Has Locked In ' + _.get(constants, ['side', curPly.side]) + ' ' + _.get(curPly, 'tmpRSPoints', 0) + '+ Points: ');
-							var mesg = 'You have been awarded: ' + _.get(curPly, 'tmpRSPoints', 0) + ' Points, Total ' + _.get(constants, ['side', curPly.side]) + ' RS Points: ' + _.get(rsTotal, [curPly.side], 0);
 							DCSLuaCommands.sendMesgToGroup(obj.groupId, serverName, mesg, '15');
 							resolve();
 						}
