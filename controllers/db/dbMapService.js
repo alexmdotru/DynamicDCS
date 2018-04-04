@@ -401,17 +401,23 @@ exports.srvPlayerActions = function (action, serverName, obj){
 				if (err) { reject(err) }
 				if (serverObj.length !== 0) {
 					var curPly = _.get(serverObj, [0]);
-					var rsTotal = ['first'];
+					var rsTotals = {
+						redRSPoints: _.get(curPly, ['redRSTotal'], 0),
+						blueRSPoints: _.get(curPly, ['blueRSTotal'], 0),
+						tmpRSPoints: _.get(curPly, 'tmpRSPoints', 0)
+					};
 					if (curPly.side === 1) {
-						rsTotal.push(_.get(curPly, ['redRSTotal'], 0) + _.get(curPly, 'tmpRSPoints', 0));
+						_.set(rsTotals, 'redRSPoints', rsTotals.redRSPoints + rsTotals.tmpRSPoints);
+						_.set(rsTotals, 'tmpRSPoints', 0);
 					}
 					if (curPly.side === 2) {
-						rsTotal.push(_.get(curPly, ['blueRSTotal'], 0) + _.get(curPly, 'tmpRSPoints', 0));
+						_.set(rsTotals, 'blueRSPoints', rsTotals.blueRSPoints + rsTotals.tmpRSPoints);
+						_.set(rsTotals, 'tmpRSPoints', 0);
 					}
-					console.log('APLY: ', rsTotal, curPly);
+					console.log('APLY: ', rsTotals);
 					SrvPlayer.update(
 						{_id: obj._id},
-						{$set: {redRSPoints: _.get(rsTotal, [1], 0), blueRSPoints: _.get(rsTotal, [2], 0), tmpRSPoints: 0}},
+						{$set: rsTotals},
 						function(err) {
 							if (err) { reject(err) }
 							console.log(_.get(curPly, 'name') + ' Has Locked In ' + _.get(constants, ['side', curPly.side]) + ' ' + _.get(curPly, 'tmpRSPoints', 0) + '+ Points: ');
