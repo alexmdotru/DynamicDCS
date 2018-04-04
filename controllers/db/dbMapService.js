@@ -403,10 +403,10 @@ exports.srvPlayerActions = function (action, serverName, obj){
 					var curPly = _.get(serverObj, [0]);
 					var rsTotal = [];
 					if (curPly.side === 1) {
-						_.set(rsTotal, 1, _.get(curPly, ['redRSTotal'], 0) + _.get(curPly, 'tmpRSPoints', 0));
+						_.set(rsTotal, [1], _.get(curPly, ['redRSTotal'], 0) + _.get(curPly, 'tmpRSPoints', 0));
 					}
 					if (curPly.side === 2) {
-						_.set(rsTotal, 2, _.get(curPly, ['blueRSTotal'], 0) + _.get(curPly, 'tmpRSPoints', 0));
+						_.set(rsTotal, [2], _.get(curPly, ['blueRSTotal'], 0) + _.get(curPly, 'tmpRSPoints', 0));
 					}
 					SrvPlayer.update(
 						{_id: obj._id},
