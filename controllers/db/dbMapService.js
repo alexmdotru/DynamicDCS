@@ -402,6 +402,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 				if (err) { reject(err) }
 				if (serverObj.length !== 0) {
 					var curPly = _.get(serverObj, [0]);
+					console.log('APLY1: ', _.get(curPly, 'tmpRSPoints', 0));
 					var rsTotals = {
 						redRSPoints: _.get(curPly, 'redRSPoints', 0),
 						blueRSPoints: _.get(curPly, 'blueRSPoints', 0),
@@ -417,7 +418,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 						mesg = 'You have been awarded: ' + rsTotals.tmpRSPoints + ' Points, Total Blue RS Points: ' + rsTotals.blueRSPoints;
 						_.set(rsTotals, 'tmpRSPoints', 0);
 					}
-					console.log('APLY: ', _.get(curPly, 'name'), rsTotals, mesg);
+					console.log('APLY2: ', _.get(curPly, 'name'), rsTotals, mesg);
 					SrvPlayer.update(
 						{_id: obj._id},
 						{$set: rsTotals},
