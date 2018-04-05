@@ -409,21 +409,20 @@ exports.srvPlayerActions = function (action, serverName, obj){
 					};
 					if (curPly.side === 1) {
 						_.set(rsTotals, 'redRSPoints', rsTotals.redRSPoints + rsTotals.tmpRSPoints);
+						mesg = 'You have been awarded: ' + rsTotals.tmpRSPoints + ' Points, Total Red RS Points: ' + rsTotals.redRSPoints;
 						_.set(rsTotals, 'tmpRSPoints', 0);
-						mesg = 'You have been awarded: ' + _.get(curPly, 'tmpRSPoints', 0) + ' Points, Total Red RS Points: ' + rsTotals.redRSPoints;
 					}
 					if (curPly.side === 2) {
 						_.set(rsTotals, 'blueRSPoints', rsTotals.blueRSPoints + rsTotals.tmpRSPoints);
+						mesg = 'You have been awarded: ' + rsTotals.tmpRSPoints + ' Points, Total Blue RS Points: ' + rsTotals.blueRSPoints;
 						_.set(rsTotals, 'tmpRSPoints', 0);
-						mesg = 'You have been awarded: ' + _.get(curPly, 'tmpRSPoints', 0) + ' Points, Total Red RS Points: ' + rsTotals.blueRSPoints;
 					}
-					console.log('APLY: ', rsTotals);
+					console.log('APLY: ', _.get(curPly, 'name'), rsTotals, mesg);
 					SrvPlayer.update(
 						{_id: obj._id},
 						{$set: rsTotals},
 						function(err) {
 							if (err) { reject(err) }
-							console.log(_.get(curPly, 'name') + ' ' + mesg);
 							DCSLuaCommands.sendMesgToGroup(obj.groupId, serverName, mesg, '15');
 							resolve();
 						}
