@@ -443,7 +443,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 						var addScore = _.get(obj, 'score', 0);
 						var curType = _.get(obj, 'unitType', '');
 						var tObj = {};
-						if (_.get(obj, 'unitCoalition') === curPly.side) {
+						if (_.get(obj, 'unitCoalition') === curPly.side && !isTroop) {
 							if (curPly.side === 1) {
 								mesg = 'You have been awarded ' + addScore + ' from your ' + curType + ' for red';
 								_.set(tObj, 'redRSPoints', _.get(curPly, ['redRSPoints'], 0) + addScore);
