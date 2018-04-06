@@ -201,7 +201,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 					} else {
 						nextCapLife = curPly.nextCapLife;
 						if(0 ===  nextCapLife || nextCapLife < nowTime) {
-							console.log('addCapResetTime: ', nextCapLife, ' < ', nowTime, respawnTime, curLife, new Date(nowTime + respawnTime));
+							// console.log('addCapResetTime: ', nextCapLife, ' < ', nowTime, respawnTime, curLife, new Date(nowTime + respawnTime));
 							nextCapLife = nowTime + respawnTime;
 						}
 					}
@@ -247,7 +247,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 					} else {
 						nextCasLife = curPly.nextCasLife;
 						if(0 ===  nextCasLife || nextCasLife < nowTime) {
-							console.log('addCasResetTime: ', nextCasLife, ' < ', nowTime, respawnTime, curLife, new Date(nowTime + respawnTime));
+							// console.log('addCasResetTime: ', nextCasLife, ' < ', nowTime, respawnTime, curLife, new Date(nowTime + respawnTime));
 							nextCasLife = nowTime + respawnTime;
 						}
 					}
@@ -286,7 +286,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 				if ((serverObj.length !== 0) && ((curPly.lastLifeAction !== curAction) || (new Date(curPly.safeLifeActionTime).getTime() < nowTime))) {
 					var curLife = _.get(curPly, ['curCapLives'], 1) - 1;
 					if(0 ===  curPly.nextCapLife) {
-						console.log('rmCapResetTimer: ', nowTime, respawnTime, curLife, new Date(nowTime + respawnTime));
+						// console.log('rmCapResetTimer: ', nowTime, respawnTime, curLife, new Date(nowTime + respawnTime));
 						curPly.nextCapLife = nowTime + respawnTime;
 					}
 					SrvPlayer.update(
@@ -324,7 +324,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 				if ((serverObj.length !== 0) && ((curPly.lastLifeAction !== curAction) || (new Date(curPly.safeLifeActionTime).getTime() < nowTime))) {
 					var curLife = _.get(curPly, ['curCasLives'], 1) - 1;
 					if(0 ===  curPly.nextCasLife) {
-						console.log('rmCasResetTimer: ', nowTime, respawnTime, curLife, new Date(nowTime + respawnTime));
+						// console.log('rmCasResetTimer: ', nowTime, respawnTime, curLife, new Date(nowTime + respawnTime));
 						curPly.nextCasLife = nowTime + respawnTime;
 					}
 
@@ -361,7 +361,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 						{$set: {tmpRSPoints: newTmpScore}},
 						function(err) {
 							if (err) { reject(err) }
-							console.log(_.get(curPly, 'name'), ' Has Tmp Score(cleared)');
+							// console.log(_.get(curPly, 'name'), ' Has Tmp Score(cleared)');
 							var mesg = 'Your Tmp Score Has Been Cleared';
 							DCSLuaCommands.sendMesgToGroup(obj.groupId, serverName, mesg, '15');
 							resolve();
@@ -384,7 +384,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 						{$set: {tmpRSPoints: newTmpScore}},
 						function(err) {
 							if (err) { reject(err) }
-							console.log(_.get(curPly, 'name'), ' Has Tmp Score: ', newTmpScore);
+							// console.log(_.get(curPly, 'name'), ' Has Tmp Score: ', newTmpScore);
 							var mesg = 'TmpScore: ' + newTmpScore + ', Land at a friendly base/farp to receive these points';
 							DCSLuaCommands.sendMesgToGroup(obj.groupId, serverName, mesg, '15');
 							resolve();
@@ -402,7 +402,6 @@ exports.srvPlayerActions = function (action, serverName, obj){
 				if (err) { reject(err) }
 				if (serverObj.length !== 0) {
 					var curPly = _.get(serverObj, [0]);
-					console.log('APLY1: ', _.get(curPly, 'tmpRSPoints', 0));
 					var rsTotals = {
 						redRSPoints: _.get(curPly, 'redRSPoints', 0),
 						blueRSPoints: _.get(curPly, 'blueRSPoints', 0),
@@ -418,12 +417,13 @@ exports.srvPlayerActions = function (action, serverName, obj){
 						mesg = 'You have been awarded: ' + rsTotals.tmpRSPoints + ' Points, Total Blue RS Points: ' + rsTotals.blueRSPoints;
 						_.set(rsTotals, 'tmpRSPoints', 0);
 					}
-					console.log('APLY2: ', _.get(curPly, 'name'), rsTotals, mesg);
+					// console.log('APLY2: ', _.get(curPly, 'name'), rsTotals, mesg);
 					SrvPlayer.update(
 						{_id: obj._id},
 						{$set: rsTotals},
 						function(err) {
 							if (err) { reject(err) }
+							console.log('aplyT2R: ', mesg);
 							DCSLuaCommands.sendMesgToGroup(obj.groupId, serverName, mesg, '15');
 							resolve();
 						}
