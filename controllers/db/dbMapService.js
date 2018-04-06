@@ -443,6 +443,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 						var addScore = _.get(obj, 'score', 0);
 						var curType = _.get(obj, 'unitType', '');
 						var tObj = {};
+						// unit has to be on the same side as player and not be a troop
 						if (_.get(obj, 'unitCoalition') === curPly.side && !isTroop) {
 							if (curPly.side === 1) {
 								mesg = 'You have been awarded ' + addScore + ' from your ' + curType + ' for red';
