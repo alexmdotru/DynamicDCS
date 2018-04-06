@@ -423,7 +423,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 						{$set: rsTotals},
 						function(err) {
 							if (err) { reject(err) }
-							console.log('aplyT2R: ', mesg);
+							console.log('aplyT2R: ', _.get(curPly, 'name'), mesg);
 							DCSLuaCommands.sendMesgToGroup(obj.groupId, serverName, mesg, '15');
 							resolve();
 						}
