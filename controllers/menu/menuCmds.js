@@ -709,7 +709,7 @@ _.set(exports, 'unpackCrate', function (serverName, unit, type, special, combo, 
 										if (curUnitHdg > 359) {
 											curUnitHdg = 15;
 										}
-										_.set(unitStart, 'spwnName', 'DU|' + curPlayer.ucid + '|' + cbUnit.type + '||true|' + mobile + '|' + _.random(1000000, 9999999));
+										_.set(unitStart, 'spwnName', 'DU|' + curPlayer.ucid + '|' + cbUnit.type + '||true|' + mobile + '|' + curPlayer.name + '|' + _.random(1000000, 9999999));
 										_.set(unitStart, 'lonLatLoc', unit.lonLatLoc);
 										_.set(unitStart, 'heading', curUnitHdg);
 										_.set(unitStart, 'country', unit.country);
@@ -723,7 +723,7 @@ _.set(exports, 'unpackCrate', function (serverName, unit, type, special, combo, 
 									if (curUnitHdg > 359) {
 										curUnitHdg = 15;
 									}
-									_.set(unitStart, 'spwnName', 'DU|' + curPlayer.ucid + '|' + cbUnit.type + '||true|' + mobile + '|');
+									_.set(unitStart, 'spwnName', 'DU|' + curPlayer.ucid + '|' + cbUnit.type + '||true|' + mobile + '|' + curPlayer.name + '|');
 									_.set(unitStart, 'lonLatLoc', unit.lonLatLoc);
 									_.set(unitStart, 'heading', curUnitHdg);
 									_.set(unitStart, 'country', unit.country);
@@ -743,7 +743,7 @@ _.set(exports, 'unpackCrate', function (serverName, unit, type, special, combo, 
 						_.set(unit, 'country', 'UKRAINE');
 					}
 					spawnArray = _.concat(spawnArray, {
-						spwnName: 'DU|' + curPlayer.ucid + '|' + type + '|' + special + '|false|' + mobile + '|',
+						spwnName: 'DU|' + curPlayer.ucid + '|' + type + '|' + special + '|false|' + mobile + '|' + curPlayer.name + '|',
 						type: type,
 						lonLatLoc: unit.lonLatLoc,
 						heading: unit.hdg,
