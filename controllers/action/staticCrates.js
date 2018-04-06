@@ -89,8 +89,8 @@ _.set(exports, 'unpackCrate', function (serverName, crateObj) { //crateObj is ev
 								msg = "G: Unpacking " + _.toUpper(curCrateSpecial) + " " + curCrateType + "!";
 								console.log('unpackCrate: ', msg);
 								menuCmdsController.unpackCrate(serverName, curPlayerUnit, curCrateType, curCrateSpecial, isCombo, isMobile);
-								console.log('singleCrateDestroy: ', curCrate.name);
-								groupController.destroyUnit(serverName, curCrate.name);
+								// console.log('singleCrateDestroy: ', curCrate.name);
+								// groupController.destroyUnit(serverName, curCrate.name);
 								DCSLuaCommands.sendMesgToGroup(
 									curPlayerUnit.groupId,
 									serverName,
