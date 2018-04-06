@@ -55,17 +55,18 @@ _.set(exports, 'unpackCrate', function (serverName, crateObj) { //crateObj is ev
 					var isCombo = curCrate.isCombo;
 					var isMobile = curCrate.playerCanDrive;
 					// console.log('cratesInProx: ', serverName, curPlayerUnit.lonLatLoc, 0.4, curPlayerUnit.coalition, crates);
-					if(curCrate && curCrate.name) {
-						//virtual sling loading
+					if(curCrate) {
 						grpTypes = _.transform(crates, function (result, value) {
 							(result[curCrateType] || (result[curCrateType] = [])).push(value);
 						}, {});
 
 						localCrateNum = _.get(grpTypes, [curCrateType], []).length;
+						console.log('unpackingCrate: ', curCrate, localCrateNum, grpTypes);
 						if( localCrateNum >=  numCrate) {
 							cCnt = 1;
 							_.forEach(_.get(grpTypes, [curCrateType]), function (eCrate) {
 								if ( cCnt <= numCrate) {
+									console.log('delCrate: ',  eCrate._id);
 									dbMapServiceController.staticCrateActions('delete', serverName, {
 										_id: eCrate._id
 									})
@@ -79,12 +80,16 @@ _.set(exports, 'unpackCrate', function (serverName, crateObj) { //crateObj is ev
 							});
 
 							if (curCrateSpecial === 'reloadGroup') {
+								console.log('reloadGroup: ', curCrate._id);
 								reloadController.reloadSAM(serverName, curPlayerUnit, curCrate);
 							} else if (curCrateSpecial === 'repairBase') {
+								console.log('reloadBase: ', curCrate._id);
 								repairController.repairBase(serverName, curPlayerUnit, curCrateType, curCrate);
 							} else {
 								msg = "G: Unpacking " + _.toUpper(curCrateSpecial) + " " + curCrateType + "!";
+								console.log('unpackCrate: ', mesg);
 								menuCmdsController.unpackCrate(serverName, curPlayerUnit, curCrateType, curCrateSpecial, isCombo, isMobile);
+								console.log('singleCrateDestroy: ', curCrate.name);
 								groupController.destroyUnit(serverName, curCrate.name);
 								DCSLuaCommands.sendMesgToGroup(
 									curPlayerUnit.groupId,
