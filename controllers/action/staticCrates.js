@@ -57,7 +57,7 @@ _.set(exports, 'unpackCrate', function (serverName, crateObj) { //crateObj is ev
 					// console.log('cratesInProx: ', serverName, curPlayerUnit.lonLatLoc, 0.4, curPlayerUnit.coalition, crates);
 					if(curCrate) {
 						grpTypes = _.transform(crates, function (result, value) {
-							(result[value.templateName] || (result[value.templateName] = [])).push(templateName);
+							(result[value.templateName] || (result[value.templateName] = [])).push(value);
 						}, {});
 
 						localCrateNum = _.get(grpTypes, [curCrateType], []).length;
