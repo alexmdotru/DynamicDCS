@@ -21,6 +21,58 @@ _.set(exports, 'spawnStatic', function (serverName, staticSpawn, country, statNa
 	}
 });
 
+_.set(exports, 'turnOnEWRAuto', function () {
+	return '' +
+		'["route"] = {' +
+			'["spans"] = {},' +
+			'["points"] = {' +
+				'[1] = {' +
+					// '["alt"] = 252,' +
+					'["type"] = "Turning Point",' +
+					'["ETA"] = 0,' +
+					'["alt_type"] = "BARO",' +
+					'["formation_template"] = "",' +
+					// '["y"] = 440640.41085714,' +
+					// '["x"] = -60694.918271202,' +
+					'["name"] = "dontdisperse",' +
+					'["ETA_locked"] = true,' +
+					'["speed"] = 0,' +
+					'["action"] = "Off Road",' +
+					'["task"] = {' +
+						'["id"] = "ComboTask",' +
+						'["params"] = {' +
+							'["tasks"] = {' +
+								'[1] = {' +
+									'["enabled"] = true,' +
+									'["auto"] = false,' +
+									'["id"] = "WrappedAction",' +
+									'["number"] = 1,' +
+									'["params"] = {' +
+										'["action"] = {' +
+											'["id"] = "Option",' +
+											'["params"] = {' +
+												'["name"] = 8,' +
+											'},' +
+										'},' +
+									'},' +
+								'},' +
+								'[2] = {' +
+									'["number"] = 2,' +
+									'["name"] = "ewr enroute task",' +
+									'["id"] = "EWR",' +
+									'["auto"] = true,' +
+									'["enabled"] = true,' +
+									'["params"] = {},' +
+								'},' +
+							'},' +
+						'},' +
+					'},' +
+					'["speed_locked"] = true,' +
+				'},' +
+			'},' +
+		'},';
+});
+
 _.set(exports, 'turnOffDisperseUnderFire', function () {
 	return '' +
 		'["route"] = {' +
@@ -211,6 +263,9 @@ _.set(exports, 'grndUnitGroup', function ( groupObj, task, routes ) {
 
 	if (routes) {
 		curRoute = routes;
+	} else if (groupObj.type === '1L13 EWR' || groupObj.type === '55G6 EWR' ) {
+		console.log('turningOnRouteEWRInstructions: ', groupObj);
+		curRoute = exports.turnOnEWRAuto();
 	} else {
 		curRoute = exports.turnOffDisperseUnderFire();
 	}

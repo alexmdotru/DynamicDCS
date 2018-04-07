@@ -38,6 +38,8 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 					_.set(curData, 'proxChkGrp', stParse[3]);
 					_.set(curData, 'playerCanDrive', stParse[5]);
 				}
+
+				/*
 				//set ewr task to ewr if new
                 if (curUnit.type === '1L13 EWR' || curUnit.type === '55G6 EWR' || curUnit.type === 'Dog Ear radar') {
                     if (!_.get(taskController, ['ewrUnitsActivated', curUnitName], false)) {
@@ -46,6 +48,7 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
                         _.set(taskController, ['ewrUnitsActivated', curUnitName], true);
                     }
                 }
+                */
 
 				if ((!_.isEmpty(curUnit) && _.get(unitObj, 'action') !== 'D')) {
 					iCurObj = {
