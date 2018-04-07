@@ -11,14 +11,14 @@ _.set(exports, 'processStaticCrate', function (serverName, crateObj) {
 	var cPromise = [];
 	_.forEach(_.get(crateObj, 'data', {}), function (crate, name) {
 		if(crate.alive) {
-			console.log('ACHK: ', name);
+			// console.log('ACHK: ', name);
 			cPromise.push(dbMapServiceController.staticCrateActions('update', serverName, {_id: name, lonLatLoc: [crate.lon, crate.lat]})
 				.catch(function (err) {
 					console.log('line 17: ', err);
 				})
 			);
 		} else {
-			console.log('DCHK: ', name);
+			// console.log('DCHK: ', name);
 			cPromise.push(dbMapServiceController.staticCrateActions('delete', serverName, {_id: name})
 				.catch(function (err) {
 					console.log('line 23: ', err);
@@ -61,7 +61,7 @@ _.set(exports, 'unpackCrate', function (serverName, crateObj) { //crateObj is ev
 						}, {});
 
 						localCrateNum = _.get(grpTypes, [curCrateType], []).length;
-						console.log('unpackingCrate: ', curCrate, localCrateNum, grpTypes);
+						// console.log('unpackingCrate: ', curCrate, localCrateNum, grpTypes);
 						if( localCrateNum >=  numCrate) {
 							cCnt = 1;
 							_.forEach(_.get(grpTypes, [curCrateType]), function (eCrate) {
