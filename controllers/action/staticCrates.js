@@ -56,7 +56,7 @@ _.set(exports, 'unpackCrate', function (serverName, crateObj) { //crateObj is ev
 					var isMobile = curCrate.playerCanDrive;
 					// console.log('cratesInProx: ', serverName, curPlayerUnit.lonLatLoc, 0.4, curPlayerUnit.coalition, crates);
 					if(curCrate) {
-						grpTypes = _.transform(crates, function (result, unpackingCrateresult, value) {
+						grpTypes = _.transform(crates, function (result, value) {
 							(result[curCrateType] || (result[curCrateType] = [])).push(value);
 						}, {});
 
