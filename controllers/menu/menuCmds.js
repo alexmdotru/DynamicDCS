@@ -930,8 +930,14 @@ _.set(exports, 'spawnTanker', function (serverName, curUnit, curPlayer, tankerTy
 		};
 	}
 
-	// check cost, if person has it, then deduct and spawn, unless give error that unit exists already on the map OR they dont have enough resources to call it in
-
-
-	groupController.spawnTankerPlane(serverName, curUnit, tankerObj);
+	resourcePointsController.spendResourcePoints(serverName, curPlayer, rsCost, 'Tanker')
+		.then(function(spentPoints) {
+			if (spentPoints) {
+				groupController.spawnTankerPlane(serverName, curUnit, tankerObj);
+			}
+		})
+		.catch(function(err) {
+			console.log('err line938: ', err);
+		})
+	;
 });
