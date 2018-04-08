@@ -780,8 +780,8 @@ _.set(exports, 'spawnTanker', function (serverName, curUnit, curPlayer, tankerTy
 			name: 'BHABTKR',
 			type: 'KC-135',
 			country: 'USA',
-			alt: '9144',
-			speed: '187.56944444444',
+			alt: '7620',
+			speed: '265',
 			tacan: {
 				enabled: true,
 				channel: 33,
@@ -805,8 +805,8 @@ _.set(exports, 'spawnTanker', function (serverName, curUnit, curPlayer, tankerTy
 			name: 'BHADTKR',
 			type: 'IL-78M',
 			country: 'UKRAINE',
-			alt: '9144',
-			speed: '187.56944444444',
+			alt: '7620',
+			speed: '265',
 			tacan: {
 				enabled: false
 			},
@@ -872,8 +872,8 @@ _.set(exports, 'spawnTanker', function (serverName, curUnit, curPlayer, tankerTy
 			name: 'RHADTKR',
 			type: 'IL-78M',
 			country: 'RUSSIA',
-			alt: '9144',
-			speed: '187.56944444444',
+			alt: '7620',
+			speed: '265',
 			tacan: {
 				enabled: false
 			},
