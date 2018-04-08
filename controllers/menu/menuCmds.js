@@ -795,7 +795,8 @@ _.set(exports, 'spawnTanker', function (serverName, curUnit, curPlayer, tankerTy
 				'3': 1,
 				name: 'Arco11'
 			},
-			onboard_num: 135
+			onboard_num: 135,
+			details: '(TACAN: 33X, CALLSIGN: Arco, Freq: 125Mhz AM)'
 		};
 	}
 	if(tankerType === 'BHADTKR') {
@@ -811,7 +812,8 @@ _.set(exports, 'spawnTanker', function (serverName, curUnit, curPlayer, tankerTy
 			radioFreq: 126000000,
 			spawnDistance: 100,
 			callsign: 78,
-			onboard_num: 78
+			onboard_num: 78,
+			details: '(CALLSIGN: 78, Freq: 126Mhz AM)'
 		};
 	}
 	if(tankerType === 'BLABTKR') {
@@ -834,7 +836,8 @@ _.set(exports, 'spawnTanker', function (serverName, curUnit, curPlayer, tankerTy
 				'3': 1,
 				name: 'Shell11'
 			},
-			onboard_num: 135
+			onboard_num: 135,
+			details: '(TACAN: 35X, CALLSIGN: Shell, Freq: 127.5Mhz AM)'
 		};
 	}
 	if(tankerType === 'BLADTKR') {
@@ -857,7 +860,8 @@ _.set(exports, 'spawnTanker', function (serverName, curUnit, curPlayer, tankerTy
 				'3': 1,
 				name: 'Texaco11'
 			},
-			onboard_num: 130
+			onboard_num: 130,
+			details: '(TACAN: 36X, CALLSIGN: Texaco, Freq: 128Mhz AM)'
 		};
 	}
 	if(tankerType === 'RHADTKR') {
@@ -873,7 +877,8 @@ _.set(exports, 'spawnTanker', function (serverName, curUnit, curPlayer, tankerTy
 			radioFreq: 130000000,
 			spawnDistance: 100,
 			callsign: 78,
-			onboard_num: 78
+			onboard_num: 78,
+			details: '(CALLSIGN: 78, Freq: 130Mhz AM)'
 		};
 	}
 	if(tankerType === 'RLABTKR') {
@@ -888,7 +893,7 @@ _.set(exports, 'spawnTanker', function (serverName, curUnit, curPlayer, tankerTy
 				channel: 43,
 				modeChannel: 'Y'
 			},
-			radioFreq: 127500000,
+			radioFreq: 131000000,
 			spawnDistance: 100,
 			callsign: {
 				'1': 1,
@@ -896,7 +901,8 @@ _.set(exports, 'spawnTanker', function (serverName, curUnit, curPlayer, tankerTy
 				'3': 1,
 				name: 'Texaco11'
 			},
-			onboard_num: 135
+			onboard_num: 135,
+			details: '(TACAN: 43X, CALLSIGN: Texaco, Freq: 131Mhz AM)'
 		};
 	}
 	if(tankerType === 'RLADTKR') {
@@ -911,14 +917,16 @@ _.set(exports, 'spawnTanker', function (serverName, curUnit, curPlayer, tankerTy
 				channel: 44,
 				modeChannel: 'Y'
 			},
-			radioFreq: 128000000,
+			radioFreq: 132000000,
 			spawnDistance: 100,
 			callsign: 130,
-			onboard_num: 130
+			onboard_num: 130,
+			details: '(TACAN: 44X, CALLSIGN: 130, Freq: 132Mhz AM)'
 		};
 	}
 
 	// check cost, if person has it, then deduct and spawn, unless give error that unit exists already on the map OR they dont have enough resources to call it in
+
 
 	groupController.spawnTankerPlane(serverName, curUnit, tankerObj);
 });

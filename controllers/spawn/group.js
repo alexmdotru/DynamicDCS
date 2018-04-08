@@ -2,6 +2,7 @@ const _ = require('lodash');
 const constants = require('../constants');
 const dbMapServiceController = require('../db/dbMapService');
 const dbSystemServiceController = require('../db/dbSystemService');
+const DCSLuaCommands = require('../player/DCSLuaCommands');
 const zoneController = require('../proxZone/zone');
 
 _.set(exports, 'spawnGrp', function (grpSpawn, country, category) {
@@ -438,7 +439,7 @@ _.set(exports, 'airUnitTemplate', function ( unitObj ) {
 		'},';
 
 		if (unitObj.country === 'USA' || unitObj.country === 'AGGRESSORS') {
-			console.log('cs: ', unitObj);
+			// console.log('cs: ', unitObj);
 			curAirTemplate = curAirTemplate + '["callsign"] = {' +
 			'[1] = ' + _.get(unitObj, ['callsign', '1']) + ',' +
 			'[2] = ' + _.get(unitObj, ['callsign', '2']) + ',' +
@@ -670,6 +671,15 @@ _.set(exports, 'spawnTankerPlane', function (serverName, playerUnitObj, tankerOb
 			var sendClient = {action: "CMD", cmd: [curCMD], reqID: 0};
 			var actionObj = {actionObj: sendClient, queName: 'clientArray'};
 			dbMapServiceController.cmdQueActions('save', serverName, actionObj)
+				.then(function () {
+					var mesg = 'A ' + tankerObj.type + ' Tanker Has Been Spawned ' + closeBase.spawnAngle + ' from ' + closeBase.name + ' ' + tankerObj.details;
+					DCSLuaCommands.sendMesgToCoalition(
+						playerUnitObj.coalition,
+						serverName,
+						mesg,
+						20
+					);
+				})
 				.catch(function (err) {
 					console.log('erroring line428: ', err);
 				})
