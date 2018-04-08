@@ -671,7 +671,7 @@ _.set(exports, 'spawnTankerPlane', function (serverName, playerUnitObj, tankerOb
 			var actionObj = {actionObj: sendClient, queName: 'clientArray'};
 			dbMapServiceController.cmdQueActions('save', serverName, actionObj)
 				.then(function () {
-					var mesg = 'A ' + tankerObj.type + ' Tanker Has Been Spawned ' + closeBase.spawnAngle + ' from ' + closeBase.name + ' ' + tankerObj.details;
+					var mesg = 'C: A ' + tankerObj.type + ' Tanker Has Been Spawned ' + closeBase.spawnAngle + ' from ' + closeBase.name + ' ' + tankerObj.details;
 					DCSLuaCommands.sendMesgToCoalition(
 						playerUnitObj.coalition,
 						serverName,

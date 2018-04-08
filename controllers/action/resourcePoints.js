@@ -16,7 +16,7 @@ _.set(exports, 'spendResourcePoints', function (serverName, player, rsCost, rsIt
 					};
 					return dbMapServiceController.srvPlayerActions('update', serverName, currentObjUpdate)
 						.then(function () {
-							mesg = 'You have spent red ' + rsCost + ' points on a ' + rsItem + '(' + currentObjUpdate.redRSPoints + 'pts left)';
+							mesg = 'G: You have spent red ' + rsCost + ' points on a ' + rsItem + '(' + currentObjUpdate.redRSPoints + 'pts left)';
 							DCSLuaCommands.sendMesgToGroup(
 								curUnit.groupId,
 								serverName,
@@ -30,7 +30,7 @@ _.set(exports, 'spendResourcePoints', function (serverName, player, rsCost, rsIt
 						})
 						;
 				} else {
-					mesg = 'You do not have red ' + rsCost + ' points to buy a ' + rsItem + ' (' + player.redRSPoints + 'pts)';
+					mesg = 'G: You do not have red ' + rsCost + ' points to buy a ' + rsItem + ' (' + player.redRSPoints + 'pts)';
 					DCSLuaCommands.sendMesgToGroup(
 						curUnit.groupId,
 						serverName,
@@ -47,7 +47,7 @@ _.set(exports, 'spendResourcePoints', function (serverName, player, rsCost, rsIt
 					};
 					return dbMapServiceController.srvPlayerActions('update', serverName, currentObjUpdate)
 						.then(function () {
-							mesg = 'You have spent ' + rsCost + ' blue points on a ' + rsItem + '(' + currentObjUpdate.blueRSPoints + 'pts left)';
+							mesg = 'G: You have spent ' + rsCost + ' blue points on a ' + rsItem + '(' + currentObjUpdate.blueRSPoints + 'pts left)';
 							DCSLuaCommands.sendMesgToGroup(
 								curUnit.groupId,
 								serverName,
@@ -61,7 +61,7 @@ _.set(exports, 'spendResourcePoints', function (serverName, player, rsCost, rsIt
 						})
 					;
 				} else {
-					mesg = 'You do not have ' + rsCost + ' blue points to buy a ' + rsItem + ' (' + player.blueRSPoints + 'pts)';
+					mesg = 'G: You do not have ' + rsCost + ' blue points to buy a ' + rsItem + ' (' + player.blueRSPoints + 'pts)';
 					DCSLuaCommands.sendMesgToGroup(
 						curUnit.groupId,
 						serverName,
@@ -86,9 +86,9 @@ _.set(exports, 'checkResourcePoints', function (serverName, player) {
 				var curUnit = _.get(cUnit, [0]);
 
 				if (player.side === 1) {
-					mesg = 'You have ' + player.redRSPoints + ' Red Resource Points!';
+					mesg = 'G: You have ' + player.redRSPoints + ' Red Resource Points!';
 				} else {
-					mesg = 'You have ' + player.blueRSPoints + ' Blue Resource Points!';
+					mesg = 'G: You have ' + player.blueRSPoints + ' Blue Resource Points!';
 				}
 
 				DCSLuaCommands.sendMesgToGroup(
