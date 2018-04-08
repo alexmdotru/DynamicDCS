@@ -387,6 +387,12 @@ _.set(exports, 'grndUnitGroup', function ( groupObj, task, routes ) {
 
 	return '{' +
 		//'["groupId"] = ' + _.get(groupObj, 'groupId') + ',' +
+		'["communication"] = true,' +
+		'["start_time"] = 0,' +
+		'["frequency"] = 251,' +
+		'["radioSet"] = false,' +
+		'["modulation"] = 0,' +
+		'["taskSelected"] = true,' +
 		'["name"] = "' + _.get(groupObj, 'groupName') + '",' +
 		'["visible"] = ' + _.get(groupObj, 'visible', false) + ',' +
 		'["hidden"] = ' + _.get(groupObj, 'hidden', false) + ',' +
@@ -431,7 +437,7 @@ _.set(exports, 'airUnitTemplate', function ( unitObj ) {
 			'["gun"] = 200,' +
 		'},';
 
-		if (unitObj.country === 'USA' || unitObj.country === 'UKRAINE') {
+		if (unitObj.country === 'USA' || unitObj.country === 'AGGRESSORS') {
 			console.log('cs: ', unitObj);
 			curAirTemplate = curAirTemplate + '["callsign"] = {' +
 			'[1] = ' + _.get(unitObj, ['callsign', '1']) + ',' +
