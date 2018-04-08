@@ -930,7 +930,7 @@ _.set(exports, 'spawnTanker', function (serverName, curUnit, curPlayer, tankerTy
 		};
 	}
 
-	resourcePointsController.spendResourcePoints(serverName, curPlayer, rsCost, 'Tanker')
+	resourcePointsController.spendResourcePoints(serverName, curPlayer, rsCost, 'Tanker', tankerObj)
 		.then(function(spentPoints) {
 			if (spentPoints) {
 				groupController.spawnTankerPlane(serverName, curUnit, tankerObj);
