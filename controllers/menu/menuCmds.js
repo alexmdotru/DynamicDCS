@@ -785,7 +785,8 @@ _.set(exports, 'spawnTanker', function (serverName, curUnit, curPlayer, tankerTy
 			tacan: {
 				enabled: true,
 				channel: 33,
-				modeChannel: 'Y'
+				modeChannel: 'Y',
+				frequency: 1120000000,
 			},
 			radioFreq: 125000000,
 			spawnDistance: 100,
@@ -826,7 +827,8 @@ _.set(exports, 'spawnTanker', function (serverName, curUnit, curPlayer, tankerTy
 			tacan: {
 				enabled: true,
 				channel: 35,
-				modeChannel: 'Y'
+				modeChannel: 'Y',
+				frequency: 1122000000,
 			},
 			radioFreq: 127500000,
 			spawnDistance: 100,
@@ -850,7 +852,8 @@ _.set(exports, 'spawnTanker', function (serverName, curUnit, curPlayer, tankerTy
 			tacan: {
 				enabled: true,
 				channel: 36,
-				modeChannel: 'Y'
+				modeChannel: 'Y',
+				frequency: 1123000000,
 			},
 			radioFreq: 128000000,
 			spawnDistance: 100,
@@ -891,7 +894,8 @@ _.set(exports, 'spawnTanker', function (serverName, curUnit, curPlayer, tankerTy
 			tacan: {
 				enabled: true,
 				channel: 43,
-				modeChannel: 'Y'
+				modeChannel: 'Y',
+				frequency: 1130000000
 			},
 			radioFreq: 131000000,
 			spawnDistance: 100,
@@ -915,7 +919,8 @@ _.set(exports, 'spawnTanker', function (serverName, curUnit, curPlayer, tankerTy
 			tacan: {
 				enabled: true,
 				channel: 44,
-				modeChannel: 'Y'
+				modeChannel: 'Y',
+				frequency: 1131000000
 			},
 			radioFreq: 132000000,
 			spawnDistance: 100,

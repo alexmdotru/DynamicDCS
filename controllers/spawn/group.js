@@ -200,20 +200,20 @@ _.set(exports, 'tankerPlaneRouteTemplate', function (routes) {
 		'["auto"] = true,' +
 		'["id"] = "WrappedAction",' +
 		'["name"] = "TACAN",' +
-		'["enabled"]=true,' +
+		'["enabled"] = true,' +
 		'["params"] = {' +
 			'["action"] = {' +
 				'["id"] = "ActivateBeacon",' +
 				'["params"] = {' +
-					'["type"]=4,' +
-					'["AA"]=true,' +
-					'["callsign"]="BHABTKR",' +
-					'["system"]=4,' +
-					'["name"]="BHABTKR",' +
-					'["channel"]=' + _.get(routes, 'tacan.channel') + ',' +
+					'["type"] = 4,' +
+					'["AA"] = true,' +
+					'["callsign"] = "BHABTKR",' +
+					'["system"] = 4,' +
+					'["name"] = "BHABTKR",' +
+					'["channel"] = ' + _.get(routes, 'tacan.channel') + ',' +
 					'["modeChannel"] = "' + _.get(routes, 'tacan.modeChannel') + '",' +
-					'["bearing"]=true,' +
-					'["frequency"]=1120000000,' +
+					'["bearing"] = true,' +
+					'["frequency"]= ' + _.get(routes, 'tacan.frequency') + ',' +
 				'},' +
 			'},' +
 		'},' +
@@ -225,7 +225,6 @@ _.set(exports, 'tankerPlaneRouteTemplate', function (routes) {
 	} else {
 		tankerTemplate = _.replace(tankerTemplate, "#TACAN", "");
 	}
-
 	return tankerTemplate;
 });
 
