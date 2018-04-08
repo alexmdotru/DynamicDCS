@@ -446,6 +446,12 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 						if (pObj.cmd === 'LRSAM') {
 							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, true, '', pObj.mobile, pObj.mass, defCrate);
 						}
+
+						//Support Menu
+						if (pObj.cmd === 'spawnTanker') {
+							exports.spawnTanker(serverName, curUnit, curPlayer, pObj.type, pObj.rsCost);
+						}
+
 					})
 					.catch(function (err) {
 						console.log('line359: ', err);
@@ -759,4 +765,156 @@ _.set(exports, 'unpackCrate', function (serverName, unit, type, special, combo, 
 			})
 		;
 	}
+});
+
+_.set(exports, 'spawnTanker', function (serverName, curUnit, curPlayer, tankerType, rsCost) {
+	console.log('tankerType: ', tankerType, rsCost);
+
+	var tankerObj;
+	if(tankerType === 'BHABTKR') {
+		tankerObj = {
+			name: 'BHABTKR',
+			type: 'KC-135',
+			country: 'USA',
+			alt: '9144',
+			speed: '187.56944444444',
+			tacan: {
+				enabled: true,
+				channel: 33,
+				modeChannel: 'Y'
+			},
+			radioFreq: 125000000,
+			spawnDistance: 100,
+			callsign: {
+				'1': 2,
+				'2': 1,
+				'3': 1,
+				name: 'Arco11'
+			},
+			onboard_num: 135
+		};
+	}
+	if(tankerType === 'BHADTKR') {
+		tankerObj = {
+			name: 'BHADTKR',
+			type: 'IL-78M',
+			country: 'UKRAINE',
+			alt: '9144',
+			speed: '187.56944444444',
+			tacan: {
+				enabled: false
+			},
+			radioFreq: 126000000,
+			spawnDistance: 100,
+			callsign: 78,
+			onboard_num: 78
+		};
+	}
+	if(tankerType === 'BLABTKR') {
+		tankerObj = {
+			name: 'BLABTKR',
+			type: 'KC-135',
+			country: 'USA',
+			alt: '4572',
+			speed: '118.19444444444',
+			tacan: {
+				enabled: true,
+				channel: 35,
+				modeChannel: 'Y'
+			},
+			radioFreq: 127500000,
+			spawnDistance: 100,
+			callsign: {
+				'1': 3,
+				'2': 1,
+				'3': 1,
+				name: 'Shell11'
+			},
+			onboard_num: 135
+		};
+	}
+	if(tankerType === 'BLADTKR') {
+		tankerObj = {
+			name: 'BLADTKR',
+			type: 'KC130',
+			country: 'USA',
+			alt: '4572',
+			speed: '169.58333333333',
+			tacan: {
+				enabled: true,
+				channel: 36,
+				modeChannel: 'Y'
+			},
+			radioFreq: 128000000,
+			spawnDistance: 100,
+			callsign: {
+				'1': 1,
+				'2': 1,
+				'3': 1,
+				name: 'Texaco11'
+			},
+			onboard_num: 130
+		};
+	}
+	if(tankerType === 'RHADTKR') {
+		tankerObj = {
+			name: 'RHADTKR',
+			type: 'IL-78M',
+			country: 'RUSSIA',
+			alt: '9144',
+			speed: '187.56944444444',
+			tacan: {
+				enabled: false
+			},
+			radioFreq: 130000000,
+			spawnDistance: 100,
+			callsign: 78,
+			onboard_num: 78
+		};
+	}
+	if(tankerType === 'RLABTKR') {
+		tankerObj = {
+			name: 'RLABTKR',
+			type: 'KC-135',
+			country: 'AGGRESSORS',
+			alt: '4572',
+			speed: '118.19444444444',
+			tacan: {
+				enabled: true,
+				channel: 43,
+				modeChannel: 'Y'
+			},
+			radioFreq: 127500000,
+			spawnDistance: 100,
+			callsign: {
+				'1': 1,
+				'2': 1,
+				'3': 1,
+				name: 'Texaco11'
+			},
+			onboard_num: 135
+		};
+	}
+	if(tankerType === 'RLADTKR') {
+		tankerObj = {
+			name: 'RLADTKR',
+			type: 'KC130',
+			country: 'RUSSIA',
+			alt: '4572',
+			speed: '169.58333333333',
+			tacan: {
+				enabled: true,
+				channel: 44,
+				modeChannel: 'Y'
+			},
+			radioFreq: 128000000,
+			spawnDistance: 100,
+			callsign: 130,
+			onboard_num: 130
+		};
+	}
+
+	// check cost, if person has it, then deduct and spawn, unless give error that unit exists already on the map OR they dont have enough resources to call it in
+
+	groupController.spawnTankerPlane(serverName, curUnit, tankerObj);
 });

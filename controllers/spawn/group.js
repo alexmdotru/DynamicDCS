@@ -117,6 +117,117 @@ _.set(exports, 'turnOffDisperseUnderFire', function () {
 		'},';
 });
 
+_.set(exports, 'tankerPlaneRouteTemplate', function (routes) {
+	var tankerTemplate = '' +
+		'["route"] = {' +
+			'["points"] = {' +
+				'[1] = {' +
+					'["alt"] = ' + _.get(routes, 'alt') + ',' +
+					'["action"] = "Turning Point",' +
+					'["alt_type"] = "BARO",' +
+					'["speed"] = ' + _.get(routes, 'speed') + ',' +
+					'["task"] = {' +
+						'["id"] = "ComboTask",' +
+						'["params"] = {' +
+							'["tasks"] = {' +
+								'[1] = {' +
+									'["number"] = 1,' +
+									'["auto"] = true,' +
+									'["id"] = "Tanker",' +
+									'["enabled"]=true,' +
+									'["params"]={},' +
+								'},' +
+								'[2] = {' +
+									'["number"] = 2,' +
+									'["auto"] = false,' +
+									'["id"] = "WrappedAction",' +
+									'["name"] = "RadioFreq",' +
+									'["enabled"]=true,' +
+									'["params"] = {' +
+										'["action"] = {' +
+											'["id"] = "SetFrequency",' +
+											'["params"] = {' +
+												'["power"]=10,' +
+												'["modulation"]=0,' +
+												'["frequency"]=' + _.get(routes, 'radioFreq') + ',' +
+											'},' +
+										'},' +
+									'},' +
+								'},' +
+								'[3] = {' +
+									'["number"] = 3,' +
+									'["auto"] = false,' +
+									'["id"] = "Orbit",' +
+									'["enabled"]=true,' +
+									'["params"] = {' +
+										'["altitude"] = ' + _.get(routes, 'alt') + ',' +
+										'["pattern"] = "Race-Track",' +
+										'["speed"] = ' + _.get(routes, 'speed') + ',' +
+										'["speedEdited"] = true,' +
+									'},' +
+								'},' +
+								'#TACAN' +
+							'},' +
+						'},' +
+					'},' +
+					'["type"] = "Turning Point",' +
+					'["x"] = coord.LLtoLO(' + _.get(routes, ['routeLocs', 0, 1]) + ', ' + _.get(routes, ['routeLocs', 0, 0]) + ').x, ' +
+					'["y"] = coord.LLtoLO(' + _.get(routes, ['routeLocs', 0, 1]) + ', ' + _.get(routes, ['routeLocs', 0, 0]) + ').z, ' +
+					'["speed_locked"] = true,' +
+				'},' +
+				'[2]={' +
+					'["alt"] = ' + _.get(routes, 'alt') + ',' +
+					'["action"] = "Turning Point",' +
+					'["alt_type"] = "BARO",' +
+					'["speed"] = ' + _.get(routes, 'speed') + ',' +
+					'["task"] = {' +
+						'["id"] = "ComboTask",' +
+						'["params"] = {' +
+							'["tasks"]={}' +
+						'},' +
+					'},' +
+					'["type"] = "Turning Point",' +
+					'["x"] = coord.LLtoLO(' + _.get(routes, ['routeLocs', 1, 1]) + ', ' + _.get(routes, ['routeLocs', 1, 0]) + ').x, ' +
+					'["y"] = coord.LLtoLO(' + _.get(routes, ['routeLocs', 1, 1]) + ', ' + _.get(routes, ['routeLocs', 1, 0]) + ').z, ' +
+					'["speed_locked"] = true,' +
+				'},' +
+			'},' +
+		'},'
+		;
+	var tacanInfo = '[4] = {' +
+		'["number"] = 4,' +
+		'["auto"] = true,' +
+		'["id"] = "WrappedAction",' +
+		'["name"] = "TACAN",' +
+		'["enabled"]=true,' +
+		'["params"] = {' +
+			'["action"] = {' +
+				'["id"] = "ActivateBeacon",' +
+				'["params"] = {' +
+					'["type"]=4,' +
+					'["AA"]=true,' +
+					'["callsign"]="BHABTKR",' +
+					'["system"]=4,' +
+					'["name"]="BHABTKR",' +
+					'["channel"]=' + _.get(routes, 'tacan.channel') + ',' +
+					'["modeChannel"] = "' + _.get(routes, 'tacan.modeChannel') + '",' +
+					'["bearing"]=true,' +
+					'["frequency"]=1120000000,' +
+				'},' +
+			'},' +
+		'},' +
+	'},'
+	;
+
+	if(_.get(routes, 'tacan.enabled')) {
+		tankerTemplate = _.replace(tankerTemplate, "#TACAN", tacanInfo);
+	} else {
+		tankerTemplate = _.replace(tankerTemplate, "#TACAN", "");
+	}
+
+	return tankerTemplate;
+});
+
 _.set(exports, 'landPlaneRouteTemplate', function (routes) {
 	return '' +
 		'["route"] = {' +
@@ -304,7 +415,7 @@ _.set(exports, 'grndUnitTemplate', function ( unitObj ) {
 });
 
 _.set(exports, 'airUnitTemplate', function ( unitObj ) {
-	return '{' +
+	var curAirTemplate = '{' +
 		'["x"] = coord.LLtoLO(' + _.get(unitObj, ['lonLatLoc', 1]) + ', ' +  _.get(unitObj, ['lonLatLoc', 0]) + ').x, ' +
 		'["y"] = coord.LLtoLO(' + _.get(unitObj, ['lonLatLoc', 1]) + ', ' +  _.get(unitObj, ['lonLatLoc', 0]) + ').z, ' +
 		'["type"] = "' + _.get(unitObj, 'type') +'",' +
@@ -314,12 +425,28 @@ _.set(exports, 'airUnitTemplate', function ( unitObj ) {
 		'["skill"] = "' + _.get(unitObj, 'skill', "Excellent") + '",' +
 		'["payload"]={' +
 			'["pylons"]={},' +
-			'["fuel"] = "20830",' +
-			'["flare"] = 60,' +
-			'["chaff"] = 120,' +
-			'["gun"] = 100,' +
-		'},' +
-	'}';
+			'["fuel"] = "100000",' +
+			'["flare"] = 200,' +
+			'["chaff"] = 200,' +
+			'["gun"] = 200,' +
+		'},';
+
+		if (unitObj.country === 'USA' || unitObj.country === 'UKRAINE') {
+			console.log('cs: ', unitObj);
+			curAirTemplate = curAirTemplate + '["callsign"] = {' +
+			'[1] = ' + _.get(unitObj, ['callsign', '1']) + ',' +
+			'[2] = ' + _.get(unitObj, ['callsign', '2']) + ',' +
+			'[3] = ' + _.get(unitObj, ['callsign', '3']) + ',' +
+			'["name"] = "' + _.get(unitObj, 'callsign.name') + '",' +
+			'},' +
+			'["onboard_num"] = "' + _.get(unitObj, 'onboard_num') + '",';
+		} else {
+			curAirTemplate = curAirTemplate + '["callsign"] = "' + _.get(unitObj, 'callsign') + '",' +
+			'["onboard_num"] = "' + _.get(unitObj, 'onboard_num') + '",';
+		}
+	curAirTemplate = curAirTemplate + '}';
+
+		return curAirTemplate;
 });
 
 _.set(exports, 'staticTemplate', function (staticObj) {
@@ -494,6 +621,58 @@ _.set(exports, 'spawnBaseReinforcementGroup', function (serverName, side) {
 		}
 	});
 	return _.compact(spawnArray);
+});
+
+_.set(exports, 'spawnTankerPlane', function (serverName, playerUnitObj, tankerObj) {
+	var curTkrName;
+	var curUnitSpawn;
+	var curGroupSpawn;
+	var curCountry;
+	var curSpwnUnit;
+	var curGrpObj = {};
+	var remoteLoc;
+	var curCategory = 'AIRPLANE';
+
+	curCountry = tankerObj.country;
+	curTkrName = 'AI|' + tankerObj.name + '|';
+	curSpwnUnit = _.cloneDeep(tankerObj);
+
+	dbMapServiceController.baseActions('getClosestBase', serverName, { unitLonLatLoc: playerUnitObj.lonLatLoc})
+		.then(function (closeBase) {
+			// console.log('CB: ', closeBase);
+			remoteLoc = zoneController.getLonLatFromDistanceDirection(playerUnitObj.lonLatLoc, closeBase.spawnAngle, curSpwnUnit.spawnDistance);
+
+			curGrpObj = _.cloneDeep(curSpwnUnit);
+			_.set(curGrpObj, 'groupName', curTkrName);
+			_.set(curGrpObj, 'country', curCountry);
+			_.set(curGrpObj, 'category', curCategory);
+			_.set(curGrpObj, 'routeLocs', [
+				remoteLoc,
+				playerUnitObj.lonLatLoc
+			]);
+
+			curGroupSpawn = exports.grndUnitGroup( curGrpObj, 'Refueling', exports.tankerPlaneRouteTemplate(curGrpObj));
+
+			_.set(curSpwnUnit, 'lonLatLoc', remoteLoc);
+			_.set(curSpwnUnit, 'name', curTkrName);
+			_.set(curSpwnUnit, 'playerCanDrive', false);
+
+			curUnitSpawn = exports.airUnitTemplate(curSpwnUnit);
+
+			curGroupSpawn = _.replace(curGroupSpawn, "#UNITS", curUnitSpawn);
+			var curCMD = exports.spawnGrp(curGroupSpawn, curCountry, curCategory);
+			var sendClient = {action: "CMD", cmd: [curCMD], reqID: 0};
+			var actionObj = {actionObj: sendClient, queName: 'clientArray'};
+			dbMapServiceController.cmdQueActions('save', serverName, actionObj)
+				.catch(function (err) {
+					console.log('erroring line428: ', err);
+				})
+			;
+		})
+		.catch(function (err) {
+			console.log('erroring line632: ', err);
+		})
+	;
 });
 
 _.set(exports, 'spawnSupportPlane', function (serverName, baseObj, side, farpBase) {

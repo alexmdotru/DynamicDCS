@@ -378,6 +378,26 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 							}
 						}
 
+						if(unit.coalition === 1) {
+							cmdArray = _.concat(cmdArray, [
+								'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "$Support$")',
+								'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "Refueling", {"$Support$"})',
+								'missionCommands.addCommandForGroup("' + unit.groupId + '", "IL-78M(HA Drogue)(200rs)", {"$Support$", "Refueling"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "spawnTanker", ["type"] = "RHADTKR", ["unitId"] = ' + unit.unitId + ', ["rsCost"] = 200})',
+								'missionCommands.addCommandForGroup("' + unit.groupId + '", "KC-135(LA Boom)(200rs)", {"$Support$", "Refueling"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "spawnTanker", ["type"] = "RLABTKR", ["unitId"] = ' + unit.unitId + ', ["rsCost"] = 200})',
+								'missionCommands.addCommandForGroup("' + unit.groupId + '", "KC-130(LA Drogue)(200rs)", {"$Support$", "Refueling"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "spawnTanker", ["type"] = "RLADTKR", ["unitId"] = ' + unit.unitId + ', ["rsCost"] = 200})',
+							]);
+						}
+						if(unit.coalition === 2) {
+							cmdArray = _.concat(cmdArray, [
+								'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "$Support$")',
+								'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "Refueling", {"$Support$"})',
+								'missionCommands.addCommandForGroup("' + unit.groupId + '", "KC-135(HA Boom)(200rs)", {"$Support$", "Refueling"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "spawnTanker", ["type"] = "BHABTKR", ["unitId"] = ' + unit.unitId + ', ["rsCost"] = 200})',
+								'missionCommands.addCommandForGroup("' + unit.groupId + '", "IL-78M(HA Drogue)(200rs)", {"$Support$", "Refueling"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "spawnTanker", ["type"] = "BHADTKR", ["unitId"] = ' + unit.unitId + ', ["rsCost"] = 200})',
+								'missionCommands.addCommandForGroup("' + unit.groupId + '", "KC-135(LA Boom)(200rs)", {"$Support$", "Refueling"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "spawnTanker", ["type"] = "BLABTKR", ["unitId"] = ' + unit.unitId + ', ["rsCost"] = 200})',
+								'missionCommands.addCommandForGroup("' + unit.groupId + '", "KC-130(LA Drogue)(200rs)", {"$Support$", "Refueling"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "spawnTanker", ["type"] = "BLADTKR", ["unitId"] = ' + unit.unitId + ', ["rsCost"] = 200})',
+							]);
+						}
+
 						// console.log('cmd: ', cmdArray);
 						var sendClient = {action: "CMD", cmd: cmdArray, reqID: 0};
 						var actionObj = {actionObj: sendClient, queName: 'clientArray'};

@@ -36,6 +36,27 @@ exports.baseActions = function (action, serverName, obj){
 			});
 		});
 	}
+	if(action === 'getClosestBase') {
+		return new Promise(function(resolve, reject) {
+			Airfield.find(
+				{
+					mainBase: true,
+					centerLoc: {
+						$near: {
+							$geometry: {
+								type: "Point",
+								coordinates: obj.unitLonLatLoc
+							}
+						}
+					}
+				},
+				function(err, dbairfields) {
+					if (err) { reject(err) }
+					resolve(_.first(dbairfields));
+				}
+			);
+		});
+	}
 	if(action === 'getBaseSides') {
 		var tAirfields;
 		return new Promise(function(resolve, reject) {
