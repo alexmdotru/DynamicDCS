@@ -8,6 +8,7 @@ const crateController = require('../spawn/crate');
 const reloadController = require('../menu/reload');
 const repairController = require('../menu/repair');
 const userLivesController = require('../action/userLives');
+const resourcePointsController = require('../action/resourcePoints');
 
 exports.maxCrates = 10;
 exports.maxTroops = 1;
@@ -34,6 +35,9 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 							}
 							if (pObj.cmd === 'checkCasLives') {
 								userLivesController.checkCasLives(serverName, curPlayer.ucid);
+							} // resourcePoints
+							if (pObj.cmd === 'resourcePoints') {
+								resourcePointsController.checkResourcePoints(serverName, curPlayer);
 							}
 							if (pObj.cmd === 'unloadExtractTroops') {
 								if(curUnit.inAir) {

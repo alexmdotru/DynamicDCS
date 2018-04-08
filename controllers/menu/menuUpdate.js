@@ -378,6 +378,12 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 							}
 						}
 
+						cmdArray = _.concat(cmdArray, [
+							'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "$Resource Points$")',
+							'missionCommands.addCommandForGroup("' + unit.groupId + '", "Resource Points Acquired", {"$Resource Points$"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "resourcePoints", ["type"] = "Resource Points", ["unitId"] = ' + unit.unitId + '})'
+						]);
+
+
 						if(unit.coalition === 1) {
 							cmdArray = _.concat(cmdArray, [
 								'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "$Support$")',
