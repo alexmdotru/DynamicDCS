@@ -646,7 +646,7 @@ _.set(exports, 'spawnTankerPlane', function (serverName, playerUnitObj, tankerOb
 	dbMapServiceController.baseActions('getClosestBase', serverName, { unitLonLatLoc: playerUnitObj.lonLatLoc})
 		.then(function (closeBase) {
 			// console.log('CB: ', closeBase);
-			remoteLoc = zoneController.getLonLatFromDistanceDirection(playerUnitObj.lonLatLoc, closeBase.spawnAngle, curSpwnUnit.spawnDistance);
+			remoteLoc = zoneController.getLonLatFromDistanceDirection(playerUnitObj.lonLatLoc, playerUnitObj.hdg, curSpwnUnit.spawnDistance);
 
 			curGrpObj = _.cloneDeep(curSpwnUnit);
 			_.set(curGrpObj, 'groupName', curTkrName);
@@ -671,7 +671,7 @@ _.set(exports, 'spawnTankerPlane', function (serverName, playerUnitObj, tankerOb
 			var actionObj = {actionObj: sendClient, queName: 'clientArray'};
 			dbMapServiceController.cmdQueActions('save', serverName, actionObj)
 				.then(function () {
-					var mesg = 'C: A ' + tankerObj.type + ' Tanker Has Been Spawned ' + closeBase.spawnAngle + ' from ' + closeBase.name + ' ' + tankerObj.details;
+					var mesg = 'C: A ' + tankerObj.type + ' Tanker Has Been Spawned ' + playerUnitObj.hdg + ' from ' + closeBase.name + ' ' + tankerObj.details;
 					DCSLuaCommands.sendMesgToCoalition(
 						playerUnitObj.coalition,
 						serverName,
