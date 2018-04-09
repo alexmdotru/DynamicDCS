@@ -789,7 +789,7 @@ _.set(exports, 'spawnTanker', function (serverName, curUnit, curPlayer, tankerTy
 				frequency: 1120000000,
 			},
 			radioFreq: 125000000,
-			spawnDistance: 100,
+			spawnDistance: 50,
 			callsign: {
 				'1': 2,
 				'2': 1,
@@ -811,7 +811,7 @@ _.set(exports, 'spawnTanker', function (serverName, curUnit, curPlayer, tankerTy
 				enabled: false
 			},
 			radioFreq: 126000000,
-			spawnDistance: 100,
+			spawnDistance: 50,
 			callsign: 78,
 			onboard_num: 78,
 			details: '(CALLSIGN: 78, Freq: 126Mhz AM)'
@@ -831,7 +831,7 @@ _.set(exports, 'spawnTanker', function (serverName, curUnit, curPlayer, tankerTy
 				frequency: 1122000000,
 			},
 			radioFreq: 127500000,
-			spawnDistance: 100,
+			spawnDistance: 50,
 			callsign: {
 				'1': 3,
 				'2': 1,
@@ -856,7 +856,7 @@ _.set(exports, 'spawnTanker', function (serverName, curUnit, curPlayer, tankerTy
 				frequency: 1123000000,
 			},
 			radioFreq: 128000000,
-			spawnDistance: 100,
+			spawnDistance: 50,
 			callsign: {
 				'1': 1,
 				'2': 1,
@@ -878,7 +878,7 @@ _.set(exports, 'spawnTanker', function (serverName, curUnit, curPlayer, tankerTy
 				enabled: false
 			},
 			radioFreq: 130000000,
-			spawnDistance: 100,
+			spawnDistance: 50,
 			callsign: 78,
 			onboard_num: 78,
 			details: '(CALLSIGN: 78, Freq: 130Mhz AM)'
@@ -898,7 +898,7 @@ _.set(exports, 'spawnTanker', function (serverName, curUnit, curPlayer, tankerTy
 				frequency: 1130000000
 			},
 			radioFreq: 131000000,
-			spawnDistance: 100,
+			spawnDistance: 50,
 			callsign: {
 				'1': 1,
 				'2': 1,
@@ -923,7 +923,7 @@ _.set(exports, 'spawnTanker', function (serverName, curUnit, curPlayer, tankerTy
 				frequency: 1131000000
 			},
 			radioFreq: 132000000,
-			spawnDistance: 100,
+			spawnDistance: 50,
 			callsign: 130,
 			onboard_num: 130,
 			details: '(TACAN: 44X, CALLSIGN: 130, Freq: 132Mhz AM)'
