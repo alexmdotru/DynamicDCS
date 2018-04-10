@@ -452,6 +452,9 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 						}
 
 						//Support Menu
+						if (pObj.cmd === 'spawnAWACS') {
+							exports.spawnAWACS(serverName, curUnit, curPlayer, pObj.type, pObj.rsCost);
+						}
 						if (pObj.cmd === 'spawnTanker') {
 							exports.spawnTanker(serverName, curUnit, curPlayer, pObj.type, pObj.rsCost);
 						}
@@ -770,6 +773,57 @@ _.set(exports, 'unpackCrate', function (serverName, unit, type, special, combo, 
 		;
 	}
 });
+
+_.set(exports, 'spawnAWACS', function (serverName, curUnit, curPlayer, awacsType, rsCost) {
+	console.log('AWACSType: ', awacsType, rsCost);
+
+	var awacsObj;
+	if(awacsType === 'RussianAWACS') {
+		awacsObj = {
+			name: 'RussianAWACS',
+			type: 'A-50',
+			country: 'RUSSIA',
+			alt: '7620',
+			speed: '265',
+			radioFreq: 139000000,
+			spawnDistance: 50,
+			callsign: 50,
+			onboard_num: 250,
+			details: '(CALLSIGN: Overlord, Freq: 138Mhz AM)'
+		};
+	}
+	if(awacsType === 'USAAWACS') {
+		awacsObj = {
+			name: 'USAAWACS',
+			type: 'E-3A',
+			country: 'USA',
+			alt: '7620',
+			speed: '265',
+			radioFreq: 139000000,
+			spawnDistance: 50,
+			callsign: {
+				'1': 1,
+				'2': 1,
+				'3': 1,
+				name: 'Overlord11'
+			},
+			onboard_num: 249,
+			details: '(CALLSIGN: Overlord, Freq: 139Mhz AM)'
+		};
+	}
+
+	resourcePointsController.spendResourcePoints(serverName, curPlayer, rsCost, 'AWACS', awacsObj)
+		.then(function(spentPoints) {
+			if (spentPoints) {
+				groupController.spawnAWACSPlane(serverName, curUnit, awacsObj);
+			}
+		})
+		.catch(function(err) {
+			console.log('err line938: ', err);
+		})
+	;
+});
+
 
 _.set(exports, 'spawnTanker', function (serverName, curUnit, curPlayer, tankerType, rsCost) {
 	console.log('tankerType: ', tankerType, rsCost);

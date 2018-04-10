@@ -118,6 +118,99 @@ _.set(exports, 'turnOffDisperseUnderFire', function () {
 		'},';
 });
 
+_.set(exports, 'awacsPlaneRouteTemplate', function (routes) {
+	return '' +
+		'["route"] = {' +
+			'["points"] = {' +
+				'[1] = {' +
+					'["alt"] = ' + _.get(routes, 'alt') + ',' +
+					'["action"] = "Turning Point",' +
+					'["alt_type"] = "BARO",' +
+					'["speed"] = ' + _.get(routes, 'speed') + ',' +
+					'["task"] = {' +
+						'["id"] = "ComboTask",' +
+						'["params"] = {' +
+							'["tasks"] = {' +
+								'[1] = {' +
+									'["number"] = 1,' +
+									'["auto"] = true,' +
+									'["id"] = "AWACS",' +
+									'["enabled"] = true,' +
+									'["params"]={},' +
+								'},' +
+								'[2] = {' +
+									'["number"] = 2,' +
+									'["auto"] = false,' +
+									'["id"] = "WrappedAction",' +
+									'["name"] = "RadioFreq",' +
+									'["enabled"] = true,' +
+									'["params"] = {' +
+										'["action"] = {' +
+											'["id"] = "SetFrequency",' +
+											'["params"] = {' +
+												'["power"]=10,' +
+												'["modulation"]=0,' +
+												'["frequency"]=' + _.get(routes, 'radioFreq') + ',' +
+											'},' +
+										'},' +
+									'},' +
+								'},' +
+								'[3] = {' +
+									'["number"] = 3,' +
+									'["auto"] = false,' +
+									'["id"] = "Orbit",' +
+									'["enabled"]=true,' +
+									'["params"] = {' +
+										'["altitude"] = ' + _.get(routes, 'alt') + ',' +
+										'["pattern"] = "Race-Track",' +
+										'["speed"] = ' + _.get(routes, 'speed') + ',' +
+										'["speedEdited"] = true,' +
+									'},' +
+								'},' +
+								'[4] = {' +
+									'["number"] = 4,' +
+									'["auto"] = false,' +
+									'["id"] = "WrappedAction",' +
+									'["enabled"] = true,' +
+									'["params"] = {' +
+										'["action"] = {' +
+											'["id"] = "Option",' +
+											'["params"] = {' +
+												'["name"] = 1,' +
+												'["value"] = 2,' +
+											'},' +
+										'},' +
+									'},' +
+								'},' +
+							'},' +
+						'},' +
+					'},' +
+					'["type"] = "Turning Point",' +
+					'["x"] = coord.LLtoLO(' + _.get(routes, ['routeLocs', 0, 1]) + ', ' + _.get(routes, ['routeLocs', 0, 0]) + ').x, ' +
+					'["y"] = coord.LLtoLO(' + _.get(routes, ['routeLocs', 0, 1]) + ', ' + _.get(routes, ['routeLocs', 0, 0]) + ').z, ' +
+					'["speed_locked"] = true,' +
+				'},' +
+				'[2]={' +
+					'["alt"] = ' + _.get(routes, 'alt') + ',' +
+					'["action"] = "Turning Point",' +
+					'["alt_type"] = "BARO",' +
+					'["speed"] = ' + _.get(routes, 'speed') + ',' +
+					'["task"] = {' +
+						'["id"] = "ComboTask",' +
+						'["params"] = {' +
+							'["tasks"]={}' +
+						'},' +
+					'},' +
+					'["type"] = "Turning Point",' +
+					'["x"] = coord.LLtoLO(' + _.get(routes, ['routeLocs', 1, 1]) + ', ' + _.get(routes, ['routeLocs', 1, 0]) + ').x, ' +
+					'["y"] = coord.LLtoLO(' + _.get(routes, ['routeLocs', 1, 1]) + ', ' + _.get(routes, ['routeLocs', 1, 0]) + ').z, ' +
+					'["speed_locked"] = true,' +
+				'},' +
+			'},' +
+		'},'
+	;
+});
+
 _.set(exports, 'tankerPlaneRouteTemplate', function (routes) {
 	var tankerTemplate = '' +
 		'["route"] = {' +
@@ -627,6 +720,67 @@ _.set(exports, 'spawnBaseReinforcementGroup', function (serverName, side) {
 		}
 	});
 	return _.compact(spawnArray);
+});
+
+_.set(exports, 'spawnAWACSPlane', function (serverName, playerUnitObj, awacsObj) {
+	var curTkrName;
+	var curUnitSpawn;
+	var curGroupSpawn;
+	var curCountry;
+	var curSpwnUnit;
+	var curGrpObj = {};
+	var remoteLoc;
+	var curCategory = 'AIRPLANE';
+
+	curCountry = awacsObj.country;
+	curTkrName = 'AI|' + awacsObj.name + '|';
+	curSpwnUnit = _.cloneDeep(awacsObj);
+
+	dbMapServiceController.baseActions('getClosestBase', serverName, { unitLonLatLoc: playerUnitObj.lonLatLoc})
+		.then(function (closeBase) {
+			// console.log('CB: ', closeBase);
+			remoteLoc = zoneController.getLonLatFromDistanceDirection(playerUnitObj.lonLatLoc, playerUnitObj.hdg, curSpwnUnit.spawnDistance);
+
+			curGrpObj = _.cloneDeep(curSpwnUnit);
+			_.set(curGrpObj, 'groupName', curTkrName);
+			_.set(curGrpObj, 'country', curCountry);
+			_.set(curGrpObj, 'category', curCategory);
+			_.set(curGrpObj, 'routeLocs', [
+				remoteLoc,
+				playerUnitObj.lonLatLoc
+			]);
+
+			curGroupSpawn = exports.grndUnitGroup( curGrpObj, 'AWACS', exports.awacsPlaneRouteTemplate(curGrpObj));
+
+			_.set(curSpwnUnit, 'lonLatLoc', remoteLoc);
+			_.set(curSpwnUnit, 'name', curTkrName);
+			_.set(curSpwnUnit, 'playerCanDrive', false);
+
+			curUnitSpawn = exports.airUnitTemplate(curSpwnUnit);
+
+			curGroupSpawn = _.replace(curGroupSpawn, "#UNITS", curUnitSpawn);
+			var curCMD = exports.spawnGrp(curGroupSpawn, curCountry, curCategory);
+			var sendClient = {action: "CMD", cmd: [curCMD], reqID: 0};
+			var actionObj = {actionObj: sendClient, queName: 'clientArray'};
+			dbMapServiceController.cmdQueActions('save', serverName, actionObj)
+				.then(function () {
+					var mesg = 'C: A ' + awacsObj.type + ' Tanker Has Been Spawned ' + playerUnitObj.hdg + ' from ' + closeBase.name + ' ' + awacsObj.details;
+					DCSLuaCommands.sendMesgToCoalition(
+						playerUnitObj.coalition,
+						serverName,
+						mesg,
+						20
+					);
+				})
+				.catch(function (err) {
+					console.log('erroring line428: ', err);
+				})
+			;
+		})
+		.catch(function (err) {
+			console.log('erroring line632: ', err);
+		})
+	;
 });
 
 _.set(exports, 'spawnTankerPlane', function (serverName, playerUnitObj, tankerObj) {

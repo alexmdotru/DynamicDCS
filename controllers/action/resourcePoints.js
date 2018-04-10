@@ -20,6 +20,15 @@ _.set(exports, 'spendResourcePoints', function (serverName, player, rsCost, rsIt
 							5
 						);
 						return false;
+					} else if(unitExist.length > 0 && rsItem === 'AWACS') {
+						mesg = 'G: AWACS your trying to spawn already exists';
+						DCSLuaCommands.sendMesgToGroup(
+							curUnit.groupId,
+							serverName,
+							mesg,
+							5
+						);
+						return false;
 					} else {
 						if (player.side === 1) {
 							if(player.redRSPoints >= rsCost){
