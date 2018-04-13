@@ -68,11 +68,19 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 						var unitsProxBase = proximityController.extractUnitsBackToBase(unit, serverName);
 						var logiFarpName = proximityController.unitInProxLogiTowers(unit, serverName);
 
-						if(_.includes(allowedTypesForTroops, unit.type) && !_.get(unit, 'inAir', true)) {
+						if(_.includes(allowedHelisForTroops, unit.type) && !_.get(unit, 'inAir', true)) {
+							cmdArray = _.concat(cmdArray, aTroopMenu);
+							enableAction = true;
+						}
+						if(_.includes(allowedPlanesForTroops, unit.type) && !_.get(unit, 'inAir', true)) {
 							cmdArray = _.concat(cmdArray, aTroopMenu);
 							enableAction = true;
 						}
 						if(_.includes(allowedTypesForCratesLight, unit.type) && !_.get(unit, 'inAir', true)) {
+							cmdArray = _.concat(cmdArray, aUnpackMenu);
+							enableAction = true;
+						}
+						if(_.includes(allowedTypesForCratesHeavy, unit.type) && !_.get(unit, 'inAir', true)) {
 							cmdArray = _.concat(cmdArray, aUnpackMenu);
 							enableAction = true;
 						}
