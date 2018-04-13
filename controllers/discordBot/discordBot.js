@@ -14,7 +14,7 @@ exports.timeToCorrect = 20;
 client.on('ready', () => {
 	console.log('Ready!');
 	setInterval (function (){
-		var discordUserNames = [];
+		var discordUserNames = ['Drexserver'];
 		var curGuild = client.guilds.get('389682718033707008');
 		var voiceChans = curGuild.channels.filter(ch => ch.type === 'voice');
 		_.forEach(Array.from(voiceChans.values()), function (voiceChan) {
