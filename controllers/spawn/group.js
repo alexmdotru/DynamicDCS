@@ -488,7 +488,7 @@ _.set(exports, 'grndUnitGroup', function ( groupObj, task, routes ) {
 		'["taskSelected"] = true,' +
 		'["name"] = "' + _.get(groupObj, 'groupName') + '",' +
 		'["visible"] = ' + _.get(groupObj, 'visible', false) + ',' +
-		'["hidden"] = ' + _.get(groupObj, 'hidden', false) + ',' +
+		'["hidden"] = ' + _.get(groupObj, 'hidden', true) + ',' +
 		'["task"] = ' + _.get(groupObj, 'task', '{}') + ',' +
 		'["units"] = {#UNITS},' +
 		'["category"] = Group.Category.' + _.get(groupObj, 'category') + ',' +
@@ -619,7 +619,7 @@ _.set(exports, 'getServer', function ( serverName ) {
 		;
 });
 
-_.set(exports, 'getRndFromSpawnCat', function (spawnCat, side, spawnHidden, spawnAlways) {
+_.set(exports, 'getRndFromSpawnCat', function (spawnCat, side, spawnShow, spawnAlways) {
 	var curEnabledCountrys = _.get(constants, [_.get(constants, ['side', side]) + 'Countrys']);
 	var findUnits = _.filter(_.get(exports, 'unitDictionary'), {spawnCat: spawnCat, enabled: true});
 	var cPUnits = [];
@@ -648,9 +648,9 @@ _.set(exports, 'getRndFromSpawnCat', function (spawnCat, side, spawnHidden, spaw
 	if(_.get(unitsChosen, [0, 'comboName'])) {
 		unitsChosen = _.filter(cPUnits, {comboName: _.get(unitsChosen, [0, 'comboName'])});
 	}
-	if (spawnHidden) {
+	if (spawnShow) {
 		_.forEach(unitsChosen, function (unit) {
-			_.set(unit, 'hidden', true);
+			_.set(unit, 'hidden', false);
 		});
 	}
 
@@ -672,7 +672,7 @@ _.set(exports, 'spawnSupportVehiclesOnFarp', function ( serverName, baseName, si
 		curAng = curAng + 270
 	}
 	_.forEach(sptArray, function (val) {
-		var sptUnit = _.cloneDeep(_.first(exports.getRndFromSpawnCat(val, side, true, true)));
+		var sptUnit = _.cloneDeep(_.first(exports.getRndFromSpawnCat(val, side, false, true)));
 		_.set(sptUnit, 'name', baseName + '_' + val);
 		_.set(sptUnit, 'lonLatLoc', zoneController.getLonLatFromDistanceDirection(_.get(curBase, ['centerLoc']), curAng, 0.05));
 		curAng += 15;
@@ -708,7 +708,7 @@ _.set(exports, 'spawnSupportBaseGrp', function ( serverName, baseName, side, ini
 	}
 
 	for (var i = 0; i < 3; i++) {
-		spawnArray = _.concat(spawnArray, _.cloneDeep(exports.getRndFromSpawnCat( 'armoredCar', side, true )));
+		spawnArray = _.concat(spawnArray, _.cloneDeep(exports.getRndFromSpawnCat( 'armoredCar', side, false )));
 	}
 
 	return _.compact(spawnArray);
@@ -721,7 +721,7 @@ _.set(exports, 'spawnBaseReinforcementGroup', function (serverName, side) {
 	_.forEach(curBaseSpawnCats, function (tickVal, name) {
 		if (tickVal > 0) {
 			for (var i = 0; i < tickVal; i++) {
-				spawnArray = _.concat(spawnArray, _.cloneDeep(exports.getRndFromSpawnCat( name, side, true )));
+				spawnArray = _.concat(spawnArray, _.cloneDeep(exports.getRndFromSpawnCat( name, side, false )));
 			}
 		}
 	});
@@ -875,10 +875,10 @@ _.set(exports, 'spawnSupportPlane', function (serverName, baseObj, side, farpBas
 	}
 
 	if(_.get(baseObj, 'farp')) {
-		curSpwnUnit = _.cloneDeep(_.first(exports.getRndFromSpawnCat( 'transportHeli', side, false, true )));
+		curSpwnUnit = _.cloneDeep(_.first(exports.getRndFromSpawnCat( 'transportHeli', side, true, true )));
 		remoteLoc = zoneController.getLonLatFromDistanceDirection(baseLoc, _.get(baseObj, 'spawnAngle'), 40);
 	} else {
-		curSpwnUnit = _.cloneDeep(_.first(exports.getRndFromSpawnCat( 'transportAircraft', side, false, true )));
+		curSpwnUnit = _.cloneDeep(_.first(exports.getRndFromSpawnCat( 'transportAircraft', side, true, true )));
 		remoteLoc = zoneController.getLonLatFromDistanceDirection(baseLoc, _.get(baseObj, 'spawnAngle'), 70);
 	}
 	curGrpObj = _.cloneDeep(curSpwnUnit);

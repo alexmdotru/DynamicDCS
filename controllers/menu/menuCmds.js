@@ -72,7 +72,7 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 														groupController.destroyUnit(serverName, unit.name);
 													});
 													// spawn troop type
-													curSpawnUnit = _.cloneDeep(_.first(groupController.getRndFromSpawnCat(curUnit.troopType, curUnit.coalition, false, true)));
+													curSpawnUnit = _.cloneDeep(_.first(groupController.getRndFromSpawnCat(curUnit.troopType, curUnit.coalition, true, true)));
 													spawnArray = {
 														spwnName: 'TU|' + curPlayer.ucid + '|' + curUnit.troopType + '|' + curUnit.playername + '|' ,
 														type: curSpawnUnit.type,
