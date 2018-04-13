@@ -761,6 +761,7 @@ _.set(exports, 'spawnAWACSPlane', function (serverName, playerUnitObj, awacsObj)
 			_.set(curSpwnUnit, 'lonLatLoc', remoteLoc);
 			_.set(curSpwnUnit, 'name', curTkrName);
 			_.set(curSpwnUnit, 'playerCanDrive', false);
+			_.set(curSpwnUnit, 'hidden', false);
 
 			curUnitSpawn = exports.airUnitTemplate(curSpwnUnit);
 
@@ -822,6 +823,7 @@ _.set(exports, 'spawnTankerPlane', function (serverName, playerUnitObj, tankerOb
 			_.set(curSpwnUnit, 'lonLatLoc', remoteLoc);
 			_.set(curSpwnUnit, 'name', curTkrName);
 			_.set(curSpwnUnit, 'playerCanDrive', false);
+			_.set(curSpwnUnit, 'hidden', false);
 
 			curUnitSpawn = exports.airUnitTemplate(curSpwnUnit);
 
@@ -908,6 +910,7 @@ _.set(exports, 'spawnSupportPlane', function (serverName, baseObj, side, farpBas
 	// _.set(curSpwnUnit, 'unitId', unitNum);
 	_.set(curSpwnUnit, 'name', curUnitName);
 	_.set(curSpwnUnit, 'playerCanDrive', false);
+	_.set(curSpwnUnit, 'hidden', false);
 
 	curUnitSpawn = exports.airUnitTemplate(curSpwnUnit);
 

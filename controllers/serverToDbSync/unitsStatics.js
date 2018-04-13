@@ -39,7 +39,6 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 					_.set(curData, 'playerOwnerId', stParse[1]);
 					_.set(curData, 'proxChkGrp', stParse[3]);
 					_.set(curData, 'playerCanDrive', stParse[5]);
-					_.set(curData, 'hidden', false);
 				}
 
 				/*
