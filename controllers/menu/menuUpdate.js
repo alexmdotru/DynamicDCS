@@ -6,32 +6,25 @@ const userLivesController = require('../action/userLives');
 
 exports.virtualCrates = false;
 var enableAction = false;
-var allowedTypesForTroops = [
+var allowedHelisForTroops = [
 	'UH-1H',
 	'Mi-8MT',
 	'SA342Mistral',
 	'SA342M',
-	'SA342L',
-	'Bf-109K-4',
-	'FW-190D9',
-	'P-51D',
-	'SpitfireLFMkIX',
+	'SA342L'
+];
+var allowedPlanesForTroops = [
 	'TF-51D',
 	'F-86F Sabre',
-	'Hawk',
 	'MiG-15bis',
-	'L-39ZA',
-	'L-39C',
-	'C-101CC'
+	'L-39ZA'
 ];
 var allowedTypesForCratesLight = [
 	'UH-1H',
-	'Ka-50',
-	'Mi-8MT'
+	'Ka-50'
 ];
 
 var allowedTypesForCratesHeavy = [
-	'Ka-50',
 	'Mi-8MT'
 ];
 
@@ -99,7 +92,7 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 							'missionCommands.addCommandForGroup("' + unit.groupId + '", "Modern CAP Lives", {"Lives"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "checkCapLives", ["type"] = "Modern CAP Lives", ["unitId"] = ' + unit.unitId + '})',
 							'missionCommands.addCommandForGroup("' + unit.groupId + '", "Modern CAS Lives", {"Lives"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "checkCasLives", ["type"] = "Modern CAS Lives", ["unitId"] = ' + unit.unitId + '})',
 						]);
-						if (_.includes(allowedTypesForTroops, unit.type) && unitsProxBase) {
+						if (_.includes(allowedHelisForTroops, unit.type) && unitsProxBase) {
 							cmdArray = _.concat(cmdArray, [
 								'missionCommands.addSubMenuForGroup("' + unit.groupId + '", ' + trpMenuTitle + ')',
 								'missionCommands.addCommandForGroup("' + unit.groupId + '", "Load Rifle Troop", {' + trpMenuTitle + '}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "Soldier", ["type"] = "combo", ["unitId"] = ' + unit.unitId + '})',
@@ -107,7 +100,12 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 								'missionCommands.addCommandForGroup("' + unit.groupId + '", "Load ManPad", {' + trpMenuTitle + '}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "MANPAD", ["type"] = "combo", ["unitId"] = ' + unit.unitId + '})',
 								'missionCommands.addCommandForGroup("' + unit.groupId + '", "Load RPG Troop", {' + trpMenuTitle + '}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "RPG", ["type"] = "combo", ["unitId"] = ' + unit.unitId + '})',
 								'missionCommands.addCommandForGroup("' + unit.groupId + '", "Load Mortar Troop", {' + trpMenuTitle + '}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "Mortar Team", ["type"] = "combo", ["unitId"] = ' + unit.unitId + '})',
-
+							]);
+						}
+						if (_.includes(allowedPlanesForTroops, unit.type) && unitsProxBase) {
+							cmdArray = _.concat(cmdArray, [
+								'missionCommands.addSubMenuForGroup("' + unit.groupId + '", ' + trpMenuTitle + ')',
+								'missionCommands.addCommandForGroup("' + unit.groupId + '", "Load Rifle Troop", {' + trpMenuTitle + '}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "Soldier", ["type"] = "combo", ["unitId"] = ' + unit.unitId + '})'
 							]);
 						}
 						if (_.includes(allowedTypesForCratesLight, unit.type) && logiFarpName) {
