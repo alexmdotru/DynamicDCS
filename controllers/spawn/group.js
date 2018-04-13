@@ -465,6 +465,8 @@ _.set(exports, 'grndUnitGroup', function ( groupObj, task, routes ) {
 	var curRoute = '';
 	var curTask = '';
 
+	console.log('hidden: ', groupObj);
+
 	if (routes) {
 		curRoute = routes;
 	} else if (groupObj.type === '1L13 EWR' || groupObj.type === '55G6 EWR' ) {
