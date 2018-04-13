@@ -465,7 +465,7 @@ _.set(exports, 'grndUnitGroup', function ( groupObj, task, routes ) {
 	var curRoute = '';
 	var curTask = '';
 
-	console.log('hidden: ', groupObj);
+	// console.log('hidden: ', groupObj);
 
 	if (routes) {
 		curRoute = routes;
