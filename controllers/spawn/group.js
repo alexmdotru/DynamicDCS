@@ -619,7 +619,7 @@ _.set(exports, 'getServer', function ( serverName ) {
 		;
 });
 
-_.set(exports, 'getRndFromSpawnCat', function (spawnCat, side, spawnAlways) {
+_.set(exports, 'getRndFromSpawnCat', function (spawnCat, side, spawnHidden, spawnAlways) {
 	var curEnabledCountrys = _.get(constants, [_.get(constants, ['side', side]) + 'Countrys']);
 	var findUnits = _.filter(_.get(exports, 'unitDictionary'), {spawnCat: spawnCat, enabled: true});
 	var cPUnits = [];
@@ -648,6 +648,12 @@ _.set(exports, 'getRndFromSpawnCat', function (spawnCat, side, spawnAlways) {
 	if(_.get(unitsChosen, [0, 'comboName'])) {
 		unitsChosen = _.filter(cPUnits, {comboName: _.get(unitsChosen, [0, 'comboName'])});
 	}
+	if (spawnHidden) {
+		_.forEach(unitsChosen, function (unit) {
+			_.set(unit, 'hidden', true);
+		});
+	}
+
 	return unitsChosen;
 });
 
@@ -666,7 +672,7 @@ _.set(exports, 'spawnSupportVehiclesOnFarp', function ( serverName, baseName, si
 		curAng = curAng + 270
 	}
 	_.forEach(sptArray, function (val) {
-		var sptUnit = _.cloneDeep(_.first(exports.getRndFromSpawnCat(val, side, true)));
+		var sptUnit = _.cloneDeep(_.first(exports.getRndFromSpawnCat(val, side, true, true)));
 		_.set(sptUnit, 'name', baseName + '_' + val);
 		_.set(sptUnit, 'lonLatLoc', zoneController.getLonLatFromDistanceDirection(_.get(curBase, ['centerLoc']), curAng, 0.05));
 		curAng += 15;
@@ -702,7 +708,7 @@ _.set(exports, 'spawnSupportBaseGrp', function ( serverName, baseName, side, ini
 	}
 
 	for (var i = 0; i < 3; i++) {
-		spawnArray = _.concat(spawnArray, _.cloneDeep(exports.getRndFromSpawnCat( 'armoredCar', side )));
+		spawnArray = _.concat(spawnArray, _.cloneDeep(exports.getRndFromSpawnCat( 'armoredCar', side, true )));
 	}
 
 	return _.compact(spawnArray);
@@ -715,7 +721,7 @@ _.set(exports, 'spawnBaseReinforcementGroup', function (serverName, side) {
 	_.forEach(curBaseSpawnCats, function (tickVal, name) {
 		if (tickVal > 0) {
 			for (var i = 0; i < tickVal; i++) {
-				spawnArray = _.concat(spawnArray, _.cloneDeep(exports.getRndFromSpawnCat( name, side )));
+				spawnArray = _.concat(spawnArray, _.cloneDeep(exports.getRndFromSpawnCat( name, side, true )));
 			}
 		}
 	});
@@ -869,10 +875,10 @@ _.set(exports, 'spawnSupportPlane', function (serverName, baseObj, side, farpBas
 	}
 
 	if(_.get(baseObj, 'farp')) {
-		curSpwnUnit = _.cloneDeep(_.first(exports.getRndFromSpawnCat( 'transportHeli', side, true )));
+		curSpwnUnit = _.cloneDeep(_.first(exports.getRndFromSpawnCat( 'transportHeli', side, false, true )));
 		remoteLoc = zoneController.getLonLatFromDistanceDirection(baseLoc, _.get(baseObj, 'spawnAngle'), 40);
 	} else {
-		curSpwnUnit = _.cloneDeep(_.first(exports.getRndFromSpawnCat( 'transportAircraft', side, true )));
+		curSpwnUnit = _.cloneDeep(_.first(exports.getRndFromSpawnCat( 'transportAircraft', side, false, true )));
 		remoteLoc = zoneController.getLonLatFromDistanceDirection(baseLoc, _.get(baseObj, 'spawnAngle'), 70);
 	}
 	curGrpObj = _.cloneDeep(curSpwnUnit);
@@ -1117,7 +1123,7 @@ _.set(exports, 'healBase', function ( serverName, baseName ) {
 					var curBase = _.get(baseUnit, [0], {});
 					if (curUnit) {
 						_.set(curUnit, 'coalition', _.get(curBase, 'side'));
-						// console.log('creating logistics from existing: ', serverName, curUnit, false, curBase);
+						console.log('creating logistics from existing: ', serverName, curUnit, false, curBase);
 						exports.spawnLogisticCmdCenter(serverName, curUnit, false, curBase, curBase.side);
 					} else {
 						exports.spawnLogisticCmdCenter(serverName, {}, false, curBase, curBase.side);

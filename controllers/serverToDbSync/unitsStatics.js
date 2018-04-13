@@ -17,12 +17,14 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 					stParse = _.split(curData.name, '|');
 					_.set(curData, 'playerOwnerId', stParse[1]);
 					_.set(curData, 'isAI', true);
+					_.set(curData, 'hidden', false);
 				}
 				if (_.includes(curData.name, 'TU|')) {
 					stParse = _.split(curData.name, '|');
 					_.set(curData, 'playerOwnerId', stParse[1]);
 					_.set(curData, 'playerCanDrive', false);
 					_.set(curData, 'isTroop', true);
+					_.set(curData, 'hidden', false);
 					_.set(curData, 'spawnCat', stParse[2]);
 				}
 				if (_.includes(curData.name, 'CU|')) {
@@ -31,12 +33,14 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 					_.set(curData, 'isCombo', _.isBoolean(stParse[5]));
 					_.set(curData, 'playerCanDrive', false);
 					_.set(curData, 'isCrate', true);
+					_.set(curData, 'hidden', false);
 				}
 				if (_.includes(curData.name, 'DU|')) {
 					stParse = _.split(curData.name, '|');
 					_.set(curData, 'playerOwnerId', stParse[1]);
 					_.set(curData, 'proxChkGrp', stParse[3]);
 					_.set(curData, 'playerCanDrive', stParse[5]);
+					_.set(curData, 'hidden', false);
 				}
 
 				/*

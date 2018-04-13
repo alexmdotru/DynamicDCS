@@ -68,6 +68,10 @@ const UnitSchema = new Schema({
 	playerOwnerId: {
 		type: String
 	},
+	hidden: {
+		type: Boolean,
+		default: true
+	},
 	enabled: {
 		type: Boolean,
 		default: true
