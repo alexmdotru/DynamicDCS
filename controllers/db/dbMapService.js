@@ -76,7 +76,7 @@ exports.baseActions = function (action, serverName, obj){
 		return new Promise(function(resolve, reject) {
 			Airfield.update(
 				{_id: obj.name},
-				{$set: {side: _.get(obj, 'side', 0)}},
+				{$set: {side: _.get(obj, 'side', 0), replenTime: 0}},
 				function(err, airfield) {
 					if (err) { reject(err) }
 					resolve(airfield);
