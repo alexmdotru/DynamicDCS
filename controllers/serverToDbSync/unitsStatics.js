@@ -24,7 +24,6 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 					_.set(curData, 'playerOwnerId', stParse[1]);
 					_.set(curData, 'playerCanDrive', false);
 					_.set(curData, 'isTroop', true);
-					_.set(curData, 'hidden', false);
 					_.set(curData, 'spawnCat', stParse[2]);
 				}
 				if (_.includes(curData.name, 'CU|')) {
