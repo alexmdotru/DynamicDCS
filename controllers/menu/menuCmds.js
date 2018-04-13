@@ -762,7 +762,8 @@ _.set(exports, 'unpackCrate', function (serverName, unit, type, special, combo, 
 						heading: unit.hdg,
 						country: unit.country,
 						playerCanDrive: mobile,
-						category: "GROUND"
+						category: "GROUND",
+						hidden: false
 					});
 					groupController.spawnLogiGroup(serverName, spawnArray, unit.coalition);
 				}
@@ -789,7 +790,8 @@ _.set(exports, 'spawnAWACS', function (serverName, curUnit, curPlayer, awacsType
 			spawnDistance: 50,
 			callsign: 50,
 			onboard_num: 250,
-			details: '(CALLSIGN: Overlord, Freq: 138Mhz AM)'
+			details: '(CALLSIGN: Overlord, Freq: 138Mhz AM)',
+			hidden: false
 		};
 	}
 	if(awacsType === 'USAAWACS') {
@@ -808,7 +810,8 @@ _.set(exports, 'spawnAWACS', function (serverName, curUnit, curPlayer, awacsType
 				name: 'Overlord11'
 			},
 			onboard_num: 249,
-			details: '(CALLSIGN: Overlord, Freq: 139Mhz AM)'
+			details: '(CALLSIGN: Overlord, Freq: 139Mhz AM)',
+			hidden: false
 		};
 	}
 
@@ -851,7 +854,8 @@ _.set(exports, 'spawnTanker', function (serverName, curUnit, curPlayer, tankerTy
 				name: 'Arco11'
 			},
 			onboard_num: 135,
-			details: '(TACAN: 33X, CALLSIGN: Arco, Freq: 125Mhz AM)'
+			details: '(TACAN: 33X, CALLSIGN: Arco, Freq: 125Mhz AM)',
+			hidden: false
 		};
 	}
 	if(tankerType === 'BHADTKR') {
@@ -868,7 +872,8 @@ _.set(exports, 'spawnTanker', function (serverName, curUnit, curPlayer, tankerTy
 			spawnDistance: 50,
 			callsign: 78,
 			onboard_num: 78,
-			details: '(CALLSIGN: 78, Freq: 126Mhz AM)'
+			details: '(CALLSIGN: 78, Freq: 126Mhz AM)',
+			hidden: false
 		};
 	}
 	if(tankerType === 'BLABTKR') {
@@ -893,7 +898,8 @@ _.set(exports, 'spawnTanker', function (serverName, curUnit, curPlayer, tankerTy
 				name: 'Shell11'
 			},
 			onboard_num: 135,
-			details: '(TACAN: 35X, CALLSIGN: Shell, Freq: 127.5Mhz AM)'
+			details: '(TACAN: 35X, CALLSIGN: Shell, Freq: 127.5Mhz AM)',
+			hidden: false
 		};
 	}
 	if(tankerType === 'BLADTKR') {
@@ -918,7 +924,8 @@ _.set(exports, 'spawnTanker', function (serverName, curUnit, curPlayer, tankerTy
 				name: 'Texaco11'
 			},
 			onboard_num: 130,
-			details: '(TACAN: 36X, CALLSIGN: Texaco, Freq: 128Mhz AM)'
+			details: '(TACAN: 36X, CALLSIGN: Texaco, Freq: 128Mhz AM)',
+			hidden: false
 		};
 	}
 	if(tankerType === 'RHADTKR') {
@@ -935,7 +942,8 @@ _.set(exports, 'spawnTanker', function (serverName, curUnit, curPlayer, tankerTy
 			spawnDistance: 50,
 			callsign: 78,
 			onboard_num: 78,
-			details: '(CALLSIGN: 78, Freq: 130Mhz AM)'
+			details: '(CALLSIGN: 78, Freq: 130Mhz AM)',
+			hidden: false
 		};
 	}
 	if(tankerType === 'RLABTKR') {
@@ -960,7 +968,8 @@ _.set(exports, 'spawnTanker', function (serverName, curUnit, curPlayer, tankerTy
 				name: 'Texaco11'
 			},
 			onboard_num: 135,
-			details: '(TACAN: 43X, CALLSIGN: Texaco, Freq: 131Mhz AM)'
+			details: '(TACAN: 43X, CALLSIGN: Texaco, Freq: 131Mhz AM)',
+			hidden: false
 		};
 	}
 	if(tankerType === 'RLADTKR') {
@@ -980,7 +989,8 @@ _.set(exports, 'spawnTanker', function (serverName, curUnit, curPlayer, tankerTy
 			spawnDistance: 50,
 			callsign: 130,
 			onboard_num: 130,
-			details: '(TACAN: 44X, CALLSIGN: 130, Freq: 132Mhz AM)'
+			details: '(TACAN: 44X, CALLSIGN: 130, Freq: 132Mhz AM)',
+			hidden: false
 		};
 	}
 
