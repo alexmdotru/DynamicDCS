@@ -32,6 +32,7 @@ var allowedTypesForModernCapLives = userLivesController.capLivesEnabled;
 var allowedTypesForModernCasLives = userLivesController.casLivesEnabled;
 
 _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
+	console.log('logiCall');
 	dbMapServiceController.srvPlayerActions('read', serverName, {name: unit.playername})
 		.then(function(player) {
 			var curPlayer = _.get(player, [0]);
