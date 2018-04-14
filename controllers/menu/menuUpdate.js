@@ -20,12 +20,12 @@ var allowedPlanesForTroops = [
 	'L-39ZA'
 ];
 var allowedTypesForCratesLight = [
-	'UH-1H',
-	'Ka-50'
+	'UH-1H'
 ];
 
 var allowedTypesForCratesHeavy = [
-	'Mi-8MT'
+	'Mi-8MT',
+	'Ka-50'
 ];
 
 var allowedTypesForModernCapLives = userLivesController.capLivesEnabled;
