@@ -9,13 +9,16 @@ _.set(exports, 'repairBase', function (serverName, curUnit, crateOriginLogiName,
 		groupController.healBase(serverName, baseClose);
 		// baracks
 		// base respawn building
-		groupController.destroyUnit(serverName, crate.name);
+		if (crate) {
+			groupController.destroyUnit(serverName, crate.name);
+		}
 		DCSLuaCommands.sendMesgToGroup(
 			curUnit.groupId,
 			serverName,
 			"G: " + baseClose + " Base Has Been Repaired!",
 			5
 		);
+		return true;
 	} else {
 		DCSLuaCommands.sendMesgToGroup(
 			curUnit.groupId,
@@ -24,4 +27,5 @@ _.set(exports, 'repairBase', function (serverName, curUnit, crateOriginLogiName,
 			5
 		);
 	}
+	return false;
 });

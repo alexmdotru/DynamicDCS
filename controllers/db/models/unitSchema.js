@@ -118,6 +118,9 @@ const UnitSchema = new Schema({
 	virtCrateType: {
 		type: String
 	},
+	intCargoType: {
+		type: String
+	},
 	spawnCat: {
 		type: String
 	}

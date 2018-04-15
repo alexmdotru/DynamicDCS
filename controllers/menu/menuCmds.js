@@ -459,6 +459,10 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 							exports.spawnTanker(serverName, curUnit, curPlayer, pObj.type, pObj.rsCost);
 						}
 
+						//Internal Crates
+						if (pObj.cmd === 'InternalCargo') {
+							exports.internalCargo(serverName, curUnit, curPlayer, pObj.type);
+						}
 					})
 					.catch(function (err) {
 						console.log('line359: ', err);
@@ -1004,4 +1008,150 @@ _.set(exports, 'spawnTanker', function (serverName, curUnit, curPlayer, tankerTy
 			console.log('err line938: ', err);
 		})
 	;
+});
+
+_.set(exports, 'internalCargo', function (serverName, curUnit, curPlayer, intCargoType) {
+	// console.log('tankerType: ', tankerType, rsCost);
+	// InternalCargo
+	// loaded, unpack, jtac, BaseRepair
+	if(intCargoType === 'loaded') {
+		if(curUnit.intCargoType) {
+			DCSLuaCommands.sendMesgToGroup(
+				curUnit.groupId,
+				serverName,
+				"G: " + curUnit.intCargoType + " Internal Crate is Onboard!",
+				5
+			);
+		} else {
+			DCSLuaCommands.sendMesgToGroup(
+				curUnit.groupId,
+				serverName,
+				"G: No Internal Crates Onboard!",
+				5
+			);
+		}
+	}
+	if(intCargoType === 'unpack') {
+		proximityController.getLogiTowersProximity(serverName, curUnit.lonLatLoc, 0.8)
+			.then(function (logiProx) {
+				var curIntCrateType = _.split(curUnit.intCargoType, '|')[1];
+				var curIntCrateBaseOrigin = _.split(curUnit.intCargoType, '|')[2];
+				var crateType = (curUnit.coalition === 1)?'UAZ-469':'Hummer';
+				if (logiProx.length) {
+					DCSLuaCommands.sendMesgToGroup(
+						curUnit.groupId,
+						serverName,
+						"G: You need to move farther away from Command Towers (800m)",
+						5
+					);
+				} else {
+					if (curUnit.inAir) {
+						DCSLuaCommands.sendMesgToGroup(
+							curUnit.groupId,
+							serverName,
+							"G: Please Land Before Attempting Cargo Commands!",
+							5
+						);
+					} else {
+						if (curIntCrateType) {
+							if(curIntCrateType === 'JTAC') {
+								exports.unpackCrate(serverName, curUnit, crateType, 'jtac', false, true);
+
+								dbMapServiceController.unitActions('updateByUnitId', serverName, {unitId: curUnit.unitId, intCargoType: ''})
+									.then(function () {
+										DCSLuaCommands.sendMesgToGroup(
+											curUnit.groupId,
+											serverName,
+											"G: You Have Spawned A JTAC Unit From Internal Cargo!",
+											5
+										);
+									})
+									.catch(function (err) {
+										console.log('erroring line209: ', err);
+									})
+								;
+							}
+							if(curIntCrateType === 'BaseRepair') {
+								if (repairController.repairBase(serverName, curUnit, curIntCrateBaseOrigin)) {
+									dbMapServiceController.unitActions('updateByUnitId', serverName, {unitId: curUnit.unitId, intCargoType: ''})
+										.catch(function (err) {
+											console.log('erroring line209: ', err);
+										})
+									;
+								}
+							}
+						} else {
+							DCSLuaCommands.sendMesgToGroup(
+								curUnit.groupId,
+								serverName,
+								"G: No Internal Crates Onboard!",
+								5
+							);
+						}
+					}
+				}
+			})
+			.catch(function(err) {
+				console.log('err line1072: ', err);
+			})
+		;
+	}
+	if(intCargoType === 'loadJTAC' || intCargoType === 'loadBaseRepair') {
+		proximityController.getLogiTowersProximity(serverName, curUnit.lonLatLoc, 0.2)
+			.then(function (logiProx) {
+				var curLogiName = _.get(logiProx, [0, 'name']);
+				if(logiProx.length) {
+					if(curUnit.inAir) {
+						DCSLuaCommands.sendMesgToGroup(
+							curUnit.groupId,
+							serverName,
+							"G: Please Land Before Attempting Cargo Commands!",
+							5
+						);
+					} else {
+						if(intCargoType === 'loadJTAC') {
+							dbMapServiceController.unitActions('updateByUnitId', serverName, {unitId: curUnit.unitId, intCargoType: '|JTAC|' + curLogiName + '|'})
+								.then(function () {
+									DCSLuaCommands.sendMesgToGroup(
+										curUnit.groupId,
+										serverName,
+										'G: Picked Up A JTAC Internal Crate From ' + curLogiName + '!',
+										5
+									);
+								})
+								.catch(function (err) {
+									console.log('erroring line209: ', err);
+								})
+							;
+						}
+						if(intCargoType === 'loadBaseRepair') {
+							dbMapServiceController.unitActions('updateByUnitId', serverName, {unitId: curUnit.unitId, intCargoType: '|BaseRepair|' + curLogiName + '|'})
+								.then(function () {
+									DCSLuaCommands.sendMesgToGroup(
+										curUnit.groupId,
+										serverName,
+										'G: Picked Up A Base Repair Internal Crate From ' + curLogiName + '!',
+										5
+									);
+								})
+								.catch(function (err) {
+									console.log('erroring line209: ', err);
+								})
+							;
+						}
+					}
+				} else {
+					DCSLuaCommands.sendMesgToGroup(
+						curUnit.groupId,
+						serverName,
+						"G: You are not close enough to a command center!",
+						5
+					);
+				}
+			})
+			.catch(function(err) {
+				console.log('err line1072: ', err);
+			})
+		;
+	}
 });

@@ -149,6 +149,7 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 								_id: _.get(curData, 'name'),
 								name: _.get(curData, 'name'),
 								troopType: null,
+								intCargoType: null,
 								virtCrateType: null,
 								dead: true
 							}
