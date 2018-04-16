@@ -8,7 +8,6 @@ var enableAction = false;
 var allowedHelisForTroops = [
 	'UH-1H',
 	'Mi-8MT',
-	'SA342Mistral',
 	'SA342M',
 	'SA342L'
 ];
@@ -16,7 +15,8 @@ var allowedPlanesForTroops = [
 	'TF-51D',
 	'F-86F Sabre',
 	'MiG-15bis',
-	'L-39ZA'
+	'L-39ZA',
+	'SA342Mistral'
 ];
 var allowedTypesForCratesLight = [
 	'UH-1H'
