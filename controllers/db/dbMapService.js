@@ -150,6 +150,19 @@ exports.srvPlayerActions = function (action, serverName, obj){
 	}
 	if (action === 'update') {
 		return new Promise(function(resolve, reject) {
+			SrvPlayer.update(
+				{_id: obj._id},
+				{$set: obj},
+				function(err, serObj) {
+					if (err) { reject(err) }
+					resolve(serObj);
+				}
+			);
+		});
+	}
+
+	if (action === 'updateFromServer') {
+		return new Promise(function(resolve, reject) {
 			SrvPlayer.find({_id: obj._id}, function (err, serverObj) {
 				var curPly = _.get(serverObj, [0]);
 				if (err) {
