@@ -4,8 +4,8 @@ const groupController = require('../spawn/group');
 const baseSpawnFlagsController = require('../action/baseSpawnFlags');
 const menuUpdateController = require('../menu/menuUpdate');
 
-var replenThreshold = 20; // percentage under max
-var replenTimer = _.random(3600, 7200);
+var replenThreshold = 30; // percentage under max
+var replenTimer = _.random(1800, 5400);
 var AIMaxIdleTime = (5 * 60 * 1000); // 5 mins
 var maxCrateLife = (90 * 60 * 1000); // 90 mins
 
