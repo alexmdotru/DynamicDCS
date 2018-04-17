@@ -318,7 +318,7 @@ _.set(exports, 'checkUnitsToBaseForTroops', function (serverName) {
 							var cId = _.toNumber(key);
 							if(!_.find(unitsInProx, {unitId: cId}) && unit.enabled) {
 								_.set(unit, 'enabled', false);
-								console.log('resetMenuProxUnits: ', curBaseName, cId);
+								// console.log('resetMenuProxUnits: ', curBaseName, cId);
 								//remove logi f10 menu
 								menuUpdateController.logisticsMenu('resetMenu', serverName, unit.data);
 							}
@@ -333,7 +333,7 @@ _.set(exports, 'checkUnitsToBaseForTroops', function (serverName) {
 									});
 									// console.log('A baseTroops: ', curBaseName, cId);
 									//update f10 radio menu
-									console.log('addTroopsMenu: ', curBaseName, cId);
+									// console.log('addTroopsMenu: ', curBaseName, cId);
 									menuUpdateController.logisticsMenu('addTroopsMenu', serverName, unit);
 								}
 							}
