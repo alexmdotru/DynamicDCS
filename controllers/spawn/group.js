@@ -884,8 +884,8 @@ _.set(exports, 'spawnSupportPlane', function (serverName, baseObj, side, farpBas
 		remoteLoc = zoneController.getLonLatFromDistanceDirection(baseLoc, _.random(0, 359), 40);
 	} else {
 		curSpwnUnit = _.cloneDeep(_.first(exports.getRndFromSpawnCat( 'transportAircraft', side, true, true )));
-		// remoteLoc = zoneController.getLonLatFromDistanceDirection(baseLoc, _.get(baseObj, 'spawnAngle'), 70);
-		remoteLoc = zoneController.getLonLatFromDistanceDirection(baseLoc, _.random(0, 359), 70);
+		remoteLoc = zoneController.getLonLatFromDistanceDirection(baseLoc, _.get(baseObj, 'spawnAngle'), 70);
+		// remoteLoc = zoneController.getLonLatFromDistanceDirection(baseLoc, _.random(0, 359), 70);
 	}
 	curGrpObj = _.cloneDeep(curSpwnUnit);
 	_.set(curGrpObj, 'groupId', grpNum);
