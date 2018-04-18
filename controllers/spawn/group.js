@@ -5,8 +5,6 @@ const dbSystemServiceController = require('../db/dbSystemService');
 const DCSLuaCommands = require('../player/DCSLuaCommands');
 const zoneController = require('../proxZone/zone');
 
-var rndSpawnAngle = _.random(0, 359);
-
 _.set(exports, 'spawnGrp', function (grpSpawn, country, category) {
 	return gSpawnCmd = 'coalition.addGroup(' + _.indexOf(constants.countryId, country) + ', Group.Category.' + category + ', ' + grpSpawn + ')';
 });
@@ -883,11 +881,11 @@ _.set(exports, 'spawnSupportPlane', function (serverName, baseObj, side, farpBas
 	if(_.get(baseObj, 'farp')) {
 		curSpwnUnit = _.cloneDeep(_.first(exports.getRndFromSpawnCat( 'transportHeli', side, true, true )));
 		// remoteLoc = zoneController.getLonLatFromDistanceDirection(baseLoc, _.get(baseObj, 'spawnAngle'), 40);
-		remoteLoc = zoneController.getLonLatFromDistanceDirection(baseLoc, rndSpawnAngle, 40);
+		remoteLoc = zoneController.getLonLatFromDistanceDirection(baseLoc, _.random(0, 359), 40);
 	} else {
 		curSpwnUnit = _.cloneDeep(_.first(exports.getRndFromSpawnCat( 'transportAircraft', side, true, true )));
 		// remoteLoc = zoneController.getLonLatFromDistanceDirection(baseLoc, _.get(baseObj, 'spawnAngle'), 70);
-		remoteLoc = zoneController.getLonLatFromDistanceDirection(baseLoc, rndSpawnAngle, 70);
+		remoteLoc = zoneController.getLonLatFromDistanceDirection(baseLoc, _.random(0, 359), 70);
 	}
 	curGrpObj = _.cloneDeep(curSpwnUnit);
 	_.set(curGrpObj, 'groupId', grpNum);
