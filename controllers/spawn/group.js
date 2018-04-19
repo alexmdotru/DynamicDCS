@@ -10,6 +10,12 @@ _.set(exports, 'spawnGrp', function (grpSpawn, country, category) {
 });
 
 _.set(exports, 'spawnStatic', function (serverName, staticSpawn, country, statName, init) {
+
+	return sSpawnCmd = [
+		'coalition.addStaticObject(' + _.indexOf(constants.countryId, country) + ', ' + staticSpawn + ')'
+	];
+
+	/*
 	if (init) {
 		return sSpawnCmd = [
 			'coalition.addStaticObject(' + _.indexOf(constants.countryId, country) + ', ' + staticSpawn + ')'
@@ -20,6 +26,7 @@ _.set(exports, 'spawnStatic', function (serverName, staticSpawn, country, statNa
 			'coalition.addStaticObject(' + _.indexOf(constants.countryId, country) + ', ' + staticSpawn + ')'
 		];
 	}
+	*/
 });
 
 _.set(exports, 'turnOnEWRAuto', function () {
