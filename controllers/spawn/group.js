@@ -497,7 +497,8 @@ _.set(exports, 'grndUnitGroup', function ( groupObj, task, routes ) {
 		'["taskSelected"] = true,' +
 		'["name"] = "' + _.get(groupObj, 'groupName') + '",' +
 		'["visible"] = ' + _.get(groupObj, 'visible', false) + ',' +
-		'["hidden"] = ' + _.get(groupObj, 'hidden', true) + ',' +
+		// '["hidden"] = ' + _.get(groupObj, 'hidden', true) + ',' +
+		'["hidden"] = ' + _.get(groupObj, 'hidden', false) + ',' +
 		'["task"] = ' + _.get(groupObj, 'task', '{}') + ',' +
 		'["units"] = {#UNITS},' +
 		'["category"] = Group.Category.' + _.get(groupObj, 'category') + ',' +
@@ -634,6 +635,8 @@ _.set(exports, 'getRndFromSpawnCat', function (spawnCat, side, spawnShow, spawnA
 	var cPUnits = [];
 	var randomIndex;
 	var unitsChosen = [];
+	var curUnit;
+	var curUnits = [];
 	_.forEach(findUnits, function (unit) {
 		if(_.intersection(_.get(unit, 'country'), curEnabledCountrys).length > 0) {
 			cPUnits.push(unit);
@@ -643,27 +646,36 @@ _.set(exports, 'getRndFromSpawnCat', function (spawnCat, side, spawnShow, spawnA
 		reject('cPUnits are less than zero');
 	}
 	if (spawnAlways) {
-		randomIndex = _.random(0, cPUnits.length-1);
-		if (cPUnits[randomIndex]) {
-			unitsChosen.push(cPUnits[randomIndex]);
-		}
+		randomIndex = _.random(0, cPUnits.length - 1);
 	} else {
 		randomIndex = _.random(0, cPUnits.length);
-		if (cPUnits[randomIndex]) {
-			unitsChosen.push(cPUnits[randomIndex]);
+	}
+
+	curUnit = cPUnits[randomIndex];
+	if (curUnit) {
+		if(curUnit.comboName) {
+			curUnits = _.filter(cPUnits, {comboName: curUnit.comboName});
+		} else {
+			curUnits.push(curUnit);
 		}
-	}
 
-	if(_.get(unitsChosen, [0, 'comboName'])) {
-		unitsChosen = _.filter(cPUnits, {comboName: _.get(unitsChosen, [0, 'comboName'])});
-	}
-	if (spawnShow) {
-		_.forEach(unitsChosen, function (unit) {
-			_.set(unit, 'hidden', false);
-		});
-	}
+		if (curUnits.length > 0) {
+			_.forEach(curUnits, function (cUnit) {
+				for (y=0; y < cUnit.spawnCount; y++) {
+					unitsChosen.push(cUnit);
+				}
+			})
+		}
+		if (spawnShow) {
+			_.forEach(unitsChosen, function (unit) {
+				_.set(unit, 'hidden', false);
+			});
+		}
 
-	return unitsChosen;
+		return unitsChosen;
+	} else {
+		return false;
+	}
 });
 
 _.set(exports, 'spawnSupportVehiclesOnFarp', function ( serverName, baseName, side ) {
@@ -672,7 +684,7 @@ _.set(exports, 'spawnSupportVehiclesOnFarp', function ( serverName, baseName, si
 	var sptArray = [
 		"unarmedAmmo",
 		"unarmedFuel",
-		"unarmedPower"
+		// "unarmedPower"
 	];
 	var curAng = _.cloneDeep(curBase.hdg);
 	if (curAng > 180) {
@@ -717,7 +729,7 @@ _.set(exports, 'spawnSupportBaseGrp', function ( serverName, baseName, side, ini
 	}
 
 	for (var i = 0; i < 3; i++) {
-		spawnArray = _.concat(spawnArray, _.cloneDeep(exports.getRndFromSpawnCat( 'armoredCar', side, false )));
+		spawnArray = _.concat(spawnArray, _.cloneDeep(exports.getRndFromSpawnCat( 'APC', side, false )));
 	}
 
 	return _.compact(spawnArray);

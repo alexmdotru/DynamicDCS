@@ -33,6 +33,10 @@ const UnitDictionarySchema = new Schema({
 			type: Boolean,
 			default: false
 		},
+		spawnCount: {
+			type: Number,
+			default: 1
+		},
 		threatLvl: {
 			type: Number,
 			default: 0

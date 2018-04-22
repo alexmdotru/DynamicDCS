@@ -70,7 +70,7 @@ const UnitSchema = new Schema({
 	},
 	hidden: {
 		type: Boolean,
-		default: true
+		default: false
 	},
 	enabled: {
 		type: Boolean,
