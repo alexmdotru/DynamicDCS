@@ -25,7 +25,10 @@ const ServerSchema = new Schema({
 		defBaseSides: {
 			type: Object
 		},
-		replenThreshold: {
+		replenThresholdFARP: {
+			type: Number
+		},
+		replenThresholdBase: {
 			type: Number
 		},
 		replenTimer: {

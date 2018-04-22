@@ -742,7 +742,7 @@ _.set(exports, 'spawnBaseReinforcementGroup', function (serverName, side, baseNa
 	_.forEach(curBaseSpawnCats, function (tickVal, name) {
 		var curTickVal = _.cloneDeep(tickVal);
 		if(_.includes(baseName, 'FARP')) {
-			curTickVal = tickVal - 1;
+			curTickVal = curTickVal - 1;
 		}
 		if (curTickVal > 0) {
 			for (var i = 0; i < curTickVal; i++) {
@@ -1064,8 +1064,15 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 	var defBaseSides = _.get(curServer, 'defBaseSides');
 	_.forEach(defBaseSides, function (extSide, extName) {
 		var spawnArray = [];
+		var curReplenThreshold;
 		spawnArray = _.concat(spawnArray, exports.spawnSupportBaseGrp(serverName, extName, extSide, true));
-		while (spawnArray.length < curServer.replenThreshold) { //UNCOMMENT THESE
+		if(_.includes(extName, 'FARP')) {
+			curReplenThreshold = curServer.replenThresholdFARP;
+		} else {
+			curReplenThreshold = curServer.replenThresholdBase;
+		}
+
+		while (spawnArray.length < curReplenThreshold) { //UNCOMMENT THESE
 			spawnArray = _.concat(spawnArray, exports.spawnBaseReinforcementGroup(serverName, extSide, extName));
 		}
 		exports.spawnGroup(serverName, spawnArray, extName, extSide);
