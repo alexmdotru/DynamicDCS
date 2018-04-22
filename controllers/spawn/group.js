@@ -735,13 +735,17 @@ _.set(exports, 'spawnSupportBaseGrp', function ( serverName, baseName, side, ini
 	return _.compact(spawnArray);
 });
 
-_.set(exports, 'spawnBaseReinforcementGroup', function (serverName, side) {
+_.set(exports, 'spawnBaseReinforcementGroup', function (serverName, side, baseName) {
 	var curServer = _.get(exports, ['config']);
 	var spawnArray = [];
 	var curBaseSpawnCats = _.get(curServer, 'spwnLimitsPerTick');
 	_.forEach(curBaseSpawnCats, function (tickVal, name) {
-		if (tickVal > 0) {
-			for (var i = 0; i < tickVal; i++) {
+		var curTickVal = _.cloneDeep(tickVal);
+		if(_.includes(baseName, 'FARP')) {
+			curTickVal = tickVal - 1;
+		}
+		if (curTickVal > 0) {
+			for (var i = 0; i < curTickVal; i++) {
 				spawnArray = _.concat(spawnArray, _.cloneDeep(exports.getRndFromSpawnCat( name, side, false )));
 			}
 		}
@@ -1062,7 +1066,7 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 		var spawnArray = [];
 		spawnArray = _.concat(spawnArray, exports.spawnSupportBaseGrp(serverName, extName, extSide, true));
 		while (spawnArray.length < curServer.replenThreshold) { //UNCOMMENT THESE
-			spawnArray = _.concat(spawnArray, exports.spawnBaseReinforcementGroup(serverName, extSide));
+			spawnArray = _.concat(spawnArray, exports.spawnBaseReinforcementGroup(serverName, extSide, extName));
 		}
 		exports.spawnGroup(serverName, spawnArray, extName, extSide);
 
@@ -1125,7 +1129,7 @@ _.set(exports, 'spawnLogisticCmdCenter', function (serverName, staticObj, init, 
 });
 
 _.set(exports, 'replenishUnits', function ( serverName, baseName, side ) {
-	exports.spawnGroup(serverName, exports.spawnBaseReinforcementGroup(serverName, side), baseName, side);
+	exports.spawnGroup(serverName, exports.spawnBaseReinforcementGroup(serverName, side, baseName), baseName, side);
 });
 
 _.set(exports, 'destroyUnit', function ( serverName, unitName ) {
