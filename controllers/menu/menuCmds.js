@@ -691,6 +691,7 @@ _.set(exports, 'unpackCrate', function (serverName, unit, type, special, combo, 
 							tRem = _.size(grpGroups) - exports.maxUnitsStationary;
 						}
 
+						/*
 						_.forEach(grpGroups, function (gUnit) {
 							if (curUnit <= tRem) {
 								_.forEach(gUnit, function(unit) {
@@ -699,11 +700,12 @@ _.set(exports, 'unpackCrate', function (serverName, unit, type, special, combo, 
 											console.log('erroring line462: ', err);
 										})
 									;
-									// groupController.destroyUnit(serverName, unit.name);
+									groupController.destroyUnit(serverName, unit.name);
 								});
 								curUnit++;
 							}
 						});
+						*/
 					})
 					.catch(function (err) {
 						console.log('line 390: ', err);
