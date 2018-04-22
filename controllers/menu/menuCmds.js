@@ -699,7 +699,7 @@ _.set(exports, 'unpackCrate', function (serverName, unit, type, special, combo, 
 											console.log('erroring line462: ', err);
 										})
 									;
-									groupController.destroyUnit(serverName, unit.name);
+									// groupController.destroyUnit(serverName, unit.name);
 								});
 								curUnit++;
 							}
