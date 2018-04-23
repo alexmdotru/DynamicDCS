@@ -731,6 +731,7 @@ _.set(exports, 'unpackCrate', function (serverName, playerUnit, country, type, s
 									_.set(unitStart, 'country', country);
 									_.set(unitStart, 'playerCanDrive', mobile);
 									addHdg = addHdg + 15;
+									console.log('unitStart1: ', unitStart);
 									newSpawnArray.push(unitStart);
 								}
 								/*
@@ -752,7 +753,7 @@ _.set(exports, 'unpackCrate', function (serverName, playerUnit, country, type, s
 								}
 								*/
 							});
-							console.log('SL1: ', serverName, newSpawnArray, playerUnit.coalition);
+							// console.log('SL1: ', serverName, newSpawnArray, playerUnit.coalition);
 							groupController.spawnLogiGroup(serverName, newSpawnArray, playerUnit.coalition);
 						})
 						.catch(function (err) {
@@ -767,7 +768,7 @@ _.set(exports, 'unpackCrate', function (serverName, playerUnit, country, type, s
 							var unitStart;
 							var pCountry = country;
 							var findUnit = _.find(unitDic, {_id: type, enabled: true});
-							console.log('TEST: ', findUnit, pCountry, serverName, playerUnit, type, special, combo, mobile);
+							// console.log('TEST: ', findUnit, pCountry, serverName, playerUnit, type, special, combo, mobile);
 							if ((type === '1L13 EWR' || type === '55G6 EWR' || type === 'Dog Ear radar') && country === 'USA') {
 								pCountry = 'UKRAINE';
 							}
@@ -783,6 +784,7 @@ _.set(exports, 'unpackCrate', function (serverName, playerUnit, country, type, s
 								_.set(unitStart, 'country', pCountry);
 								_.set(unitStart, 'playerCanDrive', mobile);
 								addHdg = addHdg + 15;
+								console.log('unitStart2: ', unitStart);
 								newSpawnArray.push(unitStart);
 							}
 							console.log('SL2: ', serverName, newSpawnArray, playerUnit.coalition);
