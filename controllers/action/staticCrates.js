@@ -64,7 +64,6 @@ _.set(exports, 'unpackCrate', function (serverName, crateObj) { //crateObj is ev
 						// console.log('unpackingCrate: ', curCrate, localCrateNum, grpTypes);
 						if( localCrateNum >=  numCrate) {
 							cCnt = 1;
-							/*
 							_.forEach(_.get(grpTypes, [curCrateType]), function (eCrate) {
 								if ( cCnt <= numCrate) {
 									console.log('delCrate: ',  eCrate._id);
@@ -79,7 +78,6 @@ _.set(exports, 'unpackCrate', function (serverName, crateObj) { //crateObj is ev
 									cCnt ++;
 								}
 							});
-							*/
 
 							if (curCrateSpecial === 'reloadGroup') {
 								console.log('reloadGroup: ', curCrate._id);
