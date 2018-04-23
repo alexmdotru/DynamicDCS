@@ -202,7 +202,7 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 																	repairController.repairBase(serverName, curUnit, curCrateType, curCrate);
 																} else {
 																	msg = "G: Unpacking " + _.toUpper(curCrateSpecial) + " " + curCrateType + "!";
-																	exports.unpackCrate(serverName, curUnit, curCrateType, curCrateSpecial, isCombo, isMobile);
+																	exports.unpackCrate(serverName, curUnit, curCrate, curCrateType, curCrateSpecial, isCombo, isMobile);
 																	groupController.destroyUnit(serverName, curCrate.name);
 																	DCSLuaCommands.sendMesgToGroup(
 																		curUnit.groupId,
@@ -666,7 +666,7 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 	}
 });
 
-_.set(exports, 'unpackCrate', function (serverName, playerUnit, type, special, combo, mobile) {
+_.set(exports, 'unpackCrate', function (serverName, playerUnit, country, type, special, combo, mobile) {
 	if(playerUnit.inAir) {
 		DCSLuaCommands.sendMesgToGroup(
 			playerUnit.groupId,
@@ -728,7 +728,7 @@ _.set(exports, 'unpackCrate', function (serverName, playerUnit, type, special, c
 									_.set(unitStart, 'spwnName', 'DU|' + curPlayer.ucid + '|' + cbUnit.type + '||true|' + mobile + '|' + curPlayer.name + '|' + _.random(1000000, 9999999));
 									_.set(unitStart, 'lonLatLoc', curPlayer.lonLatLoc);
 									_.set(unitStart, 'heading', curUnitHdg);
-									_.set(unitStart, 'country', curPlayer.country);
+									_.set(unitStart, 'country', country);
 									_.set(unitStart, 'playerCanDrive', mobile);
 									addHdg = addHdg + 15;
 									newSpawnArray.push(unitStart);
@@ -765,11 +765,11 @@ _.set(exports, 'unpackCrate', function (serverName, playerUnit, type, special, c
 							var addHdg = 0;
 							var curUnitHdg;
 							var unitStart;
-							var pCountry = curPlayer.country;
+							var pCountry = country;
 							var findUnit = _.find(unitDic, {_id: type, enabled: true});
 							console.log('TEST: ', findUnit, pCountry, serverName, playerUnit, type, special, combo, mobile);
-							if ((type === '1L13 EWR' || type === '55G6 EWR' || type === 'Dog Ear radar') && unit.country === 'USA') {
-								_.set(pCountry, 'country', 'UKRAINE');
+							if ((type === '1L13 EWR' || type === '55G6 EWR' || type === 'Dog Ear radar') && country === 'USA') {
+								pCountry = 'UKRAINE';
 							}
 							for (x=0; x < findUnit.spawnCount; x++) {
 								unitStart = _.cloneDeep(findUnit);
@@ -1078,8 +1078,7 @@ _.set(exports, 'internalCargo', function (serverName, curUnit, curPlayer, intCar
 					} else {
 						if (curIntCrateType) {
 							if(curIntCrateType === 'JTAC') {
-								exports.unpackCrate(serverName, curUnit, crateType, 'jtac', false, true);
-
+								exports.unpackCrate(serverName, curUnit, _.get(constants, ['defCountrys', curUnit.coalition]), crateType, 'jtac', false, true);
 								dbMapServiceController.unitActions('updateByUnitId', serverName, {unitId: curUnit.unitId, intCargoType: ''})
 									.then(function () {
 										DCSLuaCommands.sendMesgToGroup(
