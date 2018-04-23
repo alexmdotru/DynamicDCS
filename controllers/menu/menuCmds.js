@@ -666,7 +666,7 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 	}
 });
 
-_.set(exports, 'unpackCrate', function (serverName, unit, type, special, combo, mobile) {
+_.set(exports, 'unpackCrate', function (serverName, playerUnit, type, special, combo, mobile) {
 	if(unit.inAir) {
 		DCSLuaCommands.sendMesgToGroup(
 			unit.groupId,
@@ -675,7 +675,7 @@ _.set(exports, 'unpackCrate', function (serverName, unit, type, special, combo, 
 			5
 		);
 	} else {
-		dbMapServiceController.srvPlayerActions('read', serverName, {name: unit.playername})
+		dbMapServiceController.srvPlayerActions('read', serverName, {name: playerUnit.playername})
 			.then(function(player) {
 				var curPlayer = _.get(player, [0]);
 				dbMapServiceController.unitActions('readStd', serverName, {playerOwnerId: curPlayer.ucid, playerCanDrive: mobile, isCrate: false, dead: false})
@@ -691,7 +691,6 @@ _.set(exports, 'unpackCrate', function (serverName, unit, type, special, combo, 
 							tRem = _.size(grpGroups) - exports.maxUnitsStationary;
 						}
 
-						/*
 						_.forEach(grpGroups, function (gUnit) {
 							if (curUnit <= tRem) {
 								_.forEach(gUnit, function(unit) {
@@ -705,7 +704,6 @@ _.set(exports, 'unpackCrate', function (serverName, unit, type, special, combo, 
 								curUnit++;
 							}
 						});
-						*/
 					})
 					.catch(function (err) {
 						console.log('line 390: ', err);
@@ -720,16 +718,17 @@ _.set(exports, 'unpackCrate', function (serverName, unit, type, special, combo, 
 							var unitStart;
 							var findUnits = _.filter(unitDic, {comboName: type, enabled: true});
 							_.forEach(findUnits, function (cbUnit) {
+								var curUnitHdg = _.cloneDeep(curUnitHdg);
 								for (x=0; x < cbUnit.spawnCount; x++) {
 									unitStart = _.cloneDeep(cbUnit);
-									curUnitHdg = cbUnit.hdg + addHdg;
+									curUnitHdg = curPlayer.hdg + addHdg;
 									if (curUnitHdg > 359) {
 										curUnitHdg = 15;
 									}
 									_.set(unitStart, 'spwnName', 'DU|' + curPlayer.ucid + '|' + cbUnit.type + '||true|' + mobile + '|' + curPlayer.name + '|' + _.random(1000000, 9999999));
-									_.set(unitStart, 'lonLatLoc', cbUnit.lonLatLoc);
+									_.set(unitStart, 'lonLatLoc', curPlayer.lonLatLoc);
 									_.set(unitStart, 'heading', curUnitHdg);
-									_.set(unitStart, 'country', cbUnit.country);
+									_.set(unitStart, 'country', curPlayer.country);
 									_.set(unitStart, 'playerCanDrive', mobile);
 									addHdg = addHdg + 15;
 									newSpawnArray.push(unitStart);
@@ -761,34 +760,36 @@ _.set(exports, 'unpackCrate', function (serverName, unit, type, special, combo, 
 						})
 					;
 				} else {
-					if ((type === '1L13 EWR' || type === '55G6 EWR' || type === 'Dog Ear radar') && unit.country === 'USA') {
-						_.set(unit, 'country', 'UKRAINE');
-					}
-					for (x=0; x < unit.spawnCount; x++) {
-						unitStart = _.cloneDeep(unit);
-						curUnitHdg = unit.hdg + addHdg;
-						if (curUnitHdg > 359) {
-							curUnitHdg = 15;
-						}
-						_.set(unitStart, 'spwnName', 'DU|' + curPlayer.ucid + '|' + unit.type + '||true|' + mobile + '|' + curPlayer.name + '|' + _.random(1000000, 9999999));
-						_.set(unitStart, 'lonLatLoc', unit.lonLatLoc);
-						_.set(unitStart, 'heading', curUnitHdg);
-						_.set(unitStart, 'country', unit.country);
-						_.set(unitStart, 'playerCanDrive', mobile);
-						addHdg = addHdg + 15;
-						newSpawnArray.push(unitStart);
-					}
-					/*
-					spawnArray = _.concat(spawnArray, {
-						spwnName: 'DU|' + curPlayer.ucid + '|' + type + '|' + special + '|false|' + mobile + '|' + curPlayer.name + '|',
-						type: type,
-						lonLatLoc: unit.lonLatLoc,
-						heading: unit.hdg,
-						country: unit.country,
-						playerCanDrive: mobile,
-						category: "GROUND",
-						hidden: false
-					});*/
+					groupController.getUnitDictionary()
+						.then(function (unitDic) {
+							var addHdg = 0;
+							var curUnitHdg;
+							var unitStart;
+							var pCountry = curPlayer.country;
+							var findUnit = _.find(unitDic, {_id: type, enabled: true});
+							if ((type === '1L13 EWR' || type === '55G6 EWR' || type === 'Dog Ear radar') && unit.country === 'USA') {
+								_.set(pCountry, 'country', 'UKRAINE');
+							}
+							for (x=0; x < findUnit.spawnCount; x++) {
+								unitStart = _.cloneDeep(findUnit);
+								curUnitHdg = curPlayer.hdg + addHdg;
+								if (curUnitHdg > 359) {
+									curUnitHdg = 15;
+								}
+								_.set(unitStart, 'spwnName', 'DU|' + curPlayer.ucid + '|' + unitStart.type + '||true|' + mobile + '|' + curPlayer.name + '|' + _.random(1000000, 9999999));
+								_.set(unitStart, 'lonLatLoc', curPlayer.lonLatLoc);
+								_.set(unitStart, 'heading', curUnitHdg);
+								_.set(unitStart, 'country', pCountry);
+								_.set(unitStart, 'playerCanDrive', mobile);
+								addHdg = addHdg + 15;
+								newSpawnArray.push(unitStart);
+							}
+
+						})
+						.catch(function (err) {
+							console.log('line 394: ', err);
+						})
+					;
 					console.log('SL2: ', serverName, newSpawnArray, unit.coalition);
 					groupController.spawnLogiGroup(serverName, newSpawnArray, unit.coalition);
 				}
