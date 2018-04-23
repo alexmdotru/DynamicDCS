@@ -667,9 +667,9 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 });
 
 _.set(exports, 'unpackCrate', function (serverName, playerUnit, type, special, combo, mobile) {
-	if(unit.inAir) {
+	if(playerUnit.inAir) {
 		DCSLuaCommands.sendMesgToGroup(
-			unit.groupId,
+			playerUnit.groupId,
 			serverName,
 			"G: Please Land Before Attempting Logistic Commands!",
 			5
@@ -752,8 +752,8 @@ _.set(exports, 'unpackCrate', function (serverName, playerUnit, type, special, c
 								}
 								*/
 							});
-							console.log('SL1: ', serverName, newSpawnArray, cbUnit.coalition);
-							groupController.spawnLogiGroup(serverName, newSpawnArray, cbUnit.coalition);
+							console.log('SL1: ', serverName, newSpawnArray, playerUnit.coalition);
+							groupController.spawnLogiGroup(serverName, newSpawnArray, playerUnit.coalition);
 						})
 						.catch(function (err) {
 							console.log('line 394: ', err);
@@ -790,8 +790,8 @@ _.set(exports, 'unpackCrate', function (serverName, playerUnit, type, special, c
 							console.log('line 394: ', err);
 						})
 					;
-					console.log('SL2: ', serverName, newSpawnArray, unit.coalition);
-					groupController.spawnLogiGroup(serverName, newSpawnArray, unit.coalition);
+					console.log('SL2: ', serverName, newSpawnArray, playerUnit.coalition);
+					groupController.spawnLogiGroup(serverName, newSpawnArray, playerUnit.coalition);
 				}
 			})
 			.catch(function (err) {
