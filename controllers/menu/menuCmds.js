@@ -721,12 +721,12 @@ _.set(exports, 'unpackCrate', function (serverName, playerUnit, country, type, s
 								var curUnitHdg = _.cloneDeep(curUnitHdg);
 								for (x=0; x < cbUnit.spawnCount; x++) {
 									unitStart = _.cloneDeep(cbUnit);
-									curUnitHdg = curPlayer.hdg + addHdg;
+									curUnitHdg = playerUnit.hdg + addHdg;
 									if (curUnitHdg > 359) {
 										curUnitHdg = 15;
 									}
 									_.set(unitStart, 'spwnName', 'DU|' + curPlayer.ucid + '|' + cbUnit.type + '||true|' + mobile + '|' + curPlayer.name + '|' + _.random(1000000, 9999999));
-									_.set(unitStart, 'lonLatLoc', curPlayer.lonLatLoc);
+									_.set(unitStart, 'lonLatLoc', playerUnit.lonLatLoc);
 									_.set(unitStart, 'heading', curUnitHdg);
 									_.set(unitStart, 'country', country);
 									_.set(unitStart, 'playerCanDrive', mobile);
@@ -757,15 +757,14 @@ _.set(exports, 'unpackCrate', function (serverName, playerUnit, country, type, s
 							for (x=0; x < findUnit.spawnCount; x++) {
 								unitStart = _.cloneDeep(findUnit);
 								console.log('1: ', unitStart);
-								curUnitHdg = curPlayer.hdg + addHdg;
+								curUnitHdg = playerUnit.hdg + addHdg;
 								if (curUnitHdg > 359) {
 									curUnitHdg = 15;
 								}
-								console.log('2: ', curUnitHdg);
 								_.set(unitStart, 'spwnName', 'DU|' + curPlayer.ucid + '|' + type + '||true|' + mobile + '|' + curPlayer.name + '|' + _.random(1000000, 9999999));
 								console.log('3: ', 'DU|' + curPlayer.ucid + '|' + type + '||true|' + mobile + '|' + curPlayer.name + '|' + _.random(1000000, 9999999));
-								_.set(unitStart, 'lonLatLoc', curPlayer.lonLatLoc);
-								console.log('4: ', curPlayer.lonLatLoc);
+								_.set(unitStart, 'lonLatLoc', playerUnit.lonLatLoc);
+								console.log('4: ', playerUnit.lonLatLoc);
 								_.set(unitStart, 'heading', curUnitHdg);
 								console.log('5: ', curUnitHdg);
 								_.set(unitStart, 'country', pCountry);
