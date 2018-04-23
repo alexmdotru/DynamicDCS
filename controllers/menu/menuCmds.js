@@ -718,7 +718,6 @@ _.set(exports, 'unpackCrate', function (serverName, playerUnit, country, type, s
 							var unitStart;
 							var findUnits = _.filter(unitDic, {comboName: type, enabled: true});
 							_.forEach(findUnits, function (cbUnit) {
-								var curUnitHdg = _.cloneDeep(curUnitHdg);
 								for (x=0; x < cbUnit.spawnCount; x++) {
 									unitStart = _.cloneDeep(cbUnit);
 									curUnitHdg = playerUnit.hdg + addHdg;
