@@ -767,6 +767,7 @@ _.set(exports, 'unpackCrate', function (serverName, playerUnit, type, special, c
 							var unitStart;
 							var pCountry = curPlayer.country;
 							var findUnit = _.find(unitDic, {_id: type, enabled: true});
+							console.log('TEST: ', findUnit, pCountry, serverName, playerUnit, type, special, combo, mobile);
 							if ((type === '1L13 EWR' || type === '55G6 EWR' || type === 'Dog Ear radar') && unit.country === 'USA') {
 								_.set(pCountry, 'country', 'UKRAINE');
 							}
