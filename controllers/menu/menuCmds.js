@@ -734,24 +734,6 @@ _.set(exports, 'unpackCrate', function (serverName, playerUnit, country, type, s
 									console.log('unitStart1: ', unitStart);
 									newSpawnArray.push(unitStart);
 								}
-								/*
-								if (cbUnit.launcher) {
-
-								} else {
-									unitStart = _.cloneDeep(cbUnit);
-									curUnitHdg = unit.hdg + addHdg;
-									if (curUnitHdg > 359) {
-										curUnitHdg = 15;
-									}
-									_.set(unitStart, 'spwnName', 'DU|' + curPlayer.ucid + '|' + cbUnit.type + '||true|' + mobile + '|' + curPlayer.name + '|');
-									_.set(unitStart, 'lonLatLoc', unit.lonLatLoc);
-									_.set(unitStart, 'heading', curUnitHdg);
-									_.set(unitStart, 'country', unit.country);
-									_.set(unitStart, 'playerCanDrive', mobile);
-									addHdg = addHdg + 15;
-									newSpawnArray.push(unitStart);
-								}
-								*/
 							});
 							// console.log('SL1: ', serverName, newSpawnArray, playerUnit.coalition);
 							groupController.spawnLogiGroup(serverName, newSpawnArray, playerUnit.coalition);
@@ -784,7 +766,7 @@ _.set(exports, 'unpackCrate', function (serverName, playerUnit, country, type, s
 								_.set(unitStart, 'country', pCountry);
 								_.set(unitStart, 'playerCanDrive', mobile);
 								addHdg = addHdg + 15;
-								console.log('unitStart2: ', unitStart);
+								console.log('unitStart2: ', _.cloneDeep(unitStart));
 								newSpawnArray.push(unitStart);
 							}
 							console.log('SL2: ', serverName, newSpawnArray, playerUnit.coalition);
