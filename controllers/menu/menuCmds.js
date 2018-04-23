@@ -1057,7 +1057,7 @@ _.set(exports, 'internalCargo', function (serverName, curUnit, curPlayer, intCar
 					} else {
 						if (curIntCrateType) {
 							if(curIntCrateType === 'JTAC') {
-								exports.unpackCrate(serverName, curUnit, _.get(constants, ['defCountrys', curUnit.coalition]), crateType, 'jtac', false, true);
+								exports.unpackCrate(serverName, curUnit, curUnit.country, crateType, 'jtac', false, true);
 								dbMapServiceController.unitActions('updateByUnitId', serverName, {unitId: curUnit.unitId, intCargoType: ''})
 									.then(function () {
 										DCSLuaCommands.sendMesgToGroup(
