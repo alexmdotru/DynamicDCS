@@ -49,7 +49,7 @@ _.set(exports, 'processFiveSecActions', function (serverName, fullySynced) {
 						if (new Date(_.get(crate, 'createdAt', 0)).getTime() + maxCrateLife < new Date().getTime()) {
 							dbMapServiceController.staticCrateActions('delete', serverName, {_id: crate._id})
 								.then(function () {
-									console.log('destroy crate: ', crate.name);
+									console.log('cleanup crate: ', crate.name);
 									groupController.destroyUnit( serverName, crate.name );
 								})
 								.catch(function (err) {
