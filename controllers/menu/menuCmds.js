@@ -785,14 +785,13 @@ _.set(exports, 'unpackCrate', function (serverName, playerUnit, country, type, s
 								addHdg = addHdg + 15;
 								newSpawnArray.push(unitStart);
 							}
-
+							console.log('SL2: ', serverName, newSpawnArray, playerUnit.coalition);
+							groupController.spawnLogiGroup(serverName, newSpawnArray, playerUnit.coalition);
 						})
 						.catch(function (err) {
 							console.log('line 394: ', err);
 						})
 					;
-					console.log('SL2: ', serverName, newSpawnArray, playerUnit.coalition);
-					groupController.spawnLogiGroup(serverName, newSpawnArray, playerUnit.coalition);
 				}
 			})
 			.catch(function (err) {
