@@ -730,6 +730,7 @@ _.set(exports, 'unpackCrate', function (serverName, playerUnit, country, type, s
 									_.set(unitStart, 'country', country);
 									_.set(unitStart, 'playerCanDrive', mobile);
 									addHdg = addHdg + 15;
+									console.log('ah1: ', curUnitHdg, addHdg, playerUnit);
 									newSpawnArray.push(unitStart);
 								}
 							});
@@ -762,6 +763,7 @@ _.set(exports, 'unpackCrate', function (serverName, playerUnit, country, type, s
 								_.set(unitStart, 'country', pCountry);
 								_.set(unitStart, 'playerCanDrive', mobile);
 								addHdg = addHdg + 15;
+								console.log('ah2: ', curUnitHdg, addHdg, playerUnit);
 								newSpawnArray.push(unitStart);
 							}
 							groupController.spawnLogiGroup(serverName, newSpawnArray, playerUnit.coalition);
