@@ -965,6 +965,7 @@ _.set(exports, 'spawnLogiGroup', function (serverName, spawnArray, side) {
 	var curSide;
 	var curSpwnUnit;
 	var sArray = _.compact(_.cloneDeep(spawnArray));
+	console.log('SPAWNLOGI!!!: ', sArray);
 	curGrpObj = _.get(sArray, 0);
 	if (curGrpObj) {
 		grpNum = _.get(curGrpObj, 'groupId', _.random(1000000, 9999999));
