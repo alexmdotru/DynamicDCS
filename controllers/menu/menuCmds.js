@@ -667,7 +667,6 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 });
 
 _.set(exports, 'unpackCrate', function (serverName, playerUnit, country, type, special, combo, mobile) {
-	console.log('start: ', serverName, playerUnit, country, type, special, combo, mobile);
 	if(playerUnit.inAir) {
 		DCSLuaCommands.sendMesgToGroup(
 			playerUnit.groupId,
@@ -711,7 +710,6 @@ _.set(exports, 'unpackCrate', function (serverName, playerUnit, country, type, s
 					})
 				;
 				var newSpawnArray = [];
-				console.log('COMBO: ', combo);
 				if (combo) {
 					groupController.getUnitDictionary()
 						.then(function (unitDic) {
@@ -719,7 +717,6 @@ _.set(exports, 'unpackCrate', function (serverName, playerUnit, country, type, s
 							var curUnitHdg;
 							var unitStart;
 							var findUnits = _.filter(unitDic, {comboName: type, enabled: true});
-							console.log('FU1: ', findUnit);
 							_.forEach(findUnits, function (cbUnit) {
 								for (x=0; x < cbUnit.spawnCount; x++) {
 									unitStart = _.cloneDeep(cbUnit);
@@ -732,7 +729,6 @@ _.set(exports, 'unpackCrate', function (serverName, playerUnit, country, type, s
 									_.set(unitStart, 'heading', curUnitHdg);
 									_.set(unitStart, 'country', country);
 									_.set(unitStart, 'playerCanDrive', mobile);
-									console.log('US1: ', _.cloneDeep(unitStart));
 									addHdg = addHdg + 15;
 									// console.log('ah1: ', curUnitHdg, addHdg, playerUnit);
 									newSpawnArray.push(unitStart);
@@ -752,7 +748,6 @@ _.set(exports, 'unpackCrate', function (serverName, playerUnit, country, type, s
 							var unitStart;
 							var pCountry = country;
 							var findUnit = _.find(unitDic, {_id: type, enabled: true});
-							console.log('FU2: ', findUnit);
 							if ((type === '1L13 EWR' || type === '55G6 EWR' || type === 'Dog Ear radar') && country === 'USA') {
 								pCountry = 'UKRAINE';
 							}
@@ -767,7 +762,6 @@ _.set(exports, 'unpackCrate', function (serverName, playerUnit, country, type, s
 								_.set(unitStart, 'heading', curUnitHdg);
 								_.set(unitStart, 'country', pCountry);
 								_.set(unitStart, 'playerCanDrive', mobile);
-								console.log('US2: ', _.cloneDeep(unitStart));
 								addHdg = addHdg + 15;
 								// console.log('ah2: ', curUnitHdg, addHdg, playerUnit);
 								newSpawnArray.push(unitStart);

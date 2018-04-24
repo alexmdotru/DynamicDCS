@@ -89,7 +89,6 @@ _.set(exports, 'unpackCrate', function (serverName, crateObj) { //crateObj is ev
 								repairController.repairBase(serverName, curPlayerUnit, curCrateType, curCrate);
 							} else {
 								msg = "G: Unpacking " + _.toUpper(curCrateSpecial) + " " + curCrateType + "!";
-								console.log('unpackCrate: ', msg, 'isCombo: ', isCombo);
 								menuCmdsController.unpackCrate(serverName, curPlayerUnit, curCrate.country, curCrateType, curCrateSpecial, isCombo, isMobile);
 								// console.log('singleCrateDestroy: ', curCrate.name);
 								// groupController.destroyUnit(serverName, curCrate.name);
