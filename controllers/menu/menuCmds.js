@@ -667,6 +667,7 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 });
 
 _.set(exports, 'unpackCrate', function (serverName, playerUnit, country, type, special, combo, mobile) {
+	console.log('start: ', serverName, playerUnit, country, type, special, combo, mobile);
 	if(playerUnit.inAir) {
 		DCSLuaCommands.sendMesgToGroup(
 			playerUnit.groupId,
@@ -717,6 +718,7 @@ _.set(exports, 'unpackCrate', function (serverName, playerUnit, country, type, s
 							var curUnitHdg;
 							var unitStart;
 							var findUnits = _.filter(unitDic, {comboName: type, enabled: true});
+							console.log('FU1: ', findUnit);
 							_.forEach(findUnits, function (cbUnit) {
 								for (x=0; x < cbUnit.spawnCount; x++) {
 									unitStart = _.cloneDeep(cbUnit);
@@ -749,6 +751,7 @@ _.set(exports, 'unpackCrate', function (serverName, playerUnit, country, type, s
 							var unitStart;
 							var pCountry = country;
 							var findUnit = _.find(unitDic, {_id: type, enabled: true});
+							console.log('FU2: ', findUnit);
 							if ((type === '1L13 EWR' || type === '55G6 EWR' || type === 'Dog Ear radar') && country === 'USA') {
 								pCountry = 'UKRAINE';
 							}
