@@ -15,7 +15,7 @@ _.set(exports, 'sendMissingUnits', function (serverName, serverUnitArray) {
 				.then(function () {
 					dbMapServiceController.unitActions('read', serverName, {isResync: false, dead: false})
 						.then(function (units) {
-							console.log('DB RECOVERY: ' + units.length + ' Units, Remove 1');
+							console.log('DB RECOVERY UNITS NOT SYNCED: ' + units);
 							var unit = _.get(units, [0]);
 							var curDead;
 							// dont remove units, only add
