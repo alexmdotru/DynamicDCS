@@ -64,22 +64,20 @@ _.set(exports, 'unpackCrate', function (serverName, crateObj) { //crateObj is ev
 						// console.log('unpackingCrate: ', curCrate, localCrateNum, grpTypes);
 						if( localCrateNum >=  numCrate) {
 							cCnt = 1;
-							if (curCrateSpecial !== 'reloadGroup') {
-								_.forEach(_.get(grpTypes, [curCrateType]), function (eCrate) {
-									if ( cCnt <= numCrate) {
-										console.log('delCrate: ',  eCrate._id);
-										dbMapServiceController.staticCrateActions('delete', serverName, {
-											_id: eCrate._id
+							_.forEach(_.get(grpTypes, [curCrateType]), function (eCrate) {
+								if ( cCnt <= numCrate) {
+									console.log('delCrate: ',  eCrate._id);
+									dbMapServiceController.staticCrateActions('delete', serverName, {
+										_id: eCrate._id
+									})
+										.catch(function (err) {
+											console.log('erroring line59: ', err);
 										})
-											.catch(function (err) {
-												console.log('erroring line59: ', err);
-											})
-										;
-										groupController.destroyUnit(serverName, eCrate.name);
-										cCnt ++;
-									}
-								});
-							}
+									;
+									groupController.destroyUnit(serverName, eCrate.name);
+									cCnt ++;
+								}
+							});
 
 							if (curCrateSpecial === 'reloadGroup') {
 								console.log('reloadGroup: ', curCrate._id);
@@ -90,7 +88,7 @@ _.set(exports, 'unpackCrate', function (serverName, crateObj) { //crateObj is ev
 							} else {
 								msg = "G: Unpacking " + _.toUpper(curCrateSpecial) + " " + curCrateType + "!";
 								console.log('unpackCrate: ', msg);
-								menuCmdsController.unpackCrate(serverName, curPlayerUnit, curCrate.country, curCrateType, curCrateSpecial, isCombo, isMobile);
+								menuCmdsController.unpackCrate(serverName, curPlayerUnit, curCrateType, curCrateSpecial, isCombo, isMobile);
 								// console.log('singleCrateDestroy: ', curCrate.name);
 								// groupController.destroyUnit(serverName, curCrate.name);
 								DCSLuaCommands.sendMesgToGroup(
