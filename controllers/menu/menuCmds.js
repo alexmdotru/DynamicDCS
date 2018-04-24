@@ -711,6 +711,7 @@ _.set(exports, 'unpackCrate', function (serverName, playerUnit, country, type, s
 					})
 				;
 				var newSpawnArray = [];
+				console.log('COMBO: ', combo);
 				if (combo) {
 					groupController.getUnitDictionary()
 						.then(function (unitDic) {
@@ -740,7 +741,7 @@ _.set(exports, 'unpackCrate', function (serverName, playerUnit, country, type, s
 							groupController.spawnLogiGroup(serverName, newSpawnArray, playerUnit.coalition);
 						})
 						.catch(function (err) {
-							console.log('line 394: ', err);
+							console.log('line 743: ', err);
 						})
 					;
 				} else {
@@ -774,7 +775,7 @@ _.set(exports, 'unpackCrate', function (serverName, playerUnit, country, type, s
 							groupController.spawnLogiGroup(serverName, newSpawnArray, playerUnit.coalition);
 						})
 						.catch(function (err) {
-							console.log('line 394: ', err);
+							console.log('line 777: ', err);
 						})
 					;
 				}
