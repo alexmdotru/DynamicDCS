@@ -50,7 +50,7 @@ _.set(exports, 'unpackCrate', function (serverName, crateObj) { //crateObj is ev
 					var msg;
 					var curCrate = _.get(crates, [0], {});
 					var numCrate = curCrate.crateAmt;
-					var curCrateSpecial = curCrate.special;
+					var curCrateSpecial = _.get(curCrate, 'special', '');
 					var curCrateType = curCrate.templateName;
 					var isCombo = curCrate.isCombo;
 					var isMobile = curCrate.playerCanDrive;
