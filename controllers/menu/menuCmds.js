@@ -729,6 +729,7 @@ _.set(exports, 'unpackCrate', function (serverName, playerUnit, country, type, s
 									_.set(unitStart, 'heading', curUnitHdg);
 									_.set(unitStart, 'country', country);
 									_.set(unitStart, 'playerCanDrive', mobile);
+									console.log('US: ', _.cloneDeep(unitStart));
 									addHdg = addHdg + 15;
 									// console.log('ah1: ', curUnitHdg, addHdg, playerUnit);
 									newSpawnArray.push(unitStart);
