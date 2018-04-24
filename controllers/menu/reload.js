@@ -13,7 +13,7 @@ _.set(exports, 'reloadSAM', function (serverName, unitCalling, crate) {
 				dbMapServiceController.unitActions('read', serverName, {groupName: closestUnit.groupName, isCrate: false, dead: false})
 					.then(function(samUnits){
 						// console.log('samu: ', samUnits, closestUnit.groupName); closest unit can be the repair truck.... LOL FIX ME
-						if (samUnits.length > 1) {
+						if (samUnits.length) {
 							var curSamType = _.first(samUnits).type;
 							dbSystemServiceController.unitDictionaryActions('read', {_id: curSamType, threatLvl: { $gt: 0 }})
 								.then(function (samUnitDict) {
@@ -39,11 +39,6 @@ _.set(exports, 'reloadSAM', function (serverName, unitCalling, crate) {
 									console.log('line 112: ', err);
 								})
 							;
-						} else if (samUnits.length === 1) {
-							//unit is single, respawn it
-							var curUnit = _.get(samUnits, [0]);
-							groupController.spawnGroup(serverName, [curUnit]);
-							groupController.destroyUnit(serverName, crate.name);
 						}
 					})
 					.catch(function (err) {
