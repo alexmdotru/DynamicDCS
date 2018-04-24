@@ -64,20 +64,22 @@ _.set(exports, 'unpackCrate', function (serverName, crateObj) { //crateObj is ev
 						// console.log('unpackingCrate: ', curCrate, localCrateNum, grpTypes);
 						if( localCrateNum >=  numCrate) {
 							cCnt = 1;
-							_.forEach(_.get(grpTypes, [curCrateType]), function (eCrate) {
-								if ( cCnt <= numCrate) {
-									console.log('delCrate: ',  eCrate._id);
-									dbMapServiceController.staticCrateActions('delete', serverName, {
-										_id: eCrate._id
-									})
-										.catch(function (err) {
-											console.log('erroring line59: ', err);
+							if (curCrateSpecial !== 'reloadGroup') {
+								_.forEach(_.get(grpTypes, [curCrateType]), function (eCrate) {
+									if ( cCnt <= numCrate) {
+										console.log('delCrate: ',  eCrate._id);
+										dbMapServiceController.staticCrateActions('delete', serverName, {
+											_id: eCrate._id
 										})
-									;
-									groupController.destroyUnit(serverName, eCrate.name);
-									cCnt ++;
-								}
-							});
+											.catch(function (err) {
+												console.log('erroring line59: ', err);
+											})
+										;
+										groupController.destroyUnit(serverName, eCrate.name);
+										cCnt ++;
+									}
+								});
+							}
 
 							if (curCrateSpecial === 'reloadGroup') {
 								console.log('reloadGroup: ', curCrate._id);
