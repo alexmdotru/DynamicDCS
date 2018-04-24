@@ -724,7 +724,7 @@ _.set(exports, 'unpackCrate', function (serverName, playerUnit, country, type, s
 									if (curUnitHdg > 359) {
 										curUnitHdg = 15;
 									}
-									_.set(unitStart, 'spwnName', 'DU|' + curPlayer.ucid + '|' + cbUnit.type + '|' + special + '|true|' + mobile + '|' + curPlayer.name + '|' + _.random(1000000, 9999999));
+									_.set(unitStart, 'spwnName', 'DU|' + curPlayer.ucid + '|' + cbUnit.type + '|' + special + '|true|' + mobile + '|' + curPlayer.name + '|');
 									_.set(unitStart, 'lonLatLoc', playerUnit.lonLatLoc);
 									_.set(unitStart, 'heading', curUnitHdg);
 									_.set(unitStart, 'country', country);
@@ -757,7 +757,7 @@ _.set(exports, 'unpackCrate', function (serverName, playerUnit, country, type, s
 								if (curUnitHdg > 359) {
 									curUnitHdg = 15;
 								}
-								_.set(unitStart, 'spwnName', 'DU|' + curPlayer.ucid + '|' + type + '|' + special + '|true|' + mobile + '|' + curPlayer.name + '|' + _.random(1000000, 9999999));
+								_.set(unitStart, 'spwnName', 'DU|' + curPlayer.ucid + '|' + type + '|' + special + '|true|' + mobile + '|' + curPlayer.name + '|');
 								_.set(unitStart, 'lonLatLoc', playerUnit.lonLatLoc);
 								_.set(unitStart, 'heading', curUnitHdg);
 								_.set(unitStart, 'country', pCountry);
