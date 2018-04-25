@@ -16,7 +16,8 @@ var allowedPlanesForTroops = [
 	'F-86F Sabre',
 	'MiG-15bis',
 	'L-39ZA',
-	'SA342Mistral'
+	'SA342Mistral',
+	'SA342Minigun'
 ];
 var allowedTypesForCratesLight = [
 	'UH-1H'
