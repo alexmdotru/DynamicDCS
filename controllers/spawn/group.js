@@ -470,7 +470,9 @@ _.set(exports, 'landHeliRouteTemplate', function ( routes ) {
 _.set(exports, 'grndUnitGroup', function ( groupObj, task, routes ) {
 
 	var curRoute = '';
-	var curTask = '';
+	var curTask = (task) ? task : '{}';
+	var uncontrollable = _.get(groupObj, 'playerCanDrive', false) === false;
+	console.log('uncontrol: ', uncontrollable, curTask);
 
 	// console.log('hidden: ', groupObj);
 
@@ -481,10 +483,6 @@ _.set(exports, 'grndUnitGroup', function ( groupObj, task, routes ) {
 		curRoute = exports.turnOnEWRAuto();
 	} else {
 		curRoute = exports.turnOffDisperseUnderFire();
-	}
-
-	if (task) {
-		curTask = '["task"] = "' + task + '",';
 	}
 
 	return '{' +
@@ -499,11 +497,11 @@ _.set(exports, 'grndUnitGroup', function ( groupObj, task, routes ) {
 		'["visible"] = ' + _.get(groupObj, 'visible', false) + ',' +
 		// '["hidden"] = ' + _.get(groupObj, 'hidden', true) + ',' +
 		'["hidden"] = ' + _.get(groupObj, 'hidden', false) + ',' +
-		'["task"] = ' + _.get(groupObj, 'task', '{}') + ',' +
+		'["uncontrollable"] = ' + uncontrollable + ',' +
+		'["task"] = ' + _.get(groupObj, 'task', curTask) + ',' +
 		'["units"] = {#UNITS},' +
 		'["category"] = Group.Category.' + _.get(groupObj, 'category') + ',' +
 		'["country"] = "' + _.get(groupObj, 'country') + '",' +
-		curTask +
 		curRoute +
 	'}';
 });
