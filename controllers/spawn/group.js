@@ -470,7 +470,7 @@ _.set(exports, 'landHeliRouteTemplate', function ( routes ) {
 _.set(exports, 'grndUnitGroup', function ( groupObj, task, routes ) {
 
 	var curRoute = '';
-	var curTask = (task) ? task : '{}';
+	var curTask = (task) ? task : 'Ground Nothing';
 	var uncontrollable = _.get(groupObj, 'playerCanDrive', false) === false;
 	console.log('uncontrol: ', uncontrollable, curTask);
 
@@ -498,7 +498,9 @@ _.set(exports, 'grndUnitGroup', function ( groupObj, task, routes ) {
 		// '["hidden"] = ' + _.get(groupObj, 'hidden', true) + ',' +
 		'["hidden"] = ' + _.get(groupObj, 'hidden', false) + ',' +
 		'["uncontrollable"] = ' + uncontrollable + ',' +
+		'["tasks"] = {},' +
 		'["task"] = ' + _.get(groupObj, 'task', curTask) + ',' +
+		'["taskSelected"] = true,' +
 		'["units"] = {#UNITS},' +
 		'["category"] = Group.Category.' + _.get(groupObj, 'category') + ',' +
 		'["country"] = "' + _.get(groupObj, 'country') + '",' +
