@@ -716,7 +716,7 @@ _.set(exports, 'unpackCrate', function (serverName, playerUnit, country, type, s
 							var addHdg = 0;
 							var curUnitHdg;
 							var unitStart;
-							var findUnits = _.filter(unitDic, {comboName: type, enabled: true});
+							var findUnits = _.filter(unitDic, {comboName: type});
 							_.forEach(findUnits, function (cbUnit) {
 								for (x=0; x < cbUnit.spawnCount; x++) {
 									unitStart = _.cloneDeep(cbUnit);
@@ -747,7 +747,7 @@ _.set(exports, 'unpackCrate', function (serverName, playerUnit, country, type, s
 							var curUnitHdg;
 							var unitStart;
 							var pCountry = country;
-							var findUnit = _.find(unitDic, {_id: type, enabled: true});
+							var findUnit = _.find(unitDic, {_id: type});
 							if ((type === '1L13 EWR' || type === '55G6 EWR' || type === 'Dog Ear radar') && country === 'USA') {
 								pCountry = 'UKRAINE';
 							}
