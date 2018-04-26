@@ -499,7 +499,7 @@ _.set(exports, 'grndUnitGroup', function ( groupObj, task, routes ) {
 		'["hidden"] = ' + _.get(groupObj, 'hidden', false) + ',' +
 		'["uncontrollable"] = ' + uncontrollable + ',' +
 		'["tasks"] = {},' +
-		'["task"] = ' + _.get(groupObj, 'task', curTask) + ',' +
+		'["task"] = "' + _.get(groupObj, 'task', curTask) + '",' +
 		'["taskSelected"] = true,' +
 		'["units"] = {#UNITS},' +
 		'["category"] = Group.Category.' + _.get(groupObj, 'category') + ',' +
