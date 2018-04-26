@@ -722,14 +722,15 @@ _.set(exports, 'unpackCrate', function (serverName, playerUnit, country, type, s
 									unitStart = _.cloneDeep(cbUnit);
 									curUnitHdg = playerUnit.hdg + addHdg;
 									if (curUnitHdg > 359) {
-										curUnitHdg = 15;
+										curUnitHdg = 30;
+										addHdg = 0;
 									}
 									_.set(unitStart, 'spwnName', 'DU|' + curPlayer.ucid + '|' + cbUnit.type + '|' + special + '|true|' + mobile + '|' + curPlayer.name + '|' + _.random(10000, 99999));
 									_.set(unitStart, 'lonLatLoc', playerUnit.lonLatLoc);
 									_.set(unitStart, 'heading', curUnitHdg);
 									_.set(unitStart, 'country', country);
 									_.set(unitStart, 'playerCanDrive', mobile);
-									addHdg = addHdg + 15;
+									addHdg = addHdg + 30;
 									// console.log('ah1: ', curUnitHdg, addHdg, playerUnit);
 									newSpawnArray.push(unitStart);
 								}
@@ -755,14 +756,15 @@ _.set(exports, 'unpackCrate', function (serverName, playerUnit, country, type, s
 								unitStart = _.cloneDeep(findUnit);
 								curUnitHdg = playerUnit.hdg + addHdg;
 								if (curUnitHdg > 359) {
-									curUnitHdg = 15;
+									curUnitHdg = 30;
+									addHdg = 0;
 								}
 								_.set(unitStart, 'spwnName', 'DU|' + curPlayer.ucid + '|' + type + '|' + special + '|true|' + mobile + '|' + curPlayer.name + '|' + _.random(10000, 99999));
 								_.set(unitStart, 'lonLatLoc', playerUnit.lonLatLoc);
 								_.set(unitStart, 'heading', curUnitHdg);
 								_.set(unitStart, 'country', pCountry);
 								_.set(unitStart, 'playerCanDrive', mobile);
-								addHdg = addHdg + 15;
+								addHdg = addHdg + 30;
 								// console.log('ah2: ', curUnitHdg, addHdg, playerUnit);
 								newSpawnArray.push(unitStart);
 							}
