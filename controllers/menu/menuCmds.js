@@ -713,24 +713,22 @@ _.set(exports, 'unpackCrate', function (serverName, playerUnit, country, type, s
 				if (combo) {
 					groupController.getUnitDictionary()
 						.then(function (unitDic) {
-							var addHdg = 0;
-							var curUnitHdg;
+							var addHdg = 30;
+							var curUnitHdg = playerUnit.hdg;
 							var unitStart;
 							var findUnits = _.filter(unitDic, {comboName: type});
 							_.forEach(findUnits, function (cbUnit) {
 								for (x=0; x < cbUnit.spawnCount; x++) {
 									unitStart = _.cloneDeep(cbUnit);
-									curUnitHdg = playerUnit.hdg + addHdg;
+									curUnitHdg = curUnitHdg + addHdg;
 									if (curUnitHdg > 359) {
 										curUnitHdg = 30;
-										addHdg = 0;
 									}
 									_.set(unitStart, 'spwnName', 'DU|' + curPlayer.ucid + '|' + cbUnit.type + '|' + special + '|true|' + mobile + '|' + curPlayer.name + '|' + _.random(10000, 99999));
 									_.set(unitStart, 'lonLatLoc', playerUnit.lonLatLoc);
 									_.set(unitStart, 'heading', curUnitHdg);
 									_.set(unitStart, 'country', country);
 									_.set(unitStart, 'playerCanDrive', mobile);
-									addHdg = addHdg + 30;
 									// console.log('ah1: ', curUnitHdg, addHdg, playerUnit);
 									newSpawnArray.push(unitStart);
 								}
@@ -744,8 +742,8 @@ _.set(exports, 'unpackCrate', function (serverName, playerUnit, country, type, s
 				} else {
 					groupController.getUnitDictionary()
 						.then(function (unitDic) {
-							var addHdg = 0;
-							var curUnitHdg;
+							var addHdg = 30;
+							var curUnitHdg = playerUnit.hdg;
 							var unitStart;
 							var pCountry = country;
 							var findUnit = _.find(unitDic, {_id: type});
@@ -754,17 +752,15 @@ _.set(exports, 'unpackCrate', function (serverName, playerUnit, country, type, s
 							}
 							for (x=0; x < findUnit.spawnCount; x++) {
 								unitStart = _.cloneDeep(findUnit);
-								curUnitHdg = playerUnit.hdg + addHdg;
+								curUnitHdg = curUnitHdg + addHdg;
 								if (curUnitHdg > 359) {
 									curUnitHdg = 30;
-									addHdg = 0;
 								}
 								_.set(unitStart, 'spwnName', 'DU|' + curPlayer.ucid + '|' + type + '|' + special + '|true|' + mobile + '|' + curPlayer.name + '|' + _.random(10000, 99999));
 								_.set(unitStart, 'lonLatLoc', playerUnit.lonLatLoc);
 								_.set(unitStart, 'heading', curUnitHdg);
 								_.set(unitStart, 'country', pCountry);
 								_.set(unitStart, 'playerCanDrive', mobile);
-								addHdg = addHdg + 30;
 								// console.log('ah2: ', curUnitHdg, addHdg, playerUnit);
 								newSpawnArray.push(unitStart);
 							}
