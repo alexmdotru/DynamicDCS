@@ -20,11 +20,13 @@ _.set(exports, 'reloadSAM', function (serverName, unitCalling, crate) {
 									//unit is multi, count mins, sum them, if true,
 									var curUnitDict = _.get(samUnitDict, [0]);
 									var curReloadArray = curUnitDict.reloadReqArray;
-									// console.log('is unit fully alive: ', curReloadArray.length, ' === ', _.intersection(curReloadArray, _.map(samUnits, 'type')).length);
 									if(curReloadArray.length === _.intersection(curReloadArray, _.map(samUnits, 'type')).length) {
+										/*
 										_.forEach(samUnits, function (unit) {
 											groupController.destroyUnit(serverName, unit.name);
 										});
+										*/
+										//should spawn units with same names
 										groupController.spawnGroup(serverName, samUnits);
 									} else {
 										DCSLuaCommands.sendMesgToGroup(
