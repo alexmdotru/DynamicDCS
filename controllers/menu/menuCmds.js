@@ -1032,7 +1032,7 @@ _.set(exports, 'internalCargo', function (serverName, curUnit, curPlayer, intCar
 		}
 	}
 	if(intCargoType === 'unpack') {
-		proximityController.getLogiTowersProximity(serverName, curUnit.lonLatLoc, 2.5)
+		proximityController.getLogiTowersProximity(serverName, curUnit.lonLatLoc, 1.5)
 			.then(function (logiProx) {
 				var curIntCrateType = _.split(curUnit.intCargoType, '|')[1];
 				var curIntCrateBaseOrigin = _.split(curUnit.intCargoType, '|')[2];
@@ -1041,7 +1041,7 @@ _.set(exports, 'internalCargo', function (serverName, curUnit, curPlayer, intCar
 					DCSLuaCommands.sendMesgToGroup(
 						curUnit.groupId,
 						serverName,
-						"G: You need to move farther away from Command Towers for internal cargo (4km)",
+						"G: You need to move farther away from Command Towers for internal cargo (1.5km)",
 						5
 					);
 				} else {
@@ -1096,7 +1096,7 @@ _.set(exports, 'internalCargo', function (serverName, curUnit, curPlayer, intCar
 		;
 	}
 	if(intCargoType === 'loadJTAC' || intCargoType === 'loadBaseRepair') {
-		proximityController.getLogiTowersProximity(serverName, curUnit.lonLatLoc, 2.5)
+		proximityController.getLogiTowersProximity(serverName, curUnit.lonLatLoc, 1.2)
 			.then(function (logiProx) {
 				var curLogiName = _.get(logiProx, [0, 'name']);
 				if(logiProx.length) {
