@@ -1160,10 +1160,10 @@ _.set(exports, 'healBase', function ( serverName, baseName ) {
 					var curBase = _.get(baseUnit, [0], {});
 					if (curUnit) {
 						_.set(curUnit, 'coalition', _.get(curBase, 'side'));
-						console.log('creating logistics from existing: ', serverName, curUnit, false, curBase, curBase.side);
+						// console.log('creating logistics from existing: ', serverName, curUnit, false, curBase, curBase.side);
 						exports.spawnLogisticCmdCenter(serverName, curUnit, false, curBase, curBase.side);
 					} else {
-						console.log('creating NEW logistics: ', serverName, {}, false, curBase, curBase.side);
+						// console.log('creating NEW logistics: ', serverName, {}, false, curBase, curBase.side);
 						exports.spawnLogisticCmdCenter(serverName, {}, false, curBase, curBase.side);
 					}
 
