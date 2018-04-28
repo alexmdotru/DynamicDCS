@@ -69,7 +69,7 @@ _.set(dBot, 'kickForNoComms', function (curServerName, playerArray, discordUserN
 });
 
 _.set(dBot, 'kickForOpposingSides', function (serverName, playerArray, discordByChannel) {
-	var moveToChan = client.channels.find("name", 'dynamicdcs.com for map');
+	var moveToChan = client.channels.find("name", 'Imposters');
 	_.forEach(exports.Only1ChannelNames, function (chanName) {
 		if(discordByChannel[chanName]) {
 			_.forEach(discordByChannel[chanName], function (vcUser, userName) {
