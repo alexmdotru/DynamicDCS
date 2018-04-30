@@ -392,7 +392,7 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 						}
 
 						if (pObj.cmd === 'reloadGroup') {
-							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, false, 'reloadGroup', pObj.mobile, pObj.mass, 'ammo_cargo');
+							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, false, 'reloadGroup', pObj.mobile, pObj.mass, 'container_cargo');
 						}
 
 						if (pObj.cmd === 'repairBase') {
