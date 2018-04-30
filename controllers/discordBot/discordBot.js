@@ -69,7 +69,7 @@ _.set(dBot, 'kickForNoComms', function (curServerName, playerArray, discordUserN
 });
 
 _.set(dBot, 'kickForOpposingSides', function (serverName, playerArray, discordByChannel) {
-	var moveToChan = client.channels.find("name", 'Imposters');
+	var moveToChan;
 	_.forEach(exports.Only1ChannelNames, function (chanName) {
 		if(discordByChannel[chanName]) {
 			_.forEach(discordByChannel[chanName], function (vcUser, userName) {
@@ -77,6 +77,7 @@ _.set(dBot, 'kickForOpposingSides', function (serverName, playerArray, discordBy
 				if(findCurPlayer) {
 					if (findCurPlayer.side !== 1) {
 						console.log('kick user for wrong side GCI: ', userName);
+						moveToChan = client.channels.find("name", _.first(exports.Only2ChannelNames));
 						vcUser.setVoiceChannel(moveToChan);
 					}
 				}
@@ -90,6 +91,7 @@ _.set(dBot, 'kickForOpposingSides', function (serverName, playerArray, discordBy
 				if(findCurPlayer) {
 					if (findCurPlayer.side !== 2) {
 						console.log('kick user for wrong side GCI: ', userName);
+						moveToChan = client.channels.find("name", _.first(exports.Only1ChannelNames));
 						vcUser.setVoiceChannel(moveToChan);
 					}
 				}
