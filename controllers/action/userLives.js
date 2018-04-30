@@ -11,7 +11,8 @@ exports.capLivesEnabled = [
 	'Su-33',
 	'MiG-29A',
 	'MiG-29S',
-	'M-2000C'
+	'M-2000C',
+	'J-11A'
 ];
 
 exports.casLivesEnabled = [
