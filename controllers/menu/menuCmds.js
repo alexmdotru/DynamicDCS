@@ -17,7 +17,8 @@ exports.maxUnitsStationary = 7;
 exports.spawnLauncherCnt = 3;
 
 _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
-	var defCrate = (_.toNumber(pObj.mass) > 1000)?'iso_container':'iso_container_small';
+	var defCrate = 'iso_container_small';
+	//var defCrate = (_.toNumber(pObj.mass) > 1000)?'iso_container':'iso_container_small';
 	// console.log('process menu cmd: ', pObj);
 	dbMapServiceController.unitActions('read', serverName, {unitId: pObj.unitId})
 		.then(function(units) {
