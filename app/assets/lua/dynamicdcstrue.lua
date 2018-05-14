@@ -1,5 +1,6 @@
 clientEventHandler = {}
 
+--in missionScripting.lua file: dynamicDCS = { require = require }
 function tprint(tbl, indent)
 	if not indent then indent = 0 end
 	for k, v in pairs(tbl) do
@@ -122,6 +123,7 @@ do
 	local staticCache = {}
 	local crateCache = {}
 	local livesCache = {}
+	local sideLockCache = {}
 	local completeAliveNames = {}
 	local updateQue = { ["que"] = {} }
 
@@ -135,7 +137,6 @@ do
 	package.path = package.path .. ";.\\LuaSocket\\?.lua"
 	package.cpath = package.cpath .. ";.\\LuaSocket\\?.dll"
 
-	--in missionScripting.lua file: dynamicDCS = { require = require }
 	require = dynamicDCS.require
 	local socket = require("socket")
 	local JSON = loadfile("Scripts\\JSON.lua")()
@@ -672,6 +673,23 @@ do
 							end
 						else
 							livesCache[curUcid.ucid] = curUcid.val
+							trigger.action.setUserFlag(curUcid.ucid, curUcid.val)
+						end
+					end
+				end
+			end
+			if request.action == "SETSIDELOCK" then
+				env.info('SET SIDE LOCK')
+				if type(request.data) == 'table' then
+					for rIndex = 1, #request.data do
+						local curUcid = request.data[rIndex]
+						if sideLockCache[curUcid.ucid] ~= nil then
+							if sideLockCache[curUcid.ucid] ~= curUcid.val then
+								sideLockCache[curUcid.ucid] = curUcid.val
+								trigger.action.setUserFlag(curUcid.ucid, curUcid.val)
+							end
+						else
+							sideLockCache[curUcid.ucid] = curUcid.val
 							trigger.action.setUserFlag(curUcid.ucid, curUcid.val)
 						end
 					end

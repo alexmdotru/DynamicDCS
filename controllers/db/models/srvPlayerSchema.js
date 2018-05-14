@@ -22,6 +22,12 @@ const srvPlayerSchema = new Schema({
 			max: 2,
 			default: 0
 		},
+		sideLock: {
+			type: Number,
+			min: 0,
+			max: 2,
+			default: 0
+		},
 		slot: {
 			type: String
 		},

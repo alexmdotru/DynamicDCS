@@ -191,6 +191,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 					if (curPly.sessionName !== obj.sessionName) {
 						obj.curCapLives = userLivesController.capDefaultLife;
 						obj.curCasLives = userLivesController.casDefaultLife;
+						obj.sideLock = 0;
 					}
 					curIP = obj.ipaddr;
 					if(obj.ipaddr === ':10308' || obj.ipaddr === '127.0.0.1'){

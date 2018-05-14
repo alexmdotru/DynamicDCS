@@ -1,7 +1,9 @@
 const _ = require('lodash');
+const constants = require('../../constants');
 const dbSystemServiceController = require('../../db/dbSystemService');
 const dbMapServiceController = require('../../db/dbMapService');
 const DCSLuaCommands = require('../../player/DCSLuaCommands');
+const sideLockController = require('../../action/sideLock');
 const webPushCommands = require('../../socketIO/webPush');
 
 _.set(exports, 'processPlayerEvent', function (serverName, sessionName, playerArray) {
@@ -40,7 +42,11 @@ _.set(exports, 'processPlayerEvent', function (serverName, sessionName, playerAr
 									// switching to spectator gets around this, fix this in future please
 									if ((curUnitSide !== curPlyrSide) && curPlyrSide !== 0 && curPlyrSide) {
 										if (curUnitSide) {
-
+											DCSLuaCommands.sendMesgToAll(
+												serverName,
+												curPlyrName + ' Has Switch To ' + constants.side[curPlyrSide],
+												15
+											);
 											//fix refiring
 											/*
                                             iCurObj = {
@@ -92,6 +98,28 @@ _.set(exports, 'processPlayerEvent', function (serverName, sessionName, playerAr
                                             })
                                         ;
                                         */
+									}
+								} else {
+									if(_.includes(player.slot, 'artillery_commander')) {
+										dbMapServiceController.srvPlayerActions('read', serverName, {_id: player.ucid})
+											.then(function (srvPlayer) {
+												var curPlayer = _.first(srvPlayer);
+												if(curPlayer.sideLock === 0) {
+													dbMapServiceController.srvPlayerActions('update', serverName, {_id: player.ucid, sideLock: player.side})
+														.then(function (srvPlayer) {
+															sideLockController.setSideLockFlags(serverName);
+															console.log(player.name + ' is now locked to ' + player.side);
+														})
+														.catch(function (err) {
+															console.log('line120', err);
+														})
+													;
+												}
+											})
+											.catch(function (err) {
+												console.log('line120', err);
+											})
+										;
 									}
 								}
 							})

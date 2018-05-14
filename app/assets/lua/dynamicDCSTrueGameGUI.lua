@@ -9,6 +9,8 @@ local DATA_TIMEOUT_SEC = 0.5
 isLoadLock = false
 isCapLives = false
 isCasLives = false
+isRedLocked = false
+isBlueLocked = false
 
 package.path  = package.path..";.\\LuaSocket\\?.lua;"
 package.cpath = package.cpath..";.\\LuaSocket\\?.dll;"
@@ -38,7 +40,8 @@ capLives = {
 	['Su-33'] = 1,
 	['MiG-29A'] = 1,
 	['MiG-29S'] = 1,
-	['M-2000C'] = 1
+	['M-2000C'] = 1,
+	['J-11A'] = 1
 }
 
 casLives = {
@@ -512,6 +515,8 @@ function dynDCS.shouldAllowSlot(_playerID, _slotID)
 	isCapLives = false
 	isCasLives = false
 	isLoadLock = false
+	isRedLocked = false
+	isBlueLocked = false
 	local _isOpenSlot = dynDCS.getFlagValue('isOpenSlot')
 	--net.log('io'.._playerID..' '.._slotID..' '.._isOpenSlot)
 	if _isOpenSlot ~= nil then
@@ -535,6 +540,8 @@ function dynDCS.shouldAllowSlot(_playerID, _slotID)
 	local _baseFlag = dynDCS.getFlagValue(curBaseName)
 	local _ucidFlagCap = dynDCS.getFlagValue(curUcid..'_CAP')
 	local _ucidFlagCas = dynDCS.getFlagValue(curUcid..'_CAS')
+	local _ucidFlagRed = dynDCS.getFlagValue(curUcid..'_1')
+	local _ucidFlagBlue = dynDCS.getFlagValue(curUcid..'_2')
 	--net.log(curBaseName.."_".._unitId..' flag:'.._baseFlag..' uSide:'..curSide..' ucidFlag: '.._ucidFlag..' ucid:'..curUcid)
 	if _baseFlag == curSide then
 		--net.log('STUFFF '..capLives[curType]..' - '..curType..' ucid: '.._ucidFlag)
@@ -546,6 +553,16 @@ function dynDCS.shouldAllowSlot(_playerID, _slotID)
 		if _ucidFlagCas == 1 and casLives[curType] == 1 then
 			--net.log('User Flagged For Cap Lives Used Up')
 			isCasLives = true
+			return false
+		end
+		if _ucidFlagRed == 1 and _baseFlag == 2 then
+			net.log('User red locked')
+			isRedLocked = true
+			return false
+		end
+		if _ucidFlagBlue == 1 and _baseFlag == 1 then
+			net.log('User blue locked')
+			isBlueLocked = true
 			return false
 		end
 		--net.log('Base Slot Open')
@@ -566,6 +583,10 @@ dynDCS.rejectPlayer = function(playerID)
 			_chatMessage = "***Slot DISABLED, Your Modern CAS Lives Are Used Up***"
 		elseif (isCasLives) then
 			_chatMessage = "***Slot DISABLED, Your Modern CAS Lives Are Used Up***"
+		elseif (isRedLocked) then
+			_chatMessage = "***Slot DISABLED, You Are Locked To Red Side This Session***"
+		elseif (isBlueLocked) then
+			_chatMessage = "***Slot DISABLED, You Are Locked To Blue Side This Session***"
 		else
 			_chatMessage = "***Slot DISABLED, Capture This Airport***"
 		end
