@@ -6,11 +6,12 @@ local updateQue = {["que"] = {} }
 local PORT = 3002
 local DATA_TIMEOUT_SEC = 0.5
 
-isLoadLock = false
 isCapLives = false
 isCasLives = false
+isLoadLock = false
 isRedLocked = false
 isBlueLocked = false
+curColor = ''
 
 package.path  = package.path..";.\\LuaSocket\\?.lua;"
 package.cpath = package.cpath..";.\\LuaSocket\\?.dll;"
@@ -529,19 +530,31 @@ function dynDCS.shouldAllowSlot(_playerID, _slotID)
 		isLoadLock = true
 		return false
 	end
+
+	local curUcid = net.get_player_info(_playerID, 'ucid')
+	local _ucidFlagRed = dynDCS.getFlagValue(curUcid..'_1')
+	local _ucidFlagBlue = dynDCS.getFlagValue(curUcid..'_2')
 	local _unitId = dynDCS.getUnitId(_slotID)
 	if _unitId == nil then
+		local curColor = _slotID:split('_')[3]
+		net.log('cu: '..curColor..' | '.._ucidFlagRed.. ' | '.._ucidFlagBlue)
+		if _ucidFlagRed == 1 and curColor == 'blue' then
+			isRedLocked = true
+			return false
+		end
+		if _ucidFlagBlue == 1 and curColor == 'red' then
+			isBlueLocked = true
+			return false
+		end
 		return true
 	end
+
 	local curSide = coalitionLookup[DCS.getUnitProperty(_slotID, DCS.UNIT_COALITION)]
 	local curType = DCS.getUnitProperty(_slotID, DCS.UNIT_TYPE)
 	local curBaseName = DCS.getUnitProperty(_slotID, DCS.UNIT_NAME):split(' #')[1]:split("_Extension")[1]
-	local curUcid = net.get_player_info(_playerID, 'ucid')
 	local _baseFlag = dynDCS.getFlagValue(curBaseName)
 	local _ucidFlagCap = dynDCS.getFlagValue(curUcid..'_CAP')
 	local _ucidFlagCas = dynDCS.getFlagValue(curUcid..'_CAS')
-	local _ucidFlagRed = dynDCS.getFlagValue(curUcid..'_1')
-	local _ucidFlagBlue = dynDCS.getFlagValue(curUcid..'_2')
 	--net.log(curBaseName.."_".._unitId..' flag:'.._baseFlag..' uSide:'..curSide..' ucidFlag: '.._ucidFlag..' ucid:'..curUcid)
 	if _baseFlag == curSide then
 		--net.log('STUFFF '..capLives[curType]..' - '..curType..' ucid: '.._ucidFlag)
@@ -598,6 +611,7 @@ dynDCS.onPlayerTryChangeSlot = function(playerID, side, slotID)
 	--net.log("SLOT - allowed -  playerid: "..playerID.." side:"..side.." slot: "..slotID)
 	if  DCS.isServer() and DCS.isMultiplayer() then
 		if  (side ~=0 and  slotID ~='' and slotID ~= nil)  then
+			net.log('netslot '..slotID)
 			local _allow = dynDCS.shouldAllowSlot(playerID,slotID)
 			if not _allow then
 				dynDCS.rejectPlayer(playerID)
