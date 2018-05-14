@@ -2,7 +2,7 @@ const	_ = require('lodash');
 const dbMapServiceController = require('../db/dbMapService');
 
 _.set(exports, 'setSideLockFlags', function (serverName) {
-	console.log('SETSIDELOCKGFLAGS ');
+	// console.log('SETSIDELOCKGFLAGS ');
 	var playerSideLockTable = [];
 	dbMapServiceController.statSessionActions('readLatest', serverName, {})
 		.then(function (latestSession) {
@@ -30,7 +30,7 @@ _.set(exports, 'setSideLockFlags', function (serverName) {
 							"data": playerSideLockTable
 						};
 						actionObj = {actionObj: sendClient, queName: 'clientArray'};
-						console.log('AOBJ: ', playerSideLockTable);
+						// console.log('AOBJ: ', playerSideLockTable);
 						dbMapServiceController.cmdQueActions('save', serverName, actionObj)
 							.catch(function (err) {
 								console.log('erroring line41: ', err);

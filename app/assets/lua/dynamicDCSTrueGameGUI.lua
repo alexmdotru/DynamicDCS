@@ -537,7 +537,7 @@ function dynDCS.shouldAllowSlot(_playerID, _slotID)
 	local _unitId = dynDCS.getUnitId(_slotID)
 	if _unitId == nil then
 		local curColor = _slotID:split('_')[3]
-		net.log('cu: '..curColor..' | '.._ucidFlagRed.. ' | '.._ucidFlagBlue)
+		--net.log('cu: '..curColor..' | '.._ucidFlagRed.. ' | '.._ucidFlagBlue)
 		if _ucidFlagRed == 1 and curColor == 'blue' then
 			isRedLocked = true
 			return false
@@ -569,12 +569,12 @@ function dynDCS.shouldAllowSlot(_playerID, _slotID)
 			return false
 		end
 		if _ucidFlagRed == 1 and _baseFlag == 2 then
-			net.log('User red locked')
+			--net.log('User red locked')
 			isRedLocked = true
 			return false
 		end
 		if _ucidFlagBlue == 1 and _baseFlag == 1 then
-			net.log('User blue locked')
+			--net.log('User blue locked')
 			isBlueLocked = true
 			return false
 		end
@@ -611,7 +611,7 @@ dynDCS.onPlayerTryChangeSlot = function(playerID, side, slotID)
 	--net.log("SLOT - allowed -  playerid: "..playerID.." side:"..side.." slot: "..slotID)
 	if  DCS.isServer() and DCS.isMultiplayer() then
 		if  (side ~=0 and  slotID ~='' and slotID ~= nil)  then
-			net.log('netslot '..slotID)
+			--net.log('netslot '..slotID)
 			local _allow = dynDCS.shouldAllowSlot(playerID,slotID)
 			if not _allow then
 				dynDCS.rejectPlayer(playerID)
