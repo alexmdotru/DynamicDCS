@@ -30,11 +30,12 @@ _.set(exports, 'processSelfKill', function (serverName, sessionName, eventObj) {
 				})
 			;
 		}
-
+		/*
 		DCSLuaCommands.sendMesgToAll(
 			serverName,
 			_.get(iCurObj, 'msg'),
 			15
 		);
+		*/
 	}
 });

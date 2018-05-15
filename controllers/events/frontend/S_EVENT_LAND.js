@@ -89,8 +89,8 @@ _.set(exports, 'processEventLand', function (serverName, sessionName, eventObj) 
 								dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 							}
 
-							DCSLuaCommands.sendMesgToCoalition(
-								_.get(iCurObj, 'displaySide'),
+							DCSLuaCommands.sendMesgToGroup(
+								_.get(curIUnit, 'groupId'),
 								serverName,
 								_.get(iCurObj, 'msg'),
 								5

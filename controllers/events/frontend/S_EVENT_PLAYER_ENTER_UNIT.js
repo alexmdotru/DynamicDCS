@@ -36,12 +36,14 @@ _.set(exports, 'processEventPlayerEnterUnit', function (serverName, sessionName,
 							}
 							userLivesController.updateServerLives(serverName, curIUnit);
 							menuUpdateController.logisticsMenu('resetMenu', serverName, curIUnit);
+							/*
 							DCSLuaCommands.sendMesgToCoalition(
 								_.get(iCurObj, 'displaySide'),
 								serverName,
 								_.get(iCurObj, 'msg'),
 								5
 							);
+							*/
 						}
 					}
 				})

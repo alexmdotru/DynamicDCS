@@ -28,7 +28,8 @@ _.set(exports, 'processDisconnect', function (serverName, sessionName, eventObj)
 				})
 			;
 		}
-		DCSLuaCommands.sendMesgToAll(
+		DCSLuaCommands.sendMesgToCoalition(
+			eventObj.data.arg3,
 			serverName,
 			_.get(iCurObj, 'msg'),
 			5

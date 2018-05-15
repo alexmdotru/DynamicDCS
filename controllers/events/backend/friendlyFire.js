@@ -42,9 +42,10 @@ _.set(exports, 'processFriendlyFire', function (serverName, sessionName, eventOb
 
 		// console.log('tplayer: ', tPlayer, eventObj);
 		mesg = 'A: ' + constants.side[iPlayer.side] +' ' + iPlayer.name + ' has accidentally hit ' + _.get(tPlayer, 'name', 'friendly unit') + ' with a ' + _.get(eventObj, 'data.arg2', '?') + ' - 100pts';
-		DCSLuaCommands.sendMesgToAll(
+		DCSLuaCommands.sendMesgToCoalition(
+			iPlayer.side,
 			serverName,
-			mesg,
+			_.get(iCurObj, 'msg'),
 			15
 		);
 	}

@@ -31,8 +31,8 @@ _.set(exports, 'processEventRefueling', function (serverName, sessionName, event
 								webPushCommands.sendToCoalition(serverName, {payload: {action: eventObj.action, data: _.cloneDeep(iCurObj)}});
 								dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 							}
-							DCSLuaCommands.sendMesgToCoalition(
-								_.get(iCurObj, 'displaySide'),
+							DCSLuaCommands.sendMesgToGroup(
+								_.get(curIUnit, 'groupId'),
 								serverName,
 								_.get(iCurObj, 'msg'),
 								5

@@ -7,10 +7,12 @@ _.set(exports, 'processConnect', function (serverName, sessionName, eventObj) {
 	_.set(eventObj, ['data', 'mesg'], mesg);
 	webPushCommands.sendToAll(serverName, {payload: eventObj});
 	// "connect", playerID, name - no ucid lookup yet
+	/*
 	DCSLuaCommands.sendMesgToAll(
 		serverName,
 		mesg,
 		5
 	);
+	*/
 });
 

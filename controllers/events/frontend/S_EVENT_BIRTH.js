@@ -35,12 +35,14 @@ _.set(exports, 'processEventBirth', function (serverName, sessionName, eventObj)
 									console.log('line35', err);
 								})
 							;
+							/*
 							DCSLuaCommands.sendMesgToCoalition(
 								_.get(iCurObj, 'displaySide'),
 								serverName,
 								_.get(iCurObj, 'msg'),
 								5
 							);
+							*/
 						}
 					}
 				})
