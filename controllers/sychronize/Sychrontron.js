@@ -4,6 +4,7 @@ const groupController = require('../spawn/group');
 const DCSLuaCommands = require('../player/DCSLuaCommands');
 const menuUpdateController = require('../menu/menuUpdate');
 const crateController = require('../spawn/crate');
+const sideLockController = require('../action/sideLock');
 const taskController = require('../action/task');
 
 var mesg;
@@ -122,6 +123,7 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 								exports.isServerSynced = true;
 								isServerFresh = false;
 								DCSLuaCommands.setIsOpenSlotFlag(serverName, 1);
+								sideLockController.setSideLockFlags(serverName);
 							} else {
 								console.log('failing  !exports.isServerSynced && units.length > 500', !exports.isServerSynced, ' && ', units.length > 500);
 							}

@@ -105,7 +105,11 @@ _.set(exports, 'processPlayerEvent', function (serverName, sessionName, playerAr
 											.then(function (srvPlayer) {
 												var curPlayer = _.first(srvPlayer);
 												if(curPlayer.sideLock === 0) {
-													dbMapServiceController.srvPlayerActions('update', serverName, {_id: player.ucid, sideLock: player.side})
+													dbMapServiceController.srvPlayerActions('update', serverName, {
+														_id: player.ucid,
+														sideLock: player.side,
+														sideLockTime: new Date().getTime() + (60 * 60 * 1000)
+													})
 														.then(function (srvPlayer) {
 															sideLockController.setSideLockFlags(serverName);
 															console.log(player.name + ' is now locked to ' + player.side);

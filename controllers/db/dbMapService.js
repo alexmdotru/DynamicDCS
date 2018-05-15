@@ -189,9 +189,14 @@ exports.srvPlayerActions = function (action, serverName, obj){
 					});
 				} else {
 					if (curPly.sessionName !== obj.sessionName) {
+						var curTime =  new Date().getTime();
 						obj.curCapLives = userLivesController.capDefaultLife;
 						obj.curCasLives = userLivesController.casDefaultLife;
-						obj.sideLock = 0;
+						// console.log('ctl: ', curPly.sideLockTime, curTime, curPly.sideLockTime < curTime);
+						if (curPly.sideLockTime < curTime) {
+							obj.sideLockTime = curTime + oneHour;
+							obj.sideLock = 0;
+						}
 					}
 					curIP = obj.ipaddr;
 					if(obj.ipaddr === ':10308' || obj.ipaddr === '127.0.0.1'){
