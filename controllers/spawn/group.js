@@ -952,10 +952,10 @@ _.set(exports, 'spawnBomberPlane', function (serverName, playerUnitObj, bomberOb
 	dbMapServiceController.baseActions('getClosestEnemyBase', serverName, { unitLonLatLoc: playerUnitObj.lonLatLoc, playerSide: playerUnitObj.coalition})
 		.then(function (closeBase) {
 			// console.log('CB: ', closeBase);
-			remoteLoc = zoneController.getLonLatFromDistanceDirection(closeBase.centerLoc, closeBase.hdg, curSpwnUnit.spawnDistance);
+			remoteLoc = zoneController.getLonLatFromDistanceDirection(closeBase.centerLoc, closeBase.spawnAngle, curSpwnUnit.spawnDistance);
 
 			curGrpObj = _.cloneDeep(curSpwnUnit);
-			_.set(curGrpObj, 'groupName', curTkrName);
+			_.set(curGrpObj, 'groupName', curTkrName + '#' + _.random(1000000, 9999999));
 			_.set(curGrpObj, 'country', curCountry);
 			_.set(curGrpObj, 'category', curCategory);
 			_.set(curGrpObj, 'routeLocs', [
@@ -966,7 +966,7 @@ _.set(exports, 'spawnBomberPlane', function (serverName, playerUnitObj, bomberOb
 			curGroupSpawn = exports.grndUnitGroup( curGrpObj, 'CAS', exports.bombersPlaneRouteTemplate(curGrpObj));
 
 			_.set(curSpwnUnit, 'lonLatLoc', remoteLoc);
-			_.set(curSpwnUnit, 'name', curTkrName);
+			_.set(curSpwnUnit, 'name', curTkrName + '#' + _.random(1000000, 9999999));
 			_.set(curSpwnUnit, 'playerCanDrive', false);
 			_.set(curSpwnUnit, 'hidden', false);
 
@@ -985,7 +985,7 @@ _.set(exports, 'spawnBomberPlane', function (serverName, playerUnitObj, bomberOb
 			var actionObj = {actionObj: sendClient, queName: 'clientArray'};
 			dbMapServiceController.cmdQueActions('save', serverName, actionObj)
 				.then(function () {
-					var mesg = 'C: ' + bomberObj.type + ' Bomber is commencing its run ' + playerUnitObj.hdg + ' from ' + closeBase.name + ' ' + bomberObj.details;
+					var mesg = 'C: ' + bomberObj.type + ' Bomber is commencing its run BRA ' + closeBase.spawnAngle + ' from ' + closeBase.name + ' ' + bomberObj.details;
 					DCSLuaCommands.sendMesgToCoalition(
 						playerUnitObj.coalition,
 						serverName,
