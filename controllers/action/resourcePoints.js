@@ -9,8 +9,7 @@ _.set(exports, 'spendResourcePoints', function (serverName, player, rsCost, rsIt
 			var currentObjUpdate;
 			var curUnit = _.get(cUnit, [0]);
 			var curName = 'AI|' + _.get(itemObj, 'name', '') + '|';
-			// if (curUnit.inAir) {
-			if (true) {
+			if (curUnit.inAir) {
 				return dbMapServiceController.unitActions('read', serverName, {_id: curName})
 					.then(function(unitExist) {
 						if(unitExist.length > 0 && rsItem === 'Tanker') {
