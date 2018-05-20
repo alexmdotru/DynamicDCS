@@ -125,6 +125,108 @@ _.set(exports, 'turnOffDisperseUnderFire', function () {
 		'},';
 });
 
+_.set(exports, 'bombersPlaneRouteTemplate', function (routes) {
+	return '' +
+		'["route"] = {' +
+			'["points"] = {' +
+				'[1] = {' +
+					'["alt"] = ' + _.get(routes, 'alt') + ',' +
+					'["action"] = "Turning Point",' +
+					'["alt_type"] = "BARO",' +
+					'["speed"] = ' + _.get(routes, 'speed') + ',' +
+					'["task"] = {' +
+						'["id"] = "ComboTask",' +
+						'["params"] = {' +
+							'["tasks"] = {' +
+								'[1] = {' +
+									'["number"] = 1,' +
+									'["auto"] = true,' +
+									'["id"] = "EngageTargets",' +
+									'["enabled"] = true,' +
+									'["key"] = "CAS",' +
+									'["params"] = {' +
+										'["targetTypes"] = {' +
+											'[1] = "Helicopters",' +
+											'[2] = "Ground Units",' +
+											'[3] = "Light armed ships",' +
+										'},' +
+										'["priority"] = 0,' +
+									'},' +
+								'},' +
+								'[2] = {' +
+									'["number"] = 2,' +
+									'["auto"] = true,' +
+									'["id"] = "WrappedAction",' +
+									'["enabled"] = true,' +
+									'["params"] = {' +
+										'["action"] = {' +
+											'["id"] = "EPLRS",' +
+											'["params"] = {' +
+												'["value"]=true,' +
+												'["groupId"]=5,' +
+											'},' +
+										'},' +
+									'},' +
+								'},' +
+								'[3] = {' +
+									'["number"] = 3,' +
+									'["auto"] = false,' +
+									'["id"] = "WrappedAction",' +
+									'["enabled"] = true,' +
+									'["params"] = {' +
+										'["action"] = {' +
+											'["id"] = "Option",' +
+											'["params"] = {' +
+												'["value"]=0,' +
+												'["name"]=0,' +
+											'},' +
+										'},' +
+									'},' +
+								'},' +
+								'[4] = {' +
+									'["number"] = 4,' +
+									'["auto"] = false,' +
+									'["id"] = "WrappedAction",' +
+									'["enabled"] = true,' +
+									'["params"] = {' +
+										'["action"] = {' +
+											'["id"] = "Option",' +
+											'["params"] = {' +
+												'["value"]=2,' +
+												'["name"]=1,' +
+											'},' +
+										'},' +
+									'},' +
+								'},' +
+							'},' +
+						'},' +
+					'},' +
+					'["type"] = "Turning Point",' +
+					'["x"] = coord.LLtoLO(' + _.get(routes, ['routeLocs', 0, 1]) + ', ' + _.get(routes, ['routeLocs', 0, 0]) + ').x, ' +
+					'["y"] = coord.LLtoLO(' + _.get(routes, ['routeLocs', 0, 1]) + ', ' + _.get(routes, ['routeLocs', 0, 0]) + ').z, ' +
+					'["speed_locked"] = true,' +
+				'},' +
+				'[2]={' +
+					'["alt"] = ' + _.get(routes, 'alt') + ',' +
+					'["action"] = "Turning Point",' +
+					'["alt_type"] = "BARO",' +
+					'["speed"] = ' + _.get(routes, 'speed') + ',' +
+					'["task"] = {' +
+						'["id"] = "ComboTask",' +
+						'["params"] = {' +
+							'["tasks"]={}' +
+						'},' +
+					'},' +
+					'["type"] = "Turning Point",' +
+					'["x"] = coord.LLtoLO(' + _.get(routes, ['routeLocs', 1, 1]) + ', ' + _.get(routes, ['routeLocs', 1, 0]) + ').x, ' +
+					'["y"] = coord.LLtoLO(' + _.get(routes, ['routeLocs', 1, 1]) + ', ' + _.get(routes, ['routeLocs', 1, 0]) + ').z, ' +
+					'["speed_locked"] = true,' +
+				'},' +
+			'},' +
+		'},'
+	;
+});
+
 _.set(exports, 'awacsPlaneRouteTemplate', function (routes) {
 	return '' +
 		'["route"] = {' +
@@ -523,6 +625,85 @@ _.set(exports, 'grndUnitTemplate', function ( unitObj ) {
 	;
 });
 
+_.set(exports, 'b1bTemplate', function ( unitObj ) {
+	var curAirTemplate = '{' +
+		'["x"] = coord.LLtoLO(' + _.get(unitObj, ['lonLatLoc', 1]) + ', ' +  _.get(unitObj, ['lonLatLoc', 0]) + ').x, ' +
+		'["y"] = coord.LLtoLO(' + _.get(unitObj, ['lonLatLoc', 1]) + ', ' +  _.get(unitObj, ['lonLatLoc', 0]) + ').z, ' +
+		'["type"] = "B-1B",' +
+		'["name"] = "' + _.get(unitObj, 'name') + '",' +
+		// '["unitId"] = ' + _.get(unitObj, 'unitId') + ',' +
+		'["heading"] = ' + _.get(unitObj, 'heading', 0) + ',' +
+		'["skill"] = "' + _.get(unitObj, 'skill', "Excellent") + '",' +
+		'["hardpoint_racks"] = true,' +
+		'["payload"]={' +
+			'["pylons"]={' +
+				'[1] = {' +
+					'["CLSID"] = "B-1B_Mk-84*8",' +
+				'},' +
+				'[2] = {' +
+					'["CLSID"] = "GBU-31V3B*8",' +
+				'},' +
+				'[3] = {' +
+					'["CLSID"] = "B-1B_Mk-84*8",' +
+				'},' +
+			'},' +
+			'["fuel"] = "88450",' +
+			'["flare"] = 30,' +
+			'["chaff"] = 60,' +
+			'["gun"] = 100,' +
+		'},' +
+	'},';
+
+	return curAirTemplate;
+});
+
+_.set(exports, 'su24mTemplate', function ( unitObj ) {
+	var curAirTemplate = '{' +
+		'["x"] = coord.LLtoLO(' + _.get(unitObj, ['lonLatLoc', 1]) + ', ' +  _.get(unitObj, ['lonLatLoc', 0]) + ').x, ' +
+		'["y"] = coord.LLtoLO(' + _.get(unitObj, ['lonLatLoc', 1]) + ', ' +  _.get(unitObj, ['lonLatLoc', 0]) + ').z, ' +
+		'["type"] = "Su-24M",' +
+		'["name"] = "' + _.get(unitObj, 'name') + '",' +
+		// '["unitId"] = ' + _.get(unitObj, 'unitId') + ',' +
+		'["heading"] = ' + _.get(unitObj, 'heading', 0) + ',' +
+		'["skill"] = "' + _.get(unitObj, 'skill', "Excellent") + '",' +
+		'["hardpoint_racks"] = true,' +
+		'["payload"]={' +
+			'["pylons"]={' +
+				'[1] = {' +
+					'["CLSID"] = "{3C612111-C7AD-476E-8A8E-2485812F4E5C}",' +
+				'},' +
+				'[2] = {' +
+					'["CLSID"] = "{KAB_1500Kr_LOADOUT}",' +
+				'},' +
+				'[3] = {' +
+					'["CLSID"] = "{E2C426E3-8B10-4E09-B733-9CDC26520F48}",' +
+				'},' +
+				'[4] = {' +
+					'["CLSID"] = "{KAB_1500Kr_LOADOUT}",' +
+				'},' +
+				'[5] = {' +
+					'["CLSID"] = "{3C612111-C7AD-476E-8A8E-2485812F4E5C}",' +
+				'},' +
+				'[6] = {' +
+					'["CLSID"] = "{E2C426E3-8B10-4E09-B733-9CDC26520F48}",' +
+				'},' +
+				'[7] = {' +
+					'["CLSID"] = "{KAB_1500Kr_LOADOUT}",' +
+				'},' +
+				'[8] = {' +
+					'["CLSID"] = "{3C612111-C7AD-476E-8A8E-2485812F4E5C}",' +
+				'},' +
+			'},' +
+			'["fuel"] = "11700",' +
+			'["flare"] = 96,' +
+			'["chaff"] = 96,' +
+			'["gun"] = 100,' +
+		'},' +
+	'},';
+
+	return curAirTemplate;
+});
+
 _.set(exports, 'airUnitTemplate', function ( unitObj ) {
 	var curAirTemplate = '{' +
 		'["x"] = coord.LLtoLO(' + _.get(unitObj, ['lonLatLoc', 1]) + ', ' +  _.get(unitObj, ['lonLatLoc', 0]) + ').x, ' +
@@ -751,6 +932,76 @@ _.set(exports, 'spawnBaseReinforcementGroup', function (serverName, side, baseNa
 		}
 	});
 	return _.compact(spawnArray);
+});
+
+
+_.set(exports, 'spawnBomberPlane', function (serverName, playerUnitObj, bomberObj) {
+	var curTkrName;
+	var curUnitSpawn = '';
+	var curGroupSpawn;
+	var curCountry;
+	var curSpwnUnit;
+	var curGrpObj = {};
+	var remoteLoc;
+	var curCategory = 'AIRPLANE';
+
+	curCountry = bomberObj.country;
+	curTkrName = 'AI|' + bomberObj.name + '|';
+	curSpwnUnit = _.cloneDeep(bomberObj);
+
+	dbMapServiceController.baseActions('getClosestEnemyBase', serverName, { unitLonLatLoc: playerUnitObj.lonLatLoc, playerSide: playerUnitObj.coalition})
+		.then(function (closeBase) {
+			// console.log('CB: ', closeBase);
+			remoteLoc = zoneController.getLonLatFromDistanceDirection(closeBase.centerLoc, closeBase.hdg, curSpwnUnit.spawnDistance);
+
+			curGrpObj = _.cloneDeep(curSpwnUnit);
+			_.set(curGrpObj, 'groupName', curTkrName);
+			_.set(curGrpObj, 'country', curCountry);
+			_.set(curGrpObj, 'category', curCategory);
+			_.set(curGrpObj, 'routeLocs', [
+				remoteLoc,
+				closeBase.centerLoc
+			]);
+
+			curGroupSpawn = exports.grndUnitGroup( curGrpObj, 'CAS', exports.bombersPlaneRouteTemplate(curGrpObj));
+
+			_.set(curSpwnUnit, 'lonLatLoc', remoteLoc);
+			_.set(curSpwnUnit, 'name', curTkrName);
+			_.set(curSpwnUnit, 'playerCanDrive', false);
+			_.set(curSpwnUnit, 'hidden', false);
+
+			if (bomberObj.name === 'RussianBomber') {
+				for(x=0; x < 3; x++) {
+					curUnitSpawn += exports.su24mTemplate(curSpwnUnit);
+				}
+			}
+			if (bomberObj.name === 'USABomber') {
+				curUnitSpawn = exports.b1bTemplate(curSpwnUnit);
+			}
+
+			curGroupSpawn = _.replace(curGroupSpawn, "#UNITS", curUnitSpawn);
+			var curCMD = exports.spawnGrp(curGroupSpawn, curCountry, curCategory);
+			var sendClient = {action: "CMD", cmd: [curCMD], reqID: 0};
+			var actionObj = {actionObj: sendClient, queName: 'clientArray'};
+			dbMapServiceController.cmdQueActions('save', serverName, actionObj)
+				.then(function () {
+					var mesg = 'C: ' + bomberObj.type + ' Bomber is commencing its run ' + playerUnitObj.hdg + ' from ' + closeBase.name + ' ' + bomberObj.details;
+					DCSLuaCommands.sendMesgToCoalition(
+						playerUnitObj.coalition,
+						serverName,
+						mesg,
+						20
+					);
+				})
+				.catch(function (err) {
+					console.log('erroring line428: ', err);
+				})
+			;
+		})
+		.catch(function (err) {
+			console.log('erroring line632: ', err);
+		})
+	;
 });
 
 _.set(exports, 'spawnAWACSPlane', function (serverName, playerUnitObj, awacsObj) {

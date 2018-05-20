@@ -32,6 +32,11 @@ exports.defCountrys = {
 	2: 'USA'
 };
 
+exports.enemyCountry = {
+	1: 2,
+	2: 1
+};
+
 exports.countryId = [
 	'RUSSIA',
 	'UKRAINE',

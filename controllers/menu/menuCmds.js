@@ -452,6 +452,11 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, true, '', pObj.mobile, pObj.mass, defCrate);
 						}
 
+						//Offense Menu
+						if (pObj.cmd === 'spawnBomber') {
+							exports.spawnBomber(serverName, curUnit, curPlayer, pObj.type, pObj.rsCost);
+						}
+
 						//Support Menu
 						if (pObj.cmd === 'spawnAWACS') {
 							exports.spawnAWACS(serverName, curUnit, curPlayer, pObj.type, pObj.rsCost);
@@ -779,6 +784,48 @@ _.set(exports, 'unpackCrate', function (serverName, playerUnit, country, type, s
 		;
 	}
 });
+
+_.set(exports, 'spawnBomber', function (serverName, curUnit, curPlayer, bomberType, rsCost) {
+	console.log('BomberType: ', bomberType, rsCost);
+
+	var bomberObj;
+	if(bomberType === 'RussianBomber') {
+		bomberObj = {
+			name: 'RussianBomber',
+			type: 'Su-25M',
+			country: 'RUSSIA',
+			alt: '3048',
+			speed: '233',
+			spawnDistance: 50,
+			details: '(3 * Su-24M)',
+			hidden: false
+		};
+	}
+	if(bomberType === 'USABomber') {
+		bomberObj = {
+			name: 'USABomber',
+			type: 'B-1B',
+			country: 'USA',
+			alt: '3048',
+			speed: '233',
+			spawnDistance: 50,
+			details: '(1 * B-1B)',
+			hidden: false
+		};
+	}
+
+	resourcePointsController.spendResourcePoints(serverName, curPlayer, rsCost, 'Bomber', bomberObj)
+		.then(function(spentPoints) {
+			if (spentPoints) {
+				groupController.spawnBomberPlane(serverName, curUnit, bomberObj);
+			}
+		})
+		.catch(function(err) {
+			console.log('err line938: ', err);
+		})
+	;
+});
+
 
 _.set(exports, 'spawnAWACS', function (serverName, curUnit, curPlayer, awacsType, rsCost) {
 	console.log('AWACSType: ', awacsType, rsCost);

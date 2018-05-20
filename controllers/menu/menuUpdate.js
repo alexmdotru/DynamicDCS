@@ -103,15 +103,16 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 		'missionCommands.addCommandForGroup("' + unit.groupId + '", "Resource Points Acquired", {"$Resource Points$"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "resourcePoints", ["type"] = "Resource Points", ["unitId"] = ' + unit.unitId + '})'
 	]);
 
-	cmdArray = _.concat(cmdArray, [
-		'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "$Offensive$")'
-	]);
-
-	cmdArray = _.concat(cmdArray, [
-		'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "$Defensive$")'
-	]);
-
 	if(unit.coalition === 1) {
+		cmdArray = _.concat(cmdArray, [
+			'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "$Offensive$")',
+			'missionCommands.addCommandForGroup("' + unit.groupId + '", "Bomber Raid(Closest Enemy Base 1000rs)", {"$Offensive$"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "spawnBomber", ["type"] = "RussianBomber", ["unitId"] = ' + unit.unitId + ', ["rsCost"] = 1000})',
+		]);
+
+		cmdArray = _.concat(cmdArray, [
+			'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "$Defensive$")'
+		]);
+
 		cmdArray = _.concat(cmdArray, [
 			'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "$Support$")',
 			'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "AWACS", {"$Support$"})',
@@ -123,6 +124,15 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 		]);
 	}
 	if(unit.coalition === 2) {
+		cmdArray = _.concat(cmdArray, [
+			'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "$Offensive$")',
+			'missionCommands.addCommandForGroup("' + unit.groupId + '", "Bomber Raid(Closest Enemy Base 1000rs)", {"$Offensive$"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "spawnBomber", ["type"] = "USABomber", ["unitId"] = ' + unit.unitId + ', ["rsCost"] = 1000})',
+		]);
+
+		cmdArray = _.concat(cmdArray, [
+			'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "$Defensive$")'
+		]);
+
 		cmdArray = _.concat(cmdArray, [
 			'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "$Support$")',
 			'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "AWACS", {"$Support$"})',
