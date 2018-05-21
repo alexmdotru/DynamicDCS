@@ -109,12 +109,12 @@ _.set(CCB, 'socketCallback', function (serverName, cbArray) {
 		CCB.getLatestSession(serverName, cbArray.epoc, cbArray.startAbsTime,  cbArray.curAbsTime);
 	} else {
 		_.forEach(_.get(cbArray, 'que', []), function (queObj) {
-
 			if ((_.get(queObj, 'action') === 'C') || (_.get(queObj, 'action') === 'U') || (_.get(queObj, 'action') === 'D'))  {
 				unitsStaticsController.processUnitUpdates(serverName, CCB.sessionName, queObj);
 			}
 
 			if (_.get(queObj, 'action') === 'airbaseC' || _.get(queObj, 'action') === 'airbaseU') {
+				console.log('action: ', _.get(queObj, 'action'), queObj);
 				airbaseSyncController.processAirbaseUpdates(serverName, queObj);
 			}
 

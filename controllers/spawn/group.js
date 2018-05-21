@@ -788,7 +788,18 @@ _.set(exports, 'getBases', function (serverName) {
 	return dbMapServiceController.baseActions('read', serverName)
 		.then(function (bases) {
 			return new Promise(function (resolve) {
-				resolve(bases);
+				if (bases.length) {
+					resolve(bases);
+				} else {
+					console.log('Rebuilding Base DB');
+					var actionObj = {actionObj: {action: "GETPOLYDEF"}, queName: 'clientArray'};
+					dbMapServiceController.cmdQueActions('save', serverName, actionObj)
+						.catch(function (err) {
+							console.log('erroring line790: ', err);
+						})
+					;
+					resolve('rebuild base DB');
+				}
 			});
 		})
 		.catch(function (err) {

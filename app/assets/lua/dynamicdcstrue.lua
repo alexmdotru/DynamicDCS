@@ -468,7 +468,7 @@ do
 		if request.action ~= nil then
 			if request.action == "GETPOLYDEF" then
 				env.info('GET POLY')
-				--initAirbases()
+				initAirbases()
 			end
 			if request.action == "CRATEUPDATE" then
 				if type(request.crateNames) == 'table' then

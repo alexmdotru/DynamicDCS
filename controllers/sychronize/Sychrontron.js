@@ -81,7 +81,7 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 							console.log('processed Instructons 2: ', exports.processInstructions);
 						})
 						.catch(function (err) {
-							console.log('line 77: ', err);
+							console.log('line 84: ', err);
 						})
 					;
 				} else {
