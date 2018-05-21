@@ -192,7 +192,7 @@ _.set(exports, 'bombersPlaneRouteTemplate', function (routes) {
 										'["action"] = {' +
 											'["id"] = "Option",' +
 											'["params"] = {' +
-												'["value"]=2,' +
+												'["value"]=1,' +
 												'["name"]=1,' +
 											'},' +
 										'},' +
