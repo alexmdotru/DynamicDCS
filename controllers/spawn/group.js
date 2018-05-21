@@ -958,6 +958,7 @@ _.set(exports, 'spawnBomberPlane', function (serverName, playerUnitObj, bomberOb
 			_.set(curGrpObj, 'groupName', curTkrName + '#' + _.random(1000000, 9999999));
 			_.set(curGrpObj, 'country', curCountry);
 			_.set(curGrpObj, 'category', curCategory);
+			_.set(curGrpObj, 'alt', _.parseInt(bomberObj.alt) + _.parseInt(closeBase.alt));
 			_.set(curGrpObj, 'routeLocs', [
 				remoteLoc,
 				closeBase.centerLoc
