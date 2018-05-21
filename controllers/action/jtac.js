@@ -4,17 +4,24 @@ const dbMapServiceController = require('../db/dbMapService');
 const proximityController = require('../proxZone/proximity');
 
 var jtacDistance = 10;
-var laserCode = 1113;
+var curLaserCode = 1688;
+var redLaserCode = 1686;
+var blueLaserCode = 1687;
 var fiveMins = 5 * 60 * 1000;
 
 _.set(exports, 'setLaserSmoke', function (serverName, jtUnit, enemyUnit) {
 	console.log('Setting Laser: ', jtUnit.name);
+	if (jtUnit.coalition === 1) {
+		curLaserCode = redLaserCode;
+	} else {
+		curLaserCode = blueLaserCode;
+	}
 	//laser & smoke
 	var sendClient = {
 		"action" : "SETLASERSMOKE",
 		"jtacUnitName": jtUnit.name,
 		"enemyUnitName": enemyUnit.name,
-		"laserCode": laserCode,
+		"laserCode": curLaserCode,
 		"coalition": jtUnit.coalition
 	};
 	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
