@@ -192,8 +192,38 @@ _.set(exports, 'bombersPlaneRouteTemplate', function (routes) {
 										'["action"] = {' +
 											'["id"] = "Option",' +
 											'["params"] = {' +
-												'["value"]=1,' +
+												'["value"]=0,' +
 												'["name"]=1,' +
+											'},' +
+										'},' +
+									'},' +
+								'},' +
+								'[5] = {' +
+									'["number"] = 5,' +
+									'["auto"] = false,' +
+									'["id"] = "WrappedAction",' +
+									'["enabled"] = true,' +
+									'["params"] = {' +
+										'["action"] = {' +
+											'["id"] = "Option",' +
+											'["params"] = {' +
+												'["value"]=1,' +
+												'["name"]=4,' +
+											'},' +
+										'},' +
+									'},' +
+								'},' +
+								'[6] = {' +
+									'["number"] = 6,' +
+									'["auto"] = false,' +
+									'["id"] = "WrappedAction",' +
+									'["enabled"] = true,' +
+									'["params"] = {' +
+										'["action"] = {' +
+											'["id"] = "Option",' +
+											'["params"] = {' +
+												'["value"]=1,' +
+												'["name"]=13,' +
 											'},' +
 										'},' +
 									'},' +
