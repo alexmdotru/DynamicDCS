@@ -1001,7 +1001,7 @@ _.set(exports, 'spawnBomberPlane', function (serverName, playerUnitObj, bomberOb
 			_.set(curSpwnUnit, 'hidden', false);
 
 			if (bomberObj.name === 'RussianBomber') {
-				for(x=0; x < 3; x++) {
+				for(x=0; x < 4; x++) {
 					curUnitSpawn += exports.su24mTemplate(curSpwnUnit);
 				}
 			}
