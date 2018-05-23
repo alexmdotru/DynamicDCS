@@ -147,44 +147,14 @@ _.set(exports, 'bombersPlaneRouteTemplate', function (routes) {
 										'["action"] = {' +
 											'["id"] = "Option",' +
 											'["params"] = {' +
-												'["value"]=0,' +
-												'["name"]=0,' +
+												'["value"]=true,' +
+												'["name"]=15,' +
 											'},' +
 										'},' +
 									'},' +
 								'},' +
 								'[2] = {' +
 									'["number"] = 2,' +
-									'["auto"] = true,' +
-									'["id"] = "EngageTargets",' +
-									'["enabled"] = true,' +
-									'["key"] = "CAS",' +
-									'["params"] = {' +
-										'["targetTypes"] = {' +
-											'[1] = "Helicopters",' +
-											'[2] = "Ground Units",' +
-											'[3] = "Light armed ships",' +
-										'},' +
-										'["priority"] = 0,' +
-									'},' +
-								'},' +
-								'[3] = {' +
-									'["number"] = 3,' +
-									'["auto"] = true,' +
-									'["id"] = "WrappedAction",' +
-									'["enabled"] = true,' +
-									'["params"] = {' +
-										'["action"] = {' +
-											'["id"] = "EPLRS",' +
-											'["params"] = {' +
-												'["value"]=true,' +
-												'["groupId"]=3,' +
-											'},' +
-										'},' +
-									'},' +
-								'},' +
-								'[4] = {' +
-									'["number"] = 4,' +
 									'["auto"] = false,' +
 									'["id"] = "WrappedAction",' +
 									'["enabled"] = true,' +
@@ -192,14 +162,14 @@ _.set(exports, 'bombersPlaneRouteTemplate', function (routes) {
 										'["action"] = {' +
 											'["id"] = "Option",' +
 											'["params"] = {' +
-												'["value"]=0,' +
+												'["value"]=2,' +
 												'["name"]=1,' +
 											'},' +
 										'},' +
 									'},' +
 								'},' +
-								'[5] = {' +
-									'["number"] = 5,' +
+								'[3] = {' +
+									'["number"] = 3,' +
 									'["auto"] = false,' +
 									'["id"] = "WrappedAction",' +
 									'["enabled"] = true,' +
@@ -207,23 +177,8 @@ _.set(exports, 'bombersPlaneRouteTemplate', function (routes) {
 										'["action"] = {' +
 											'["id"] = "Option",' +
 											'["params"] = {' +
-												'["value"]=1,' +
-												'["name"]=4,' +
-											'},' +
-										'},' +
-									'},' +
-								'},' +
-								'[6] = {' +
-									'["number"] = 6,' +
-									'["auto"] = false,' +
-									'["id"] = "WrappedAction",' +
-									'["enabled"] = true,' +
-									'["params"] = {' +
-										'["action"] = {' +
-											'["id"] = "Option",' +
-											'["params"] = {' +
-												'["value"]=1,' +
-												'["name"]=13,' +
+												'["value"]=4,' +
+												'["name"]=0,' +
 											'},' +
 										'},' +
 									'},' +
@@ -248,21 +203,6 @@ _.set(exports, 'bombersPlaneRouteTemplate', function (routes) {
 								'[1] = {' +
 									'["number"] = 1,' +
 									'["auto"] = false,' +
-									'["id"] = "WrappedAction",' +
-									'["enabled"] = true,' +
-									'["params"] = {' +
-										'["action"] = {' +
-											'["id"] = "Option",' +
-											'["params"] = {' +
-												'["value"]=0,' +
-												'["name"]=0,' +
-											'},' +
-										'},' +
-									'},' +
-								'},' +
-								'[2] = {' +
-									'["number"] = 2,' +
-									'["auto"] = true,' +
 									'["id"] = "EngageTargets",' +
 									'["enabled"] = true,' +
 									'["key"] = "CAS",' +
@@ -275,23 +215,8 @@ _.set(exports, 'bombersPlaneRouteTemplate', function (routes) {
 										'["priority"] = 0,' +
 									'},' +
 								'},' +
-								'[3] = {' +
-									'["number"] = 3,' +
-									'["auto"] = true,' +
-									'["id"] = "WrappedAction",' +
-									'["enabled"] = true,' +
-									'["params"] = {' +
-										'["action"] = {' +
-											'["id"] = "EPLRS",' +
-											'["params"] = {' +
-												'["value"]=true,' +
-												'["groupId"]=5,' +
-											'},' +
-										'},' +
-									'},' +
-								'},' +
-								'[4] = {' +
-									'["number"] = 4,' +
+								'[2] = {' +
+									'["number"] = 2,' +
 									'["auto"] = false,' +
 									'["id"] = "WrappedAction",' +
 									'["enabled"] = true,' +
@@ -300,37 +225,7 @@ _.set(exports, 'bombersPlaneRouteTemplate', function (routes) {
 											'["id"] = "Option",' +
 											'["params"] = {' +
 												'["value"]=0,' +
-												'["name"]=1,' +
-											'},' +
-										'},' +
-									'},' +
-								'},' +
-								'[5] = {' +
-									'["number"] = 5,' +
-									'["auto"] = false,' +
-									'["id"] = "WrappedAction",' +
-									'["enabled"] = true,' +
-									'["params"] = {' +
-										'["action"] = {' +
-											'["id"] = "Option",' +
-											'["params"] = {' +
-												'["value"]=1,' +
-												'["name"]=4,' +
-											'},' +
-										'},' +
-									'},' +
-								'},' +
-								'[6] = {' +
-									'["number"] = 6,' +
-									'["auto"] = false,' +
-									'["id"] = "WrappedAction",' +
-									'["enabled"] = true,' +
-									'["params"] = {' +
-										'["action"] = {' +
-											'["id"] = "Option",' +
-											'["params"] = {' +
-												'["value"]=1,' +
-												'["name"]=13,' +
+												'["name"]=0,' +
 											'},' +
 										'},' +
 									'},' +
