@@ -970,6 +970,7 @@ _.set(exports, 'spawnBomberPlane', function (serverName, playerUnitObj, bomberOb
 	var curSpwnUnit;
 	var curGrpObj = {};
 	var remoteLoc;
+	var closeLoc;
 	var curCategory = 'AIRPLANE';
 
 	curCountry = bomberObj.country;
@@ -980,6 +981,7 @@ _.set(exports, 'spawnBomberPlane', function (serverName, playerUnitObj, bomberOb
 		.then(function (closeBase) {
 			// console.log('CB: ', closeBase);
 			remoteLoc = zoneController.getLonLatFromDistanceDirection(closeBase.centerLoc, closeBase.spawnAngle, curSpwnUnit.spawnDistance);
+			closeLoc = zoneController.getLonLatFromDistanceDirection(closeBase.centerLoc, closeBase.spawnAngle, 7);
 
 			curGrpObj = _.cloneDeep(curSpwnUnit);
 			_.set(curGrpObj, 'groupName', curTkrName + '#' + _.random(1000000, 9999999));
@@ -988,7 +990,7 @@ _.set(exports, 'spawnBomberPlane', function (serverName, playerUnitObj, bomberOb
 			_.set(curGrpObj, 'alt', _.parseInt(bomberObj.alt) + _.parseInt(closeBase.alt));
 			_.set(curGrpObj, 'routeLocs', [
 				remoteLoc,
-				closeBase.centerLoc
+				closeLoc
 			]);
 
 			curGroupSpawn = exports.grndUnitGroup( curGrpObj, 'CAS', exports.bombersPlaneRouteTemplate(curGrpObj));
