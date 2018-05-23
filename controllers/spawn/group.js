@@ -244,7 +244,98 @@ _.set(exports, 'bombersPlaneRouteTemplate', function (routes) {
 					'["task"] = {' +
 						'["id"] = "ComboTask",' +
 						'["params"] = {' +
-							'["tasks"]={}' +
+							'["tasks"] = {' +
+								'[1] = {' +
+									'["number"] = 1,' +
+									'["auto"] = true,' +
+									'["id"] = "EngageTargets",' +
+									'["enabled"] = true,' +
+									'["key"] = "CAS",' +
+									'["params"] = {' +
+										'["targetTypes"] = {' +
+											'[1] = "Helicopters",' +
+											'[2] = "Ground Units",' +
+											'[3] = "Light armed ships",' +
+										'},' +
+										'["priority"] = 0,' +
+									'},' +
+								'},' +
+								'[2] = {' +
+									'["number"] = 2,' +
+									'["auto"] = true,' +
+									'["id"] = "WrappedAction",' +
+									'["enabled"] = true,' +
+									'["params"] = {' +
+										'["action"] = {' +
+											'["id"] = "EPLRS",' +
+											'["params"] = {' +
+												'["value"]=true,' +
+												'["groupId"]=5,' +
+											'},' +
+										'},' +
+									'},' +
+								'},' +
+								'[3] = {' +
+									'["number"] = 3,' +
+									'["auto"] = false,' +
+									'["id"] = "WrappedAction",' +
+									'["enabled"] = true,' +
+									'["params"] = {' +
+										'["action"] = {' +
+											'["id"] = "Option",' +
+											'["params"] = {' +
+												'["value"]=0,' +
+												'["name"]=0,' +
+											'},' +
+										'},' +
+									'},' +
+								'},' +
+								'[4] = {' +
+									'["number"] = 4,' +
+									'["auto"] = false,' +
+									'["id"] = "WrappedAction",' +
+									'["enabled"] = true,' +
+									'["params"] = {' +
+										'["action"] = {' +
+											'["id"] = "Option",' +
+											'["params"] = {' +
+												'["value"]=0,' +
+												'["name"]=1,' +
+											'},' +
+										'},' +
+									'},' +
+								'},' +
+								'[5] = {' +
+									'["number"] = 5,' +
+									'["auto"] = false,' +
+									'["id"] = "WrappedAction",' +
+									'["enabled"] = true,' +
+									'["params"] = {' +
+										'["action"] = {' +
+											'["id"] = "Option",' +
+											'["params"] = {' +
+												'["value"]=1,' +
+												'["name"]=4,' +
+											'},' +
+										'},' +
+									'},' +
+								'},' +
+								'[6] = {' +
+									'["number"] = 6,' +
+									'["auto"] = false,' +
+									'["id"] = "WrappedAction",' +
+									'["enabled"] = true,' +
+									'["params"] = {' +
+										'["action"] = {' +
+											'["id"] = "Option",' +
+											'["params"] = {' +
+												'["value"]=1,' +
+												'["name"]=13,' +
+											'},' +
+										'},' +
+									'},' +
+								'},' +
+							'},' +
 						'},' +
 					'},' +
 					'["type"] = "Turning Point",' +
