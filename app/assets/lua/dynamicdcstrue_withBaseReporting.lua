@@ -192,6 +192,76 @@ do
 
 	local polyArray = getAllDefzone()
 
+	local function updateAirbases(airbases, coalition)
+		local airbaseObj = {}
+		for airbaseIndex = 1, #airbases do
+			local baseId = tonumber(airbases[airbaseIndex]:getID())
+			local unitPosition = airbases[airbaseIndex]:getPosition()
+			local x = unitPosition.p.x
+			local y = unitPosition.p.z
+			local lat, lon, alt = coord.LOtoLL(unitPosition.p)
+			local unitXYZNorthCorr = coord.LLtoLO(lat + 1, lon)
+			local headingNorthCorr = math.atan2(unitXYZNorthCorr.z - unitPosition.p.z, unitXYZNorthCorr.x - unitPosition.p.x)
+			local heading = math.atan2(unitPosition.x.z, unitPosition.x.x) + headingNorthCorr
+			if heading < 0 then
+				heading = heading + 2 * math.pi
+			end
+			local hdg = math.floor(heading / math.pi * 180);
+			local baseName = airbases[airbaseIndex]:getName()
+			local country = CountryNames[airbases[airbaseIndex]:getCountry()]
+			local curObj = {
+				["_id"] = baseName,
+				["baseId"] = baseId,
+				["name"] = baseName,
+				["country"] = country,
+				["hdg"] = hdg,
+				["side"] = coalition,
+				["centerLoc"] = {
+					lon,
+					lat
+				},
+				["polygonLoc"] = {},
+				["alt"] = alt,
+				["farp"] = false,
+				["expansion"] = false,
+				["mainBase"] = false
+			}
+			if string.find(baseName, 'FARP', 1, true) then
+				curObj.farp = true
+			end
+			if string.find(baseName, 'Expansion', 1, true) then
+				curObj.expansion = true
+			end
+			if not string.find(baseName, 'Expansion', 1, true) and not string.find(baseName, ' #', 1, true) then
+				--env.info('applycache  ' .. baseName..' : '.. coalition);
+				trigger.action.setUserFlag(baseName, coalition)
+				curObj.mainBase = true
+				airbaseCache[baseName].side = coalition
+				curObj["polygonLoc"] = polyArray[baseName]
+			end
+			table.insert(updateQue.que, {
+				polyCnt = polyArray.count,
+				action = 'airbaseC',
+				data = curObj
+			})
+		end
+	end
+
+	local function initAirbases()
+		local neutralAirbases = coalition.getAirbases(coalition.side.NEUTRAL)
+		if neutralAirbases ~= nil then
+			updateAirbases(neutralAirbases, 0)
+		end
+		local redAirbases = coalition.getAirbases(coalition.side.RED)
+		if redAirbases ~= nil then
+			updateAirbases(redAirbases, 1)
+		end
+		local blueAirbases = coalition.getAirbases(coalition.side.BLUE)
+		if blueAirbases ~= nil then
+			updateAirbases(blueAirbases, 2)
+		end
+	end
+
 	local function addGroups(groups, coalition, Init)
 		for groupIndex = 1, #groups do
 			local group = groups[groupIndex]
@@ -396,6 +466,10 @@ do
 
 	local function runRequest(request)
 		if request.action ~= nil then
+			if request.action == "GETPOLYDEF" then
+				--env.info('GET POLY')
+				initAirbases()
+			end
 			if request.action == "CRATEUPDATE" then
 				if type(request.crateNames) == 'table' then
 					local crateObjs = {};
