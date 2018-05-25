@@ -203,62 +203,64 @@ do
 						uType = "unit",
 						data = {}
 					}
-					curUnit.data.groupId = group:getID()
-					curUnit.data.unitId = tonumber(unit:getID())
-					curUnit.data.name = unit:getName()
-					table.insert(completeAliveNames, curUnit.data.name)
-					--curUnit.data.life = tonumber(unit:getLife())
-					local unitPosition = unit:getPosition()
-					local lat, lon, alt = coord.LOtoLL(unitPosition.p)
-					curUnit.data.lonLatLoc = {
-						lon,
-						lat
-					}
-					curUnit.data.alt = alt
-					local unitXYZNorthCorr = coord.LLtoLO(lat + 1, lon)
-					local headingNorthCorr = math.atan2(unitXYZNorthCorr.z - unitPosition.p.z, unitXYZNorthCorr.x - unitPosition.p.x)
-					local heading = math.atan2(unitPosition.x.z, unitPosition.x.x) + headingNorthCorr
-					if heading < 0 then
-						heading = heading + 2 * math.pi
-					end
-					curUnit.data.hdg = math.floor(heading / math.pi * 180);
-					local velocity = unit:getVelocity()
-					if (velocity) then
-						curUnit.data.speed = math.sqrt(velocity.x ^ 2 + velocity.z ^ 2)
-					end
-					local PlayerName = unit:getPlayerName()
-					if PlayerName ~= nil then
-						curUnit.data.playername = PlayerName
-					else
-						curUnit.data.playername = ""
-					end
-					curUnit.data.inAir = unit:inAir()
-					if unitCache[curUnit.data.name] ~= nil and not Init then
-						if unitCache[curUnit.data.name].lat ~= lat or unitCache[curUnit.data.name].lon ~= lon then
+					curUnit.data.category = CategoryNames[unit:getDesc().category]
+					if curUnit.data.category ~= "SHIP" then
+						curUnit.data.groupId = group:getID()
+						curUnit.data.unitId = tonumber(unit:getID())
+						curUnit.data.name = unit:getName()
+						table.insert(completeAliveNames, curUnit.data.name)
+						--curUnit.data.life = tonumber(unit:getLife())
+						local unitPosition = unit:getPosition()
+						local lat, lon, alt = coord.LOtoLL(unitPosition.p)
+						curUnit.data.lonLatLoc = {
+							lon,
+							lat
+						}
+						curUnit.data.alt = alt
+						local unitXYZNorthCorr = coord.LLtoLO(lat + 1, lon)
+						local headingNorthCorr = math.atan2(unitXYZNorthCorr.z - unitPosition.p.z, unitXYZNorthCorr.x - unitPosition.p.x)
+						local heading = math.atan2(unitPosition.x.z, unitPosition.x.x) + headingNorthCorr
+						if heading < 0 then
+							heading = heading + 2 * math.pi
+						end
+						curUnit.data.hdg = math.floor(heading / math.pi * 180);
+						local velocity = unit:getVelocity()
+						if (velocity) then
+							curUnit.data.speed = math.sqrt(velocity.x ^ 2 + velocity.z ^ 2)
+						end
+						local PlayerName = unit:getPlayerName()
+						if PlayerName ~= nil then
+							curUnit.data.playername = PlayerName
+						else
+							curUnit.data.playername = ""
+						end
+						curUnit.data.inAir = unit:inAir()
+						if unitCache[curUnit.data.name] ~= nil and not Init then
+							if unitCache[curUnit.data.name].lat ~= lat or unitCache[curUnit.data.name].lon ~= lon then
+								unitCache[curUnit.data.name] = {}
+								unitCache[curUnit.data.name].lat = lat
+								unitCache[curUnit.data.name].lon = lon
+								curUnit.action = "U"
+								table.insert(updateQue.que, curUnit)
+							end
+						else
 							unitCache[curUnit.data.name] = {}
 							unitCache[curUnit.data.name].lat = lat
 							unitCache[curUnit.data.name].lon = lon
-							curUnit.action = "U"
+							--local maxLife = unit:getLife0()
+							--if maxLife ~= nil then
+							--	curUnit.data.maxLife = tonumber(maxLife)
+							--end
+							curUnit.data.groupName = group:getName()
+							curUnit.data.name = unit:getName()
+							curUnit.data.type = unit:getTypeName()
+							curUnit.data.coalition = coalition
+							curUnit.data.country = CountryNames[unit:getCountry()]
+							curUnit.action = "C"
 							table.insert(updateQue.que, curUnit)
 						end
-					else
-						unitCache[curUnit.data.name] = {}
-						unitCache[curUnit.data.name].lat = lat
-						unitCache[curUnit.data.name].lon = lon
-						--local maxLife = unit:getLife0()
-						--if maxLife ~= nil then
-						--	curUnit.data.maxLife = tonumber(maxLife)
-						--end
-						curUnit.data.groupName = group:getName()
-						curUnit.data.name = unit:getName()
-						curUnit.data.category = CategoryNames[unit:getDesc().category]
-						curUnit.data.type = unit:getTypeName()
-						curUnit.data.coalition = coalition
-						curUnit.data.country = CountryNames[unit:getCountry()]
-						curUnit.action = "C"
-						table.insert(updateQue.que, curUnit)
+						checkUnitDead[curUnit.data.name] = 1
 					end
-					checkUnitDead[curUnit.data.name] = 1
 				end
 			end
 		end

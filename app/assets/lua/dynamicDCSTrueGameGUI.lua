@@ -556,6 +556,7 @@ function dynDCS.shouldAllowSlot(_playerID, _slotID)
 	local _ucidFlagCap = dynDCS.getFlagValue(curUcid..'_CAP')
 	local _ucidFlagCas = dynDCS.getFlagValue(curUcid..'_CAS')
 	--net.log(curBaseName.."_".._unitId..' flag:'.._baseFlag..' uSide:'..curSide..' ucidFlag: '.._ucidFlag..' ucid:'..curUcid)
+	net.log('CBN: '..curBaseName)
 	if _baseFlag == curSide then
 		--net.log('STUFFF '..capLives[curType]..' - '..curType..' ucid: '.._ucidFlag)
 		if _ucidFlagCap == 1 and capLives[curType] == 1 then
@@ -579,6 +580,9 @@ function dynDCS.shouldAllowSlot(_playerID, _slotID)
 			return false
 		end
 		--net.log('Base Slot Open')
+		return true
+	end
+	if curBaseName == 'Carrier1' or curBaseName == 'Carrier2' then
 		return true
 	end
 	return false
