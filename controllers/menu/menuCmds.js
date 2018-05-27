@@ -838,7 +838,7 @@ _.set(exports, 'spawnAWACS', function (serverName, curUnit, curPlayer, awacsType
 			country: 'RUSSIA',
 			alt: '7620',
 			speed: '265',
-			radioFreq: 139000000,
+			radioFreq: 138000000,
 			spawnDistance: 50,
 			callsign: 50,
 			onboard_num: 250,
