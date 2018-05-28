@@ -57,6 +57,28 @@ exports.baseActions = function (action, serverName, obj){
 			);
 		});
 	}
+	if(action === 'getClosestFriendlyBase') {
+		return new Promise(function(resolve, reject) {
+			Airfield.find(
+				{
+					mainBase: true,
+					side: obj.playerSide,
+					centerLoc: {
+						$near: {
+							$geometry: {
+								type: "Point",
+								coordinates: obj.unitLonLatLoc
+							}
+						}
+					}
+				},
+				function(err, dbairfields) {
+					if (err) { reject(err) }
+					resolve(_.first(dbairfields));
+				}
+			);
+		});
+	}
 	if(action === 'getClosestEnemyBase') {
 		return new Promise(function(resolve, reject) {
 			Airfield.find(

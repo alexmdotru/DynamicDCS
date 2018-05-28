@@ -456,6 +456,9 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 						if (pObj.cmd === 'spawnBomber') {
 							exports.spawnBomber(serverName, curUnit, curPlayer, pObj.type, pObj.rsCost);
 						}
+						if (pObj.cmd === 'spawnAtkHeli') {
+							exports.spawnAtkHeli(serverName, curUnit, curPlayer, pObj.type, pObj.rsCost);
+						}
 
 						//Support Menu
 						if (pObj.cmd === 'spawnAWACS') {
@@ -783,6 +786,43 @@ _.set(exports, 'unpackCrate', function (serverName, playerUnit, country, type, s
 			})
 		;
 	}
+});
+
+_.set(exports, 'spawnAtkHeli', function (serverName, curUnit, curPlayer, heliType, rsCost) {
+	console.log('HeliType: ', heliType, rsCost);
+
+	var heliObj;
+	if(heliType === 'RussianAtkHeli') {
+		heliObj = {
+			name: 'RussianAtkHeli',
+			type: 'Mi-28N',
+			country: 'RUSSIA',
+			alt: '1000',
+			speed: '55',
+			hidden: false
+		};
+	}
+	if(heliType === 'USAAtkHeli') {
+		heliObj = {
+			name: 'USAAtkHeli',
+			type: 'AH-64D',
+			country: 'USA',
+			alt: '1000',
+			speed: '55',
+			hidden: false
+		};
+	}
+
+	resourcePointsController.spendResourcePoints(serverName, curPlayer, rsCost, 'AtkHeli', heliObj)
+		.then(function(spentPoints) {
+			if (spentPoints) {
+				groupController.spawnAtkChopper(serverName, curUnit, heliObj);
+			}
+		})
+		.catch(function(err) {
+			console.log('err line938: ', err);
+		})
+	;
 });
 
 _.set(exports, 'spawnBomber', function (serverName, curUnit, curPlayer, bomberType, rsCost) {

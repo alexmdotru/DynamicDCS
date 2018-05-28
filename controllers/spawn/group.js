@@ -125,6 +125,94 @@ _.set(exports, 'turnOffDisperseUnderFire', function () {
 		'},';
 });
 
+_.set(exports, 'atkHeliRouteTemplate', function (routes) {
+	return '' +
+		'["route"] = {' +
+			'["points"] = {' +
+				'[1] = {' +
+					'["alt"] = ' + _.get(routes, 'alt') + ',' +
+					'["action"] = "Turning Point",' +
+					'["alt_type"] = "BARO",' +
+					'["speed"] = ' + _.get(routes, 'speed') + ',' +
+					'["task"] = {' +
+						'["id"] = "ComboTask",' +
+						'["params"] = {' +
+							'["tasks"] = {' +
+								'[1] = {' +
+									'["number"] = 1,' +
+									'["auto"] = true,' +
+									'["id"] = "EngageTargets",' +
+									'["enabled"] = true,' +
+									'["key"] = "CAS",' +
+									'["params"] = {' +
+										'["targetTypes"] = {' +
+											'[1] = "Helicopters",' +
+											'[2] = "Ground Units",' +
+											'[3] = "Light armed ships",' +
+										'},' +
+										'["priority"] = 0,' +
+									'},' +
+								'},' +
+								'[2] = {' +
+									'["number"] = 2,' +
+									'["auto"] = false,' +
+									'["id"] = "WrappedAction",' +
+									'["enabled"] = true,' +
+									'["params"] = {' +
+										'["action"] = {' +
+											'["id"] = "Option",' +
+											'["params"] = {' +
+												'["value"]=2,' +
+												'["name"]=1,' +
+											'},' +
+										'},' +
+									'},' +
+								'},' +
+								'[3] = {' +
+									'["number"] = 3,' +
+									'["auto"] = false,' +
+									'["id"] = "WrappedAction",' +
+									'["enabled"] = true,' +
+									'["params"] = {' +
+										'["action"] = {' +
+											'["id"] = "Option",' +
+											'["params"] = {' +
+												'["value"]=0,' +
+												'["name"]=0,' +
+											'},' +
+										'},' +
+									'},' +
+								'},' +
+							'},' +
+						'},' +
+					'},' +
+					'["type"] = "Turning Point",' +
+					'["x"] = coord.LLtoLO(' + _.get(routes, ['routeLocs', 0, 1]) + ', ' + _.get(routes, ['routeLocs', 0, 0]) + ').x, ' +
+					'["y"] = coord.LLtoLO(' + _.get(routes, ['routeLocs', 0, 1]) + ', ' + _.get(routes, ['routeLocs', 0, 0]) + ').z, ' +
+					'["speed_locked"] = true,' +
+				'},' +
+				'[2]={' +
+					'["alt"] = ' + _.get(routes, 'alt') + ',' +
+					'["action"] = "Turning Point",' +
+					'["alt_type"] = "BARO",' +
+					'["speed"] = ' + _.get(routes, 'speed') + ',' +
+					'["task"] = {' +
+						'["id"] = "ComboTask",' +
+						'["params"] = {' +
+							'["tasks"] = {' +
+							'},' +
+						'},' +
+					'},' +
+					'["type"] = "Turning Point",' +
+					'["x"] = coord.LLtoLO(' + _.get(routes, ['routeLocs', 1, 1]) + ', ' + _.get(routes, ['routeLocs', 1, 0]) + ').x, ' +
+					'["y"] = coord.LLtoLO(' + _.get(routes, ['routeLocs', 1, 1]) + ', ' + _.get(routes, ['routeLocs', 1, 0]) + ').z, ' +
+					'["speed_locked"] = true,' +
+				'},' +
+			'},' +
+		'},'
+		;
+});
+
 _.set(exports, 'bombersPlaneRouteTemplate', function (routes) {
 	return '' +
 		'["route"] = {' +
@@ -641,6 +729,61 @@ _.set(exports, 'grndUnitTemplate', function ( unitObj ) {
 	;
 });
 
+_.set(exports, 'mi28nTemplate', function ( unitObj ) {
+	var curAirTemplate = '{' +
+		'["x"] = coord.LLtoLO(' + _.get(unitObj, ['lonLatLoc', 1]) + ', ' +  _.get(unitObj, ['lonLatLoc', 0]) + ').x, ' +
+		'["y"] = coord.LLtoLO(' + _.get(unitObj, ['lonLatLoc', 1]) + ', ' +  _.get(unitObj, ['lonLatLoc', 0]) + ').z, ' +
+		'["type"] = "Mi-28N",' +
+		'["name"] = "' + _.get(unitObj, 'name') + '",' +
+		// '["unitId"] = ' + _.get(unitObj, 'unitId') + ',' +
+		'["heading"] = ' + _.get(unitObj, 'heading', 0) + ',' +
+		'["skill"] = "' + _.get(unitObj, 'skill', "Excellent") + '",' +
+		'["hardpoint_racks"] = true,' +
+		'["payload"]={' +
+			'["pylons"]={' +
+				'[1] = {' +
+					'["CLSID"] = "{57232979-8B0F-4db7-8D9A-55197E06B0F5}",' +
+				'},' +
+			'},' +
+			'["fuel"] = "1500",' +
+			'["flare"] = 128,' +
+			'["chaff"] = 0,' +
+			'["gun"] = 100,' +
+		'},' +
+	'},';
+
+	return curAirTemplate;
+});
+
+_.set(exports, 'ah64dTemplate', function ( unitObj ) {
+	var curAirTemplate = '{' +
+		'["x"] = coord.LLtoLO(' + _.get(unitObj, ['lonLatLoc', 1]) + ', ' +  _.get(unitObj, ['lonLatLoc', 0]) + ').x, ' +
+		'["y"] = coord.LLtoLO(' + _.get(unitObj, ['lonLatLoc', 1]) + ', ' +  _.get(unitObj, ['lonLatLoc', 0]) + ').z, ' +
+		'["type"] = "AH-64D",' +
+		'["name"] = "' + _.get(unitObj, 'name') + '",' +
+		// '["unitId"] = ' + _.get(unitObj, 'unitId') + ',' +
+		'["heading"] = ' + _.get(unitObj, 'heading', 0) + ',' +
+		'["skill"] = "' + _.get(unitObj, 'skill', "Excellent") + '",' +
+		'["hardpoint_racks"] = true,' +
+		'["payload"]={' +
+			'["pylons"]={' +
+				'[1] = {' +
+					'["CLSID"] = "{88D18A5E-99C8-4B04-B40B-1C02F2018B6E}",' +
+				'},' +
+				'[4] = {' +
+					'["CLSID"] = "{88D18A5E-99C8-4B04-B40B-1C02F2018B6E}",' +
+				'},' +
+			'},' +
+			'["fuel"] = "1157",' +
+			'["flare"] = 30,' +
+			'["chaff"] = 30,' +
+			'["gun"] = 50,' +
+		'},' +
+	'},';
+
+	return curAirTemplate;
+});
+
 _.set(exports, 'b1bTemplate', function ( unitObj ) {
 	var curAirTemplate = '{' +
 		'["x"] = coord.LLtoLO(' + _.get(unitObj, ['lonLatLoc', 1]) + ', ' +  _.get(unitObj, ['lonLatLoc', 0]) + ').x, ' +
@@ -961,6 +1104,82 @@ _.set(exports, 'spawnBaseReinforcementGroup', function (serverName, side, baseNa
 	return _.compact(spawnArray);
 });
 
+_.set(exports, 'spawnAtkChopper', function (serverName, playerUnitObj, unitObj) {
+	var curTkrName;
+	var curUnitSpawn = '';
+	var curGroupSpawn;
+	var curCountry;
+	var curSpwnUnit;
+	var curGrpObj = {};
+	var friendlyLoc;
+	var enemyLoc;
+	var curCategory = 'HELICOPTER';
+
+	curCountry = unitObj.country;
+	curTkrName = 'AI|' + unitObj.name + '|';
+	curSpwnUnit = _.cloneDeep(unitObj);
+
+	dbMapServiceController.baseActions('getClosestEnemyBase', serverName, { unitLonLatLoc: playerUnitObj.lonLatLoc, playerSide: playerUnitObj.coalition})
+		.then(function (enemyBase) {
+			dbMapServiceController.baseActions('getClosestFriendlyBase', serverName, { unitLonLatLoc: playerUnitObj.lonLatLoc, playerSide: playerUnitObj.coalition})
+				.then(function (friendlyBase) {
+					//friendlyLoc = zoneController.getLonLatFromDistanceDirection(enemyBase.centerLoc, enemyBase.spawnAngle, curSpwnUnit.spawnDistance);
+					friendlyLoc = zoneController.getLonLatFromDistanceDirection(friendlyBase.centerLoc, zoneController.findBearing(friendlyBase.centerLoc[1], friendlyBase.centerLoc[0], enemyBase.centerLoc[1], enemyBase.centerLoc[0]), 10);
+					enemyLoc = enemyBase.centerLoc;
+
+					curGrpObj = _.cloneDeep(curSpwnUnit);
+					_.set(curGrpObj, 'groupName', curTkrName + '#' + _.random(1000000, 9999999));
+					_.set(curGrpObj, 'country', curCountry);
+					_.set(curGrpObj, 'category', curCategory);
+					_.set(curGrpObj, 'alt', _.parseInt(unitObj.alt) + _.parseInt(friendlyBase.alt));
+					_.set(curGrpObj, 'routeLocs', [
+						friendlyLoc,
+						enemyLoc
+					]);
+
+					curGroupSpawn = exports.grndUnitGroup( curGrpObj, 'CAS', exports.atkHeliRouteTemplate(curGrpObj));
+
+					_.set(curSpwnUnit, 'lonLatLoc', friendlyLoc);
+					_.set(curSpwnUnit, 'name', curTkrName + '#' + _.random(1000000, 9999999));
+					_.set(curSpwnUnit, 'playerCanDrive', false);
+					_.set(curSpwnUnit, 'hidden', false);
+
+					if (unitObj.name === 'RussianAtkHeli') {
+						curUnitSpawn += exports.mi28nTemplate(curSpwnUnit);
+					}
+					if (unitObj.name === 'USAAtkHeli') {
+						curUnitSpawn = exports.ah64dTemplate(curSpwnUnit);
+					}
+
+					curGroupSpawn = _.replace(curGroupSpawn, "#UNITS", curUnitSpawn);
+					var curCMD = exports.spawnGrp(curGroupSpawn, curCountry, curCategory);
+					var sendClient = {action: "CMD", cmd: [curCMD], reqID: 0};
+					var actionObj = {actionObj: sendClient, queName: 'clientArray'};
+					dbMapServiceController.cmdQueActions('save', serverName, actionObj)
+						.then(function () {
+							var mesg = 'C: ' + unitObj.type + ' Atk Heli is departed ' + friendlyBase.name + ' and it is patrolling toward ' + enemyBase.name;
+							DCSLuaCommands.sendMesgToCoalition(
+								playerUnitObj.coalition,
+								serverName,
+								mesg,
+								20
+							);
+						})
+						.catch(function (err) {
+							console.log('erroring line1026: ', err);
+						})
+					;
+				})
+				.catch(function (err) {
+					console.log('erroring line1031: ', err);
+				})
+			;
+		})
+		.catch(function (err) {
+			console.log('erroring line1036: ', err);
+		})
+	;
+});
 
 _.set(exports, 'spawnBomberPlane', function (serverName, playerUnitObj, bomberObj) {
 	var curTkrName;
