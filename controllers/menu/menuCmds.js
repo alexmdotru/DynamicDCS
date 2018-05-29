@@ -460,6 +460,11 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 							exports.spawnAtkHeli(serverName, curUnit, curPlayer, pObj.type, pObj.rsCost);
 						}
 
+						//Defense Menu
+						if (pObj.cmd === 'spawnDefHeli') {
+							exports.spawnDefHeli(serverName, curUnit, curPlayer, pObj.type, pObj.rsCost);
+						}
+
 						//Support Menu
 						if (pObj.cmd === 'spawnAWACS') {
 							exports.spawnAWACS(serverName, curUnit, curPlayer, pObj.type, pObj.rsCost);
@@ -786,6 +791,43 @@ _.set(exports, 'unpackCrate', function (serverName, playerUnit, country, type, s
 			})
 		;
 	}
+});
+
+_.set(exports, 'spawnDefHeli', function (serverName, curUnit, curPlayer, heliType, rsCost) {
+	console.log('HeliType: ', heliType, rsCost);
+
+	var heliObj;
+	if(heliType === 'RussianDefHeli') {
+		heliObj = {
+			name: 'RussianDefHeli',
+			type: 'Mi-24V',
+			country: 'RUSSIA',
+			alt: '1000',
+			speed: '55',
+			hidden: false
+		};
+	}
+	if(heliType === 'USADefHeli') {
+		heliObj = {
+			name: 'USADefHeli',
+			type: 'AH-1W',
+			country: 'USA',
+			alt: '1000',
+			speed: '55',
+			hidden: false
+		};
+	}
+
+	resourcePointsController.spendResourcePoints(serverName, curPlayer, rsCost, 'DefHeli', heliObj)
+		.then(function(spentPoints) {
+			if (spentPoints) {
+				groupController.spawnDefenseChopper(serverName, curUnit, heliObj);
+			}
+		})
+		.catch(function(err) {
+			console.log('err line938: ', err);
+		})
+	;
 });
 
 _.set(exports, 'spawnAtkHeli', function (serverName, curUnit, curPlayer, heliType, rsCost) {

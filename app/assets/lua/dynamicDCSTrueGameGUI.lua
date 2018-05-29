@@ -597,7 +597,7 @@ dynDCS.rejectPlayer = function(playerID)
 		if(isLoadLock) then
 			_chatMessage = "***Slot DISABLED, Server Is Syncing Units***"
 		elseif (isCapLives) then
-			_chatMessage = "***Slot DISABLED, Your Modern CAS Lives Are Used Up***"
+			_chatMessage = "***Slot DISABLED, Your Modern CAP Lives Are Used Up***"
 		elseif (isCasLives) then
 			_chatMessage = "***Slot DISABLED, Your Modern CAS Lives Are Used Up***"
 		elseif (isRedLocked) then

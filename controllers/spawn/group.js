@@ -125,6 +125,193 @@ _.set(exports, 'turnOffDisperseUnderFire', function () {
 		'},';
 });
 
+_.set(exports, 'defenseHeliRouteTemplate', function (routes) {
+	return '' +
+		'["route"] = {' +
+			'["points"] = {' +
+				'[1] = {' +
+					'["alt"] = ' + _.get(routes, 'alt') + ',' +
+					'["action"] = "Turning Point",' +
+					'["alt_type"] = "BARO",' +
+					'["speed"] = ' + _.get(routes, 'speed') + ',' +
+					'["task"] = {' +
+						'["id"] = "ComboTask",' +
+						'["params"] = {' +
+							'["tasks"] = {' +
+								'[1] = {' +
+									'["number"] = 1,' +
+									'["auto"] = true,' +
+									'["id"] = "EngageTargets",' +
+									'["enabled"] = true,' +
+									'["key"] = "CAS",' +
+									'["params"] = {' +
+										'["targetTypes"] = {' +
+											'[1] = "Helicopters",' +
+											'[2] = "Ground Units",' +
+											'[3] = "Light armed ships",' +
+										'},' +
+										'["priority"] = 0,' +
+									'},' +
+								'},' +
+								'[2] = {' +
+									'["number"] = 2,' +
+									'["auto"] = false,' +
+									'["id"] = "WrappedAction",' +
+									'["enabled"] = true,' +
+									'["params"] = {' +
+										'["action"] = {' +
+											'["id"] = "Option",' +
+											'["params"] = {' +
+												'["value"]=2,' +
+												'["name"]=1,' +
+											'},' +
+										'},' +
+									'},' +
+								'},' +
+								'[3] = {' +
+									'["number"] = 3,' +
+									'["auto"] = false,' +
+									'["id"] = "WrappedAction",' +
+									'["enabled"] = true,' +
+									'["params"] = {' +
+										'["action"] = {' +
+											'["id"] = "Option",' +
+											'["params"] = {' +
+												'["value"]=0,' +
+												'["name"]=0,' +
+											'},' +
+										'},' +
+									'},' +
+								'},' +
+							'},' +
+						'},' +
+					'},' +
+					'["type"] = "Turning Point",' +
+					'["x"] = coord.LLtoLO(' + _.get(routes, ['routeLocs', 0, 1]) + ', ' + _.get(routes, ['routeLocs', 0, 0]) + ').x, ' +
+					'["y"] = coord.LLtoLO(' + _.get(routes, ['routeLocs', 0, 1]) + ', ' + _.get(routes, ['routeLocs', 0, 0]) + ').z, ' +
+					'["speed_locked"] = true,' +
+				'},' +
+				'[2]={' +
+					'["alt"] = ' + _.get(routes, 'alt') + ',' +
+					'["action"] = "Turning Point",' +
+					'["alt_type"] = "BARO",' +
+					'["speed"] = ' + _.get(routes, 'speed') + ',' +
+					'["task"] = {' +
+						'["id"] = "ComboTask",' +
+						'["params"] = {["tasks"] = {}}' +
+					'},' +
+					'["type"] = "Turning Point",' +
+					'["x"] = coord.LLtoLO(' + _.get(routes, ['routeLocs', 1, 1]) + ', ' + _.get(routes, ['routeLocs', 1, 0]) + ').x, ' +
+					'["y"] = coord.LLtoLO(' + _.get(routes, ['routeLocs', 1, 1]) + ', ' + _.get(routes, ['routeLocs', 1, 0]) + ').z, ' +
+					'["speed_locked"] = true,' +
+				'},' +
+				'[3]={' +
+					'["alt"] = ' + _.get(routes, 'alt') + ',' +
+					'["action"] = "Turning Point",' +
+					'["alt_type"] = "BARO",' +
+					'["speed"] = ' + _.get(routes, 'speed') + ',' +
+					'["task"] = {' +
+						'["id"] = "ComboTask",' +
+						'["params"] = {["tasks"] = {}}' +
+					'},' +
+					'["type"] = "Turning Point",' +
+					'["x"] = coord.LLtoLO(' + _.get(routes, ['routeLocs', 2, 1]) + ', ' + _.get(routes, ['routeLocs', 2, 0]) + ').x, ' +
+					'["y"] = coord.LLtoLO(' + _.get(routes, ['routeLocs', 2, 1]) + ', ' + _.get(routes, ['routeLocs', 2, 0]) + ').z, ' +
+					'["speed_locked"] = true,' +
+				'},' +
+				'[4]={' +
+					'["alt"] = ' + _.get(routes, 'alt') + ',' +
+					'["action"] = "Turning Point",' +
+					'["alt_type"] = "BARO",' +
+					'["speed"] = ' + _.get(routes, 'speed') + ',' +
+					'["task"] = {' +
+						'["id"] = "ComboTask",' +
+						'["params"] = {["tasks"] = {}}' +
+					'},' +
+					'["type"] = "Turning Point",' +
+					'["x"] = coord.LLtoLO(' + _.get(routes, ['routeLocs', 3, 1]) + ', ' + _.get(routes, ['routeLocs', 3, 0]) + ').x, ' +
+					'["y"] = coord.LLtoLO(' + _.get(routes, ['routeLocs', 3, 1]) + ', ' + _.get(routes, ['routeLocs', 3, 0]) + ').z, ' +
+					'["speed_locked"] = true,' +
+				'},' +
+				'[5]={' +
+					'["alt"] = ' + _.get(routes, 'alt') + ',' +
+					'["action"] = "Turning Point",' +
+					'["alt_type"] = "BARO",' +
+					'["speed"] = ' + _.get(routes, 'speed') + ',' +
+					'["task"] = {' +
+						'["id"] = "ComboTask",' +
+						'["params"] = {["tasks"] = {}}' +
+					'},' +
+					'["type"] = "Turning Point",' +
+					'["x"] = coord.LLtoLO(' + _.get(routes, ['routeLocs', 4, 1]) + ', ' + _.get(routes, ['routeLocs', 4, 0]) + ').x, ' +
+					'["y"] = coord.LLtoLO(' + _.get(routes, ['routeLocs', 4, 1]) + ', ' + _.get(routes, ['routeLocs', 4, 0]) + ').z, ' +
+					'["speed_locked"] = true,' +
+				'},' +
+				'[6]={' +
+					'["alt"] = ' + _.get(routes, 'alt') + ',' +
+					'["action"] = "Turning Point",' +
+					'["alt_type"] = "BARO",' +
+					'["speed"] = ' + _.get(routes, 'speed') + ',' +
+					'["task"] = {' +
+						'["id"] = "ComboTask",' +
+						'["params"] = {["tasks"] = {}}' +
+					'},' +
+					'["type"] = "Turning Point",' +
+					'["x"] = coord.LLtoLO(' + _.get(routes, ['routeLocs', 5, 1]) + ', ' + _.get(routes, ['routeLocs', 5, 0]) + ').x, ' +
+					'["y"] = coord.LLtoLO(' + _.get(routes, ['routeLocs', 5, 1]) + ', ' + _.get(routes, ['routeLocs', 5, 0]) + ').z, ' +
+					'["speed_locked"] = true,' +
+				'},' +
+				'[7]={' +
+					'["alt"] = ' + _.get(routes, 'alt') + ',' +
+					'["action"] = "Turning Point",' +
+					'["alt_type"] = "BARO",' +
+					'["speed"] = ' + _.get(routes, 'speed') + ',' +
+					'["task"] = {' +
+						'["id"] = "ComboTask",' +
+						'["params"] = {["tasks"] = {}}' +
+					'},' +
+					'["type"] = "Turning Point",' +
+					'["x"] = coord.LLtoLO(' + _.get(routes, ['routeLocs', 6, 1]) + ', ' + _.get(routes, ['routeLocs', 6, 0]) + ').x, ' +
+					'["y"] = coord.LLtoLO(' + _.get(routes, ['routeLocs', 6, 1]) + ', ' + _.get(routes, ['routeLocs', 6, 0]) + ').z, ' +
+					'["speed_locked"] = true,' +
+				'},' +
+				'[8]={' +
+					'["alt"] = ' + _.get(routes, 'alt') + ',' +
+					'["action"] = "Turning Point",' +
+					'["alt_type"] = "BARO",' +
+					'["speed"] = ' + _.get(routes, 'speed') + ',' +
+					'["task"] = {' +
+						'["id"] = "ComboTask",' +
+						'["params"] = {' +
+							'["tasks"] = {' +
+								'[1] = {' +
+									'["number"] = 1,' +
+									'["auto"] = false,' +
+									'["id"] = "WrappedAction",' +
+									'["enabled"] = true,' +
+									'["params"] = {' +
+										'["action"] = {' +
+											'["id"] = "SwitchWaypoint",' +
+											'["params"] = {' +
+												'["goToWaypointIndex"] = 1,' +
+												'["fromWaypointIndex"] = 8,' +
+											'},' +
+										'},' +
+									'},' +
+								'},' +
+							'},' +
+						'}' +
+					'},' +
+					'["type"] = "Turning Point",' +
+					'["x"] = coord.LLtoLO(' + _.get(routes, ['routeLocs', 7, 1]) + ', ' + _.get(routes, ['routeLocs', 7, 0]) + ').x, ' +
+					'["y"] = coord.LLtoLO(' + _.get(routes, ['routeLocs', 7, 1]) + ', ' + _.get(routes, ['routeLocs', 7, 0]) + ').z, ' +
+					'["speed_locked"] = true,' +
+				'},' +
+			'},' +
+		'},'
+	;
+});
+
 _.set(exports, 'atkHeliRouteTemplate', function (routes) {
 	return '' +
 		'["route"] = {' +
@@ -729,6 +916,50 @@ _.set(exports, 'grndUnitTemplate', function ( unitObj ) {
 	;
 });
 
+_.set(exports, 'mi24vTemplate', function ( unitObj ) {
+	var curAirTemplate = '{' +
+		'["x"] = coord.LLtoLO(' + _.get(unitObj, ['lonLatLoc', 1]) + ', ' +  _.get(unitObj, ['lonLatLoc', 0]) + ').x, ' +
+		'["y"] = coord.LLtoLO(' + _.get(unitObj, ['lonLatLoc', 1]) + ', ' +  _.get(unitObj, ['lonLatLoc', 0]) + ').z, ' +
+		'["livery_id"] = "standard 1",' +
+		'["type"] = "Mi-24V",' +
+		'["name"] = "' + _.get(unitObj, 'name') + '",' +
+		// '["unitId"] = ' + _.get(unitObj, 'unitId') + ',' +
+		'["heading"] = ' + _.get(unitObj, 'heading', 0) + ',' +
+		'["skill"] = "' + _.get(unitObj, 'skill', "Excellent") + '",' +
+		'["payload"]={' +
+			'["pylons"]={},' +
+			'["fuel"] = "1704",' +
+			'["flare"] = 192,' +
+			'["chaff"] = 0,' +
+			'["gun"] = 100,' +
+		'},' +
+	'},';
+
+	return curAirTemplate;
+});
+
+_.set(exports, 'ah1wTemplate', function ( unitObj ) {
+	var curAirTemplate = '{' +
+		'["x"] = coord.LLtoLO(' + _.get(unitObj, ['lonLatLoc', 1]) + ', ' +  _.get(unitObj, ['lonLatLoc', 0]) + ').x, ' +
+		'["y"] = coord.LLtoLO(' + _.get(unitObj, ['lonLatLoc', 1]) + ', ' +  _.get(unitObj, ['lonLatLoc', 0]) + ').z, ' +
+		'["livery_id"] = "USA X Black",' +
+		'["type"] = "AH-1W",' +
+		'["name"] = "' + _.get(unitObj, 'name') + '",' +
+		// '["unitId"] = ' + _.get(unitObj, 'unitId') + ',' +
+		'["heading"] = ' + _.get(unitObj, 'heading', 0) + ',' +
+		'["skill"] = "' + _.get(unitObj, 'skill', "Excellent") + '",' +
+		'["payload"]={' +
+			'["pylons"]={},' +
+				'["fuel"] = "1250",' +
+				'["flare"] = 30,' +
+				'["chaff"] = 30,' +
+				'["gun"] = 100,' +
+			'},' +
+		'},';
+
+	return curAirTemplate;
+});
+
 _.set(exports, 'mi28nTemplate', function ( unitObj ) {
 	var curAirTemplate = '{' +
 		'["x"] = coord.LLtoLO(' + _.get(unitObj, ['lonLatLoc', 1]) + ', ' +  _.get(unitObj, ['lonLatLoc', 0]) + ').x, ' +
@@ -1104,6 +1335,83 @@ _.set(exports, 'spawnBaseReinforcementGroup', function (serverName, side, baseNa
 	return _.compact(spawnArray);
 });
 
+_.set(exports, 'spawnDefenseChopper', function (serverName, playerUnitObj, unitObj) {
+	var curTkrName;
+	var curUnitSpawn = '';
+	var curGroupSpawn;
+	var curCountry;
+	var curSpwnUnit;
+	var curGrpObj = {};
+	var friendlyLoc;
+	var curCategory = 'HELICOPTER';
+
+	curCountry = unitObj.country;
+	curTkrName = 'AI|' + unitObj.name + '|';
+	curSpwnUnit = _.cloneDeep(unitObj);
+
+	dbMapServiceController.baseActions('getClosestFriendlyBase', serverName, { unitLonLatLoc: playerUnitObj.lonLatLoc, playerSide: playerUnitObj.coalition})
+		.then(function (friendlyBase) {
+			var patrolDistance = 2;
+			friendlyLoc = zoneController.getLonLatFromDistanceDirection(friendlyBase.centerLoc, 0, patrolDistance);
+			curGrpObj = _.cloneDeep(curSpwnUnit);
+			_.set(curGrpObj, 'groupName', curTkrName + '#' + _.random(1000000, 9999999));
+			_.set(curGrpObj, 'country', curCountry);
+			_.set(curGrpObj, 'category', curCategory);
+			_.set(curGrpObj, 'alt', _.parseInt(unitObj.alt) + _.parseInt(friendlyBase.alt));
+			_.set(curGrpObj, 'routeLocs', [
+				friendlyLoc,
+				zoneController.getLonLatFromDistanceDirection(friendlyBase.centerLoc, 45, patrolDistance),
+				zoneController.getLonLatFromDistanceDirection(friendlyBase.centerLoc, 90, patrolDistance),
+				zoneController.getLonLatFromDistanceDirection(friendlyBase.centerLoc, 135, patrolDistance),
+				zoneController.getLonLatFromDistanceDirection(friendlyBase.centerLoc, 180, patrolDistance),
+				zoneController.getLonLatFromDistanceDirection(friendlyBase.centerLoc, 225, patrolDistance),
+				zoneController.getLonLatFromDistanceDirection(friendlyBase.centerLoc, 270, patrolDistance),
+				zoneController.getLonLatFromDistanceDirection(friendlyBase.centerLoc, 315, patrolDistance)
+			]);
+
+			curGroupSpawn = exports.grndUnitGroup( curGrpObj, 'CAS', exports.defenseHeliRouteTemplate(curGrpObj));
+
+			_.set(curSpwnUnit, 'lonLatLoc', friendlyLoc);
+			_.set(curSpwnUnit, 'name', curTkrName + '#' + _.random(1000000, 9999999));
+			_.set(curSpwnUnit, 'playerCanDrive', false);
+			_.set(curSpwnUnit, 'hidden', false);
+
+			if (unitObj.name === 'RussianDefHeli') {
+				for(x=0; x < 2; x++) {
+					curUnitSpawn += exports.mi24vTemplate(curSpwnUnit);
+				}
+			}
+			if (unitObj.name === 'USADefHeli') {
+				for(x=0; x < 2; x++) {
+					curUnitSpawn += exports.ah1wTemplate(curSpwnUnit);
+				}
+			}
+
+			curGroupSpawn = _.replace(curGroupSpawn, "#UNITS", curUnitSpawn);
+			var curCMD = exports.spawnGrp(curGroupSpawn, curCountry, curCategory);
+			var sendClient = {action: "CMD", cmd: [curCMD], reqID: 0};
+			var actionObj = {actionObj: sendClient, queName: 'clientArray'};
+			dbMapServiceController.cmdQueActions('save', serverName, actionObj)
+				.then(function () {
+					var mesg = 'C: A pair of ' + unitObj.type + ' is defending ' + friendlyBase.name;
+					DCSLuaCommands.sendMesgToCoalition(
+						playerUnitObj.coalition,
+						serverName,
+						mesg,
+						20
+					);
+				})
+				.catch(function (err) {
+					console.log('erroring line1400: ', err);
+				})
+			;
+		})
+		.catch(function (err) {
+			console.log('erroring line1405: ', err);
+		})
+	;
+});
+
 _.set(exports, 'spawnAtkChopper', function (serverName, playerUnitObj, unitObj) {
 	var curTkrName;
 	var curUnitSpawn = '';
@@ -1145,10 +1453,14 @@ _.set(exports, 'spawnAtkChopper', function (serverName, playerUnitObj, unitObj) 
 					_.set(curSpwnUnit, 'hidden', false);
 
 					if (unitObj.name === 'RussianAtkHeli') {
-						curUnitSpawn += exports.mi28nTemplate(curSpwnUnit);
+						for(x=0; x < 2; x++) {
+							curUnitSpawn += exports.mi28nTemplate(curSpwnUnit);
+						}
 					}
 					if (unitObj.name === 'USAAtkHeli') {
-						curUnitSpawn = exports.ah64dTemplate(curSpwnUnit);
+						for(x=0; x < 2; x++) {
+							curUnitSpawn += exports.ah64dTemplate(curSpwnUnit);
+						}
 					}
 
 					curGroupSpawn = _.replace(curGroupSpawn, "#UNITS", curUnitSpawn);
