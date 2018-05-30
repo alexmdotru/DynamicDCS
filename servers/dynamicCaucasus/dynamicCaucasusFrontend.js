@@ -233,7 +233,7 @@ setInterval(function () {
 setInterval(function () {
 	if (groupController.bases) {
 		if (!_.get(CCB, ['DCSSocket', 'connOpen'], true)) {
-			sychrontronController.syncType(CCB.serverName, _.get(CCB, 'curServerUnitCnt', 20) - 20);
+			sychrontronController.syncType(CCB.serverName, _.get(CCB, 'curServerUnitCnt', 56) - 56);
 		}
 	} else {
 		groupController.initDbs(CCB.serverName);
