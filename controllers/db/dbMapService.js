@@ -653,7 +653,7 @@ exports.unitActions = function (action, serverName, obj){
 					category: {
 						$ne: 'STRUCTURE'
 					},
-					date: {
+					updatedAt: {
 						$lte: fiveMinsAgo
 					}
 				},
