@@ -21,7 +21,7 @@ var processSchema = require('./models/processSchema');
 
 var oneMin = 60 * 1000;
 var oneHour = 60 * oneMin;
-var removeDead = oneMin * 5;
+var removeDead = 5 * oneMin;
 
 _.set(exports, 'connectMapDB', function (dynamicHost, dynamicDatabase) {
 	mapdb.open(dynamicHost, dynamicDatabase);
@@ -645,6 +645,8 @@ exports.unitActions = function (action, serverName, obj){
 	}
 	if(action === 'removeAllDead') {
 		return new Promise(function(resolve, reject) {
+			var fiveMinsAgo = new Date(new Date()).getTime() - removeDead;
+			console.log('five mins: ', fiveMinsAgo);
 			Unit.remove(
 				{
 					dead: true,
@@ -652,7 +654,7 @@ exports.unitActions = function (action, serverName, obj){
 						$ne: 'STRUCTURE'
 					},
 					date: {
-						$lte: (new Date(new Date()).getTime() - removeDead)
+						$lte: fiveMinsAgo
 					}
 				},
 				function(err, units) {
