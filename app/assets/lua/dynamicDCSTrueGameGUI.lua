@@ -11,6 +11,7 @@ isCasLives = false
 isLoadLock = false
 isRedLocked = false
 isBlueLocked = false
+isGamemasterLock = false
 curColor = ''
 
 package.path  = package.path..";.\\LuaSocket\\?.lua;"
@@ -257,7 +258,7 @@ dynDCS.onGameEvent = function(eventName,arg1,arg2,arg3,arg4,arg5,arg6,arg7, arg8
 		table.insert(updateQue.que, curUpdate)
 	end
 	--if( eventName == "mission_end" ) then
-		--"mission_end", winner, msg
+	--"mission_end", winner, msg
 	--	curUpdate = {
 	--		action = eventName,
 	--		data = {
@@ -519,6 +520,7 @@ function dynDCS.shouldAllowSlot(_playerID, _slotID)
 	isLoadLock = false
 	isRedLocked = false
 	isBlueLocked = false
+	isGamemasterLock = false
 	local _isOpenSlot = dynDCS.getFlagValue('isOpenSlot')
 	--net.log('io'.._playerID..' '.._slotID..' '.._isOpenSlot)
 	if _isOpenSlot ~= nil then
@@ -533,9 +535,18 @@ function dynDCS.shouldAllowSlot(_playerID, _slotID)
 	end
 
 	local curUcid = net.get_player_info(_playerID, 'ucid')
+	if string.find(tostring(_slotID),"instructor",1,true) then
+		net.log('slotid: '.._slotID..' ucid: '..curUcid)
+		if curUcid == 'd124b99273260cf876203cb63e3d7791' then
+			return true
+		end
+		isGamemasterLock = true
+		return false
+	end
 	local _ucidFlagRed = dynDCS.getFlagValue(curUcid..'_1')
 	local _ucidFlagBlue = dynDCS.getFlagValue(curUcid..'_2')
 	local _unitId = dynDCS.getUnitId(_slotID)
+
 	if _unitId == nil then
 		local curColor = _slotID:split('_')[3]
 		--net.log('cu: '..curColor..' | '.._ucidFlagRed.. ' | '.._ucidFlagBlue)
@@ -597,6 +608,8 @@ dynDCS.rejectPlayer = function(playerID)
 		local _chatMessage
 		if(isLoadLock) then
 			_chatMessage = "***Slot DISABLED, Server Is Syncing Units***"
+		elseif (isGamemasterLock) then
+			_chatMessage = "***Slot DISABLED, Slot is only for Game Masters***"
 		elseif (isCapLives) then
 			_chatMessage = "***Slot DISABLED, Your Modern CAP Lives Are Used Up***"
 		elseif (isCasLives) then
