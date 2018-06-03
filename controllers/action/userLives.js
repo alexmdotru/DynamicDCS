@@ -12,7 +12,8 @@ exports.capLivesEnabled = [
 	'MiG-29A',
 	'MiG-29S',
 	'M-2000C',
-	'J-11A'
+	'J-11A',
+	'FA-18C_hornet'
 ];
 
 exports.casLivesEnabled = [
