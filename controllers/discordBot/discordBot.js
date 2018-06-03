@@ -42,7 +42,7 @@ _.set(dBot, 'kickForNoComms', function (curServerName, playerArray, discordUserN
 					var newLifeCount = (curPlayer.gicTimeLeft === 0)? exports.timeToCorrect : curPlayer.gicTimeLeft - 1 ;
 					if (newLifeCount !== 0) {
 						console.log('GTBK: ', newLifeCount, pUnit.playername);
-						var mesg = "SERVER REQUIREMENT(you have " + newLifeCount + " mins left to fix):You are currently not logged into a discord voice channel or your discord nickname and player name does not match(Case Sensitive!). Please join DDCS discord https://discord.gg/NSzajs7";
+						var mesg = "SERVER REQUIREMENT(you have " + newLifeCount + " mins left to fix):You are currently need to be in a VOICE discord channel, Status is online(not invisi) and/or your discord nickname and player name needs to match exactly. Please join DDCS discord https://discord.gg/3J3petx";
                         DCSLuaCommands.sendMesgToGroup(pUnit.groupId, curServerName, mesg, '60');
                         dbMapServiceController.srvPlayerActions('update', curServerName, {_id: curPlayer._id, gicTimeLeft: newLifeCount})
                             .catch(function (err) {
@@ -53,7 +53,7 @@ _.set(dBot, 'kickForNoComms', function (curServerName, playerArray, discordUserN
 						dbMapServiceController.srvPlayerActions('update', curServerName, {_id: curPlayer._id, gicTimeLeft: newLifeCount})
 							.then(function () {
 								console.log('KICKED FOR NO COMMS: ', pUnit.playername, pUnit);
-								var mesg = "YOU HAVE BEEN KICKED TO SPECTATOR FOR NOT BEING IN COMMS, You are currently not logged into a discord voice channel or your discord nickname and player name does not match(Case Sensitive!). Please join DDCS discord https://discord.gg/NSzajs7";
+								var mesg = "YOU HAVE BEEN KICKED TO SPECTATOR FOR NOT BEING IN COMMS, You are currently need to be in a VOICE discord channel, Status is online(not invisi) and/or your discord nickname and player name needs to match exactly. Please join DDCS discord https://discord.gg/3J3petx";
                                 DCSLuaCommands.sendMesgToGroup(pUnit.groupId, curServerName, mesg, '60');
                                 DCSLuaCommands.forcePlayerSpectator(curServerName, curPlayer.playerId, mesg);
 							})
