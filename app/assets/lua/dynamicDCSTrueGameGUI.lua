@@ -42,7 +42,8 @@ capLives = {
 	['MiG-29A'] = 1,
 	['MiG-29S'] = 1,
 	['M-2000C'] = 1,
-	['J-11A'] = 1
+	['J-11A'] = 1,
+	['FA-18C_hornet'] = 1
 }
 
 casLives = {
