@@ -30,7 +30,7 @@ _.set(dBot, 'kickForNoComms', function (curServerName, playerArray, discordUserN
 		return _.includes(discordUserNames, player.name);
 	});
 
-	dbMapServiceController.unitActions('read', curServerName, {playername: {$in: _.compact( _.map(pNIC, 'name'))}})
+	dbMapServiceController.unitActions('read', curServerName, {dead: false, playername: {$in: _.compact( _.map(pNIC, 'name'))}})
 		.then(function (pUnits) {
 			console.log('----------------------');
 			_.forEach(pUnits, function (pUnit) {
