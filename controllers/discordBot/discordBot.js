@@ -11,6 +11,9 @@ const client = new Discord.Client();
 var dBot = {};
 exports.oldestAllowedUser = 300;
 exports.timeToCorrect = 20;
+exports.Only0ChannelNames = [
+	'Please join side before joining GCI'
+];
 exports.Only1ChannelNames = [
 	'Red Gen Chat(Relaxed GCI)',
 	'Red GCI Group 1(Brevity)',
@@ -75,7 +78,11 @@ _.set(dBot, 'kickForOpposingSides', function (serverName, playerArray, discordBy
 			_.forEach(discordByChannel[chanName], function (vcUser, userName) {
 				var findCurPlayer = _.find(playerArray, {name: userName});
 				if(findCurPlayer) {
-					if (findCurPlayer.side !== 1) {
+					if (findCurPlayer.side === 0) {
+						console.log('kick user to gen: ', userName);
+						moveToChan = client.channels.find("name", _.first(exports.Only0ChannelNames));
+						vcUser.setVoiceChannel(moveToChan);
+					} else if (findCurPlayer.side !== 1) {
 						console.log('kick user for wrong side GCI: ', userName);
 						moveToChan = client.channels.find("name", _.first(exports.Only2ChannelNames));
 						vcUser.setVoiceChannel(moveToChan);
@@ -89,7 +96,11 @@ _.set(dBot, 'kickForOpposingSides', function (serverName, playerArray, discordBy
 			_.forEach(discordByChannel[chanName], function (vcUser, userName) {
 				var findCurPlayer = _.find(playerArray, {name: userName});
 				if(findCurPlayer) {
-					if (findCurPlayer.side !== 2) {
+					if (findCurPlayer.side === 0) {
+						console.log('kick user to gen: ', userName);
+						moveToChan = client.channels.find("name", _.first(exports.Only0ChannelNames));
+						vcUser.setVoiceChannel(moveToChan);
+					} else if (findCurPlayer.side !== 2) {
 						console.log('kick user for wrong side GCI: ', userName);
 						moveToChan = client.channels.find("name", _.first(exports.Only1ChannelNames));
 						vcUser.setVoiceChannel(moveToChan);
