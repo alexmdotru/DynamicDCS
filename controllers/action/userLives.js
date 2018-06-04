@@ -2,8 +2,8 @@ const	_ = require('lodash');
 const dbMapServiceController = require('../db/dbMapService');
 const DCSLuaCommands = require('../player/DCSLuaCommands');
 
-exports.capDefaultLife = 3;
-exports.casDefaultLife = 6;
+exports.capDefaultLife = 2;
+exports.casDefaultLife = 4;
 
 exports.capLivesEnabled = [
 	'F-15C',
