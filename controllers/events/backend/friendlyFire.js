@@ -5,11 +5,15 @@ const DCSLuaCommands = require('../../player/DCSLuaCommands');
 const playersEvent = require('../../events/backend/players');
 
 _.set(exports, 'processFriendlyFire', function (serverName, sessionName, eventObj) {
-	var iCurObj;
+	//var iCurObj;
 	var iPlayer;
 	var tPlayer;
 	var mesg;
 	// "friendly_fire", playerID, weaponName, victimPlayerID
+
+	iPlayer = _.find(playersEvent.rtPlayerArray[serverName], {id: eventObj.data.arg1});
+	tPlayer = _.find(playersEvent.rtPlayerArray[serverName], {id: eventObj.data.arg3});
+	/*
 	iCurObj = {
 		sessionName: sessionName,
 		eventCode: constants.shortNames[eventObj.action],
@@ -18,19 +22,18 @@ _.set(exports, 'processFriendlyFire', function (serverName, sessionName, eventOb
 		showInChart: true
 	};
 
-	iPlayer = _.find(playersEvent.rtPlayerArray[serverName], {id: eventObj.data.arg1});
+
 	if (iPlayer) {
 		_.set(iCurObj, 'iucid', iPlayer.ucid);
 		_.set(iCurObj, 'iName', iPlayer.name);
 	}
-	tPlayer = _.find(playersEvent.rtPlayerArray[serverName], {id: eventObj.data.arg3});
 	if (tPlayer) {
 		_.set(iCurObj, 'tucid', tPlayer.ucid);
 		_.set(iCurObj, 'tName', tPlayer.name);
 	}
+	*/
 
-
-	if(iCurObj.iucid || iCurObj.tucid) {
+	if(iPlayer.ucid && tPlayer.ucid) {
 		// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
 		/*
 		dbMapServiceController.statSrvEventActions('save', serverName, iCurObj)
@@ -41,11 +44,11 @@ _.set(exports, 'processFriendlyFire', function (serverName, sessionName, eventOb
 		*/
 
 		// console.log('tplayer: ', tPlayer, eventObj);
-		mesg = 'A: ' + constants.side[iPlayer.side] +' ' + iPlayer.name + ' has accidentally hit ' + _.get(tPlayer, 'name', 'friendly unit') + ' with a ' + _.get(eventObj, 'data.arg2', '?') + ' - 100pts';
+		mesg = 'A: ' + constants.side[iPlayer.side] +' ' + iPlayer.name + ' has hit friendly ' + tPlayer.name + ' with a ' + _.get(eventObj, 'data.arg2', '?') + ', -1 life to ' + iPlayer.name;
 		DCSLuaCommands.sendMesgToCoalition(
 			iPlayer.side,
 			serverName,
-			_.get(iCurObj, 'msg'),
+			mesg,
 			15
 		);
 	}

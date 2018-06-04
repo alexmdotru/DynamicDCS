@@ -62,11 +62,10 @@ _.set(DCB, 'socketCallback', function (serverName, cbArray) {
 		if (_.get(queObj, 'action') === 'players') {
 			playersEvent.processPlayerEvent(serverName, DCB.sessionName, queObj);
 		}
-		/*
-			if (_.get(queObj, 'action') === 'friendly_fire') {
-				friendlyFireEvent.processFriendlyFire(serverName, DCB.sessionName, queObj);
-			}
-		*/
+
+		if (_.get(queObj, 'action') === 'friendly_fire') {
+			friendlyFireEvent.processFriendlyFire(serverName, DCB.sessionName, queObj);
+		}
 
 		if (_.get(queObj, 'action') === 'self_kill') {
 			selfKillEvent.processSelfKill(serverName, DCB.sessionName, queObj);
