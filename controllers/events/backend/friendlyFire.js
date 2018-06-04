@@ -33,7 +33,7 @@ _.set(exports, 'processFriendlyFire', function (serverName, sessionName, eventOb
 	}
 	*/
 
-	if(iPlayer.ucid && tPlayer.ucid) {
+	if(iPlayer && tPlayer) {
 		// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
 		/*
 		dbMapServiceController.statSrvEventActions('save', serverName, iCurObj)
