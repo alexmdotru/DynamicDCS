@@ -20,13 +20,12 @@ var allowedPlanesForTroops = [
 	'SA342Mistral'
 ];
 var allowedTypesForCratesLight = [
-	'UH-1H'
-];
-
-var allowedTypesForCratesHeavy = [
+	'UH-1H',
 	'Mi-8MT',
 	'Ka-50'
 ];
+
+var allowedTypesForCratesHeavy = [];
 
 var allowedHelisForInternalCrates = [
 	'UH-1H',
