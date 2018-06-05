@@ -34,22 +34,24 @@ _.set(exports, 'processFriendlyFire', function (serverName, sessionName, eventOb
 	*/
 
 	if(iPlayer && tPlayer) {
-		// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
-		/*
-		dbMapServiceController.statSrvEventActions('save', serverName, iCurObj)
-			.catch(function (err) {
-				console.log('err line45: ', err);
-			})
-		;
-		*/
+		if(iPlayer.ucid !== tPlayer.ucid) {
+			// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
+			/*
+            dbMapServiceController.statSrvEventActions('save', serverName, iCurObj)
+                .catch(function (err) {
+                    console.log('err line45: ', err);
+                })
+            ;
+            */
 
-		// console.log('tplayer: ', tPlayer, eventObj);
-		mesg = 'A: ' + constants.side[iPlayer.side] +' ' + iPlayer.name + ' has hit friendly ' + tPlayer.name + ' with a ' + _.get(eventObj, 'data.arg2', '?') + ', -1 life to ' + iPlayer.name;
-		DCSLuaCommands.sendMesgToCoalition(
-			iPlayer.side,
-			serverName,
-			mesg,
-			15
-		);
+			// console.log('tplayer: ', tPlayer, eventObj);
+			mesg = 'A: ' + constants.side[iPlayer.side] +' ' + iPlayer.name + ' has hit friendly ' + tPlayer.name + ' with a ' + _.get(eventObj, 'data.arg2', '?') + ', -1 life to ' + iPlayer.name;
+			DCSLuaCommands.sendMesgToCoalition(
+				iPlayer.side,
+				serverName,
+				mesg,
+				15
+			);
+		}
 	}
 });
