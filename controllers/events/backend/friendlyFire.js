@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const constants = require('../../constants');
-// const dbMapServiceController = require('../../db/dbMapService');
+const dbMapServiceController = require('../../db/dbMapService');
 const DCSLuaCommands = require('../../player/DCSLuaCommands');
 const playersEvent = require('../../events/backend/players');
 const userLivesController = require('../../action/userLives');
@@ -9,6 +9,8 @@ _.set(exports, 'processFriendlyFire', function (serverName, sessionName, eventOb
 	//var iCurObj;
 	var iPlayer;
 	var tPlayer;
+	var curIUnit;
+	var curTUnit;
 	var mesg;
 	// "friendly_fire", playerID, weaponName, victimPlayerID
 
@@ -41,26 +43,44 @@ _.set(exports, 'processFriendlyFire', function (serverName, sessionName, eventOb
 
 	if(iPlayer && tPlayer) {
 		if(iPlayer.slot !== tPlayer.slot && iPlayer.ucid !== tPlayer.ucid) {
-			dbMapServiceController.unitActions('read', serverName, {unitId: iPlayer.slot})
-				.then(function (iunit) {
-					dbMapServiceController.unitActions('read', serverName, {unitId: tPlayer.slot})
-						.then(function (tunit) {
-							var curIUnit = _.get(iunit, 0);
-							var curTUnit = _.get(tunit, 0);
-							// console.log('tplayer: ', tPlayer, eventObj);
-							if (_.includes(userLivesController.capLivesEnabled, curIUnit.type)) {
-								userLivesController.removeLife(serverName, iPlayer.ucid, curIUnit, 'Cap');
-							}
-							if (_.includes(userLivesController.casLivesEnabled, curIUnit.type)) {
-								userLivesController.removeLife(serverName, iPlayer.ucid, curIUnit, 'Cas');
-							}
+			dbMapServiceController.srvPlayerActions('read', serverName, {_id: iPlayer.ucid})
+				.then(function (players) {
+					dbMapServiceController.unitActions('read', serverName, {unitId: iPlayer.slot})
+						.then(function (iunit) {
+							dbMapServiceController.unitActions('read', serverName, {unitId: tPlayer.slot})
+								.then(function (tunit) {
+									var curPlayer = _.get(players, 0);
+									curIUnit = _.get(iunit, 0);
+									curTUnit = _.get(tunit, 0);
+									// console.log('tplayer: ', tPlayer, eventObj);
+									if (_.includes(userLivesController.capLivesEnabled, curIUnit.type)) {
+										userLivesController.removeLife(serverName, iPlayer.ucid, curIUnit, 'Cap');
+									}
+									if (_.includes(userLivesController.casLivesEnabled, curIUnit.type)) {
+										userLivesController.removeLife(serverName, iPlayer.ucid, curIUnit, 'Cas');
+									}
 
-							if (_.includes(userLivesController.capLivesEnabled, curTUnit.type)) {
-								userLivesController.autoAddLife(serverName, tPlayer.ucid, 'Cap');
-							}
-							if (_.includes(userLivesController.casLivesEnabled, curTUnit.type)) {
-								userLivesController.autoAddLife(serverName, tPlayer.ucid, 'Cas');
-							}
+									if (_.includes(userLivesController.capLivesEnabled, curTUnit.type)) {
+										userLivesController.autoAddLife(serverName, tPlayer.ucid, 'Cap');
+									}
+									if (_.includes(userLivesController.casLivesEnabled, curTUnit.type)) {
+										userLivesController.autoAddLife(serverName, tPlayer.ucid, 'Cas');
+									}
+
+									if(new Date(curPlayer.safeLifeActionTime).getTime() < new Date().getTime()) {
+										mesg = 'A: ' + constants.side[iPlayer.side] +' ' + iPlayer.name + '(' + curIUnit.type + ':-1 Life) has hit friendly ' + tPlayer.name + '(' + curTUnit.type + ':+1 Life) with a ' + _.get(eventObj, 'data.arg2', '?');
+										DCSLuaCommands.sendMesgToCoalition(
+											iPlayer.side,
+											serverName,
+											mesg,
+											15
+										);
+									}
+								})
+								.catch(function (err) {
+									console.log('err line45: ', err);
+								})
+							;
 						})
 						.catch(function (err) {
 							console.log('err line45: ', err);
@@ -71,14 +91,6 @@ _.set(exports, 'processFriendlyFire', function (serverName, sessionName, eventOb
 					console.log('err line45: ', err);
 				})
 			;
-
-			mesg = 'A: ' + constants.side[iPlayer.side] +' ' + iPlayer.name + '(' + curIUnit.type + ':-1 Life) has hit friendly ' + tPlayer.name + '(' + curTUnit.type + ':+1 Life) with a ' + _.get(eventObj, 'data.arg2', '?');
-			DCSLuaCommands.sendMesgToCoalition(
-				iPlayer.side,
-				serverName,
-				mesg,
-				15
-			);
 		}
 	}
 });
