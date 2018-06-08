@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const dbMapServiceController = require('../db/dbMapService');
 const jtacController = require('../action/jtac');
+const troopLocalizerController = require('../action/troopLocalizer');
 
 _.set(exports, 'processThirtySecActions', function (serverName, fullySynced) {
 	if (fullySynced) {
@@ -14,5 +15,6 @@ _.set(exports, 'processThirtySecActions', function (serverName, fullySynced) {
 		;
 
 		jtacController.aliveJtac30SecCheck(serverName);
+		troopLocalizerController.checkTroopProx(serverName);
 	}
 });

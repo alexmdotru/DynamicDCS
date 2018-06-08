@@ -123,6 +123,34 @@ _.set(exports, 'getPlayersInProximity', function (serverName, lonLat, kmDistance
 	;
 });
 
+_.set(exports, 'isPlayerInProximity', function (serverName, lonLat, kmDistance, playerName) {
+	return dbMapServiceController.unitActions(
+		'read',
+		serverName,
+		{
+			dead: false,
+			lonLatLoc: {
+				$geoWithin: {
+					$centerSphere: [
+						lonLat,
+						kmDistance / 6378.1
+					]
+				}
+			},
+			playername: playerName
+		})
+		.then(function (closeUnits) {
+			if(closeUnits.length > 0) {
+				return true;
+			}
+			return false;
+		})
+		.catch(function (err) {
+			console.log('line 114: ', err);
+		})
+		;
+});
+
 _.set(exports, 'getVirtualCratesInProximity', function (serverName, lonLat, kmDistance, coalition) {
 	return dbMapServiceController.unitActions(
 		'readStd',
