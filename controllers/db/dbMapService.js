@@ -646,7 +646,7 @@ exports.unitActions = function (action, serverName, obj){
 	if(action === 'removeAllDead') {
 		return new Promise(function(resolve, reject) {
 			var fiveMinsAgo = new Date(new Date()).getTime() - removeDead;
-			console.log('five mins: ', fiveMinsAgo);
+			// console.log('five mins: ', fiveMinsAgo);
 			Unit.remove(
 				{
 					dead: true,
