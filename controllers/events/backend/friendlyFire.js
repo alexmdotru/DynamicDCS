@@ -60,10 +60,10 @@ _.set(exports, 'processFriendlyFire', function (serverName, sessionName, eventOb
 										userLivesController.removeLife(serverName, iPlayer.ucid, curIUnit, 'Cas');
 									}
 
-									if (_.includes(userLivesController.capLivesEnabled, curTUnit.type)) {
+									if (_.includes(userLivesController.capLivesEnabled, curTUnit.type) && curTUnit.inAir) {
 										userLivesController.autoAddLife(serverName, tPlayer.ucid, 'Cap');
 									}
-									if (_.includes(userLivesController.casLivesEnabled, curTUnit.type)) {
+									if (_.includes(userLivesController.casLivesEnabled, curTUnit.type) && curTUnit.inAir) {
 										userLivesController.autoAddLife(serverName, tPlayer.ucid, 'Cas');
 									}
 
