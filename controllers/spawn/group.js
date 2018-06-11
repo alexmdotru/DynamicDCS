@@ -1266,7 +1266,7 @@ _.set(exports, 'spawnSupportVehiclesOnFarp', function ( serverName, baseName, si
 	var sptArray = [
 		"unarmedAmmo",
 		"unarmedFuel",
-		// "unarmedPower"
+		"unarmedPower"
 	];
 	var curAng = _.cloneDeep(curBase.hdg);
 	if (curAng > 180) {
