@@ -473,16 +473,16 @@ function pcallCommand(s, respID)
 	local success, resp =  pcall(commandExecute, s)
 	if success then
 		if resp then
-			local curUpdate
-			curUpdate = {
-				action = 'CMDRESPONSE',
-				data = {
-					respID = respID,
-					cmd = s,
-					response = resp
-				}
-			}
-			table.insert(updateQue.que, curUpdate)
+			--local curUpdate
+			--curUpdate = {
+			--	action = 'CMDRESPONSE',
+			--	data = {
+			--		respID = respID,
+			--		cmd = s,
+			--		response = resp
+			--	}
+			--}
+			--table.insert(updateQue.que, curUpdate)
 		end
 	else
 		log("Error: " .. resp)
