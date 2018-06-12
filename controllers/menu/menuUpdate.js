@@ -25,7 +25,10 @@ var allowedTypesForCratesLight = [
 	'Ka-50'
 ];
 
-var allowedTypesForCratesHeavy = [];
+var allowedTypesForCratesHeavy = [
+	'Mi-8MT',
+	'Ka-50'
+];
 
 var allowedHelisForInternalCrates = [
 	'UH-1H',
@@ -210,6 +213,7 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 							if(unit.coalition === 1) {
 								cmdArray = _.concat(cmdArray, [
 									'missionCommands.addSubMenuForGroup("' + unit.groupId + '", ' + aqMenuTitleLite + ')',
+									'missionCommands.addCommandForGroup("' + unit.groupId + '", "Acquisition Count", {' + aqMenuTitleLite + '}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "acquisitionCnt", ["unitId"] = ' + unit.unitId + '})',
 									'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "Support", {' + aqMenuTitleLite + '})',
 									'missionCommands.addCommandForGroup("' + unit.groupId + '", "Early Warning Radar Short(1Q-1C)", {' + aqMenuTitleLite + ',"Support"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "EWR", ["type"] = "1L13 EWR", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1, ["mobile"] = "true", ["mass"] = "501"})',
 									'missionCommands.addCommandForGroup("' + unit.groupId + '", "Early Warning Radar Long(1Q-2C)", {' + aqMenuTitleLite + ',"Support"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "EWR", ["type"] = "55G6 EWR", ["unitId"] = ' + unit.unitId + ', ["crates"] = 2, ["mobile"] = "true", ["mass"] = "502"})',
@@ -258,6 +262,7 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 							} else {
 								cmdArray = _.concat(cmdArray, [
 									'missionCommands.addSubMenuForGroup("' + unit.groupId + '", ' + aqMenuTitleLite + ')',
+									'missionCommands.addCommandForGroup("' + unit.groupId + '", "Acquisition Count", {' + aqMenuTitleLite + '}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "acquisitionCnt", ["unitId"] = ' + unit.unitId + '})',
 									'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "Support", {' + aqMenuTitleLite + '})',
 									'missionCommands.addCommandForGroup("' + unit.groupId + '", "Early Warning Radar Short(1Q-1C)", {' + aqMenuTitleLite + ',"Support"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "EWR", ["type"] = "1L13 EWR", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1, ["mobile"] = "true", ["mass"] = "501"})',
 									'missionCommands.addCommandForGroup("' + unit.groupId + '", "Reload Group(1Q-1C)", {' + aqMenuTitleLite + ',"Support"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "reloadGroup", ["type"] = "", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1, ["mobile"] = "true", ["mass"] = "504"})',
@@ -308,6 +313,7 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 							if(unit.coalition === 1) {
 								cmdArray = _.concat(cmdArray, [
 									'missionCommands.addSubMenuForGroup("' + unit.groupId + '", ' + aqMenuTitleHeavy + ')',
+									'missionCommands.addCommandForGroup("' + unit.groupId + '", "Acquisition Count", {' + aqMenuTitleHeavy + '}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "acquisitionCnt", ["unitId"] = ' + unit.unitId + '})',
 									'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "Support", {' + aqMenuTitleHeavy + '})',
 									'missionCommands.addCommandForGroup("' + unit.groupId + '", "Early Warning Radar Short(1Q-1C)", {' + aqMenuTitleHeavy + ',"Support"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "EWR", ["type"] = "1L13 EWR", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1, ["mobile"] = "true", ["mass"] = "1401"})',
 									'missionCommands.addCommandForGroup("' + unit.groupId + '", "Early Warning Radar Long(1Q-2C)", {' + aqMenuTitleHeavy + ',"Support"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "EWR", ["type"] = "55G6 EWR", ["unitId"] = ' + unit.unitId + ', ["crates"] = 2, ["mobile"] = "true", ["mass"] = "1402"})',
@@ -356,6 +362,7 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 							} else {
 								cmdArray = _.concat(cmdArray, [
 									'missionCommands.addSubMenuForGroup("' + unit.groupId + '", ' + aqMenuTitleHeavy + ')',
+									'missionCommands.addCommandForGroup("' + unit.groupId + '", "Acquisition Count", {' + aqMenuTitleHeavy + '}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "acquisitionCnt", ["unitId"] = ' + unit.unitId + '})',
 									'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "Support", {' + aqMenuTitleHeavy + '})',
 									'missionCommands.addCommandForGroup("' + unit.groupId + '", "Early Warning Radar Short(1Q-1C)", {' + aqMenuTitleHeavy + ',"Support"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "EWR", ["type"] = "1L13 EWR", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1, ["mobile"] = "true", ["mass"] = "1401"})',
 									'missionCommands.addCommandForGroup("' + unit.groupId + '", "Reload Group(1Q-1C)", {' + aqMenuTitleHeavy + ',"Support"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "reloadGroup", ["type"] = "", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1, ["mobile"] = "true", ["mass"] = "1404"})',

@@ -408,6 +408,26 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 						}
 
 						// Crate Menu ["action"] = "f10Menu", ["cmd"] = "EWR", ["type"] = "55G6 EWR", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1})
+						if (pObj.cmd === 'acquisitionCnt') {
+							dbMapServiceController.unitActions('read', serverName, {playerOwnerId: curPlayer.ucid, isCrate:false, isTroop: false, dead: false})
+								.then(function(unitsOwned){
+									var grpGroups = _.transform(unitsOwned, function (result, value) {
+										(result[value.groupName] || (result[value.groupName] = [])).push(value);
+									}, {});
+
+									DCSLuaCommands.sendMesgToGroup(
+										curUnit.groupId,
+										serverName,
+										"G: You Have " + _.size(grpGroups) + '/' + exports.maxUnitsMoving + " Unit Acquisitions In Play!",
+										10
+									);
+								})
+								.catch(function (err) {
+									console.log('erroring line427: ', err);
+								})
+							;
+						}
+
 						if (pObj.cmd === 'EWR') {
 							exports.spawnCrateFromLogi(serverName, curUnit, pObj.type, pObj.crates, false, '', pObj.mobile, pObj.mass, defCrate);
 						}
