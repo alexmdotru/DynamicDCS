@@ -738,16 +738,16 @@ do
 		local success, resp = pcall(commandExecute, s)
 		if success then
 			if resp ~= nil then
-				local curUpdate;
-				curUpdate = {
-					action = 'CMDRESPONSE',
-					data = {
-						respId = respId,
-						cmd = s,
-						response = resp
-					}
-				}
-				table.insert(updateQue.que, curUpdate)
+				--local curUpdate;
+				--curUpdate = {
+				--	action = 'CMDRESPONSE',
+				--	data = {
+				--		respId = respId,
+				--		cmd = s,
+				--		response = resp
+				--	}
+				--}
+				--table.insert(updateQue.que, curUpdate)
 			end
 		else
 			log("Error: " .. resp)
@@ -843,11 +843,14 @@ do
 						["category"] = weaponCategory[curWeapon.category + 1]
 					}
 				end
-				table.insert(updateQue.que, {
-					action = eventTypes[_event.id],
-					data = curEvent
-				})
-				return true
+				if client then
+					--env.info('EVENT RUNNING')
+					table.insert(updateQue.que, {
+						action = eventTypes[_event.id],
+						data = curEvent
+					})
+					return true
+				end
 			end
 		end, _event)
 		if (not status) then

@@ -57,6 +57,7 @@ _.set(DCB, 'getLatestSession', function (serverName) {
 });
 
 _.set(DCB, 'socketCallback', function (serverName, cbArray) {
+	// console.log('BB: ', cbArray.que);
 	DCB.getLatestSession(serverName);
 	_.forEach(_.get(cbArray, 'que', []), function (queObj) {
 		if (_.get(queObj, 'action') === 'players') {
