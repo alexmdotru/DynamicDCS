@@ -35,7 +35,8 @@ _.set(exports, 'processEventPlayerEnterUnit', function (serverName, sessionName,
 								dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 							}
 							userLivesController.updateServerLives(serverName, curIUnit);
-							menuUpdateController.logisticsMenu('resetMenu', serverName, curIUnit);
+							// console.log('PLAYER ENTER UNIT', curIUnit);
+							// menuUpdateController.logisticsMenu('resetMenu', serverName, curIUnit);
 							/*
 							DCSLuaCommands.sendMesgToCoalition(
 								_.get(iCurObj, 'displaySide'),

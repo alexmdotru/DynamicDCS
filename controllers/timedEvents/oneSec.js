@@ -6,9 +6,9 @@ _.set(exports, 'processOneSecActions', function (serverName, fullySynced) {
 	if (fullySynced) {
 		eventHitController.checkShootingUsers(serverName);
 
-		proximityController.checkUnitsToBaseForTroops(serverName);
+		// proximityController.checkUnitsToBaseForTroops(serverName);
 
-		proximityController.checkUnitsToLogisticTowers(serverName);
+		// proximityController.checkUnitsToLogisticTowers(serverName);
 
 		proximityController.checkUnitsToBaseForCapture(serverName);
 	}

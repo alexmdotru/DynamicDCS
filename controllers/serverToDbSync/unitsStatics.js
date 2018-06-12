@@ -2,6 +2,7 @@ const _ = require('lodash');
 const dbMapServiceController = require('../db/dbMapService');
 const taskController = require('../action/task');
 const webPushCommands = require('../socketIO/webPush');
+const menuUpdateController = require('../menu/menuUpdate');
 
 _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj) {
 	dbMapServiceController.unitActions('read', serverName, {_id: _.get(unitObj, 'data.name')})
@@ -39,6 +40,10 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 					_.set(curData, 'playerOwnerId', stParse[1]);
 					_.set(curData, 'proxChkGrp', stParse[3]);
 					_.set(curData, 'playerCanDrive', stParse[5]);
+				}
+				if (curData.playername && (_.get(unitObj, 'action') === 'C')) {
+					// console.log('playername', unitObj);
+					menuUpdateController.logisticsMenu('resetMenu', serverName, unitObj.data);
 				}
 
 				/*
