@@ -201,7 +201,29 @@ client.on('message', message => {
 			// 'Blue Gen Chat(Relaxed GCI)',
 		];
 		var vcArray = [];
-		var songFile = 'C:/Users/andre/IdeaProjects/DynamicDCS/sndBites/AMERICAshort.mp3';
+		var songFile = 'C:/Users/MegaServer/DynamicDCS/sndBites/AMERICAshort.mp3';
+		var curGuild = client.guilds.get('389682718033707008');
+
+		_.forEach(channelsToPlay, function (channel) {
+			vcArray.push(_.first(curGuild.channels.filter(ch => ch.type === 'voice' && ch.name === channel).array()));
+		});
+
+		//vcArray.push(_.first(curGuild.channels.filter(ch => ch.type === 'voice' && ch.name === 'Here But Coding').array()));
+		//vcArray.push(_.first(curGuild.channels.filter(ch => ch.type === 'voice' && ch.name === 'Group 1').array()));
+		// vcArray = curGuild.channels.filter(ch => ch.type === 'voice').array();
+
+		exports.sendSoundBite(vcArray, songFile);
+
+		message.channel.send('testPlay');
+	}
+	if (message.content === '!F-18') {
+		var channelsToPlay = [
+			'General',
+			// 'Red Gen Chat(Relaxed GCI)',
+			// 'Blue Gen Chat(Relaxed GCI)',
+		];
+		var vcArray = [];
+		var songFile = 'C:/Users/MegaServer/DynamicDCS/sndBites/DCS_World_FA-18C_Hornet_Menu_Theme.mp3';
 		var curGuild = client.guilds.get('389682718033707008');
 
 		_.forEach(channelsToPlay, function (channel) {
