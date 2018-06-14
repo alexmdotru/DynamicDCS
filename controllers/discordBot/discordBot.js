@@ -193,10 +193,9 @@ client.on('message', message => {
 	if (message.content === '!paypal') {
 		message.channel.send('https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=HSRWLCYNXQB4N');
 	}
-	if (message.content === '!playSound') {
+	if (message.content === '!America') {
 		var channelsToPlay = [
-			'Here But Coding',
-			'Group 1',
+			'General',
 			// 'Red Gen Chat(Relaxed GCI)',
 			// 'Blue Gen Chat(Relaxed GCI)',
 		];
