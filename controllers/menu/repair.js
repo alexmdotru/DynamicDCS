@@ -5,6 +5,7 @@ const proximityController = require('../proxZone/proximity');
 
 _.set(exports, 'repairBase', function (serverName, curUnit, crateOriginLogiName, crate) {
 	var baseClose = proximityController.extractUnitsBackToBase(curUnit, serverName);
+	console.log('repairNase: ', baseClose, curUnit, serverName, crateOriginLogiName);
 	if (baseClose + ' Logistics' !== crateOriginLogiName) {
 		groupController.healBase(serverName, baseClose);
 		// baracks
