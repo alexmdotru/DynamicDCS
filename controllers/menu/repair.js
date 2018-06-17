@@ -5,7 +5,7 @@ const proximityController = require('../proxZone/proximity');
 
 _.set(exports, 'repairBase', function (serverName, base, curUnit, crateOriginLogiName, crate) {
 	var curBaseName = base.name;
-	console.log('repairNase: ', base, curUnit, serverName, crateOriginLogiName, curBaseName + ' Logistics', crateOriginLogiName);
+	// console.log('repairNase: ', base, curUnit, serverName, crateOriginLogiName, curBaseName + ' Logistics', crateOriginLogiName);
 	if (curBaseName + ' Logistics' !== crateOriginLogiName) {
 		groupController.healBase(serverName, base);
 		DCSLuaCommands.sendMesgToCoalition(
