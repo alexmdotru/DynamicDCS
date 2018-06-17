@@ -1278,13 +1278,31 @@ _.set(exports, 'internalCargo', function (serverName, curUnit, curPlayer, intCar
 								;
 							}
 							if(curIntCrateType === 'BaseRepair') {
-								if (repairController.repairBase(serverName, curUnit, curIntCrateBaseOrigin)) {
-									dbMapServiceController.unitActions('updateByUnitId', serverName, {unitId: curUnit.unitId, intCargoType: ''})
-										.catch(function (err) {
-											console.log('erroring line209: ', err);
-										})
-									;
-								}
+								dbMapServiceController.baseActions('read', serverName, {mainBase: true, side: curUnit.coalition})
+									.then(function (bases) {
+										_.forEach(bases, function (base) {
+											exports.getPlayersInProximity(serverName, _.get(base, 'centerLoc'), 3.4, false, base.side)
+												.then(function (unitsInProx) {
+													if(unitsInProx.length > 0) {
+														if (repairController.repairBase(serverName, curUnit, curIntCrateBaseOrigin)) {
+															dbMapServiceController.unitActions('updateByUnitId', serverName, {unitId: curUnit.unitId, intCargoType: ''})
+																.catch(function (err) {
+																	console.log('erroring line209: ', err);
+																})
+															;
+														}
+													}
+												})
+												.catch(function (err) {
+													console.log('line 64: ', err);
+												})
+											;
+										});
+									})
+									.catch(function (err) {
+										console.log('line 64: ', err);
+									})
+								;
 							}
 						} else {
 							DCSLuaCommands.sendMesgToGroup(
