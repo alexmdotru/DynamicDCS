@@ -84,9 +84,9 @@ _.set(exports, 'unpackCrate', function (serverName, crateObj) { //crateObj is ev
 							if (curCrateSpecial === 'reloadGroup') {
 								console.log('reloadGroup: ', curCrate._id);
 								reloadController.reloadSAM(serverName, curPlayerUnit, curCrate);
-							} else if (curCrateSpecial === 'repairBase') {
-								console.log('reloadBase: ', curCrate._id);
-								repairController.repairBase(serverName, curPlayerUnit, curCrateType, curCrate);
+							// } else if (curCrateSpecial === 'repairBase') {
+							//	console.log('reloadBase: ', curCrate._id);
+							//	repairController.repairBase(serverName, curPlayerUnit, curCrateType, curCrate);
 							} else {
 								msg = "G: Unpacking " + _.toUpper(curCrateSpecial) + " " + curCrateType + "!";
 								menuCmdsController.unpackCrate(serverName, curPlayerUnit, curCrate.country, curCrateType, curCrateSpecial, isCombo, isMobile);
