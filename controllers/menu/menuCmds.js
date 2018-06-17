@@ -1283,7 +1283,7 @@ _.set(exports, 'internalCargo', function (serverName, curUnit, curPlayer, intCar
 										_.forEach(bases, function (base) {
 											proximityController.getPlayersInProximity(serverName, _.get(base, 'centerLoc'), 3.4, false, base.side)
 												.then(function (unitsInProx) {
-													console.log('UIP: ', unitsInProx);
+													console.log('UIP: ', unitsInProx, _.find(unitsInProx, {playername: curUnit.name}) );
 													if(false) {
 														if (repairController.repairBase(serverName, base, curUnit, curIntCrateBaseOrigin)) {
 															dbMapServiceController.unitActions('updateByUnitId', serverName, {unitId: curUnit.unitId, intCargoType: ''})
