@@ -223,8 +223,8 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 
 																if (curCrateSpecial === 'reloadGroup') {
 																	reloadController.reloadSAM(serverName, curUnit, curCrate);
-																} else if (curCrateSpecial === 'repairBase') {
-																	repairController.repairBase(serverName, curUnit, curCrateType, curCrate);
+																// } else if (curCrateSpecial === 'repairBase') {
+																//	repairController.repairBase(serverName, curUnit, curCrateType, curCrate);
 																} else {
 																	msg = "G: Unpacking " + _.toUpper(curCrateSpecial) + " " + curCrateType + "!";
 																	exports.unpackCrate(serverName, curUnit, curCrate, curCrateType, curCrateSpecial, isCombo, isMobile);
@@ -1284,7 +1284,7 @@ _.set(exports, 'internalCargo', function (serverName, curUnit, curPlayer, intCar
 											proximityController.getPlayersInProximity(serverName, _.get(base, 'centerLoc'), 3.4, false, base.side)
 												.then(function (unitsInProx) {
 													if(unitsInProx.length > 0) {
-														if (repairController.repairBase(serverName, curUnit, curIntCrateBaseOrigin)) {
+														if (repairController.repairBase(serverName, base, curUnit, curIntCrateBaseOrigin)) {
 															dbMapServiceController.unitActions('updateByUnitId', serverName, {unitId: curUnit.unitId, intCargoType: ''})
 																.catch(function (err) {
 																	console.log('erroring line209: ', err);
