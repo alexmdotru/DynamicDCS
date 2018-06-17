@@ -1281,7 +1281,7 @@ _.set(exports, 'internalCargo', function (serverName, curUnit, curPlayer, intCar
 								dbMapServiceController.baseActions('read', serverName, {mainBase: true, side: curUnit.coalition})
 									.then(function (bases) {
 										_.forEach(bases, function (base) {
-											exports.getPlayersInProximity(serverName, _.get(base, 'centerLoc'), 3.4, false, base.side)
+											proximityController.getPlayersInProximity(serverName, _.get(base, 'centerLoc'), 3.4, false, base.side)
 												.then(function (unitsInProx) {
 													if(unitsInProx.length > 0) {
 														if (repairController.repairBase(serverName, curUnit, curIntCrateBaseOrigin)) {
