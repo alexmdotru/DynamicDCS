@@ -11,9 +11,9 @@ _.set(exports, 'checkTroopProx', function (serverName) {
 				var playerName = stParse[3];
 				proximityController.isPlayerInProximity(serverName, troop.lonLatLoc, 1, playerName)
 					.then(function (isPlayerProximity) {
+						console.log('Destroying ' + playerName + 's ' + troop.type + ' has been destroyed due to proximity', isPlayerProximity, !isPlayerProximity);
 						if (!isPlayerProximity) {
-							console.log('Destroying ' + playerName + 's ' + troop.type + ' has been destroyed due to proximity', serverName, troop.lonLatLoc, 1, playerName, isPlayerProximity);
-							// groupController.destroyUnit(serverName, troop.name);
+							groupController.destroyUnit(serverName, troop.name);
 						}
 					})
 					.catch(function (err) {
