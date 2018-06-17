@@ -1239,7 +1239,7 @@ _.set(exports, 'internalCargo', function (serverName, curUnit, curPlayer, intCar
 		}
 	}
 	if(intCargoType === 'unpack') {
-		proximityController.getLogiTowersProximity(serverName, curUnit.lonLatLoc, 1.5)
+		proximityController.getLogiTowersProximity(serverName, curUnit.lonLatLoc, 1)
 			.then(function (logiProx) {
 				var curIntCrateType = _.split(curUnit.intCargoType, '|')[1];
 				var curIntCrateBaseOrigin = _.split(curUnit.intCargoType, '|')[2];
