@@ -106,7 +106,12 @@ exports.countryId = [
 	'THIRDREICH',
 	'YUGOSLAVIA',
 	'USSR',
-	'ITALIAN_SOCIAL_REPUBLIC'
+	'ITALIAN_SOCIAL_REPUBLIC',
+	'ALGERIA',
+	'KUWAIT',
+	'QATAR',
+	'OMAN',
+	'UNITED_ARAB_EMIRATES'
 ];
 
 exports.redCountrys = [
@@ -129,7 +134,12 @@ exports.redCountrys = [
 	'SERBIA',
 	'SLOVAKIA',
 	'SOUTH_OSETIA',
-	'SYRIA'
+	'SYRIA',
+	'ALGERIA',
+	'KUWAIT',
+	'QATAR',
+	'OMAN',
+	'UNITED_ARAB_EMIRATES'
 ];
 
 exports.blueCountrys = [

@@ -108,7 +108,12 @@ local CountryNames = {
 	[66] = "THIRDREICH",
 	[67] = "YUGOSLAVIA",
 	[68] = "USSR",
-	[69] = "ITALIAN_SOCIAL_REPUBLIC"
+	[69] = "ITALIAN_SOCIAL_REPUBLIC",
+	[70] = "ALGERIA",
+	[71] = "KUWAIT",
+	[72] = "QATAR",
+	[73] = "OMAN",
+	[73] = "UNITED_ARAB_EMIRATES"
 }
 
 do

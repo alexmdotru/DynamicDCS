@@ -6,12 +6,12 @@ function tprint(tbl, indent)
 	for k, v in pairs(tbl) do
 		formatting = string.rep("  ", indent) .. k .. ": "
 		if type(v) == "table" then
-			--env.info(formatting)
+			env.info(formatting)
 			tprint(v, indent + 1)
 		elseif type(v) == 'boolean' then
-			--env.info(formatting .. tostring(v))
+			env.info(formatting .. tostring(v))
 		else
-			--env.info(formatting .. tostring(v))
+			env.info(formatting .. tostring(v))
 		end
 	end
 end
@@ -108,7 +108,12 @@ local CountryNames = {
 	[66] = "THIRDREICH",
 	[67] = "YUGOSLAVIA",
 	[68] = "USSR",
-	[69] = "ITALIAN_SOCIAL_REPUBLIC"
+	[69] = "ITALIAN_SOCIAL_REPUBLIC",
+	[70] = "ALGERIA",
+	[71] = "KUWAIT",
+	[72] = "QATAR",
+	[73] = "OMAN",
+	[73] = "UNITED_ARAB_EMIRATES"
 }
 
 do
@@ -208,12 +213,11 @@ do
 			end
 			local hdg = math.floor(heading / math.pi * 180);
 			local baseName = airbases[airbaseIndex]:getName()
-			local country = CountryNames[airbases[airbaseIndex]:getCountry()]
+			env.info('BASENAME: '..baseName..' : '..baseId..' : '..lat..' : '..lon..' : '..hdg)
 			local curObj = {
 				["_id"] = baseName,
 				["baseId"] = baseId,
 				["name"] = baseName,
-				["country"] = country,
 				["hdg"] = hdg,
 				["side"] = coalition,
 				["centerLoc"] = {
@@ -226,19 +230,26 @@ do
 				["expansion"] = false,
 				["mainBase"] = false
 			}
+			env.info('RUN1')
 			if string.find(baseName, 'FARP', 1, true) then
 				curObj.farp = true
 			end
+			env.info('RUN2')
 			if string.find(baseName, 'Expansion', 1, true) then
 				curObj.expansion = true
 			end
+			env.info('RUN3')
 			if not string.find(baseName, 'Expansion', 1, true) and not string.find(baseName, ' #', 1, true) then
+				env.info('RUN4')
 				--env.info('applycache  ' .. baseName..' : '.. coalition);
-				trigger.action.setUserFlag(baseName, coalition)
+				--trigger.action.setUserFlag(baseName, coalition)
 				curObj.mainBase = true
-				airbaseCache[baseName].side = coalition
-				curObj["polygonLoc"] = polyArray[baseName]
+				--airbaseCache[baseName].side = coalition
+				if polyArray[baseName] ~= nil then
+					curObj["polygonLoc"] = polyArray[baseName]
+				end
 			end
+			env.info('RUN5')
 			table.insert(updateQue.que, {
 				polyCnt = polyArray.count,
 				action = 'airbaseC',
@@ -465,9 +476,10 @@ do
 	end
 
 	local function runRequest(request)
+		env.info('REQUEST: '..request.action)
 		if request.action ~= nil then
 			if request.action == "GETPOLYDEF" then
-				--env.info('GET POLY')
+				env.info('GET POLY')
 				initAirbases()
 			end
 			if request.action == "CRATEUPDATE" then
