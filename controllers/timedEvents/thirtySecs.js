@@ -15,6 +15,6 @@ _.set(exports, 'processThirtySecActions', function (serverName, fullySynced) {
 		;
 
 		jtacController.aliveJtac30SecCheck(serverName);
-		troopLocalizerController.checkTroopProx(serverName);
+		// troopLocalizerController.checkTroopProx(serverName);
 	}
 });
