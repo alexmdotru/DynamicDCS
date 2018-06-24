@@ -1921,6 +1921,7 @@ _.set(exports, 'initDbs', function ( serverName ) {
 });
 
 _.set(exports, 'spawnLogisticCmdCenter', function (serverName, staticObj, init, baseObj, side) {
+	console.log('spawnLogi: ', serverName, staticObj, init, baseObj, side);
 	var curGrpObj = _.cloneDeep(staticObj);
 	_.set(curGrpObj, 'name', _.get(curGrpObj, 'name', _.get(baseObj, 'name', '') + ' Logistics'));
 	_.set(curGrpObj, 'coalition', _.get(curGrpObj, 'coalition', side));

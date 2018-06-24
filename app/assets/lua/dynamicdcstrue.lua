@@ -303,53 +303,51 @@ do
 	local function addStatics(statics, coalition, Init)
 		for staticIndex = 1, #statics do
 			local static = statics[staticIndex]
-			if static ~= 1 then
-				local curStatic = {
-					uType = "static",
-					data = {}
-				}
-				curStatic.data.name = static:getName()
-				table.insert(completeAliveNames, curStatic.data.name)
-				--curStatic.data.life = static:getLife()
-				local staticPosition = static:getPosition()
-				curStatic.data.lat, curStatic.data.lon, curStatic.data.alt = coord.LOtoLL(staticPosition.p)
-				local lat, lon, alt = coord.LOtoLL(staticPosition.p)
-				curStatic.data.lonLatLoc = {
-					lon,
-					lat
-				}
-				curStatic.data.alt = alt
-				local unitXYZNorthCorr = coord.LLtoLO(lat + 1, lon)
-				local unitXYZNorthCorr = coord.LLtoLO(curStatic.data.lat + 1, curStatic.data.lon)
-				local headingNorthCorr = math.atan2(unitXYZNorthCorr.z - staticPosition.p.z, unitXYZNorthCorr.x - staticPosition.p.x)
-				local heading = math.atan2(staticPosition.x.z, staticPosition.x.x) + headingNorthCorr
-				if heading < 0 then
-					heading = heading + 2 * math.pi
-				end
-				curStatic.data.hdg = math.floor(heading / math.pi * 180);
-				if staticCache[curStatic.data.name] ~= nil and not Init then
-					if staticCache[curStatic.data.name].lat ~= lat or staticCache[curStatic.data.name].lon ~= lon then
-						staticCache[curStatic.data.name] = {}
-						staticCache[curStatic.data.name].lat = lat
-						staticCache[curStatic.data.name].lon = lon
-						curStatic.action = "U"
-						table.insert(updateQue.que, curStatic)
-					end
-				else
+			local curStatic = {
+				uType = "static",
+				data = {}
+			}
+			curStatic.data.name = static:getName()
+			table.insert(completeAliveNames, curStatic.data.name)
+			--curStatic.data.life = static:getLife()
+			local staticPosition = static:getPosition()
+			curStatic.data.lat, curStatic.data.lon, curStatic.data.alt = coord.LOtoLL(staticPosition.p)
+			local lat, lon, alt = coord.LOtoLL(staticPosition.p)
+			curStatic.data.lonLatLoc = {
+				lon,
+				lat
+			}
+			curStatic.data.alt = alt
+			local unitXYZNorthCorr = coord.LLtoLO(lat + 1, lon)
+			local unitXYZNorthCorr = coord.LLtoLO(curStatic.data.lat + 1, curStatic.data.lon)
+			local headingNorthCorr = math.atan2(unitXYZNorthCorr.z - staticPosition.p.z, unitXYZNorthCorr.x - staticPosition.p.x)
+			local heading = math.atan2(staticPosition.x.z, staticPosition.x.x) + headingNorthCorr
+			if heading < 0 then
+				heading = heading + 2 * math.pi
+			end
+			curStatic.data.hdg = math.floor(heading / math.pi * 180);
+			if staticCache[curStatic.data.name] ~= nil and not Init then
+				if staticCache[curStatic.data.name].lat ~= lat or staticCache[curStatic.data.name].lon ~= lon then
 					staticCache[curStatic.data.name] = {}
 					staticCache[curStatic.data.name].lat = lat
 					staticCache[curStatic.data.name].lon = lon
-					curStatic.data.groupName = curStatic.data.name
-					--curStatic.data.maxLife = tonumber(static:getLife())
-					curStatic.data.category = CategoryNames[static:getDesc().category]
-					curStatic.data.type = static:getTypeName()
-					curStatic.data.coalition = coalition
-					curStatic.data.country = CountryNames[static:getCountry()]
-					curStatic.action = "C"
+					curStatic.action = "U"
 					table.insert(updateQue.que, curStatic)
 				end
-				checkStaticDead[curStatic.data.name] = 1
+			else
+				staticCache[curStatic.data.name] = {}
+				staticCache[curStatic.data.name].lat = lat
+				staticCache[curStatic.data.name].lon = lon
+				curStatic.data.groupName = curStatic.data.name
+				--curStatic.data.maxLife = tonumber(static:getLife())
+				curStatic.data.category = CategoryNames[static:getDesc().category]
+				curStatic.data.type = static:getTypeName()
+				curStatic.data.coalition = coalition
+				curStatic.data.country = CountryNames[static:getCountry()]
+				curStatic.action = "C"
+				table.insert(updateQue.que, curStatic)
 			end
+			checkStaticDead[curStatic.data.name] = 1
 		end
 	end
 

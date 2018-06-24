@@ -670,15 +670,17 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 						})
 					;
 				} else {
-					dbMapServiceController.baseActions('read', serverName, {mainBase: true, $or: [{side: 1}, {side: 2}]})
+					dbMapServiceController.baseActions('read', serverName)
 						.then(function (bases) {
 							var checkAllBase = [];
 							_.forEach(bases, function (base) {
-								checkAllBase.push(proximityController.isPlayerInProximity(serverName, base.logiCenter, 0.4, unit.playername)
-									.catch(function (err) {
-										console.log('line 59: ', err);
-									})
-								)
+								if (base.logiCenter) {
+									checkAllBase.push(proximityController.isPlayerInProximity(serverName, base.logiCenter, 0.4, unit.playername)
+										.catch(function (err) {
+											console.log('line 59: ', err);
+										})
+									)
+								}
 							});
 
 							Promise.all(checkAllBase)
@@ -1324,7 +1326,7 @@ _.set(exports, 'internalCargo', function (serverName, curUnit, curPlayer, intCar
 											crateCount++;
 										});
 										crateObj = {
-											name: intCargoType + '|#' + _.random(1000000, 9999999),
+											name: curUnit.intCargoType + '|#' + _.random(1000000, 9999999),
 											unitLonLatLoc: curUnit.lonLatLoc,
 											shape_name: 'iso_container_small_cargo',
 											category: 'Cargo',
@@ -1334,7 +1336,7 @@ _.set(exports, 'internalCargo', function (serverName, curUnit, curPlayer, intCar
 											mass: 500,
 											playerOwnerId: curPlayer.ucid,
 											templateName: 'CCBuild',
-											special: intCargoType,
+											special: curUnit.intCargoType,
 											crateAmt: 2,
 											isCombo: false,
 											playerCanDrive: false,

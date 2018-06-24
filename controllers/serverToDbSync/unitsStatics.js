@@ -114,7 +114,7 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 						})
 					;
 				}else if (_.get(unitObj, 'action') === 'C') {
-					//console.log('CREATE: ', _.get(unitObj, 'data'));
+					console.log('CREATE: ', _.get(unitObj, 'data'));
 					if (_.get(curData, 'name')) {
 						_.set(curData, '_id', _.get(curData, 'name'));
 						iCurObj = {

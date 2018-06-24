@@ -6,6 +6,7 @@ const reloadController = require('../menu/reload');
 const repairController = require('../menu/repair');
 const DCSLuaCommands = require('../player/DCSLuaCommands');
 const menuCmdsController = require('../menu/menuCmds');
+const neutralCCController = require('../action/neutralCC');
 
 _.set(exports, 'processStaticCrate', function (serverName, crateObj) {
 	var cPromise = [];
@@ -65,7 +66,7 @@ _.set(exports, 'unpackCrate', function (serverName, crateObj) { //crateObj is ev
 
 						if( localCrateNum >=  numCrate) {
 							cCnt = 1;
-
+							/*
 							_.forEach(_.get(grpTypes, [curCrateType]), function (eCrate) {
 								if ( cCnt <= numCrate) {
 									console.log('delCrate: ',  eCrate._id);
@@ -80,13 +81,13 @@ _.set(exports, 'unpackCrate', function (serverName, crateObj) { //crateObj is ev
 									cCnt ++;
 								}
 							});
-
+							*/
 							if (curCrateSpecial === 'reloadGroup') {
 								console.log('reloadGroup: ', curCrate._id);
 								reloadController.reloadSAM(serverName, curPlayerUnit, curCrate);
-							// } else if (curCrateSpecial === 'repairBase') {
-							//	console.log('reloadBase: ', curCrate._id);
-							//	repairController.repairBase(serverName, curPlayerUnit, curCrateType, curCrate);
+							} else if (_.includes(curCrateSpecial, 'CCBuild|')) {
+								console.log('trying to build cc on empty base');
+								neutralCCController.spawnCCAtNeutralBase(serverName, curPlayerUnit);
 							} else {
 								msg = "G: Unpacking " + _.toUpper(curCrateSpecial) + " " + curCrateType + "!";
 								menuCmdsController.unpackCrate(serverName, curPlayerUnit, curCrate.country, curCrateType, curCrateSpecial, isCombo, isMobile);

@@ -118,7 +118,7 @@ _.set(exports, 'getPlayersInProximity', function (serverName, lonLat, kmDistance
 			return closeUnits;
 		})
 		.catch(function (err) {
-			console.log('line 114: ', err);
+			console.log('line 121: ', err);
 		})
 	;
 });
@@ -146,7 +146,7 @@ _.set(exports, 'isPlayerInProximity', function (serverName, lonLat, kmDistance, 
 			return false;
 		})
 		.catch(function (err) {
-			console.log('line 114: ', err);
+			console.log('line 149: ', err);
 		})
 		;
 });
