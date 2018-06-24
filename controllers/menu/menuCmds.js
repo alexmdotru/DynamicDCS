@@ -1343,7 +1343,11 @@ _.set(exports, 'internalCargo', function (serverName, curUnit, curPlayer, intCar
 											coalition: curUnit.coalition
 										};
 										crateController.spawnLogiCrate(serverName, crateObj, true);
-
+										dbMapServiceController.unitActions('updateByUnitId', serverName, {unitId: curUnit.unitId, intCargoType: ''})
+											.catch(function (err) {
+												console.log('erroring line209: ', err);
+											})
+										;
 										DCSLuaCommands.sendMesgToGroup(
 											curUnit.groupId,
 											serverName,
