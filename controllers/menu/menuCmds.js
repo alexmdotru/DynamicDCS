@@ -669,7 +669,7 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 
 	if(unit.inAir) {
 		DCSLuaCommands.sendMesgToGroup(
-			curUnit.groupId,
+			unit.groupId,
 			serverName,
 			"G: Please Land Before Attempting Logistic Commands!",
 			5
@@ -719,7 +719,7 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 							dbMapServiceController.unitActions('read', serverName, {_id:  /Logistics/, dead: false})
 								.then(function(aliveBases) {
 									_.forEach(bases, function (base) {
-										console.log('TT: ', base.logiCenter, !!_.find(aliveBases, {name: base.name + ' Logistics'}), proximityController.isPlayerInProximity(serverName, base.logiCenter, 0.4, unit.playername), serverName, base.logiCenter, 0.4, unit.playername);
+										console.log('TT: ', base.logiCenter, !!_.find(aliveBases, {name: base.name + ' Logistics'}), serverName, base.logiCenter, 0.4, unit.playername);
 										if (base.logiCenter && !!_.find(aliveBases, {name: base.name + ' Logistics'})) {
 											checkAllBase.push(proximityController.isPlayerInProximity(serverName, base.logiCenter, 0.4, unit.playername)
 												.catch(function (err) {
@@ -728,74 +728,73 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 											)
 										}
 									});
-								})
-								.catch(function (err) {
-									console.log('line 13: ', err);
-								})
-							;
+									Promise.all(checkAllBase)
+										.then(function (playerProx) {
+											console.log('SC: ', _.some(playerProx), playerProx);
+											if (_.some(playerProx)) {
+												dbMapServiceController.staticCrateActions('read', serverName, {playerOwnerId: curPlayer.ucid})
+													.then(function(delCrates) {
+														_.forEach(delCrates, function (crate) {
+															if (crateCount > exports.maxCrates - 2) {
+																dbMapServiceController.staticCrateActions('delete', serverName, {
+																	_id: crate._id
+																})
+																	.catch(function (err) {
+																		console.log('erroring line573: ', err);
+																	})
+																;
+																groupController.destroyUnit(serverName, crate._id);
+															}
+															crateCount++;
+														});
+														crateObj = {
+															name: (spc) ? spc + '|#' + _.random(1000000, 9999999) : type + '|#' + _.random(1000000, 9999999),
+															unitLonLatLoc: unit.lonLatLoc,
+															shape_name: _.get(_.find(groupController.staticDictionary, {_id: crateType}), 'shape_name', 'iso_container_small_cargo'),
+															category: 'Cargo',
+															type: crateType,
+															heading: unit.hdg,
+															canCargo: true,
+															mass: mass,
+															playerOwnerId: curPlayer.ucid,
+															templateName: type,
+															special: spc,
+															crateAmt: crates,
+															isCombo: combo,
+															playerCanDrive: mobile,
+															country: _.get(constants, ['defCountrys', unit.coalition]),
+															side: unit.coalition,
+															coalition: unit.coalition
+														};
+														crateController.spawnLogiCrate(serverName, crateObj, true);
 
-							Promise.all(checkAllBase)
-								.then(function (playerProx) {
-									console.log('SC: ', _.some(playerProx), playerProx);
-									if (_.some(playerProx)) {
-										dbMapServiceController.staticCrateActions('read', serverName, {playerOwnerId: curPlayer.ucid})
-											.then(function(delCrates) {
-												_.forEach(delCrates, function (crate) {
-													if (crateCount > exports.maxCrates - 2) {
-														dbMapServiceController.staticCrateActions('delete', serverName, {
-															_id: crate._id
-														})
-															.catch(function (err) {
-																console.log('erroring line573: ', err);
-															})
-														;
-														groupController.destroyUnit(serverName, crate._id);
-													}
-													crateCount++;
-												});
-												crateObj = {
-													name: (spc) ? spc + '|#' + _.random(1000000, 9999999) : type + '|#' + _.random(1000000, 9999999),
-													unitLonLatLoc: unit.lonLatLoc,
-													shape_name: _.get(_.find(groupController.staticDictionary, {_id: crateType}), 'shape_name', 'iso_container_small_cargo'),
-													category: 'Cargo',
-													type: crateType,
-													heading: unit.hdg,
-													canCargo: true,
-													mass: mass,
-													playerOwnerId: curPlayer.ucid,
-													templateName: type,
-													special: spc,
-													crateAmt: crates,
-													isCombo: combo,
-													playerCanDrive: mobile,
-													country: _.get(constants, ['defCountrys', unit.coalition]),
-													side: unit.coalition,
-													coalition: unit.coalition
-												};
-												crateController.spawnLogiCrate(serverName, crateObj, true);
-
+														DCSLuaCommands.sendMesgToGroup(
+															unit.groupId,
+															serverName,
+															"G: " + _.toUpper(spc) + " " + type + " crate has been spawned!",
+															5
+														);
+													})
+													.catch(function (err) {
+														console.log('line 358: ', err);
+													})
+												;
+											} else {
 												DCSLuaCommands.sendMesgToGroup(
 													unit.groupId,
 													serverName,
-													"G: " + _.toUpper(spc) + " " + type + " crate has been spawned!",
+													"G: You are not close enough to the command center to spawn a crate!",
 													5
 												);
-											})
-											.catch(function (err) {
-												console.log('line 358: ', err);
-											})
-										;
-									} else {
-										DCSLuaCommands.sendMesgToGroup(
-											unit.groupId,
-											serverName,
-											"G: You are not close enough to the command center to spawn a crate!",
-											5
-										);
-									}
+											}
+										})
+										.catch(function (err) {
+											console.log('line 26: ', err);
+										})
+									;
 								})
 								.catch(function (err) {
-									console.log('line 26: ', err);
+									console.log('line 13: ', err);
 								})
 							;
 						})
