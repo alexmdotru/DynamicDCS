@@ -52,7 +52,7 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 								} else {
 									if(exports.isTroopOnboard(curUnit, serverName)) {
 										var checkAllBase = [];
-										dbMapServiceController.baseActions('read', serverName, {mainBase: true, $or: [{side: 1}, {side: 2}]})
+										dbMapServiceController.baseActions('read', serverName, {mainBase: true, side: curUnit.coalition})
 											.then(function (bases) {
 												_.forEach(bases, function (base) {
 													checkAllBase.push(proximityController.isPlayerInProximity(serverName, base.centerLoc, 3.4, curUnit.playername)
@@ -239,12 +239,21 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 																}
 
 															} else {
-																DCSLuaCommands.sendMesgToGroup(
-																	curUnit.groupId,
-																	serverName,
-																	"G: Not Enough Crates for " + curCrateType + "!(" + localCrateNum + '/' + numCrate + ")",
-																	5
-																);
+																if (localCrateNum) {
+																	DCSLuaCommands.sendMesgToGroup(
+																		curUnit.groupId,
+																		serverName,
+																		"G: Not Enough Crates for " + curCrateType + "!(" + localCrateNum + '/' + numCrate + ")",
+																		5
+																	);
+																} else {
+																	DCSLuaCommands.sendMesgToGroup(
+																		curUnit.groupId,
+																		serverName,
+																		"G: No Crates In Area!",
+																		5
+																	);
+																}
 															}
 														} else {
 															// no crates
@@ -547,14 +556,48 @@ _.set(exports, 'loadTroops', function(serverName, unitId, troopType) {
 					5
 				);
 			} else {
-				dbMapServiceController.unitActions('updateByUnitId', serverName, {unitId: unitId, troopType: troopType})
-					.then(function(unit) {
-						DCSLuaCommands.sendMesgToGroup(
-							unit.groupId,
-							serverName,
-							"G: " + troopType + " Has Been Loaded!",
-							5
-						);
+				dbMapServiceController.baseActions('read', serverName, {mainBase: true, side: curUnit.coalition})
+					.then(function (bases) {
+						var checkAllBase = [];
+						_.forEach(bases, function (base) {
+							if (base.logiCenter) {
+								checkAllBase.push(proximityController.isPlayerInProximity(serverName, base.centerLoc, 3.4, curUnit.playername)
+									.catch(function (err) {
+										console.log('line 59: ', err);
+									})
+								)
+							}
+						});
+
+						Promise.all(checkAllBase)
+							.then(function (playerProx) {
+								if (_.some(playerProx)) {
+									dbMapServiceController.unitActions('updateByUnitId', serverName, {unitId: unitId, troopType: troopType})
+										.then(function(unit) {
+											DCSLuaCommands.sendMesgToGroup(
+												unit.groupId,
+												serverName,
+												"G: " + troopType + " Has Been Loaded!",
+												5
+											);
+										})
+										.catch(function (err) {
+											console.log('line 13: ', err);
+										})
+									;
+								} else {
+									DCSLuaCommands.sendMesgToGroup(
+										curUnit.groupId,
+										serverName,
+										"G: You are too far from a friendly base to load troops!",
+										5
+									);
+								}
+							})
+							.catch(function (err) {
+								console.log('line 13: ', err);
+							})
+						;
 					})
 					.catch(function (err) {
 						console.log('line 13: ', err);
@@ -670,7 +713,7 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 						})
 					;
 				} else {
-					dbMapServiceController.baseActions('read', serverName)
+					dbMapServiceController.baseActions('read', serverName, { mainBase: true, side: unit.coalition })
 						.then(function (bases) {
 							var checkAllBase = [];
 							_.forEach(bases, function (base) {

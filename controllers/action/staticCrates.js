@@ -102,12 +102,21 @@ _.set(exports, 'unpackCrate', function (serverName, crateObj) { //crateObj is ev
 							}
 
 						} else {
-							DCSLuaCommands.sendMesgToGroup(
-								curPlayerUnit.groupId,
-								serverName,
-								"G: Not Enough Crates for " + curCrateType + "!(" + localCrateNum + '/' + numCrate + ")",
-								5
-							);
+							if (localCrateNum) {
+								DCSLuaCommands.sendMesgToGroup(
+									curPlayerUnit.groupId,
+									serverName,
+									"G: Not Enough Crates for " + curCrateType + "!(" + localCrateNum + '/' + numCrate + ")",
+									5
+								);
+							} else {
+								DCSLuaCommands.sendMesgToGroup(
+									curPlayerUnit.groupId,
+									serverName,
+									"G: No Crates In Area!",
+									5
+								);
+							}
 						}
 					} else {
 						// no troops
