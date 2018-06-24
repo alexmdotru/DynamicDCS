@@ -1,4 +1,5 @@
 const	_ = require('lodash');
+const constants = require('../constants');
 const DCSLuaCommands = require('../player/DCSLuaCommands');
 const dbMapServiceController = require('../db/dbMapService');
 const proximityController = require('../proxZone/proximity');
@@ -713,7 +714,7 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 													crateAmt: crates,
 													isCombo: combo,
 													playerCanDrive: mobile,
-													country: unit.country,
+													country: _.get(constants, ['defCountrys', unit.coalition]),
 													side: unit.coalition,
 													coalition: unit.coalition
 												};

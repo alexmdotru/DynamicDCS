@@ -5,7 +5,7 @@ const baseSpawnFlagsController = require('../action/baseSpawnFlags');
 const menuUpdateController = require('../menu/menuUpdate');
 
 var replenThreshold = 30; // percentage under max
-var replenTimer = _.random(1800, 5400);
+var replenTimer = _.random(5400, 9000);
 var AIMaxIdleTime = (5 * 60 * 1000); // 5 mins
 var maxCrateLife = (90 * 60 * 1000); // 90 mins
 

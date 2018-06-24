@@ -1290,20 +1290,20 @@ _.set(exports, 'spawnSupportBaseGrp', function ( serverName, baseName, side, ini
 	var curBases = _.get(exports, ['bases']);
 	var farpBases = _.filter(curBases, {farp: true});
 	var expBases = _.filter(curBases, {expansion: true});
-	var curEnabledCountrys = _.get(constants, [_.get(constants, ['side', side]) + 'Countrys']);
-	//console.log('ssb2 ', curEnabledCountrys);
+	// var curEnabledCountrys = _.get(constants, [_.get(constants, ['side', side]) + 'Countrys']);
 	if (_.includes(baseName, 'FARP')) {
 		var curFarpBases = _.filter(farpBases, function (farp) {
-			return _.first(_.split(_.get(farp, 'name'), ' #')) === baseName &&
-				!_.isEmpty(_.intersection([_.get(farp, 'country')], curEnabledCountrys));
+			return _.first(_.split(_.get(farp, 'name'), ' #')) === baseName;
+				// && !_.isEmpty(_.intersection([_.get(farp, 'country')], curEnabledCountrys));
 		});
+		console.log('doesnty work: ', serverName, baseName, side, init, curFarpBases, farpBases);
 		_.forEach(curFarpBases, function (farp) {
 			spawnArray = _.concat(spawnArray, exports.spawnSupportVehiclesOnFarp( serverName, _.get(farp, 'name'), side ));
 		});
 	} else {
 		var curExpBases = _.filter(expBases, function (exp) {
-			return _.first(_.split(_.get(exp, 'name'), ' #')) === baseName + '_Expansion' &&
-				!_.isEmpty(_.intersection([_.get(exp, 'country')], curEnabledCountrys));
+			return _.first(_.split(_.get(exp, 'name'), ' #')) === baseName + '_Expansion';
+				//&& !_.isEmpty(_.intersection([_.get(exp, 'country')], curEnabledCountrys));
 		});
 		_.forEach(curExpBases, function (exp) {
 			spawnArray = _.concat(spawnArray, exports.spawnSupportVehiclesOnFarp( serverName, _.get(exp, 'name'), side ));

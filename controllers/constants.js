@@ -139,7 +139,8 @@ exports.redCountrys = [
 	'KUWAIT',
 	'QATAR',
 	'OMAN',
-	'UNITED_ARAB_EMIRATES'
+	'UNITED_ARAB_EMIRATES',
+	'TURKEY'
 ];
 
 exports.blueCountrys = [

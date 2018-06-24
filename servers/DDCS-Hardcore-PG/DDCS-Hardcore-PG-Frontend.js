@@ -104,7 +104,7 @@ _.set(CCB, 'getLatestSession', function (serverName, serverEpoc, startAbs, curAb
 });
 
 _.set(CCB, 'socketCallback', function (serverName, cbArray) {
-	console.log('CB: ', cbArray.que);
+	// console.log('CB: ', cbArray.que);
 	_.set(CCB, 'curServerUnitCnt', cbArray.unitCount);
 	if(!_.get(CCB, 'sessionName')) {
 		CCB.getLatestSession(serverName, cbArray.epoc, cbArray.startAbsTime,  cbArray.curAbsTime);
@@ -234,7 +234,7 @@ setInterval(function () {
 setInterval(function () {
 	if (groupController.bases) {
 		if (!_.get(CCB, ['DCSSocket', 'connOpen'], true)) {
-			sychrontronController.syncType(CCB.serverName, _.get(CCB, 'curServerUnitCnt', 56) - 56);
+			sychrontronController.syncType(CCB.serverName, _.get(CCB, 'curServerUnitCnt', 38) - 38);
 		}
 	} else {
 		groupController.initDbs(CCB.serverName);

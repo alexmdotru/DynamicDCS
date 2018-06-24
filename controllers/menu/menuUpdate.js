@@ -14,6 +14,8 @@ var allowedHelisForTroops = [
 ];
 var allowedPlanesForTroops = [
 	'TF-51D',
+	'Bf-109K-4',
+	'P-51D',
 	'F-86F Sabre',
 	'MiG-15bis',
 	'L-39ZA',
@@ -33,7 +35,9 @@ var allowedTypesForCratesHeavy = [
 var allowedHelisForInternalCrates = [
 	'UH-1H',
 	'Mi-8MT',
-	'TF-51D'
+	'TF-51D',
+	'Bf-109K-4',
+	'P-51D',
 ];
 
 _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
