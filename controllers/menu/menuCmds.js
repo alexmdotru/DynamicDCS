@@ -719,7 +719,6 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 							dbMapServiceController.unitActions('read', serverName, {_id:  /Logistics/, dead: false})
 								.then(function(aliveBases) {
 									_.forEach(bases, function (base) {
-										console.log('TT: ', base.logiCenter, !!_.find(aliveBases, {name: base.name + ' Logistics'}), serverName, base.logiCenter, 0.4, unit.playername);
 										if (base.logiCenter && !!_.find(aliveBases, {name: base.name + ' Logistics'})) {
 											checkAllBase.push(proximityController.isPlayerInProximity(serverName, base.logiCenter, 0.4, unit.playername)
 												.catch(function (err) {
@@ -730,7 +729,7 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 									});
 									Promise.all(checkAllBase)
 										.then(function (playerProx) {
-											console.log('SC: ', _.some(playerProx), playerProx);
+											// console.log('SC: ', _.some(playerProx), playerProx);
 											if (_.some(playerProx)) {
 												dbMapServiceController.staticCrateActions('read', serverName, {playerOwnerId: curPlayer.ucid})
 													.then(function(delCrates) {
