@@ -719,6 +719,7 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 							dbMapServiceController.unitActions('read', serverName, {_id:  /Logistics/, dead: false})
 								.then(function(aliveBases) {
 									_.forEach(bases, function (base) {
+										console.log('TT: ', base.logiCenter, !!_.find(aliveBases, {name: base.name + ' Logistics'}), proximityController.isPlayerInProximity(serverName, base.logiCenter, 0.4, unit.playername), serverName, base.logiCenter, 0.4, unit.playername);
 										if (base.logiCenter && !!_.find(aliveBases, {name: base.name + ' Logistics'})) {
 											checkAllBase.push(proximityController.isPlayerInProximity(serverName, base.logiCenter, 0.4, unit.playername)
 												.catch(function (err) {
