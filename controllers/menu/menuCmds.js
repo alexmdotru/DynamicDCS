@@ -716,15 +716,22 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 					dbMapServiceController.baseActions('read', serverName, { mainBase: true, side: unit.coalition })
 						.then(function (bases) {
 							var checkAllBase = [];
-							_.forEach(bases, function (base) {
-								if (base.logiCenter) {
-									checkAllBase.push(proximityController.isPlayerInProximity(serverName, base.logiCenter, 0.4, unit.playername)
-										.catch(function (err) {
-											console.log('line 59: ', err);
-										})
-									)
-								}
-							});
+							dbMapServiceController.unitActions('read', serverName, {_id:  /Logistics/, dead: false})
+								.then(function(aliveBases) {
+									_.forEach(bases, function (base) {
+										if (base.logiCenter & _.find(aliveBases, {name: base.name + ' Logistics'})) {
+											checkAllBase.push(proximityController.isPlayerInProximity(serverName, base.logiCenter, 0.4, unit.playername)
+												.catch(function (err) {
+													console.log('line 59: ', err);
+												})
+											)
+										}
+									});
+								})
+								.catch(function (err) {
+									console.log('line 13: ', err);
+								})
+							;
 
 							Promise.all(checkAllBase)
 								.then(function (playerProx) {
