@@ -713,7 +713,7 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 						})
 					;
 				} else {
-					dbMapServiceController.baseActions('read', serverName, { mainBase: true, side: unit.coalition })
+					dbMapServiceController.baseActions('read', serverName, { side: unit.coalition })
 						.then(function (bases) {
 							var checkAllBase = [];
 							dbMapServiceController.unitActions('read', serverName, {_id:  /Logistics/, dead: false})
