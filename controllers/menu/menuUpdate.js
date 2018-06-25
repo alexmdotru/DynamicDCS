@@ -176,10 +176,6 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 				if (curPlayer) {
 					if(true) {
 						if (_.includes(allowedHelisForTroops, unit.type)) {
-
-							// isTroop = (_.find(unitsOwned, {isTroop: true})) ? 1 : 0;
-							// troopsDeployed = '(' + isTroop + '/' + menuCmdsController.maxTroops + ')';
-							// trpMenuTitle = '"Troops' + troopsDeployed + '"';
 							trpMenuTitle = '"Troops"';
 
 							cmdArray = _.concat(cmdArray, [
@@ -192,7 +188,6 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 							]);
 						}
 						if (_.includes(allowedPlanesForTroops, unit.type)) {
-							// troopsDeployed = '(' + isTroop + '/' + menuCmdsController.maxTroops + ')';
 							trpMenuTitle = '"Troops"';
 
 							cmdArray = _.concat(cmdArray, [
