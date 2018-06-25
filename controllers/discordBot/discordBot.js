@@ -140,7 +140,6 @@ client.on('ready', () => {
 					var curServerName = _.get(srv, '_id');
 					dbMapServiceController.statSessionActions('readLatest', curServerName, {})
 						.then(function (latestSession) {
-							console.log('ls: ', latestSession);
 							if (latestSession.name) {
 								dbMapServiceController.srvPlayerActions('read', curServerName, {playerId: {$ne: '1'}, name: {$ne: ''}, sessionName: latestSession.name})
 									.then(function (playerArray) {
