@@ -1428,7 +1428,7 @@ _.set(exports, 'internalCargo', function (serverName, curUnit, curPlayer, intCar
 			})
 		;
 	}
-	if(intCargoType === 'loadJTAC' || intCargoType === 'loadBaseRepair') {
+	if(intCargoType === 'loadJTAC' || intCargoType === 'loadBaseRepair' || intCargoType === 'loadCCBuild') {
 		proximityController.getLogiTowersProximity(serverName, curUnit.lonLatLoc, 1.2)
 			.then(function (logiProx) {
 				var curLogiName = _.get(logiProx, [0, 'name']);
