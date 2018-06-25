@@ -864,7 +864,6 @@ _.set(exports, 'unpackCrate', function (serverName, playerUnit, country, type, s
 							_.forEach(findUnits, function (cbUnit) {
 								for (x=0; x < cbUnit.spawnCount; x++) {
 									unitStart = _.cloneDeep(cbUnit);
-									curUnitHdg = curUnitHdg + addHdg;
 									if (curUnitHdg > 359) {
 										curUnitHdg = 30;
 									}
@@ -875,6 +874,7 @@ _.set(exports, 'unpackCrate', function (serverName, playerUnit, country, type, s
 									_.set(unitStart, 'playerCanDrive', mobile);
 									// console.log('ah1: ', curUnitHdg, addHdg, playerUnit);
 									newSpawnArray.push(unitStart);
+									curUnitHdg = curUnitHdg + addHdg;
 								}
 							});
 							groupController.spawnLogiGroup(serverName, newSpawnArray, playerUnit.coalition);
@@ -896,7 +896,6 @@ _.set(exports, 'unpackCrate', function (serverName, playerUnit, country, type, s
 							}
 							for (x=0; x < findUnit.spawnCount; x++) {
 								unitStart = _.cloneDeep(findUnit);
-								curUnitHdg = curUnitHdg + addHdg;
 								if (curUnitHdg > 359) {
 									curUnitHdg = 30;
 								}
@@ -907,6 +906,7 @@ _.set(exports, 'unpackCrate', function (serverName, playerUnit, country, type, s
 								_.set(unitStart, 'playerCanDrive', mobile);
 								// console.log('ah2: ', curUnitHdg, addHdg, playerUnit);
 								newSpawnArray.push(unitStart);
+								curUnitHdg = curUnitHdg + addHdg;
 							}
 							groupController.spawnLogiGroup(serverName, newSpawnArray, playerUnit.coalition);
 						})
