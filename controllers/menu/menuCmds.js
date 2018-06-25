@@ -11,10 +11,6 @@ const repairController = require('../menu/repair');
 const userLivesController = require('../action/userLives');
 const resourcePointsController = require('../action/resourcePoints');
 
-// exports.maxCrates = 10;
-// exports.maxTroops = 1;
-// exports.maxUnitsMoving = 7;
-
 _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 	var defCrate = 'iso_container_small';
 	//var defCrate = (_.toNumber(pObj.mass) > 1000)?'iso_container':'iso_container_small';
