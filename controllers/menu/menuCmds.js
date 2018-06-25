@@ -14,8 +14,6 @@ const resourcePointsController = require('../action/resourcePoints');
 exports.maxCrates = 10;
 exports.maxTroops = 1;
 exports.maxUnitsMoving = 7;
-exports.maxUnitsStationary = 7;
-exports.spawnLauncherCnt = 3;
 
 _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 	var defCrate = 'iso_container_small';
@@ -170,7 +168,7 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 							exports.isCrateOnboard(curUnit, serverName, true);
 						}
 						if (pObj.cmd === 'unpackCrate') {
-							proximityController.getLogiTowersProximity(serverName, curUnit.lonLatLoc, 0.8)
+							proximityController.getLogiTowersProximity(serverName, curUnit.lonLatLoc, 0.8, curUnit.coalition)
 								.then(function (logiProx) {
 									if (logiProx.length) {
 										DCSLuaCommands.sendMesgToGroup(
@@ -829,11 +827,7 @@ _.set(exports, 'unpackCrate', function (serverName, playerUnit, country, type, s
 						var grpGroups = _.transform(delUnits, function (result, value) {
 							(result[value.groupName] || (result[value.groupName] = [])).push(value);
 						}, {});
-						if (mobile) {
-							tRem = _.size(grpGroups) - exports.maxUnitsMoving;
-						} else {
-							tRem = _.size(grpGroups) - exports.maxUnitsStationary;
-						}
+						tRem = _.size(grpGroups) - exports.maxUnitsMoving;
 
 						_.forEach(grpGroups, function (gUnit) {
 							if (curUnit <= tRem) {
@@ -1294,7 +1288,7 @@ _.set(exports, 'internalCargo', function (serverName, curUnit, curPlayer, intCar
 		}
 	}
 	if(intCargoType === 'unpack') {
-		proximityController.getLogiTowersProximity(serverName, curUnit.lonLatLoc, 1)
+		proximityController.getLogiTowersProximity(serverName, curUnit.lonLatLoc, 1, curUnit.coalition)
 			.then(function (logiProx) {
 				var curIntCrateType = _.split(curUnit.intCargoType, '|')[1];
 				var curIntCrateBaseOrigin = _.split(curUnit.intCargoType, '|')[2];
@@ -1429,7 +1423,7 @@ _.set(exports, 'internalCargo', function (serverName, curUnit, curPlayer, intCar
 		;
 	}
 	if(intCargoType === 'loadJTAC' || intCargoType === 'loadBaseRepair' || intCargoType === 'loadCCBuild') {
-		proximityController.getLogiTowersProximity(serverName, curUnit.lonLatLoc, 1.2)
+		proximityController.getLogiTowersProximity(serverName, curUnit.lonLatLoc, 1.2, curUnit.coalition)
 			.then(function (logiProx) {
 				var curLogiName = _.get(logiProx, [0, 'name']);
 				if(logiProx.length) {

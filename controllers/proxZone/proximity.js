@@ -7,7 +7,7 @@ const DCSLuaCommands = require('../player/DCSLuaCommands');
 var unitsInProxLogiTowers = {};
 var unitsInProxBases = {};
 
-_.set(exports, 'getLogiTowersProximity', function (serverName, lonLat, kmDistance) {
+_.set(exports, 'getLogiTowersProximity', function (serverName, lonLat, kmDistance, coalition) {
 	return dbMapServiceController.unitActions(
 		'read',
 		serverName,
@@ -22,7 +22,8 @@ _.set(exports, 'getLogiTowersProximity', function (serverName, lonLat, kmDistanc
 				}
 			},
 			category: 'STRUCTURE',
-			proxChkGrp: 'logisticTowers'
+			proxChkGrp: 'logisticTowers',
+			coalition: coalition
 		})
 		.then(function (closeUnits) {
 			// console.log('close units ' + closeUnits);
