@@ -61,6 +61,21 @@ const ServerSchema = new Schema({
 		enabled: {
 			type: Boolean,
 			default: false
+		},
+		maxCrates: {
+			type: Number,
+			required: true,
+			default: 10
+		},
+		maxTroops: {
+			type: Number,
+			required: true,
+			default: 1
+		},
+		maxUnitsMoving: {
+			type: Number,
+			required: true,
+			default: 7
 		}
 	},
 	{
