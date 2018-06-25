@@ -716,7 +716,7 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 					dbMapServiceController.baseActions('read', serverName)
 						.then(function (bases) {
 							var checkAllBase = [];
-							dbMapServiceController.unitActions('read', serverName, {_id:  /Logistics/, dead: false})
+							dbMapServiceController.unitActions('read', serverName, {_id:  /Logistics/, dead: false, coalition: unit.coalition})
 								.then(function(aliveBases) {
 									_.forEach(bases, function (base) {
 										if (base.logiCenter && !!_.find(aliveBases, {name: base.name + ' Logistics'})) {
