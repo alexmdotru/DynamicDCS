@@ -540,7 +540,7 @@ function dynDCS.shouldAllowSlot(_playerID, _slotID)
 	end
 
 	local curSide = coalitionLookup[DCS.getUnitProperty(_slotID, DCS.UNIT_COALITION)]
-	local curType = DCS.getUnitProperty(_slotID, DCS.UNIT_TYPE)
+	-- local curType = DCS.getUnitProperty(_slotID, DCS.UNIT_TYPE)
 	local curBaseName = DCS.getUnitProperty(_slotID, DCS.UNIT_NAME):split(' #')[1]:split("_Extension")[1]
 	local _baseFlag = dynDCS.getFlagValue(curBaseName)
 	--net.log(curBaseName.."_".._unitId..' flag:'.._baseFlag..' uSide:'..curSide..' ucidFlag: '.._ucidFlag..' ucid:'..curUcid)
@@ -560,7 +560,10 @@ function dynDCS.shouldAllowSlot(_playerID, _slotID)
 		--net.log('Base Slot Open')
 		return true
 	end
-	if curBaseName == 'Carrier1' or curBaseName == 'Carrier2' then
+	if curBaseName == 'Carrier1' and _ucidFlagBlue ~= 1 then
+		return true
+	end
+	if curBaseName == 'Carrier2' and _ucidFlagRed ~= 1 then
 		return true
 	end
 	return false
