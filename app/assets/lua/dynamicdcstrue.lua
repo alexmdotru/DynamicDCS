@@ -341,7 +341,7 @@ do
 		updateStatics()
 
 		--env.info('paySize: '..table.getn(updateQue.que));
-		local chkSize = 1
+		local chkSize = 5
 		local payload = {}
 		payload.que = {}
 		for i = 1, chkSize do
