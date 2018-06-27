@@ -11,7 +11,6 @@ var mesg;
 var masterUnitCount;
 var lastUnitCount;
 var isServerFresh = false;
-var stuckDetectstuckDetect = 0;
 var stuckThreshold = 30;
 exports.isServerSynced = false;
 exports.isSyncLockdownMode = false; //lock all processes out until server fully syncs

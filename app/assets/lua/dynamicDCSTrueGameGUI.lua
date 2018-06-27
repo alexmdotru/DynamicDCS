@@ -6,8 +6,6 @@ local updateQue = {["que"] = {} }
 local PORT = 3002
 local DATA_TIMEOUT_SEC = 0.1
 
-isCapLives = false
-isCasLives = false
 isLoadLock = false
 isRedLocked = false
 isBlueLocked = false

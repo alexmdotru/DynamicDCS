@@ -119,7 +119,7 @@ local CountryNames = {
 do
 	--
 	local PORT = 3001
-	local DATA_TIMEOUT_SEC = 0.100
+	local DATA_TIMEOUT_SEC = 0.1
 
 	local isResetUnits = false
 	local lockBaseUpdates = true
