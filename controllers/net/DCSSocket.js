@@ -8,6 +8,7 @@ var syncSpawnTimer = 1* 60 * 1000;
 
 exports.createSocket = function (serverName, address, port, queName, callback) {
 	var sock = this;
+	var cnt = 0;
 	var sockConn;
 	_.set(sock, 'cQue', []);
 	_.set(sock, 'serverName', serverName);
@@ -45,7 +46,7 @@ exports.createSocket = function (serverName, address, port, queName, callback) {
 				})
 			;
 		}
-	}, 500);
+	}, 100);
 
 	sock.connSocket = function () {
 		sockConn = net.createConnection({
@@ -81,7 +82,8 @@ exports.createSocket = function (serverName, address, port, queName, callback) {
 				callback(serverName, curStr);
 				sock.buffer = sock.buffer.substring(i + 1);
 				nextInst = _.get(sock, ['cQue', 0]);
-				strJson = (JSON.stringify(nextInst)) ? JSON.stringify(nextInst) : '{"action":"NONE"}' ;
+				// strJson = (JSON.stringify(nextInst)) ? JSON.stringify(nextInst) : '{"action":"NONE"}' ;
+				strJson = (nextInst) ? JSON.stringify(nextInst) : '{"action":"NONE"}' ;
 				sockConn.write( strJson + "\n");
 				if (nextInst) {
 					sock.cQue.shift();

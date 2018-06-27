@@ -119,7 +119,7 @@ local CountryNames = {
 do
 	--
 	local PORT = 3001
-	local DATA_TIMEOUT_SEC = 0.5
+	local DATA_TIMEOUT_SEC = 0.100
 
 	local isResetUnits = false
 	local lockBaseUpdates = true
@@ -127,7 +127,6 @@ do
 	local airbaseCache = {}
 	local staticCache = {}
 	local crateCache = {}
-	local livesCache = {}
 	local sideLockCache = {}
 	local completeAliveNames = {}
 	local updateQue = { ["que"] = {} }
@@ -154,48 +153,6 @@ do
 	end
 
 	log('REALTIME ' .. missionStartTime)
-
-	local function getAllDefzone ()
-		local polyArray = {}
-		polyArray.count = 0
-		if env.mission.coalition then
-			for coa,coaTable in pairs(env.mission.coalition) do
-				if type(coaTable) == 'table' and coaTable.country and coa == 'blue' then
-					for i=1,#coaTable.country do
-						local country = coaTable.country[i]
-						for uType,uTable in pairs(country) do
-							if uType == 'helicopter' then
-								if type(uTable)=='table' and uTable.group then
-									for j=1,#uTable.group do
-										local group = uTable.group[j]
-										local gName = env.getValueDictByKey(group.name)
-										if gName and group.route.points and string.find(gName, '_DEFZONE_', 1, true) then
-											local nArry = gName:split("_DEFZONE_")
-											polyArray[nArry[2]] = {}
-											airbaseCache[nArry[2]] = {}
-											airbaseCache[nArry[2]].side = 0
-											--env.info('poly: '..gName)
-											polyArray.count = polyArray.count + 1
-											for pIndex = 1, #group.route.points do
-												local lat, lon, alt = coord.LOtoLL({x = group.route.points[pIndex].x, y = 0, z = group.route.points[pIndex].y})
-												polyArray[nArry[2]][pIndex] = {
-													[1] = lon,
-													[2] = lat
-												}
-											end
-										end
-									end
-								end
-							end
-						end
-					end
-				end
-			end
-		end
-		return polyArray
-	end
-
-	local polyArray = getAllDefzone()
 
 	local function addGroups(groups, coalition, Init)
 		for groupIndex = 1, #groups do
@@ -384,14 +341,13 @@ do
 		updateStatics()
 
 		--env.info('paySize: '..table.getn(updateQue.que));
-		local chkSize = 100
+		local chkSize = 1
 		local payload = {}
 		payload.que = {}
 		for i = 1, chkSize do
 			table.insert(payload.que, updateQue.que[i])
 			table.remove(updateQue.que, i)
 		end
-		payload.polyCnt = polyArray.count
 		payload.unitCount = unitCnt + staticCnt
 		payload.startAbsTime = timer.getTime0()
 		payload.curAbsTime = timer.getAbsTime()
@@ -563,73 +519,27 @@ do
 					data = completeAliveNames
 				})
 			end
-			--if request.action == "SENDUNITSINFO" then
-			--	if type(request.unitIds) == 'table' then
-			--		for rIndex = 1, #request.unitIds do
-			--			local curUnitId = request.unitIds[rIndex]
-			--			env.info('SendUnits: '..curUnitId)
-			--		end
-			--	end
-			--end
 			if request.action == "SETBASEFLAGS" then
 				--env.info('SET BASE FLAGS')
 				if type(request.data) == 'table' then
 					for rIndex = 1, #request.data do
-						local curBase = request.data[rIndex].name
-						local curSide = request.data[rIndex].side
-						--env.info('BS: '..curBase..':'..curSide)
-						if airbaseCache[curBase] ~= nil then
-							airbaseCache[curBase] = {}
-						end
-						if airbaseCache[curBase].side ~= curSide and airbaseCache[curBase].side ~= 0 then
-							airbaseCache[curBase].side = curSide
-							trigger.action.setUserFlag(curBase, curSide)
-						end
+						trigger.action.setUserFlag(request.data[rIndex].name, request.data[rIndex].side)
 					end
 				end
 			end
 			if request.action == "SETISOPENSLOT" then
-				--env.info('SET ISOPENSLOT FLAG')
 				trigger.action.setUserFlag('isOpenSlot', request.val)
-			end
-			if request.action == "SETCAPLIVES" then
-				--env.info('SET CAP LIVES')
-				if type(request.data) == 'table' then
-					for rIndex = 1, #request.data do
-						local curUcid = request.data[rIndex]
-						if livesCache[curUcid.ucid] ~= nil then
-							if livesCache[curUcid.ucid] ~= curUcid.val then
-								livesCache[curUcid.ucid] = curUcid.val
-								trigger.action.setUserFlag(curUcid.ucid, curUcid.val)
-							end
-						else
-							livesCache[curUcid.ucid] = curUcid.val
-							trigger.action.setUserFlag(curUcid.ucid, curUcid.val)
-						end
-					end
-				end
 			end
 			if request.action == "SETSIDELOCK" then
 				--env.info('SET SIDE LOCK')
 				if type(request.data) == 'table' then
 					for rIndex = 1, #request.data do
 						local curUcid = request.data[rIndex]
-						if sideLockCache[curUcid.ucid] ~= nil then
-							if sideLockCache[curUcid.ucid] ~= curUcid.val then
-								sideLockCache[curUcid.ucid] = curUcid.val
-								trigger.action.setUserFlag(curUcid.ucid, curUcid.val)
-							end
-						else
-							sideLockCache[curUcid.ucid] = curUcid.val
-							trigger.action.setUserFlag(curUcid.ucid, curUcid.val)
-						end
+						trigger.action.setUserFlag(curUcid.ucid, curUcid.val)
 					end
 				end
 			end
 			if request.action == "INIT" then
-				--env.info('INIT')
-				--send all unit updates
-				--initAirbases()
 				completeAliveNames = {}
 				updateGroups(true)
 				updateStatics(true)

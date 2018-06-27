@@ -4,7 +4,7 @@ local cacheDB = {}
 local updateQue = {["que"] = {} }
 
 local PORT = 3002
-local DATA_TIMEOUT_SEC = 0.5
+local DATA_TIMEOUT_SEC = 0.1
 
 isCapLives = false
 isCasLives = false
@@ -34,24 +34,6 @@ coalitionLookup = {
 	["neutral"] = 0,
 	["red"] = 1,
 	["blue"] = 2
-}
-
-capLives = {
-	['F-15C'] = 1,
-	['Su-27'] = 1,
-	['Su-33'] = 1,
-	['MiG-29A'] = 1,
-	['MiG-29S'] = 1,
-	['M-2000C'] = 1,
-	['J-11A'] = 1,
-	['FA-18C_hornet'] = 1
-}
-
-casLives = {
-	['A-10A'] = 1,
-	['A-10C'] = 1,
-	['Su-25T'] = 1,
-	['AV8BNA'] = 1
 }
 
 function string:split( inSplitPattern, outResults )
@@ -515,8 +497,6 @@ function dynDCS.getUnitId(_slotID)
 end
 
 function dynDCS.shouldAllowSlot(_playerID, _slotID)
-	isCapLives = false
-	isCasLives = false
 	isLoadLock = false
 	isRedLocked = false
 	isBlueLocked = false
@@ -565,22 +545,10 @@ function dynDCS.shouldAllowSlot(_playerID, _slotID)
 	local curType = DCS.getUnitProperty(_slotID, DCS.UNIT_TYPE)
 	local curBaseName = DCS.getUnitProperty(_slotID, DCS.UNIT_NAME):split(' #')[1]:split("_Extension")[1]
 	local _baseFlag = dynDCS.getFlagValue(curBaseName)
-	local _ucidFlagCap = dynDCS.getFlagValue(curUcid..'_CAP')
-	local _ucidFlagCas = dynDCS.getFlagValue(curUcid..'_CAS')
 	--net.log(curBaseName.."_".._unitId..' flag:'.._baseFlag..' uSide:'..curSide..' ucidFlag: '.._ucidFlag..' ucid:'..curUcid)
 	--net.log('CBN: '..curBaseName)
 	if _baseFlag == curSide then
 		--net.log('STUFFF '..capLives[curType]..' - '..curType..' ucid: '.._ucidFlag)
-		if _ucidFlagCap == 1 and capLives[curType] == 1 then
-			--net.log('User Flagged For Cap Lives Used Up')
-			isCapLives = true
-			return false
-		end
-		if _ucidFlagCas == 1 and casLives[curType] == 1 then
-			--net.log('User Flagged For Cap Lives Used Up')
-			isCasLives = true
-			return false
-		end
 		if _ucidFlagRed == 1 and _baseFlag == 2 then
 			--net.log('User red locked')
 			isRedLocked = true
@@ -610,10 +578,6 @@ dynDCS.rejectPlayer = function(playerID)
 			_chatMessage = "***Slot DISABLED, Server Is Syncing Units***"
 		elseif (isGamemasterLock) then
 			_chatMessage = "***Slot DISABLED, Slot is only for Game Masters***"
-		elseif (isCapLives) then
-			_chatMessage = "***Slot DISABLED, Your Modern CAP Lives Are Used Up***"
-		elseif (isCasLives) then
-			_chatMessage = "***Slot DISABLED, Your Modern CAS Lives Are Used Up***"
 		elseif (isRedLocked) then
 			_chatMessage = "***Slot DISABLED, You Are Locked To Red Side This Session***"
 		elseif (isBlueLocked) then
