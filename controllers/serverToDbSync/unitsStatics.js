@@ -92,7 +92,7 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 						_.set(iCurObj, 'data.country', _.get(curData, 'country'));
 					}
 
-					dbMapServiceController.unitActions('updateAndCheckAir', serverName, iCurObj.data)
+					dbMapServiceController.unitActions('update', serverName, iCurObj.data)
 						.then(function () {
 							var sObj = {
 								action: 'U',

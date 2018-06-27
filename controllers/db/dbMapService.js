@@ -595,40 +595,6 @@ exports.unitActions = function (action, serverName, obj){
 			);
 		});
 	}
-	if(action === 'updateAndCheckAir') {
-		return new Promise(function(resolve, reject) {
-			Unit.find({_id: obj._id}, function (err, unitObj) {
-				if (err) {
-					reject(err)
-				}
-				if (unitObj.length === 0) {
-					const uObj = new Unit(obj);
-					uObj.save(function (err, unObj) {
-						if (err) {
-							reject(err)
-						}
-						resolve(unObj);
-					});
-				} else {
-					if ((_.get(unitObj, [0, 'inAir']) !== obj.inAir) && obj.playername !== '') {
-						if (obj.inAir) {
-							console.log( obj.playername + ' has taken off');
-						} else {
-							console.log( obj.playername + ' has landed');
-						}
-					}
-					Unit.update(
-						{_id: obj._id},
-						{$set: obj},
-						function(err, units) {
-							if (err) { reject(err) }
-							resolve(units);
-						}
-					);
-				}
-			});
-		});
-	}
 	if(action === 'updateByName') {
 		return new Promise(function(resolve, reject) {
 			Unit.findOneAndUpdate(
