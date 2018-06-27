@@ -610,7 +610,7 @@ exports.unitActions = function (action, serverName, obj){
 						resolve(unObj);
 					});
 				} else {
-					if (_.get(unitObj, [0, unitObj.inAir]) !== obj.inAir) {
+					if ((_.get(unitObj, [0, unitObj.inAir]) !== obj.inAir) && obj.playername !== '') {
 						if (obj.inAir) {
 							console.log( obj.playername + ' has taken off');
 						} else {
