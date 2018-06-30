@@ -298,6 +298,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 				if (err) {
 					reject(err)
 				}
+				console.log('removeP: ', curTotalPoints, serverObj);
 				if (curTotalPoints < 0) {
 					DCSLuaCommands.forcePlayerSpectator(
 						serverName,
