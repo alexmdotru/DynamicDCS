@@ -137,12 +137,12 @@ _.set(exports, 'checkLifeResource', function (serverName, playerUcid) {
 
 _.set(exports, 'checkAircraftCosts', function (serverName) {
 	console.log('CHK Aircraft');
-	dbMapServiceController.srvPlayerActions('read', serverName, {dead: false, playername: {$ne: ''}})
+	dbMapServiceController.srvPlayerActions('read', serverName, {playername: {$ne: ''}})
 		.then(function(srvPlayers) {
 			_.forEach(srvPlayers, function (curPlayer) {
 				console.log('CHK Aircraft2', curPlayer);
 				if(_.isNumber(curPlayer.slot)) {
-					dbMapServiceController.unitActions('read', serverName, {unitId: _.toNumber(curPlayer.slot)})
+					dbMapServiceController.unitActions('read', serverName, {dead: false, unitId: _.toNumber(curPlayer.slot)})
 						.then(function(cUnit) {
 							console.log('CHK Aircraft3', cUnit);
 							var curUnit = _.get(cUnit, [0]);
