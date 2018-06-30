@@ -70,7 +70,7 @@ _.set(exports, 'updateServerLifePoints', function (serverName) {
 						} else {
 							addFracPoint = 1;
 						}
-						if (!_.isEmpty(cPlayer.slot) && _.isNumber(curPlayer.slot)) {
+						if (!_.isEmpty(cPlayer.slot) && _.isNumber(cPlayer.slot)) {
 							dbMapServiceController.unitActions('read', serverName, {unitId: cPlayer.slot})
 								.then(function (cUnit) {
 									var curUnit = _.get(cUnit, [0]);
