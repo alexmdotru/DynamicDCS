@@ -48,19 +48,7 @@ const srvPlayerSchema = new Schema({
 		sessionName: {
 			type: String
 		},
-		curCapLives: {
-			type: Number,
-			default: 2
-		},
-		nextCapLife: {
-			type: Number,
-			default: 0
-		},
-		curCasLives: {
-			type: Number,
-			default: 4
-		},
-		nextCasLife: {
+		curLifePoints: {
 			type: Number,
 			default: 0
 		},
@@ -77,13 +65,6 @@ const srvPlayerSchema = new Schema({
 			default: 0
 		},
 		tmpRSPoints: {
-			type: Number,
-			default: 0
-		},
-		lastLifeAction: {
-			type: String
-		},
-		safeLifeActionTime: {
 			type: Number,
 			default: 0
 		}

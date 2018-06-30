@@ -76,6 +76,11 @@ const ServerSchema = new Schema({
 			type: Number,
 			required: true,
 			default: 7
+		},
+		startLifePoints: {
+			type: Number,
+			required: true,
+			default: 8
 		}
 	},
 	{

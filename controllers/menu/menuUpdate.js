@@ -100,8 +100,7 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 	// console.log('der: ', unit.type, _.includes(allowedTypesForTroops, unit.type), proximityController.extractUnitsBackToBase(unit, serverName));
 	cmdArray = _.concat(cmdArray, [
 		'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "Lives")',
-		'missionCommands.addCommandForGroup("' + unit.groupId + '", "Modern CAP Lives", {"Lives"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "checkCapLives", ["type"] = "Modern CAP Lives", ["unitId"] = ' + unit.unitId + '})',
-		'missionCommands.addCommandForGroup("' + unit.groupId + '", "Modern CAS Lives", {"Lives"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "checkCasLives", ["type"] = "Modern CAS Lives", ["unitId"] = ' + unit.unitId + '})',
+		'missionCommands.addCommandForGroup("' + unit.groupId + '", "Check Life Resource", {"Lives"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "checkLifeResource", ["type"] = "Check Life Resource", ["unitId"] = ' + unit.unitId + '})'
 	]);
 
 	cmdArray = _.concat(cmdArray, [

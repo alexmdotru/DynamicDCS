@@ -153,7 +153,7 @@ _.set(exports, 'processPlayerEvent', function (serverName, sessionName, playerAr
 			//update map based player table
 			dbMapServiceController.srvPlayerActions('updateFromServer', serverName, curData)
 				.catch(function (err) {
-					console.log('line114', err);
+					console.log('line156', err);
 				})
 			;
 		}

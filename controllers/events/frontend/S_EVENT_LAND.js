@@ -25,6 +25,8 @@ _.set(exports, 'processEventLand', function (serverName, sessionName, eventObj) 
 					var iPlayer;
 					var iCurObj;
 					var curIUnit = _.get(iunit, 0);
+					var curUnitDict = _.find(groupController.unitDictionary, {_id: curIUnit.type});
+					var curLifePointVal = (curUnitDict) ? curUnitDict.lifeCost : 1;
 					if (curIUnit) {
 						// console.log('land: ', _.get(curIUnit, 'playername'));
 						//landed logistic planes/helis spawn new group for area
@@ -77,14 +79,13 @@ _.set(exports, 'processEventLand', function (serverName, sessionName, eventObj) 
 								msg: 'C: '+ _.get(curIUnit, 'type') + '(' + _.get(curIUnit, 'playername') + ') has landed' + place
 							};
 							if(_.get(iCurObj, 'iucid')) {
-								if (_.includes(userLivesController.capLivesEnabled, curIUnit.type)) {
-									console.log(' add cap life: ', _.get(curIUnit, 'playername'));
-									userLivesController.autoAddLife(serverName, iPlayer.ucid, 'Cap');
-								}
-								if (_.includes(userLivesController.casLivesEnabled, curIUnit.type)) {
-									console.log(' add cas life: ', _.get(curIUnit, 'playername'));
-									userLivesController.autoAddLife(serverName, iPlayer.ucid, 'Cas');
-								}
+
+								dbMapServiceController.srvPlayerActions('addLifePoints', serverName, {
+									_id: iPlayer._id,
+									execAction: curIUnit.type + ' Land',
+									groupId: curIUnit.groupId,
+									addLifePoints: curLifePointVal
+								});
 								webPushCommands.sendToCoalition(serverName, {payload: {action: eventObj.action, data: _.cloneDeep(iCurObj)}});
 								dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 							}

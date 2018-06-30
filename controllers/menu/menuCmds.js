@@ -26,12 +26,9 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 							var spawnArray;
 							var curSpawnUnit;
 							// action menu
-							if (pObj.cmd === 'checkCapLives') {
-								userLivesController.checkCapLives(serverName, curPlayer.ucid);
+							if (pObj.cmd === 'checkLifeResource') {
+								userLivesController.checkLifeResource(serverName, curPlayer.ucid);
 							}
-							if (pObj.cmd === 'checkCasLives') {
-								userLivesController.checkCasLives(serverName, curPlayer.ucid);
-							} // resourcePoints
 							if (pObj.cmd === 'resourcePoints') {
 								resourcePointsController.checkResourcePoints(serverName, curPlayer);
 							}
@@ -150,7 +147,7 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 												}
 											})
 											.catch(function (err) {
-												console.log('line114: ', err);
+												console.log('line150: ', err);
 											})
 										;
 									}

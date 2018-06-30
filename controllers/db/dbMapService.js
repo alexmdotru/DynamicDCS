@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 const _ = require('lodash');
 const constants = require('../constants');
-const userLivesController = require('../action/userLives');
 const DCSLuaCommands = require('../player/DCSLuaCommands');
+const groupController = require('../spawn/group');
 
 //changing promises to bluebird
 mongoose.Promise = require('bluebird');
@@ -215,9 +215,6 @@ exports.srvPlayerActions = function (action, serverName, obj){
 				}
 				if (serverObj.length === 0) {
 					const sObj = new SrvPlayer(obj);
-					sObj.nextCapLife = 0;
-					sObj.curCapLives = userLivesController.capDefaultLife;
-					sObj.curCasLives = userLivesController.casDefaultLife;
 					curIP = sObj.ipaddr;
 					if(sObj.ipaddr === ':10308' || sObj.ipaddr === '127.0.0.1'){
 						curIP = '127.0.0.1';
@@ -233,15 +230,10 @@ exports.srvPlayerActions = function (action, serverName, obj){
 						resolve(serObj);
 					});
 				} else {
-					if (curPly.sessionName !== obj.sessionName) {
-						var curTime =  new Date().getTime();
-						obj.curCapLives = userLivesController.capDefaultLife;
-						obj.curCasLives = userLivesController.casDefaultLife;
-						// console.log('ctl: ', curPly.sideLockTime, curTime, curPly.sideLockTime < curTime);
-						if (curPly.sideLockTime < curTime) {
-							obj.sideLockTime = curTime + oneHour;
-							obj.sideLock = 0;
-						}
+					// console.log('sess: ', curPly.sessionName, obj.sessionName);
+					if ((curPly.sessionName !== obj.sessionName) && curPly.sessionName && obj.sessionName) {
+						// console.log('cf: ', groupController);
+						obj.curLifePoints = _.get(groupController, 'config.startLifePoints', 0);
 					}
 					curIP = obj.ipaddr;
 					if(obj.ipaddr === ':10308' || obj.ipaddr === '127.0.0.1'){
@@ -264,170 +256,69 @@ exports.srvPlayerActions = function (action, serverName, obj){
 		});
 	}
 
-	if (action === 'autoCapAddLife') {
+	if (action === 'addLifePoints') {
 		return new Promise(function(resolve, reject) {
 			SrvPlayer.find({_id: obj._id}, function (err, serverObj) {
-				var curAction = 'addCapLife';
-				var respawnTime = oneHour;
-				var curPly = _.get(serverObj, [0]);
-				if(curPly.side === _.get(userLivesController, ['underDog', 'side'])) {
-					respawnTime = respawnTime * _.get(userLivesController, ['underDog', 'percent']);
-				}
+				var curPlayerLifePoints = _.get(serverObj, [0, 'curLifePoints'], 0);
+				var curTotalPoints = (curPlayerLifePoints >= 0) ? curPlayerLifePoints + obj.addLifePoints : obj.addLifePoints;
+				var msg;
 				if (err) {
 					reject(err)
 				}
-				if ((serverObj.length !== 0) && ((curPly.lastLifeAction !== curAction) || (new Date(curPly.safeLifeActionTime).getTime() < nowTime))) {
-					var nextCapLife;
-					var curCapLives = _.get(curPly, ['curCapLives'], 0);
-					var curLife = (curCapLives < 0)? 1 : curCapLives + 1;
-					if (curLife >= userLivesController.capDefaultLife) {
-						curLife = userLivesController.capDefaultLife;
-						nextCapLife = 0;
-					} else {
-						nextCapLife = curPly.nextCapLife;
-						if(0 ===  nextCapLife || nextCapLife < nowTime) {
-							// console.log('addCapResetTime: ', nextCapLife, ' < ', nowTime, respawnTime, curLife, new Date(nowTime + respawnTime));
-							nextCapLife = nowTime + respawnTime;
-						}
-					}
+				if (serverObj.length !== 0) {
 					SrvPlayer.findOneAndUpdate(
 						{_id: obj._id},
-						{$set:
-							{
-								curCapLives: curLife,
-								nextCapLife: nextCapLife,
-								lastLifeAction: curAction,
-								safeLifeActionTime: (nowTime + oneMin)
-							}
+						{ $set: {curLifePoints: curTotalPoints }
 						},
 						function(err, srvPlayer) {
 							if (err) { reject(err) }
+							if (obj.execAction === 'PeriodicAdd') {
+								msg = '+' + _.round(obj.addLifePoints, 2).toFixed(2) + 'LP(T:' + curTotalPoints + ')';
+							} else {
+								msg = 'You Have Just Gained ' + obj.addLifePoints + ' Life Points! ' + obj.execAction + '(Total:' + curTotalPoints + ')'
+							}
+							if (obj.groupId) {
+								DCSLuaCommands.sendMesgToGroup( obj.groupId, serverName, msg, 5);
+							}
 							resolve(srvPlayer);
 						}
 					)
+				} else {
+					resolve('line276: Error: No Record in player db');
 				}
 			});
 		})
 	}
 
-	if (action === 'autoCasAddLife') {
+	if (action === 'removeLifePoints') {
 		return new Promise(function(resolve, reject) {
 			SrvPlayer.find({_id: obj._id}, function (err, serverObj) {
-				var curAction = 'addCasLife';
-				var respawnTime = oneHour;
-				var curPly = _.get(serverObj, [0]);
-				if(curPly.side === _.get(userLivesController, ['underDog', 'side'])) {
-					respawnTime = respawnTime * _.get(userLivesController, ['underDog', 'percent']);
-				}
+				var curPlayerLifePoints = _.get(serverObj, [0, curLifePoints], 0);
+				var curTotalPoints = curPlayerLifePoints - obj.removeLifePoints;
 				if (err) {
 					reject(err)
 				}
-				if ((serverObj.length !== 0) && ((curPly.lastLifeAction !== curAction) || (new Date(curPly.safeLifeActionTime).getTime() < nowTime))) {
-					var nextCasLife;
-					var curCasLives = _.get(curPly, ['curCasLives'], 0);
-					var curLife = (curCasLives < 0)? 1 : curCasLives + 1;
-					if (curLife >= userLivesController.casDefaultLife) {
-						curLife = userLivesController.casDefaultLife;
-						nextCasLife = 0;
+				if (curTotalPoints < 0) {
+					DCSLuaCommands.forcePlayerSpectator(
+						serverName,
+						serverObj.playerId,
+						'You Do Not Have Enough Points To Fly This Vehicle' +
+							'{' + curPlayerLifePoints + '/' + obj.removeLifePoints + ')');
+					resolve(false);
+				} else {
+					if (serverObj.length !== 0) {
+						SrvPlayer.findOneAndUpdate(
+							{_id: obj._id},
+							{ $set: {curLifePoints: curTotalPoints }},
+							function(err, srvPlayer) {
+								if (err) { reject(err) }
+								DCSLuaCommands.sendMesgToGroup( obj.groupId, serverName, 'You Have Just Used ' + obj.removeLifePoints + ' Life Points! ' + obj.execAction + '(Total:' + curTotalPoints + ')', 5);
+								resolve(srvPlayer);
+							}
+						)
 					} else {
-						nextCasLife = curPly.nextCasLife;
-						if(0 ===  nextCasLife || nextCasLife < nowTime) {
-							// console.log('addCasResetTime: ', nextCasLife, ' < ', nowTime, respawnTime, curLife, new Date(nowTime + respawnTime));
-							nextCasLife = nowTime + respawnTime;
-						}
+						resolve('line305: Error: No Record in player db');
 					}
-					SrvPlayer.findOneAndUpdate(
-						{_id: obj._id},
-						{$set:
-							{
-								curCasLives: curLife,
-								nextCasLife: nextCasLife,
-								lastLifeAction: curAction,
-								safeLifeActionTime: (nowTime + oneMin)
-							}
-						},
-						function(err, srvPlayer) {
-							if (err) { reject(err) }
-							resolve(srvPlayer);
-						}
-					);
-				}
-			});
-		})
-	}
-
-	if (action === 'removeCapLife') {
-		return new Promise(function(resolve, reject) {
-			SrvPlayer.find({_id: obj._id}, function (err, serverObj) {
-				var curAction = 'removeCapLife';
-				var respawnTime = oneHour;
-				var curPly = _.get(serverObj, [0]);
-				if(curPly.side === _.get(userLivesController, ['underDog', 'side'])) {
-					respawnTime = respawnTime * _.get(userLivesController, ['underDog', 'percent']);
-				}
-				if (err) {
-					reject(err)
-				}
-				if ((serverObj.length !== 0) && ((curPly.lastLifeAction !== curAction) || (new Date(curPly.safeLifeActionTime).getTime() < nowTime))) {
-					var curLife = _.get(curPly, ['curCapLives'], 1) - 1;
-					if(0 ===  curPly.nextCapLife) {
-						// console.log('rmCapResetTimer: ', nowTime, respawnTime, curLife, new Date(nowTime + respawnTime));
-						curPly.nextCapLife = nowTime + respawnTime;
-					}
-					SrvPlayer.update(
-						{_id: obj._id},
-						{$set:
-							{
-								curCapLives: curLife,
-								nextCapLife: curPly.nextCapLife,
-								lastLifeAction: curAction,
-								safeLifeActionTime: (nowTime + oneMin)
-							}
-						},
-						function(err) {
-							if (err) { reject(err) }
-							resolve(curLife);
-						}
-					);
-				}
-			});
-		})
-	}
-
-	if (action === 'removeCasLife') {
-		return new Promise(function(resolve, reject) {
-			SrvPlayer.find({_id: obj._id}, function (err, serverObj) {
-				var curAction = 'removeCasLife';
-				var respawnTime = oneHour;
-				var curPly = _.get(serverObj, [0]);
-				if(curPly.side === _.get(userLivesController, ['underDog', 'side'])) {
-					respawnTime = respawnTime * _.get(userLivesController, ['underDog', 'percent']);
-				}
-				if (err) {
-					reject(err)
-				}
-				if ((serverObj.length !== 0) && ((curPly.lastLifeAction !== curAction) || (new Date(curPly.safeLifeActionTime).getTime() < nowTime))) {
-					var curLife = _.get(curPly, ['curCasLives'], 1) - 1;
-					if(0 ===  curPly.nextCasLife) {
-						// console.log('rmCasResetTimer: ', nowTime, respawnTime, curLife, new Date(nowTime + respawnTime));
-						curPly.nextCasLife = nowTime + respawnTime;
-					}
-
-					SrvPlayer.update(
-						{_id: obj._id},
-						{$set:
-							{
-								curCasLives: curLife,
-								nextCasLife: curPly.nextCasLife,
-								lastLifeAction: curAction,
-								safeLifeActionTime: (nowTime + oneMin)
-							}
-						},
-						function(err) {
-							if (err) { reject(err) }
-							resolve(curLife);
-						}
-					);
 				}
 			});
 		})

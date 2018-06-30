@@ -25,6 +25,7 @@ const processEventPlayerLeaveUnit = require('../../controllers/events/frontend/S
 const processTimedOneSec = require('../../controllers/timedEvents/oneSec');
 const processTimedFiveSecs = require('../../controllers/timedEvents/fiveSecs');
 const processTimedThirtySecs = require('../../controllers/timedEvents/thirtySecs');
+const processTimedTenMinutes = require('../../controllers/timedEvents/tenMinutes');
 
 var CCB = {};
 
@@ -43,7 +44,9 @@ _.assign(CCB, {
 	sec: 1000,
 	twoSec: 2 * 1000,
 	fiveSecs: 5 * 1000,
-	thirtySecs: 30 * 1000
+	thirtySecs: 30 * 1000,
+	//tenMinutes: 10 * 60 * 1000
+	tenMinutes: 5 * 1000
 });
 
 dbSystemServiceController.connectSystemDB(CCB.db.systemHost, CCB.db.systemDatabase);
@@ -68,7 +71,7 @@ setInterval(function () {
 	} else {
 		CCB.DCSSocket = new DCSSocket.createSocket(CCB.serverName, CCB.serverIP, CCB.serverPort, CCB.queName, CCB.socketCallback);
 	}
-}, 3 * 1000);
+}, 10 * 1000);
 
 _.set(CCB, 'getLatestSession', function (serverName, serverEpoc, startAbs, curAbs) {
 	console.log('sn: ', serverEpoc, startAbs, curAbs, _.get(CCB, 'sessionName'));
@@ -232,11 +235,18 @@ setInterval(function () {
 }, CCB.thirtySecs);
 
 setInterval(function () {
+	if (!_.get(CCB, ['DCSSocket', 'connOpen'], true)) {
+		processTimedTenMinutes.processTenMinuteActions(CCB.serverName, sychrontronController.isServerSynced);
+	}
+}, CCB.tenMinutes);
+
+
+setInterval(function () {
 	if (groupController.bases) {
 		if (!_.get(CCB, ['DCSSocket', 'connOpen'], true)) {
 			sychrontronController.syncType(CCB.serverName, _.get(CCB, 'curServerUnitCnt', 38) - 38);
 		}
-	} else {
-		groupController.initDbs(CCB.serverName);
 	}
 }, 1 * 1000);
+
+groupController.initDbs(CCB.serverName);

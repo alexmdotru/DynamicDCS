@@ -47,6 +47,10 @@ const UnitDictionarySchema = new Schema({
 		enabled: {
 			type: Boolean,
 			default: true
+		},
+		lifeCost: {
+			type: Number,
+			default: 1
 		}
 	},
 	{

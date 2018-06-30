@@ -8,6 +8,7 @@ const friendlyFireEvent = require('../../controllers/events/backend/friendlyFire
 const selfKillEvent = require('../../controllers/events/backend/selfKill');
 const connectEvent = require('../../controllers/events/backend/connect');
 const disconnectEvent = require('../../controllers/events/backend/disconnect');
+const groupController = require('../../controllers/spawn/group');
 
 var DCB = {};
 
@@ -38,7 +39,7 @@ setInterval(function () {
 	} else {
 		DCB.DCSSocket = new DCSSocket.createSocket(DCB.serverName, DCB.serverIP, DCB.serverPort, DCB.queName, DCB.socketCallback);
 	}
-}, 3 * 1000);
+}, 10 * 1000);
 
 _.set(DCB, 'getLatestSession', function (serverName) {
 	dbMapServiceController.statSessionActions('readLatest', serverName, {})
@@ -82,4 +83,5 @@ _.set(DCB, 'socketCallback', function (serverName, cbArray) {
 
 	});
 });
+groupController.initDbs(DCB.serverName);
 

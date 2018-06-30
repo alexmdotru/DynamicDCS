@@ -34,7 +34,7 @@ _.set(exports, 'processEventPlayerEnterUnit', function (serverName, sessionName,
 								webPushCommands.sendToCoalition(serverName, {payload: {action: eventObj.action, data: _.cloneDeep(iCurObj)}});
 								dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 							}
-							userLivesController.updateServerLives(serverName, curIUnit);
+							// userLivesController.updateServerLives(serverName, curIUnit);
 							// console.log('PLAYER ENTER UNIT', curIUnit);
 							// menuUpdateController.logisticsMenu('resetMenu', serverName, curIUnit);
 							/*

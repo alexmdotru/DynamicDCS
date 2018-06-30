@@ -50,7 +50,7 @@ _.set(exports, 'spendResourcePoints', function (serverName, player, rsCost, rsIt
 											return true;
 										})
 										.catch(function (err) {
-											console.log('line114', err);
+											console.log('line53', err);
 										})
 										;
 								} else {
@@ -81,7 +81,7 @@ _.set(exports, 'spendResourcePoints', function (serverName, player, rsCost, rsIt
 											return true;
 										})
 										.catch(function (err) {
-											console.log('line114', err);
+											console.log('line84', err);
 										})
 										;
 								} else {
@@ -98,7 +98,7 @@ _.set(exports, 'spendResourcePoints', function (serverName, player, rsCost, rsIt
 						}
 					})
 					.catch(function (err) {
-						console.log('line114', err);
+						console.log('line101', err);
 					})
 					;
 			} else {

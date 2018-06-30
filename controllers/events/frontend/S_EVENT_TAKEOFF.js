@@ -2,9 +2,8 @@ const _ = require('lodash');
 const constants = require('../../constants');
 const dbMapServiceController = require('../../db/dbMapService');
 const DCSLuaCommands = require('../../player/DCSLuaCommands');
-const playersEvent = require('../../events/backend/players');
+const groupController = require('../../spawn/group');
 const webPushCommands = require('../../socketIO/webPush');
-const userLivesController = require('../../action/userLives');
 
 _.set(exports, 'processEventTakeoff', function (serverName, sessionName, eventObj) {
 	var place;
@@ -24,6 +23,8 @@ _.set(exports, 'processEventTakeoff', function (serverName, sessionName, eventOb
 					var iPlayer;
 					var iCurObj;
 					var curIUnit = _.get(iunit, 0);
+					var curUnitDict = _.find(groupController.unitDictionary, {_id: curIUnit.type});
+					var curLifePointVal = (curUnitDict) ? curUnitDict.lifeCost : 1;
 					if (curIUnit) {
 						iPlayer = _.find(playerArray, {name: _.get(curIUnit, 'playername')});
 						// console.log('takeoff: ', _.get(curIUnit, 'playername'));
@@ -38,14 +39,14 @@ _.set(exports, 'processEventTakeoff', function (serverName, sessionName, eventOb
 								msg: 'C: '+ _.get(curIUnit, 'type') + '('+_.get(curIUnit, 'playername')+') has taken off' + place
 							};
 							if(_.get(iCurObj, 'iucid')) {
-								if (_.includes(userLivesController.capLivesEnabled, curIUnit.type)) {
-									console.log(' remove cap life: ', _.get(curIUnit, 'playername'));
-									userLivesController.removeLife(serverName, iPlayer.ucid, curIUnit, 'Cap');
-								}
-								if (_.includes(userLivesController.casLivesEnabled, curIUnit.type)) {
-									console.log(' remove cap life: ', _.get(curIUnit, 'playername'));
-									userLivesController.removeLife(serverName, iPlayer.ucid, curIUnit, 'Cas');
-								}
+								// remove unit types worth of points from user db, if db doesnt have enough kick to spectator
+
+								dbMapServiceController.srvPlayerActions('removeLifePoints', serverName, {
+									_id: iPlayer._id,
+									execAction: curIUnit.type + ' Takeoff',
+									groupId: curIUnit.groupId,
+									removeLifePoints: curLifePointVal
+								});
 								webPushCommands.sendToCoalition(serverName, {payload: {action: eventObj.action, data: _.cloneDeep(iCurObj)}});
 								dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 							}
