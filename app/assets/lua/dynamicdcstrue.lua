@@ -214,7 +214,6 @@ do
 							--	curUnit.data.maxLife = tonumber(maxLife)
 							--end
 							curUnit.data.groupName = group:getName()
-							curUnit.data.name = unit:getName()
 							curUnit.data.type = unit:getTypeName()
 							curUnit.data.coalition = coalition
 							curUnit.data.country = CountryNames[unit:getCountry()]
