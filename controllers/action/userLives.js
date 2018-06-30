@@ -137,7 +137,7 @@ _.set(exports, 'checkLifeResource', function (serverName, playerUcid) {
 
 _.set(exports, 'checkAircraftCosts', function (serverName) {
 	console.log('CHK Aircraft');
-	dbMapServiceController.srvPlayerActions('read', serverName, {playername: {$ne: ''}})
+	dbMapServiceController.srvPlayerActions('read', serverName, {dead: false, playername: {$ne: ''}})
 		.then(function(srvPlayers) {
 			_.forEach(srvPlayers, function (curPlayer) {
 				console.log('CHK Aircraft2', curPlayer);
