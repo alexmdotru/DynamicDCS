@@ -57,8 +57,7 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
                 }
                 */
 
-				//if ((!_.isEmpty(curUnit) && _.get(unitObj, 'action') !== 'D')) {
-				if (_.get(unitObj, 'action') === 'U') {
+				if ((!_.isEmpty(curUnit) && _.get(unitObj, 'action') !== 'D')) {
 					iCurObj = {
 						action: 'U',
 						sessionName: sessionName,
@@ -74,15 +73,12 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 							dead: false
 						}
 					};
-
-					/*
 					if(_.get(curData, 'groupId')) {
 						_.set(iCurObj, 'data.groupId', _.get(curData, 'groupId'));
 					}
 					if(_.get(curData, 'unitId')) {
 						_.set(iCurObj, 'data.unitId', _.get(curData, 'unitId'));
 					}
-					*/
 					if(_.get(curData, 'type')) {
 						_.set(iCurObj, 'data.type', _.get(curData, 'type'));
 					}
