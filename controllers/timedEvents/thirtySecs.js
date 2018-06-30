@@ -4,6 +4,7 @@ const jtacController = require('../action/jtac');
 const menuUpdateController = require('../menu/menuUpdate');
 const groupController = require('../spawn/group');
 const troopLocalizerController = require('../action/troopLocalizer');
+const userLivesController = require('../action/userLives');
 
 var AIMaxIdleTime = (5 * 60 * 1000); // 5 mins
 var maxCrateLife = (3 * 60 * 60 * 1000); // 3 hrs
@@ -18,6 +19,8 @@ _.set(exports, 'processThirtySecActions', function (serverName, fullySynced) {
 				console.log('err line12: ', err);
 			})
 		;
+
+		userLivesController.checkAircraftCosts(serverName);
 
 		jtacController.aliveJtac30SecCheck(serverName);
 		// troopLocalizerController.checkTroopProx(serverName);

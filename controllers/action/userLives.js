@@ -1,6 +1,7 @@
 const	_ = require('lodash');
 const dbMapServiceController = require('../db/dbMapService');
 const DCSLuaCommands = require('../player/DCSLuaCommands');
+const groupController = require('../../spawn/group');
 
 _.set(exports, 'getPlayerBalance', function (serverName) {
 	var blueAll;
@@ -130,6 +131,38 @@ _.set(exports, 'checkLifeResource', function (serverName, playerUcid) {
 		})
 		.catch(function (err) {
 			console.log('line119', err);
+		})
+	;
+});
+
+_.set(exports, 'checkAircraftCosts', function (serverName) {
+	dbMapServiceController.srvPlayerActions('read', serverName, {playername: {$ne: ''}})
+		.then(function(srvPlayers) {
+			_.forEach(srvPlayers, function (curPlayer) {
+				if(_.isNumber(curPlayer.slot)) {
+					dbMapServiceController.unitActions('read', serverName, {unitId: _.toNumber(curPlayer.slot)})
+						.then(function(cUnit) {
+							var curUnit = _.get(cUnit, [0]);
+							var curUnitDict = _.find(groupController.unitDictionary, {_id: curUnit.type});
+							var curUnitLifePoints = (curUnitDict)? curUnitDict:1;
+							if(curPlayer.curLifePoints < curUnitLifePoints) {
+								DCSLuaCommands.sendMesgToGroup(
+									curUnit.groupId,
+									serverName,
+									"G: You Do Not Have Enough Points To Takeoff In " + curUnit.type + "(" + curUnitLifePoints + "/" + curPlayer.curLifePoints + "}",
+									30
+								);
+							}
+						})
+						.catch(function (err) {
+							console.log('line112', err);
+						})
+					;
+				}
+			});
+		})
+		.catch(function (err) {
+			console.log('line112', err);
 		})
 	;
 });
