@@ -141,7 +141,7 @@ _.set(exports, 'checkAircraftCosts', function (serverName) {
 		.then(function(srvPlayers) {
 			_.forEach(srvPlayers, function (curPlayer) {
 				console.log('CHK Aircraft2', curPlayer);
-				if(_.isNumber(curPlayer.slot)) {
+				if(curPlayer.slot) {
 					dbMapServiceController.unitActions('read', serverName, {dead: false, unitId: _.toNumber(curPlayer.slot)})
 						.then(function(cUnit) {
 							console.log('CHK Aircraft3', cUnit);
