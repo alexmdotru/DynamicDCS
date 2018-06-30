@@ -186,11 +186,11 @@ _.set(CCB, 'socketCallback', function (serverName, cbArray) {
 			if ((_.get(queObj, 'action') === 'S_EVENT_REFUELING_STOP') && sychrontronController.isServerSynced) {
 				processEventRefuelingStop.processEventRefuelingStop(serverName, CCB.sessionName, queObj);
 			}
-
+/*
 			if ((_.get(queObj, 'action') === 'S_EVENT_BIRTH') && sychrontronController.isServerSynced) {
 				processEventBirth.processEventBirth(serverName, CCB.sessionName, queObj);
 			}
-
+*/
 			if ((_.get(queObj, 'action') === 'S_EVENT_PLAYER_ENTER_UNIT') && sychrontronController.isServerSynced) {
 				processEventPlayerEnterUnit.processEventPlayerEnterUnit(serverName, CCB.sessionName, queObj);
 			}
