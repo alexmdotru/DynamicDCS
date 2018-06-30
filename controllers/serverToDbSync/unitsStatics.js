@@ -91,7 +91,6 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 					if(_.get(curData, 'country')) {
 						_.set(iCurObj, 'data.country', _.get(curData, 'country'));
 					}
-
 					dbMapServiceController.unitActions('update', serverName, iCurObj.data)
 						.then(function () {
 							var sObj = {
@@ -114,7 +113,6 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 						})
 					;
 				}else if (_.get(unitObj, 'action') === 'C') {
-					// console.log('CREATE: ', _.get(unitObj, 'data'));
 					if (_.get(curData, 'name')) {
 						_.set(curData, '_id', _.get(curData, 'name'));
 						iCurObj = {
@@ -127,7 +125,6 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 								_.set(curData, 'proxChkGrp', 'logisticTowers');
 							}
 						}
-
 						dbMapServiceController.unitActions('save', serverName, iCurObj.data)
 							.then(function (unit) {
 								webPushCommands.sendToCoalition(serverName, {payload: _.cloneDeep(iCurObj)});
