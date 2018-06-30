@@ -1813,7 +1813,7 @@ _.set(exports, 'spawnLogiGroup', function (serverName, spawnArray, side) {
 		var actionObj = {actionObj: sendClient, queName: 'clientArray'};
 		dbMapServiceController.cmdQueActions('save', serverName, actionObj)
 			.catch(function (err) {
-				console.log('erroring line476: ', err);
+				console.log('erroring line1816: ', err);
 			})
 		;
 	}

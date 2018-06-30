@@ -47,7 +47,7 @@ _.set(exports, 'getPlayerBalance', function (serverName) {
 			}
 		})
 		.catch(function (err) {
-			console.log('line47', err);
+			console.log('line50', err);
 		})
 	;
 });
@@ -62,22 +62,25 @@ _.set(exports, 'updateServerLifePoints', function (serverName) {
 		.then(function(playerBalance) {
 			_.forEach(playerBalance.players, function (cPlayer) {
 				if (cPlayer) {
-					if (!_.isEmpty(cPlayer.slot)) {
+					// if (!_.isEmpty(cPlayer.slot)) {
+					if (!_.isEmpty(cPlayer.name)) {
 						if (cPlayer.side === playerBalance.side) {
 							addFracPoint = playerBalance.modifier
 						} else {
 							addFracPoint = 1;
 						}
-						if (cPlayer.slot) {
+						if (_.isNumber(cPlayer.slot)) {
 							dbMapServiceController.unitActions('read', serverName, {unitId: _.toNumber(cPlayer.slot)})
 								.then(function (cUnit) {
 									var curUnit = _.get(cUnit, [0]);
-									dbMapServiceController.srvPlayerActions('addLifePoints', serverName, {
-										_id: cPlayer._id,
-										execAction: 'PeriodicAdd',
-										groupId: curUnit.groupId,
-										addLifePoints: addFracPoint
-									});
+									if (curUnit) {
+										dbMapServiceController.srvPlayerActions('addLifePoints', serverName, {
+											_id: cPlayer._id,
+											execAction: 'PeriodicAdd',
+											groupId: curUnit.groupId,
+											addLifePoints: addFracPoint
+										});
+									}
 								})
 								.catch(function (err) {
 									console.log('line81', err);
@@ -96,7 +99,7 @@ _.set(exports, 'updateServerLifePoints', function (serverName) {
 			});
 		})
 		.catch(function (err) {
-			console.log('line47', err);
+			console.log('line100', err);
 		})
 	;
 });
