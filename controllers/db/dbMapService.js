@@ -306,7 +306,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 						serverName,
 						curPlayerObj.playerId,
 						'You Do Not Have Enough Points To Fly This Vehicle' +
-							'{' + curPlayerLifePoints + '/' + obj.removeLifePoints + ')');
+							'{' + obj.removeLifePoints + '/' + curPlayerLifePoints + ')');
 					resolve(false);
 				} else {
 					if (serverObj.length !== 0) {
