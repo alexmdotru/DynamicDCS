@@ -138,37 +138,46 @@ _.set(exports, 'checkLifeResource', function (serverName, playerUcid) {
 });
 
 _.set(exports, 'checkAircraftCosts', function (serverName) {
-	dbMapServiceController.srvPlayerActions('read', serverName, {playername: {$ne: ''}})
-		.then(function(srvPlayers) {
-			_.forEach(srvPlayers, function (curPlayer) {
-				var numSlot = !!_.toNumber(curPlayer.slot);
-				if(!_.isEmpty(curPlayer.slot) && numSlot) {
-					dbMapServiceController.unitActions('read', serverName, {dead: false, unitId: curPlayer.slot})
-						.then(function(cUnit) {
-							if (cUnit.length > 0) {
-								var curUnit = _.get(cUnit, [0]);
-								var curUnitDict = _.find(groupController.unitDictionary, {_id: curUnit.type});
-								var curUnitLifePoints = (curUnitDict)? curUnitDict.lifeCost:1;
-								// console.log('CHK Aircraft4', _.get(curPlayer, 'curLifePoints', 0), curUnitLifePoints, curUnit.type);
-								if(_.get(curPlayer, 'curLifePoints', 0) < curUnitLifePoints) {
-									DCSLuaCommands.sendMesgToGroup(
-										curUnit.groupId,
-										serverName,
-										"G: You Do Not Have Enough Points To Takeoff In " + curUnit.type + "(" + curUnitLifePoints + "/" + curPlayer.curLifePoints + "}",
-										30
-									);
-								}
+	dbMapServiceController.statSessionActions('readLatest', serverName, {})
+		.then(function (latestSession) {
+			if (latestSession.name) {
+				dbMapServiceController.srvPlayerActions('read', serverName, {sessionName: latestSession.name, playername: {$ne: ''}})
+					.then(function(srvPlayers) {
+						_.forEach(srvPlayers, function (curPlayer) {
+							var numSlot = !!_.toNumber(curPlayer.slot);
+							if(!_.isEmpty(curPlayer.slot) && numSlot) {
+								dbMapServiceController.unitActions('read', serverName, {dead: false, unitId: curPlayer.slot})
+									.then(function(cUnit) {
+										if (cUnit.length > 0) {
+											var curUnit = _.get(cUnit, [0]);
+											var curUnitDict = _.find(groupController.unitDictionary, {_id: curUnit.type});
+											var curUnitLifePoints = (curUnitDict)? curUnitDict.lifeCost:1;
+											// console.log('CHK Aircraft4', _.get(curPlayer, 'curLifePoints', 0), curUnitLifePoints, curUnit.type);
+											if(_.get(curPlayer, 'curLifePoints', 0) < curUnitLifePoints) {
+												DCSLuaCommands.sendMesgToGroup(
+													curUnit.groupId,
+													serverName,
+													"G: You Do Not Have Enough Points To Takeoff In " + curUnit.type + "(" + curUnitLifePoints + "/" + curPlayer.curLifePoints + "}",
+													30
+												);
+											}
+										}
+									})
+									.catch(function (err) {
+										console.log('line161', err);
+									})
+								;
 							}
-						})
-						.catch(function (err) {
-							console.log('line161', err);
-						})
-					;
-				}
-			});
+						});
+					})
+					.catch(function (err) {
+						console.log('line168', err);
+					})
+				;
+			}
 		})
 		.catch(function (err) {
-			console.log('line168', err);
+			console.log('line180', err);
 		})
 	;
 });
