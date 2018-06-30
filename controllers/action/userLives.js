@@ -136,15 +136,19 @@ _.set(exports, 'checkLifeResource', function (serverName, playerUcid) {
 });
 
 _.set(exports, 'checkAircraftCosts', function (serverName) {
+	console.log('CHK Aircraft');
 	dbMapServiceController.srvPlayerActions('read', serverName, {playername: {$ne: ''}})
 		.then(function(srvPlayers) {
 			_.forEach(srvPlayers, function (curPlayer) {
+				console.log('CHK Aircraft2', curPlayer);
 				if(_.isNumber(curPlayer.slot)) {
 					dbMapServiceController.unitActions('read', serverName, {unitId: _.toNumber(curPlayer.slot)})
 						.then(function(cUnit) {
+							console.log('CHK Aircraft3', cUnit);
 							var curUnit = _.get(cUnit, [0]);
 							var curUnitDict = _.find(groupController.unitDictionary, {_id: curUnit.type});
 							var curUnitLifePoints = (curUnitDict)? curUnitDict:1;
+							console.log('CHK Aircraft4', _.get(curPlayer, 'curLifePoints', 0), curUnitLifePoints, curUnit.type);
 							if(_.get(curPlayer, 'curLifePoints', 0) < curUnitLifePoints) {
 								DCSLuaCommands.sendMesgToGroup(
 									curUnit.groupId,
