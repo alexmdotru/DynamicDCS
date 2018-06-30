@@ -59,6 +59,7 @@ _.set(exports, 'processEventHit', function (serverName, sessionName, eventObj) {
 	var iCurObj;
 	var iPlayer;
 	var tPlayer;
+	console.log('hit obj: ', serverName, sessionName, eventObj);
 	dbMapServiceController.unitActions('read', serverName, {unitId: iUnitId})
 		.then(function (iunit) {
 			var curIUnit = _.get(iunit, 0);
