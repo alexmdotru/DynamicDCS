@@ -70,8 +70,8 @@ _.set(exports, 'updateServerLifePoints', function (serverName) {
 						} else {
 							addFracPoint = 1;
 						}
-						if (cPlayer.slot) {
-							dbMapServiceController.unitActions('read', serverName, {unitId: _.toNumber(cPlayer.slot)})
+						if (!_.isEmpty(cPlayer.slot)) {
+							dbMapServiceController.unitActions('read', serverName, {unitId: cPlayer.slot})
 								.then(function (cUnit) {
 									var curUnit = _.get(cUnit, [0]);
 									if (curUnit) {
@@ -112,7 +112,7 @@ _.set(exports, 'checkLifeResource', function (serverName, playerUcid) {
 			var curPlayer = _.get(srvPlayer, [0]);
 			if (curPlayer) {
 				if (!_.isEmpty(curPlayer.slot)) {
-					dbMapServiceController.unitActions('read', serverName, {unitId: _.toNumber(curPlayer.slot)})
+					dbMapServiceController.unitActions('read', serverName, {unitId: curPlayer.slot})
 						.then(function(cUnit) {
 							var curUnit = _.get(cUnit, [0]);
 							DCSLuaCommands.sendMesgToGroup(
@@ -139,8 +139,8 @@ _.set(exports, 'checkAircraftCosts', function (serverName) {
 	dbMapServiceController.srvPlayerActions('read', serverName, {playername: {$ne: ''}})
 		.then(function(srvPlayers) {
 			_.forEach(srvPlayers, function (curPlayer) {
-				if(curPlayer.slot) {
-					dbMapServiceController.unitActions('read', serverName, {dead: false, unitId: _.toNumber(curPlayer.slot)})
+				if(!_.isEmpty(curPlayer.slot)) {
+					dbMapServiceController.unitActions('read', serverName, {dead: false, unitId: curPlayer.slot})
 						.then(function(cUnit) {
 							if (cUnit.length > 0) {
 								var curUnit = _.get(cUnit, [0]);
