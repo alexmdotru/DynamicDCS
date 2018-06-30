@@ -299,8 +299,9 @@ exports.srvPlayerActions = function (action, serverName, obj){
 				if (err) {
 					reject(err)
 				}
-				console.log('removeP: ', curTotalPoints, curPlayerObj);
+				// console.log('removeP: ', curTotalPoints, curPlayerObj);
 				if (curTotalPoints < 0) {
+					console.log('Removed ' + curPlayerObj.name + ' from aircraft for not enough points');
 					DCSLuaCommands.forcePlayerSpectator(
 						serverName,
 						curPlayerObj.playerId,
