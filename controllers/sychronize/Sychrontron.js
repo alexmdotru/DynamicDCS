@@ -131,7 +131,7 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 						console.log('No Sync Instructions to be processed', exports.processInstructions);
 					}
 				} else { // server has units on it
-					// console.log('Server is not fresh');
+					console.log('Server is not fresh');
 					if (units.length !== serverUnitCount) { // db doesnt match server
 						if (lastUnitCount === serverUnitCount) {
 							if (stuckDetect > 5) {
