@@ -81,7 +81,11 @@ const ServerSchema = new Schema({
 			type: Number,
 			required: true,
 			default: 8
-		}
+		},
+		inGameHitMessages: {
+			type: Boolean,
+			default: true
+		},
 	},
 	{
 		timestamps: true, // Saves createdAt and updatedAt as dates. createdAt will be our timestamp.
