@@ -45,8 +45,7 @@ _.assign(CCB, {
 	twoSec: 2 * 1000,
 	fiveSecs: 5 * 1000,
 	thirtySecs: 30 * 1000,
-	//tenMinutes: 10 * 60 * 1000
-	tenMinutes: 5 * 1000
+	tenMinutes: 10 * 60 * 1000
 });
 
 dbSystemServiceController.connectSystemDB(CCB.db.systemHost, CCB.db.systemDatabase);
