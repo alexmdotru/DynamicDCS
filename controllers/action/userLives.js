@@ -123,14 +123,14 @@ _.set(exports, 'checkLifeResource', function (serverName, playerUcid) {
 							);
 						})
 						.catch(function (err) {
-							console.log('line112', err);
+							console.log('line126', err);
 						})
 					;
 				}
 			}
 		})
 		.catch(function (err) {
-			console.log('line119', err);
+			console.log('line133', err);
 		})
 	;
 });
@@ -158,14 +158,14 @@ _.set(exports, 'checkAircraftCosts', function (serverName) {
 							}
 						})
 						.catch(function (err) {
-							console.log('line112', err);
+							console.log('line161', err);
 						})
 					;
 				}
 			});
 		})
 		.catch(function (err) {
-			console.log('line112', err);
+			console.log('line168', err);
 		})
 	;
 });
