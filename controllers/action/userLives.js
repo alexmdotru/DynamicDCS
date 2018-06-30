@@ -145,7 +145,7 @@ _.set(exports, 'checkAircraftCosts', function (serverName) {
 							var curUnit = _.get(cUnit, [0]);
 							var curUnitDict = _.find(groupController.unitDictionary, {_id: curUnit.type});
 							var curUnitLifePoints = (curUnitDict)? curUnitDict:1;
-							if(curPlayer.curLifePoints < curUnitLifePoints) {
+							if(_.get(curPlayer, 'curLifePoints', 0) < curUnitLifePoints) {
 								DCSLuaCommands.sendMesgToGroup(
 									curUnit.groupId,
 									serverName,
