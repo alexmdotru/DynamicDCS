@@ -293,16 +293,17 @@ exports.srvPlayerActions = function (action, serverName, obj){
 	if (action === 'removeLifePoints') {
 		return new Promise(function(resolve, reject) {
 			SrvPlayer.find({_id: obj._id}, function (err, serverObj) {
-				var curPlayerLifePoints = _.get(serverObj, [0, 'curLifePoints'], 0);
+				var curPlayerObj = _.first(serverObj);
+				var curPlayerLifePoints = _.get(curPlayerObj, 'curLifePoints', 0);
 				var curTotalPoints = curPlayerLifePoints - obj.removeLifePoints;
 				if (err) {
 					reject(err)
 				}
-				console.log('removeP: ', curTotalPoints, serverObj);
+				console.log('removeP: ', curTotalPoints, curPlayerObj);
 				if (curTotalPoints < 0) {
 					DCSLuaCommands.forcePlayerSpectator(
 						serverName,
-						serverObj.playerId,
+						curPlayerObj.playerId,
 						'You Do Not Have Enough Points To Fly This Vehicle' +
 							'{' + curPlayerLifePoints + '/' + obj.removeLifePoints + ')');
 					resolve(false);
