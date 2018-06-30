@@ -1,7 +1,7 @@
 const	_ = require('lodash');
 const dbMapServiceController = require('../db/dbMapService');
 const DCSLuaCommands = require('../player/DCSLuaCommands');
-const groupController = require('../../spawn/group');
+const groupController = require('../spawn/group');
 
 _.set(exports, 'getPlayerBalance', function (serverName) {
 	var blueAll;
