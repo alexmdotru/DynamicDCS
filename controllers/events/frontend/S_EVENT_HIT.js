@@ -83,6 +83,7 @@ _.set(exports, 'processEventHit', function (serverName, sessionName, eventObj) {
 							}
 							dbMapServiceController.srvPlayerActions('read', serverName, {_id: {$in: oId}})
 								.then(function (ownerIds) {
+									console.log('targethit: ', curTUnit);
 									iCurObj = {
 										sessionName: sessionName,
 										eventCode: constants.shortNames[eventObj.action],
