@@ -58,7 +58,7 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
                 */
 
 				if ((!_.isEmpty(curUnit) && _.get(unitObj, 'action') !== 'D')) {
-					console.log('updateIDs: ', _.get(curData, 'groupId'));
+					// console.log('updateIDs: ', _.get(curData, 'unitId'));
 					iCurObj = {
 						action: 'U',
 						sessionName: sessionName,
