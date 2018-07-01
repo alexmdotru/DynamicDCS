@@ -73,6 +73,9 @@ const AirfieldSchema = new mongoose.Schema({
 	},
 	replenTime: {
 		type: Date
+	},
+	unitSide: {
+		type: Number
 	}
 },
 	{
