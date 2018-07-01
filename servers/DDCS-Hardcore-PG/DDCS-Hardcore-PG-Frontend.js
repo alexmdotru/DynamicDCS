@@ -71,7 +71,7 @@ setInterval(function () {
 	} else {
 		CCB.DCSSocket = new DCSSocket.createSocket(CCB.serverName, CCB.serverIP, CCB.serverPort, CCB.queName, CCB.socketCallback);
 	}
-}, 10 * 1000);
+}, 3 * 1000);
 
 _.set(CCB, 'getLatestSession', function (serverName, serverEpoc, startAbs, curAbs) {
 	console.log('sn: ', serverEpoc, startAbs, curAbs, _.get(CCB, 'sessionName'));
@@ -244,9 +244,10 @@ setInterval(function () {
 		if (!_.get(CCB, ['DCSSocket', 'connOpen'], true)) {
 			if (waitTenSecs > 10) {
 				sychrontronController.syncType(CCB.serverName, _.get(CCB, 'curServerUnitCnt'));
+			} else {
+				console.log('W: ', waitTenSecs);
+				waitTenSecs++;
 			}
-			console.log('W: ', waitTenSecs);
-			waitTenSecs++;
 		}
 	}
 }, 1 * 1000);

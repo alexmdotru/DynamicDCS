@@ -6,6 +6,7 @@ const menuUpdateController = require('../menu/menuUpdate');
 const crateController = require('../spawn/crate');
 const sideLockController = require('../action/sideLock');
 const taskController = require('../action/task');
+const baseSpawnFlagsController = require('../action/baseSpawnFlags');
 
 var mesg;
 var masterUnitCount;
@@ -19,6 +20,7 @@ exports.processInstructions = false;
 
 _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 	var remappedunits = {};
+	console.log('start: ', serverName, serverUnitCount);
 	dbMapServiceController.unitActions('readStd', serverName, {dead: false})
 		.then(function (units) {
 			if (serverUnitCount === 0) { //server is empty
@@ -123,6 +125,7 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 								isServerFresh = false;
 								DCSLuaCommands.setIsOpenSlotFlag(serverName, 1);
 								sideLockController.setSideLockFlags(serverName);
+								baseSpawnFlagsController.setbaseSides(serverName);
 							} else {
 								console.log('failing  !exports.isServerSynced && units.length > 500', !exports.isServerSynced, ' && ', units.length > 500);
 							}
@@ -163,6 +166,7 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 							//DCSLuaCommands.sendMesgChatWindow(serverName, mesg);
 							exports.isServerSynced = true;
 							DCSLuaCommands.setIsOpenSlotFlag(serverName, 1);
+							baseSpawnFlagsController.setbaseSides(serverName);
 						}
 					}
 				}

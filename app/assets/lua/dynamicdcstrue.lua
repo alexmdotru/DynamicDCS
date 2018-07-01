@@ -264,47 +264,50 @@ do
 				data = {}
 			}
 			curStatic.data.name = static:getName()
-			table.insert(completeAliveNames, curStatic.data.name)
-			--curStatic.data.life = static:getLife()
-			local staticPosition = static:getPosition()
-			curStatic.data.lat, curStatic.data.lon, curStatic.data.alt = coord.LOtoLL(staticPosition.p)
-			local lat, lon, alt = coord.LOtoLL(staticPosition.p)
-			curStatic.data.lonLatLoc = {
-				lon,
-				lat
-			}
-			curStatic.data.alt = alt
-			local unitXYZNorthCorr = coord.LLtoLO(lat + 1, lon)
-			local unitXYZNorthCorr = coord.LLtoLO(curStatic.data.lat + 1, curStatic.data.lon)
-			local headingNorthCorr = math.atan2(unitXYZNorthCorr.z - staticPosition.p.z, unitXYZNorthCorr.x - staticPosition.p.x)
-			local heading = math.atan2(staticPosition.x.z, staticPosition.x.x) + headingNorthCorr
-			if heading < 0 then
-				heading = heading + 2 * math.pi
-			end
-			curStatic.data.hdg = math.floor(heading / math.pi * 180);
-			if staticCache[curStatic.data.name] ~= nil and not Init then
-				if staticCache[curStatic.data.name].lat ~= lat or staticCache[curStatic.data.name].lon ~= lon then
+			if curStatic.data.name:split(" #")[1] ~= 'New Static Object' then
+				table.insert(completeAliveNames, curStatic.data.name)
+				--curStatic.data.life = static:getLife()
+				local staticPosition = static:getPosition()
+				curStatic.data.lat, curStatic.data.lon, curStatic.data.alt = coord.LOtoLL(staticPosition.p)
+				local lat, lon, alt = coord.LOtoLL(staticPosition.p)
+				curStatic.data.lonLatLoc = {
+					lon,
+					lat
+				}
+				curStatic.data.alt = alt
+				local unitXYZNorthCorr = coord.LLtoLO(lat + 1, lon)
+				local unitXYZNorthCorr = coord.LLtoLO(curStatic.data.lat + 1, curStatic.data.lon)
+				local headingNorthCorr = math.atan2(unitXYZNorthCorr.z - staticPosition.p.z, unitXYZNorthCorr.x - staticPosition.p.x)
+				local heading = math.atan2(staticPosition.x.z, staticPosition.x.x) + headingNorthCorr
+				if heading < 0 then
+					heading = heading + 2 * math.pi
+				end
+				curStatic.data.hdg = math.floor(heading / math.pi * 180);
+				if staticCache[curStatic.data.name] ~= nil and not Init then
+					if staticCache[curStatic.data.name].lat ~= lat or staticCache[curStatic.data.name].lon ~= lon then
+						staticCache[curStatic.data.name] = {}
+						staticCache[curStatic.data.name].lat = lat
+						staticCache[curStatic.data.name].lon = lon
+						curStatic.action = "U"
+						table.insert(updateQue.que, curStatic)
+					end
+				else
 					staticCache[curStatic.data.name] = {}
 					staticCache[curStatic.data.name].lat = lat
 					staticCache[curStatic.data.name].lon = lon
-					curStatic.action = "U"
+					curStatic.data.groupName = curStatic.data.name
+					--curStatic.data.maxLife = tonumber(static:getLife())
+					curStatic.data.category = CategoryNames[static:getDesc().category]
+					curStatic.data.type = static:getTypeName()
+					curStatic.data.coalition = coalition
+					curStatic.data.country = CountryNames[static:getCountry()]
+					curStatic.action = "C"
 					table.insert(updateQue.que, curStatic)
 				end
-			else
-				staticCache[curStatic.data.name] = {}
-				staticCache[curStatic.data.name].lat = lat
-				staticCache[curStatic.data.name].lon = lon
-				curStatic.data.groupName = curStatic.data.name
-				--curStatic.data.maxLife = tonumber(static:getLife())
-				curStatic.data.category = CategoryNames[static:getDesc().category]
-				curStatic.data.type = static:getTypeName()
-				curStatic.data.coalition = coalition
-				curStatic.data.country = CountryNames[static:getCountry()]
-				curStatic.action = "C"
-				table.insert(updateQue.que, curStatic)
+				checkStaticDead[curStatic.data.name] = 1
 			end
-			checkStaticDead[curStatic.data.name] = 1
 		end
+
 	end
 
 	local function updateStatics(Init)
@@ -330,7 +333,9 @@ do
 				table.insert(updateQue.que, curStatic)
 				staticCache[k] = nil
 			end
-			staticCnt = staticCnt + 1
+			if k:split(" #")[1] ~= 'New Static Object' then
+				staticCnt = staticCnt + 1
+			end
 		end
 	end
 
@@ -356,6 +361,7 @@ do
 
 	local function runRequest(request)
 		if request.action ~= nil then
+			--env.info('REQ_ACTION: '..request.action)
 			if request.action == "CRATEUPDATE" then
 				if type(request.crateNames) == 'table' then
 					local crateObjs = {};

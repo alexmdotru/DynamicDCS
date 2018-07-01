@@ -1,7 +1,6 @@
 const _ = require('lodash');
 const dbMapServiceController = require('../db/dbMapService');
 const groupController = require('../spawn/group');
-const baseSpawnFlagsController = require('../action/baseSpawnFlags');
 
 var replenThreshold = 30; // percentage under max
 var replenTimer = _.random(5400, 9000);
@@ -9,8 +8,6 @@ var replenTimer = _.random(5400, 9000);
 _.set(exports, 'processFiveSecActions', function (serverName, fullySynced) {
 	if (fullySynced) {
 		//set base flags
-		baseSpawnFlagsController.setbaseSides(serverName);
-
 		dbMapServiceController.baseActions('read', serverName, {mainBase: true, $or: [{side: 1}, {side: 2}]})
 			.then(function (bases) {
 				_.forEach(bases, function (base) {
