@@ -245,6 +245,7 @@ setInterval(function () {
 			if (waitTenSecs > 10) {
 				sychrontronController.syncType(CCB.serverName, _.get(CCB, 'curServerUnitCnt', 38) - 38);
 			}
+			console.log('W: ', waitTenSecs);
 			waitTenSecs++;
 		}
 	}
