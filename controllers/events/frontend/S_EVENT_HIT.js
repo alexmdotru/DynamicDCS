@@ -59,7 +59,7 @@ _.set(exports, 'processEventHit', function (serverName, sessionName, eventObj) {
 	var iCurObj;
 	var iPlayer;
 	var tPlayer;
-	console.log('hit obj: ', serverName, sessionName, eventObj);
+	// console.log('hit obj: ', serverName, sessionName, eventObj);
 	dbMapServiceController.unitActions('read', serverName, {unitId: iUnitId})
 		.then(function (iunit) {
 			var curIUnit = _.get(iunit, 0);
@@ -83,7 +83,7 @@ _.set(exports, 'processEventHit', function (serverName, sessionName, eventObj) {
 							}
 							dbMapServiceController.srvPlayerActions('read', serverName, {_id: {$in: oId}})
 								.then(function (ownerIds) {
-									console.log('targethit: ', curTUnit);
+									console.log('targethit: ', _.get(curTUnit, 'groupId'));
 									iCurObj = {
 										sessionName: sessionName,
 										eventCode: constants.shortNames[eventObj.action],
