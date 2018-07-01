@@ -243,7 +243,7 @@ setInterval(function () {
 	if (groupController.bases) {
 		if (!_.get(CCB, ['DCSSocket', 'connOpen'], true)) {
 			if (waitTenSecs > 10) {
-				sychrontronController.syncType(CCB.serverName, _.get(CCB, 'curServerUnitCnt', 38) - 38);
+				sychrontronController.syncType(CCB.serverName, _.get(CCB, 'curServerUnitCnt'));
 			}
 			console.log('W: ', waitTenSecs);
 			waitTenSecs++;
