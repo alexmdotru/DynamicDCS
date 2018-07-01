@@ -11,7 +11,7 @@ _.set(exports, 'processEventBirth', function (serverName, sessionName, eventObj)
 		dbMapServiceController.unitActions('read', serverName, {unitId: _.get(eventObj, ['data', 'arg3'])})
 			.then(function (iunit) {
 				var curIUnit = _.get(iunit, 0);
-				if (curIUnit.playername !== '') {
+				if (_.get(curIUnit, 'playername', '') !== '') {
 					dbMapServiceController.srvPlayerActions('read', serverName, {sessionName: sessionName})
 						.then(function (playerArray) {
 							var iPlayer;
