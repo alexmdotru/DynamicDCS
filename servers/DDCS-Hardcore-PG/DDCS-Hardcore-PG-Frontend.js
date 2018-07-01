@@ -244,8 +244,8 @@ setInterval(function () {
 		if (!_.get(CCB, ['DCSSocket', 'connOpen'], true)) {
 			if (waitTenSecs > 10) {
 				sychrontronController.syncType(CCB.serverName, _.get(CCB, 'curServerUnitCnt', 38) - 38);
-				waitTenSecs++;
 			}
+			waitTenSecs++;
 		}
 	}
 }, 1 * 1000);
