@@ -121,7 +121,6 @@ _.set(CCB, 'socketCallback', function (serverName, cbArray) {
 				airbaseSyncController.processAirbaseUpdates(serverName, queObj);
 			}
 
-			console.log('processing', sychrontronController.isServerSynced);
 			if (sychrontronController.isServerSynced) {
 				if ((_.get(queObj, 'action') === 'f10Menu') && sychrontronController.isServerSynced) {
 					menuCmdsController.menuCmdProcess(serverName, CCB.sessionName, queObj);
