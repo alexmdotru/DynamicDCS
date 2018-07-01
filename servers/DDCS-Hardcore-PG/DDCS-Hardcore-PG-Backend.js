@@ -39,7 +39,7 @@ setInterval(function () {
 	} else {
 		DCB.DCSSocket = new DCSSocket.createSocket(DCB.serverName, DCB.serverIP, DCB.serverPort, DCB.queName, DCB.socketCallback);
 	}
-}, 10 * 1000);
+}, 3 * 1000);
 
 _.set(DCB, 'getLatestSession', function (serverName) {
 	dbMapServiceController.statSessionActions('readLatest', serverName, {})
