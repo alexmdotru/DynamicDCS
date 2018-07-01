@@ -865,7 +865,7 @@ _.set(exports, 'grndUnitGroup', function ( groupObj, task, routes ) {
 	var curRoute = '';
 	var curTask = (task) ? task : 'Ground Nothing';
 	var uncontrollable = _.get(groupObj, 'playerCanDrive', false) === false;
-	console.log('uncontrol: ', uncontrollable, curTask);
+	// console.log('uncontrol: ', uncontrollable, curTask);
 
 	// console.log('hidden: ', groupObj);
 

@@ -28,6 +28,7 @@ const processTimedThirtySecs = require('../../controllers/timedEvents/thirtySecs
 const processTimedTenMinutes = require('../../controllers/timedEvents/tenMinutes');
 
 var CCB = {};
+var waitTenSecs = 0;
 
 //config
 _.assign(CCB, {
@@ -241,7 +242,10 @@ setInterval(function () {
 setInterval(function () {
 	if (groupController.bases) {
 		if (!_.get(CCB, ['DCSSocket', 'connOpen'], true)) {
-			sychrontronController.syncType(CCB.serverName, _.get(CCB, 'curServerUnitCnt', 38) - 38);
+			if (waitTenSecs > 10) {
+				sychrontronController.syncType(CCB.serverName, _.get(CCB, 'curServerUnitCnt', 38) - 38);
+				waitTenSecs++;
+			}
 		}
 	}
 }, 1 * 1000);
