@@ -122,6 +122,7 @@ _.set(CCB, 'socketCallback', function (serverName, cbArray) {
 			}
 
 			if (!sychrontronController.isSyncLockdownMode) {
+				console.log('processing');
 				if ((_.get(queObj, 'action') === 'f10Menu') && sychrontronController.isServerSynced) {
 					menuCmdsController.menuCmdProcess(serverName, CCB.sessionName, queObj);
 				}
