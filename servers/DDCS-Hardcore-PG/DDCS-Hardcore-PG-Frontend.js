@@ -121,95 +121,93 @@ _.set(CCB, 'socketCallback', function (serverName, cbArray) {
 				airbaseSyncController.processAirbaseUpdates(serverName, queObj);
 			}
 
-			if (sychrontronController.isServerSynced) {
-				if ((_.get(queObj, 'action') === 'f10Menu') && sychrontronController.isServerSynced) {
-					menuCmdsController.menuCmdProcess(serverName, CCB.sessionName, queObj);
-				}
+			if ((_.get(queObj, 'action') === 'f10Menu') && sychrontronController.isServerSynced) {
+				menuCmdsController.menuCmdProcess(serverName, CCB.sessionName, queObj);
+			}
 
-				/*
-                //Cmd Response
-                if (_.get(queObj, 'action') === 'CMDRESPONSE') {
-                    _.set(queObj, 'sessionName', sessionName);
-                    //send response straight to client id
-                    curServers[serverName].updateQue.q1.push(_.cloneDeep(queObj));
-                    curServers[serverName].updateQue.q2.push(_.cloneDeep(queObj));
-                    curServers[serverName].updateQue.qadmin.push(_.cloneDeep(queObj));
-                }
-                */
+			/*
+            //Cmd Response
+            if (_.get(queObj, 'action') === 'CMDRESPONSE') {
+                _.set(queObj, 'sessionName', sessionName);
+                //send response straight to client id
+                curServers[serverName].updateQue.q1.push(_.cloneDeep(queObj));
+                curServers[serverName].updateQue.q2.push(_.cloneDeep(queObj));
+                curServers[serverName].updateQue.qadmin.push(_.cloneDeep(queObj));
+            }
+            */
 
-				/*
-                //mesg
-                if (_.get(queObj, 'action') === 'MESG') {
-                    _.set(queObj, 'sessionName', sessionName);
-                    // console.log('mesg: ', queObj);
-                    if (_.get(queObj, 'data.playerID')) {
-                        if (_.isNumber(_.get(_.find(curServers[serverName].serverObject.players, {'id': _.get(queObj, 'data.playerID')}), 'side', 0))) {
-                            curServers[serverName].updateQue['q' + _.get(_.find(curServers[serverName].serverObject.players, {'id': _.get(queObj, 'data.playerID')}), 'side', 0)]
-                                .push(_.cloneDeep(queObj));
-                            curServers[serverName].updateQue.qadmin.push(_.cloneDeep(queObj));
-                        }
+			/*
+            //mesg
+            if (_.get(queObj, 'action') === 'MESG') {
+                _.set(queObj, 'sessionName', sessionName);
+                // console.log('mesg: ', queObj);
+                if (_.get(queObj, 'data.playerID')) {
+                    if (_.isNumber(_.get(_.find(curServers[serverName].serverObject.players, {'id': _.get(queObj, 'data.playerID')}), 'side', 0))) {
+                        curServers[serverName].updateQue['q' + _.get(_.find(curServers[serverName].serverObject.players, {'id': _.get(queObj, 'data.playerID')}), 'side', 0)]
+                            .push(_.cloneDeep(queObj));
+                        curServers[serverName].updateQue.qadmin.push(_.cloneDeep(queObj));
                     }
                 }
-                */
+            }
+            */
 
-				if ((_.get(queObj, 'action') === 'S_EVENT_HIT') && sychrontronController.isServerSynced) {
-					processEventHit.processEventHit(serverName, CCB.sessionName, queObj);
-				}
+			if ((_.get(queObj, 'action') === 'S_EVENT_HIT') && sychrontronController.isServerSynced) {
+				processEventHit.processEventHit(serverName, CCB.sessionName, queObj);
+			}
 
-				if ((_.get(queObj, 'action') === 'S_EVENT_TAKEOFF') && sychrontronController.isServerSynced) {
-					processEventTakeoff.processEventTakeoff(serverName, CCB.sessionName, queObj);
-				}
+			if ((_.get(queObj, 'action') === 'S_EVENT_TAKEOFF') && sychrontronController.isServerSynced) {
+				processEventTakeoff.processEventTakeoff(serverName, CCB.sessionName, queObj);
+			}
 
-				if ((_.get(queObj, 'action') === 'S_EVENT_LAND') && sychrontronController.isServerSynced) {
-					processEventLand.processEventLand(serverName, CCB.sessionName, queObj);
-				}
+			if ((_.get(queObj, 'action') === 'S_EVENT_LAND') && sychrontronController.isServerSynced) {
+				processEventLand.processEventLand(serverName, CCB.sessionName, queObj);
+			}
 
-				if ((_.get(queObj, 'action') === 'S_EVENT_EJECTION') && sychrontronController.isServerSynced) {
-					processEventEjection.processEventEjection(serverName, CCB.sessionName, queObj);
-				}
+			if ((_.get(queObj, 'action') === 'S_EVENT_EJECTION') && sychrontronController.isServerSynced) {
+				processEventEjection.processEventEjection(serverName, CCB.sessionName, queObj);
+			}
 
-				if ((_.get(queObj, 'action') === 'S_EVENT_CRASH') && sychrontronController.isServerSynced) {
-					processEventCrash.processEventCrash(serverName, CCB.sessionName, queObj);
-				}
+			if ((_.get(queObj, 'action') === 'S_EVENT_CRASH') && sychrontronController.isServerSynced) {
+				processEventCrash.processEventCrash(serverName, CCB.sessionName, queObj);
+			}
 
-				if ((_.get(queObj, 'action') === 'S_EVENT_DEAD') && sychrontronController.isServerSynced) {
-					processEventDead.processEventDead(serverName, CCB.sessionName, queObj);
-				}
+			if ((_.get(queObj, 'action') === 'S_EVENT_DEAD') && sychrontronController.isServerSynced) {
+				processEventDead.processEventDead(serverName, CCB.sessionName, queObj);
+			}
 
-				if ((_.get(queObj, 'action') === 'S_EVENT_PILOT_DEAD') && sychrontronController.isServerSynced) {
-					processEventPilotDead.processEventPilotDead(serverName, CCB.sessionName, queObj);
-				}
+			if ((_.get(queObj, 'action') === 'S_EVENT_PILOT_DEAD') && sychrontronController.isServerSynced) {
+				processEventPilotDead.processEventPilotDead(serverName, CCB.sessionName, queObj);
+			}
 
-				if ((_.get(queObj, 'action') === 'S_EVENT_REFUELING') && sychrontronController.isServerSynced) {
-					processEventRefueling.processEventRefueling(serverName, CCB.sessionName, queObj);
-				}
+			if ((_.get(queObj, 'action') === 'S_EVENT_REFUELING') && sychrontronController.isServerSynced) {
+				processEventRefueling.processEventRefueling(serverName, CCB.sessionName, queObj);
+			}
 
-				if ((_.get(queObj, 'action') === 'S_EVENT_REFUELING_STOP') && sychrontronController.isServerSynced) {
-					processEventRefuelingStop.processEventRefuelingStop(serverName, CCB.sessionName, queObj);
-				}
-                if ((_.get(queObj, 'action') === 'S_EVENT_BIRTH') && sychrontronController.isServerSynced) {
-                    processEventBirth.processEventBirth(serverName, CCB.sessionName, queObj);
-                }
-				if ((_.get(queObj, 'action') === 'S_EVENT_PLAYER_ENTER_UNIT') && sychrontronController.isServerSynced) {
-					processEventPlayerEnterUnit.processEventPlayerEnterUnit(serverName, CCB.sessionName, queObj);
-				}
+			if ((_.get(queObj, 'action') === 'S_EVENT_REFUELING_STOP') && sychrontronController.isServerSynced) {
+				processEventRefuelingStop.processEventRefuelingStop(serverName, CCB.sessionName, queObj);
+			}
+			if ((_.get(queObj, 'action') === 'S_EVENT_BIRTH') && sychrontronController.isServerSynced) {
+				processEventBirth.processEventBirth(serverName, CCB.sessionName, queObj);
+			}
+			if ((_.get(queObj, 'action') === 'S_EVENT_PLAYER_ENTER_UNIT') && sychrontronController.isServerSynced) {
+				processEventPlayerEnterUnit.processEventPlayerEnterUnit(serverName, CCB.sessionName, queObj);
+			}
 
-				if ((_.get(queObj, 'action') === 'S_EVENT_PLAYER_LEAVE_UNIT') && sychrontronController.isServerSynced) {
-					processEventPlayerLeaveUnit.processEventPlayerLeaveUnit(serverName, CCB.sessionName, queObj);
-				}
+			if ((_.get(queObj, 'action') === 'S_EVENT_PLAYER_LEAVE_UNIT') && sychrontronController.isServerSynced) {
+				processEventPlayerLeaveUnit.processEventPlayerLeaveUnit(serverName, CCB.sessionName, queObj);
+			}
 
-				// line of sight callback from server
-				if ((_.get(queObj, 'action') === 'LOSVISIBLEUNITS') && sychrontronController.isServerSynced) {
-					jtacController.processLOSEnemy(serverName, queObj);
-				}
+			// line of sight callback from server
+			if ((_.get(queObj, 'action') === 'LOSVISIBLEUNITS') && sychrontronController.isServerSynced) {
+				jtacController.processLOSEnemy(serverName, queObj);
+			}
 
-				if ((_.get(queObj, 'action') === 'CRATEOBJUPDATE') && sychrontronController.isServerSynced) {
-					staticCratesController.processStaticCrate(serverName, queObj);
-				}
+			if ((_.get(queObj, 'action') === 'CRATEOBJUPDATE') && sychrontronController.isServerSynced) {
+				staticCratesController.processStaticCrate(serverName, queObj);
+			}
 
-				if (_.get(queObj, 'action') === 'unitsAlive') {
-					recoveryController.sendMissingUnits(serverName, _.get(queObj, 'data'))
-				}
+			if (_.get(queObj, 'action') === 'unitsAlive') {
+				recoveryController.sendMissingUnits(serverName, _.get(queObj, 'data'))
 			}
 		});
 	}
