@@ -20,7 +20,7 @@ exports.processInstructions = false;
 
 _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 	var remappedunits = {};
-	console.log('start: ', serverName, serverUnitCount);
+	// console.log('start: ', serverName, serverUnitCount);
 	dbMapServiceController.unitActions('readStd', serverName, {dead: false})
 		.then(function (units) {
 			if (serverUnitCount === 0) { //server is empty
