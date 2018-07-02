@@ -675,7 +675,7 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 	} else {
 		groupController.getServer(serverName)
 			.then(function(serverInfo) {
-				console.log('SERVERI: ', serverName, serverInfo);
+				// console.log('SERVERI: ', serverName, serverInfo);
 				dbMapServiceController.srvPlayerActions('read', serverName, {name: unit.playername})
 					.then(function(player) {
 						var curPlayer = _.get(player, [0]);
