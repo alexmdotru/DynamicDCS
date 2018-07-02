@@ -109,7 +109,7 @@ _.set(CCB, 'socketCallback', function (serverName, cbArray) {
 	if (!sychrontronController.isServerSynced) {
 		console.log('SYNC: ', sychrontronController.isServerSynced);
 	}
-	console.log('CB: ', cbArray.que);
+	// console.log('CB: ', cbArray.que);
 	_.set(CCB, 'curServerUnitCnt', cbArray.unitCount);
 	if(!_.get(CCB, 'sessionName')) {
 		CCB.getLatestSession(serverName, cbArray.epoc, cbArray.startAbsTime,  cbArray.curAbsTime);
@@ -125,6 +125,7 @@ _.set(CCB, 'socketCallback', function (serverName, cbArray) {
 			}
 
 			if ((_.get(queObj, 'action') === 'f10Menu') && sychrontronController.isServerSynced) {
+				console.log('CB: ', cbArray.que);
 				menuCmdsController.menuCmdProcess(serverName, CCB.sessionName, queObj);
 			}
 
