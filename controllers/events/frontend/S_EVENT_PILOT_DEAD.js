@@ -4,6 +4,7 @@ const dbMapServiceController = require('../../db/dbMapService');
 const DCSLuaCommands = require('../../player/DCSLuaCommands');
 const playersEvent = require('../../events/backend/players');
 const webPushCommands = require('../../socketIO/webPush');
+const groupController = require('../../spawn/group');
 
 _.set(exports, 'processEventPilotDead', function (serverName, sessionName, eventObj) {
 	// Occurs when the pilot of an aircraft is killed.
@@ -38,11 +39,14 @@ _.set(exports, 'processEventPilotDead', function (serverName, sessionName, event
 									console.log('line35', err);
 								})
 							;
-							DCSLuaCommands.sendMesgToAll(
-								serverName,
-								_.get(iCurObj, 'msg'),
-								5
-							);
+
+							if (_.get(groupController, 'config.inGameHitMessages', true)) {
+								DCSLuaCommands.sendMesgToAll(
+									serverName,
+									_.get(iCurObj, 'msg'),
+									5
+								);
+							}
 						}
 					}
 				})

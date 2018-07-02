@@ -11,6 +11,7 @@ const dbSystemServiceController = require('../../db/dbSystemService');
 const dbMapServiceController = require('../../db/dbMapService');
 const DCSLuaCommands = require('../../player/DCSLuaCommands');
 const webPushCommands = require('../../socketIO/webPush');
+const groupController = require('../../spawn/group');
 
 exports.shootingUsers = {};
 
@@ -40,11 +41,15 @@ _.set(exports, 'checkShootingUsers', function (serverName) {
 						})
 					;
 				}
-				DCSLuaCommands.sendMesgToAll(
-					serverName,
-					_.get(shootObj, 'msg'),
-					20
-				);
+
+				if (_.get(groupController, 'config.inGameHitMessages', true)) {
+					DCSLuaCommands.sendMesgToAll(
+						serverName,
+						_.get(shootObj, 'msg'),
+						20
+					);
+				}
+
 				delete exports.shootingUsers[key];
 			}
 		});
@@ -172,11 +177,14 @@ _.set(exports, 'processEventHit', function (serverName, sessionName, eventObj) {
 																	})
 																;
 															}
-															DCSLuaCommands.sendMesgToAll(
-																serverName,
-																_.get(iCurObj, 'msg'),
-																20
-															);
+
+															if (_.get(groupController, 'config.inGameHitMessages', true)) {
+																DCSLuaCommands.sendMesgToAll(
+																	serverName,
+																	_.get(iCurObj, 'msg'),
+																	20
+																);
+															}
 														}
 													}
 												})
