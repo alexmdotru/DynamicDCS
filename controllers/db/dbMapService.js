@@ -381,7 +381,9 @@ exports.srvPlayerActions = function (action, serverName, obj){
 							if (err) { reject(err) }
 							// console.log(_.get(curPly, 'name'), ' Has Tmp Score: ', newTmpScore);
 							var mesg = 'TmpScore: ' + newTmpScore + ', Land at a friendly base/farp to receive these points';
-							DCSLuaCommands.sendMesgToGroup(obj.groupId, serverName, mesg, '15');
+							if (_.get(groupController, 'config.inGameHitMessages', true)) {
+								DCSLuaCommands.sendMesgToGroup(obj.groupId, serverName, mesg, '15');
+							}
 							resolve();
 						}
 					);
@@ -454,7 +456,9 @@ exports.srvPlayerActions = function (action, serverName, obj){
 								function(err) {
 									if (err) { reject(err) }
 									console.log(_.get(obj, 'unitType', '') + ' has given ' + addScore + ' to ' + _.get(curPly, 'name') + ' on ' + curPly.side + ', Total: ', tObj);
-									DCSLuaCommands.sendMesgToGroup(obj.groupId, serverName, mesg, '15');
+									if (_.get(groupController, 'config.inGameHitMessages', true)) {
+										DCSLuaCommands.sendMesgToGroup(obj.groupId, serverName, mesg, '15');
+									}
 									resolve();
 								}
 							);

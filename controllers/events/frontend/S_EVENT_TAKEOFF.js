@@ -50,12 +50,14 @@ _.set(exports, 'processEventTakeoff', function (serverName, sessionName, eventOb
 								webPushCommands.sendToCoalition(serverName, {payload: {action: eventObj.action, data: _.cloneDeep(iCurObj)}});
 								dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
 							}
+							/*
 							DCSLuaCommands.sendMesgToGroup(
 								_.get(curIUnit, 'groupId'),
 								serverName,
 								_.get(iCurObj, 'msg'),
 								5
 							);
+							*/
 						}
 					}
 				})
