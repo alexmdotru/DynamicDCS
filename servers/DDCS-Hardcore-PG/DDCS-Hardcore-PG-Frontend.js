@@ -109,7 +109,7 @@ _.set(CCB, 'socketCallback', function (serverName, cbArray) {
 	if (!sychrontronController.isServerSynced) {
 		console.log('SYNC: ', sychrontronController.isServerSynced);
 	}
-	// console.log('CB: ', cbArray.que);
+	console.log('CB: ', cbArray.que);
 	_.set(CCB, 'curServerUnitCnt', cbArray.unitCount);
 	if(!_.get(CCB, 'sessionName')) {
 		CCB.getLatestSession(serverName, cbArray.epoc, cbArray.startAbsTime,  cbArray.curAbsTime);
