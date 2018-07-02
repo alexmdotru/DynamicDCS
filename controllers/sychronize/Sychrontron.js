@@ -128,7 +128,7 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 									sideLockController.setSideLockFlags(serverName);
 									baseSpawnFlagsController.setbaseSides(serverName);
 								} else {
-									console.log('failing  !exports.isServerSynced && units.length > 500', !exports.isServerSynced, ' && ', units.length > 500);
+									console.log('failing  !exports.isServerSynced && units.length > 100', !exports.isServerSynced, ' && ', units.length > 100);
 								}
 							}
 						} else {
@@ -161,7 +161,7 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 							// DCSLuaCommands.sendMesgChatWindow(serverName, mesg);
 							// exports.isServerSynced = true;
 						} else {
-							if (!exports.isServerSynced && units.length > 500) {
+							if (!exports.isServerSynced && units.length > 100) {
 								mesg = 'Server units Synced';
 								console.log(mesg);
 								//DCSLuaCommands.sendMesgChatWindow(serverName, mesg);
