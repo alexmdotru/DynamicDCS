@@ -67,6 +67,13 @@ const srvPlayerSchema = new Schema({
 		tmpRSPoints: {
 			type: Number,
 			default: 0
+		},
+		lastLifeAction: {
+			type: String
+		},
+		safeLifeActionTime: {
+			type: Number,
+			default: 0
 		}
 	},
 	{

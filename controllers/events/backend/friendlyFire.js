@@ -52,19 +52,22 @@ _.set(exports, 'processFriendlyFire', function (serverName, sessionName, eventOb
 									var curPlayer = _.get(players, 0);
 									curIUnit = _.get(iunit, 0);
 									curTUnit = _.get(tunit, 0);
-									// console.log('tplayer: ', tPlayer, eventObj);
-									if (_.includes(userLivesController.capLivesEnabled, curIUnit.type)) {
-										userLivesController.removeLife(serverName, iPlayer.ucid, curIUnit, 'Cap');
-									}
-									if (_.includes(userLivesController.casLivesEnabled, curIUnit.type)) {
-										userLivesController.removeLife(serverName, iPlayer.ucid, curIUnit, 'Cas');
-									}
+									var curTUnitDict = _.find(groupController.unitDictionary, {_id: curTUnit.type});
+									var curTLifePointVal = (curUnitDict) ? curTUnitDict.lifeCost : 1;
+									dbMapServiceController.srvPlayerActions('removeLifePoints', serverName, {
+										_id: iPlayer._id,
+										execAction: 'Friendly Kill',
+										groupId: curIUnit.groupId,
+										removeLifePoints: 4
+									});
 
-									if (_.includes(userLivesController.capLivesEnabled, curTUnit.type) && curTUnit.inAir) {
-										userLivesController.autoAddLife(serverName, tPlayer.ucid, 'Cap');
-									}
-									if (_.includes(userLivesController.casLivesEnabled, curTUnit.type) && curTUnit.inAir) {
-										userLivesController.autoAddLife(serverName, tPlayer.ucid, 'Cas');
+									if (curTUnit.inAir) {
+										dbMapServiceController.srvPlayerActions('addLifePoints', serverName, {
+											_id: tPlayer._id,
+											execAction: 'Friendly Death',
+											groupId: curTUnit.groupId,
+											addLifePoints: curTLifePointVal
+										});
 									}
 
 									if(new Date(curPlayer.safeLifeActionTime).getTime() < new Date().getTime()) {

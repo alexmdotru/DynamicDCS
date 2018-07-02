@@ -19,6 +19,7 @@ var cmdQueSchema = require('./models/cmdQueSchema');
 var webPushSchema = require('./models/webPushSchema');
 var processSchema = require('./models/processSchema');
 
+var fiveSecs = 5 * 1000;
 var oneMin = 60 * 1000;
 var oneHour = 60 * oneMin;
 var removeDead = 5 * oneMin;
@@ -232,8 +233,13 @@ exports.srvPlayerActions = function (action, serverName, obj){
 				} else {
 					// console.log('sess: ', curPly.sessionName, obj.sessionName);
 					if ((curPly.sessionName !== obj.sessionName) && curPly.sessionName && obj.sessionName) {
+						var curTime =  new Date().getTime();
 						// console.log('cf: ', groupController);
 						obj.curLifePoints = _.get(groupController, 'config.startLifePoints', 0);
+						if (curPly.sideLockTime < curTime) {
+							obj.sideLockTime = curTime + oneHour;
+							obj.sideLock = 0;
+						}
 					}
 					curIP = obj.ipaddr;
 					if(obj.ipaddr === ':10308' || obj.ipaddr === '127.0.0.1'){
@@ -259,6 +265,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 	if (action === 'addLifePoints') {
 		return new Promise(function(resolve, reject) {
 			SrvPlayer.find({_id: obj._id}, function (err, serverObj) {
+				var curAction = 'addLifePoint';
 				var curPlayerLifePoints = _.get(serverObj, [0, 'curLifePoints'], 0);
 				var curTotalPoints = (curPlayerLifePoints >= 0) ? curPlayerLifePoints + obj.addLifePoints : obj.addLifePoints;
 				var msg;
@@ -268,7 +275,11 @@ exports.srvPlayerActions = function (action, serverName, obj){
 				if (serverObj.length !== 0) {
 					SrvPlayer.findOneAndUpdate(
 						{_id: obj._id},
-						{ $set: {curLifePoints: curTotalPoints }
+						{ $set: {
+							curLifePoints: curTotalPoints,
+							lastLifeAction: curAction,
+							safeLifeActionTime: (nowTime + fiveSecs)
+						}
 						},
 						function(err, srvPlayer) {
 							if (err) { reject(err) }
@@ -293,6 +304,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 	if (action === 'removeLifePoints') {
 		return new Promise(function(resolve, reject) {
 			SrvPlayer.find({_id: obj._id}, function (err, serverObj) {
+				var curAction = 'removeLifePoint';
 				var curPlayerObj = _.first(serverObj);
 				var curPlayerLifePoints = _.get(curPlayerObj, 'curLifePoints', 0);
 				var curTotalPoints = curPlayerLifePoints - obj.removeLifePoints;
@@ -312,7 +324,11 @@ exports.srvPlayerActions = function (action, serverName, obj){
 					if (serverObj.length !== 0) {
 						SrvPlayer.findOneAndUpdate(
 							{_id: obj._id},
-							{ $set: {curLifePoints: curTotalPoints }},
+							{ $set: {
+								curLifePoints: curTotalPoints,
+								lastLifeAction: curAction,
+								safeLifeActionTime: (nowTime + fiveSecs)
+							}},
 							function(err, srvPlayer) {
 								if (err) { reject(err) }
 								DCSLuaCommands.sendMesgToGroup( obj.groupId, serverName, 'You Have Just Used ' + obj.removeLifePoints + ' Life Points! ' + obj.execAction + '(Total:' + curTotalPoints + ')', 5);
