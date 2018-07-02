@@ -19,7 +19,7 @@ var cmdQueSchema = require('./models/cmdQueSchema');
 var webPushSchema = require('./models/webPushSchema');
 var processSchema = require('./models/processSchema');
 
-var fiveSecs = 5 * 1000;
+var fifteenSecs = 15 * 1000;
 var oneMin = 60 * 1000;
 var oneHour = 60 * oneMin;
 var removeDead = 5 * oneMin;
@@ -278,7 +278,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 						{ $set: {
 							curLifePoints: curTotalPoints,
 							lastLifeAction: curAction,
-							safeLifeActionTime: (nowTime + fiveSecs)
+							safeLifeActionTime: (nowTime + fifteenSecs)
 						}
 						},
 						function(err, srvPlayer) {
@@ -318,7 +318,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 						{ $set: {
 							curLifePoints: curTotalPoints,
 							lastLifeAction: curAction,
-							safeLifeActionTime: (nowTime + fiveSecs)
+							safeLifeActionTime: (nowTime + fifteenSecs)
 						}},
 						function(err, srvPlayer) {
 							if (err) { reject(err) }
