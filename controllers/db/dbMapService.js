@@ -306,6 +306,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 			SrvPlayer.find({_id: obj._id}, function (err, serverObj) {
 				var curAction = 'removeLifePoint';
 				var curPlayerObj = _.first(serverObj);
+				console.log('curPlayer: ', curPlayerObj, serverObj);
 				var curPlayerLifePoints = _.get(curPlayerObj, 'curLifePoints', 0);
 				var curTotalPoints = curPlayerLifePoints - obj.removeLifePoints;
 				if (err) {

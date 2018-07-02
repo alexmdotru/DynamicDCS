@@ -72,7 +72,7 @@ _.set(exports, 'processFriendlyFire', function (serverName, sessionName, eventOb
 									}
 
 									if(new Date(curPlayer.safeLifeActionTime).getTime() < new Date().getTime()) {
-										mesg = 'A: ' + constants.side[iPlayer.side] +' ' + iPlayer.name + '(' + curIUnit.type + ':-1 Life) has hit friendly ' + tPlayer.name + '(' + curTUnit.type + ':+1 Life) with a ' + _.get(eventObj, 'data.arg2', '?');
+										mesg = 'A: ' + constants.side[iPlayer.side] +' ' + iPlayer.name + '(' + curIUnit.type + ':-4 LP) has hit friendly ' + tPlayer.name + '(' + curTUnit.type + ':+' + curTLifePointVal + ' LP) with a ' + _.get(eventObj, 'data.arg2', '?');
 										DCSLuaCommands.sendMesgToCoalition(
 											iPlayer.side,
 											serverName,
