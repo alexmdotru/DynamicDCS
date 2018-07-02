@@ -55,6 +55,7 @@ _.set(exports, 'processFriendlyFire', function (serverName, sessionName, eventOb
 									curTUnit = _.get(tunit, 0);
 									var curTUnitDict = _.find(groupController.unitDictionary, {_id: curTUnit.type});
 									var curTLifePointVal = (curTUnitDict) ? curTUnitDict.lifeCost : 1;
+									console.log('player: ', iPlayer, tPlayer);
 									dbMapServiceController.srvPlayerActions('removeLifePoints', serverName, {
 										_id: iPlayer._id,
 										execAction: 'Friendly Kill',
