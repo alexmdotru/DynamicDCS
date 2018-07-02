@@ -47,7 +47,7 @@ _.set(exports, 'processFriendlyFire', function (serverName, sessionName, eventOb
 			dbMapServiceController.srvPlayerActions('read', serverName, {_id: iPlayer.ucid})
 				.then(function (players) {
 					var curPlayer = _.get(players, 0);
-					console.log('SAT: ', curPlayer.safeLifeActionTime);
+					// console.log('SAT: ', curPlayer.safeLifeActionTime);
 					if(new Date(curPlayer.safeLifeActionTime).getTime() < new Date().getTime()) {
 						dbMapServiceController.unitActions('read', serverName, {unitId: iPlayer.slot})
 							.then(function (iunit) {
