@@ -272,7 +272,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 				if (err) {
 					reject(err)
 				}
-				if (serverObj.length !== 0) {
+				if (serverObj.length > 0) {
 					SrvPlayer.findOneAndUpdate(
 						{_id: obj._id},
 						{ $set: {
@@ -295,7 +295,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 						}
 					)
 				} else {
-					resolve('line276: Error: No Record in player db');
+					resolve('line276: Error: No Record in player db' + obj._id);
 				}
 			});
 		})
@@ -306,23 +306,22 @@ exports.srvPlayerActions = function (action, serverName, obj){
 			SrvPlayer.find({_id: obj._id}, function (err, serverObj) {
 				var curAction = 'removeLifePoint';
 				var curPlayerObj = _.first(serverObj);
-				console.log('curPlayer: ', curPlayerObj, serverObj);
 				var curPlayerLifePoints = _.get(curPlayerObj, 'curLifePoints', 0);
 				var curTotalPoints = curPlayerLifePoints - obj.removeLifePoints;
 				if (err) {
 					reject(err)
 				}
 				// console.log('removeP: ', curTotalPoints, curPlayerObj);
-				if (curTotalPoints < 0) {
-					console.log('Removed ' + curPlayerObj.name + ' from aircraft for not enough points');
-					DCSLuaCommands.forcePlayerSpectator(
-						serverName,
-						curPlayerObj.playerId,
-						'You Do Not Have Enough Points To Fly This Vehicle' +
+				if (serverObj.length > 0) {
+					if (curTotalPoints < 0) {
+						console.log('Removed ' + curPlayerObj.name + ' from aircraft for not enough points');
+						DCSLuaCommands.forcePlayerSpectator(
+							serverName,
+							curPlayerObj.playerId,
+							'You Do Not Have Enough Points To Fly This Vehicle' +
 							'{' + obj.removeLifePoints + '/' + curPlayerLifePoints + ')');
-					resolve(false);
-				} else {
-					if (serverObj.length !== 0) {
+						resolve(false);
+					} else {
 						SrvPlayer.findOneAndUpdate(
 							{_id: obj._id},
 							{ $set: {
@@ -336,9 +335,9 @@ exports.srvPlayerActions = function (action, serverName, obj){
 								resolve(srvPlayer);
 							}
 						)
-					} else {
-						resolve('line305: Error: No Record in player db');
 					}
+				} else {
+					resolve('line305: Error: No Record in player db:' + obj._id);
 				}
 			});
 		})
