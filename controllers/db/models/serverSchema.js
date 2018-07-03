@@ -80,7 +80,7 @@ const ServerSchema = new Schema({
 		startLifePoints: {
 			type: Number,
 			required: true,
-			default: 8
+			default: 12
 		},
 		inGameHitMessages: {
 			type: Boolean,
