@@ -119,7 +119,7 @@ _.set(CCB, 'socketCallback', function (serverName, cbArray) {
 	} else {
 		_.forEach(_.get(cbArray, 'que', []), function (queObj) {
 			if ((_.get(queObj, 'action') === 'C') || (_.get(queObj, 'action') === 'U') || (_.get(queObj, 'action') === 'D'))  {
-				console.log('CB: ', queObj.data);
+				// console.log('CB: ', queObj.data);
 				unitsStaticsController.processUnitUpdates(serverName, CCB.sessionName, queObj);
 			}
 
