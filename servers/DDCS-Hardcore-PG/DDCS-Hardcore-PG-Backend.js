@@ -58,11 +58,12 @@ _.set(DCB, 'getLatestSession', function (serverName) {
 });
 
 _.set(DCB, 'socketCallback', function (serverName, cbArray) {
-	console.log('BB: ', cbArray.que);
+	// console.log('BB: ', cbArray.que);
 	DCB.getLatestSession(serverName);
 	_.forEach(_.get(cbArray, 'que', []), function (queObj) {
 		if (_.get(queObj, 'action') === 'players') {
 			playersEvent.processPlayerEvent(serverName, DCB.sessionName, queObj);
+			console.log('PLAYERS: ', queObj.data);
 		}
 
 		if (_.get(queObj, 'action') === 'friendly_fire') {
