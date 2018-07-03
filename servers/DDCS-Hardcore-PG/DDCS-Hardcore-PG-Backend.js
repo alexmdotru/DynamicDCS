@@ -63,7 +63,7 @@ _.set(DCB, 'socketCallback', function (serverName, cbArray) {
 	_.forEach(_.get(cbArray, 'que', []), function (queObj) {
 		if (_.get(queObj, 'action') === 'players') {
 			playersEvent.processPlayerEvent(serverName, DCB.sessionName, queObj);
-			console.log('PLAYERS: ', queObj.data);
+			// console.log('PLAYERS: ', queObj.data);
 		}
 
 		if (_.get(queObj, 'action') === 'friendly_fire') {
