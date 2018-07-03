@@ -39,7 +39,7 @@ setInterval(function () {
 	} else {
 		DCB.DCSSocket = new DCSSocket.createSocket(DCB.serverName, DCB.serverIP, DCB.serverPort, DCB.queName, DCB.socketCallback);
 	}
-}, 3 * 1000);
+}, 10 * 1000);
 
 _.set(DCB, 'getLatestSession', function (serverName) {
 	dbMapServiceController.statSessionActions('readLatest', serverName, {})
@@ -58,7 +58,7 @@ _.set(DCB, 'getLatestSession', function (serverName) {
 });
 
 _.set(DCB, 'socketCallback', function (serverName, cbArray) {
-	// console.log('BB: ', cbArray.que);
+	console.log('BB: ', cbArray.que);
 	DCB.getLatestSession(serverName);
 	_.forEach(_.get(cbArray, 'que', []), function (queObj) {
 		if (_.get(queObj, 'action') === 'players') {
