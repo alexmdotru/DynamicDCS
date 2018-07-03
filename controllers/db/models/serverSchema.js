@@ -86,6 +86,10 @@ const ServerSchema = new Schema({
 			type: Boolean,
 			default: true
 		},
+		mapRotation: {
+			type: Array,
+			required: true
+		},
 	},
 	{
 		timestamps: true, // Saves createdAt and updatedAt as dates. createdAt will be our timestamp.

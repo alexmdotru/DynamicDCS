@@ -10,6 +10,7 @@ const reloadController = require('../menu/reload');
 const repairController = require('../menu/repair');
 const userLivesController = require('../action/userLives');
 const resourcePointsController = require('../action/resourcePoints');
+const serverTimerController = require('../action/serverTimer');
 
 _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 	var defCrate = 'iso_container_small';
@@ -26,6 +27,9 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 							var spawnArray;
 							var curSpawnUnit;
 							// action menu
+							if (pObj.cmd === 'serverTimeLeft') {
+								serverTimerController.timeLeft(serverName, curUnit);
+							}
 							if (pObj.cmd === 'checkLifeResource') {
 								userLivesController.checkLifeResource(serverName, curPlayer.ucid);
 							}

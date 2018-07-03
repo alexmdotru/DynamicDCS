@@ -10,6 +10,7 @@ const airbaseSyncController = require('../../controllers/serverToDbSync/airbaseS
 const sychrontronController = require('../../controllers/sychronize/Sychrontron');
 const recoveryController = require('../../controllers/sychronize/recovery');
 const jtacController = require('../../controllers/action/jtac');
+const serverTimerController = require('../../controllers/action/serverTimer');
 const processEventHit = require('../../controllers/events/frontend/S_EVENT_HIT');
 const processEventTakeoff = require('../../controllers/events/frontend/S_EVENT_TAKEOFF');
 const processEventLand = require('../../controllers/events/frontend/S_EVENT_LAND');
@@ -45,7 +46,8 @@ _.assign(CCB, {
 	twoSec: 2 * 1000,
 	fiveSecs: 5 * 1000,
 	thirtySecs: 30 * 1000,
-	tenMinutes: 10 * 60 * 1000
+	tenMinutes: 10 * 60 * 1000,
+	curServerSecs: 0
 });
 
 dbSystemServiceController.connectSystemDB(CCB.db.systemHost, CCB.db.systemDatabase);
@@ -106,6 +108,7 @@ _.set(CCB, 'getLatestSession', function (serverName, serverEpoc, startAbs, curAb
 });
 
 _.set(CCB, 'socketCallback', function (serverName, cbArray) {
+	_.set(CCB, 'realServerSecs', cbArray.curAbsTime - cbArray.startAbsTime);
 	if (!sychrontronController.isServerSynced) {
 		console.log('SYNC: ', sychrontronController.isServerSynced);
 	}
@@ -232,6 +235,7 @@ setInterval(function () {
 setInterval(function () {
 	if (!_.get(CCB, ['DCSSocket', 'connOpen'], true)) {
 		processTimedThirtySecs.processThirtySecActions(CCB.serverName, sychrontronController.isServerSynced);
+		serverTimerController.processTimer(CCB.serverName, _.get(CCB, 'realServerSecs', 0));
 	}
 }, CCB.thirtySecs);
 

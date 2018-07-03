@@ -89,3 +89,14 @@ _.set(exports, 'forcePlayerSpectator', function (serverName, playerId, mesg) {
 		})
 	;
 });
+
+_.set(exports, 'loadMission', function (serverName, missionName) {
+	var curCMD = 'net.load_mission([[' + missionName + ']])';
+	var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
+	var actionObj = {actionObj: sendClient, queName: 'gameGuiArray'};
+	dbMapServiceController.cmdQueActions('save', serverName, actionObj)
+		.catch(function (err) {
+			console.log('erroring line65: ', err);
+		})
+	;
+});
