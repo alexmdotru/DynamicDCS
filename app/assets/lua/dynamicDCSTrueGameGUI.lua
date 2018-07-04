@@ -1,4 +1,19 @@
 --dynamicDCSGameGUI to export player information and run player commands
+function tprint(tbl, indent)
+	if not indent then indent = 0 end
+	for k, v in pairs(tbl) do
+		formatting = string.rep("  ", indent) .. k .. ": "
+		if type(v) == "table" then
+			net.log(formatting)
+			tprint(v, indent + 1)
+		elseif type(v) == 'boolean' then
+			net.log(formatting .. tostring(v))
+		else
+			net.log(formatting .. tostring(v))
+		end
+	end
+end
+
 local dynDCS = {}
 local cacheDB = {}
 local updateQue = {["que"] = {} }
@@ -8,8 +23,6 @@ local DATA_TIMEOUT_SEC = 0.1
 
 totalPlayers = 50
 
-totalRed = 0
-totalBlue = 0
 isLoadLock = false
 isRedPlayerMax = false
 isBluePlayerMax = false
@@ -67,8 +80,8 @@ local function getDataMessage()
 		table.remove(updateQue.que, i)
 	end
 	--log(JSON:encode(playerSync()))
-	local curPlayers = playerSync()
-	table.insert(payload.que, curPlayers)
+	dynDCS.curPlayers = dynDCS.playerSync()
+	table.insert(payload.que, dynDCS.curPlayers)
 	return payload
 end
 
@@ -163,9 +176,7 @@ local function step()
 	end
 end
 
-function playerSync()
-	totalRed = 0
-	totalBlue = 0
+dynDCS.playerSync = function ()
 	local refreshPlayer = {}
 	local playerTable = {}
 	playerTable.action = 'players'
@@ -176,21 +187,15 @@ function playerSync()
 	for key,value in pairs(curPlayers) do
 		playerTable.data[value] = net.get_player_info(value)
 		refreshPlayer[value] = 1
-		local _playerId = playerTable.data[value].id
-		local _slotId = playerTable.data[value].slot
-		local _side = playerTable.data[value].side
-		if (_side == 1) then
-			totalRed = totalRed + 1
-		end
-		if (_side == 2) then
-			totalBlue = totalBlue + 1
-		end
+		--local _playerId = playerTable.data[value].id
+		--local _slotId = playerTable.data[value].slot
+		--local _side = playerTable.data[value].side
 
-		if  (_side ~=0 and  slotID ~='' and _slotId ~= nil)  then
-			if not dynDCS.shouldAllowSlot(_playerId, _slotId) then
-				dynDCS.rejectPlayer(_playerId)
-			end
-		end
+		--if  (_side ~=0 and  slotID ~='' and _slotId ~= nil)  then
+		--	if not dynDCS.shouldAllowSlot(_playerId, _slotId) then
+		--		dynDCS.rejectPlayer(_playerId)
+		--	end
+		--end
 	end
 
 	for k, v in pairs( playerTable.data ) do
@@ -511,13 +516,39 @@ function dynDCS.getUnitId(_slotID)
 	return tonumber(_unitId)
 end
 
-function dynDCS.shouldAllowSlot(_playerID, _slotID)
+function dynDCS.shouldAllowSlot(_playerID, _slotID, side)
 	isLoadLock = false
 	isRedPlayerMax = false
 	isBluePlayerMax = false
 	isRedLocked = false
 	isBlueLocked = false
 	isGamemasterLock = false
+
+	local curSides = {
+		["red"] = 0,
+		["blue"] = 0
+	}
+
+	local curPlayers = net.get_player_list()
+	for key,value in pairs(curPlayers) do
+		local playerInfo = net.get_player_info(value);
+		if playerInfo.id ~= _playerID then
+			if playerInfo.side == 1 then
+				curSides.red = curSides.red + 1
+			end
+			if playerInfo.side == 2 then
+				curSides.blue = curSides.blue + 1
+			end
+		end
+	end
+	if side == 1 then
+		curSides.red = curSides.red + 1
+	end
+	if side == 2 then
+		curSides.blue = curSides.blue + 1
+	end
+
+	local curSlot = net.get_player_info(_playerID, 'slot')
 	local _isOpenSlot = dynDCS.getFlagValue('isOpenSlot')
 	--net.log('io'.._playerID..' '.._slotID..' '.._isOpenSlot)
 	if _isOpenSlot ~= nil then
@@ -533,7 +564,7 @@ function dynDCS.shouldAllowSlot(_playerID, _slotID)
 
 	local curUcid = net.get_player_info(_playerID, 'ucid')
 	if string.find(tostring(_slotID),"instructor",1,true) then
-		net.log('slotid: '.._slotID..' ucid: '..curUcid)
+		--net.log('slotid: '.._slotID..' ucid: '..curUcid)
 		if curUcid == 'd124b99273260cf876203cb63e3d7791' then
 			return true
 		end
@@ -546,14 +577,13 @@ function dynDCS.shouldAllowSlot(_playerID, _slotID)
 
 	if _unitId == nil then
 		local curColor = _slotID:split('_')[3]
-		--net.log('cu: '..curColor..' | '.._ucidFlagRed.. ' | '.._ucidFlagBlue)
-		if curColor == 'red' and totalRed > totalPerSide then
-			net.log('max red players reached')
+		if curColor == 'red' and curSides.red > totalPerSide then
+			--net.log('max red players reached')
 			isRedPlayerMax = true
 			return false
 		end
-		if curColor == 'blue' and totalBlue > totalPerSide  then
-			net.log('max blue players reached')
+		if curColor == 'blue' and curSides.blue > totalPerSide  then
+			--net.log('max blue players reached')
 			isBluePlayerMax = true
 			return false
 		end
@@ -574,16 +604,16 @@ function dynDCS.shouldAllowSlot(_playerID, _slotID)
 	local _baseFlag = dynDCS.getFlagValue(curBaseName)
 	--net.log(curBaseName.."_".._unitId..' flag:'.._baseFlag..' uSide:'..curSide..' ucidFlag: '.._ucidFlag..' ucid:'..curUcid)
 	--net.log('CBN: '..curBaseName)
+	--net.log('totalRed:'..curSides.red..' totalBlue:'..curSides.blue..' slotId:'..curSlot)
 	if _baseFlag == curSide then
 		--net.log('STUFFF '..capLives[curType]..' - '..curType..' ucid: '.._ucidFlag)
-		--net.log('red:'.._ucidFlagRed..' blue:'.._ucidFlagBlue..' TR:'..totalRed..' TB:'..totalBlue..' 1/2side:'.. totalPerSide)
-		if totalRed > totalPerSide and curSide == 1 then
-			net.log('max red players reached')
+		if curSides.red > totalPerSide and curSide == 1 then
+			--net.log('max red players reached')
 			isRedPlayerMax = true
 			return false
 		end
-		if totalBlue > totalPerSide and curSide == 2 then
-			net.log('max blue players reached')
+		if curSides.blue > totalPerSide and curSide == 2 then
+			--net.log('max blue players reached')
 			isBluePlayerMax = true
 			return false
 		end
@@ -639,7 +669,7 @@ dynDCS.onPlayerTryChangeSlot = function(playerID, side, slotID)
 	if  DCS.isServer() and DCS.isMultiplayer() then
 		if  (side ~=0 and  slotID ~='' and slotID ~= nil)  then
 			--net.log('netslot '..slotID)
-			local _allow = dynDCS.shouldAllowSlot(playerID,slotID)
+			local _allow = dynDCS.shouldAllowSlot(playerID,slotID, side)
 			if not _allow then
 				dynDCS.rejectPlayer(playerID)
 				return false
