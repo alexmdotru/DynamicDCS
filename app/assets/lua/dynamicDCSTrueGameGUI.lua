@@ -6,7 +6,13 @@ local updateQue = {["que"] = {} }
 local PORT = 3002
 local DATA_TIMEOUT_SEC = 0.1
 
+totalPlayers = 50
+
+totalRed = 0
+totalBlue = 0
 isLoadLock = false
+isRedPlayerMax = false
+isBluePlayerMax = false
 isRedLocked = false
 isBlueLocked = false
 isGamemasterLock = false
@@ -22,6 +28,8 @@ local JSON = loadfile("Scripts\\JSON.lua")()
 local function log(msg)
 	--net.log("DynamicDCSGameGUI: " .. msg)
 end
+
+totalPerSide = totalPlayers / 2
 
 local function clearVar()
 	cacheDB = {}
@@ -156,6 +164,8 @@ local function step()
 end
 
 function playerSync()
+	totalRed = 0
+	totalBlue = 0
 	local refreshPlayer = {}
 	local playerTable = {}
 	playerTable.action = 'players'
@@ -169,6 +179,13 @@ function playerSync()
 		local _playerId = playerTable.data[value].id
 		local _slotId = playerTable.data[value].slot
 		local _side = playerTable.data[value].side
+		if (_side == 1) then
+			totalRed = totalRed + 1
+		end
+		if (_side == 2) then
+			totalBlue = totalBlue + 1
+		end
+
 		if  (_side ~=0 and  slotID ~='' and _slotId ~= nil)  then
 			if not dynDCS.shouldAllowSlot(_playerId, _slotId) then
 				dynDCS.rejectPlayer(_playerId)
@@ -496,6 +513,8 @@ end
 
 function dynDCS.shouldAllowSlot(_playerID, _slotID)
 	isLoadLock = false
+	isRedPlayerMax = false
+	isBluePlayerMax = false
 	isRedLocked = false
 	isBlueLocked = false
 	isGamemasterLock = false
@@ -528,6 +547,16 @@ function dynDCS.shouldAllowSlot(_playerID, _slotID)
 	if _unitId == nil then
 		local curColor = _slotID:split('_')[3]
 		--net.log('cu: '..curColor..' | '.._ucidFlagRed.. ' | '.._ucidFlagBlue)
+		if curColor == 'red' and totalRed > totalPerSide then
+			net.log('max red players reached')
+			isRedPlayerMax = true
+			return false
+		end
+		if curColor == 'blue' and totalBlue > totalPerSide  then
+			net.log('max blue players reached')
+			isBluePlayerMax = true
+			return false
+		end
 		if _ucidFlagRed == 1 and curColor == 'blue' then
 			isRedLocked = true
 			return false
@@ -547,6 +576,17 @@ function dynDCS.shouldAllowSlot(_playerID, _slotID)
 	--net.log('CBN: '..curBaseName)
 	if _baseFlag == curSide then
 		--net.log('STUFFF '..capLives[curType]..' - '..curType..' ucid: '.._ucidFlag)
+		--net.log('red:'.._ucidFlagRed..' blue:'.._ucidFlagBlue..' TR:'..totalRed..' TB:'..totalBlue..' 1/2side:'.. totalPerSide)
+		if totalRed > totalPerSide and curSide == 1 then
+			net.log('max red players reached')
+			isRedPlayerMax = true
+			return false
+		end
+		if totalBlue > totalPerSide and curSide == 2 then
+			net.log('max blue players reached')
+			isBluePlayerMax = true
+			return false
+		end
 		if _ucidFlagRed == 1 and _baseFlag == 2 then
 			--net.log('User red locked')
 			isRedLocked = true
@@ -579,6 +619,10 @@ dynDCS.rejectPlayer = function(playerID)
 			_chatMessage = "***Slot DISABLED, Server Is Syncing Units***"
 		elseif (isGamemasterLock) then
 			_chatMessage = "***Slot DISABLED, Slot is only for Game Masters***"
+		elseif (isRedPlayerMax) then
+			_chatMessage = "***Side DISABLED, Maximum Amount Of Red Players Reached("..totalPerSide..")***"
+		elseif (isBluePlayerMax) then
+			_chatMessage = "***Side DISABLED, Maximum Amount Of Blue Players Reached("..totalPerSide..")***"
 		elseif (isRedLocked) then
 			_chatMessage = "***Slot DISABLED, You Are Locked To Red Side This Session***"
 		elseif (isBlueLocked) then
