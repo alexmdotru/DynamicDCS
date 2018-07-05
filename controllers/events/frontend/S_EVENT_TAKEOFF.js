@@ -4,6 +4,7 @@ const dbMapServiceController = require('../../db/dbMapService');
 const DCSLuaCommands = require('../../player/DCSLuaCommands');
 const groupController = require('../../spawn/group');
 const webPushCommands = require('../../socketIO/webPush');
+const weaponComplianceController = require('../../action/weaponCompliance');
 
 _.set(exports, 'processEventTakeoff', function (serverName, sessionName, eventObj) {
 	var place;
@@ -28,19 +29,17 @@ _.set(exports, 'processEventTakeoff', function (serverName, sessionName, eventOb
 					if (curIUnit) {
 						iPlayer = _.find(playerArray, {name: _.get(curIUnit, 'playername')});
 						// console.log('takeoff: ', _.get(curIUnit, 'playername'));
-						if (iPlayer) {
-							iCurObj = {
-								sessionName: sessionName,
-								eventCode: constants.shortNames[eventObj.action],
-								iucid: _.get(iPlayer, 'ucid'),
-								iName: _.get(curIUnit, 'playername'),
-								displaySide: _.get(curIUnit, 'coalition'),
-								roleCode: 'I',
-								msg: 'C: '+ _.get(curIUnit, 'type') + '('+_.get(curIUnit, 'playername')+') has taken off' + place
-							};
-							if(_.get(iCurObj, 'iucid')) {
-								// remove unit types worth of points from user db, if db doesnt have enough kick to spectator
-
+						if (iPlayer.iucid) {
+							if (weaponComplianceController.checkWeaponComplianceOnTakeoff(serverName, iPlayer, curIUnit)) {
+								iCurObj = {
+									sessionName: sessionName,
+									eventCode: constants.shortNames[eventObj.action],
+									iucid: _.get(iPlayer, 'ucid'),
+									iName: _.get(curIUnit, 'playername'),
+									displaySide: _.get(curIUnit, 'coalition'),
+									roleCode: 'I',
+									msg: 'C: '+ _.get(curIUnit, 'type') + '('+_.get(curIUnit, 'playername')+') has taken off' + place
+								};
 								dbMapServiceController.srvPlayerActions('removeLifePoints', serverName, {
 									_id: iPlayer._id,
 									execAction: curIUnit.type + ' Takeoff',
@@ -49,15 +48,15 @@ _.set(exports, 'processEventTakeoff', function (serverName, sessionName, eventOb
 								});
 								webPushCommands.sendToCoalition(serverName, {payload: {action: eventObj.action, data: _.cloneDeep(iCurObj)}});
 								dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
+								/*
+                                DCSLuaCommands.sendMesgToGroup(
+                                    _.get(curIUnit, 'groupId'),
+                                    serverName,
+                                    _.get(iCurObj, 'msg'),
+                                    5
+                                );
+                                */
 							}
-							/*
-							DCSLuaCommands.sendMesgToGroup(
-								_.get(curIUnit, 'groupId'),
-								serverName,
-								_.get(iCurObj, 'msg'),
-								5
-							);
-							*/
 						}
 					}
 				})
