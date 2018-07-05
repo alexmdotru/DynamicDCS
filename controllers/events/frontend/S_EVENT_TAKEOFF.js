@@ -28,6 +28,7 @@ _.set(exports, 'processEventTakeoff', function (serverName, sessionName, eventOb
 					var curLifePointVal = (curUnitDict) ? curUnitDict.lifeCost : 1;
 					if (curIUnit) {
 						iPlayer = _.find(playerArray, {name: _.get(curIUnit, 'playername')});
+						console.log('SER: ', serverName, iPlayer, curIUnit);
 						// console.log('takeoff: ', _.get(curIUnit, 'playername'));
 						if (iPlayer.iucid) {
 							if (weaponComplianceController.checkWeaponComplianceOnTakeoff(serverName, iPlayer, curIUnit)) {
