@@ -32,7 +32,7 @@ _.set(exports, 'checkWeaponComplianceOnTakeoff', function (serverName, iPlayer, 
 	});
 	if (maxLimitedWeaponCount > _.get(weaponRules, 'longRangeMissles.maxTotalAllowed', 0)) {
 		var msg = 'Removed from aircraft not complying with weapon restrictions, (' + maxLimitedWeaponCount + ' of ' + _.join(limitedWeapons) + ')';
-		console.log('Removed ' + curPlayerObj.name + ' from aircraft not complying with weapon restrictions, (' + maxLimitedWeaponCount + ' of ' + _.join(limitedWeapons) + ')');
+		console.log('Removed ' + iPlayer.name + ' from aircraft not complying with weapon restrictions, (' + maxLimitedWeaponCount + ' of ' + _.join(limitedWeapons) + ')');
 		DCSLuaCommands.forcePlayerSpectator(
 			serverName,
 			iPlayer.playerId,
