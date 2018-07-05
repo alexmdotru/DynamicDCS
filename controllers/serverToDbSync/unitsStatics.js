@@ -77,15 +77,18 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 						}
 					};
 					if(_.get(curData, 'type')) {
-						_.set(iCurObj, 'data.type', _.get(curData, 'type'));
+						_.set(iCurObj, 'data.type', curData.type);
+					}
+					if(_.get(curData, 'ammo')) {
+						_.set(iCurObj, 'data.ammo', curData.ammo);
 					}
 					if(_.get(curData, 'coalition')) {
-						_.set(iCurObj, 'data.coalition', _.get(curData, 'coalition'));
+						_.set(iCurObj, 'data.coalition', curData.coalition);
 					} else {
 						_.set(iCurObj, 'data.coalition', curUnit.coalition);
 					}
 					if(_.get(curData, 'country')) {
-						_.set(iCurObj, 'data.country', _.get(curData, 'country'));
+						_.set(iCurObj, 'data.country', curData.country);
 					}
 					dbMapServiceController.unitActions('update', serverName, iCurObj.data)
 						.then(function () {

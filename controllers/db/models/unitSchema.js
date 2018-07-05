@@ -123,6 +123,9 @@ const UnitSchema = new Schema({
 	},
 	spawnCat: {
 		type: String
+	},
+	ammo: {
+		type: Array
 	}
 },
 	{
