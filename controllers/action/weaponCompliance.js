@@ -20,7 +20,7 @@ var weaponRules = {
 //var oneHour = 600 * 1000;
 // updateServerLives
 _.set(exports, 'checkWeaponComplianceOnTakeoff', function (serverName, iPlayer, curIUnit) {
-	console.log('CWC: ', serverName, iPlayer, curIUnit);
+	// console.log('CWC: ', serverName, iPlayer, curIUnit);
 	var limitedWeapons = [];
 	var maxLimitedWeaponCount = 0;
 	_.forEach(_.get(curIUnit, 'ammo', []), function (value) {
