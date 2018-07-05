@@ -6,12 +6,12 @@ function tprint(tbl, indent)
 	for k, v in pairs(tbl) do
 		formatting = string.rep("  ", indent) .. k .. ": "
 		if type(v) == "table" then
-			--env.info(formatting)
+			env.info(formatting)
 			tprint(v, indent + 1)
 		elseif type(v) == 'boolean' then
-			--env.info(formatting .. tostring(v))
+			env.info(formatting .. tostring(v))
 		else
-			--env.info(formatting .. tostring(v))
+			env.info(formatting .. tostring(v))
 		end
 	end
 end
@@ -193,6 +193,18 @@ do
 						local PlayerName = unit:getPlayerName()
 						if PlayerName ~= nil then
 							curUnit.data.playername = PlayerName
+							local curFullAmmo = unit:getAmmo()
+							if curFullAmmo ~= nil then
+								--tprint(curFullAmmo)
+								curUnit.data.ammo = {}
+								for ammoIndex = 1, #curFullAmmo do
+									--tprint(curFullAmmo[ammoIndex])
+									table.insert(curUnit.data.ammo, {
+										["typeName"] = curFullAmmo[ammoIndex].desc.typeName,
+										["count"] = curFullAmmo[ammoIndex].count
+									})
+								end
+							end
 						else
 							curUnit.data.playername = ""
 						end
