@@ -3,6 +3,7 @@ const dbMapServiceController = require('../db/dbMapService');
 const groupController = require('../spawn/group');
 const menuUpdateController = require('../menu/menuUpdate');
 const DCSLuaCommands = require('../player/DCSLuaCommands');
+const baseSpawnFlagsController = require('../action/baseSpawnFlags');
 
 var unitsInProxLogiTowers = {};
 var unitsInProxBases = {};
