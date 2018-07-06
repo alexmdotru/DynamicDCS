@@ -1,0 +1,54 @@
+echo "Starting DCS power on script"
+$portTimeInterval = 100
+$ruleDCSUDPName = "Disabling DCS Network UDP"
+$ruleDCSTCPName = "Disabling DCS Network TCP"
+
+echo "Starting Disabling DCS Network"
+
+$RuleDCSUDP = New-NetFirewallRule -DisplayName $ruleDCSUDPName -Action Block -Direction Inbound -Program "C:\Program Files\Eagle Dynamics\DCS World OpenBeta\bin\DCS.exe" -Protocol udp
+echo $RuleDCSUDP
+$RuleDCSTCP = New-NetFirewallRule -DisplayName $ruleDCSTCPName -Action Block -Direction Inbound -Program "C:\Program Files\Eagle Dynamics\DCS World OpenBeta\bin\DCS.exe" -Protocol tcp
+echo $RuleDCSTCP
+
+Start-Sleep -s 2
+
+echo "Starting DCS"
+
+cd "C:\Program Files\Eagle Dynamics\DCS World OpenBeta\bin"
+$dcsProcess = Start-Process -PassThru -FilePath DCS.exe
+echo $dcsProcess
+echo "MAKE SURE THERE IS NO CURSOR IN THIS BLUE WINDOW OR ELSE THE PORT WILL NOT COME BACK TO LIFE !!!"
+echo "If there is a RECTANGLE cursor in the blue window and it says:"
+echo "SELECT ADMINISTRATOR WINDOWS POWERSHELL, then you must RIGHT CLICK"
+echo "in the window to make it go away. !!!"
+Set-NetFirewallRule -DisplayName $ruleDCSUDPName -Action Block
+Set-NetFirewallRule -DisplayName $ruleDCSTCPName -Action Block
+echo "Rules are set, going to sleep for $portTimeInterval"
+Start-Sleep -s $portTimeInterval
+
+echo "Waking up, disabling rules"
+Set-NetFirewallRule -DisplayName $ruleDCSUDPName -Action Allow
+Set-NetFirewallRule -DisplayName $ruleDCSTCPName -Action Allow
+echo "DCS network enabled again, removing rules"
+Remove-NetFirewallRule -DisplayName $ruleDCSUDPName
+Remove-NetFirewallRule -DisplayName $ruleDCSTCPName
+echo "Wizard work is done, goodbye mere mortals"
+
+#This section is added to kill DCS in 6 hours and 8 minutes
+
+$totalServerRuntime = 21780
+$timeInterval = 180
+while( $totalServerRuntime -gt 0) {
+    if ( $dcsProcess.hasExited ) {
+        exit(1)
+    }
+
+    Start-Sleep -s $timeInterval
+    $totalServerRuntime = $totalServerRuntime - $timeInterval
+    $minutes = $totalServerRuntime / 60
+    echo "Server will restart in $minutes, new total is $totalServerRuntime"
+}
+echo "Time has come for the reaper to do its job"
+Stop-Process -processname DCS -force
+#Restart-Computer -ComputerName TTI-SERVER-Machine -Force
+exit(0)
