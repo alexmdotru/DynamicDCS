@@ -10,6 +10,7 @@ const airbaseSyncController = require('../../controllers/serverToDbSync/airbaseS
 const sychrontronController = require('../../controllers/sychronize/Sychrontron');
 const recoveryController = require('../../controllers/sychronize/recovery');
 const jtacController = require('../../controllers/action/jtac');
+const serverTimerController = require('../../controllers/action/serverTimer');
 const processEventHit = require('../../controllers/events/frontend/S_EVENT_HIT');
 const processEventTakeoff = require('../../controllers/events/frontend/S_EVENT_TAKEOFF');
 const processEventLand = require('../../controllers/events/frontend/S_EVENT_LAND');
@@ -25,6 +26,7 @@ const processEventPlayerLeaveUnit = require('../../controllers/events/frontend/S
 const processTimedOneSec = require('../../controllers/timedEvents/oneSec');
 const processTimedFiveSecs = require('../../controllers/timedEvents/fiveSecs');
 const processTimedThirtySecs = require('../../controllers/timedEvents/thirtySecs');
+const processTimedTenMinutes = require('../../controllers/timedEvents/tenMinutes');
 
 var CCB = {};
 
@@ -43,7 +45,9 @@ _.assign(CCB, {
 	sec: 1000,
 	twoSec: 2 * 1000,
 	fiveSecs: 5 * 1000,
-	thirtySecs: 30 * 1000
+	thirtySecs: 30 * 1000,
+	tenMinutes: 10 * 60 * 1000,
+	curServerSecs: 0
 });
 
 dbSystemServiceController.connectSystemDB(CCB.db.systemHost, CCB.db.systemDatabase);
@@ -104,6 +108,10 @@ _.set(CCB, 'getLatestSession', function (serverName, serverEpoc, startAbs, curAb
 });
 
 _.set(CCB, 'socketCallback', function (serverName, cbArray) {
+	_.set(CCB, 'realServerSecs', cbArray.curAbsTime - cbArray.startAbsTime);
+	if (!sychrontronController.isServerSynced) {
+		console.log('SYNC: ', sychrontronController.isServerSynced);
+	}
 	// console.log('CB: ', cbArray.que);
 	_.set(CCB, 'curServerUnitCnt', cbArray.unitCount);
 	if(!_.get(CCB, 'sessionName')) {
@@ -111,43 +119,44 @@ _.set(CCB, 'socketCallback', function (serverName, cbArray) {
 	} else {
 		_.forEach(_.get(cbArray, 'que', []), function (queObj) {
 			if ((_.get(queObj, 'action') === 'C') || (_.get(queObj, 'action') === 'U') || (_.get(queObj, 'action') === 'D'))  {
+				// console.log('CB: ', queObj.data);
 				unitsStaticsController.processUnitUpdates(serverName, CCB.sessionName, queObj);
 			}
 
 			if (_.get(queObj, 'action') === 'airbaseC' || _.get(queObj, 'action') === 'airbaseU') {
-				console.log('action: ', _.get(queObj, 'action'), queObj);
 				airbaseSyncController.processAirbaseUpdates(serverName, queObj);
 			}
 
 			if ((_.get(queObj, 'action') === 'f10Menu') && sychrontronController.isServerSynced) {
+				// console.log('CB: ', queObj);
 				menuCmdsController.menuCmdProcess(serverName, CCB.sessionName, queObj);
 			}
 
 			/*
-			//Cmd Response
-			if (_.get(queObj, 'action') === 'CMDRESPONSE') {
-				_.set(queObj, 'sessionName', sessionName);
-				//send response straight to client id
-				curServers[serverName].updateQue.q1.push(_.cloneDeep(queObj));
-				curServers[serverName].updateQue.q2.push(_.cloneDeep(queObj));
-				curServers[serverName].updateQue.qadmin.push(_.cloneDeep(queObj));
-			}
-			*/
+            //Cmd Response
+            if (_.get(queObj, 'action') === 'CMDRESPONSE') {
+                _.set(queObj, 'sessionName', sessionName);
+                //send response straight to client id
+                curServers[serverName].updateQue.q1.push(_.cloneDeep(queObj));
+                curServers[serverName].updateQue.q2.push(_.cloneDeep(queObj));
+                curServers[serverName].updateQue.qadmin.push(_.cloneDeep(queObj));
+            }
+            */
 
 			/*
-			//mesg
-			if (_.get(queObj, 'action') === 'MESG') {
-				_.set(queObj, 'sessionName', sessionName);
-				// console.log('mesg: ', queObj);
-				if (_.get(queObj, 'data.playerID')) {
-					if (_.isNumber(_.get(_.find(curServers[serverName].serverObject.players, {'id': _.get(queObj, 'data.playerID')}), 'side', 0))) {
-						curServers[serverName].updateQue['q' + _.get(_.find(curServers[serverName].serverObject.players, {'id': _.get(queObj, 'data.playerID')}), 'side', 0)]
-							.push(_.cloneDeep(queObj));
-						curServers[serverName].updateQue.qadmin.push(_.cloneDeep(queObj));
-					}
-				}
-			}
-			*/
+            //mesg
+            if (_.get(queObj, 'action') === 'MESG') {
+                _.set(queObj, 'sessionName', sessionName);
+                // console.log('mesg: ', queObj);
+                if (_.get(queObj, 'data.playerID')) {
+                    if (_.isNumber(_.get(_.find(curServers[serverName].serverObject.players, {'id': _.get(queObj, 'data.playerID')}), 'side', 0))) {
+                        curServers[serverName].updateQue['q' + _.get(_.find(curServers[serverName].serverObject.players, {'id': _.get(queObj, 'data.playerID')}), 'side', 0)]
+                            .push(_.cloneDeep(queObj));
+                        curServers[serverName].updateQue.qadmin.push(_.cloneDeep(queObj));
+                    }
+                }
+            }
+            */
 
 			if ((_.get(queObj, 'action') === 'S_EVENT_HIT') && sychrontronController.isServerSynced) {
 				processEventHit.processEventHit(serverName, CCB.sessionName, queObj);
@@ -184,11 +193,9 @@ _.set(CCB, 'socketCallback', function (serverName, cbArray) {
 			if ((_.get(queObj, 'action') === 'S_EVENT_REFUELING_STOP') && sychrontronController.isServerSynced) {
 				processEventRefuelingStop.processEventRefuelingStop(serverName, CCB.sessionName, queObj);
 			}
-
 			if ((_.get(queObj, 'action') === 'S_EVENT_BIRTH') && sychrontronController.isServerSynced) {
 				processEventBirth.processEventBirth(serverName, CCB.sessionName, queObj);
 			}
-
 			if ((_.get(queObj, 'action') === 'S_EVENT_PLAYER_ENTER_UNIT') && sychrontronController.isServerSynced) {
 				processEventPlayerEnterUnit.processEventPlayerEnterUnit(serverName, CCB.sessionName, queObj);
 			}
@@ -228,15 +235,23 @@ setInterval(function () {
 setInterval(function () {
 	if (!_.get(CCB, ['DCSSocket', 'connOpen'], true)) {
 		processTimedThirtySecs.processThirtySecActions(CCB.serverName, sychrontronController.isServerSynced);
+		serverTimerController.processTimer(CCB.serverName, _.get(CCB, 'realServerSecs', 0));
 	}
 }, CCB.thirtySecs);
 
 setInterval(function () {
+	if (!_.get(CCB, ['DCSSocket', 'connOpen'], true)) {
+		processTimedTenMinutes.processTenMinuteActions(CCB.serverName, sychrontronController.isServerSynced);
+	}
+}, CCB.tenMinutes);
+
+
+setInterval(function () {
 	if (groupController.bases) {
 		if (!_.get(CCB, ['DCSSocket', 'connOpen'], true)) {
-			sychrontronController.syncType(CCB.serverName, _.get(CCB, 'curServerUnitCnt', 56) - 56);
+			sychrontronController.syncType(CCB.serverName, _.get(CCB, 'curServerUnitCnt', -1));
 		}
-	} else {
-		groupController.initDbs(CCB.serverName);
 	}
 }, 1 * 1000);
+
+groupController.initDbs(CCB.serverName);
