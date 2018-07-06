@@ -120,7 +120,7 @@ _.set(exports, 'checkLifeResource', function (serverName, playerUcid) {
 							DCSLuaCommands.sendMesgToGroup(
 								curUnit.groupId,
 								serverName,
-								"G: You Have " + curPlayer.curLifePoints + " Life Resource Points.",
+								"G: You Have " + curPlayer.curLifePoints.toFixed(2) + " Life Resource Points.",
 								5
 							);
 						})
@@ -157,7 +157,7 @@ _.set(exports, 'checkAircraftCosts', function (serverName) {
 												DCSLuaCommands.sendMesgToGroup(
 													curUnit.groupId,
 													serverName,
-													"G: You Do Not Have Enough Points To Takeoff In " + curUnit.type + "(" + curUnitLifePoints + "/" + curPlayer.curLifePoints + "}",
+													"G: You Do Not Have Enough Points To Takeoff In " + curUnit.type + "(" + curUnitLifePoints.toFixed(2) + "/" + curPlayer.curLifePoints.toFixed(2) + "}",
 													30
 												);
 											}

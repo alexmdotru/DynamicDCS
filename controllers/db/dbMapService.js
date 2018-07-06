@@ -286,7 +286,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 							if (obj.execAction === 'PeriodicAdd') {
 								msg = '+' + _.round(obj.addLifePoints, 2).toFixed(2) + 'LP(T:' + curTotalPoints + ')';
 							} else {
-								msg = 'You Have Just Gained ' + obj.addLifePoints + ' Life Points! ' + obj.execAction + '(Total:' + curTotalPoints + ')'
+								msg = 'You Have Just Gained ' + obj.addLifePoints.toFixed(2) + ' Life Points! ' + obj.execAction + '(Total:' + curTotalPoints.toFixed(2) + ')'
 							}
 							if (obj.groupId) {
 								DCSLuaCommands.sendMesgToGroup( obj.groupId, serverName, msg, 5);
@@ -328,10 +328,10 @@ exports.srvPlayerActions = function (action, serverName, obj){
 									serverName,
 									curPlayerObj.playerId,
 									'You Do Not Have Enough Points To Fly This Vehicle' +
-									'{' + obj.removeLifePoints + '/' + curPlayerLifePoints + ')'
+									'{' + obj.removeLifePoints.toFixed(2) + '/' + curPlayerLifePoints.toFixed(2) + ')'
 								);
 							} else {
-								DCSLuaCommands.sendMesgToGroup( obj.groupId, serverName, 'You Have Just Used ' + obj.removeLifePoints + ' Life Points! ' + obj.execAction + '(Total:' + curTotalPoints + ')', 5);
+								DCSLuaCommands.sendMesgToGroup( obj.groupId, serverName, 'You Have Just Used ' + obj.removeLifePoints.toFixed(2) + ' Life Points! ' + obj.execAction + '(Total:' + curTotalPoints.toFixed(2) + ')', 5);
 							}
 							resolve(srvPlayer);
 						}
