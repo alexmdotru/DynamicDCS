@@ -236,6 +236,8 @@ setInterval(function () {
 	if (!_.get(CCB, ['DCSSocket', 'connOpen'], true)) {
 		processTimedThirtySecs.processThirtySecActions(CCB.serverName, sychrontronController.isServerSynced);
 		serverTimerController.processTimer(CCB.serverName, _.get(CCB, 'realServerSecs', 0));
+	} else {
+		serverTimerController.timerObj = {}
 	}
 }, CCB.thirtySecs);
 
