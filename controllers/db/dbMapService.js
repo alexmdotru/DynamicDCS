@@ -321,7 +321,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 							'You Do Not Have Enough Points To Fly This Vehicle' +
 							'{' + obj.removeLifePoints.toFixed(2) + '/' + curPlayerLifePoints.toFixed(2) + ')'
 						);
-						resolve(srvPlayer);
+						resolve(serverObj);
 					} else {
 						SrvPlayer.findOneAndUpdate(
 							{_id: obj._id},
