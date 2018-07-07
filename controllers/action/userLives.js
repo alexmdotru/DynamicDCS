@@ -144,9 +144,8 @@ _.set(exports, 'checkAircraftCosts', function (serverName) {
 				dbMapServiceController.srvPlayerActions('read', serverName, {sessionName: latestSession.name, playername: {$ne: ''}})
 					.then(function(srvPlayers) {
 						_.forEach(srvPlayers, function (curPlayer) {
-							var numSlot = !!_.toNumber(curPlayer.slot);
-							if(!_.isEmpty(curPlayer.slot) && numSlot) {
-								dbMapServiceController.unitActions('read', serverName, {dead: false, unitId: curPlayer.slot})
+							if(curPlayer.name) {
+								dbMapServiceController.unitActions('read', serverName, {dead: false, playername: curPlayer.name})
 									.then(function(cUnit) {
 										if (cUnit.length > 0) {
 											var curUnit = _.get(cUnit, [0]);
