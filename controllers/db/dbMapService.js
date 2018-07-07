@@ -284,7 +284,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 						function(err, srvPlayer) {
 							if (err) { reject(err) }
 							if (obj.execAction === 'PeriodicAdd') {
-								msg = '+' + _.round(obj.addLifePoints, 2).toFixed(2) + 'LP(T:' + curTotalPoints + ')';
+								msg = '+' + _.round(obj.addLifePoints, 2).toFixed(2) + 'LP(T:' + curTotalPoints.toFixed(2) + ')';
 							} else {
 								msg = 'You Have Just Gained ' + obj.addLifePoints.toFixed(2) + ' Life Points! ' + obj.execAction + '(Total:' + curTotalPoints.toFixed(2) + ')'
 							}
