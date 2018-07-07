@@ -154,6 +154,7 @@ _.set(exports, 'checkAircraftCosts', function (serverName) {
 											var curUnitLifePoints = (curUnitDict)? curUnitDict.lifeCost:1;
 											// console.log('CHK Aircraft4', _.get(curPlayer, 'curLifePoints', 0), curUnitLifePoints, curUnit.type);
 											if(_.get(curPlayer, 'curLifePoints', 0) < curUnitLifePoints && !_.get(curUnit, 'inAir', false)) {
+												console.log('nagScreen: ', cUnit, curPlayer, latestSession);
 												DCSLuaCommands.sendMesgToGroup(
 													curUnit.groupId,
 													serverName,
