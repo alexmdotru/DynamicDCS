@@ -62,7 +62,7 @@ _.set(exports, 'processFriendlyFire', function (serverName, sessionName, eventOb
 											_id: iPlayer.ucid,
 											execAction: 'Friendly Kill',
 											groupId: curIUnit.groupId,
-											removeLifePoints: 4
+											removeLifePoints: 6
 										});
 
 										if (curTUnit.inAir) {
@@ -74,7 +74,7 @@ _.set(exports, 'processFriendlyFire', function (serverName, sessionName, eventOb
 											});
 										}
 
-										mesg = 'A: ' + constants.side[iPlayer.side] +' ' + iPlayer.name + '(' + curIUnit.type + ':-4 LP) has hit friendly ' + tPlayer.name + '(' + curTUnit.type + ':+' + curTLifePointVal + ' LP) with a ' + _.get(eventObj, 'data.arg2', '?');
+										mesg = 'A: ' + constants.side[iPlayer.side] +' ' + iPlayer.name + '(' + curIUnit.type + ':-6 LP) has hit friendly ' + tPlayer.name + '(' + curTUnit.type + ':+' + curTLifePointVal + ' LP) with a ' + _.get(eventObj, 'data.arg2', '?');
 										DCSLuaCommands.sendMesgToCoalition(
 											iPlayer.side,
 											serverName,
