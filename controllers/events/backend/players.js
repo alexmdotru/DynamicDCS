@@ -12,12 +12,15 @@ _.set(exports, 'processPlayerEvent', function (serverName, sessionName, playerAr
 	_.forEach(playerArray.data, function (player) {
 		if (player !== null) {
 			var curPlyrUcid = player.ucid;
+			var curPlyrIPSplit =  _.split(player.ipaddr, '.');
+			var curSearchIp = curPlyrIPSplit[0] + '.' + curPlyrIPSplit[1] + '.' +curPlyrIPSplit[2];
 			var curPlyrSide = player.side;
 			var curPlyrName = player.name;
-			dbSystemServiceController.banUserActions('read', curPlyrUcid)
+
+			dbMapServiceController.srvPlayerActions('read', serverName, {banned: true, $or: [{_id: curPlyrUcid}, {ipaddr: new RegExp('^' + curSearchIp)}] })
 				.then(function (banUser) {
 					if (!_.isEmpty(banUser)){
-						console.log('Banning User: ', curPlyrName, curPlyrUcid);
+						console.log('Banning User: ', curPlyrName, curPlyrUcid, curSearchIp);
 						DCSLuaCommands.kickPlayer(
 							serverName,
 							player.id,
@@ -25,7 +28,7 @@ _.set(exports, 'processPlayerEvent', function (serverName, sessionName, playerAr
 						);
 					} else {
 						if (curPlyrName === '') {
-							console.log('Banning User for blank name: ', curPlyrName, curPlyrUcid);
+							console.log('Banning User for blank name: ', curPlyrName, curPlyrUcid, curPlyrIP);
 							DCSLuaCommands.kickPlayer(
 								serverName,
 								player.id,

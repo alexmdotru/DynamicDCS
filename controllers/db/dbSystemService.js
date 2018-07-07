@@ -253,20 +253,6 @@ exports.weaponScoreActions = function (action, obj){
 	}
 };
 
-var banUserSchema = require('./models/banUserSchema');
-const BanUser = systemdb.model('banUser', banUserSchema);
-
-exports.banUserActions = function (action, ucid){
-	if(action === 'read') {
-		return new Promise(function(resolve, reject) {
-			BanUser.find({_id: ucid}, function (err, banUser) {
-				if (err) { reject(err) }
-				resolve(banUser);
-			});
-		});
-	}
-};
-
 var staticDictionarySchema = require('./models/staticDictionarySchema');
 const StaticDictionary = systemdb.model('staticDictionary', staticDictionarySchema);
 

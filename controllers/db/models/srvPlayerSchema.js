@@ -74,6 +74,10 @@ const srvPlayerSchema = new Schema({
 		safeLifeActionTime: {
 			type: Number,
 			default: 0
+		},
+		banned: {
+			type: Boolean,
+			default: false
 		}
 	},
 	{
