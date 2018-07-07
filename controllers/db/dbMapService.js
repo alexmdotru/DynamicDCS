@@ -24,6 +24,8 @@ var oneMin = 60 * 1000;
 var oneHour = 60 * oneMin;
 var removeDead = 5 * oneMin;
 
+var maxLifePoints = 18;
+
 _.set(exports, 'connectMapDB', function (dynamicHost, dynamicDatabase) {
 	mapdb.open(dynamicHost, dynamicDatabase);
 });
@@ -276,7 +278,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 					SrvPlayer.findOneAndUpdate(
 						{_id: obj._id},
 						{ $set: {
-							curLifePoints: curTotalPoints,
+							curLifePoints: (curTotalPoints > maxLifePoints) ? maxLifePoints : curTotalPoints,
 							lastLifeAction: curAction,
 							safeLifeActionTime: (nowTime + fifteenSecs)
 						}
