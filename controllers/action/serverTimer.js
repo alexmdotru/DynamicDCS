@@ -16,77 +16,77 @@ _.set(exports, 'processTimer', function (serverName, serverSecs) {
 	//5 hours
 	if (serverSecs > 3600 && !_.get(exports, 'timerObj.fiveHours', true)) {
 		mesg = 'Server is restarting in 5 hours!';
-		_.set(exports, 'fiveHours', true)
+		_.set(exports, 'timerObj.fiveHours', true)
 	}
 	//4 hours
-	if (serverSecs > 7200 && !_.get(timerObj, 'timerObj.fourHours', true)) {
+	if (serverSecs > 7200 && !_.get(exports, 'timerObj.fourHours', true)) {
 		mesg = 'Server is restarting in 4 hours!';
-		_.set(exports, 'fourHours', true)
+		_.set(exports, 'timerObj.fourHours', true)
 	}
 	//3 hours
-	if (serverSecs > 10800 && !_.get(timerObj, 'timerObj.threeHours', true)) {
+	if (serverSecs > 10800 && !_.get(exports, 'timerObj.threeHours', true)) {
 		mesg = 'Server is restarting in 3 hours!';
-		_.set(exports, 'threeHours', true)
+		_.set(exports, 'timerObj.threeHours', true)
 	}
 	//2 hours
-	if (serverSecs > 14400 && !_.get(timerObj, 'timerObj.twoHours', true)) {
+	if (serverSecs > 14400 && !_.get(exports, 'timerObj.twoHours', true)) {
 		mesg = 'Server is restarting in 2 hours!';
-		_.set(exports, 'twoHours', true)
+		_.set(exports, 'timerObj.twoHours', true)
 	}
 	//1 hour
-	if (serverSecs > 18000 && !_.get(timerObj, 'timerObj.oneHour', true)) {
+	if (serverSecs > 18000 && !_.get(exports, 'timerObj.oneHour', true)) {
 		mesg = 'Server is restarting in 1 hours!';
-		_.set(exports, 'oneHour', true)
+		_.set(exports, 'timerObj.oneHour', true)
 	}
 	//30 mins
-	if (serverSecs > 19800 && !_.get(timerObj, 'timerObj.thirtyMinutes', true)) {
+	if (serverSecs > 19800 && !_.get(exports, 'timerObj.thirtyMinutes', true)) {
 		mesg = 'Server is restarting in 30 minutes!';
-		_.set(exports, 'thirtyMinutes', true)
+		_.set(exports, 'timerObj.thirtyMinutes', true)
 	}
 	//20 mins
-	if (serverSecs > 20400 && !_.get(timerObj, 'timerObj.twentyMinutes', true)) {
+	if (serverSecs > 20400 && !_.get(exports, 'timerObj.twentyMinutes', true)) {
 		mesg = 'Server is restarting in 20 mins!';
-		_.set(exports, 'twentyMinutes', true)
+		_.set(exports, 'timerObj.twentyMinutes', true)
 	}
 	//10 mins
-	if (serverSecs > 21000 && !_.get(timerObj, 'timerObj.tenMinutes', true)) {
+	if (serverSecs > 21000 && !_.get(exports, 'timerObj.tenMinutes', true)) {
 		mesg = 'Server is restarting in 10 mins!';
-		_.set(exports, 'tenMinutes', true)
+		_.set(exports, 'timerObj.tenMinutes', true)
 	}
 	//5 mins
-	if (serverSecs > 21300 && !_.get(timerObj, 'timerObj.fiveMinutes', true)) {
+	if (serverSecs > 21300 && !_.get(exports, 'timerObj.fiveMinutes', true)) {
 		mesg = 'Server is restarting in 5 minutes!';
-		_.set(exports, 'fiveMinutes', true)
+		_.set(exports, 'timerObj.fiveMinutes', true)
 	}
 	//4 mins
-	if (serverSecs > 21360 && !_.get(timerObj, 'timerObj.fourMinutes', true)) {
+	if (serverSecs > 21360 && !_.get(exports, 'timerObj.fourMinutes', true)) {
 		mesg = 'Server is restarting in 4 minutes!';
-		_.set(exports, 'fourMinutes', true)
+		_.set(exports, 'timerObj.fourMinutes', true)
 	}
 	//3 mins
-	if (serverSecs > 21420 && !_.get(timerObj, 'timerObj.threeMinutes', true)) {
+	if (serverSecs > 21420 && !_.get(exports, 'timerObj.threeMinutes', true)) {
 		mesg = 'Server is restarting in 3 minutes!';
-		_.set(exports, 'threeMinutes', true)
+		_.set(exports, 'timerObj.threeMinutes', true)
 	}
 	//2 mins
-	if (serverSecs > 21480 && !_.get(timerObj, 'timerObj.twoMinutes', true)) {
+	if (serverSecs > 21480 && !_.get(exports, 'timerObj.twoMinutes', true)) {
 		mesg = 'Server is restarting in 2 minutes!';
-		_.set(exports, 'twoMinutes', true)
+		_.set(exports, 'timerObj.twoMinutes', true)
 	}
 
 	//1 min
-	if (serverSecs > 21540 && !_.get(timerObj, 'timerObj.oneMinute')) {
+	if (serverSecs > 21540 && !_.get(exports, 'timerObj.oneMinute')) {
 		mesg = 'Server is restarting in 1 minute!';
-		_.set(exports, 'oneMinute', true)
+		_.set(exports, 'timerObj.oneMinute', true)
 	}
 	//restart server
 	if (serverSecs > 21600) {
 		//restart server on next or same map depending on rotation
-		exports.restartServer(
-			serverName,
-			_.get(exports, 'timerObj.curMap'),
-			_.get(groupController, 'config.mapRotation')
-		);
+			exports.restartServer(
+				serverName,
+				_.get(exports, 'timerObj.curMap'),
+				_.get(groupController, 'config.mapRotation')
+			);
 	} else {
 		if (mesg) {
 			DCSLuaCommands.sendMesgToAll(serverName, mesg, 20);
@@ -97,14 +97,17 @@ _.set(exports, 'processTimer', function (serverName, serverSecs) {
 
 _.set(exports, 'restartServer', function (serverName, curMap, rotationObj) {
 	var curMapIndex = _.findIndex(rotationObj, function(o) { return o === curMap; });
-	if (rotationObj[curMapIndex+1]) {
-		console.log('Loading Map: ', rotationObj[curMapIndex+1]);
-		DCSLuaCommands.loadMission(serverName, rotationObj[curMapIndex+1]);
-		_.set(exports, 'timerObj.curMap', rotationObj[curMapIndex+1]);
-	} else {
-		console.log('Loading Map: ', _.first(rotationObj));
-		DCSLuaCommands.loadMission(serverName, _.first(rotationObj));
-		_.set(exports, 'timerObj.curMap', _.first(rotationObj));
+	if (!_.get(exports, 'timerObj.restart')) {
+		if (rotationObj[curMapIndex+1]) {
+			console.log('Loading Map: ', rotationObj[curMapIndex+1]);
+			DCSLuaCommands.loadMission(serverName, rotationObj[curMapIndex+1]);
+			_.set(exports, 'timerObj.curMap', rotationObj[curMapIndex+1]);
+		} else {
+			console.log('Loading Map: ', _.first(rotationObj));
+			DCSLuaCommands.loadMission(serverName, _.first(rotationObj));
+			_.set(exports, 'timerObj.curMap', _.first(rotationObj));
+		}
+		_.set(exports, 'timerObj.restart', true);
 	}
 });
 
