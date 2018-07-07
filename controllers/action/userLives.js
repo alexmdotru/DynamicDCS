@@ -140,6 +140,7 @@ _.set(exports, 'checkLifeResource', function (serverName, playerUcid) {
 _.set(exports, 'checkAircraftCosts', function (serverName) {
 	dbMapServiceController.statSessionActions('readLatest', serverName, {})
 		.then(function (latestSession) {
+			var mesg;
 			if (latestSession.name) {
 				dbMapServiceController.srvPlayerActions('read', serverName, {sessionName: latestSession.name, playername: {$ne: ''}})
 					.then(function(srvPlayers) {
@@ -153,11 +154,12 @@ _.set(exports, 'checkAircraftCosts', function (serverName) {
 											var curUnitLifePoints = (curUnitDict)? curUnitDict.lifeCost:1;
 											// console.log('CHK Aircraft4', _.get(curPlayer, 'curLifePoints', 0), curUnitLifePoints, curUnit.type);
 											if(_.get(curPlayer, 'curLifePoints', 0) < curUnitLifePoints && !_.get(curUnit, 'inAir', false)) {
-												console.log('nagScreen: ', cUnit, curPlayer, latestSession);
+												mesg = "G: You Do Not Have Enough Points To Takeoff In " + curUnit.type + "(" + curUnitLifePoints.toFixed(2) + "/" + curPlayer.curLifePoints.toFixed(2) + "}";
+												console.log(curPlayer.name + ' ' + mesg);
 												DCSLuaCommands.sendMesgToGroup(
 													curUnit.groupId,
 													serverName,
-													"G: You Do Not Have Enough Points To Takeoff In " + curUnit.type + "(" + curUnitLifePoints.toFixed(2) + "/" + curPlayer.curLifePoints.toFixed(2) + "}",
+													mesg,
 													30
 												);
 											}
