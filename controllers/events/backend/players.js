@@ -17,7 +17,8 @@ _.set(exports, 'processPlayerEvent', function (serverName, sessionName, playerAr
 			var curPlyrSide = player.side;
 			var curPlyrName = player.name;
 
-			dbMapServiceController.srvPlayerActions('read', serverName, {banned: true, $or: [{_id: curPlyrUcid}, {ipaddr: new RegExp('^' + curSearchIp)}] })
+			// dbMapServiceController.srvPlayerActions('read', serverName, {banned: true, $or: [{_id: curPlyrUcid}, {ipaddr: new RegExp('^' + curSearchIp)}] })
+			dbMapServiceController.srvPlayerActions('read', serverName, {_id: curPlyrUcid, banned: true})
 				.then(function (banUser) {
 					if (!_.isEmpty(banUser)){
 						console.log('Banning User: ', curPlyrName, curPlyrUcid, curSearchIp);
