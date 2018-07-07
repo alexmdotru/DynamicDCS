@@ -313,29 +313,30 @@ exports.srvPlayerActions = function (action, serverName, obj){
 				}
 				// console.log('removeP: ', curTotalPoints, curPlayerObj, serverObj, obj);
 				if (serverObj.length > 0) {
-					SrvPlayer.findOneAndUpdate(
-						{_id: obj._id},
-						{ $set: {
-							curLifePoints: curTotalPoints,
-							lastLifeAction: curAction,
-							safeLifeActionTime: (nowTime + fifteenSecs)
-						}},
-						function(err, srvPlayer) {
-							if (err) { reject(err) }
-							if (curTotalPoints < 0) {
-								console.log('Removed ' + curPlayerObj.name + ' from aircraft for not enough points');
-								DCSLuaCommands.forcePlayerSpectator(
-									serverName,
-									curPlayerObj.playerId,
-									'You Do Not Have Enough Points To Fly This Vehicle' +
-									'{' + obj.removeLifePoints.toFixed(2) + '/' + curPlayerLifePoints.toFixed(2) + ')'
-								);
-							} else {
+					if (curTotalPoints < 0) {
+						console.log('Removed ' + curPlayerObj.name + ' from aircraft for not enough points');
+						DCSLuaCommands.forcePlayerSpectator(
+							serverName,
+							curPlayerObj.playerId,
+							'You Do Not Have Enough Points To Fly This Vehicle' +
+							'{' + obj.removeLifePoints.toFixed(2) + '/' + curPlayerLifePoints.toFixed(2) + ')'
+						);
+						resolve(srvPlayer);
+					} else {
+						SrvPlayer.findOneAndUpdate(
+							{_id: obj._id},
+							{ $set: {
+								curLifePoints: curTotalPoints,
+								lastLifeAction: curAction,
+								safeLifeActionTime: (nowTime + fifteenSecs)
+							}},
+							function(err, srvPlayer) {
+								if (err) { reject(err) }
 								DCSLuaCommands.sendMesgToGroup( obj.groupId, serverName, 'You Have Just Used ' + obj.removeLifePoints.toFixed(2) + ' Life Points! ' + obj.execAction + '(Total:' + curTotalPoints.toFixed(2) + ')', 5);
+								resolve(srvPlayer);
 							}
-							resolve(srvPlayer);
-						}
-					)
+						)
+					}
 				} else {
 					resolve('line305: Error: No Record in player db:' + obj._id);
 				}
