@@ -14,62 +14,62 @@ _.set(exports, 'processTimer', function (serverName, serverSecs) {
 	curSecs = serverSecs;
 
 	//5 hours
-	if (serverSecs > 3600 && !_.get(exports, 'timerObj.fiveHours', true)) {
+	if (serverSecs > 3600 && !_.get(exports, 'timerObj.fiveHours')) {
 		mesg = 'Server is restarting in 5 hours!';
 		_.set(exports, 'timerObj.fiveHours', true)
 	}
 	//4 hours
-	if (serverSecs > 7200 && !_.get(exports, 'timerObj.fourHours', true)) {
+	if (serverSecs > 7200 && !_.get(exports, 'timerObj.fourHours')) {
 		mesg = 'Server is restarting in 4 hours!';
 		_.set(exports, 'timerObj.fourHours', true)
 	}
 	//3 hours
-	if (serverSecs > 10800 && !_.get(exports, 'timerObj.threeHours', true)) {
+	if (serverSecs > 10800 && !_.get(exports, 'timerObj.threeHours')) {
 		mesg = 'Server is restarting in 3 hours!';
 		_.set(exports, 'timerObj.threeHours', true)
 	}
 	//2 hours
-	if (serverSecs > 14400 && !_.get(exports, 'timerObj.twoHours', true)) {
+	if (serverSecs > 14400 && !_.get(exports, 'timerObj.twoHours')) {
 		mesg = 'Server is restarting in 2 hours!';
 		_.set(exports, 'timerObj.twoHours', true)
 	}
 	//1 hour
-	if (serverSecs > 18000 && !_.get(exports, 'timerObj.oneHour', true)) {
-		mesg = 'Server is restarting in 1 hours!';
+	if (serverSecs > 18000 && !_.get(exports, 'timerObj.oneHour')) {
+		mesg = 'Server is restarting in 1 hour!';
 		_.set(exports, 'timerObj.oneHour', true)
 	}
 	//30 mins
-	if (serverSecs > 19800 && !_.get(exports, 'timerObj.thirtyMinutes', true)) {
+	if (serverSecs > 19800 && !_.get(exports, 'timerObj.thirtyMinutes')) {
 		mesg = 'Server is restarting in 30 minutes!';
 		_.set(exports, 'timerObj.thirtyMinutes', true)
 	}
 	//20 mins
-	if (serverSecs > 20400 && !_.get(exports, 'timerObj.twentyMinutes', true)) {
+	if (serverSecs > 20400 && !_.get(exports, 'timerObj.twentyMinutes')) {
 		mesg = 'Server is restarting in 20 mins!';
 		_.set(exports, 'timerObj.twentyMinutes', true)
 	}
 	//10 mins
-	if (serverSecs > 21000 && !_.get(exports, 'timerObj.tenMinutes', true)) {
+	if (serverSecs > 21000 && !_.get(exports, 'timerObj.tenMinutes')) {
 		mesg = 'Server is restarting in 10 mins!';
 		_.set(exports, 'timerObj.tenMinutes', true)
 	}
 	//5 mins
-	if (serverSecs > 21300 && !_.get(exports, 'timerObj.fiveMinutes', true)) {
+	if (serverSecs > 21300 && !_.get(exports, 'timerObj.fiveMinutes')) {
 		mesg = 'Server is restarting in 5 minutes!';
 		_.set(exports, 'timerObj.fiveMinutes', true)
 	}
 	//4 mins
-	if (serverSecs > 21360 && !_.get(exports, 'timerObj.fourMinutes', true)) {
+	if (serverSecs > 21360 && !_.get(exports, 'timerObj.fourMinutes')) {
 		mesg = 'Server is restarting in 4 minutes!';
 		_.set(exports, 'timerObj.fourMinutes', true)
 	}
 	//3 mins
-	if (serverSecs > 21420 && !_.get(exports, 'timerObj.threeMinutes', true)) {
+	if (serverSecs > 21420 && !_.get(exports, 'timerObj.threeMinutes')) {
 		mesg = 'Server is restarting in 3 minutes!';
 		_.set(exports, 'timerObj.threeMinutes', true)
 	}
 	//2 mins
-	if (serverSecs > 21480 && !_.get(exports, 'timerObj.twoMinutes', true)) {
+	if (serverSecs > 21480 && !_.get(exports, 'timerObj.twoMinutes')) {
 		mesg = 'Server is restarting in 2 minutes!';
 		_.set(exports, 'timerObj.twoMinutes', true)
 	}
