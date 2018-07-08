@@ -62,7 +62,6 @@ _.set(exports, 'updateServerLifePoints', function (serverName) {
 	exports.getPlayerBalance(serverName)
 		.then(function(playerBalance) {
 			_.forEach(playerBalance.players, function (cPlayer) {
-				var numSlot = !!_.toNumber(cPlayer.slot);
 				if (cPlayer) {
 					// if (!_.isEmpty(cPlayer.slot)) {
 					if (!_.isEmpty(cPlayer.name)) {
@@ -71,31 +70,29 @@ _.set(exports, 'updateServerLifePoints', function (serverName) {
 						} else {
 							addFracPoint = 1;
 						}
-						if (!_.isEmpty(cPlayer.slot) && numSlot) {
-							dbMapServiceController.unitActions('read', serverName, {unitId: cPlayer.slot})
-								.then(function (cUnit) {
-									var curUnit = _.get(cUnit, [0]);
-									if (curUnit) {
-										dbMapServiceController.srvPlayerActions('addLifePoints', serverName, {
-											_id: cPlayer._id,
-											execAction: 'PeriodicAdd',
-											groupId: curUnit.groupId,
-											addLifePoints: addFracPoint
-										});
-									}
-								})
-								.catch(function (err) {
-									console.log('line81', err);
-								})
-							;
-						} else {
-							dbMapServiceController.srvPlayerActions('addLifePoints', serverName, {
-								_id: cPlayer._id,
-								execAction: 'PeriodicAdd',
-								groupId: null,
-								addLifePoints: addFracPoint
-							});
-						}
+						dbMapServiceController.unitActions('read', serverName, {dead: false, playername: cPlayer.name})
+							.then(function (cUnit) {
+								var curUnit = _.get(cUnit, [0]);
+								if (curUnit) {
+									dbMapServiceController.srvPlayerActions('addLifePoints', serverName, {
+										_id: cPlayer._id,
+										execAction: 'PeriodicAdd',
+										groupId: curUnit.groupId,
+										addLifePoints: addFracPoint
+									});
+								} else {
+									dbMapServiceController.srvPlayerActions('addLifePoints', serverName, {
+										_id: cPlayer._id,
+										execAction: 'PeriodicAdd',
+										groupId: null,
+										addLifePoints: addFracPoint
+									});
+								}
+							})
+							.catch(function (err) {
+								console.log('line81', err);
+							})
+						;
 					}
 				}
 			});
@@ -111,10 +108,9 @@ _.set(exports, 'checkLifeResource', function (serverName, playerUcid) {
 	dbMapServiceController.srvPlayerActions('read', serverName, {_id: playerUcid})
 		.then(function(srvPlayer) {
 			var curPlayer = _.get(srvPlayer, [0]);
-			var numSlot = !!_.toNumber(curPlayer.slot);
 			if (curPlayer) {
-				if (!_.isEmpty(curPlayer.slot) && numSlot) {
-					dbMapServiceController.unitActions('read', serverName, {unitId: curPlayer.slot})
+				if (curPlayer.name) {
+					dbMapServiceController.unitActions('read', serverName, {playername: curPlayer.name})
 						.then(function(cUnit) {
 							var curUnit = _.get(cUnit, [0]);
 							DCSLuaCommands.sendMesgToGroup(
