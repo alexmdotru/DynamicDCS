@@ -273,10 +273,12 @@ _.set(exports, 'checkUnitsToBaseForCapture', function (serverName) {
 									60
 								);
 								// console.log('Spawning Support Units', base, 2);
-								baseSpawnFlagsController.setbaseSides(serverName);
 								spawnArray = _.concat(spawnArray, groupController.spawnSupportBaseGrp(serverName, base.name, 2, false));
 								groupController.spawnGroup(serverName, spawnArray, base.name, 2);
 								dbMapServiceController.baseActions('updateSide', serverName, {name: base.name, side: 2})
+									.then(function () {
+										baseSpawnFlagsController.setbaseSides(serverName);
+									})
 									.catch(function (err) {
 										console.log('erroring line162: ', err);
 									})
@@ -304,10 +306,12 @@ _.set(exports, 'checkUnitsToBaseForCapture', function (serverName) {
 									60
 								);
 								// console.log('Spawning Support Units', base, 1);
-								baseSpawnFlagsController.setbaseSides(serverName);
 								spawnArray = _.concat(spawnArray, groupController.spawnSupportBaseGrp(serverName, base.name, 1, false));
 								groupController.spawnGroup(serverName, spawnArray, base.name, 1);
 								dbMapServiceController.baseActions('updateSide', serverName, {name: base.name, side: 1})
+									.then(function () {
+										baseSpawnFlagsController.setbaseSides(serverName);
+									})
 									.catch(function (err) {
 										console.log('erroring line189: ', err);
 									})
