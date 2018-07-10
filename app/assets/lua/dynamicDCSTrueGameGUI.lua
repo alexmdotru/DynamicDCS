@@ -19,7 +19,7 @@ local cacheDB = {}
 local updateQue = {["que"] = {} }
 
 local PORT = 3002
-local DATA_TIMEOUT_SEC = 0.1
+local DATA_TIMEOUT_SEC = 1
 
 totalPlayers = 50
 
