@@ -6,8 +6,9 @@ const sychrontronController = require('../sychronize/Sychrontron');
 var lastSyncTime = new Date().getTime();
 var syncSpawnTimer = 1* 60 * 1000;
 
-exports.createSocket = function (serverName, address, port, queName, callback) {
+exports.createSocket = function (serverName, address, port, queName, callback, type) {
 	var sock = this;
+	var socketSpeed;
 	var cnt = 0;
 	var sockConn;
 	_.set(sock, 'cQue', []);
@@ -16,6 +17,13 @@ exports.createSocket = function (serverName, address, port, queName, callback) {
 	_.set(sock, 'buffer', {});
 	_.set(sock, 'startTime', new Date().valueOf() );
 	_.set(sock, 'sessionName', serverName+'_'+sock.startTime+' ' + queName + ' Node Server Starttime');
+
+	if (type === 'frontend') {
+		socketSpeed = 200;
+	}
+	if (type === 'backend') {
+		socketSpeed = 1000;
+	}
 
 	setInterval(function () { //sending FULL SPEED AHEAD, 1 per milsec (watch for weird errors, etc)
 		var curTime = new Date().getTime();
@@ -46,7 +54,7 @@ exports.createSocket = function (serverName, address, port, queName, callback) {
 				})
 			;
 		}
-	}, 200);
+	}, socketSpeed);
 
 	sock.connSocket = function () {
 		sockConn = net.createConnection({

@@ -37,7 +37,7 @@ setInterval(function () {
 			DCB.DCSSocket.connSocket();
 		}
 	} else {
-		DCB.DCSSocket = new DCSSocket.createSocket(DCB.serverName, DCB.serverIP, DCB.serverPort, DCB.queName, DCB.socketCallback);
+		DCB.DCSSocket = new DCSSocket.createSocket(DCB.serverName, DCB.serverIP, DCB.serverPort, DCB.queName, DCB.socketCallback, 'backend');
 	}
 }, 5 * 1000);
 

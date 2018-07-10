@@ -70,7 +70,7 @@ setInterval(function () {
 			;
 		}
 	} else {
-		CCB.DCSSocket = new DCSSocket.createSocket(CCB.serverName, CCB.serverIP, CCB.serverPort, CCB.queName, CCB.socketCallback);
+		CCB.DCSSocket = new DCSSocket.createSocket(CCB.serverName, CCB.serverIP, CCB.serverPort, CCB.queName, CCB.socketCallback, 'frontend');
 	}
 }, 3 * 1000);
 
