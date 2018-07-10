@@ -226,6 +226,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 					if(sObj.side === 0){ //keep the user on the last side
 						delete sObj.side
 					}
+					sObj.curLifePoints = _.get(groupController, 'config.startLifePoints', 0);
 					sObj.save(function (err, serObj) {
 						if (err) {
 							reject(err)
