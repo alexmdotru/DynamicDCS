@@ -40,12 +40,7 @@ _.assign(CCB, {
 		systemHost: 'localhost',
 		systemDatabase: 'DynamicDCS',
 		dynamicHost: 'localhost',
-		dynamicDatabase: 'DDCSMaps',
-		opt: {
-			server: { auto_reconnect: true },
-			user: 'DDCSUser',
-			pass: 'DCSDreamSim'
-		}
+		dynamicDatabase: 'DDCSMaps'
 	},
 	sec: 1000,
 	twoSec: 2 * 1000,
@@ -55,8 +50,8 @@ _.assign(CCB, {
 	curServerSecs: 0
 });
 
-dbSystemServiceController.connectSystemDB(CCB.db.systemHost, CCB.db.systemDatabase, '27017', CCB.db.opts);
-dbMapServiceController.connectMapDB(CCB.db.dynamicHost, CCB.db.dynamicDatabase, '27017', CCB.db.opts);
+dbSystemServiceController.connectSystemDB(CCB.db.systemHost, CCB.db.systemDatabase);
+dbMapServiceController.connectMapDB(CCB.db.dynamicHost, CCB.db.dynamicDatabase);
 
 //checks to see if socket needs restarting every 3 secs
 setInterval(function () {

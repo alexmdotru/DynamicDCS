@@ -26,8 +26,8 @@ var removeDead = 5 * oneMin;
 
 var maxLifePoints = 18;
 
-_.set(exports, 'connectMapDB', function (host, database, port, opts) {
-	mapdb.open(host, database, port, opts);
+_.set(exports, 'connectMapDB', function (host, database) {
+	mapdb.open(host, database);
 });
 
 exports.baseActions = function (action, serverName, obj){
