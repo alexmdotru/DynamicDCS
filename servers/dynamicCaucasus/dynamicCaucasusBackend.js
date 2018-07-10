@@ -22,12 +22,17 @@ _.assign(DCB, {
 		systemHost: 'localhost',
 		systemDatabase: 'DynamicDCS',
 		dynamicHost: 'localhost',
-		dynamicDatabase: 'DDCSMaps'
+		dynamicDatabase: 'DDCSMaps',
+		opt: {
+			server: { auto_reconnect: true },
+			user: 'DDCSUser',
+			pass: 'DCSDreamSim'
+		}
 	}
 });
 
-dbSystemServiceController.connectSystemDB(DCB.db.systemHost, DCB.db.systemDatabase);
-dbMapServiceController.connectMapDB(DCB.db.dynamicHost, DCB.db.dynamicDatabase);
+dbSystemServiceController.connectSystemDB(DCB.db.systemHost, DCB.db.systemDatabase, '27017', DCB.db.opts);
+dbMapServiceController.connectMapDB(DCB.db.dynamicHost, DCB.db.dynamicDatabase, '27017', DCB.db.opts);
 
 //checks to see if socket needs restarting every 3 secs
 setInterval(function () {

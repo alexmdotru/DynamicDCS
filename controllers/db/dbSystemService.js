@@ -10,8 +10,8 @@ var systemdb = mongoose.createConnection();
 var userAccountSchema = require('./models/userAccountSchema');
 const UserAccount = systemdb.model('userAccount', userAccountSchema);
 
-_.set(exports, 'connectSystemDB', function (systemHost, systemDatabase) {
-	systemdb.open(systemHost, systemDatabase);
+_.set(exports, 'connectSystemDB', function (host, database, port, opts) {
+	systemdb.open(host, database, port, opts);
 });
 
 exports.userAccountActions = function (action, obj){
