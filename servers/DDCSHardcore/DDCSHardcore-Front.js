@@ -32,15 +32,15 @@ var CCB = {};
 
 //config
 _.assign(CCB, {
-	serverName: 'DynamicCaucasus',
+	serverName: 'DDCSHardcore',
 	serverIP: '127.0.0.1',
 	serverPort: '3001',
 	queName: 'clientArray',
 	db: {
 		systemHost: 'localhost',
-		systemDatabase: 'DynamicDCS',
+		systemDatabase: 'DDCS',
 		dynamicHost: 'localhost',
-		dynamicDatabase: 'DDCSMaps'
+		dynamicDatabase: 'DDCSHardcore'
 	},
 	sec: 1000,
 	twoSec: 2 * 1000,
@@ -237,8 +237,8 @@ setInterval(function () {
 		processTimedThirtySecs.processThirtySecActions(CCB.serverName, sychrontronController.isServerSynced);
 		serverTimerController.processTimer(CCB.serverName, _.get(CCB, 'realServerSecs', 0));
 	} else {
-		serverTimerController.timerObj = {}
-	}
+        serverTimerController.timerObj = {}
+    }
 }, CCB.thirtySecs);
 
 setInterval(function () {

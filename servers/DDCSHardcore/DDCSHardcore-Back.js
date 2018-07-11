@@ -14,15 +14,15 @@ var DCB = {};
 
 //config
 _.assign(DCB, {
-	serverName: 'DynamicCaucasus',
+	serverName: 'DDCSHardcore',
 	serverIP: '127.0.0.1',
 	serverPort: '3002',
 	queName: 'gameGuiArray',
 	db: {
 		systemHost: 'localhost',
-		systemDatabase: 'DynamicDCS',
+		systemDatabase: 'DDCS',
 		dynamicHost: 'localhost',
-		dynamicDatabase: 'DDCSMaps'
+		dynamicDatabase: 'DDCSHardcore'
 	}
 });
 

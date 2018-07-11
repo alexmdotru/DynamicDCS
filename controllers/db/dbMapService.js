@@ -1,12 +1,11 @@
-const mongoose = require('mongoose');
 const _ = require('lodash');
 const constants = require('../constants');
 const DCSLuaCommands = require('../player/DCSLuaCommands');
 const groupController = require('../spawn/group');
+const Mongoose = require('mongoose');
 
 //changing promises to bluebird
-mongoose.Promise = require('bluebird');
-var mapdb = mongoose.createConnection();
+Mongoose.Promise = require('bluebird');
 
 var airfieldSchema = require('./models/airfieldSchema');
 var srvPlayerSchema = require('./models/srvPlayerSchema');
@@ -26,12 +25,16 @@ var removeDead = 5 * oneMin;
 
 var maxLifePoints = 18;
 
+var connString;
+var DBMap = {};
+
 _.set(exports, 'connectMapDB', function (host, database) {
-	mapdb.open(host, database);
+    connString = 'mongodb://DDCSUser:DCSDreamSim@' + host + ':27017/' + database + '?authSource=admin';
+    DBMap =  Mongoose.createConnection(connString, { useNewUrlParser: true });
 });
 
 exports.baseActions = function (action, serverName, obj){
-	const Airfield = mapdb.model(serverName+'_airfield', airfieldSchema);
+	const Airfield = DBMap.model(serverName+'_airfield', airfieldSchema);
 	if (action === 'read') {
 		return new Promise(function(resolve, reject) {
 			Airfield.find(obj, function (err, dbairfields) {
@@ -186,7 +189,7 @@ exports.baseActions = function (action, serverName, obj){
 };
 
 exports.srvPlayerActions = function (action, serverName, obj){
-	const SrvPlayer = mapdb.model(serverName+'_srvPlayer', srvPlayerSchema);
+	const SrvPlayer = DBMap.model(serverName+'_srvPlayer', srvPlayerSchema);
 	var nowTime = new Date().getTime();
 	if (action === 'read') {
 		return new Promise(function(resolve, reject) {
@@ -475,7 +478,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 };
 
 exports.unitActions = function (action, serverName, obj){
-	const Unit = mapdb.model(serverName+'_unit', unitSchema);
+	const Unit = DBMap.model(serverName+'_unit', unitSchema);
 	if (action === 'read') {
 		return new Promise(function(resolve, reject) {
 			Unit.find(obj).sort( { createdAt: -1 } ).exec(function (err, dbUnits) {
@@ -596,7 +599,7 @@ exports.unitActions = function (action, serverName, obj){
 };
 
 exports.staticCrateActions = function (action, serverName, obj){
-	const StaticCrates = mapdb.model(serverName+'_crate', staticCratesSchema);
+	const StaticCrates = DBMap.model(serverName+'_crate', staticCratesSchema);
 	if (action === 'read') {
 		return new Promise(function(resolve, reject) {
 			StaticCrates.find(obj).sort( { createdAt: -1 } ).exec(function (err, dbUnits) {
@@ -696,7 +699,7 @@ exports.staticCrateActions = function (action, serverName, obj){
 };
 
 exports.statSessionActions = function (action, serverName, obj){
-	const StatSession = mapdb.model(serverName+'_statSession', statSessionSchema);
+	const StatSession = DBMap.model(serverName+'_statSession', statSessionSchema);
 	if (action === 'read') {
 		return new Promise(function(resolve, reject) {
 			StatSession.find(function (err, statSession) {
@@ -749,7 +752,7 @@ exports.statSessionActions = function (action, serverName, obj){
 /*
 exports.statSrvEventActions = function (action, serverName, obj){
 	var newObjArray = [];
-	const StatSrvEvent = mapdb.model(serverName+'_statSrvEvent', statSrvEventSchema);
+	const StatSrvEvent = DBMap.model(serverName+'_statSrvEvent', statSrvEventSchema);
 	if (action === 'read') {
 		return new Promise(function(resolve, reject) {
 			StatSrvEvent.find({sessionName: _.get(obj, 'sessionName'), showInChart: true}, function (err, statSrvEvent) {
@@ -780,7 +783,7 @@ exports.statSrvEventActions = function (action, serverName, obj){
 
 exports.simpleStatEventActions = function (action, serverName, obj){
 	var newObjArray = [];
-	const SimpleStatEvent = mapdb.model(serverName+'_simpleStatEvent', simpleStatEventSchema);
+	const SimpleStatEvent = DBMap.model(serverName+'_simpleStatEvent', simpleStatEventSchema);
 	if (action === 'read') {
 		return new Promise(function(resolve, reject) {
 			SimpleStatEvent.find({sessionName: _.get(obj, 'sessionName'), showInChart: true}, function (err, simpleStatEvent) {
@@ -809,7 +812,7 @@ exports.simpleStatEventActions = function (action, serverName, obj){
 };
 
 exports.cmdQueActions = function (action, serverName, obj){
-	const CmdQue = mapdb.model(serverName+'_cmdque', cmdQueSchema);
+	const CmdQue = DBMap.model(serverName+'_cmdque', cmdQueSchema);
 	if (action === 'grabNextQue') {
 		return new Promise(function(resolve, reject) {
 			CmdQue.findOneAndRemove({queName: obj.queName}, function (err,clientQue){
@@ -846,7 +849,7 @@ exports.cmdQueActions = function (action, serverName, obj){
 };
 
 exports.webPushActions = function (action, serverName, obj){
-	const WebPush = mapdb.model(serverName+'_webpush', webPushSchema);
+	const WebPush = DBMap.model(serverName+'_webpush', webPushSchema);
 	if (action === 'grabNextQue') {
 		return new Promise(function(resolve, reject) {
 			WebPush.findOneAndRemove({serverName: serverName}, function (err, wpush){
@@ -883,7 +886,7 @@ exports.webPushActions = function (action, serverName, obj){
 };
 
 exports.processActions = function (action, serverName, obj){
-	const ProcessQue = mapdb.model(serverName+'_processque', processSchema);
+	const ProcessQue = DBMap.model(serverName+'_processque', processSchema);
 	if (action === 'read') {
 		return new Promise(function(resolve, reject) {
 			ProcessQue.find(obj, function (err, pQue){

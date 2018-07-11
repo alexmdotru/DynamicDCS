@@ -32,15 +32,15 @@ var CCB = {};
 
 //config
 _.assign(CCB, {
-	serverName: 'DDCS-Hardcore-PG',
+	serverName: 'DDCSStandard',
 	serverIP: '127.0.0.1',
 	serverPort: '3001',
 	queName: 'clientArray',
 	db: {
 		systemHost: 'localhost',
-		systemDatabase: 'DynamicDCS',
+		systemDatabase: 'DDCS',
 		dynamicHost: 'localhost',
-		dynamicDatabase: 'DDCS-Hardcore-PG'
+		dynamicDatabase: 'DDCSStandard'
 	},
 	sec: 1000,
 	twoSec: 2 * 1000,
@@ -70,7 +70,7 @@ setInterval(function () {
 			;
 		}
 	} else {
-		CCB.DCSSocket = new DCSSocket.createSocket(CCB.serverName, CCB.serverIP, CCB.serverPort, CCB.queName, CCB.socketCallback);
+		CCB.DCSSocket = new DCSSocket.createSocket(CCB.serverName, CCB.serverIP, CCB.serverPort, CCB.queName, CCB.socketCallback, 'frontend');
 	}
 }, 3 * 1000);
 
@@ -236,6 +236,8 @@ setInterval(function () {
 	if (!_.get(CCB, ['DCSSocket', 'connOpen'], true)) {
 		processTimedThirtySecs.processThirtySecActions(CCB.serverName, sychrontronController.isServerSynced);
 		serverTimerController.processTimer(CCB.serverName, _.get(CCB, 'realServerSecs', 0));
+	} else {
+		serverTimerController.timerObj = {}
 	}
 }, CCB.thirtySecs);
 

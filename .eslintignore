@@ -1,6 +1,0 @@
-# node_modules ignored by default
-
-# ignore built files
-.temp/
-coverage/
-dist/

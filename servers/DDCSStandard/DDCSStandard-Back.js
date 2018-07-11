@@ -14,15 +14,15 @@ var DCB = {};
 
 //config
 _.assign(DCB, {
-	serverName: 'DDCS-Hardcore-PG',
+	serverName: 'DDCSStandard',
 	serverIP: '127.0.0.1',
 	serverPort: '3002',
 	queName: 'gameGuiArray',
 	db: {
 		systemHost: 'localhost',
-		systemDatabase: 'DynamicDCS',
+		systemDatabase: 'DDCS',
 		dynamicHost: 'localhost',
-		dynamicDatabase: 'DDCS-Hardcore-PG'
+		dynamicDatabase: 'DDCSStandard'
 	}
 });
 
@@ -37,7 +37,7 @@ setInterval(function () {
 			DCB.DCSSocket.connSocket();
 		}
 	} else {
-		DCB.DCSSocket = new DCSSocket.createSocket(DCB.serverName, DCB.serverIP, DCB.serverPort, DCB.queName, DCB.socketCallback);
+		DCB.DCSSocket = new DCSSocket.createSocket(DCB.serverName, DCB.serverIP, DCB.serverPort, DCB.queName, DCB.socketCallback, 'backend');
 	}
 }, 5 * 1000);
 

@@ -1,20 +1,28 @@
-const mongoose = require('mongoose');
 const _ = require('lodash');
+const Mongoose = require('mongoose');
+
+var userAccountSchema = require('./models/userAccountSchema');
+var serverSchema = require('./models/serverSchema');
+var theaterSchema = require('./models/theaterSchema');
+var weaponScoreSchema = require('./models/weaponScoreSchema');
+var staticDictionarySchema = require('./models/staticDictionarySchema');
+var unitDictionarySchema = require('./models/unitDictionarySchema');
+
+var connString;
+var DBSystem = {};
 
 //changing promises to bluebird
-mongoose.Promise = require('bluebird');
-
-var systemdb = mongoose.createConnection();
-
-// include mongoose db schemas
-var userAccountSchema = require('./models/userAccountSchema');
-const UserAccount = systemdb.model('userAccount', userAccountSchema);
+Mongoose.Promise = require('bluebird');
 
 _.set(exports, 'connectSystemDB', function (host, database) {
-	systemdb.open(host, database);
+    connString = 'mongodb://DDCSUser:DCSDreamSim@' + host + ':27017/' + database + '?authSource=admin';
+    DBSystem =  Mongoose.createConnection(connString, { useNewUrlParser: true });
 });
 
+// include mongoose db schemas
 exports.userAccountActions = function (action, obj){
+    const UserAccount = DBSystem.model('userAccount', userAccountSchema);
+	console.log('ua: ', action, obj);
 	if(action === 'create') {
 		return new Promise(function(resolve, reject) {
 			const useraccount = new UserAccount(obj);
@@ -162,11 +170,8 @@ exports.userAccountActions = function (action, obj){
 	}
 };
 
-
-var serverSchema = require('./models/serverSchema');
-const Server = systemdb.model('server', serverSchema);
-
 exports.serverActions = function (action, obj){
+    const Server = DBSystem.model('server', serverSchema);
 	if(action === 'create') {
 		return new Promise(function(resolve, reject) {
 			const server = new Server(obj);
@@ -207,10 +212,8 @@ exports.serverActions = function (action, obj){
 	}
 };
 
-var theaterSchema = require('./models/theaterSchema');
-const Theater = systemdb.model('theater', theaterSchema);
-
 exports.theaterActions = function (action){
+    const Theater = DBSystem.model('theater', theaterSchema);
 	if(action === 'read') {
 		return new Promise(function(resolve, reject) {
 			Theater.find(function (err, servers) {
@@ -221,10 +224,8 @@ exports.theaterActions = function (action){
 	}
 };
 
-var weaponScoreSchema = require('./models/weaponScoreSchema');
-const WeaponScore = systemdb.model('weaponScore', weaponScoreSchema);
-
 exports.weaponScoreActions = function (action, obj){
+    const WeaponScore = DBSystem.model('weaponScore', weaponScoreSchema);
 	if(action === 'read') {
 		return new Promise(function(resolve, reject) {
 			WeaponScore.find({_id: obj.typeName}, function (err, weaponscore) {
@@ -253,10 +254,8 @@ exports.weaponScoreActions = function (action, obj){
 	}
 };
 
-var staticDictionarySchema = require('./models/staticDictionarySchema');
-const StaticDictionary = systemdb.model('staticDictionary', staticDictionarySchema);
-
 exports.staticDictionaryActions = function (action, obj){
+    const StaticDictionary = DBSystem.model('staticDictionary', staticDictionarySchema);
 	if(action === 'read') {
 		return new Promise(function(resolve, reject) {
 			StaticDictionary.find(obj, function (err, staticDictionary) {
@@ -267,10 +266,8 @@ exports.staticDictionaryActions = function (action, obj){
 	}
 };
 
-var unitDictionarySchema = require('./models/unitDictionarySchema');
-const UnitDictionary = systemdb.model('unitDictionary', unitDictionarySchema);
-
 exports.unitDictionaryActions = function (action, obj){
+    const UnitDictionary = DBSystem.model('unitDictionary', unitDictionarySchema);
 	if(action === 'read') {
 		return new Promise(function(resolve, reject) {
 			UnitDictionary.find(obj, function (err, unitDictionary) {
