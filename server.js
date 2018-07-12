@@ -23,10 +23,10 @@ var DDCS = {};
 _.assign(DDCS, {
 	port: 80,
 	db: {
-		systemHost: '192.168.44.60',
-		systemDatabase: 'DynamicDCS',
-		dynamicHost: '192.168.44.60',
-		dynamicDatabase: 'DDCSMaps'
+		systemHost: '127.0.0.1',
+		systemDatabase: 'DDCS',
+		dynamicHost: '127.0.0.1',
+		dynamicDatabase: 'DDCSStandard'
 	},
 	perSendMax: 500,
 	serverAdminLvl: 10,
