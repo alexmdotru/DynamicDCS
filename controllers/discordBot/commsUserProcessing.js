@@ -167,8 +167,9 @@ _.set(dBot, 'kickForOpposingSides', function (playerArray, discordByChannel) {
 });
 */
 
-_.set(exports, 'checkForComms', function (serverName, isDiscordAllowed, playerArray) {
+_.set(exports, 'checkForComms', function (serverName, isDiscordAllowed, procPlayerArray) {
     //console.log('PA: ', playerArray);
+    var playerArray = _.remove(procPlayerArray, {playerId: 1});
     dBot.kickForNoComms(serverName, playerArray, isDiscordAllowed);
     /*
     var fiveMinsAgo = new Date().getTime() - (5 * oneMin);
