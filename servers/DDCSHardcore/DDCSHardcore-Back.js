@@ -25,7 +25,7 @@ _.assign(DCB, {
 		systemDatabase: 'DDCS',
 		dynamicHost: 'localhost',
 		dynamicDatabase: 'DDCSHardcore',
-		remoteHost: 'localhost'
+		remoteHost: '192.168.44.60'
 	}
 });
 
