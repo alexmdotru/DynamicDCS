@@ -50,7 +50,7 @@ _.assign(CCB, {
 	curServerSecs: 0
 });
 
-dbSystemLocalController.connectSystemDB(CCB.db.systemHost, CCB.db.systemDatabase);
+dbSystemLocalController.connectSystemLocalDB(CCB.db.systemHost, CCB.db.systemDatabase);
 dbMapServiceController.connectMapDB(CCB.db.dynamicHost, CCB.db.dynamicDatabase);
 
 //checks to see if socket needs restarting every 3 secs

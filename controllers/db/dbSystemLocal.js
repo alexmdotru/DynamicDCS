@@ -14,7 +14,7 @@ var DBSystem = {};
 //changing promises to bluebird
 Mongoose.Promise = require('bluebird');
 
-_.set(exports, 'connectSystemDB', function (host, database) {
+_.set(exports, 'connectSystemLocalDB', function (host, database) {
     connString = 'mongodb://DDCSUser:DCSDreamSim@' + host + ':27017/' + database + '?authSource=admin';
     DBSystem =  Mongoose.createConnection(connString, { useNewUrlParser: true });
 });
@@ -276,46 +276,4 @@ exports.unitDictionaryActions = function (action, obj){
 			});
 		});
 	}
-};
-
-exports.masterQueActions = function (action, obj){
-    const Server = DBSystem.model('server', MasterQueSchema);
-    if(action === 'create') {
-        return new Promise(function(resolve, reject) {
-            const server = new Server(obj);
-            server.save(function (err, servers) {
-                if (err) { reject(err) }
-                resolve(servers);
-            });
-        });
-    }
-    if(action === 'read') {
-        return new Promise(function(resolve, reject) {
-            Server.find(obj, function (err, servers) {
-                if (err) { reject(err) }
-                resolve(servers);
-            });
-        });
-    }
-    if(action === 'update') {
-        return new Promise(function(resolve, reject) {
-            Server.findOneAndUpdate(
-                {_id: obj._id},
-                {$set: obj},
-                {new: true},
-                function(err, servers) {
-                    if (err) { reject(err) }
-                    resolve(servers);
-                }
-            );
-        });
-    }
-    if(action === 'delete') {
-        return new Promise(function(resolve, reject) {
-            Server.findOneAndRemove({_id: obj._id}, function (err, servers) {
-                if (err) { reject(err) }
-                resolve(servers);
-            });
-        });
-    }
 };

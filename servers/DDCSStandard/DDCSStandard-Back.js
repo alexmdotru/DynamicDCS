@@ -26,7 +26,7 @@ _.assign(DCB, {
 	}
 });
 
-dbSystemLocalController.connectSystemDB(DCB.db.systemHost, DCB.db.systemDatabase);
+dbSystemLocalController.connectSystemLocalDB(DCB.db.systemHost, DCB.db.systemDatabase);
 dbMapServiceController.connectMapDB(DCB.db.dynamicHost, DCB.db.dynamicDatabase);
 
 //checks to see if socket needs restarting every 3 secs

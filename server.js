@@ -26,7 +26,8 @@ _.assign(DDCS, {
 		systemHost: '127.0.0.1',
 		systemDatabase: 'DDCS',
 		dynamicHost: '127.0.0.1',
-		dynamicDatabase: 'DDCSStandard'
+		dynamicDatabase: 'DDCSStandard',
+		remoteHost: '127.0.0.1',
 	},
 	perSendMax: 500,
 	serverAdminLvl: 10,
@@ -39,8 +40,11 @@ server = app.listen(DDCS.port);
 //Controllers
 const discordBotController = require('./controllers/discordBot/discordBot');
 const dbSystemLocalController = require('./controllers/db/dbSystemLocal');
+const dbSystemRemoteController = require('./controllers/db/dbSystemRemote');
 const dbMapServiceController = require('./controllers/db/dbMapService');
-dbSystemLocalController.connectSystemDB(DDCS.db.systemHost, DDCS.db.systemDatabase);
+
+dbSystemLocalController.connectSystemLocalDB(DDCS.db.systemHost, DDCS.db.systemDatabase);
+dbSystemRemoteController.connectSystemRemoteDB(DDCS.db.remoteHost, DDCS.db.systemDatabase);
 dbMapServiceController.connectMapDB(DDCS.db.dynamicHost, DDCS.db.dynamicDatabase);
 
 //secure sockets
