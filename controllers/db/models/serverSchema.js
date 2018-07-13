@@ -90,6 +90,15 @@ const ServerSchema = new Schema({
 			type: Array,
 			required: true
 		},
+		SRSFilePath: {
+			type: String,
+			required: true,
+			default: 'C:/Program Files/DCS-SimpleRadio-Standalone/clients-list.json'
+		},
+		isDiscordAllowed: {
+			type: Boolean,
+			default: true
+		}
 	},
 	{
 		timestamps: true, // Saves createdAt and updatedAt as dates. createdAt will be our timestamp.
