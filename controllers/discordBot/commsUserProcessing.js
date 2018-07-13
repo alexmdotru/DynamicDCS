@@ -169,7 +169,8 @@ _.set(dBot, 'kickForOpposingSides', function (playerArray, discordByChannel) {
 
 _.set(exports, 'checkForComms', function (serverName, isDiscordAllowed, playerArray) {
     //console.log('PA: ', playerArray);
-    dBot.kickForNoComms(serverName, _.remove(playerArray, {id: 1}), isDiscordAllowed);
+    var removeServerHost = _.filter(playerArray, function (p) {return p.id != 1;});
+    dBot.kickForNoComms(serverName, removeServerHost, isDiscordAllowed);
     /*
     var fiveMinsAgo = new Date().getTime() - (5 * oneMin);
     dbMapServiceController.statSessionActions('readLatest', serverName, {})
