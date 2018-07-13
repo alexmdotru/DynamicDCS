@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const DCSSocket = require('../../controllers/net/DCSSocket');
-const dbSystemServiceController = require('../../controllers/db/dbSystemService');
+const dbSystemLocalController = require('../../controllers/db/dbSystemLocal');
 const dbMapServiceController = require('../../controllers/db/dbMapService');
 const sychrontronController = require('../../controllers/sychronize/Sychrontron');
 const playersEvent = require('../../controllers/events/backend/players');
@@ -26,7 +26,7 @@ _.assign(DCB, {
 	}
 });
 
-dbSystemServiceController.connectSystemDB(DCB.db.systemHost, DCB.db.systemDatabase);
+dbSystemLocalController.connectSystemDB(DCB.db.systemHost, DCB.db.systemDatabase);
 dbMapServiceController.connectMapDB(DCB.db.dynamicHost, DCB.db.dynamicDatabase);
 
 //checks to see if socket needs restarting every 3 secs

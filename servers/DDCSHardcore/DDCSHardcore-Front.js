@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const DCSSocket = require('../../controllers/net/DCSSocket');
-const dbSystemServiceController = require('../../controllers/db/dbSystemService');
+const dbSystemLocalController = require('../../controllers/db/dbSystemLocal');
 const dbMapServiceController = require('../../controllers/db/dbMapService');
 const menuCmdsController = require('../../controllers/menu/menuCmds');
 const groupController = require('../../controllers/spawn/group');
@@ -50,7 +50,7 @@ _.assign(CCB, {
 	curServerSecs: 0
 });
 
-dbSystemServiceController.connectSystemDB(CCB.db.systemHost, CCB.db.systemDatabase);
+dbSystemLocalController.connectSystemDB(CCB.db.systemHost, CCB.db.systemDatabase);
 dbMapServiceController.connectMapDB(CCB.db.dynamicHost, CCB.db.dynamicDatabase);
 
 //checks to see if socket needs restarting every 3 secs

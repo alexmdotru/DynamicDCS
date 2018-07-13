@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const constants = require('../constants');
 const dbMapServiceController = require('../db/dbMapService');
-const dbSystemServiceController = require('../db/dbSystemService');
+const dbSystemLocalController = require('../db/dbSystemLocal');
 const DCSLuaCommands = require('../player/DCSLuaCommands');
 const zoneController = require('../proxZone/zone');
 
@@ -1149,7 +1149,7 @@ _.set(exports, 'staticTemplate', function (staticObj) {
 });
 
 _.set(exports, 'getStaticDictionary', function () {
-	return dbSystemServiceController.staticDictionaryActions('read')
+	return dbSystemLocalController.staticDictionaryActions('read')
 		.then(function (staticDic) {
 			return new Promise(function (resolve) {
 				resolve(staticDic);
@@ -1162,7 +1162,7 @@ _.set(exports, 'getStaticDictionary', function () {
 });
 
 _.set(exports, 'getUnitDictionary', function () {
-	return dbSystemServiceController.unitDictionaryActions('read')
+	return dbSystemLocalController.unitDictionaryActions('read')
 		.then(function (unitsDic) {
 			return new Promise(function (resolve) {
 				resolve(unitsDic);
@@ -1199,7 +1199,7 @@ _.set(exports, 'getBases', function (serverName) {
 });
 
 _.set(exports, 'getServer', function ( serverName ) {
-	return dbSystemServiceController.serverActions('read', {_id: serverName})
+	return dbSystemLocalController.serverActions('read', {_id: serverName})
 		.then(function (server) {
 			return new Promise(function (resolve) {
 				resolve(_.first(server));

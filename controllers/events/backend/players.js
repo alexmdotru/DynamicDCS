@@ -1,6 +1,5 @@
 const _ = require('lodash');
 const constants = require('../../constants');
-const dbSystemServiceController = require('../../db/dbSystemService');
 const dbMapServiceController = require('../../db/dbMapService');
 const DCSLuaCommands = require('../../player/DCSLuaCommands');
 const sideLockController = require('../../action/sideLock');
@@ -77,7 +76,7 @@ _.set(exports, 'processPlayerEvent', function (serverName, sessionName, playerAr
                                             */
 										}
 										/*
-                                        dbSystemServiceController.userAccountActions('read')
+                                        dbSystemLocalController.userAccountActions('read')
                                             .then(function (resp) {
                                                 var curSocket;
                                                 var switchedPlayerSocket = _.get(nonaccountUsers, curPlyrUcid);

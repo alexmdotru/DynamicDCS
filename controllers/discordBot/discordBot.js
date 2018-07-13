@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const Discord = require('discord.js');
 const constants = require('../constants');
-const dbSystemServiceController = require('../db/dbSystemService');
+const dbSystemLocalController = require('../db/dbSystemLocal');
 const dbMapServiceController = require('../db/dbMapService');
 const DCSLuaCommands = require('../player/DCSLuaCommands');
 const webPushCommands = require('../socketIO/webPush');
@@ -134,7 +134,7 @@ client.on('ready', () => {
 			});
 		});
 
-		dbSystemServiceController.serverActions('read', {enabled: true})
+		dbSystemLocalController.serverActions('read', {enabled: true})
 			.then(function (srvs) {
 				_.forEach(srvs, function (srv) {
 					var curServerName = _.get(srv, '_id');

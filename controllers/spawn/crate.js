@@ -1,7 +1,6 @@
 const _ = require('lodash');
 const constants = require('../constants');
 const dbMapServiceController = require('../db/dbMapService');
-const dbSystemServiceController = require('../db/dbSystemService');
 const zoneController = require('../proxZone/zone');
 const groupController = require('../spawn/group');
 

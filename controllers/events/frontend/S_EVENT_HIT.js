@@ -7,7 +7,7 @@
 
 const _ = require('lodash');
 const constants = require('../../constants');
-const dbSystemServiceController = require('../../db/dbSystemService');
+const dbSystemLocalController = require('../../db/dbSystemLocal');
 const dbMapServiceController = require('../../db/dbMapService');
 const DCSLuaCommands = require('../../player/DCSLuaCommands');
 const webPushCommands = require('../../socketIO/webPush');
@@ -141,7 +141,7 @@ _.set(exports, 'processEventHit', function (serverName, sessionName, eventObj) {
 									if (_.get(curIUnit, 'coalition', 0) !== _.get(curTUnit, 'coalition', 0)) {
 										if( _.get(eventObj, ['data', 'arg7', 'typeName'])){
 											// console.log('weaponhere: ', _.get(eventObj, ['data', 'arg7', 'typeName']));
-											dbSystemServiceController.weaponScoreActions('read', _.get(eventObj, ['data', 'arg7']))
+											dbSystemLocalController.weaponScoreActions('read', _.get(eventObj, ['data', 'arg7']))
 												.then(function (weaponResp) {
 													if (_.get(iCurObj, 'iucid') || _.get(iCurObj, 'tucid') || isOwnedUnit) {
 														if (_.startsWith(_.get(weaponResp, 'name'), 'weapons.shells')){

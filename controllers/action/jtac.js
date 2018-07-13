@@ -1,5 +1,5 @@
 const	_ = require('lodash');
-const dbSystemServiceController = require('../db/dbSystemService');
+const dbSystemLocalController = require('../db/dbSystemLocal');
 const dbMapServiceController = require('../db/dbMapService');
 const proximityController = require('../proxZone/proximity');
 
@@ -147,7 +147,7 @@ _.set(exports, 'processLOSEnemy', function (serverName, losReply) {
 				var curJtacUnit = _.get(fJtacUnit, [0]);
 				dbMapServiceController.unitActions('read', serverName, {name: {$in: losReply.data}})
 					.then(function (eJtacUnit) {
-						dbSystemServiceController.unitDictionaryActions('read', {})
+						dbSystemLocalController.unitDictionaryActions('read', {})
 							.then(function (unitDict) {
 								_.forEach(eJtacUnit, function (jtUnit) {
 									var curUnitDict = _.find(unitDict, {_id: jtUnit.type});

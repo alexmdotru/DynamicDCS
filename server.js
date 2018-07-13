@@ -38,14 +38,15 @@ server = app.listen(DDCS.port);
 
 //Controllers
 const discordBotController = require('./controllers/discordBot/discordBot');
-const dbSystemServiceController = require('./controllers/db/dbSystemService');
+const dbSystemLocalController = require('./controllers/db/dbSystemLocal');
 const dbMapServiceController = require('./controllers/db/dbMapService');
-dbSystemServiceController.connectSystemDB(DDCS.db.systemHost, DDCS.db.systemDatabase);
+dbSystemLocalController.connectSystemDB(DDCS.db.systemHost, DDCS.db.systemDatabase);
 dbMapServiceController.connectMapDB(DDCS.db.dynamicHost, DDCS.db.dynamicDatabase);
 
 //secure sockets
 var io = require('socket.io').listen(server);
 var admin = false;
+
 
 var srvPlayerObj;
 
@@ -100,7 +101,7 @@ router.route('/srvPlayers/:serverName')
 	});
 router.route('/theaters')
 	.get(function (req, res) {
-		dbSystemServiceController.theaterActions('read')
+		dbSystemLocalController.theaterActions('read')
 			.then(function (resp) {
 				res.json(resp);
 			})
@@ -108,7 +109,7 @@ router.route('/theaters')
 	});
 router.route('/servers')
 	.get(function (req, res) {
-		dbSystemServiceController.serverActions('read')
+		dbSystemLocalController.serverActions('read')
 			.then(function (resp) {
 				res.json(resp);
 			})
@@ -117,7 +118,7 @@ router.route('/servers')
 router.route('/servers/:serverName')
 	.get(function (req, res) {
 		_.set(req, 'body.server_name', req.params.serverName);
-		dbSystemServiceController.serverActions('read', req.body)
+		dbSystemLocalController.serverActions('read', req.body)
 			.then(function (resp) {
 				res.json(resp);
 			})
@@ -125,7 +126,7 @@ router.route('/servers/:serverName')
 	});
 router.route('/userAccounts')
 	.get(function (req, res) {
-		dbSystemServiceController.userAccountActions('read')
+		dbSystemLocalController.userAccountActions('read')
 			.then(function (resp) {
 				res.json(resp);
 			})
@@ -134,7 +135,7 @@ router.route('/userAccounts')
 router.route('/userAccounts/:_id')
 	.get(function (req, res) {
 		_.set(req, 'body.ucid', req.params._id);
-		dbSystemServiceController.userAccountActions('read', req.body)
+		dbSystemLocalController.userAccountActions('read', req.body)
 			.then(function (resp) {
 				res.json(resp);
 			})
@@ -142,7 +143,7 @@ router.route('/userAccounts/:_id')
 	});
 router.route('/checkUserAccount')
 	.post(function (req, res) {
-		dbSystemServiceController.userAccountActions('checkAccount', req)
+		dbSystemLocalController.userAccountActions('checkAccount', req)
 			.then(function (resp) {
 				res.json(resp);
 			})
@@ -185,11 +186,11 @@ router.route('/unitStatics/:serverName')
 			.then(function (srvPlayer) {
 				var curSrvPlayer = _.get(srvPlayer, 0);
 				if (curSrvPlayer) {
-					dbSystemServiceController.userAccountActions('read', {ucid: curSrvPlayer._id})
+					dbSystemLocalController.userAccountActions('read', {ucid: curSrvPlayer._id})
 						.then(function (userAcct) {
 							var curAcct = _.get(userAcct, 0);
 							if (curAcct) {
-								dbSystemServiceController.userAccountActions('updateSingleUCID', {ucid: curSrvPlayer._id, lastServer: serverName, gameName: curSrvPlayer.name})
+								dbSystemLocalController.userAccountActions('updateSingleUCID', {ucid: curSrvPlayer._id, lastServer: serverName, gameName: curSrvPlayer.name})
 									.then(function () {
 										var unitObj = {
 											dead: false,
@@ -216,9 +217,9 @@ router.route('/unitStatics/:serverName')
 							} else {
 								var curSrvIP = _.first(_.split(curSrvPlayer.ipaddr, ':'));
 								console.log('Cur Account Doesnt Exist line, matching IP: ', curSrvIP);
-								dbSystemServiceController.userAccountActions('updateSingleIP', {ipaddr: curSrvIP, ucid: curSrvPlayer.ucid, lastServer: serverName, gameName: curSrvPlayer.name})
+								dbSystemLocalController.userAccountActions('updateSingleIP', {ipaddr: curSrvIP, ucid: curSrvPlayer.ucid, lastServer: serverName, gameName: curSrvPlayer.name})
 									.then(function () {
-										dbSystemServiceController.userAccountActions('read', {ucid: curSrvPlayer.ucid})
+										dbSystemLocalController.userAccountActions('read', {ucid: curSrvPlayer.ucid})
 											.then(function (userAcct) {
 												var unitObj;
 												var curAcct = _.get(userAcct, 0);
@@ -305,7 +306,7 @@ router.route('/bases/:serverName')
 protectedRouter.use(checkJwt);
 //past this point must have permission value less than 10
 protectedRouter.use(function (req, res, next) {
-	dbSystemServiceController.userAccountActions('getPerm', req.user.sub)
+	dbSystemLocalController.userAccountActions('getPerm', req.user.sub)
 		.then(function (resp) {
 			if (resp[0].permLvl < 10) {
 				next();
@@ -318,7 +319,7 @@ protectedRouter.use(function (req, res, next) {
 
 protectedRouter.route('/servers')
 	.post(function (req, res) {
-		dbSystemServiceController.serverActions('create', req.body)
+		dbSystemLocalController.serverActions('create', req.body)
 			.then(function (resp) {
 				res.json(resp);
 			})
@@ -327,7 +328,7 @@ protectedRouter.route('/servers')
 protectedRouter.route('/servers/:server_name')
 	.put(function (req, res) {
 		_.set(req, 'body.server_name', req.params.server_name);
-		dbSystemServiceController.serverActions('update', req.body)
+		dbSystemLocalController.serverActions('update', req.body)
 			.then(function (resp) {
 				res.json(resp);
 			})
@@ -335,7 +336,7 @@ protectedRouter.route('/servers/:server_name')
 	})
 	.delete(function (req, res) {
 		_.set(req, 'body.name', req.params.server_name);
-		dbSystemServiceController.serverActions('delete', req.body)
+		dbSystemLocalController.serverActions('delete', req.body)
 			.then(function (resp) {
 				res.json(resp);
 			})
@@ -344,7 +345,7 @@ protectedRouter.route('/servers/:server_name')
 
 protectedRouter.route('/userAccounts')
 	.post(function (req, res) {
-		dbSystemServiceController.userAccountActions('create', req.body)
+		dbSystemLocalController.userAccountActions('create', req.body)
 			.then(function (resp) {
 				res.json(resp);
 			})
@@ -378,7 +379,7 @@ io.on('connection', function (socket) {
 		console.log(socket.id + ' connected on ' + curIP + ' with ID: ' + authId);
 		if (authId !== 'null') {
 			console.log('LOGGED IN', authId);
-			dbSystemServiceController.userAccountActions('updateSocket', {
+			dbSystemLocalController.userAccountActions('updateSocket', {
 				authId: authId,
 				curSocket: socket.id,
 				lastIp: curIP
@@ -464,7 +465,7 @@ setInterval(function () {
 */
 
 setInterval(function () {
-	dbSystemServiceController.serverActions('read', {enabled: true})
+	dbSystemLocalController.serverActions('read', {enabled: true})
 		.then(function (srvs) {
 			_.forEach(srvs, function (srv) {
 				var curServerName = _.toLower(_.get(srv, '_id'));
