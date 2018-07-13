@@ -26,6 +26,7 @@ exports.Only2ChannelNames = [
 
 
 _.set(dBot, 'processKick', function (curServerName, curPlayer, playerCommObj, isDiscordAllowed, curPlayerUnit) {
+	console.log('PK: ', curServerName, curPlayer, playerCommObj, isDiscordAllowed, curPlayerUnit);
 	var curPlayerName = curPlayer.name;
 	var newLifeCount = (curPlayer.gicTimeLeft === 0)? exports.timeToCorrect : curPlayer.gicTimeLeft - 1 ;
 
@@ -66,6 +67,7 @@ _.set(dBot, 'processKick', function (curServerName, curPlayer, playerCommObj, is
 _.set(dBot, 'kickForNoComms', function (curServerName, playerArray, isDiscordAllowed) {
     dbSystemRemoteController.remoteCommsActions('read', {})
         .then(function (playersInComms) {
+			console.log('pic: ', playersInComms);
             if (playersInComms.length > 0) {
                 _.forEach(playerArray, function (curPlayer) {
                     var curPlayerName = curPlayer.name;
@@ -73,7 +75,7 @@ _.set(dBot, 'kickForNoComms', function (curServerName, playerArray, isDiscordAll
                     var curPlayerCommObj = _.find(playersInComms, {_id: curPlayerName});
 
                     if (curPlayerCommObj) {
-                        // console.log( curPlayerName + ' is a member of DDCS community');
+                        console.log( curPlayerName + ' is a member of DDCS community');
                         dbMapServiceController.unitActions('read', curServerName, {dead: false, playername: curPlayerName})
                             .then(function (pUnit) {
                                 var curPlayerUnit = _.get(pUnit, '0');
@@ -89,11 +91,11 @@ _.set(dBot, 'kickForNoComms', function (curServerName, playerArray, isDiscordAll
                                 }
 
                                 if (curPlayerCommObj.isInSRS) {
-                                    // console.log(curPlayerName + ' is in SRS');
+                                    console.log(curPlayerName + ' is in SRS');
                                 } else if (curPlayerCommObj.isInDiscord && isDiscordAllowed) {
-                                    // console.log(curPlayerName + ' is in discord voice');
+                                    console.log(curPlayerName + ' is in discord voice');
                                 } else {
-                                    // console.log(curPlayerName + 'NOT in voice comms');
+                                    console.log(curPlayerName + 'NOT in voice comms');
                                     dBot.processKick(curServerName, curPlayer,  curPlayerCommObj, isDiscordAllowed, curPlayerUnit);
                                 }
                             })
