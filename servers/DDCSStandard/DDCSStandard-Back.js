@@ -10,6 +10,7 @@ const selfKillEvent = require('../../controllers/events/backend/selfKill');
 const connectEvent = require('../../controllers/events/backend/connect');
 const disconnectEvent = require('../../controllers/events/backend/disconnect');
 const groupController = require('../../controllers/spawn/group');
+const commsUserProcessing = require('../../controllers/discordBot/commsUserProcessing');
 
 var DCB = {};
 
