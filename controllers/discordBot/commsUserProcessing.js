@@ -159,7 +159,10 @@ _.set(dBot, 'kickForOpposingSides', function (playerArray, discordByChannel) {
 });
 */
 
-_.set(exports, 'checkForComms', function (serverName, isDiscordAllowed) {
+_.set(exports, 'checkForComms', function (serverName, isDiscordAllowed, playerArray) {
+    console.log('PA: ', playerArray);
+    /*
+    dBot.kickForNoComms(serverName, playerArray, isDiscordAllowed);
     var fiveMinsAgo = new Date().getTime() - (5 * oneMin);
     dbMapServiceController.statSessionActions('readLatest', serverName, {})
         .then(function (latestSession) {
@@ -194,4 +197,5 @@ _.set(exports, 'checkForComms', function (serverName, isDiscordAllowed) {
             console.log('line187', err);
         })
     ;
+    */
 });
