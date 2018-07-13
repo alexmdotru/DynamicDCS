@@ -169,7 +169,7 @@ _.set(exports, 'checkForComms', function (serverName, isDiscordAllowed) {
                     name: {$ne: ''},
                     sessionName: latestSession.name,
                     updatedAt: {
-                        $gt: fiveMinsAgo
+                        $gt: new Date(fiveMinsAgo)
                     }
                 })
                     .then(function (playerArray) {
