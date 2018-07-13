@@ -160,7 +160,7 @@ _.set(dBot, 'kickForOpposingSides', function (playerArray, discordByChannel) {
 */
 
 _.set(exports, 'checkForComms', function (serverName, isDiscordAllowed) {
-    var fiveMinsAgo = new Date(new Date()).getTime() - 5 * oneMin;
+    var fiveMinsAgo = new Date(new Date().getTime() - (5 * oneMin));
     dbMapServiceController.statSessionActions('readLatest', serverName, {})
         .then(function (latestSession) {
             if (latestSession.name) {
