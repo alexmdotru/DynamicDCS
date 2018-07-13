@@ -173,7 +173,7 @@ _.set(exports, 'checkForComms', function (serverName, isDiscordAllowed) {
                     }
                 })
                     .then(function (playerArray) {
-                        console.log('PA: ', playerArray);
+                        console.log('PA: ', playerArray.length);
                     	dBot.kickForNoComms(serverName, playerArray, isDiscordAllowed);
                         // have all the existing player names on the server
                         // dBot.kickForOpposingSides(playerArray, discordByChannel); for the future
