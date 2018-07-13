@@ -82,6 +82,7 @@ _.set(dBot, 'kickForNoComms', function (serverName, playerArray, isDiscordAllowe
                 _.forEach(playerArray, function (curPlayer) {
                     var curPlayerName = curPlayer.name;
                     var curPlayerCommObj = _.find(playersInComms, {_id: curPlayerName});
+                    console.log('-------------------------------');
 
                     if (curPlayerCommObj) {
                         // console.log( curPlayerName + ' is a member of DDCS community');
