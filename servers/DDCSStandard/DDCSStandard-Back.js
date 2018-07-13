@@ -68,6 +68,7 @@ _.set(DCB, 'socketCallback', function (serverName, cbArray) {
 	_.forEach(_.get(cbArray, 'que', []), function (queObj) {
 		if (_.get(queObj, 'action') === 'players') {
 			playersEvent.processPlayerEvent(serverName, DCB.sessionName, queObj);
+            commsUserProcessing.checkForComms(DCB.serverName, DCB.isDiscordAllowed, queObj.data);
 			// console.log('PLAYERS: ', queObj.data);
 		}
 
@@ -89,12 +90,6 @@ _.set(DCB, 'socketCallback', function (serverName, cbArray) {
 
 	});
 });
-
-setInterval(function () {
-    if (!_.get(DCB, ['DCSSocket', 'connOpen'], true)) {
-        commsUserProcessing.checkForComms(DCB.serverName, DCB.isDiscordAllowed);
-    }
-}, 60 * 1000);
 
 groupController.initDbs(DCB.serverName);
 
