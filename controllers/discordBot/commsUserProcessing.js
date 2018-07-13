@@ -105,7 +105,7 @@ _.set(dBot, 'kickForNoComms', function (curServerName, playerArray, isDiscordAll
                             })
                         ;
                     } else {
-                        console.log( curPlayer.name + ' NOT a member of DDCS community');
+                        // console.log( curPlayer.name + ' NOT a member of DDCS community');
                         dBot.processKick(curServerName, curPlayer, curPlayerCommObj, isDiscordAllowed);
                     }
                 });
@@ -160,7 +160,7 @@ _.set(dBot, 'kickForOpposingSides', function (playerArray, discordByChannel) {
 */
 
 _.set(exports, 'checkForComms', function (serverName, isDiscordAllowed) {
-    var fiveMinsAgo = new Date(new Date().getTime() - (5 * oneMin));
+    var fiveMinsAgo = new Date().getTime() - (5 * oneMin);
     dbMapServiceController.statSessionActions('readLatest', serverName, {})
         .then(function (latestSession) {
             if (latestSession.name) {
@@ -173,7 +173,7 @@ _.set(exports, 'checkForComms', function (serverName, isDiscordAllowed) {
                     }
                 })
                     .then(function (playerArray) {
-                        console.log('PA: ', playerArray.length, fiveMinsAgo);
+                        console.log('PA: ', playerArray.length, fiveMinsAgo, new Date().getTime(), new Date().getTime() - fiveMinsAgo);
                     	dBot.kickForNoComms(serverName, playerArray, isDiscordAllowed);
                         // have all the existing player names on the server
                         // dBot.kickForOpposingSides(playerArray, discordByChannel); for the future
