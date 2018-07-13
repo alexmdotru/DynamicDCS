@@ -105,7 +105,7 @@ _.set(dBot, 'kickForNoComms', function (curServerName, playerArray, isDiscordAll
                             })
                         ;
                     } else {
-                        // console.log( curPlayer.name + ' NOT a member of DDCS community');
+                        console.log( curPlayer.name + ' NOT a member of DDCS community');
                         dBot.processKick(curServerName, curPlayer, curPlayerCommObj, isDiscordAllowed);
                     }
                 });
@@ -173,6 +173,7 @@ _.set(exports, 'checkForComms', function (serverName, isDiscordAllowed) {
                     }
                 })
                     .then(function (playerArray) {
+                        console.log('PA: ', playerArray);
                     	dBot.kickForNoComms(serverName, playerArray, isDiscordAllowed);
                         // have all the existing player names on the server
                         // dBot.kickForOpposingSides(playerArray, discordByChannel); for the future
