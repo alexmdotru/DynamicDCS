@@ -33,9 +33,9 @@ _.set(dBot, 'processKick', function (curServerName, curPlayer, playerCommObj, is
 	if (newLifeCount !== 0) {
 		console.log('GTBK: ', newLifeCount, curPlayerName);
 		if (isDiscordAllowed) {
-            var mesg = "SERVER REQUIREMENT(you have " + newLifeCount + " mins left to fix):You are currently need to be in a VOICE discord channel(Status is online(not invisi)) OR SRS connected to the SRS server (srs.dynamicdcs.com), You also need to be a member of the DDCS discord(with your name matching EXACTLY) https://discord.gg/3J3petx";
+            var mesg = "SERVER REQUIREMENT(you have " + newLifeCount + " mins left to fix):You need to be in a VOICE discord channel(Status is online(not invisi)) OR connected to the SRS server (srs.dynamicdcs.com), You also need to be a member of the DDCS discord(with your name matching EXACTLY) https://discord.gg/3J3petx ";
          } else {
-            var mesg = "SERVER REQUIREMENT(you have " + newLifeCount + " mins left to fix):You must the SRS server (SRS.dynamicdcs.com), You also need to be a member of the DDCS discord (with your nickname/name matching EXACTLY) https://discord.gg/3J3petx ";
+            var mesg = "SERVER REQUIREMENT(you have " + newLifeCount + " mins left to fix):You must join the SRS server (SRS.dynamicdcs.com), You also need to be a member of the DDCS discord (with your nickname/name matching EXACTLY) https://discord.gg/3J3petx ";
          }
          if (curPlayerUnit) {
              DCSLuaCommands.sendMesgToGroup(curPlayerUnit.groupId, curServerName, mesg, '60');
@@ -48,14 +48,13 @@ _.set(dBot, 'processKick', function (curServerName, curPlayer, playerCommObj, is
 	} else {
 		console.log('KICKING: ', curPlayerName);
         if (isDiscordAllowed) {
-            var mesg = "YOU HAVE BEEN KICKED TO SPECTATOR FOR NOT BEING IN COMMS, You are currently need to be in a VOICE discord channel(Status is online(not invisi)) OR SRS connected to the SRS server (srs.dynamicdcs.com), You also need to be a member of the DDCS discord(with your name matching EXACTLY) https://discord.gg/3J3petx";
+            var mesg = "YOU HAVE BEEN KICKED TO SPECTATOR FOR NOT BEING IN COMMS, You currently need to be in a VOICE discord channel(Status is online(not invisi)) OR connected to the SRS server (srs.dynamicdcs.com), You also need to be a member of the DDCS discord(with your name matching EXACTLY) https://discord.gg/3J3petx ";
         } else {
-            var mesg = "YOU HAVE BEEN KICKED TO SPECTATOR FOR NOT BEING IN COMMS, You must the SRS server (SRS.dynamicdcs.com), You also need to be a member of the DDCS discord (with your nickname/name matching EXACTLY) https://discord.gg/3J3petx ";
+            var mesg = "YOU HAVE BEEN KICKED TO SPECTATOR FOR NOT BEING IN COMMS, You must join the SRS server (SRS.dynamicdcs.com), You also need to be a member of the DDCS discord (with your nickname/name matching EXACTLY) https://discord.gg/3J3petx ";
         }
         dbMapServiceController.srvPlayerActions('update', curServerName, {_id: curPlayer._id, gicTimeLeft: newLifeCount})
             .then(function () {
                 console.log('KICKED FOR NO COMMS: ', curPlayerUnit.playername);
-                var mesg = "YOU HAVE BEEN KICKED TO SPECTATOR FOR NOT BEING IN COMMS, You are currently need to be in a VOICE discord channel, Status is online(not invisi) and/or your discord nickname and player name needs to match exactly. Please join DDCS discord https://discord.gg/3J3petx";
                 if (curPlayerUnit) {
                     DCSLuaCommands.sendMesgToGroup(curPlayerUnit.groupId, curServerName, mesg, '60');
                 }
@@ -71,15 +70,14 @@ _.set(dBot, 'processKick', function (curServerName, curPlayer, playerCommObj, is
 _.set(dBot, 'kickForNoComms', function (curServerName, playerArray, isDiscordAllowed) {
     dbSystemRemoteController.remoteCommsActions('read', {})
         .then(function (playersInComms) {
-			console.log('pic: ', playersInComms);
+			// console.log('pic: ', playersInComms);
             if (playersInComms.length > 0) {
                 _.forEach(playerArray, function (curPlayer) {
                     var curPlayerName = curPlayer.name;
-                    var playerType;
                     var curPlayerCommObj = _.find(playersInComms, {_id: curPlayerName});
 
                     if (curPlayerCommObj) {
-                        console.log( curPlayerName + ' is a member of DDCS community');
+                        // console.log( curPlayerName + ' is a member of DDCS community');
                         dbMapServiceController.unitActions('read', curServerName, {dead: false, playername: curPlayerName})
                             .then(function (pUnit) {
                                 var curPlayerUnit = _.get(pUnit, '0');
