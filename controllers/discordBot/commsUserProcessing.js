@@ -6,7 +6,6 @@ const webPushCommands = require('../socketIO/webPush');
 
 var dBot = {};
 var oneMin = 60 * 1000;
-var fiveMinsAgo = new Date(new Date()).getTime() - 5 * oneMin;
 
 exports.oldestAllowedUser = 300;
 exports.timeToCorrect = 30;
@@ -161,6 +160,7 @@ _.set(dBot, 'kickForOpposingSides', function (playerArray, discordByChannel) {
 */
 
 _.set(exports, 'checkForComms', function (serverName, isDiscordAllowed) {
+    var fiveMinsAgo = new Date(new Date()).getTime() - 5 * oneMin;
     dbMapServiceController.statSessionActions('readLatest', serverName, {})
         .then(function (latestSession) {
             if (latestSession.name) {
