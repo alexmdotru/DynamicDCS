@@ -103,7 +103,7 @@ _.set(dBot, 'kickForNoComms', function (curServerName, playerArray, isDiscordAll
                         ;
                     } else {
                         console.log( curPlayer.name + ' NOT a member of DDCS community');
-                        dBot.processKick(curServerName, curPlayer);
+                        dBot.processKick(curServerName, curPlayer, curPlayerCommObj, isDiscordAllowed);
                     }
                 });
             }
