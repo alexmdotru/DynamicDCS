@@ -79,11 +79,10 @@ _.set(dBot, 'kickForNoComms', function (serverName, playerArray, isDiscordAllowe
         .then(function (playersInComms) {
 			// console.log('pic: ', playersInComms);
             if (playersInComms.length > 0) {
+                console.log('-------------------------------');
                 _.forEach(playerArray, function (curPlayer) {
                     var curPlayerName = curPlayer.name;
                     var curPlayerCommObj = _.find(playersInComms, {_id: curPlayerName});
-                    console.log('-------------------------------');
-
                     if (curPlayerCommObj) {
                         // console.log( curPlayerName + ' is a member of DDCS community');
                         dbMapServiceController.unitActions('read', serverName, {dead: false, playername: curPlayerName})
