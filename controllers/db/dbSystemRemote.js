@@ -101,11 +101,10 @@ exports.remoteCommsActions = function (action, obj){
     }
     if(action === 'removeNonCommPeople') {
         return new Promise(function(resolve, reject) {
-            var twoMinsAgo = new Date(new Date()).getTime() - 2 * 60 * 1000;
             RemoteComm.remove(
                 {
                     updatedAt: {
-                        $lte: twoMinsAgo
+                        $lte: new Date(new Date().getTime() - (2 * 60 * 1000))
                     }
                 },
                 function(err, units) {
