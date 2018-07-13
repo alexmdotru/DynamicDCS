@@ -54,8 +54,8 @@ _.set(dBot, 'processKick', function (curServerName, curPlayer, playerCommObj, is
         }
         dbMapServiceController.srvPlayerActions('update', curServerName, {_id: curPlayer._id, gicTimeLeft: newLifeCount})
             .then(function () {
-                console.log('KICKED FOR NO COMMS: ', curPlayerUnit.playername);
                 if (curPlayerUnit) {
+                    console.log('KICKED FOR NO COMMS: ', curPlayerUnit.playername);
                     DCSLuaCommands.sendMesgToGroup(curPlayerUnit.groupId, curServerName, mesg, '60');
                 }
                 DCSLuaCommands.forcePlayerSpectator(curServerName, curPlayer.playerId, mesg);
