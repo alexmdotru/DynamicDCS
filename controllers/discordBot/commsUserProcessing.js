@@ -170,12 +170,10 @@ _.set(dBot, 'kickForOpposingSides', function (playerArray, discordByChannel) {
 _.set(exports, 'checkForComms', function (serverName, isDiscordAllowed, playerArray) {
     //console.log('PA: ', playerArray);
     var removeServerHost = _.filter(playerArray, function (p) {
-        if (p.id) {
+        if (p) {
             return p.id != 1;
-        } else {
-            console.log('p doesnt exist', p);
-            return false;
         }
+        return false;
     });
     dBot.kickForNoComms(serverName, removeServerHost, isDiscordAllowed);
     /*
