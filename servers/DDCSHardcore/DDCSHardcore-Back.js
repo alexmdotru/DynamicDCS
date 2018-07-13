@@ -93,7 +93,7 @@ setInterval(function () {
     if (!_.get(DCB, ['DCSSocket', 'connOpen'], true)) {
         commsUserProcessing.checkForComms(DCB.serverName, DCB.isDiscordAllowed);
     }
-}, 5 * 1000);
+}, 60 * 1000);
 
 groupController.initDbs(DCB.serverName);
 
