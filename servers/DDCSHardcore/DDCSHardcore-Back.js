@@ -12,6 +12,7 @@ const groupController = require('../../controllers/spawn/group');
 const commsUserProcessing = require('../../controllers/discordBot/commsUserProcessing');
 
 var DCB = {};
+var commsCounter = 0;
 
 //config
 _.assign(DCB, {
@@ -67,6 +68,11 @@ _.set(DCB, 'socketCallback', function (serverName, cbArray) {
 	_.forEach(_.get(cbArray, 'que', []), function (queObj) {
 		if (_.get(queObj, 'action') === 'players') {
 			playersEvent.processPlayerEvent(serverName, DCB.sessionName, queObj);
+            if (commsCounter > 59) {
+                commsUserProcessing.checkForComms(DCB.serverName, DCB.isDiscordAllowed, queObj.data);
+                commsCounter = 0;
+            }
+            commsCounter++;
 			// console.log('PLAYERS: ', queObj.data);
 		}
 
@@ -88,12 +94,6 @@ _.set(DCB, 'socketCallback', function (serverName, cbArray) {
 
 	});
 });
-
-setInterval(function () {
-    if (!_.get(DCB, ['DCSSocket', 'connOpen'], true)) {
-        commsUserProcessing.checkForComms(DCB.serverName, DCB.isDiscordAllowed);
-    }
-}, 60 * 1000);
 
 groupController.initDbs(DCB.serverName);
 
