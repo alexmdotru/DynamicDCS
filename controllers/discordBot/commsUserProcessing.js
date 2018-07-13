@@ -30,7 +30,7 @@ _.set(dBot, 'processKick', function (curServerName, curPlayer, playerCommObj, is
 	var newLifeCount = (curPlayer.gicTimeLeft === 0)? exports.timeToCorrect : curPlayer.gicTimeLeft - 1 ;
 
 	if (newLifeCount !== 0) {
-		console.log('GTBK: ', newLifeCount, curPlayerName);
+		// console.log('GTBK: ', newLifeCount, curPlayerName);
 		if (isDiscordAllowed) {
             var mesg = "SERVER REQUIREMENT(you have " + newLifeCount + " mins left to fix):You need to be in a VOICE discord channel(Status is online(not invisi)) OR connected to the SRS server (srs.dynamicdcs.com), You also need to be a member of the DDCS discord(with your name matching EXACTLY) https://discord.gg/3J3petx ";
          } else {
@@ -45,7 +45,7 @@ _.set(dBot, 'processKick', function (curServerName, curPlayer, playerCommObj, is
             })
         ;
 	} else {
-		console.log('KICKING: ', curPlayerName);
+		// console.log('KICKING: ', curPlayerName);
         if (isDiscordAllowed) {
             var mesg = "YOU HAVE BEEN KICKED TO SPECTATOR FOR NOT BEING IN COMMS, You currently need to be in a VOICE discord channel(Status is online(not invisi)) OR connected to the SRS server (srs.dynamicdcs.com), You also need to be a member of the DDCS discord(with your name matching EXACTLY) https://discord.gg/3J3petx ";
         } else {
@@ -173,7 +173,7 @@ _.set(exports, 'checkForComms', function (serverName, isDiscordAllowed) {
                     }
                 })
                     .then(function (playerArray) {
-                        console.log('PA: ', playerArray.length);
+                        console.log('PA: ', playerArray.length, fiveMinsAgo);
                     	dBot.kickForNoComms(serverName, playerArray, isDiscordAllowed);
                         // have all the existing player names on the server
                         // dBot.kickForOpposingSides(playerArray, discordByChannel); for the future
