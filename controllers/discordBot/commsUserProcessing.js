@@ -58,7 +58,7 @@ _.set(dBot, 'processKick', function (curServerName, curPlayer, playerCommObj, is
                     console.log('KICKED FOR NO COMMS: ', curPlayerUnit.playername);
                     DCSLuaCommands.sendMesgToGroup(curPlayerUnit.groupId, curServerName, mesg, '60');
                 }
-                DCSLuaCommands.forcePlayerSpectator(curServerName, curPlayer.playerId, mesg);
+                // DCSLuaCommands.forcePlayerSpectator(curServerName, curPlayer.playerId, mesg);
             })
             .catch(function (err) {
                 console.log('line70', err);
