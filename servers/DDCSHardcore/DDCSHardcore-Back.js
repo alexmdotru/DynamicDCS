@@ -1,14 +1,15 @@
 const _ = require('lodash');
 const DCSSocket = require('../../controllers/net/DCSSocket');
 const dbSystemLocalController = require('../../controllers/db/dbSystemLocal');
+const dbSystemRemoteController = require('../../controllers/db/dbSystemRemote');
 const dbMapServiceController = require('../../controllers/db/dbMapService');
-const sychrontronController = require('../../controllers/sychronize/Sychrontron');
 const playersEvent = require('../../controllers/events/backend/players');
 const friendlyFireEvent = require('../../controllers/events/backend/friendlyFire');
 const selfKillEvent = require('../../controllers/events/backend/selfKill');
 const connectEvent = require('../../controllers/events/backend/connect');
 const disconnectEvent = require('../../controllers/events/backend/disconnect');
 const groupController = require('../../controllers/spawn/group');
+const commsUserProcessing = require('../../controllers/discordBot/commsUserProcessing');
 
 var DCB = {};
 
@@ -18,15 +19,18 @@ _.assign(DCB, {
 	serverIP: '127.0.0.1',
 	serverPort: '3002',
 	queName: 'gameGuiArray',
+    isDiscordAllowed: false,
 	db: {
 		systemHost: 'localhost',
 		systemDatabase: 'DDCS',
 		dynamicHost: 'localhost',
-		dynamicDatabase: 'DDCSHardcore'
+		dynamicDatabase: 'DDCSHardcore',
+		remoteHost: 'localhost'
 	}
 });
 
 dbSystemLocalController.connectSystemLocalDB(DCB.db.systemHost, DCB.db.systemDatabase);
+dbSystemRemoteController.connectSystemRemoteDB(DCB.db.remoteHost, DCB.db.systemDatabase);
 dbMapServiceController.connectMapDB(DCB.db.dynamicHost, DCB.db.dynamicDatabase);
 
 //checks to see if socket needs restarting every 3 secs
@@ -84,5 +88,12 @@ _.set(DCB, 'socketCallback', function (serverName, cbArray) {
 
 	});
 });
+
+setInterval(function () {
+    if (!_.get(DCB, ['DCSSocket', 'connOpen'], true)) {
+        commsUserProcessing.checkForComms(DCB.serverName, DCB.isDiscordAllowed);
+    }
+}, 5 * 1000);
+
 groupController.initDbs(DCB.serverName);
 
