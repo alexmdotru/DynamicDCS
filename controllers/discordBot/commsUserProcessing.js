@@ -26,44 +26,52 @@ exports.Only2ChannelNames = [
 
 _.set(dBot, 'processKick', function (curServerName, curPlayer, playerCommObj, isDiscordAllowed, curPlayerUnit) {
 	// console.log('PK: ', curServerName, curPlayer, playerCommObj, isDiscordAllowed, curPlayerUnit);
-	var curPlayerName = curPlayer.name;
-	var newLifeCount = (curPlayer.gicTimeLeft === 0)? exports.timeToCorrect : curPlayer.gicTimeLeft - 1 ;
+    dbMapServiceController.srvPlayerActions('read', serverName, { _id: curPlayer.ucid })
+        .then(function (curPlayerDB) {
+            var curPlayerName = curPlayer.name;
+            var curGicTimeLeft = _.get(curPlayerDB, '0.gicTimeLeft');
+            var newLifeCount = (curGicTimeLeft === 0)? exports.timeToCorrect : curGicTimeLeft - 1 ;
 
-	if (newLifeCount !== 0) {
-		// console.log('GTBK: ', newLifeCount, curPlayerName);
-		if (isDiscordAllowed) {
-            var mesg = "SERVER REQUIREMENT(you have " + newLifeCount + " mins left to fix):You need to be in a VOICE discord channel(Status is online(not invisi)) OR connected to the SRS server (srs.dynamicdcs.com), You also need to be a member of the DDCS discord(with your name matching EXACTLY) https://discord.gg/3J3petx ";
-         } else {
-            var mesg = "SERVER REQUIREMENT(you have " + newLifeCount + " mins left to fix):You must join the SRS server (SRS.dynamicdcs.com), You also need to be a member of the DDCS discord (with your nickname/name matching EXACTLY) https://discord.gg/3J3petx ";
-         }
-         if (curPlayerUnit) {
-             DCSLuaCommands.sendMesgToGroup(curPlayerUnit.groupId, curServerName, mesg, '60');
-         }
-        dbMapServiceController.srvPlayerActions('update', curServerName, {_id: curPlayer._id, gicTimeLeft: newLifeCount})
-            .catch(function (err) {
-                console.log('line58', err);
-            })
-        ;
-	} else {
-		// console.log('KICKING: ', curPlayerName);
-        if (isDiscordAllowed) {
-            var mesg = "YOU HAVE BEEN KICKED TO SPECTATOR FOR NOT BEING IN COMMS, You currently need to be in a VOICE discord channel(Status is online(not invisi)) OR connected to the SRS server (srs.dynamicdcs.com), You also need to be a member of the DDCS discord(with your name matching EXACTLY) https://discord.gg/3J3petx ";
-        } else {
-            var mesg = "YOU HAVE BEEN KICKED TO SPECTATOR FOR NOT BEING IN COMMS, You must join the SRS server (SRS.dynamicdcs.com), You also need to be a member of the DDCS discord (with your nickname/name matching EXACTLY) https://discord.gg/3J3petx ";
-        }
-        dbMapServiceController.srvPlayerActions('update', curServerName, {_id: curPlayer._id, gicTimeLeft: newLifeCount})
-            .then(function () {
+            if (newLifeCount !== 0) {
+                console.log('GTBK: ', newLifeCount, curPlayerName);
+                if (isDiscordAllowed) {
+                    var mesg = "SERVER REQUIREMENT(you have " + newLifeCount + " mins left to fix):You need to be in a VOICE discord channel(Status is online(not invisi)) OR connected to the SRS server (srs.dynamicdcs.com), You also need to be a member of the DDCS discord(with your name matching EXACTLY) https://discord.gg/3J3petx ";
+                } else {
+                    var mesg = "SERVER REQUIREMENT(you have " + newLifeCount + " mins left to fix):You must join the SRS server (SRS.dynamicdcs.com), You also need to be a member of the DDCS discord (with your nickname/name matching EXACTLY) https://discord.gg/3J3petx ";
+                }
                 if (curPlayerUnit) {
-                    console.log('KICKED FOR NO COMMS: ', curPlayerUnit.playername);
                     DCSLuaCommands.sendMesgToGroup(curPlayerUnit.groupId, curServerName, mesg, '60');
                 }
-                // DCSLuaCommands.forcePlayerSpectator(curServerName, curPlayer.playerId, mesg);
-            })
-            .catch(function (err) {
-                console.log('line70', err);
-            })
-        ;
-	}
+                dbMapServiceController.srvPlayerActions('update', curServerName, {_id: curPlayer.ucid, gicTimeLeft: newLifeCount})
+                    .catch(function (err) {
+                        console.log('line58', err);
+                    })
+                ;
+            } else {
+                // console.log('KICKING: ', curPlayerName);
+                if (isDiscordAllowed) {
+                    var mesg = "YOU HAVE BEEN KICKED TO SPECTATOR FOR NOT BEING IN COMMS, You currently need to be in a VOICE discord channel(Status is online(not invisi)) OR connected to the SRS server (srs.dynamicdcs.com), You also need to be a member of the DDCS discord(with your name matching EXACTLY) https://discord.gg/3J3petx ";
+                } else {
+                    var mesg = "YOU HAVE BEEN KICKED TO SPECTATOR FOR NOT BEING IN COMMS, You must join the SRS server (SRS.dynamicdcs.com), You also need to be a member of the DDCS discord (with your nickname/name matching EXACTLY) https://discord.gg/3J3petx ";
+                }
+                dbMapServiceController.srvPlayerActions('update', curServerName, {_id: curPlayer.ucid, gicTimeLeft: newLifeCount})
+                    .then(function () {
+                        if (curPlayerUnit) {
+                            console.log('KICKED FOR NO COMMS: ', curPlayerUnit.playername);
+                            DCSLuaCommands.sendMesgToGroup(curPlayerUnit.groupId, curServerName, mesg, '60');
+                        }
+                        // DCSLuaCommands.forcePlayerSpectator(curServerName, curPlayer.playerId, mesg);
+                    })
+                    .catch(function (err) {
+                        console.log('line70', err);
+                    })
+                ;
+            }
+        })
+        .catch(function (err) {
+            console.log('line58', err);
+        })
+    ;
 });
 
 _.set(dBot, 'kickForNoComms', function (curServerName, playerArray, isDiscordAllowed) {
