@@ -274,6 +274,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 				var curAction = 'addLifePoint';
 				var curPlayerLifePoints = _.get(serverObj, [0, 'curLifePoints'], 0);
 				var curTotalPoints = (curPlayerLifePoints >= 0) ? curPlayerLifePoints + obj.addLifePoints : obj.addLifePoints;
+				var maxLimitedPoints = (curTotalPoints > maxLifePoints) ? maxLifePoints : curTotalPoints;
 				var msg;
 				if (err) {
 					reject(err)
@@ -282,7 +283,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 					SrvPlayer.findOneAndUpdate(
 						{_id: obj._id},
 						{ $set: {
-							curLifePoints: (curTotalPoints > maxLifePoints) ? maxLifePoints : curTotalPoints,
+							curLifePoints: maxLimitedPoints,
 							lastLifeAction: curAction,
 							safeLifeActionTime: (nowTime + fifteenSecs)
 						}
@@ -290,9 +291,9 @@ exports.srvPlayerActions = function (action, serverName, obj){
 						function(err, srvPlayer) {
 							if (err) { reject(err) }
 							if (obj.execAction === 'PeriodicAdd') {
-								msg = '+' + _.round(obj.addLifePoints, 2).toFixed(2) + 'LP(T:' + curTotalPoints.toFixed(2) + ')';
+								msg = '+' + _.round(obj.addLifePoints, 2).toFixed(2) + 'LP(T:' + maxLimitedPoints.toFixed(2) + ')';
 							} else {
-								msg = 'You Have Just Gained ' + obj.addLifePoints.toFixed(2) + ' Life Points! ' + obj.execAction + '(Total:' + curTotalPoints.toFixed(2) + ')'
+								msg = 'You Have Just Gained ' + obj.addLifePoints.toFixed(2) + ' Life Points! ' + obj.execAction + '(Total:' + maxLimitedPoints.toFixed(2) + ')'
 							}
 							if (obj.groupId) {
 								DCSLuaCommands.sendMesgToGroup( obj.groupId, serverName, msg, 5);
