@@ -1888,6 +1888,7 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 		}
 		console.log('3');
 		while (spawnArray.length < curReplenThreshold) { //UNCOMMENT THESE
+			console.log('BR: ', serverName, extSide, extName);
 			spawnArray = _.concat(spawnArray, exports.spawnBaseReinforcementGroup(serverName, extSide, extName));
 		}
         console.log('4');
