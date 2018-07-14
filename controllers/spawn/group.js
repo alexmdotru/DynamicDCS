@@ -1324,7 +1324,9 @@ _.set(exports, 'spawnBaseReinforcementGroup', function (serverName, side, baseNa
 	_.forEach(curBaseSpawnCats, function (tickVal, name) {
 		var curTickVal = _.cloneDeep(tickVal);
 		if(_.includes(baseName, 'FARP')) {
-			curTickVal = curTickVal - 1;
+			if (curTickVal > 1) {
+                curTickVal = curTickVal - 1;
+			}
 		}
 		if (curTickVal > 0) {
 			for (var i = 0; i < curTickVal; i++) {
