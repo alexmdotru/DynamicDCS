@@ -237,8 +237,8 @@ setInterval(function () {
 		processTimedThirtySecs.processThirtySecActions(CCB.serverName, sychrontronController.isServerSynced);
 		serverTimerController.processTimer(CCB.serverName, _.get(CCB, 'realServerSecs', 0));
 	} else {
-        serverTimerController.timerObj = {}
-    }
+		serverTimerController.timerObj = {};
+	}
 }, CCB.thirtySecs);
 
 setInterval(function () {
