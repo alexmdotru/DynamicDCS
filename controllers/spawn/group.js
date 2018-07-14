@@ -1880,26 +1880,20 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 	_.forEach(defBaseSides, function (extSide, extName) {
 		var spawnArray = [];
 		var curReplenThreshold;
-        console.log('1');
 		spawnArray = _.concat(spawnArray, exports.spawnSupportBaseGrp(serverName, extName, extSide, true));
-        console.log('2');
 		if(_.includes(extName, 'FARP')) {
 			curReplenThreshold = curServer.replenThresholdFARP;
 		} else {
 			curReplenThreshold = curServer.replenThresholdBase;
 		}
-		console.log('3', spawnArray.length, '<', curReplenThreshold);
 		while (spawnArray.length < curReplenThreshold) { //UNCOMMENT THESE
 			console.log('BR: ', serverName, extSide, extName);
 			spawnArray = _.concat(spawnArray, exports.spawnBaseReinforcementGroup(serverName, extSide, extName));
 		}
-        console.log('4');
 		exports.spawnGroup(serverName, spawnArray, extName, extSide);
-        console.log('5	');
 		exports.spawnLogisticCmdCenter(serverName, {}, true, _.find(exports.bases, {name: extName}), extSide);
 		totalUnitsSpawned += spawnArray.length + 1;
 	});
-    console.log('6', totalUnitsSpawned);
 	return totalUnitsSpawned
 });
 
