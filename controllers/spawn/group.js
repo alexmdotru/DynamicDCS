@@ -1871,6 +1871,7 @@ _.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {
 });
 
 _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
+	console.log('sng: ', serverName);
 	var totalUnitsSpawned = 0;
 	var curServer = _.get(exports, ['config']);
 	var defBaseSides = _.get(curServer, 'defBaseSides');
