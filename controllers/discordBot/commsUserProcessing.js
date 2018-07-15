@@ -84,12 +84,11 @@ _.set(dBot, 'kickForNoComms', function (serverName, playerArray, isDiscordAllowe
                 _.forEach(playerArray, function (curPlayer) {
                     var curPlayerName = curPlayer.name;
                     var curPlayerCommObj = _.find(playersInComms, {_id: curPlayerName});
-                    if (curPlayerCommObj) {
-                        // console.log( curPlayerName + ' is a member of DDCS community');
-                        dbMapServiceController.unitActions('read', serverName, {dead: false, playername: curPlayerName})
-                            .then(function (pUnit) {
-                                var curPlayerUnit = _.get(pUnit, '0');
-
+                    dbMapServiceController.unitActions('read', serverName, {dead: false, playername: curPlayerName})
+                        .then(function (pUnit) {
+                            var curPlayerUnit = _.get(pUnit, '0');
+                            if (curPlayerCommObj) {
+                                // console.log( curPlayerName + ' is a member of DDCS community');
                                 if (curPlayerUnit) {
                                     // player is in unit
                                     _.set(curPlayerCommObj, 'playerType', 'unit');
@@ -108,15 +107,15 @@ _.set(dBot, 'kickForNoComms', function (serverName, playerArray, isDiscordAllowe
                                     // console.log(curPlayerName + 'NOT in voice comms');
                                     dBot.processKick(serverName, curPlayer,  curPlayerCommObj, isDiscordAllowed, curPlayerUnit);
                                 }
-                            })
-                            .catch(function (err) {
-                                console.log('line37', err);
-                            })
-                        ;
-                    } else {
-                        // console.log( curPlayer.name + ' NOT a member of DDCS community');
-                        dBot.processKick(serverName, curPlayer, curPlayerCommObj, isDiscordAllowed);
-                    }
+                            } else {
+                                // console.log( curPlayer.name + ' NOT a member of DDCS community');
+                                dBot.processKick(serverName, curPlayer, curPlayerCommObj, isDiscordAllowed, curPlayerUnit);
+                            }
+                        })
+                        .catch(function (err) {
+                            console.log('line37', err);
+                        })
+                    ;
                 });
             }
         })
