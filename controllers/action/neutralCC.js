@@ -21,7 +21,7 @@ _.set(exports, 'spawnCCAtNeutralBase', function (serverName, curPlayerUnit) {
 											5
 										);
 									} else {
-										console.log('player: ', curPlayerUnit);
+										// console.log('player: ', curPlayerUnit);
 										groupController.spawnLogisticCmdCenter(serverName, {}, false, base, curPlayerUnit.coalition);
 										var mesg = 'C: ' + base.name + ' Command Center Is Now Built!';
 										DCSLuaCommands.sendMesgToCoalition(

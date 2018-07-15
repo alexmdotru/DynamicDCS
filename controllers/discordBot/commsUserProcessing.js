@@ -40,6 +40,7 @@ _.set(dBot, 'processKick', function (serverName, curPlayer, playerCommObj, isDis
                     var mesg = "SERVER REQUIREMENT(you have " + newLifeCount + " mins left to fix):You must join the SRS server (SRS.dynamicdcs.com), You also need to be a member of the DDCS discord (with your nickname/name matching EXACTLY) https://discord.gg/3J3petx ";
                 }
                 if (curPlayerUnit) {
+                    console.log('kickplay: ', curPlayerUnit);
                     DCSLuaCommands.sendMesgToGroup(curPlayerUnit.groupId, serverName, mesg, '60');
                 }
                 dbMapServiceController.srvPlayerActions('update', serverName, {_id: curPlayer.ucid, gicTimeLeft: newLifeCount})
