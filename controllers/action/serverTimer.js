@@ -5,6 +5,7 @@ const groupController = require('../spawn/group');
 
 var curSecs = 0;
 var maxTime = 21600;
+var cntr = 10;
 var mesg;
 
 exports.timerObj = {};
@@ -97,17 +98,19 @@ _.set(exports, 'processTimer', function (serverName, serverSecs) {
 
 _.set(exports, 'restartServer', function (serverName, curMap, rotationObj) {
 	var curMapIndex = _.findIndex(rotationObj, function(o) { return o === curMap; });
-	if (!_.get(exports, 'timerObj.restart')) {
-		if (rotationObj[curMapIndex+1]) {
-			console.log('Loading Map: ', rotationObj[curMapIndex+1]);
-			DCSLuaCommands.loadMission(serverName, rotationObj[curMapIndex+1]);
-			_.set(exports, 'timerObj.curMap', rotationObj[curMapIndex+1]);
-		} else {
-			console.log('Loading Map: ', _.first(rotationObj));
-			DCSLuaCommands.loadMission(serverName, _.first(rotationObj));
-			_.set(exports, 'timerObj.curMap', _.first(rotationObj));
-		}
-		_.set(exports, 'timerObj.restart', true);
+	if (cntr === 10) {
+        if (rotationObj[curMapIndex+1]) {
+            console.log('Loading Map: ', rotationObj[curMapIndex+1]);
+            DCSLuaCommands.loadMission(serverName, rotationObj[curMapIndex+1]);
+            _.set(exports, 'timerObj.curMap', rotationObj[curMapIndex+1]);
+        } else {
+            console.log('Loading Map: ', _.first(rotationObj));
+            DCSLuaCommands.loadMission(serverName, _.first(rotationObj));
+            _.set(exports, 'timerObj.curMap', _.first(rotationObj));
+        }
+        cntr = 0;
+	} else {
+        cntr++;
 	}
 });
 
