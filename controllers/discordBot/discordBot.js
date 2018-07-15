@@ -9,7 +9,10 @@ var dBot = {};
 var fs = require('fs');
 var twoMin = 2 * 60 * 1000;
 
-const SRSFilePath = 'C:/Program Files/DCS-SimpleRadio-Standalone/clients-list.json';
+const SRSFilePaths = [
+	'C:/Users/MegaServer/Desktop/SRS/DDCS-Standard/clients-list.json',
+    'C:/Users/MegaServer/Desktop/SRS/DDCS-Hardcore/clients-list.json'
+	];
 
 _.set(dBot, 'getName', function (vcUser) {
 	if (vcUser.nickname) {
@@ -36,34 +39,37 @@ client.on('ready', () => {
         ;
 
 		// grab all discord members
-        fs.readFile(SRSFilePath, 'utf8', function(err, data){
-            if(err){ console.log('line 48: ', err) }
-            SRSObj = JSON.parse(data);
-            // grab all people in voice comms
-            voiceChans = curGuild.channels.filter(ch => ch.type === 'voice');
-            _.forEach(Array.from(voiceChans.values()), function (voiceChan) {
-                _.forEach(Array.from(voiceChan.members.values()), function (vcUser) {
-                    // console.log('nick: ', vcUser.nickname, 'un: ', _.get(vcUser, 'user.username'));
-                    _.set(discordByChannel, [voiceChan.name, dBot.getName(vcUser)], vcUser);
-                    discordUserNames.push(dBot.getName(vcUser));
+        fs.readFile(SRSFilePaths[0], 'utf8', function(err, data0){
+            if(err){ console.log('line 43: ', err) }
+            fs.readFile(SRSFilePaths[1], 'utf8', function(err, data1){
+                if(err){ console.log('line 45: ', err) }
+                SRSObj = _.uniq(_.merge(JSON.parse(data0), JSON.parse(data1)));
+                // grab all people in voice comms
+                voiceChans = curGuild.channels.filter(ch => ch.type === 'voice');
+                _.forEach(Array.from(voiceChans.values()), function (voiceChan) {
+                    _.forEach(Array.from(voiceChan.members.values()), function (vcUser) {
+                        // console.log('nick: ', vcUser.nickname, 'un: ', _.get(vcUser, 'user.username'));
+                        _.set(discordByChannel, [voiceChan.name, dBot.getName(vcUser)], vcUser);
+                        discordUserNames.push(dBot.getName(vcUser));
+                    });
                 });
-            });
 
-            curGuild.members.forEach(member => {
-                var curPlayerName = dBot.getName(member);
-                _.assign(curUser, {
-                    _id: curPlayerName,
-                    isInSRS: !!_.find(SRSObj, {Name: curPlayerName}),
-                    isInDiscord: !!_.includes(discordUserNames, curPlayerName)
+                curGuild.members.forEach(member => {
+                    var curPlayerName = dBot.getName(member);
+                    _.assign(curUser, {
+                        _id: curPlayerName,
+                        isInSRS: !!_.find(SRSObj, {Name: curPlayerName}),
+                        isInDiscord: !!_.includes(discordUserNames, curPlayerName)
+                    });
+                    // console.log('upCur: ', curUser);
+                    if (curUser.isInSRS || curUser.isInDiscord) {
+                        dbSystemRemoteController.remoteCommsActions('update', curUser)
+                            .catch(function (err) {
+                                console.log('line63', err);
+                            })
+                        ;
+                    }
                 });
-                // console.log('upCur: ', curUser);
-                if (curUser.isInSRS || curUser.isInDiscord) {
-                    dbSystemRemoteController.remoteCommsActions('update', curUser)
-                        .catch(function (err) {
-                            console.log('line63', err);
-                        })
-                    ;
-                }
             });
         });
 	}, 60 * 1000);
