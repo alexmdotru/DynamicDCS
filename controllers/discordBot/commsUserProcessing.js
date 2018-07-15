@@ -33,7 +33,7 @@ _.set(dBot, 'processKick', function (serverName, curPlayer, playerCommObj, isDis
             var newLifeCount = (curGicTimeLeft === 0)? exports.timeToCorrect : curGicTimeLeft - 1 ;
 
             if (newLifeCount !== 0) {
-                console.log('GTBK: ', newLifeCount, curPlayerName, curPlayer);
+                console.log('GTBK: ', newLifeCount, curPlayerName);
                 if (isDiscordAllowed) {
                     var mesg = "SERVER REQUIREMENT(you have " + newLifeCount + " mins left to fix):You need to be in a VOICE discord channel(Status is online(not invisi)) OR connected to the SRS server (srs.dynamicdcs.com), You also need to be a member of the DDCS discord(with your name matching EXACTLY) https://discord.gg/3J3petx ";
                 } else {
@@ -48,8 +48,8 @@ _.set(dBot, 'processKick', function (serverName, curPlayer, playerCommObj, isDis
                     })
                 ;
             } else {
-                console.log('curplayer: ', curPlayer);
-                // console.log('KICKING: ', curPlayerName);
+                //console.log('curplayer: ', curPlayer);
+                console.log('KICKING: ', curPlayerName);
                 if (isDiscordAllowed) {
                     var mesg = "YOU HAVE BEEN KICKED TO SPECTATOR FOR NOT BEING IN COMMS, You currently need to be in a VOICE discord channel(Status is online(not invisi)) OR connected to the SRS server (srs.dynamicdcs.com), You also need to be a member of the DDCS discord(with your name matching EXACTLY) https://discord.gg/3J3petx ";
                 } else {
@@ -58,10 +58,10 @@ _.set(dBot, 'processKick', function (serverName, curPlayer, playerCommObj, isDis
                 dbMapServiceController.srvPlayerActions('update', serverName, {_id: curPlayer.ucid, gicTimeLeft: newLifeCount})
                     .then(function () {
                         if (curPlayerUnit) {
-                            console.log('KICKED FOR NO COMMS: ', curPlayerUnit.playername, curPlayer.playerId);
+                            console.log('KICKED FOR NO COMMS: ', curPlayerUnit.playername, curPlayer.id);
                             DCSLuaCommands.sendMesgToGroup(curPlayerUnit.groupId, serverName, mesg, '60');
                         }
-                        DCSLuaCommands.forcePlayerSpectator(serverName, curPlayer.playerId, mesg);
+                        DCSLuaCommands.forcePlayerSpectator(serverName, curPlayer.id, mesg);
                     })
                     .catch(function (err) {
                         console.log('line70', err);
