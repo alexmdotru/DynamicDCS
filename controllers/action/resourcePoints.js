@@ -121,24 +121,25 @@ _.set(exports, 'spendResourcePoints', function (serverName, player, rsCost, rsIt
 });
 
 _.set(exports, 'checkResourcePoints', function (serverName, player) {
-	if (player.slot) {
-		dbMapServiceController.unitActions('read', serverName, {unitId: _.toNumber(player.slot)})
+	if (player.name) {
+		dbMapServiceController.unitActions('read', serverName, {dead: false, playername: player.name})
 			.then(function(cUnit) {
 				var mesg;
 				var curUnit = _.get(cUnit, [0]);
+				if (cUnit.length > 0) {
+                    if (player.side === 1) {
+                        mesg = 'G: You have ' + player.redRSPoints + ' Red Resource Points!';
+                    } else {
+                        mesg = 'G: You have ' + player.blueRSPoints + ' Blue Resource Points!';
+                    }
 
-				if (player.side === 1) {
-					mesg = 'G: You have ' + player.redRSPoints + ' Red Resource Points!';
-				} else {
-					mesg = 'G: You have ' + player.blueRSPoints + ' Blue Resource Points!';
+                    DCSLuaCommands.sendMesgToGroup(
+                        curUnit.groupId,
+                        serverName,
+                        mesg,
+                        5
+                    );
 				}
-
-				DCSLuaCommands.sendMesgToGroup(
-					curUnit.groupId,
-					serverName,
-					mesg,
-					5
-				);
 			})
 			.catch(function (err) {
 				console.log('line26', err);
