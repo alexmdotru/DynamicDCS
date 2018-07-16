@@ -35,8 +35,11 @@ _.set(dBot, 'processKick', function (serverName, curPlayer, playerCommObj, isDis
 
             if (newLifeCount !== 0) {
                 // console.log('GTBK: ', newLifeCount, curPlayerName);
-                if (!playerCommObj) {
-                    var mesg = "REQUIREMENT(" + newLifeCount + " mins left):You need to be in a VOICE discord channel(Status is online(not invisi)) OR connected to the correct SRS server (" + _.get(SRSServers, [serverName]) + "), You are not a member of the DDCS discord(with your name matching EXACTLY) https://discord.gg/3J3petx ";
+                if (!playerCommObj && isDiscordAllowed) {
+                    var mesg = "REQUIREMENT(" + newLifeCount + " mins left):You are not a member of the DDCS discord(with your name matching EXACTLY) and also you need to be in a VOICE discord channel(Status is online(not invisi)) OR connected to the correct SRS server (" + _.get(SRSServers, [serverName]) + ") https://discord.gg/3J3petx ";
+                    console.log('GTBK: ', newLifeCount, curPlayerName, 'Not A Member');
+                } else if(!playerCommObj)  {
+                    var mesg = "REQUIREMENT(" + newLifeCount + " mins left):You are not a member of the DDCS discord(with your name matching EXACTLY), & also need to be connected to the correct SRS server (" + _.get(SRSServers, [serverName]) + ") https://discord.gg/3J3petx ";
                     console.log('GTBK: ', newLifeCount, curPlayerName, 'Not A Member');
                 } else if (isDiscordAllowed) {
                     var mesg = "REQUIREMENT(" + newLifeCount + " mins left):You need to be in a VOICE discord channel(Status is online(not invisi)) OR connected to the correct SRS server (" + _.get(SRSServers, [serverName]) + "), https://discord.gg/3J3petx ";
@@ -57,9 +60,12 @@ _.set(dBot, 'processKick', function (serverName, curPlayer, playerCommObj, isDis
                     })
                 ;
             } else {
-                if (!playerCommObj) {
-                    var mesg = "KICKED: You need to be in a VOICE discord channel(Status is online(not invisi)) OR connected to the correct SRS server (" + _.get(SRSServers, [serverName]) + "), You are not a member of the DDCS discord(with your name matching EXACTLY) https://discord.gg/3J3petx ";
+                if (!playerCommObj && isDiscordAllowed) {
+                    var mesg = "KICKED: You are not a member of the DDCS discord(with your name matching EXACTLY) and also you need to be in a VOICE discord channel(Status is online(not invisi)) OR connected to the correct SRS server (" + _.get(SRSServers, [serverName]) + ") https://discord.gg/3J3petx ";
                     console.log('KICKING: ', curPlayerName, 'Not A Member');
+                } else if(!playerCommObj)  {
+                    var mesg = "KICKED:You are not a member of the DDCS discord(with your name matching EXACTLY), & also need to be connected to the correct SRS server (" + _.get(SRSServers, [serverName]) + ") https://discord.gg/3J3petx ";
+                    console.log('GTBK: ', curPlayerName, 'Not A Member');
                 } else if (isDiscordAllowed) {
                     var mesg = "KICKED: You need to be in a VOICE discord channel(Status is online(not invisi)) OR connected to the SRS correct server (" + _.get(SRSServers, [serverName]) + "), https://discord.gg/3J3petx ";
                     console.log('KICKING: ', curPlayerName, 'Not In Discord OR SRS');
