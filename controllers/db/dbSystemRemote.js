@@ -104,7 +104,7 @@ exports.remoteCommsActions = function (action, obj){
             RemoteComm.remove(
                 {
                     updatedAt: {
-                        $lte: new Date(new Date().getTime() - (5 * 60 * 1000))
+                        $lte: new Date(new Date().getTime() - (2 * 60 * 1000))
                     }
                 },
                 function(err, units) {

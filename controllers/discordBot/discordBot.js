@@ -46,6 +46,12 @@ client.on('ready', () => {
 		var voiceChans;
 		var filePromise = [];
 
+        dbSystemRemoteController.remoteCommsActions('removeNonCommPeople', {})
+            .catch(function (err) {
+                console.log('line34', err);
+            })
+        ;
+
         _.forEach(SRSFilePaths, function (SRS) {
         	filePromise.push(fs.readFileAsync(SRS));
 		});
