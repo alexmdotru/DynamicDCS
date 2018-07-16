@@ -2,10 +2,12 @@ const _ = require('lodash');
 const dbSystemRemoteController = require('../db/dbSystemRemote');
 const dbMapServiceController = require('../db/dbMapService');
 const DCSLuaCommands = require('../player/DCSLuaCommands');
-const webPushCommands = require('../socketIO/webPush');
 
 var dBot = {};
-var oneMin = 60 * 1000;
+var SRSServers = {
+  DDCSStandard: 'srs.dynamicdcs.com:5002',
+  DDCSHardcore: 'srs.dynamicdcs.com:5010'
+};
 
 exports.oldestAllowedUser = 300;
 exports.timeToCorrect = 30;
@@ -23,7 +25,6 @@ exports.Only2ChannelNames = [
 	'Blue GCI Group 2(Brevity)'
 ];
 
-
 _.set(dBot, 'processKick', function (serverName, curPlayer, playerCommObj, isDiscordAllowed, curPlayerUnit) {
 	// console.log('PK: ', serverName, curPlayer, playerCommObj, isDiscordAllowed, curPlayerUnit);
     dbMapServiceController.srvPlayerActions('read', serverName, { _id: curPlayer.ucid })
@@ -34,10 +35,20 @@ _.set(dBot, 'processKick', function (serverName, curPlayer, playerCommObj, isDis
 
             if (newLifeCount !== 0) {
                 console.log('GTBK: ', newLifeCount, curPlayerName);
-                if (isDiscordAllowed) {
-                    var mesg = "SERVER REQUIREMENT(you have " + newLifeCount + " mins left to fix):You need to be in a VOICE discord channel(Status is online(not invisi)) OR connected to the SRS server (srs.dynamicdcs.com), You also need to be a member of the DDCS discord(with your name matching EXACTLY) https://discord.gg/3J3petx ";
+                //not a member message
+
+                //member of discord or SRS
+
+                //member of SRS on right server
+
+
+
+                if (!playerCommObj) {
+                    var mesg = "REQUIREMENT(" + newLifeCount + " mins left):You need to be in a VOICE discord channel(Status is online(not invisi)) OR connected to the SRS server (" + _.get(SRSServers, [serverName]) + "), You are not a member of the DDCS discord(with your name matching EXACTLY) https://discord.gg/3J3petx ";
+                } else if (isDiscordAllowed) {
+                    var mesg = "REQUIREMENT(" + newLifeCount + " mins left):You need to be in a VOICE discord channel(Status is online(not invisi)) OR connected to the SRS server (" + _.get(SRSServers, [serverName]) + "), https://discord.gg/3J3petx ";
                 } else {
-                    var mesg = "SERVER REQUIREMENT(you have " + newLifeCount + " mins left to fix):You must join the SRS server (SRS.dynamicdcs.com), You also need to be a member of the DDCS discord (with your nickname/name matching EXACTLY) https://discord.gg/3J3petx ";
+                    var mesg = "REQUIREMENT(" + newLifeCount + " mins left):You must join the correct SRS server (" + _.get(SRSServers, [serverName]) + ")";
                 }
                 if (curPlayerUnit) {
                     DCSLuaCommands.sendMesgToGroup(curPlayerUnit.groupId, serverName, mesg, '60');
@@ -79,45 +90,39 @@ _.set(dBot, 'kickForNoComms', function (serverName, playerArray, isDiscordAllowe
     dbSystemRemoteController.remoteCommsActions('read', {})
         .then(function (playersInComms) {
 			// console.log('pic: ', playersInComms);
-            if (playersInComms.length > 0) {
-                console.log('-------------------------------');
-                _.forEach(playerArray, function (curPlayer) {
-                    var curPlayerName = curPlayer.name;
-                    var curPlayerCommObj = _.find(playersInComms, {_id: curPlayerName});
-                    dbMapServiceController.unitActions('read', serverName, {dead: false, playername: curPlayerName})
-                        .then(function (pUnit) {
-                            var curPlayerUnit = _.get(pUnit, '0');
-                            if (curPlayerCommObj) {
-                                // console.log( curPlayerName + ' is a member of DDCS community');
-                                if (curPlayerUnit) {
-                                    // player is in unit
-                                    _.set(curPlayerCommObj, 'playerType', 'unit');
-                                } else if (_.includes(curPlayer.slot, 'artillery_commander')) {
-                                    // player is in tac commander
-                                    _.set(curPlayerCommObj, 'playerType', 'jtac');
-                                }  else if (_.includes(curPlayer.slot, '')) {
-                                    _.set(curPlayerCommObj, 'playerType', 'spectator');
-                                }
-
-                                if (curPlayerCommObj.isInSRS) {
-                                    // console.log(curPlayerName + ' is in SRS');
-                                } else if (curPlayerCommObj.isInDiscord && isDiscordAllowed) {
-                                    // console.log(curPlayerName + ' is in discord voice');
-                                } else {
-                                    // console.log(curPlayerName + 'NOT in voice comms');
-                                    dBot.processKick(serverName, curPlayer,  curPlayerCommObj, isDiscordAllowed, curPlayerUnit);
-                                }
-                            } else {
-                                // console.log( curPlayer.name + ' NOT a member of DDCS community');
-                                dBot.processKick(serverName, curPlayer, curPlayerCommObj, isDiscordAllowed, curPlayerUnit);
+            console.log('-------------------------------');
+            _.forEach(playerArray, function (curPlayer) {
+                var curPlayerName = curPlayer.name;
+                var curPlayerCommObj = _.find(playersInComms, {_id: curPlayerName});
+                dbMapServiceController.unitActions('read', serverName, {dead: false, playername: curPlayerName})
+                    .then(function (pUnit) {
+                        var curPlayerUnit = _.get(pUnit, '0');
+                        if (curPlayerCommObj) {
+                            // console.log( curPlayerName + ' is a member of DDCS community');
+                            if (curPlayerUnit) {
+                                // player is in unit
+                                _.set(curPlayerCommObj, 'playerType', 'unit');
+                            } else if (_.includes(curPlayer.slot, 'artillery_commander')) {
+                                // player is in tac commander
+                                _.set(curPlayerCommObj, 'playerType', 'jtac');
+                            }  else if (_.includes(curPlayer.slot, '')) {
+                                _.set(curPlayerCommObj, 'playerType', 'spectator');
                             }
-                        })
-                        .catch(function (err) {
-                            console.log('line37', err);
-                        })
-                    ;
-                });
-            }
+
+                            if (!(curPlayerCommObj.isInSRS || (curPlayerCommObj.isInDiscord && isDiscordAllowed))) {
+                                // console.log(curPlayerName + 'NOT in voice comms');
+                                dBot.processKick(serverName, curPlayer,  curPlayerCommObj, isDiscordAllowed, curPlayerUnit);
+                            }
+                        } else {
+                            // console.log( curPlayer.name + ' NOT a member of DDCS community');
+                            dBot.processKick(serverName, curPlayer, curPlayerCommObj, isDiscordAllowed, curPlayerUnit);
+                        }
+                    })
+                    .catch(function (err) {
+                        console.log('line37', err);
+                    })
+                ;
+            });
         })
         .catch(function (err) {
             console.log('line37', err);
