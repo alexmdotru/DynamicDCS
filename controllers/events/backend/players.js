@@ -20,7 +20,7 @@ _.set(exports, 'processPlayerEvent', function (serverName, sessionName, playerAr
 			dbMapServiceController.srvPlayerActions('read', serverName, {_id: curPlyrUcid, banned: true})
 				.then(function (banUser) {
 					if (!_.isEmpty(banUser)){
-						console.log('Banning User: ', curPlyrName, curPlyrUcid, curSearchIp);
+						console.log('Banning User: ', curPlyrName, curPlyrUcid, player.ipaddr);
 						DCSLuaCommands.kickPlayer(
 							serverName,
 							player.id,
@@ -28,7 +28,7 @@ _.set(exports, 'processPlayerEvent', function (serverName, sessionName, playerAr
 						);
 					} else {
 						if (curPlyrName === '') {
-							console.log('Banning User for blank name: ', curPlyrName, curPlyrUcid, curPlyrIP);
+							console.log('Banning User for blank name: ', curPlyrName, curPlyrUcid, player.ipaddr);
 							DCSLuaCommands.kickPlayer(
 								serverName,
 								player.id,
