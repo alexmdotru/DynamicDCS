@@ -113,7 +113,7 @@ _.set(dBot, 'kickForNoComms', function (serverName, playerArray, isDiscordAllowe
                                 _.set(curPlayerCommObj, 'playerType', 'spectator');
                             }
 
-                            if (!(curPlayerCommObj.isInSRS || (curPlayerCommObj.isInDiscord && isDiscordAllowed))) {
+                            if (!((curPlayerCommObj.isInSRS && serverName === _.get(curPlayerCommObj, 'SRSData.SRSServer')) || (curPlayerCommObj.isInDiscord && isDiscordAllowed))) {
                                 // console.log(curPlayerName + 'NOT in voice comms');
                                 dBot.processKick(serverName, curPlayer,  curPlayerCommObj, isDiscordAllowed, curPlayerUnit);
                             }
