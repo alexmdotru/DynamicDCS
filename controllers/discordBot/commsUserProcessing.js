@@ -36,16 +36,16 @@ _.set(dBot, 'processKick', function (serverName, curPlayer, playerCommObj, isDis
             if (newLifeCount !== 0) {
                 // console.log('GTBK: ', newLifeCount, curPlayerName);
                 if (!playerCommObj) {
-                    var mesg = "REQUIREMENT(" + newLifeCount + " mins left):You need to be in a VOICE discord channel(Status is online(not invisi)) OR connected to the SRS server (" + _.get(SRSServers, [serverName]) + "), You are not a member of the DDCS discord(with your name matching EXACTLY) https://discord.gg/3J3petx ";
+                    var mesg = "REQUIREMENT(" + newLifeCount + " mins left):You need to be in a VOICE discord channel(Status is online(not invisi)) OR connected to the correct SRS server (" + _.get(SRSServers, [serverName]) + "), You are not a member of the DDCS discord(with your name matching EXACTLY) https://discord.gg/3J3petx ";
                     console.log('GTBK: ', newLifeCount, curPlayerName, 'Not A Member');
                 } else if (isDiscordAllowed) {
-                    var mesg = "REQUIREMENT(" + newLifeCount + " mins left):You need to be in a VOICE discord channel(Status is online(not invisi)) OR connected to the SRS server (" + _.get(SRSServers, [serverName]) + "), https://discord.gg/3J3petx ";
+                    var mesg = "REQUIREMENT(" + newLifeCount + " mins left):You need to be in a VOICE discord channel(Status is online(not invisi)) OR connected to the correct SRS server (" + _.get(SRSServers, [serverName]) + "), https://discord.gg/3J3petx ";
                     console.log('GTBK: ', newLifeCount, curPlayerName, 'Not In Discord Or SRS');
                 } else if (serverName !== _.get(playerCommObj, 'SRSData.SRSServer')) {
                     var mesg = "REQUIREMENT(" + newLifeCount + " mins left):You must join the correct SRS server (" + _.get(SRSServers, [serverName]) + ")";
                     console.log('GTBK: ', newLifeCount, curPlayerName, 'Not In the correct SRS');
                 } else {
-                    var mesg = "REQUIREMENT(" + newLifeCount + " mins left):You must join the SRS server (" + _.get(SRSServers, [serverName]) + ")";
+                    var mesg = "REQUIREMENT(" + newLifeCount + " mins left):You must join the correct SRS server (" + _.get(SRSServers, [serverName]) + ")";
                     console.log('GTBK: ', newLifeCount, curPlayerName, 'Not In SRS');
                 }
                 if (curPlayerUnit) {
@@ -58,16 +58,16 @@ _.set(dBot, 'processKick', function (serverName, curPlayer, playerCommObj, isDis
                 ;
             } else {
                 if (!playerCommObj) {
-                    var mesg = "KICKED: You need to be in a VOICE discord channel(Status is online(not invisi)) OR connected to the SRS server (" + _.get(SRSServers, [serverName]) + "), You are not a member of the DDCS discord(with your name matching EXACTLY) https://discord.gg/3J3petx ";
+                    var mesg = "KICKED: You need to be in a VOICE discord channel(Status is online(not invisi)) OR connected to the correct SRS server (" + _.get(SRSServers, [serverName]) + "), You are not a member of the DDCS discord(with your name matching EXACTLY) https://discord.gg/3J3petx ";
                     console.log('KICKING: ', curPlayerName, 'Not A Member');
                 } else if (isDiscordAllowed) {
-                    var mesg = "KICKED: You need to be in a VOICE discord channel(Status is online(not invisi)) OR connected to the SRS server (" + _.get(SRSServers, [serverName]) + "), https://discord.gg/3J3petx ";
+                    var mesg = "KICKED: You need to be in a VOICE discord channel(Status is online(not invisi)) OR connected to the SRS correct server (" + _.get(SRSServers, [serverName]) + "), https://discord.gg/3J3petx ";
                     console.log('KICKING: ', curPlayerName, 'Not In Discord OR SRS');
                 } else if (serverName !== _.get(playerCommObj, 'SRSData.SRSServer')) {
                     var mesg = "KICKED: You must join the correct SRS server (" + _.get(SRSServers, [serverName]) + ")";
                     console.log('KICKING: ', curPlayerName, 'Not In the correct SRS');
                 } else {
-                    var mesg = "KICKED: You must join the SRS server (" + _.get(SRSServers, [serverName]) + ")";
+                    var mesg = "KICKED: You must join the correct SRS server (" + _.get(SRSServers, [serverName]) + ")";
                     console.log('KICKING: ', curPlayerName, 'Not In SRS');
                 }
                 dbMapServiceController.srvPlayerActions('update', serverName, {_id: curPlayer.ucid, gicTimeLeft: newLifeCount})
