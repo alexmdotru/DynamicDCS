@@ -10,9 +10,23 @@ var fs = require('fs');
 var twoMin = 2 * 60 * 1000;
 
 const SRSFilePaths = [
-	'C:/Users/MegaServer/Desktop/SRS/DDCS-Standard/clients-list.json',
-    'C:/Users/MegaServer/Desktop/SRS/DDCS-Hardcore/clients-list.json'
+    { name: 'DDCSStandard', path: 'C:/Users/andre/Desktop/testClient/2/clients-list.json' },
+    { name: 'DDCSHardcore', path: 'C:/Users/andre/Desktop/testClient/1/clients-list.json' },
+	// { name: 'DDCSStandard', path: 'C:/Users/MegaServer/Desktop/SRS/DDCS-Standard/clients-list.json' },
+	// { name: 'DDCSHardcore', path: 'C:/Users/MegaServer/Desktop/SRS/DDCS-Hardcore/clients-list.json' }
 	];
+
+fs.readFileAsync = function(fileObj) {
+    return new Promise(function(resolve, reject) {
+        fs.readFile(fileObj.path, function(err, data){
+            if (err)
+                reject(err);
+            else
+            	_.set(fileObj, 'data', JSON.parse(data));
+                resolve(fileObj);
+        });
+    });
+};
 
 _.set(dBot, 'getName', function (vcUser) {
 	if (vcUser.nickname) {
@@ -26,11 +40,12 @@ client.on('ready', () => {
 	dBot.counter = 0;
 	setInterval (function (){
 		var curGuild = client.guilds.get('389682718033707008');
-		var curUser = {};
 		var discordByChannel = {};
-		var discordUserNames = ['Drexserver'];
-		var SRSObj = {};
+		var discordVoiceNames = ['Drexserver'];
+		var SRSObjs = [];
 		var voiceChans;
+		var filePromise = [];
+		var curSRSObj = {};
 
         dbSystemRemoteController.remoteCommsActions('removeNonCommPeople', {})
             .catch(function (err) {
@@ -38,41 +53,51 @@ client.on('ready', () => {
             })
         ;
 
-		// grab all discord members
-        fs.readFile(SRSFilePaths[0], 'utf8', function(err, data0){
-            if(err){ console.log('line 43: ', err) }
-            fs.readFile(SRSFilePaths[1], 'utf8', function(err, data1){
-                if(err){ console.log('line 45: ', err) }
-                SRSObj = _.uniq(_.merge(JSON.parse(data0), JSON.parse(data1)));
-                // grab all people in voice comms
+        _.forEach(SRSFilePaths, function (SRS) {
+        	filePromise.push(fs.readFileAsync(SRS));
+		});
+
+        Promise.all(filePromise)
+			.then( function(srsfiles) {
+				_.forEach(srsfiles, function (srsfile) {
+                    _.forEach(srsfile.data, function (curObj) {
+                        _.set(curObj, 'SRSServer', srsfile.name);
+                    	SRSObjs.push(curObj);
+					});
+				});
                 voiceChans = curGuild.channels.filter(ch => ch.type === 'voice');
                 _.forEach(Array.from(voiceChans.values()), function (voiceChan) {
                     _.forEach(Array.from(voiceChan.members.values()), function (vcUser) {
                         // console.log('nick: ', vcUser.nickname, 'un: ', _.get(vcUser, 'user.username'));
                         _.set(discordByChannel, [voiceChan.name, dBot.getName(vcUser)], vcUser);
-                        discordUserNames.push(dBot.getName(vcUser));
+                        discordVoiceNames.push(dBot.getName(vcUser));
                     });
                 });
 
+
+
                 curGuild.members.forEach(member => {
+                	var curUser = {};
                     var curPlayerName = dBot.getName(member);
+                    var SRSMember = _.find(SRSObjs, {Name: curPlayerName});
                     _.assign(curUser, {
                         _id: curPlayerName,
-                        isInSRS: !!_.find(SRSObj, {Name: curPlayerName}),
-                        isInDiscord: !!_.includes(discordUserNames, curPlayerName)
+                        isInSRS: !!SRSMember,
+                        isInDiscord: !!_.includes(discordVoiceNames, curPlayerName),
+						SRSData: SRSMember
                     });
-                    // console.log('upCur: ', curUser);
-                    if (curUser.isInSRS || curUser.isInDiscord) {
-                        dbSystemRemoteController.remoteCommsActions('update', curUser)
-                            .catch(function (err) {
-                                console.log('line63', err);
-                            })
-                        ;
-                    }
+                 	dbSystemRemoteController.remoteCommsActions('update', curUser)
+                    	.catch(function (err) {
+                    		console.log('line63', err);
+                		})
+                	;
                 });
-            });
-        });
-	}, 60 * 1000);
+			})
+            .catch(function (err) {
+                console.log('line52', err);
+            })
+        ;
+	}, 5 * 1000);
 });
 
 _.set(exports, 'sendSoundBite', function (vcArray, songFile) {
