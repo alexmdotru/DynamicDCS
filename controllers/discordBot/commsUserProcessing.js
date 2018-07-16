@@ -34,7 +34,7 @@ _.set(dBot, 'processKick', function (serverName, curPlayer, playerCommObj, isDis
             var newLifeCount = (curGicTimeLeft === 0)? exports.timeToCorrect : curGicTimeLeft - 1 ;
 
             if (newLifeCount !== 0) {
-                console.log('GTBK: ', newLifeCount, curPlayerName);
+                // console.log('GTBK: ', newLifeCount, curPlayerName);
                 if (!playerCommObj) {
                     var mesg = "REQUIREMENT(" + newLifeCount + " mins left):You need to be in a VOICE discord channel(Status is online(not invisi)) OR connected to the SRS server (" + _.get(SRSServers, [serverName]) + "), You are not a member of the DDCS discord(with your name matching EXACTLY) https://discord.gg/3J3petx ";
                     console.log('GTBK: ', newLifeCount, curPlayerName, 'Not A Member');
