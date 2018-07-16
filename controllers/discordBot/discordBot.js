@@ -97,7 +97,7 @@ client.on('ready', () => {
                 console.log('line52', err);
             })
         ;
-	}, 5 * 1000);
+	}, 60 * 1000);
 });
 
 _.set(exports, 'sendSoundBite', function (vcArray, songFile) {
