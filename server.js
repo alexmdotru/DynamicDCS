@@ -69,6 +69,7 @@ app.use('/fonts', express.static(__dirname + '/app/assets/fonts'));
 app.use('/imgs', express.static(__dirname + '/app/assets/images'));
 app.use('/tabs', express.static(__dirname + '/app/tabs'));
 app.use('/libs', express.static(__dirname + '/node_modules'));
+app.use('/shh', express.static(__dirname + '/shh'));
 
 
 const checkJwt = jwt({
