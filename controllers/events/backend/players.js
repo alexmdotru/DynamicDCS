@@ -15,6 +15,8 @@ _.set(exports, 'processPlayerEvent', function (serverName, sessionName, playerAr
 			var curSearchIp = curPlyrIPSplit[0] + '.' + curPlyrIPSplit[1] + '.' +curPlyrIPSplit[2];
 			var curPlyrSide = player.side;
 			var curPlyrName = player.name;
+            var isArtilleryCmdr = _.includes(player.slot, 'artillery_commander');
+            var isForwardObserver = _.includes(player.slot, 'forward_observer');
 
 			// dbMapServiceController.srvPlayerActions('read', serverName, {banned: true, $or: [{_id: curPlyrUcid}, {ipaddr: new RegExp('^' + curSearchIp)}] })
 			dbMapServiceController.srvPlayerActions('read', serverName, {_id: curPlyrUcid, banned: true})
@@ -103,11 +105,11 @@ _.set(exports, 'processPlayerEvent', function (serverName, sessionName, playerAr
                                         */
 									}
 								} else {
-									if(_.includes(player.slot, 'artillery_commander')) {
+									if(isArtilleryCmdr || isForwardObserver) {
 										dbMapServiceController.srvPlayerActions('read', serverName, {_id: player.ucid})
 											.then(function (srvPlayer) {
 												var curPlayer = _.first(srvPlayer);
-												if (curPlayer.gciAllowed) {
+												if (curPlayer.gciAllowed || isForwardObserver) {
                                                     if(curPlayer.sideLock === 0) {
                                                         dbMapServiceController.srvPlayerActions('update', serverName, {
                                                             _id: player.ucid,
