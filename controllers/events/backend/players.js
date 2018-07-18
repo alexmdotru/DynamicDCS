@@ -124,7 +124,7 @@ _.set(exports, 'processPlayerEvent', function (serverName, sessionName, playerAr
                                                         ;
                                                     }
 												} else {
-                                                    DCSLuaCommands.kickPlayer(serverName, player.id, 'You are not allowed to use GCI/Tac Commander slot. Please contact a Mod for more information.');
+                                                    DCSLuaCommands.forcePlayerSpectator(serverName, player.id, 'You are not allowed to use GCI/Tac Commander slot. Please contact a Mod for more information.');
 												}
 											})
 											.catch(function (err) {
