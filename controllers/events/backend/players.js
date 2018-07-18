@@ -107,20 +107,24 @@ _.set(exports, 'processPlayerEvent', function (serverName, sessionName, playerAr
 										dbMapServiceController.srvPlayerActions('read', serverName, {_id: player.ucid})
 											.then(function (srvPlayer) {
 												var curPlayer = _.first(srvPlayer);
-												if(curPlayer.sideLock === 0) {
-													dbMapServiceController.srvPlayerActions('update', serverName, {
-														_id: player.ucid,
-														sideLock: player.side,
-														sideLockTime: new Date().getTime() + (60 * 60 * 1000)
-													})
-														.then(function (srvPlayer) {
-															sideLockController.setSideLockFlags(serverName);
-															console.log(player.name + ' is now locked to ' + player.side);
-														})
-														.catch(function (err) {
-															console.log('line120', err);
-														})
-													;
+												if (curPlayer.gciAllowed) {
+                                                    if(curPlayer.sideLock === 0) {
+                                                        dbMapServiceController.srvPlayerActions('update', serverName, {
+                                                            _id: player.ucid,
+                                                            sideLock: player.side,
+                                                            sideLockTime: new Date().getTime() + (60 * 60 * 1000)
+                                                        })
+                                                            .then(function (srvPlayer) {
+                                                                sideLockController.setSideLockFlags(serverName);
+                                                                console.log(player.name + ' is now locked to ' + player.side);
+                                                            })
+                                                            .catch(function (err) {
+                                                                console.log('line120', err);
+                                                            })
+                                                        ;
+                                                    }
+												} else {
+                                                    DCSLuaCommands.kickPlayer(serverName, player.id, 'You are not allowed to use GCI/Tac Commander slot. Please contact a Mod for more information.');
 												}
 											})
 											.catch(function (err) {
@@ -145,6 +149,9 @@ _.set(exports, 'processPlayerEvent', function (serverName, sessionName, playerAr
 
 //need this for current player ID lookup
 	//curServers[serverName].serverObject.players = queObj.data;
+
+
+
 	var promisSrvPlayers = [];
 	_.forEach(playerArray.data, function (data) {
 		var curData = _.cloneDeep(data);

@@ -78,6 +78,10 @@ const srvPlayerSchema = new Schema({
 		banned: {
 			type: Boolean,
 			default: false
+		},
+		gciAllowed: {
+            type: Boolean,
+            default: false
 		}
 	},
 	{
