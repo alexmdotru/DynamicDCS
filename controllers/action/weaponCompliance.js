@@ -12,7 +12,7 @@ var weaponRules = {
 			"R-27ER",
 			"R-77"
 		],
-		maxTotalAllowed: 2
+		maxTotalAllowed: _.get(groupController, 'config.maxLngRngA2A', 0)
 	}
 };
 

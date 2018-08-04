@@ -98,7 +98,12 @@ const ServerSchema = new Schema({
 		isDiscordAllowed: {
 			type: Boolean,
 			default: true
-		}
+		},
+        maxLngRngA2A: {
+            type: Number,
+            required: true,
+            default: 0
+        },
 	},
 	{
 		timestamps: true, // Saves createdAt and updatedAt as dates. createdAt will be our timestamp.
