@@ -16,6 +16,7 @@ var weaponRules = {
 	}
 };
 
+console.log('WR: ', weaponRules);
 
 //var oneHour = 600 * 1000;
 // updateServerLives
