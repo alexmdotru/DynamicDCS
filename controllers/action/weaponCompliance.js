@@ -16,7 +16,7 @@ var weaponRules = {
 	}
 };
 
-console.log('WR: ', weaponRules);
+console.log('WR: ', weaponRules, groupController.config);
 
 //var oneHour = 600 * 1000;
 // updateServerLives
