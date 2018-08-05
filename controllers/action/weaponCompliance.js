@@ -25,7 +25,6 @@ _.set(exports, 'checkWeaponComplianceOnTakeoff', function (serverName, iPlayer, 
 	var limitedWeapons = [];
 	var maxLimitedWeaponCount = 0;
     var weaponRules = exports.getWeaponRules();
-    console.log('wr1: ', weaponRules);
 	_.forEach(_.get(curIUnit, 'ammo', []), function (value) {
 		var curTypeName = value.typeName;
 		if (_.includes(weaponRules.longRangeMissles.limitedMissles, curTypeName)) {
@@ -60,7 +59,6 @@ _.set(exports, 'checkAircraftWeaponCompliance', function (serverName) {
 										var limitedWeapons = [];
 										var maxLimitedWeaponCount = 0;
 										var weaponRules = exports.getWeaponRules();
-                                        console.log('wr2: ', weaponRules);
 										_.forEach(_.get(curUnit, 'ammo', []), function (value) {
 											var curTypeName = value.typeName;
 											if (_.includes(weaponRules.longRangeMissles.limitedMissles, curTypeName)) {
