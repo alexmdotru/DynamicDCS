@@ -25,14 +25,15 @@ _.set(exports, 'checkWeaponComplianceOnTakeoff', function (serverName, iPlayer, 
 	var limitedWeapons = [];
 	var maxLimitedWeaponCount = 0;
     var weaponRules = exports.getWeaponRules();
+    console.log('wr1: ', weaponRules);
 	_.forEach(_.get(curIUnit, 'ammo', []), function (value) {
 		var curTypeName = value.typeName;
-		if (_.includes(_.get(weaponRules, 'longRangeMissles.limitedMissles', []), curTypeName)) {
+		if (_.includes(weaponRules.longRangeMissles.limitedMissles, curTypeName)) {
 			limitedWeapons.push(curTypeName);
 			maxLimitedWeaponCount = maxLimitedWeaponCount + value.count;
 		}
 	});
-	if (maxLimitedWeaponCount > _.get(weaponRules, 'longRangeMissles.maxTotalAllowed', 0)) {
+	if (maxLimitedWeaponCount > weaponRules.longRangeMissles.maxTotalAllowed) {
 		var msg = 'Removed from aircraft not complying with weapon restrictions, (' + maxLimitedWeaponCount + ' of ' + _.join(limitedWeapons) + ')';
 		console.log('Removed ' + iPlayer.name + ' from aircraft not complying with weapon restrictions, (' + maxLimitedWeaponCount + ' of ' + _.join(limitedWeapons) + ')');
 		DCSLuaCommands.forcePlayerSpectator(
@@ -59,18 +60,19 @@ _.set(exports, 'checkAircraftWeaponCompliance', function (serverName) {
 										var limitedWeapons = [];
 										var maxLimitedWeaponCount = 0;
 										var weaponRules = exports.getWeaponRules();
+                                        console.log('wr2: ', weaponRules);
 										_.forEach(_.get(curUnit, 'ammo', []), function (value) {
 											var curTypeName = value.typeName;
-											if (_.includes(_.get(weaponRules, 'longRangeMissles.limitedMissles', []), curTypeName)) {
+											if (_.includes(weaponRules.longRangeMissles.limitedMissles, curTypeName)) {
 												limitedWeapons.push(curTypeName);
 												maxLimitedWeaponCount = maxLimitedWeaponCount + value.count;
 											}
 										});
-										if (maxLimitedWeaponCount > _.get(weaponRules, 'longRangeMissles.maxTotalAllowed', 0) && !_.get(curUnit, 'inAir', false)) {
+										if (maxLimitedWeaponCount > weaponRules.longRangeMissles.maxTotalAllowed && !_.get(curUnit, 'inAir', false)) {
 											DCSLuaCommands.sendMesgToGroup(
 												curUnit.groupId,
 												serverName,
-												"G: You have too many combined long range A2A Missles(" + maxLimitedWeaponCount + " of " + _.join(limitedWeapons) + "), Max Allowed " + _.get(weaponRules, 'longRangeMissles.maxTotalAllowed', 0),
+												"G: You have too many combined long range A2A Missles(" + maxLimitedWeaponCount + " of " + _.join(limitedWeapons) + "), Max Allowed " + weaponRules.longRangeMissles.maxTotalAllowed,
 												30
 											);
 										}
