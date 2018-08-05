@@ -3,27 +3,28 @@ const dbMapServiceController = require('../db/dbMapService');
 const DCSLuaCommands = require('../player/DCSLuaCommands');
 const groupController = require('../spawn/group');
 
-var weaponRules = {
-	longRangeMissles: {
-		limitedMissles: [
-			"AIM-120B",
-			"AIM-120C",
-			"R-27ET",
-			"R-27ER",
-			"R-77"
-		],
-		maxTotalAllowed: _.get(groupController, 'config.maxLngRngA2A', 0)
-	}
-};
-
-console.log('WR: ', weaponRules, groupController.config);
-
 //var oneHour = 600 * 1000;
 // updateServerLives
+_.set(exports, 'getWeaponRules', function () {
+	return {
+        longRangeMissles: {
+            limitedMissles: [
+                "AIM-120B",
+                "AIM-120C",
+                "R-27ET",
+                "R-27ER",
+                "R-77"
+            ],
+            maxTotalAllowed: _.get(groupController, 'config.maxLngRngA2A', 0)
+        }
+	};
+});
+
 _.set(exports, 'checkWeaponComplianceOnTakeoff', function (serverName, iPlayer, curIUnit) {
 	// console.log('CWC: ', serverName, iPlayer, curIUnit);
 	var limitedWeapons = [];
 	var maxLimitedWeaponCount = 0;
+    var weaponRules = exports.getWeaponRules();
 	_.forEach(_.get(curIUnit, 'ammo', []), function (value) {
 		var curTypeName = value.typeName;
 		if (_.includes(_.get(weaponRules, 'longRangeMissles.limitedMissles', []), curTypeName)) {
@@ -57,6 +58,7 @@ _.set(exports, 'checkAircraftWeaponCompliance', function (serverName) {
 										var curUnit = _.get(cUnit, [0]);
 										var limitedWeapons = [];
 										var maxLimitedWeaponCount = 0;
+										var weaponRules = exports.getWeaponRules();
 										_.forEach(_.get(curUnit, 'ammo', []), function (value) {
 											var curTypeName = value.typeName;
 											if (_.includes(_.get(weaponRules, 'longRangeMissles.limitedMissles', []), curTypeName)) {
