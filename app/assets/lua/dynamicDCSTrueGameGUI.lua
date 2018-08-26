@@ -21,7 +21,7 @@ local updateQue = {["que"] = {} }
 local PORT = 3002
 local DATA_TIMEOUT_SEC = 1
 
-totalPlayers = 50
+totalPlayers = 40
 
 isLoadLock = false
 isRedPlayerMax = false
