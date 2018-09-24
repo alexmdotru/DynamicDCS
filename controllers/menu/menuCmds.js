@@ -184,7 +184,7 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 											);
 										} else {
 											if(menuUpdateController.virtualCrates) {
-												proximityController.getVirtualCratesInProximity(serverName, curUnit.lonLatLoc, 0.4, curUnit.coalition)
+												proximityController.getVirtualCratesInProximity(serverName, curUnit.lonLatLoc, 0.2, curUnit.coalition)
 													.then(function(units){
 														var cCnt = 0;
 														var grpTypes;
@@ -324,7 +324,7 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 								);
 							} else {
 								if (!curUnit.virtCrateType) {
-									proximityController.getVirtualCratesInProximity(serverName, curUnit.lonLatLoc, 0.4, curUnit.coalition)
+									proximityController.getVirtualCratesInProximity(serverName, curUnit.lonLatLoc, 0.2, curUnit.coalition)
 										.then(function(units){
 											var curCrate = _.find(units, {playerOwnerId: curPlayer.ucid});
 											if(curCrate) {
@@ -725,7 +725,7 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 										.then(function(aliveBases) {
 											_.forEach(bases, function (base) {
 												if (base.logiCenter && !!_.find(aliveBases, {name: base.name + ' Logistics'})) {
-													checkAllBase.push(proximityController.isPlayerInProximity(serverName, base.logiCenter, 0.4, unit.playername)
+													checkAllBase.push(proximityController.isPlayerInProximity(serverName, base.logiCenter, 0.2, unit.playername)
 														.catch(function (err) {
 															console.log('line 59: ', err);
 														})

@@ -43,7 +43,7 @@ _.set(exports, 'unpackCrate', function (serverName, crateObj) { //crateObj is ev
 	dbMapServiceController.unitActions('read', serverName, {unitId: crateObj.unitId})
 		.then(function(pUnit) {
 			var curPlayerUnit = _.get(pUnit, 0);
-			proximityController.getStaticCratesInProximity(serverName, curPlayerUnit.lonLatLoc, 0.4, curPlayerUnit.coalition)
+			proximityController.getStaticCratesInProximity(serverName, curPlayerUnit.lonLatLoc, 0.2, curPlayerUnit.coalition)
 				.then(function(crates){
 					var cCnt = 0;
 					var grpTypes;
@@ -55,7 +55,7 @@ _.set(exports, 'unpackCrate', function (serverName, crateObj) { //crateObj is ev
 					var curCrateType = curCrate.templateName;
 					var isCombo = curCrate.isCombo;
 					var isMobile = curCrate.playerCanDrive;
-					// console.log('cratesInProx: ', serverName, curPlayerUnit.lonLatLoc, 0.4, curPlayerUnit.coalition, crates);
+					// console.log('cratesInProx: ', serverName, curPlayerUnit.lonLatLoc, 0.2, curPlayerUnit.coalition, crates);
 					if(curCrate) {
 						grpTypes = _.transform(crates, function (result, value) {
 							(result[value.templateName] || (result[value.templateName] = [])).push(value);
