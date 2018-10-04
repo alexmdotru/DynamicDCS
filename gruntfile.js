@@ -25,48 +25,45 @@ function generateStaticMappings(dirs) {
     }, {});
 }
 
-module.exports = function nsBundleConfig(grunt, options) {
+module.exports = function (grunt, options) {
     if (grunt.option('time') === true) { timeGrunt(grunt); }
 
     const projectPath = process.cwd();
     const gruntPluginPath = require.resolve('grunt-contrib-clean');
-    const bundlePath = path.dirname(require.resolve('./'));
 
     const defaults = {
-        configPath: path.join(bundlePath, 'grunt'),
+        configPath: path.join(projectPath, 'grunt'),
         overridePath: path.join(projectPath, 'grunt'),
         data: {
             BUILD_NUMBER: process.env.BUILD_NUMBER || 'Development',
             GIT_COMMIT: process.env.GIT_COMMIT || 'Development',
             appFileName: '<%= package.name %>',
-            banner: grunt.file.read(path.join(bundlePath, 'grunt/banner.txt')),
+            banner: grunt.file.read(path.join(projectPath, 'grunt/banner.txt')),
             dest: 'dist',
             demoDest: 'demo',
             process: grunt.template.process,
-            src: '<%= package.config.isLib ? "src" : "app" %>',
+            src: 'app',
             demoSrc: 'src.demo',
             temp: '.temp',
-            testEnvYAML: '<%= src %>/test-env.yml',
+            testEnvYAML: 'app/test-env.yml',
             useMin: grunt.option('min') || includes(grunt.cli.tasks, 'build'),
-            vendorYAML: '<%= package.config.isLib ? demoSrc + "/vendor.js.yml" : src + "/vendor.js.yml" %>',
-            vendorLocales: '<%= src %>/locales.yml',
+            vendorYAML: 'app/vendor.js.yml',
+            vendorLocales: 'app/locales.yml',
             versions: getDependencyVersions,
         },
         jitGrunt: {
-            pluginsRoot: includes(gruntPluginPath, 'ns-grunt-bundle/node_modules')
-            ? path.join(bundlePath, 'node_modules') // nested node_modules
-            : path.join(projectPath, 'node_modules'),
+            pluginsRoot: path.join(projectPath, 'node_modules'),
             staticMappings: merge(
             {
                 configureProxies: 'grunt-connect-proxy',
                 force: 'grunt-force-task',
                 ngtemplates: 'grunt-angular-templates',
             },
-            generateStaticMappings([bundlePath, projectPath])
+            generateStaticMappings([projectPath])
             ),
         },
     };
-
+    console.log('proot: ', path.join(projectPath, 'node_modules'), defaults, options);
     // Apply grunt template helpers
     gruntTemplateProgeny(grunt);
     gruntTemplateRename(grunt);
