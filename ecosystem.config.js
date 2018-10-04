@@ -2,7 +2,7 @@ module.exports = {
   apps : [
       {
           name: 'DDCS_Webapp',
-          script: 'index.js',
+          script: 'server.js',
           // Options reference: https://pm2.io/doc/en/runtime/reference/ecosystem-file/
           instances: 1,
           autorestart: true,
