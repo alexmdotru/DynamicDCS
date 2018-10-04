@@ -1,11 +1,11 @@
 'use strict';
 
-var _ = require('lodash');
+const noop = require('lodash/noop');
 
 module.exports = function registerNOOP(grunt) {
 	grunt.registerTask(
 		'noop',
 		'A no-operation task -> useful in testing situations',
-		_.noop
+		noop
 	);
 };

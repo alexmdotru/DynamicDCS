@@ -1,8 +1,12 @@
 'use strict';
+
+const autoprefixer = require('autoprefixer');
+const postcssSorting = require('postcss-sorting');
+
 module.exports = {
 	options: {
 		processors: [
-			require('autoprefixer')({
+			autoprefixer({
 				browsers: [
 					'Android 2.3',
 					'Android >= 4',
@@ -11,13 +15,13 @@ module.exports = {
 					'Explorer >= 9',
 					'iOS >= 6',
 					'Opera >= 12',
-					'Safari >= 6'
-				]
+					'Safari >= 6',
+				],
 			}),
-			require('postcss-sorting')({ 'sort-order': 'csscomb' })
-		]
+			postcssSorting({ order: 'csscomb' }),
+		],
 	},
 	app: {
-		src: '<%= less.app.dest %>'
-	}
+		src: '<%= less.app.dest %>',
+	},
 };

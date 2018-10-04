@@ -1,6 +1,6 @@
 'use strict';
 
-var onHeaders = require('on-headers');
+const onHeaders = require('on-headers');
 
 function removeCookies() {
 	this.removeHeader('set-cookie');

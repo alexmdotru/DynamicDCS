@@ -13,6 +13,7 @@ compile:
 - compile-js
 - compile-vendor-js
 - compile-css
+- copy:locales
 
 compile-css:
 - less:app
@@ -25,7 +26,7 @@ compile-js:
 - concat:app
 
 compile-tpl:
-- ngtemplates
+- ngtemplates:app
 
 compile-vendor-js:
 - concat:vendor
@@ -37,6 +38,13 @@ default:
 - test
 - compile
 - dev
+
+demo:
+- eslint:demo
+- ngtemplates:demo
+- concat:demo
+- less:demo
+- copy:indexDemo
 
 dev:
 - connect:coverage
@@ -55,3 +63,5 @@ test:
 - eslint:app
 - eslint:spec
 - karma:once
+
+

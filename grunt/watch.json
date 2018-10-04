@@ -39,5 +39,22 @@
 	"vendorjs": {
 		"files": ["<%= vendorYAML %>", "<%= concat.vendor.src %>"],
 		"tasks": ["karma:once", "compile-vendor-js"]
+	},
+	"demo-index": {
+		"files": "<%= copy.indexDemo.src %>",
+		"tasks": ["copy:indexDemo"]
+	},
+	"demo-js": {
+		"files": "<%= eslint.demo.src %>",
+		"tasks": ["force:eslint:demo", "concat:demo"]
+	},
+	"demo-templates": {
+		"files": "<%= ngtemplates.demo.src %>",
+		"tasks": ["ngtemplates:demo", "concat:demo"]
+	},
+	"demo-less": {
+		"files": ["<%= grunt.template.progeny(less.demo.src) %>"],
+		"tasks": ["less:demo"],
+		"options": {"reload": true, "livereload": false}
 	}
 }

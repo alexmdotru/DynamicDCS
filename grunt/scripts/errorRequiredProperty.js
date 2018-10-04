@@ -5,13 +5,13 @@ module.exports = function errorRequiredProperty(grunt, propName, hostName) {
 		grunt.template.process(
 			[
 				'The <%= hostName %> host requires the `<%= propName %>` property in .proxy.json.',
-				'See the README for more information.'
+				'See the README for more information.',
 			].join(' '),
 			{
 				data: {
-					hostName: hostName,
-					propName: propName
-				}
+					hostName,
+					propName,
+				},
 			}
 		)
 	);

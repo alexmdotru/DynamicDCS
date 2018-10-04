@@ -1,29 +1,35 @@
 'use strict';
 
-var _ = require('lodash');
-var resolve = require('path').resolve;
-var fs = require('fs');
-var config = _.attempt(function loadMockApiConfig() {
-	return require(resolve('mock-api/mock-api.json'));
-});
+const bodyParser = require('body-parser');
+const jsonParser = bodyParser.json();
+const attempt = require('lodash/attempt');
+const find = require('lodash/find');
+const fs = require('fs');
+const get = require('lodash/get');
+const isError = require('lodash/isError');
+const isFunction = require('lodash/isFunction');
+const isString = require('lodash/isString');
+const resolve = require('path').resolve;
+
+// eslint-disable-next-line import/no-dynamic-require, global-require
+const config = attempt(() => require(resolve('mock-api/mock-api.json')));
 
 function mapRequest(req) {
-	var matchedContext = _.find(config, function matchContext(contextData, context) {
-		var contextMatchRegex = new RegExp(context + '.*');
+	const matchedContext = find(config, (contextData, context) => {
+		const contextMatchRegex = new RegExp(`${context}.*`);
 		return contextMatchRegex.test(req.url);
 	});
 
-	var matchedRequest = _.find(matchedContext, function matchRequest(value, request) {
-		var reqMatchRegex = new RegExp('.*' + request + '/?');
+	const matchedRequest = find(matchedContext, (value, request) => {
+		const reqMatchRegex = new RegExp(`.*${request}/?`);
 		return reqMatchRegex.test(req.url);
 	});
 
-	return _.isString(matchedRequest) ? matchedRequest : _.get(matchedRequest, req.method, undefined);
+	return isString(matchedRequest) ? matchedRequest : get(matchedRequest, req.method);
 }
 
 function serveMockApi(req, res, next) {
-	var mockApiFilePath = mapRequest(req);
-	var file;
+	const mockApiFilePath = mapRequest(req);
 
 	// if nothing matches continues with next middleware
 	if (!mockApiFilePath) {
@@ -31,16 +37,19 @@ function serveMockApi(req, res, next) {
 	}
 
 	// check if file exist
-	if (!fs.existsSync('mock-api/' + mockApiFilePath)) {
-		throw new Error(mockApiFilePath + ' does\'t exist');
+	if (!fs.existsSync(`mock-api/${mockApiFilePath}`)) {
+		throw new Error(`${mockApiFilePath} does't exist`);
 	}
 
 	// load file
-	file = require(resolve('mock-api/' + mockApiFilePath));
+	// eslint-disable-next-line import/no-dynamic-require, global-require
+	const file = require(resolve(`mock-api/${mockApiFilePath}`));
 
 	// handle function
-	if (_.isFunction(file)) {
-		return file(req, res, next);
+	if (isFunction(file)) {
+		return jsonParser(req, res, () => {
+			return file(req, res, next);
+		});
 	}
 
 	// handle json
@@ -48,7 +57,7 @@ function serveMockApi(req, res, next) {
 	return res.end(JSON.stringify(file));
 }
 
-if (_.isError(config)) {
+if (isError(config)) {
 	module.exports = function noop(req, res, next) { return next(); };
 } else {
 	module.exports = serveMockApi;
