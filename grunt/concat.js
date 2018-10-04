@@ -12,12 +12,12 @@ module.exports = function task(grunt, config) {
 		},
 		demo: {
 			src: ['<%= eslint.demo.src %>', '<%= ngtemplates.demo.dest %>'],
-			dest: '<%= demoDest %>/demo.js',
+			dest: '<%= demoDest %>/demo.js'
 		},
 		vendor: {
 			src: grunt.file.exists(grunt.template.process(config.vendorYAML, { data: config })) ?
 				grunt.file.readYAML(grunt.template.process(config.vendorYAML, { data: config })) : '{}',
-			dest: '<%= package.config.isLib ? demoDest : dest %>/vendor.js',
+			dest: '<%= dest %>/vendor.js'
 		},
 	};
 };

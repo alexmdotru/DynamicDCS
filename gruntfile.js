@@ -63,7 +63,7 @@ module.exports = function (grunt, options) {
             ),
         },
     };
-    console.log('proot: ', path.join(projectPath, 'node_modules'), defaults, options);
+
     // Apply grunt template helpers
     gruntTemplateProgeny(grunt);
     gruntTemplateRename(grunt);
