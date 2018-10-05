@@ -157,7 +157,7 @@
 					hour: '%k',
 					minute: '%k:%M',
 					second: '%k:%M:%S',
-					millisecond: '%k:%M:%S.%L',
+					millisecond: '%k:%M:%S.%L'
 				},
 				labels: {
 					style: {

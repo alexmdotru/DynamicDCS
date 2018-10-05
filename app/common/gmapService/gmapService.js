@@ -407,9 +407,28 @@
 										}
 										_.set(userAccountService, 'localAccount.headingToPoint', toHeading);
 										toDistance = (gSrv.googleMaps.geometry.spherical.computeDistanceBetween(userUnit, pnt) / 1000).toFixed(2);
-										_.set(userAccountService, 'localAccount.headerInfo', 'Lat: '+pnt.lat().toFixed(6)+' Lng: '+pnt.lng().toFixed(6)+'<br>HdgToCursor: '+toHeading+'° DistToCursor: '+toDistance+'km');
+										_.set(
+											userAccountService,
+											'localAccount.headerInfo',
+											'Lat: '+
+												pnt.lat().toFixed(6)+
+												' Lng: '+
+												pnt.lng().toFixed(6)+
+												'<br>HdgToCursor: '+
+												toHeading+
+												'° DistToCursor: '+
+												toDistance+
+												'km'
+										);
 									} else {
-										_.set(userAccountService, 'localAccount.headerInfo', 'Lat: '+pnt.lat().toFixed(6)+' Lng: '+pnt.lng().toFixed(6));
+										_.set(
+											userAccountService,
+											'localAccount.headerInfo',
+											'Lat: '+
+												pnt.lat().toFixed(6)+
+												' Lng: '+
+												pnt.lng().toFixed(6)
+										);
 									}
 								});
 
@@ -418,7 +437,7 @@
 								});
 
 								unitStaticService.init(serverName)
-									.then(function(resp){
+									.then(function(){
 										gSrv.processBases(unitStaticService.bases);
 										gSrv.processUnitsStatics(unitStaticService.unitStatics);
 									})

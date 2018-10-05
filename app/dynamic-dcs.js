@@ -10,7 +10,7 @@
 		_.set($scope, 'srvService', srvService);
 
 		_.set($scope, 'openSettingsModal', function (size) {
-			var modalInstance = $uibModal.open({
+			$uibModal.open({
 				animation: $scope.animationsEnabled,
 				ariaLabelledBy: 'modal-title',
 				ariaDescribedBy: 'modal-body',
@@ -22,7 +22,7 @@
 		});
 
 		_.set($scope, 'openAdminModal', function (size) {
-			var modalInstance = $uibModal.open({
+			$uibModal.open({
 				animation: $scope.animationsEnabled,
 				ariaLabelledBy: 'modal-title',
 				ariaDescribedBy: 'modal-body',
@@ -109,7 +109,7 @@
 		};
 
 		_.set(adminCtrl, 'openNewAdminModal', function (size) {
-			var modalNewInstance = $uibModal.open({
+			$uibModal.open({
 				animation: $scope.animationsEnabled,
 				ariaLabelledBy: 'modal-title',
 				ariaDescribedBy: 'modal-body',
@@ -120,7 +120,7 @@
 			});
 		});
 		_.set(adminCtrl, 'openDeleteAdminModal', function (size, server) {
-			var modalDelInstance = $uibModal.open({
+			$uibModal.open({
 				animation: $scope.animationsEnabled,
 				ariaLabelledBy: 'modal-title',
 				ariaDescribedBy: 'modal-body',

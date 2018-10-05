@@ -1,7 +1,7 @@
 (function (angular) {
 	'use strict';
 
-	function SocketFactoryController (socketFactory) {
+	function SocketFactoryController (io, socketFactory) {
 		var myIoSocket = io.connect('/', {
 			query: 'token=Bearer '+localStorage.getItem('access_token')+'&authId='+localStorage.getItem('sub')
 		});
@@ -16,6 +16,7 @@
 
 	angular
 		.module('dynamic-dcs.socketFactory', [
+			'angular-socket-io',
 			'btford.socket-io'
 		])
 		.factory('mySocket', SocketFactoryController)

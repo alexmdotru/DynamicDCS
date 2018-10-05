@@ -3,10 +3,12 @@
 
 	function unitStaticService($q, unitStaticAPI, basesAPI) {
 		var us = this;
+		var bases;
+		var unitsStatics;
 		_.assign(us, {
 			loaded: false,
 			ckBasesLoad: function (serverName) {
-				var bases = basesAPI.query({serverName: serverName})
+				bases = basesAPI.query({serverName: serverName})
 					.$promise
 					.$then(function(response) {
 						_.set(us, 'bases', response);
@@ -18,7 +20,7 @@
 				;
 			},
 			ckUnitsStaticsLoad: function (serverName) {
-				var unitsStatics = unitStaticAPI.query({serverName: serverName})
+				unitsStatics = unitStaticAPI.query({serverName: serverName})
 					.$promise
 					.$then(function(response) {
 						_.set(us, 'unitStatics', response);
@@ -31,14 +33,14 @@
 			},
 			init: function (serverName) {
 				console.log('sn: ', serverName);
-				var bases = basesAPI.query({serverName: serverName})
+				bases = basesAPI.query({serverName: serverName})
 					.$promise
 					.then(function(response) {
 						_.set(us, 'bases', response);
 						return response;
 					})
 				;
-				var unitsStatics = unitStaticAPI.query({serverName: serverName})
+				unitsStatics = unitStaticAPI.query({serverName: serverName})
 					.$promise
 					.then(function(response) {
 						_.set(us, 'unitStatics', response);

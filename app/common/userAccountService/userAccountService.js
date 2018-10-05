@@ -3,8 +3,6 @@
 
 	function userAccountService(DCSUserAccountsAPI, alertService) {
 		var uASrv = this;
-		var userAccounts;
-		var localAccount;
 		_.set(uASrv, 'createUser', function (userAccount) {
 			var dsave = DCSUserAccountsAPI.save(userAccount);
 			dsave.$promise
@@ -33,7 +31,7 @@
 				})
 			;
 		});
-/*
+		/*
 		_.set(uASrv, 'updateServer', function (userAccount) {
 			var dupdate = DCSUserAccountsAPI.update(userAccount);
 			dupdate.$promise

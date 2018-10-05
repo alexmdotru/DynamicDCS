@@ -52,11 +52,11 @@
 		'state.dynMap',
 		'angular-jwt'
 	])
-	.config(configureStates)
-	.run(['$rootScope', '$state', '$stateParams',
-		function ($rootScope, $state, $stateParams) {
-			_.set($rootScope, '$state', $state);
-			_.set($rootScope, '$stateParams', $stateParams);
-		}
-	])
+		.config(configureStates)
+		.run(['$rootScope', '$state', '$stateParams',
+			function ($rootScope, $state, $stateParams) {
+				_.set($rootScope, '$state', $state);
+				_.set($rootScope, '$stateParams', $stateParams);
+			}
+		])
 }(angular));

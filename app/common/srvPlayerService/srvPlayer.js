@@ -3,7 +3,7 @@
 
 	function srvPlayerService(DCSSrvPlayerAPI, alertService) {
 		var sPlayer = this;
-		var srvPlayers;
+		// var srvPlayers;
 
 		/*
 		_.set(dSrv, 'createServer', function (server) {
@@ -73,12 +73,12 @@
 		 */
 	}
 	srvPlayerService.$inject = ['dynamic-dcs.api.srvPlayer', 'alertService'];
-/*
+	/*
 	function initializeSrvPlayerService (srvPlayerService) {
 		srvPlayerService.init();
 	}
 	initializeSrvPlayerService.$inject = ['srvPlayerService'];
-*/
+	*/
 	angular
 		.module('dynamic-dcs.srvPlayerService',['dynamic-dcs.api.srvPlayer', 'dynamic-dcs.alertService'])
 		.service('srvPlayerService', srvPlayerService)
