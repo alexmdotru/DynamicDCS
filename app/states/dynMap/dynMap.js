@@ -33,7 +33,9 @@
 		});
 
 		mySocket.on('error', function (err) {
+			/* eslint-disable no-console */
 			console.log('sockErr', err);
+			/* eslint-enable no-console */
 		});
 
 		mySocket.on('reconnect', function () {

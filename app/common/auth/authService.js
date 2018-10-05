@@ -17,7 +17,9 @@
 					$timeout(function() {
 						location.reload();
 					});
+					/* eslint-disable no-console */
 					console.log(err);
+					/* eslint-enable no-console */
 					alert('Error: ' + err.error + '. Check the console for further details.');
 				}
 			});
@@ -27,7 +29,9 @@
 			if (localStorage.getItem('access_token') !== null) {
 				var accessToken = localStorage.getItem('access_token');
 				if (!accessToken) {
+					/* eslint-disable no-console */
 					console.log('Access token must exist to fetch profile');
+					/* eslint-enable no-console */
 				}
 				angularAuth0.client.userInfo(accessToken, function(err, profile) {
 					if (profile) {

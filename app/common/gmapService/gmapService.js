@@ -32,7 +32,9 @@
 					_.set(gSrv, 'overlayCoords', overlayCoordsJSON.data);
 				})
 				.catch(function(err){
+					/* eslint-disable no-console */
 					console.log('line29', err);
+					/* eslint-enable no-console */
 				})
 			;
 		});
@@ -43,7 +45,9 @@
 					_.set(gSrv, 'SIDC', sidJSON.data);
 				})
 				.catch(function(err){
-					console.log('line40', err);
+					/* eslint-disable no-console */
+					console.log('line49', err);
+					/* eslint-enable no-console */
 				})
 			;
 		});
@@ -178,7 +182,9 @@
 		_.set(gSrv, 'createMarker', function (unit) {
 			var curSymbol = gSrv.buildSIDC(unit);
 			if (!curSymbol) {
+				/* eslint-disable no-console */
 				console.log('u: ', unit);
+				/* eslint-enable no-console */
 			}
 			var curMarker = _.cloneDeep(unit);
 			_.assign(curMarker, {
@@ -442,18 +448,24 @@
 										gSrv.processUnitsStatics(unitStaticService.unitStatics);
 									})
 									.catch(function(err){
+										/* eslint-disable no-console */
 										console.log('line218', err);
+										/* eslint-enable no-console */
 									})
 								;
 							});
 						})
 						.catch(function(err){
+							/* eslint-disable no-console */
 							console.log('line58', err);
+							/* eslint-enable no-console */
 						})
 					;
 				})
 				.catch(function(err){
+					/* eslint-disable no-console */
 					console.log('line58', err);
+					/* eslint-enable no-console */
 				})
 			;
 		});

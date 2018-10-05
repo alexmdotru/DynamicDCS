@@ -14,7 +14,9 @@
 				})
 				.catch(function(err){
 					alertService.addAlert('danger', 'Server could not be created.');
+					/* eslint-disable no-console */
 					console.log(err);
+					/* eslint-enable no-console */
 				})
 			;
 		});
@@ -27,7 +29,9 @@
 				})
 				.catch(function(err){
 					alertService.addAlert('danger', 'Server service could not be queryed.');
+					/* eslint-disable no-console */
 					console.log(err);
+					/* eslint-enable no-console */
 				})
 			;
 		});
@@ -41,7 +45,9 @@
 				})
 				.catch(function(err){
 					alertService.addAlert('danger', 'Server options could not be updated.');
+					/* eslint-disable no-console */
 					console.log(err);
+					/* eslint-enable no-console */
 				})
 			;
 		});
@@ -56,7 +62,9 @@
 				})
 				.catch(function(err){
 					alertService.addAlert('danger', 'Server options could not be updated.');
+					/* eslint-disable no-console */
 					console.log(err);
+					/* eslint-enable no-console */
 				})
 			;
 		});

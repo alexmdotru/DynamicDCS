@@ -15,7 +15,9 @@
 					})
 					.catch(function(err){
 						alertService.addAlert('danger', 'Theaters could not be queryed.');
+						/* eslint-disable no-console */
 						console.log(err);
+						/* eslint-enable no-console */
 					})
 				;
 			}

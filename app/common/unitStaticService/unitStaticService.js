@@ -15,7 +15,9 @@
 						return response;
 					})
 					.catch(function(err){
-						console.log('line16', err);
+						/* eslint-disable no-console */
+						console.log('line19', err);
+						/* eslint-enable no-console */
 					})
 				;
 			},
@@ -27,12 +29,16 @@
 						return response;
 					})
 					.catch(function(err){
-						console.log('line28', err);
+						/* eslint-disable no-console */
+						console.log('line33', err);
+						/* eslint-enable no-console */
 					})
 				;
 			},
 			init: function (serverName) {
+				/* eslint-disable no-console */
 				console.log('sn: ', serverName);
+				/* eslint-enable no-console */
 				bases = basesAPI.query({serverName: serverName})
 					.$promise
 					.then(function(response) {
@@ -52,7 +58,9 @@
 					unitsStatics
 				])
 					.catch(function(err){
-						console.log('line52', err);
+						/* eslint-disable no-console */
+						console.log('line62', err);
+						/* eslint-enable no-console */
 					})
 					.finally(function () {
 						_.set(us, 'loaded', true);

@@ -71,7 +71,9 @@
 					});
 				})
 				.catch(function (err) {
+					/* eslint-disable no-console */
 					console.log('init event err line147: ', err);
+					/* eslint-enable no-console */
 				})
 			;
 		});

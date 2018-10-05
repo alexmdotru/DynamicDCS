@@ -50,12 +50,16 @@
 		_.set(setCtrl, 'userAccountService', userAccountService);
 
 		setCtrl.save = function () {
+			/* eslint-disable no-console */
 			console.log('save');
+			/* eslint-enable no-console */
 			$uibModalInstance.close('Save');
 		};
 
 		setCtrl.cancel = function () {
+			/* eslint-disable no-console */
 			console.log('cancel');
+			/* eslint-enable no-console */
 			$uibModalInstance.dismiss('Cancel');
 		};
 	}

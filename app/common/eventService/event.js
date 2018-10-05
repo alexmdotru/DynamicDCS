@@ -105,7 +105,9 @@
 				})
 				.catch(function(err){
 					alertService.addAlert('danger', 'Events could not be queryed.');
+					/* eslint-disable no-console */
 					console.log(err);
+					/* eslint-enable no-console */
 				})
 			;
 		});

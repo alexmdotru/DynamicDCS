@@ -31,7 +31,9 @@
 				})
 				.catch(function(err){
 					alertService.addAlert('danger', 'Server Players could not be queryed.');
+					/* eslint-disable no-console */
 					console.log(err);
+					/* eslint-enable no-console */
 				})
 			;
 		});
