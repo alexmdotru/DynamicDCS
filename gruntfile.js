@@ -42,17 +42,17 @@ module.exports = function (grunt, options) {
             dest: 'dist',
             demoDest: 'demo',
             process: grunt.template.process,
-            src: 'app',
+            src: '<%= "app" %>',
             demoSrc: 'src.demo',
             temp: '.temp',
-            testEnvYAML: 'app/test-env.yml',
+            testEnvYAML: '<%= src %>/test-env.yml',
             useMin: grunt.option('min') || includes(grunt.cli.tasks, 'build'),
-            vendorYAML: 'app/vendor.js.yml',
-            vendorLocales: 'app/locales.yml',
+            vendorYAML: '<%= src + "/vendor.js.yml" %>',
+            vendorLocales: '<%= src %>/locales.yml',
             versions: getDependencyVersions,
         },
         jitGrunt: {
-            pluginsRoot: path.join(projectPath, 'node_modules'),
+            pluginsRoot: 'node_modules',
             staticMappings: merge(
             {
                 configureProxies: 'grunt-connect-proxy',

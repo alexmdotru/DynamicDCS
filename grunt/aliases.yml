@@ -17,6 +17,7 @@ compile:
 
 compile-css:
 - less:app
+- concat:css
 - postcss
 
 compile-index:

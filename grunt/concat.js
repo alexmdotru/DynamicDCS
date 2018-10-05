@@ -10,6 +10,10 @@ module.exports = function task(grunt, config) {
 			src: ['<%= eslint.app.src %>', '<%= ngtemplates.app.dest %>'],
 			dest: '<%= dest %>/<%= appFileName %>.js',
 		},
+		css: {
+			src: ['<%= src %>/../node_modules/codemirror/lib/codemirror.css', '<%= dest %>/<%= appFileName %>.css'],
+			dest: '<%= dest %>/<%= appFileName %>.css'
+		},
 		demo: {
 			src: ['<%= eslint.demo.src %>', '<%= ngtemplates.demo.dest %>'],
 			dest: '<%= demoDest %>/demo.js'

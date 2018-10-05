@@ -4,9 +4,7 @@
   "description": "DDCS Community software for DCS",
   "main": "index.js",
   "files": [
-    "dist",
-    "grunt/",
-    "index.js"
+    "dist"
   ],
   "private": true,
   "dependencies": {
