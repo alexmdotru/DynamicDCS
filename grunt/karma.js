@@ -17,6 +17,10 @@ module.exports = function task(grunt, config) {
 					{ type: 'text-summary' },
 				],
 			},
+			browserConsoleLogOptions: {
+				terminal: true,
+				level: ""
+			},
 			browsers: ['PhantomJS'],
 			frameworks: ['jasmine'],
 			junitReporter: {
