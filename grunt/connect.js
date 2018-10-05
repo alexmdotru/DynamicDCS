@@ -60,8 +60,6 @@ module.exports = function configureConnect(grunt) {
 				open: grunt.option('open') === true,
 				port: 8000,
 				rewritePaths: [
-					{ from: '^/$', to: '/apps/<%= package.name %>/', redirect: 'temporary' },
-					{ from: '^/apps/<%= package.name %>/(.*?)$', to: '/$1' },
 					{ from: '^/libs/<%= package.name %>/(?:[\\d\\.]+|latest)/(.*?)$', to: '/$1' },
 					{ from: '^/libs/(.*?)/(?:[\\d\\.]+|latest)/(.*?)$', to: '/node_modules/$1/dist/$2' },
 					{ from: '^/(.*?)/websvc', to: '/$1/api' },
