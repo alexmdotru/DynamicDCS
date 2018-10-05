@@ -50,7 +50,7 @@
 			// Set the time that the access token will expire at
 			var expiresAt = JSON.stringify((authResult.expiresIn * 1000) + new Date().getTime());
 
-			var scopes = authResult.scope || REQUESTED_SCOPES || '';
+			var scopes = authResult.scope || '';
 
 			//console.log('sub is: ', authResult.idTokenPayload.sub);
 

@@ -1,7 +1,15 @@
 (function (angular) {
 	'use strict';
 
-	function controlService ($q, $window, $http, userAccountService, unitStaticService, uiGmapIsReady, uiGmapGoogleMapApi) {
+	function controlService (
+		$q,
+		$window,
+		$http,
+		userAccountService,
+		unitStaticService,
+		uiGmapIsReady,
+		uiGmapGoogleMapApi
+	) {
 		var gSrv = this;
 
 		_.set(gSrv, 'clearBaseOverlay', function () {
@@ -17,8 +25,6 @@
 			});
 			_.set(gSrv, 'circleOverlay', {});
 		});
-
-
 
 		_.set(gSrv, 'getOverlayJSON', function (theaterObj) {
 			return $http.get(theaterObj.overlayFile)
@@ -159,11 +165,14 @@
 				gSrv.addOverlay(base.name, base.side);
 			});
 		});
-		_.set(gSrv, 'processUnitsStatics', function (unitArray) {
+		_.set(gSrv, 'processUnitsStatics', function () {
 			_.set(gSrv, 'gmapObj.markers', []);
+			/*
+			unitArray
 			_.forEach(unitArray, function (unit) {
-				// gSrv.createMarker(unit);
+				gSrv.createMarker(unit);
 			});
+			*/
 		});
 
 		_.set(gSrv, 'createMarker', function (unit) {
@@ -282,9 +291,13 @@
 							base + '_' + side + '.png', imageBounds));
 					_.get(gSrv, ['baseOverlay', base]).setMap(gSrv.currentMap);
 
-					gSrv.googleMaps.event.addListener(_.get(gSrv, ['baseOverlay', base]), 'rightclick', function(e){
-						gSrv.displayCoordinates(e.latLng);
-					});
+					gSrv.googleMaps.event.addListener(
+						_.get(gSrv, ['baseOverlay', base]),
+						'rightclick',
+						function(e){
+							gSrv.displayCoordinates(e.latLng);
+						}
+					);
 				}
 
 				if ( typeof gSrv.overlayCoords[base].latc !== "undefined" ) {
@@ -305,9 +318,13 @@
 						radius: 30000
 					}));
 
-					gSrv.googleMaps.event.addListener(_.get(gSrv, ['circleOverlay', base]), 'rightclick', function(e){
-						gSrv.displayCoordinates(e.latLng);
-					});
+					gSrv.googleMaps.event.addListener(
+						_.get(gSrv, ['circleOverlay', base]),
+						'rightclick',
+						function(e){
+							gSrv.displayCoordinates(e.latLng);
+						}
+					);
 				}
 			}
 		});
@@ -340,24 +357,43 @@
 								_.set(gSrv, 'googleMaps', googleMaps);
 								_.set(gSrv, 'gmapObj.options.mapTypeControlOptions.position',
 									googleMaps.ControlPosition.LEFT_BOTTOM);
-								gSrv.googleMaps.event.addListener(gSrv.currentMap, 'zoom_changed', function () {
-									var zoomLevel = gSrv.currentMap.getZoom();
-									if( zoomLevel > _.toNumber(_.get(theaterObj, 'removeSideZone'))){
-										_.forOwn(gSrv.circleOverlay, function (value, key){
-											gSrv.circleOverlay[key].setVisible(false);
-										});
-									}else{
-										_.forOwn(gSrv.circleOverlay, function (value, key){
-											gSrv.circleOverlay[key].setVisible(true);
-										});
+								gSrv.googleMaps.event.addListener(
+									gSrv.currentMap,
+									'zoom_changed',
+									function () {
+										var zoomLevel = gSrv.currentMap.getZoom();
+										if( zoomLevel >
+											_.toNumber(
+												_.get(theaterObj, 'removeSideZone')
+											)
+										){
+											_.forOwn(gSrv.circleOverlay, function (value, key){
+												gSrv.circleOverlay[key].setVisible(false);
+											});
+										}else{
+											_.forOwn(gSrv.circleOverlay, function (value, key){
+												gSrv.circleOverlay[key].setVisible(true);
+											});
+										}
 									}
-								});
+								);
 								_.set(gSrv, 'displayCoordinates', function (pnt) {
 									var userUnit;
 									var toHeading;
 									var toDistance;
-									_.set(userAccountService, 'localAccount.unit', _.find(gSrv.gmapObj.markers, {playername: userAccountService.localAccount.gameName}));
-									_.set(userAccountService, 'localAccount.curPointer', {lat: pnt.lat(), lng: pnt.lng()});
+									_.set(
+										userAccountService,
+										'localAccount.unit',
+										_.find(
+											gSrv.gmapObj.markers,
+											{playername: userAccountService.localAccount.gameName}
+										)
+									);
+									_.set(
+										userAccountService,
+										'localAccount.curPointer',
+										{lat: pnt.lat(), lng: pnt.lng()}
+									);
 									if (typeof userAccountService.localAccount.unit !== 'undefined') {
 										userUnit = new gSrv.googleMaps.LatLng(
 											userAccountService.localAccount.unit.latitude,

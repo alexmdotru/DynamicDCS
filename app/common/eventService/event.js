@@ -4,10 +4,9 @@
 	function eventService(eventAPI, alertService) {
 		var eCtrl = this;
 		var curDate = new Date().toISOString();
-		var curTimeEpoc = new Date().getTime();
+		// var curTimeEpoc = new Date().getTime();
 		var ePromise;
 		_.set(eCtrl, 'curScore', {});
-
 		_.set(eCtrl, 'setTopScore', function (usrObj) {
 			_.set(eCtrl, 'topScore', _.get(eCtrl, 'topScore', []));
 			var curUsr = _.find(_.get(eCtrl, 'topScore'), {id: _.get(usrObj, 'id')});
@@ -16,13 +15,12 @@
 			} else {
 				eCtrl.topScore.push(usrObj);
 			}
-			_.set(eCtrl, 'topScore', _.sortBy(_.values(_.get(eCtrl, 'topScore')), 'score').reverse());
+			_.set(eCtrl, 'topScore', _.sortBy(_.values(_.get(eCtrl, 'topScore')), 'score')
+				.reverse());
 		});
-
 		_.set(eCtrl, 'byUcid', function (newEvents) {
 			var eventObj = {};
 			var scoreMath;
-			var name;
 			var sortedEvents = _.sortBy(newEvents, ['createdAt']);
 
 			_.forEach(sortedEvents, function (event) {
@@ -43,7 +41,8 @@
 				if (_.get(event, 'iucid')) {
 					if (_.get(event, 'iucid')) {
 						curPlayer = _.get(event, 'iucid');
-						scoreMath = _.get(eCtrl, ['curScore', curPlayer, 'score'], 0) + _.get(event, 'score', 0);
+						scoreMath = _.get(eCtrl, ['curScore', curPlayer, 'score'], 0) +
+							_.get(event, 'score', 0);
 					} else {
 						curPlayer = _.get(event, 'tucid');
 						scoreMath = _.get(eCtrl, ['curScore', curPlayer, 'score'], 0);
@@ -61,7 +60,11 @@
 
 					if (curPlayer) {
 						_.set(eventObj, [curPlayer, 'id'], curPlayer);
-						_.set(eventObj, [curPlayer, 'data'], _.get(eventObj, [curPlayer, 'data'], []));
+						_.set(
+							eventObj,
+							[curPlayer, 'data'],
+							_.get(eventObj, [curPlayer, 'data'], [])
+						);
 						if (!_.get(eventObj, [curPlayer, 'name'])) {
 							_.set(eventObj, [curPlayer, 'name'], _.get(event, 'iName'));
 							_.set(eCtrl, ['curScore', curPlayer, 'name'], _.get(event, 'iName'))
@@ -89,19 +92,16 @@
 					}
 				}
 			});
-
 			_.forEach(_.get(eCtrl, 'curScore'), function (usr) {
 				eCtrl.setTopScore(usr);
 			});
-
 			return eventObj;
 		});
-
 		_.set(eCtrl, 'getInitEvents', function () {
 			ePromise = eventAPI.query({serverName: 'dynamiccaucasus'});
 			return ePromise.$promise
 				.then(function (eventData) {
-						return eCtrl.byUcid(eventData);
+					return eCtrl.byUcid(eventData);
 				})
 				.catch(function(err){
 					alertService.addAlert('danger', 'Events could not be queryed.');

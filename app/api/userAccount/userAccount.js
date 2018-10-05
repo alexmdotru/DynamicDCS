@@ -34,5 +34,5 @@
 	userAccountFactory.$inject = ['$resource'];
 
 	angular.module('dynamic-dcs.api.userAccounts', ['ngResource'])
-	.factory('dynamic-dcs.api.userAccounts', userAccountFactory);
+		.factory('dynamic-dcs.api.userAccounts', userAccountFactory);
 }(angular));

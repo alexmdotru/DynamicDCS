@@ -2,7 +2,7 @@
 	'use strict';
 
 	function chatBoxController () {
-		var cbt = this;
+		// var cbt = this;
 		// $timeout, dynMsgService
 		// $timeout(function() {
 		//	_.set(cbt, 'msgs', _.get(dynMsgService, ['cObj', cbt.socketSub]));
@@ -10,7 +10,7 @@
 		// '$timeout', 'dynMsgService'
 	}
 	chatBoxController.$injector = [];
-//['cObj', cbt.socketSub]
+	// ['cObj', cbt.socketSub]
 	function chatBox() {
 		return {
 			restrict: 'E',
