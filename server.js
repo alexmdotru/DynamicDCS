@@ -194,7 +194,7 @@ router.route('/unitStatics/:serverName')
 		dbMapServiceController.srvPlayerActions('read', serverName, srvPlayerObj)
 			.then(function (srvPlayer) {
 				var curSrvPlayer = _.get(srvPlayer, 0);
-				console.log('CSP: ', curSrvPlayer);
+				// console.log('CSP: ', curSrvPlayer);
 				if (curSrvPlayer) {
 					dbSystemLocalController.userAccountActions('read', {ucid: curSrvPlayer._id})
 						.then(function (userAcct) {
@@ -225,11 +225,11 @@ router.route('/unitStatics/:serverName')
 									})
 								;
 							} else {
-								/*
 								var curSrvIP = _.first(_.split(curSrvPlayer.ipaddr, ':'));
-								console.log('Cur Account Doesnt Exist line, matching IP: ', curSrvIP);
+								// console.log('Cur Account Doesnt Exist line, matching IP: ', curSrvIP);
 								dbSystemLocalController.userAccountActions('updateSingleIP', {ipaddr: curSrvIP, ucid: curSrvPlayer.ucid, lastServer: serverName, gameName: curSrvPlayer.name})
 									.then(function () {
+										/*
 										dbSystemLocalController.userAccountActions('read', {ucid: curSrvPlayer.ucid})
 											.then(function (userAcct) {
 												var unitObj;
@@ -273,12 +273,12 @@ router.route('/unitStatics/:serverName')
 												console.log('line259: ', err);
 											})
 										;
+										*/
 									})
 									.catch(function (err) {
 										console.log('line264: ', err);
 									})
 								;
-								*/
 							}
 						})
 						.catch(function (err) {
@@ -286,8 +286,8 @@ router.route('/unitStatics/:serverName')
 						})
 					;
 				} else {
-					var mesg = clientIP + ' Has never played on the server';
-					console.log(mesg);
+					// var mesg = clientIP + ' Has never played on the server';
+					// console.log(mesg);
 					res.status(404);
 					res.send(mesg);
 				}
