@@ -2,9 +2,12 @@
 	'use strict';
 
 	function SocketFactoryController (socketFactory) {
-		var myIoSocket = io.connect('/', {
-			query: 'token=Bearer '+localStorage.getItem('access_token')+'&authId='+localStorage.getItem('sub')
-		});
+		/* eslint-disable no-undef */
+		var myIoSocket = io.connect(
+			'/',
+			{query: 'token=Bearer '+localStorage.getItem('access_token')+'&authId='+localStorage.getItem('sub')}
+		);
+		/* eslint-disable no-undef */
 		var mySocket = socketFactory({
 			ioSocket: myIoSocket
 		});
