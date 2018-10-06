@@ -221,6 +221,8 @@ router.route('/unitStatics/:serverName')
 													console.log('line184: ', err);
 												})
 											;
+										} else {
+											res.json([]);
 										}
 									})
 									.catch(function (err) {
@@ -232,6 +234,7 @@ router.route('/unitStatics/:serverName')
 								// console.log('Cur Account Doesnt Exist line, matching IP: ', curSrvIP);
 								dbSystemLocalController.userAccountActions('updateSingleIP', {ipaddr: curSrvIP, ucid: curSrvPlayer.ucid, lastServer: serverName, gameName: curSrvPlayer.name})
 									.then(function () {
+										res.json([]);
 										/*
 										dbSystemLocalController.userAccountActions('read', {ucid: curSrvPlayer.ucid})
 											.then(function (userAcct) {
@@ -289,8 +292,8 @@ router.route('/unitStatics/:serverName')
 						})
 					;
 				} else {
-					// var mesg = clientIP + ' Has never played on the server';
-					// console.log(mesg);
+					var mesg = clientIP + ' Has never played on the server';
+					console.log(mesg);
 					res.status(404);
 					res.send(mesg);
 				}
