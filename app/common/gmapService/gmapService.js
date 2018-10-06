@@ -11,21 +11,18 @@
 		uiGmapGoogleMapApi
 	) {
 		var gSrv = this;
-
 		_.set(gSrv, 'clearBaseOverlay', function () {
 			_.forEach(gSrv.baseOverlay, function (base) {
 				base.setMap(null);
 			});
 			_.set(gSrv, 'baseOverlay', {});
 		});
-
 		_.set(gSrv, 'clearCircleOverlay', function () {
 			_.forEach(gSrv.circleOverlay, function (circle) {
 				circle.setMap(null);
 			});
 			_.set(gSrv, 'circleOverlay', {});
 		});
-
 		_.set(gSrv, 'getOverlayJSON', function (theaterObj) {
 			return $http.get(theaterObj.overlayFile)
 				.then(function (overlayCoordsJSON) {
@@ -38,7 +35,6 @@
 				})
 			;
 		});
-
 		_.set(gSrv, 'getSIDCJSON', function () {
 			return $http.get('json/sidc.json')
 				.then(function (sidJSON) {
@@ -51,7 +47,6 @@
 				})
 			;
 		});
-
 		_.set(gSrv, 'mapStyles', function () {
 			return [
 				{
@@ -123,7 +118,6 @@
 				}
 			];
 		});
-
 		_.set(gSrv, 'setupGmapObj', function (theaterObj) {
 			_.set(gSrv, 'gmapObj', {
 				center: {
@@ -161,7 +155,6 @@
 				}
 			});
 		});
-
 		_.set(gSrv, 'processBases', function (basesArray) {
 			gSrv.clearBaseOverlay();
 			gSrv.clearCircleOverlay();
@@ -169,21 +162,17 @@
 				gSrv.addOverlay(base.name, base.side);
 			});
 		});
-		_.set(gSrv, 'processUnitsStatics', function () {
+		_.set(gSrv, 'processUnitsStatics', function (unitArray) {
 			_.set(gSrv, 'gmapObj.markers', []);
-			/*
-			unitArray
 			_.forEach(unitArray, function (unit) {
 				gSrv.createMarker(unit);
 			});
-			*/
 		});
-
 		_.set(gSrv, 'createMarker', function (unit) {
 			var curSymbol = gSrv.buildSIDC(unit);
 			if (!curSymbol) {
 				/* eslint-disable no-console */
-				console.log('u: ', unit);
+				console.log('undefinedSymbol: ', unit);
 				/* eslint-enable no-console */
 			}
 			var curMarker = _.cloneDeep(unit);
@@ -198,7 +187,6 @@
 			});
 			_.get(gSrv, 'gmapObj.markers').push(curMarker);
 		});
-
 		_.set(gSrv, 'updateMarker', function (unit) {
 			var curMarker = _.find(_.get(gSrv, 'gmapObj.markers'), {id: unit._id});
 			_.set(curMarker, 'latitude', unit.lonLatLoc[1]);
@@ -212,11 +200,9 @@
 				_.set(curMarker, 'icon', curSymbol.asCanvas().toDataURL());
 			}
 		});
-
 		_.set(gSrv, 'delMarker', function (unit) {
 			_.remove(_.get(gSrv, 'gmapObj.markers'), {id: unit._id});
 		});
-
 		//process inbound Unit Stream
 		_.set(gSrv, 'processUnitStream', function (update) {
 			if(update.action === 'C') {
@@ -229,7 +215,6 @@
 				gSrv.delMarker(update.data);
 			}
 		});
-
 		//process inbound Unit Stream
 		_.set(gSrv, 'buildSIDC', function (unit) {
 			// console.log('uu: ', unit);
@@ -281,7 +266,6 @@
 
 			return new $window.ms.Symbol( _sidc + '****', sidOpt );
 		});
-
 		_.set(gSrv, 'addOverlay', function (base, side) {
 			//console.log('addoverlay gmap: ',base,side);
 			if (  gSrv.overlayCoords[base] && gSrv.googleMaps ) {
@@ -334,7 +318,6 @@
 				}
 			}
 		});
-
 		_.set(gSrv, 'updateOverlay', function (base, side) {
 			if(!_.includes(base, 'FARP')){ //until farps have a img overlay, bypass them...
 				_.get(gSrv, ['baseOverlay', base]).setMap(null);
@@ -345,11 +328,9 @@
 
 			gSrv.addOverlay(base, side);
 		});
-
 		_.set(gSrv, 'init', function (serverName, theaterObj) {
 			_.set(userAccountService, 'localAccount.headerInfo', 'Right Click Map For Point Info');
 			gSrv.setupGmapObj(theaterObj);
-
 			uiGmapIsReady.promise()
 				.then(function (maps) {
 					var prePromise = [];

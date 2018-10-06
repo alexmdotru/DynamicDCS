@@ -23,9 +23,9 @@ var DDCS = {};
 _.assign(DDCS, {
 	port: 80,
 	db: {
-		systemHost: '127.0.0.1',
+		systemHost: '192.168.44.60',
 		systemDatabase: 'DDCS',
-		dynamicHost: '127.0.0.1',
+		dynamicHost: '192.168.44.60',
 		dynamicDatabase: 'DDCSStandard',
 		remoteHost: '127.0.0.1',
 	},
@@ -186,10 +186,15 @@ router.route('/unitStatics/:serverName')
 	.get(function (req, res) {
 		var serverName = req.params.serverName;
 		var clientIP = _.replace(req.connection.remoteAddress, '::ffff:', '');
-		srvPlayerObj = {ipaddr: new RegExp(clientIP)};
+		if (clientIP === '::1') {
+			srvPlayerObj = {_id: 'd124b99273260cf876203cb63e3d7791'};
+		} else {
+			srvPlayerObj = {ipaddr: new RegExp(clientIP)};
+		}
 		dbMapServiceController.srvPlayerActions('read', serverName, srvPlayerObj)
 			.then(function (srvPlayer) {
 				var curSrvPlayer = _.get(srvPlayer, 0);
+				console.log('CSP: ', curSrvPlayer);
 				if (curSrvPlayer) {
 					dbSystemLocalController.userAccountActions('read', {ucid: curSrvPlayer._id})
 						.then(function (userAcct) {
@@ -204,7 +209,7 @@ router.route('/unitStatics/:serverName')
 										if (curAcct.permLvl <= DDCS.serverAdminLvl) {
 											delete unitObj.coalition;
 										} else {
-											_.set(unitObj, 'coalition', _.get(curSrvPlayer, 'side', 0));
+											_.set(unitObj, 'coalition', _.get(curSrvPlayer, 'sideLock', 0));
 										}
 										dbMapServiceController.unitActions('readStd', serverName, unitObj)
 											.then(function (resp) {
@@ -220,6 +225,7 @@ router.route('/unitStatics/:serverName')
 									})
 								;
 							} else {
+								/*
 								var curSrvIP = _.first(_.split(curSrvPlayer.ipaddr, ':'));
 								console.log('Cur Account Doesnt Exist line, matching IP: ', curSrvIP);
 								dbSystemLocalController.userAccountActions('updateSingleIP', {ipaddr: curSrvIP, ucid: curSrvPlayer.ucid, lastServer: serverName, gameName: curSrvPlayer.name})
@@ -236,7 +242,7 @@ router.route('/unitStatics/:serverName')
 													if (curAcct.permLvl <= DDCS.serverAdminLvl) {
 														delete unitObj.coalition;
 													} else {
-														_.set(unitObj, 'coalition', _.get(curSrvPlayer, 'side', 0));
+														_.set(unitObj, 'coalition', _.get(curSrvPlayer, 'sideLock', 0));
 													}
 													dbMapServiceController.unitActions('readStd', serverName, unitObj)
 														.then(function (resp) {
@@ -252,7 +258,7 @@ router.route('/unitStatics/:serverName')
 														dead: false,
 														coalition: 0
 													};
-													_.set(unitObj, 'coalition', _.get(curSrvPlayer, 'side', 0));
+													_.set(unitObj, 'coalition', _.get(curSrvPlayer, 'sideLock', 0));
 													dbMapServiceController.unitActions('readStd', serverName, unitObj)
 														.then(function (resp) {
 															res.json(resp);
@@ -272,6 +278,7 @@ router.route('/unitStatics/:serverName')
 										console.log('line264: ', err);
 									})
 								;
+								*/
 							}
 						})
 						.catch(function (err) {

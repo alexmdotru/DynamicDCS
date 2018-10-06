@@ -251,6 +251,15 @@
     "modifier1": "-",
     "modifier2": "-"
   },
+  "FA-18C_hornet": {
+    "codingScheme": "S",
+    "affiliation": "U",
+    "battleDimension": "A",
+    "status": "-",
+    "functionID": "MFF--",
+    "modifier1": "-",
+    "modifier2": "-"
+  },
   "FW-190D9": {
     "codingScheme": "S",
     "affiliation": "U",
