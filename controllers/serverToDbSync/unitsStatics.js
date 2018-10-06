@@ -166,7 +166,6 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 
 						dbMapServiceController.unitActions('update', serverName, iCurObj.data)
 							.then(function (unit) {
-								/*
 								_.set(iCurObj, 'data.coalition', _.get(iCurObj, 'data.coalition', curUnit.coalition));
 								if (_.get(iCurObj, 'data.coalition')) {
 									// console.log('get side: ', _.get(iCurObj, 'data.coalition'));
@@ -175,7 +174,6 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 								// curServers[serverName].updateQue.q1.push(_.cloneDeep(iCurObj));
 								// curServers[serverName].updateQue.q2.push(_.cloneDeep(iCurObj));
 								// curServers[serverName].updateQue.qadmin.push(_.cloneDeep(iCurObj));
-								*/
 							})
 							.catch(function (err) {
 								console.log('del err line123: ', err);
