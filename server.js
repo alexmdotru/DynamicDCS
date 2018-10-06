@@ -202,23 +202,26 @@ router.route('/unitStatics/:serverName')
 							if (curAcct) {
 								dbSystemLocalController.userAccountActions('updateSingleUCID', {ucid: curSrvPlayer._id, lastServer: serverName, gameName: curSrvPlayer.name})
 									.then(function () {
-										var unitObj = {
-											dead: false,
-											coalition: 0
-										};
-										if (curAcct.permLvl <= DDCS.serverAdminLvl) {
-											delete unitObj.coalition;
-										} else {
-											_.set(unitObj, 'coalition', _.get(curSrvPlayer, 'sideLock', 0));
+										if(_.includes(_.get(curSrvPlayer, 'slot', ''), 'forward_observer') ||
+											_.includes(_.get(curSrvPlayer, 'slot', ''), 'artillery_commander')) {
+											var unitObj = {
+												dead: false,
+												coalition: 0
+											};
+											if (curAcct.permLvl <= DDCS.serverAdminLvl) {
+												delete unitObj.coalition;
+											} else {
+												_.set(unitObj, 'coalition', _.get(curSrvPlayer, 'sideLock', 0));
+											}
+											dbMapServiceController.unitActions('readStd', serverName, unitObj)
+												.then(function (resp) {
+													res.json(resp);
+												})
+												.catch(function (err) {
+													console.log('line184: ', err);
+												})
+											;
 										}
-										dbMapServiceController.unitActions('readStd', serverName, unitObj)
-											.then(function (resp) {
-												res.json(resp);
-											})
-											.catch(function (err) {
-												console.log('line184: ', err);
-											})
-										;
 									})
 									.catch(function (err) {
 										console.log('line211: ', err);
