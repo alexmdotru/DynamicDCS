@@ -22,7 +22,7 @@ _.set(exports, 'connectSystemLocalDB', function (host, database) {
 // include mongoose db schemas
 exports.userAccountActions = function (action, obj){
     const UserAccount = DBSystem.model('userAccount', userAccountSchema);
-	console.log('ua: ', action, obj);
+	// console.log('ua: ', action, obj);
 	if(action === 'create') {
 		return new Promise(function(resolve, reject) {
 			const useraccount = new UserAccount(obj);
