@@ -17,6 +17,6 @@
 	}
 	srvPlayerFactory.$inject = ['$resource'];
 
-	angular.module('dynamic-dcs.api.srvPlayer', ['ngResource'])
-		.factory('dynamic-dcs.api.srvPlayer', srvPlayerFactory);
+	angular.module('ddcs.api.srvPlayer', ['ngResource'])
+		.factory('ddcs.api.srvPlayer', srvPlayerFactory);
 }(angular));

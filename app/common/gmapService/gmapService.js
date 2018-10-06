@@ -473,9 +473,9 @@
 	controlService.$inject = ['$q', '$window', '$http', 'userAccountService', 'unitStaticService', 'uiGmapIsReady', 'uiGmapGoogleMapApi'];
 
 	angular
-		.module('dynamic-dcs.gmapService',[
+		.module('ddcs.gmapService',[
 			'uiGmapgoogle-maps',
-			'dynamic-dcs.unitStaticService'
+			'ddcs.unitStaticService'
 		])
 		.config(function(uiGmapGoogleMapApiProvider) {
 			uiGmapGoogleMapApiProvider.configure({

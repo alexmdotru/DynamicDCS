@@ -184,7 +184,7 @@
 			.state('index', {
 				controller: 'indexController',
 				controllerAs: 'indxCtrl',
-				templateUrl: '/apps/dynamic-dcs/states/index/index.tpl.html',
+				templateUrl: '/apps/ddcs/states/index/index.tpl.html',
 				url: '/',
 				bindToController: true
 			})

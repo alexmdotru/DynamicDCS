@@ -38,10 +38,10 @@
 			return tCtrl.loadVarCheck('theaters');
 		});
 	}
-	theaterService.$inject = ['dynamic-dcs.api.theater', 'alertService'];
+	theaterService.$inject = ['ddcs.api.theater', 'alertService'];
 
 	angular
-		.module('dynamic-dcs.theaterService',['dynamic-dcs.api.theater', 'dynamic-dcs.alertService'])
+		.module('ddcs.theaterService',['ddcs.api.theater', 'ddcs.alertService'])
 		.service('theaterService', theaterService)
 	;
 })(angular);

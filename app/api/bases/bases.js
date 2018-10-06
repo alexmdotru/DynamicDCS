@@ -17,6 +17,6 @@
 	}
 	basesFactory.$inject = ['$resource'];
 
-	angular.module('dynamic-dcs.api.bases', ['ngResource'])
-		.factory('dynamic-dcs.api.bases', basesFactory);
+	angular.module('ddcs.api.bases', ['ngResource'])
+		.factory('ddcs.api.bases', basesFactory);
 }(angular));

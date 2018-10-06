@@ -2,7 +2,7 @@
 	'use strict';
 
 	function dynamicDCSController($scope, $state, userAccountService, srvService, authService, alertService, $uibModal) {
-		_.set(this, 'startPage', '/dynamic-dcs.tpl.html');
+		_.set(this, 'startPage', '/ddcs.tpl.html');
 		_.set($scope, 'auth', authService);
 		_.set($scope, 'animationsEnabled', true);
 		_.set($scope, 'userAccountService', userAccountService);
@@ -14,7 +14,7 @@
 				animation: $scope.animationsEnabled,
 				ariaLabelledBy: 'modal-title',
 				ariaDescribedBy: 'modal-body',
-				templateUrl: '/apps/dynamic-dcs/common/modals/settings/settingsModal.tpl.html',
+				templateUrl: '/apps/ddcs/common/modals/settings/settingsModal.tpl.html',
 				controller: 'settingsModalController',
 				controllerAs: 'setCtrl',
 				size: size
@@ -26,7 +26,7 @@
 				animation: $scope.animationsEnabled,
 				ariaLabelledBy: 'modal-title',
 				ariaDescribedBy: 'modal-body',
-				templateUrl: '/apps/dynamic-dcs/common/modals/admin/adminModal.tpl.html',
+				templateUrl: '/apps/ddcs/common/modals/admin/adminModal.tpl.html',
 				controller: 'adminModalController',
 				controllerAs: 'adminCtrl',
 				size: size
@@ -117,7 +117,7 @@
 				animation: $scope.animationsEnabled,
 				ariaLabelledBy: 'modal-title',
 				ariaDescribedBy: 'modal-body',
-				templateUrl: '/apps/dynamic-dcs/common/modals/admin/adminNewModal.tpl.html',
+				templateUrl: '/apps/ddcs/common/modals/admin/adminNewModal.tpl.html',
 				controller: 'adminNewModalController',
 				controllerAs: 'adminNewCtrl',
 				size: size
@@ -128,7 +128,7 @@
 				animation: $scope.animationsEnabled,
 				ariaLabelledBy: 'modal-title',
 				ariaDescribedBy: 'modal-body',
-				templateUrl: '/apps/dynamic-dcs/common/modals/admin/adminDeleteModal.tpl.html',
+				templateUrl: '/apps/ddcs/common/modals/admin/adminDeleteModal.tpl.html',
 				controller: 'adminDeleteModalController',
 				controllerAs: 'adminDeleteCtrl',
 				size: size,
@@ -143,21 +143,21 @@
 	adminModalController.$inject = ['$scope', '$uibModal', '$uibModalInstance', 'srvService', 'theaterService'];
 
 	angular
-		.module('dynamic-dcs', [
-			'dynamic-dcs.templates',
-			'dynamic-dcs.authService',
-			'dynamic-dcs.chat-box',
-			'dynamic-dcs.api.server',
-			'dynamic-dcs.theaterService',
-			'dynamic-dcs.eventService',
-			'dynamic-dcs.alertService',
-			'dynamic-dcs.srvService',
-			'dynamic-dcs.userAccountService',
+		.module('ddcs', [
+			'ddcs.templates',
+			'ddcs.authService',
+			'ddcs.chat-box',
+			'ddcs.api.server',
+			'ddcs.theaterService',
+			'ddcs.eventService',
+			'ddcs.alertService',
+			'ddcs.srvService',
+			'ddcs.userAccountService',
 			'states',
 			'ui.bootstrap',
 			'ngAnimate',
 			'ngSanitize',
-			'dynamic-dcs.socketFactory'
+			'ddcs.socketFactory'
 		])
 		.config(['$qProvider', function ($qProvider) {
 			$qProvider.errorOnUnhandledRejections(false);

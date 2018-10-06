@@ -1,5 +1,5 @@
 {
-  "dynamic-dcs": {
+  "ddcs": {
     "TEST_LOCAL": "test locale saying"
   }
 }

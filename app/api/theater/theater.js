@@ -17,6 +17,6 @@
 	}
 	theaterFactory.$inject = ['$resource'];
 
-	angular.module('dynamic-dcs.api.theater', ['ngResource'])
-		.factory('dynamic-dcs.api.theater', theaterFactory);
+	angular.module('ddcs.api.theater', ['ngResource'])
+		.factory('ddcs.api.theater', theaterFactory);
 }(angular));

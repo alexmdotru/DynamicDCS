@@ -17,6 +17,6 @@
 	}
 	unitStaticsFactory.$inject = ['$resource'];
 
-	angular.module('dynamic-dcs.api.unitStatics', ['ngResource'])
-		.factory('dynamic-dcs.api.unitStatics', unitStaticsFactory);
+	angular.module('ddcs.api.unitStatics', ['ngResource'])
+		.factory('ddcs.api.unitStatics', unitStaticsFactory);
 }(angular));

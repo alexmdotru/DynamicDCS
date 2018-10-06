@@ -73,7 +73,7 @@
 			dSrv.readServer();
 		});
 	}
-	srvService.$inject = ['dynamic-dcs.api.server', 'alertService'];
+	srvService.$inject = ['ddcs.api.server', 'alertService'];
 
 	function initializeSrvService (srvService) {
 		srvService.init();
@@ -81,7 +81,7 @@
 	initializeSrvService.$inject = ['srvService'];
 
 	angular
-		.module('dynamic-dcs.srvService',['dynamic-dcs.api.server', 'dynamic-dcs.alertService'])
+		.module('ddcs.srvService',['ddcs.api.server', 'ddcs.alertService'])
 		.service('srvService', srvService)
 		.run(initializeSrvService)
 	;

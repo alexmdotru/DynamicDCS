@@ -14,7 +14,7 @@
 	<link href="<%= grunt.template.path.basename(less.app.dest) %>" rel="stylesheet"/>
 	<% } %>
 </head>
-<body common-css data-ng-app="dynamic-dcs" data-ng-controller="dynamicDCSController as app" data-mg-strict-di>
+<body common-css data-ng-app="ddcs" data-ng-controller="dynamicDCSController as app" data-mg-strict-di>
 <div class="alert-box repeat-item" ng-repeat="alert in alertService.alerts" >
 	<div uib-alert  ng-class="'alert-' + (alert.type || 'warning')" close="alertService.closeAlert($index)" dismiss-on-timeout="1500">{{alert.msg}}</div>
 </div>

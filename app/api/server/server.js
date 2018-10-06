@@ -33,6 +33,6 @@
 	}
 	serverFactory.$inject = ['$resource'];
 
-	angular.module('dynamic-dcs.api.server', ['ngResource'])
-		.factory('dynamic-dcs.api.server', serverFactory);
+	angular.module('ddcs.api.server', ['ngResource'])
+		.factory('ddcs.api.server', serverFactory);
 }(angular));

@@ -21,13 +21,13 @@
 			controller: 'chatBoxController',
 			controllerAs: 'cbCtrl',
 			bindToController: true,
-			templateUrl: '/apps/dynamic-dcs/common/chat-box/chat-box.tpl.html'
+			templateUrl: '/apps/ddcs/common/chat-box/chat-box.tpl.html'
 		}
 	}
 	chatBox.$inject = [];
 
 	angular
-		.module('dynamic-dcs.chat-box', [])
+		.module('ddcs.chat-box', [])
 		.directive('chatBox', chatBox)
 		.controller('chatBoxController', chatBoxController)
 	;

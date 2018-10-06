@@ -70,7 +70,7 @@
 			uASrv.readUser();
 		});
 	}
-	userAccountService.$inject = ['dynamic-dcs.api.userAccounts', 'alertService'];
+	userAccountService.$inject = ['ddcs.api.userAccounts', 'alertService'];
 
 	function initializeUserAccountServiceService (userAccountService) {
 		userAccountService.init();
@@ -78,7 +78,7 @@
 	initializeUserAccountServiceService.$inject = ['userAccountService'];
 
 	angular
-		.module('dynamic-dcs.userAccountService',['dynamic-dcs.api.userAccounts', 'dynamic-dcs.alertService'])
+		.module('ddcs.userAccountService',['ddcs.api.userAccounts', 'ddcs.alertService'])
 		.service('userAccountService', userAccountService)
 		.run(initializeUserAccountServiceService)
 	;

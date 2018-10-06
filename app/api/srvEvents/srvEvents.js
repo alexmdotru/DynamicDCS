@@ -17,6 +17,6 @@
 	}
 	srvEventFactory.$inject = ['$resource'];
 
-	angular.module('dynamic-dcs.api.srvEvent', ['ngResource'])
-		.factory('dynamic-dcs.api.srvEvent', srvEventFactory);
+	angular.module('ddcs.api.srvEvent', ['ngResource'])
+		.factory('ddcs.api.srvEvent', srvEventFactory);
 }(angular));

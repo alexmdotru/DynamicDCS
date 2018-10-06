@@ -17,7 +17,7 @@
 	alertService.$inject = [];
 
 	angular
-		.module('dynamic-dcs.alertService',[])
+		.module('ddcs.alertService',[])
 		.service('alertService', alertService)
 	;
 })(angular);

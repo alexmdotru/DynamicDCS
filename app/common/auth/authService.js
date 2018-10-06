@@ -104,8 +104,8 @@
 	authService.$inject = ['$state', 'angularAuth0', '$timeout', 'userAccountService'];
 
 	angular
-		.module('dynamic-dcs.authService',[
-			'dynamic-dcs.userAccountService'
+		.module('ddcs.authService',[
+			'ddcs.userAccountService'
 		])
 		.service('authService', authService)
 	;

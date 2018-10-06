@@ -74,7 +74,7 @@
 		});
 		 */
 	}
-	srvPlayerService.$inject = ['dynamic-dcs.api.srvPlayer', 'alertService'];
+	srvPlayerService.$inject = ['ddcs.api.srvPlayer', 'alertService'];
 	/*
 	function initializeSrvPlayerService (srvPlayerService) {
 		srvPlayerService.init();
@@ -82,7 +82,7 @@
 	initializeSrvPlayerService.$inject = ['srvPlayerService'];
 	*/
 	angular
-		.module('dynamic-dcs.srvPlayerService',['dynamic-dcs.api.srvPlayer', 'dynamic-dcs.alertService'])
+		.module('ddcs.srvPlayerService',['ddcs.api.srvPlayer', 'ddcs.alertService'])
 		.service('srvPlayerService', srvPlayerService)
 		//.run(initializeSrvPlayerService)
 	;

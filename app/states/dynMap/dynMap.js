@@ -52,7 +52,7 @@
 			.state('dynMap', {
 				controller: 'dynMapController',
 				controllerAs: 'dynC',
-				templateUrl: '/apps/dynamic-dcs/states/dynMap/dynMap.tpl.html',
+				templateUrl: '/apps/ddcs/states/dynMap/dynMap.tpl.html',
 				url: '/DynamicMap?name',
 				resolve: {
 					theaters: getTheaters
@@ -64,9 +64,9 @@
 	angular
 		.module('state.dynMap', [
 			'ui.router',
-			'dynamic-dcs.api.srvPlayer',
-			'dynamic-dcs.api.userAccounts',
-			'dynamic-dcs.gmapService'
+			'ddcs.api.srvPlayer',
+			'ddcs.api.userAccounts',
+			'ddcs.gmapService'
 		])
 		.config(['$stateProvider', '$urlRouterProvider', configFunction])
 		.controller('dynMapController', dynMapController)

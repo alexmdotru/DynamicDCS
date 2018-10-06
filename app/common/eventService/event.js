@@ -112,10 +112,10 @@
 			;
 		});
 	}
-	eventService.$inject = ['dynamic-dcs.api.srvEvent', 'alertService'];
+	eventService.$inject = ['ddcs.api.srvEvent', 'alertService'];
 
 	angular
-		.module('dynamic-dcs.eventService',['dynamic-dcs.api.srvEvent', 'dynamic-dcs.alertService'])
+		.module('ddcs.eventService',['ddcs.api.srvEvent', 'ddcs.alertService'])
 		.service('eventService', eventService)
 	;
 })(angular);

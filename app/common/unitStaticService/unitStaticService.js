@@ -69,10 +69,10 @@
 			}
 		});
 	}
-	unitStaticService.$inject = ['$q', 'dynamic-dcs.api.unitStatics', 'dynamic-dcs.api.bases'];
+	unitStaticService.$inject = ['$q', 'ddcs.api.unitStatics', 'ddcs.api.bases'];
 
 	angular
-		.module('dynamic-dcs.unitStaticService',['dynamic-dcs.api.unitStatics', 'dynamic-dcs.api.bases'])
+		.module('ddcs.unitStaticService',['ddcs.api.unitStatics', 'ddcs.api.bases'])
 		.service('unitStaticService', unitStaticService)
 	;
 })(angular);
