@@ -126,7 +126,21 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 						}
 						dbMapServiceController.unitActions('save', serverName, iCurObj.data)
 							.then(function (unit) {
-								webPushCommands.sendToCoalition(serverName, {payload: _.cloneDeep(iCurObj)});
+								var sObj = {
+									action: 'C',
+									data: {
+										_id: iCurObj.data._id,
+										lonLatLoc: iCurObj.data.lonLatLoc,
+										alt: iCurObj.data.alt,
+										hdg: iCurObj.data.hdg,
+										speed: iCurObj.data.speed,
+										coalition: iCurObj.data.coalition,
+										type: iCurObj.data.type,
+										playername: iCurObj.data.playername,
+										playerOwnerId: iCurObj.data.playerOwnerId
+									}
+								};
+								webPushCommands.sendToCoalition(serverName, {payload: sObj});
 								//curServers[serverName].updateQue['q' + parseFloat(_.get(unitObj, 'data.coalition'))].push(_.cloneDeep(iCurObj));
 								//curServers[serverName].updateQue.qadmin.push(_.cloneDeep(iCurObj));
 							})

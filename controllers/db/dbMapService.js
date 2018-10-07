@@ -496,6 +496,29 @@ exports.unitActions = function (action, serverName, obj){
 			});
 		});
 	}
+	if (action === 'readMin') {
+		return new Promise(function(resolve, reject) {
+			Unit.find(obj).exec(function (err, dbUnits) {
+				var curDbUnits = [];
+				if (err) { reject(err) }
+				_.forEach(dbUnits, function (unit) {
+					var pickArray = [
+						'_id',
+						'lonLatLoc',
+						'alt',
+						'hdg',
+						'speed',
+						'coalition',
+						'type',
+						'playername',
+						'playerOwnerId'
+					];
+					curDbUnits.push(_.pick(unit, pickArray));
+				});
+				resolve(curDbUnits);
+			});
+		});
+	}
 	if(action === 'save') {
 		return new Promise(function(resolve, reject) {
 			const unit = new Unit(obj);

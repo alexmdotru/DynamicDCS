@@ -213,7 +213,7 @@ router.route('/unitStatics/:serverName')
 											} else {
 												_.set(unitObj, 'coalition', _.get(curSrvPlayer, 'sideLock', 0));
 											}
-											dbMapServiceController.unitActions('readStd', serverName, unitObj)
+											dbMapServiceController.unitActions('readMin', serverName, unitObj)
 												.then(function (resp) {
 													res.json(resp);
 												})

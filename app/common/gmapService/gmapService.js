@@ -194,7 +194,7 @@
 			_.set(curMarker, 'alt', unit.alt);
 			_.set(curMarker, 'hdg', unit.hdg);
 			_.set(curMarker, 'speed', unit.speed);
-			if (typeof _.get(curMarker, '_id') !== 'undefined') {
+			if (typeof _.get(curMarker, 'type') !== 'undefined') {
 				var curSymbol = gSrv.buildSIDC(curMarker);
 				_.set(curMarker, 'anchorPoint', curSymbol.getAnchor());
 				_.set(curMarker, 'icon', curSymbol.asCanvas().toDataURL());
