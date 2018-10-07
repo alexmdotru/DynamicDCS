@@ -502,7 +502,7 @@ setInterval(function () {
 					;
 				}
 				_.forEach(DDCS.socketQue, function (sQue, sKey) {
-					console.log('to: ', sKey, sQue);
+					console.log('to: ', sKey);
 					io.to(sKey).emit('srvUpd', sQue);
 				});
 			})
