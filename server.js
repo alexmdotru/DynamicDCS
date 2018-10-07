@@ -511,7 +511,7 @@ setInterval(function () {
 			console.log('line273: ', err);
 		})
 	;
-}, 200);
+}, 500);
 
 /* setInterval(function () {
 	_.forEach(DDCS.socketQue, function (sQue, sKey) {
