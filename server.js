@@ -519,4 +519,4 @@ setInterval(function () {
 		}
 		io.to(sKey).emit('srvUpd', sendArray);
 	});
-}, 500);
+}, 200);
