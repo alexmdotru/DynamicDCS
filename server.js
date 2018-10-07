@@ -487,7 +487,6 @@ setInterval(function () {
 		.then(function (srvs) {
 			_.forEach(srvs, function (srv) {
 				var curServerName = _.toLower(_.get(srv, '_id'));
-				var sendArray = [];
 				for(x=0; x < DDCS.perSendMax; x++) {
 					dbMapServiceController.webPushActions('grabNextQue', curServerName)
 						.then(function (webPush) {
@@ -503,6 +502,7 @@ setInterval(function () {
 					;
 				}
 				_.forEach(DDCS.socketQue, function (sQue, sKey) {
+					console.log('to: ', sKey, sQue);
 					io.to(sKey).emit('srvUpd', sQue);
 				});
 			})
