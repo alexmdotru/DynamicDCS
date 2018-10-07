@@ -487,7 +487,8 @@ setInterval(function () {
 		.then(function (srvs) {
 			_.forEach(srvs, function (srv) {
 				var curServerName = _.toLower(_.get(srv, '_id'));
-				for(x=0; x < 50; x++) {
+				var sendArray = [];
+				for(x=0; x < DDCS.perSendMax; x++) {
 					dbMapServiceController.webPushActions('grabNextQue', curServerName)
 						.then(function (webPush) {
 							if (webPush) {
@@ -501,6 +502,9 @@ setInterval(function () {
 						})
 					;
 				}
+				_.forEach(DDCS.socketQue, function (sQue, sKey) {
+					io.to(sKey).emit('srvUpd', sQue);
+				});
 			})
 		})
 		.catch(function (err) {
@@ -509,8 +513,7 @@ setInterval(function () {
 	;
 }, 200);
 
-
-setInterval(function () {
+/* setInterval(function () {
 	_.forEach(DDCS.socketQue, function (sQue, sKey) {
 		var sendArray = [];
 		for(x=0; x < DDCS.perSendMax; x++) {
@@ -522,3 +525,4 @@ setInterval(function () {
 		io.to(sKey).emit('srvUpd', sendArray);
 	});
 }, 200);
+*/
