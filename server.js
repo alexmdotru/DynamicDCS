@@ -504,6 +504,7 @@ setInterval(function () {
 				_.forEach(DDCS.socketQue, function (sQue, sKey) {
 					io.to(sKey).emit('srvUpd', sQue);
 				});
+				_.set(DDCS, 'socketQue', {});
 			})
 		})
 		.catch(function (err) {
