@@ -487,25 +487,27 @@ setInterval(function () {
 		.then(function (srvs) {
 			_.forEach(srvs, function (srv) {
 				var curServerName = _.toLower(_.get(srv, '_id'));
-				dbMapServiceController.webPushActions('grabNextQue', curServerName)
-					.then(function (webPush) {
-						if (webPush) {
-							var rName = webPush.serverName + '_' + webPush.side;
-							_.set(DDCS, ['socketQue', rName], _.get(DDCS, ['socketQue', rName], []));
-							_.get(DDCS, ['socketQue', rName]).push(webPush.payload);
-						}
-					})
-					.catch(function (err) {
-						console.log('line273: ', err);
-					})
-				;
+				for(x=0; x < 50; x++) {
+					dbMapServiceController.webPushActions('grabNextQue', curServerName)
+						.then(function (webPush) {
+							if (webPush) {
+								var rName = webPush.serverName + '_' + webPush.side;
+								_.set(DDCS, ['socketQue', rName], _.get(DDCS, ['socketQue', rName], []));
+								_.get(DDCS, ['socketQue', rName]).push(webPush.payload);
+							}
+						})
+						.catch(function (err) {
+							console.log('line273: ', err);
+						})
+					;
+				}
 			})
 		})
 		.catch(function (err) {
 			console.log('line273: ', err);
 		})
 	;
-}, 10);
+}, 200);
 
 
 setInterval(function () {
