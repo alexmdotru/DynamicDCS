@@ -505,7 +505,7 @@ setInterval(function () {
 			console.log('line273: ', err);
 		})
 	;
-}, 100);
+}, 10);
 
 
 setInterval(function () {
