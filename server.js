@@ -529,7 +529,7 @@ setInterval(function () {
 			})
 		;
 	}
-}, 100);
+}, 200);
 
 /* setInterval(function () {
 	_.forEach(DDCS.socketQue, function (sQue, sKey) {
