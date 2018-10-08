@@ -29,7 +29,7 @@ _.assign(DDCS, {
 		dynamicDatabase: 'DDCSStandard',
 		remoteHost: '127.0.0.1',
 	},
-	perSendMax: 300,
+	perSendMax: 500,
 	serverAdminLvl: 10,
 	socketQue: {}
 });
