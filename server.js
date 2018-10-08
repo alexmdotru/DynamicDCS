@@ -204,8 +204,8 @@ router.route('/unitStatics/:serverName')
 							if (curAcct) {
 								dbSystemLocalController.userAccountActions('updateSingleUCID', {ucid: curSrvPlayer._id, lastServer: serverName, gameName: curSrvPlayer.name})
 									.then(function () {
-										if(_.includes(_.get(curSrvPlayer, 'slot', ''), 'forward_observer') ||
-											_.includes(_.get(curSrvPlayer, 'slot', ''), 'artillery_commander')) {
+										var curSlot = _.get(curSrvPlayer, 'slot', '');
+										if(_.includes(curSlot, 'forward_observer') || _.includes(curSlot, 'artillery_commander') || curSlot === '') {
 											var unitObj = {
 												dead: false,
 												coalition: 0

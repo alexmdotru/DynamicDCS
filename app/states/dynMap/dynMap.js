@@ -29,7 +29,7 @@
 					gmapService.processUnitStream(queObj);
 				}
 			});
-			console.log('u: ', data);
+			// console.log('u: ', data);
 		});
 
 		mySocket.on('error', function (err) {
