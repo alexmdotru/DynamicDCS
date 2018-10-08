@@ -50,6 +50,7 @@
 		'ui.router',
 		'state.index',
 		'state.dynMap',
+		'state.leaderboard',
 		'angular-jwt'
 	])
 		.config(configureStates)

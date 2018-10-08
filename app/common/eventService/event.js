@@ -98,7 +98,7 @@
 			return eventObj;
 		});
 		_.set(eCtrl, 'getInitEvents', function () {
-			ePromise = eventAPI.query({serverName: 'dynamiccaucasus'});
+			ePromise = eventAPI.query({serverName: 'ddcsstandard'});
 			return ePromise.$promise
 				.then(function (eventData) {
 					return eCtrl.byUcid(eventData);
