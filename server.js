@@ -513,7 +513,7 @@ setInterval(function () {
 					Promise.all(lookupFinish)
 						.then(function () {
 							_.forEach(DDCS.socketQue, function (sQue, sKey) {
-								io.to(sKey).emit('srvUpd', _.sortBy(sQue, ['recId']));
+								io.to(sKey).emit('srvUpd', _.orderBy(sQue, ['recId']));
 							});
 							_.set(DDCS, 'socketQue', {});
 							webPushDone = true;
