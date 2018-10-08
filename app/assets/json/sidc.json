@@ -296,6 +296,15 @@
     "modifier1": "-",
     "modifier2": "-"
   },
+  "J-11A": {
+    "codingScheme": "S",
+    "affiliation": "U",
+    "battleDimension": "A",
+    "status": "-",
+    "functionID": "MFF--",
+    "modifier1": "-",
+    "modifier2": "-"
+  },
   "KC-135": {
     "codingScheme": "S",
     "affiliation": "U",
