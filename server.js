@@ -50,6 +50,8 @@ dbMapServiceController.connectMapDB(DDCS.db.dynamicHost, DDCS.db.dynamicDatabase
 //secure sockets
 var io = require('socket.io').listen(server);
 var admin = false;
+var webPushDone = true;
+var webDbEmpty = false;
 
 
 var srvPlayerObj;
@@ -483,35 +485,51 @@ setInterval(function () {
 */
 
 setInterval(function () {
-	dbSystemLocalController.serverActions('read', {enabled: true})
-		.then(function (srvs) {
-			_.forEach(srvs, function (srv) {
-				var curServerName = _.toLower(_.get(srv, '_id'));
-				for(x=0; x < DDCS.perSendMax; x++) {
-					dbMapServiceController.webPushActions('grabNextQue', curServerName)
-						.then(function (webPush) {
-							if (webPush) {
-								var rName = webPush.serverName + '_' + webPush.side;
-								_.set(DDCS, ['socketQue', rName], _.get(DDCS, ['socketQue', rName], []));
-								_.get(DDCS, ['socketQue', rName]).push(webPush.payload);
-							}
+	if (webPushDone) {
+		webPushDone = false;
+		webDbEmpty = false;
+		dbSystemLocalController.serverActions('read', {enabled: true})
+			.then(function (srvs) {
+				_.forEach(srvs, function (srv) {
+					var curServerName = _.toLower(_.get(srv, '_id'));
+					var lookupFinish = [];
+					for(x=0; (x < DDCS.perSendMax) || webDbEmpty; x++) {
+						lookupFinish.push(dbMapServiceController.webPushActions('grabNextQue', curServerName)
+							.then(function (webPush) {
+								if (webPush) {
+									var rName = webPush.serverName + '_' + webPush.side;
+									_.set(webPush, 'payload.recId', _.get(webPush, '_id', 0));
+									_.set(DDCS, ['socketQue', rName], _.get(DDCS, ['socketQue', rName], []));
+									_.get(DDCS, ['socketQue', rName]).push(webPush.payload);
+								} else {
+									webDbEmpty = true
+								}
+							})
+							.catch(function (err) {
+								console.log('line273: ', err);
+							}))
+						;
+					}
+					Promise.all(lookupFinish)
+						.then(function () {
+							_.forEach(DDCS.socketQue, function (sQue, sKey) {
+								io.to(sKey).emit('srvUpd', _.sortBy(sQue, ['recId']));
+							});
+							_.set(DDCS, 'socketQue', {});
+							webPushDone = true;
 						})
 						.catch(function (err) {
-							console.log('line273: ', err);
+							console.log('line510: ', err);
 						})
 					;
-				}
-				_.forEach(DDCS.socketQue, function (sQue, sKey) {
-					io.to(sKey).emit('srvUpd', sQue);
-				});
-				_.set(DDCS, 'socketQue', {});
+				})
 			})
-		})
-		.catch(function (err) {
-			console.log('line273: ', err);
-		})
-	;
-}, 500);
+			.catch(function (err) {
+				console.log('line520: ', err);
+			})
+		;
+	}
+}, 100);
 
 /* setInterval(function () {
 	_.forEach(DDCS.socketQue, function (sQue, sKey) {
