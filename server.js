@@ -29,7 +29,7 @@ _.assign(DDCS, {
 		dynamicDatabase: 'DDCSStandard',
 		remoteHost: '127.0.0.1',
 	},
-	perSendMax: 50,
+	perSendMax: 100,
 	serverAdminLvl: 10,
 	socketQue: {}
 });
@@ -529,7 +529,7 @@ setInterval(function () {
 			})
 		;
 	}
-}, 100);
+}, 200);
 
 /* setInterval(function () {
 	_.forEach(DDCS.socketQue, function (sQue, sKey) {
