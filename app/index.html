@@ -2,7 +2,7 @@
 <html>
 <head>
 	<base href="/">
-	<title>Welcome to Dynamic DCS Engine</title>
+	<title>Welcome to DDCS Cloud Engine For DCS</title>
 	<% if (useMin) {%>
 	<link rel="stylesheet" href="css/bootstrap.min.css">
 	<link href="libs/highcharts-ng/dist/highcharts-ng.css" rel="stylesheet">
@@ -27,7 +27,7 @@
 			<span class="icon-bar"></span>
 			<span class="icon-bar"></span>
 		</button>
-		<a class="navbar-brand" href="#"><strong class="panel-title">DynamicDCS</strong></a>
+		<a class="navbar-brand" href="#"><strong class="panel-title">DDCS</strong></a>
 	</div>
 
 	<!-- Collect the nav links, forms, and other content for toggling -->
@@ -36,6 +36,7 @@
 			<div class="col-xs-4">
 				<ul class="nav navbar-nav">
 					<li><a href="#">Home</a></li>
+					<li><a href="#/Communications">Comms</a></li>
 					<li><a href="#/Leaderboard">Leaderboard</a></li>
 					<li uib-dropdown>
 						<a href="#" uib-dropdown-toggle>Live Maps <b class="caret"></b></a>
@@ -47,8 +48,8 @@
 					</li>
 				</ul>
 			</div>
-			<div class="col-xs-3 infoHeader" data-ng-show="$state.includes('dynMap')" data-ng-bind-html="userAccountService.localAccount.headerInfo"></div>
-			<div class="col-xs-2"></div>
+			<div class="col-xs-2 infoHeader" data-ng-show="$state.includes('dynMap')" data-ng-bind-html="userAccountService.localAccount.headerInfo"></div>
+			<div class="col-xs-2" data-ng-show="!$state.includes('dynMap')"></div>
 			<div class="col-xs-3 pull-right">
 				<ul class="nav navbar-nav navbar-right">
 					<li><a href="" ng-click="isCollapsed = !isCollapsed">Donate</a></li> <!--temp until better show function -->
@@ -98,5 +99,6 @@
 <script src="<%= grunt.template.path.basename(concat.vendor.dest) %>"></script>
 <script src="<%= grunt.template.path.basename(concat.app.dest) %>"></script>
 <script src="/socket.io/socket.io.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@widgetbot/html-embed"></script>
 </body>
 </html>

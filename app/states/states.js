@@ -49,6 +49,7 @@
 		'auth0.auth0',
 		'ui.router',
 		'state.index',
+		'state.comms',
 		'state.dynMap',
 		'state.leaderboard',
 		'angular-jwt'
