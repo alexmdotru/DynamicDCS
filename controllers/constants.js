@@ -249,7 +249,6 @@ _.assign(exports, {
 								return exports.getServer(serverName)
 									.then(function (server) {
 										_.set(exports, 'config', server);
-										console.log('exp: ', exports);
 									})
 								;
 
