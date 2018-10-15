@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const MasterQueSchema = new mongoose.Schema(
 	{
 		payload: {
-			type: mongoose.Schema.Types.Mixed,
+			type: Object,
 			required: true
 		},
 		serverName: {
