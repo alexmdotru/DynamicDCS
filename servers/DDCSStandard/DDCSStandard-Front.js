@@ -1,7 +1,6 @@
 const _ = require('lodash');
 const constants = require('../../controllers/constants');
 const DCSSocket = require('../../controllers/net/DCSSocket');
-const dbSystemLocalController = require('../../controllers/db/dbSystemLocal');
 const dbSystemRemoteController = require('../../controllers/db/dbSystemRemote');
 const dbMapServiceController = require('../../controllers/db/dbMapService');
 const menuCmdsController = require('../../controllers/menu/menuCmds');
@@ -52,7 +51,6 @@ _.assign(CCB, {
 	curServerSecs: 0
 });
 
-dbSystemLocalController.connectSystemLocalDB(CCB.db.systemHost, CCB.db.systemDatabase);
 dbSystemRemoteController.connectSystemRemoteDB(CCB.db.remoteHost, CCB.db.systemDatabase);
 dbMapServiceController.connectMapDB(CCB.db.dynamicHost, CCB.db.dynamicDatabase);
 

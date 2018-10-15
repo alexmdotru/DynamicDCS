@@ -1,5 +1,5 @@
 const	_ = require('lodash');
-const dbSystemLocalController = require('../db/dbSystemLocal');
+const constants = require('../constants');
 const dbMapServiceController = require('../db/dbMapService');
 const proximityController = require('../proxZone/proximity');
 
@@ -147,26 +147,19 @@ _.set(exports, 'processLOSEnemy', function (serverName, losReply) {
 				var curJtacUnit = _.get(fJtacUnit, [0]);
 				dbMapServiceController.unitActions('read', serverName, {name: {$in: losReply.data}})
 					.then(function (eJtacUnit) {
-						dbSystemLocalController.unitDictionaryActions('read', {})
-							.then(function (unitDict) {
-								_.forEach(eJtacUnit, function (jtUnit) {
-									var curUnitDict = _.find(unitDict, {_id: jtUnit.type});
-									if (curUnitDict) {
-										_.set(jtUnit, 'threatLvl', curUnitDict.threatLvl);
-										unitPThrArray.push(jtUnit)
-									} else {
-										console.log('cant findUnit: ', curUnitDict, jtUnit.type);
-									}
-								});
-								enemyUnit = _.first(_.orderBy(unitPThrArray, 'threatLvl', 'desc'));
-								//laser & smoke
-								// console.log('lasersmoke: ', serverName, curJtacUnit, enemyUnit);
-								exports.setLaserSmoke(serverName, curJtacUnit, enemyUnit);
-							})
-							.catch(function (err) {
-								console.log('line 112: ', err);
-							})
-						;
+						_.forEach(eJtacUnit, function (jtUnit) {
+							var curUnitDict = _.find(_.get(constants, 'unitDictionary'), {_id: jtUnit.type});
+							if (curUnitDict) {
+								_.set(jtUnit, 'threatLvl', curUnitDict.threatLvl);
+								unitPThrArray.push(jtUnit)
+							} else {
+								console.log('cant findUnit: ', curUnitDict, jtUnit.type);
+							}
+						});
+						enemyUnit = _.first(_.orderBy(unitPThrArray, 'threatLvl', 'desc'));
+						//laser & smoke
+						// console.log('lasersmoke: ', serverName, curJtacUnit, enemyUnit);
+						exports.setLaserSmoke(serverName, curJtacUnit, enemyUnit);
 					})
 					.catch(function (err) {
 						console.log('line 117: ', err);

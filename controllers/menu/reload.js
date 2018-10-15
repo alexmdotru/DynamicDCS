@@ -1,7 +1,6 @@
 const	_ = require('lodash');
 const constants = require('../constants');
 const DCSLuaCommands = require('../player/DCSLuaCommands');
-const dbSystemLocalController = require('../db/dbSystemLocal');
 const dbMapServiceController = require('../db/dbMapService');
 const groupController = require('../spawn/group');
 const proximityController = require('../proxZone/proximity');

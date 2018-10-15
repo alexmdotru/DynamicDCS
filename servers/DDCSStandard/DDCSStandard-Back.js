@@ -1,7 +1,6 @@
 const _ = require('lodash');
 const constants = require('../../controllers/constants');
 const DCSSocket = require('../../controllers/net/DCSSocket');
-const dbSystemLocalController = require('../../controllers/db/dbSystemLocal');
 const dbSystemRemoteController = require('../../controllers/db/dbSystemRemote');
 const dbMapServiceController = require('../../controllers/db/dbMapService');
 const sychrontronController = require('../../controllers/sychronize/Sychrontron');
@@ -32,7 +31,6 @@ _.assign(DCB, {
 	}
 });
 
-dbSystemLocalController.connectSystemLocalDB(DCB.db.systemHost, DCB.db.systemDatabase);
 dbSystemRemoteController.connectSystemRemoteDB(DCB.db.remoteHost, DCB.db.systemDatabase);
 dbMapServiceController.connectMapDB(DCB.db.dynamicHost, DCB.db.dynamicDatabase);
 
