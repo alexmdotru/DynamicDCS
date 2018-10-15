@@ -5,8 +5,7 @@ var Schema = mongoose.Schema;
 var MasterQueSchema = new Schema(
 	{
 		payload: {
-			type: Schema.Types.Mixed,
-			required: true
+			type: Object
 		},
 		serverName: {
 			type: String,
