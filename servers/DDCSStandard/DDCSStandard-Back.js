@@ -3,19 +3,17 @@ const constants = require('../../controllers/constants');
 const DCSSocket = require('../../controllers/net/DCSSocket');
 const dbSystemRemoteController = require('../../controllers/db/dbSystemRemote');
 const dbMapServiceController = require('../../controllers/db/dbMapService');
-const sychrontronController = require('../../controllers/sychronize/Sychrontron');
 const playersEvent = require('../../controllers/events/backend/players');
 const friendlyFireEvent = require('../../controllers/events/backend/friendlyFire');
 const selfKillEvent = require('../../controllers/events/backend/selfKill');
 const connectEvent = require('../../controllers/events/backend/connect');
 const disconnectEvent = require('../../controllers/events/backend/disconnect');
-const groupController = require('../../controllers/spawn/group');
 const commsUserProcessing = require('../../controllers/discordBot/commsUserProcessing');
 
 //config
 var commsCounter = 0;
 var isDiscordAllowed = true;
-var masterServer = 'localhost';
+var masterServer = '192.168.44.60';
 var serverName = 'DDCSStandard';
 
 
