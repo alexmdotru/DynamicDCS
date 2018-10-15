@@ -1,7 +1,7 @@
 const	_ = require('lodash');
+const constants = require('../constants');
 const dbMapServiceController = require('../db/dbMapService');
 const DCSLuaCommands = require('../player/DCSLuaCommands');
-const groupController = require('../spawn/group');
 
 _.set(exports, 'getPlayerBalance', function (serverName) {
 	var blueAll;
@@ -146,7 +146,7 @@ _.set(exports, 'checkAircraftCosts', function (serverName) {
 									.then(function(cUnit) {
 										if (cUnit.length > 0) {
 											var curUnit = _.get(cUnit, [0]);
-											var curUnitDict = _.find(groupController.unitDictionary, {_id: curUnit.type});
+											var curUnitDict = _.find(constants.unitDictionary, {_id: curUnit.type});
 											var curUnitLifePoints = (curUnitDict)? curUnitDict.lifeCost:1;
 											// console.log('CHK Aircraft4', _.get(curPlayer, 'curLifePoints', 0), curUnitLifePoints, curUnit.type);
 											if(_.get(curPlayer, 'curLifePoints', 0) < curUnitLifePoints && !_.get(curUnit, 'inAir', false)) {

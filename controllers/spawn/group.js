@@ -1,7 +1,6 @@
 const _ = require('lodash');
 const constants = require('../constants');
 const dbMapServiceController = require('../db/dbMapService');
-const dbSystemLocalController = require('../db/dbSystemLocal');
 const DCSLuaCommands = require('../player/DCSLuaCommands');
 const zoneController = require('../proxZone/zone');
 
@@ -1148,72 +1147,9 @@ _.set(exports, 'staticTemplate', function (staticObj) {
 	return retObj;
 });
 
-_.set(exports, 'getStaticDictionary', function () {
-	return dbSystemLocalController.staticDictionaryActions('read')
-		.then(function (staticDic) {
-			return new Promise(function (resolve) {
-				resolve(staticDic);
-			});
-		})
-		.catch(function (err) {
-			console.log('err line297: ', err);
-		})
-		;
-});
-
-_.set(exports, 'getUnitDictionary', function () {
-	return dbSystemLocalController.unitDictionaryActions('read')
-		.then(function (unitsDic) {
-			return new Promise(function (resolve) {
-				resolve(unitsDic);
-			});
-		})
-		.catch(function (err) {
-			console.log('err line310: ', err);
-		})
-	;
-});
-
-_.set(exports, 'getBases', function (serverName) {
-	return dbMapServiceController.baseActions('read', serverName)
-		.then(function (bases) {
-			return new Promise(function (resolve) {
-				if (bases.length) {
-					resolve(bases);
-				} else {
-					console.log('Rebuilding Base DB');
-					var actionObj = {actionObj: {action: "GETPOLYDEF"}, queName: 'clientArray'};
-					dbMapServiceController.cmdQueActions('save', serverName, actionObj)
-						.catch(function (err) {
-							console.log('erroring line790: ', err);
-						})
-					;
-					resolve('rebuild base DB');
-				}
-			});
-		})
-		.catch(function (err) {
-			console.log('err line110: ', err);
-		})
-	;
-});
-
-_.set(exports, 'getServer', function ( serverName ) {
-	return dbSystemLocalController.serverActions('read', {_id: serverName})
-		.then(function (server) {
-			return new Promise(function (resolve) {
-				resolve(_.first(server));
-			});
-		})
-		.catch(function (err) {
-			console.log('err line101: ', err);
-		})
-		;
-});
-
 _.set(exports, 'getRndFromSpawnCat', function (spawnCat, side, spawnShow, spawnAlways) {
 	var curEnabledCountrys = _.get(constants, [_.get(constants, ['side', side]) + 'Countrys']);
-	var findUnits = _.filter(_.get(exports, 'unitDictionary'), {spawnCat: spawnCat, enabled: true});
+	var findUnits = _.filter(_.get(constants, 'unitDictionary'), {spawnCat: spawnCat, enabled: true});
 	var cPUnits = [];
 	var randomIndex;
 	var unitsChosen = [];
@@ -1261,7 +1197,7 @@ _.set(exports, 'getRndFromSpawnCat', function (spawnCat, side, spawnShow, spawnA
 });
 
 _.set(exports, 'spawnSupportVehiclesOnFarp', function ( serverName, baseName, side ) {
-	var curBase = _.find(_.get(exports, ['bases']), {name: baseName});
+	var curBase = _.find(_.get(constants, 'bases'), {name: baseName});
 	var curFarpArray = [];
 	var sptArray = [
 		"unarmedAmmo",
@@ -1287,7 +1223,7 @@ _.set(exports, 'spawnSupportVehiclesOnFarp', function ( serverName, baseName, si
 _.set(exports, 'spawnSupportBaseGrp', function ( serverName, baseName, side, init ) {
 	var curBaseObj = {};
 	var spawnArray = [];
-	var curBases = _.get(exports, ['bases']);
+	var curBases = _.get(constants, 'bases');
 	var farpBases = _.filter(curBases, {farp: true});
 	var expBases = _.filter(curBases, {expansion: true});
 	// var curEnabledCountrys = _.get(constants, [_.get(constants, ['side', side]) + 'Countrys']);
@@ -1318,7 +1254,7 @@ _.set(exports, 'spawnSupportBaseGrp', function ( serverName, baseName, side, ini
 });
 
 _.set(exports, 'spawnBaseReinforcementGroup', function (serverName, side, baseName) {
-	var curServer = _.get(exports, ['config']);
+	var curServer = _.get(constants, ['config']);
 	var spawnArray = [];
 	var curBaseSpawnCats = _.get(curServer, 'spwnLimitsPerTick');
 	_.forEach(curBaseSpawnCats, function (tickVal, name) {
@@ -1874,7 +1810,7 @@ _.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {
 
 _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 	var totalUnitsSpawned = 0;
-	var curServer = _.get(exports, ['config']);
+	var curServer = _.get(constants, ['config']);
 	var defBaseSides = _.get(curServer, 'defBaseSides');
     console.log('sng: ', serverName, curServer, defBaseSides);
 	_.forEach(defBaseSides, function (extSide, extName) {
@@ -1891,35 +1827,10 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 			spawnArray = _.concat(spawnArray, exports.spawnBaseReinforcementGroup(serverName, extSide, extName));
 		}
 		exports.spawnGroup(serverName, spawnArray, extName, extSide);
-		exports.spawnLogisticCmdCenter(serverName, {}, true, _.find(exports.bases, {name: extName}), extSide);
+		exports.spawnLogisticCmdCenter(serverName, {}, true, _.find(_.get(constants, 'bases'), {name: extName}), extSide);
 		totalUnitsSpawned += spawnArray.length + 1;
 	});
 	return totalUnitsSpawned
-});
-
-_.set(exports, 'initDbs', function ( serverName ) {
-	exports.getStaticDictionary()
-		.then(function (staticDict) {
-			_.set(exports, 'staticDictionary', staticDict);
-			exports.getUnitDictionary()
-				.then(function (unitDict) {
-					_.set(exports, 'unitDictionary', unitDict);
-					exports.getBases(serverName)
-						.then(function (bases) {
-							_.set(exports, ['bases'], bases);
-							exports.getServer(serverName)
-								.then(function (server) {
-									_.set(exports, ['config'], server);
-								})
-							;
-
-						})
-					;
-
-				})
-			;
-		})
-	;
 });
 
 _.set(exports, 'spawnLogisticCmdCenter', function (serverName, staticObj, init, baseObj, side) {

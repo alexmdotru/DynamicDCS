@@ -1,4 +1,5 @@
 const	_ = require('lodash');
+const constants = require('../constants');
 const DCSLuaCommands = require('../player/DCSLuaCommands');
 const dbSystemLocalController = require('../db/dbSystemLocal');
 const dbMapServiceController = require('../db/dbMapService');
@@ -15,7 +16,7 @@ _.set(exports, 'reloadSAM', function (serverName, unitCalling, crate) {
 						// console.log('samu: ', samUnits, closestUnit.groupName); closest unit can be the repair truck.... LOL FIX ME
 						if (samUnits.length) {
 							var curSamType = _.first(samUnits).type;
-							dbSystemLocalController.unitDictionaryActions('read', {_id: curSamType, threatLvl: { $gt: 0 }})
+							constants.unitDictionaryActions('read', {_id: curSamType, threatLvl: { $gt: 0 }})
 								.then(function (samUnitDict) {
 									//unit is multi, count mins, sum them, if true,
 									var curUnitDict = _.get(samUnitDict, [0]);

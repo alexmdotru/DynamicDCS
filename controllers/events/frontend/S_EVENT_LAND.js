@@ -25,7 +25,7 @@ _.set(exports, 'processEventLand', function (serverName, sessionName, eventObj) 
 					var iPlayer;
 					var iCurObj;
 					var curIUnit = _.get(iunit, 0);
-					var curUnitDict = _.find(groupController.unitDictionary, {_id: curIUnit.type});
+					var curUnitDict = _.find(constants.unitDictionary, {_id: curIUnit.type});
 					var curLifePointVal = (curUnitDict) ? curUnitDict.lifeCost : 1;
 					if (curIUnit) {
 						// console.log('land: ', _.get(curIUnit, 'playername'));

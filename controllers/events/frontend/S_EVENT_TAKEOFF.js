@@ -24,7 +24,7 @@ _.set(exports, 'processEventTakeoff', function (serverName, sessionName, eventOb
 					var iPlayer;
 					var iCurObj;
 					var curIUnit = _.get(iunit, 0);
-					var curUnitDict = _.find(groupController.unitDictionary, {_id: curIUnit.type});
+					var curUnitDict = _.find(constants.unitDictionary, {_id: curIUnit.type});
 					var curLifePointVal = (curUnitDict) ? curUnitDict.lifeCost : 1;
 					if (curIUnit) {
 						iPlayer = _.find(playerArray, {name: _.get(curIUnit, 'playername')});

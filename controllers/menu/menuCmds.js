@@ -754,7 +754,7 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 																crateObj = {
 																	name: (spc) ? spc + '|#' + _.random(1000000, 9999999) : type + '|#' + _.random(1000000, 9999999),
 																	unitLonLatLoc: unit.lonLatLoc,
-																	shape_name: _.get(_.find(groupController.staticDictionary, {_id: crateType}), 'shape_name', 'iso_container_small_cargo'),
+																	shape_name: _.get(_.find(constants.staticDictionary, {_id: crateType}), 'shape_name', 'iso_container_small_cargo'),
 																	category: 'Cargo',
 																	type: crateType,
 																	heading: unit.hdg,
@@ -868,7 +868,7 @@ _.set(exports, 'unpackCrate', function (serverName, playerUnit, country, type, s
 				;
 				var newSpawnArray = [];
 				if (combo) {
-					groupController.getUnitDictionary()
+					constants.getUnitDictionary()
 						.then(function (unitDic) {
 							var addHdg = 30;
 							var curUnitHdg = playerUnit.hdg;
@@ -897,7 +897,7 @@ _.set(exports, 'unpackCrate', function (serverName, playerUnit, country, type, s
 						})
 					;
 				} else {
-					groupController.getUnitDictionary()
+					constants.getUnitDictionary()
 						.then(function (unitDic) {
 							var addHdg = 30;
 							var curUnitHdg = playerUnit.hdg;

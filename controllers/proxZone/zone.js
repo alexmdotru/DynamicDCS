@@ -1,5 +1,5 @@
 const	_ = require('lodash');
-
+const constants = require('../constants');
 const dbMapServiceController = require('../db/dbMapService');
 const groupController = require('../spawn/group');
 
@@ -87,7 +87,7 @@ _.set(exports, 'isLatLonInZone', function (lonLat, polyZone) {
 });
 
 _.set(exports, 'getRandomLatLonFromBase', function (serverName, baseName) {
-	var baseInfo = _.find(_.get(groupController, ['bases']), {_id: baseName});
+	var baseInfo = _.find(_.get(constants, 'bases'), {_id: baseName});
 	var pArray = _.get(baseInfo, 'polygonLoc');
 	if (pArray) {
 		var lonLatFound = false;

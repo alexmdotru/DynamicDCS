@@ -1,4 +1,6 @@
 const _ = require('lodash');
+const dbMapServiceController = require('./db/dbMapService');
+const dbSystemRemoteController = require('./db/dbSystemRemote');
 
 _.assign(exports, {
 	blueCountrys: [
@@ -167,5 +169,90 @@ _.assign(exports, {
 		S_EVENT_BIRTH: 'B',
 		S_EVENT_PLAYER_ENTER_UNIT: 'EU',
 		S_EVENT_PLAYER_LEAVE_UNIT: 'LU'
+	},
+	getBases: function (serverName) {
+		return dbMapServiceController.baseActions('read', serverName)
+			.then(function (bases) {
+				return new Promise(function (resolve) {
+					if (bases.length) {
+						resolve(bases);
+					} else {
+						console.log('Rebuilding Base DB');
+						var actionObj = {actionObj: {action: "GETPOLYDEF"}, queName: 'clientArray'};
+						dbMapServiceController.cmdQueActions('save', serverName, actionObj)
+							.catch(function (err) {
+								console.log('erroring line790: ', err);
+							})
+						;
+						resolve('rebuild base DB');
+					}
+				});
+			})
+			.catch(function (err) {
+				console.log('err line110: ', err);
+			})
+			;
+	},
+	getServer: function ( serverName ) {
+		return dbSystemRemoteController.serverActions('read', {_id: serverName})
+			.then(function (server) {
+				return new Promise(function (resolve) {
+					resolve(_.first(server));
+				});
+			})
+			.catch(function (err) {
+				console.log('err line101: ', err);
+			})
+			;
+	},
+	getStaticDictionary: function () {
+		return dbSystemRemoteController.staticDictionaryActions('read')
+			.then(function (staticDic) {
+				return new Promise(function (resolve) {
+					resolve(staticDic);
+				});
+			})
+			.catch(function (err) {
+				console.log('err line297: ', err);
+			})
+			;
+	},
+	getUnitDictionary: function () {
+		return dbSystemRemoteController.unitDictionaryActions('read')
+			.then(function (unitsDic) {
+				return new Promise(function (resolve) {
+					resolve(unitsDic);
+				});
+			})
+			.catch(function (err) {
+				console.log('err line310: ', err);
+			})
+			;
+	},
+	initServer: function ( serverName ) {
+		return exports.getStaticDictionary()
+			.then(function (staticDict) {
+				_.set(exports, 'staticDictionary', staticDict);
+				return exports.getUnitDictionary()
+					.then(function (unitDict) {
+						_.set(exports, 'unitDictionary', unitDict);
+						return exports.getBases(serverName)
+							.then(function (bases) {
+								_.set(exports, 'bases', bases);
+								return exports.getServer(serverName)
+									.then(function (server) {
+										_.set(exports, 'config', server);
+										console.log('exp: ', exports);
+									})
+								;
+
+							})
+						;
+
+					})
+				;
+			})
+		;
 	}
 });
+
