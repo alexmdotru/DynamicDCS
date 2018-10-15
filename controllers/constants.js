@@ -170,6 +170,13 @@ _.assign(exports, {
 		S_EVENT_PLAYER_ENTER_UNIT: 'EU',
 		S_EVENT_PLAYER_LEAVE_UNIT: 'LU'
 	},
+	time: {
+		sec: 1000,
+		twoSec: 2 * 1000,
+		fiveSecs: 5 * 1000,
+		thirtySecs: 30 * 1000,
+		tenMinutes: 10 * 60 * 1000
+	},
 	getBases: function (serverName) {
 		return dbMapServiceController.baseActions('read', serverName)
 			.then(function (bases) {

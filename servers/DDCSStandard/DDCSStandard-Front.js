@@ -28,45 +28,26 @@ const processTimedFiveSecs = require('../../controllers/timedEvents/fiveSecs');
 const processTimedThirtySecs = require('../../controllers/timedEvents/thirtySecs');
 const processTimedTenMinutes = require('../../controllers/timedEvents/tenMinutes');
 
-var CCB = {};
-
 //config
-_.assign(CCB, {
-	serverName: 'DDCSStandard',
-	serverIP: '127.0.0.1',
-	serverPort: '3001',
-	queName: 'clientArray',
-	db: {
-		systemHost: 'localhost',
-		systemDatabase: 'DDCS',
-		dynamicHost: 'localhost',
-		dynamicDatabase: 'DDCSStandard',
-		remoteHost: 'localhost'
-	},
-	sec: 1000,
-	twoSec: 2 * 1000,
-	fiveSecs: 5 * 1000,
-	thirtySecs: 30 * 1000,
-	tenMinutes: 10 * 60 * 1000,
-	curServerSecs: 0
-});
+var serverName = 'DDCSStandard';
+var masterServer = 'localhost';
 
-dbSystemRemoteController.connectSystemRemoteDB(CCB.db.remoteHost, CCB.db.systemDatabase);
-dbMapServiceController.connectMapDB(CCB.db.dynamicHost, CCB.db.dynamicDatabase);
+dbSystemRemoteController.connectSystemRemoteDB(masterServer, 'DDCS');
+dbMapServiceController.connectMapDB('localhost', serverName);
 
-constants.initServer(CCB.serverName)
+constants.initServer(serverName)
 	.then(function () {
 
 //checks to see if socket needs restarting every 3 secs
 		setInterval(function () {
-			if (CCB.DCSSocket) {
-				if (CCB.DCSSocket.connOpen) {
-					console.log('Connecting to ' + CCB.serverName + ' Frontend');
-					_.set(CCB, 'sessionName', '');
+			if (exports.DCSSocket) {
+				if (exports.DCSSocket.connOpen) {
+					console.log('Connecting to ' + serverName + ' Frontend');
+					_.set(exports, 'sessionName', '');
 					sychrontronController.isSyncLockdownMode = false;
-					dbMapServiceController.cmdQueActions('removeall', CCB.serverName, {})
+					dbMapServiceController.cmdQueActions('removeall', serverName, {})
 						.then(function () {
-							CCB.DCSSocket.connSocket();
+							exports.DCSSocket.connSocket();
 						})
 						.catch(function (err) {
 							console.log('line62', err);
@@ -74,12 +55,12 @@ constants.initServer(CCB.serverName)
 					;
 				}
 			} else {
-				CCB.DCSSocket = new DCSSocket.createSocket(CCB.serverName, CCB.serverIP, CCB.serverPort, CCB.queName, CCB.socketCallback, 'frontend');
+				exports.DCSSocket = new DCSSocket.createSocket(serverName, 'localhost', _.get(constants, 'config.dcsClientPort'), 'clientArray', exports.socketCallback, 'frontend');
 			}
-		}, 3 * 1000);
+		}, 3 * _.get(constants, 'time.sec'));
 
-		_.set(CCB, 'getLatestSession', function (serverName, serverEpoc, startAbs, curAbs) {
-			console.log('sn: ', serverEpoc, startAbs, curAbs, _.get(CCB, 'sessionName'));
+		_.set(exports, 'getLatestSession', function (serverName, serverEpoc, startAbs, curAbs) {
+			console.log('sn: ', serverEpoc, startAbs, curAbs, _.get(exports, 'sessionName'));
 			if (serverEpoc) {
 				var sessionName = serverName + '_' + serverEpoc;
 				var newSession = {
@@ -90,10 +71,10 @@ constants.initServer(CCB.serverName)
 					_.set(newSession, 'startAbsTime', startAbs);
 					_.set(newSession, 'curAbsTime', curAbs);
 				}
-				if (sessionName !== _.get(CCB, ['sessionName'], '') || _.get(CCB, ['curAbsTime'], 0) > curAbs) {
+				if (sessionName !== _.get(exports, ['sessionName'], '') || _.get(exports, ['curAbsTime'], 0) > curAbs) {
 					console.log('set new session: ', sessionName);
-					_.set(CCB, ['sessionName'], sessionName);
-					_.set(CCB, ['curAbsTime'], curAbs);
+					_.set(exports, ['sessionName'], sessionName);
+					_.set(exports, ['curAbsTime'], curAbs);
 					console.log('set new session');
 					dbMapServiceController.statSessionActions('save', serverName, newSession)
 						.catch(function (err) {
@@ -111,20 +92,20 @@ constants.initServer(CCB.serverName)
 			}
 		});
 
-		_.set(CCB, 'socketCallback', function (serverName, cbArray) {
-			_.set(CCB, 'realServerSecs', cbArray.curAbsTime - cbArray.startAbsTime);
+		_.set(exports, 'socketCallback', function (serverName, cbArray) {
+			_.set(exports, 'realServerSecs', cbArray.curAbsTime - cbArray.startAbsTime);
 			if (!sychrontronController.isServerSynced) {
 				console.log('SYNC: ', sychrontronController.isServerSynced);
 			}
 			// console.log('CB: ', cbArray.que);
-			_.set(CCB, 'curServerUnitCnt', cbArray.unitCount);
-			if(!_.get(CCB, 'sessionName')) {
-				CCB.getLatestSession(serverName, cbArray.epoc, cbArray.startAbsTime,  cbArray.curAbsTime);
+			_.set(exports, 'curServerUnitCnt', cbArray.unitCount);
+			if(!_.get(exports, 'sessionName')) {
+				exports.getLatestSession(serverName, cbArray.epoc, cbArray.startAbsTime,  cbArray.curAbsTime);
 			} else {
 				_.forEach(_.get(cbArray, 'que', []), function (queObj) {
 					if ((_.get(queObj, 'action') === 'C') || (_.get(queObj, 'action') === 'U') || (_.get(queObj, 'action') === 'D'))  {
 						// console.log('CB: ', queObj.data);
-						unitsStaticsController.processUnitUpdates(serverName, CCB.sessionName, queObj);
+						unitsStaticsController.processUnitUpdates(serverName, exports.sessionName, queObj);
 					}
 
 					if (_.get(queObj, 'action') === 'airbaseC' || _.get(queObj, 'action') === 'airbaseU') {
@@ -133,7 +114,7 @@ constants.initServer(CCB.serverName)
 
 					if ((_.get(queObj, 'action') === 'f10Menu') && sychrontronController.isServerSynced) {
 						// console.log('CB: ', queObj);
-						menuCmdsController.menuCmdProcess(serverName, CCB.sessionName, queObj);
+						menuCmdsController.menuCmdProcess(serverName, exports.sessionName, queObj);
 					}
 
 					/*
@@ -163,49 +144,49 @@ constants.initServer(CCB.serverName)
                     */
 
 					if ((_.get(queObj, 'action') === 'S_EVENT_HIT') && sychrontronController.isServerSynced) {
-						processEventHit.processEventHit(serverName, CCB.sessionName, queObj);
+						processEventHit.processEventHit(serverName, exports.sessionName, queObj);
 					}
 
 					if ((_.get(queObj, 'action') === 'S_EVENT_TAKEOFF') && sychrontronController.isServerSynced) {
-						processEventTakeoff.processEventTakeoff(serverName, CCB.sessionName, queObj);
+						processEventTakeoff.processEventTakeoff(serverName, exports.sessionName, queObj);
 					}
 
 					if ((_.get(queObj, 'action') === 'S_EVENT_LAND') && sychrontronController.isServerSynced) {
-						processEventLand.processEventLand(serverName, CCB.sessionName, queObj);
+						processEventLand.processEventLand(serverName, exports.sessionName, queObj);
 					}
 
 					if ((_.get(queObj, 'action') === 'S_EVENT_EJECTION') && sychrontronController.isServerSynced) {
-						processEventEjection.processEventEjection(serverName, CCB.sessionName, queObj);
+						processEventEjection.processEventEjection(serverName, exports.sessionName, queObj);
 					}
 
 					if ((_.get(queObj, 'action') === 'S_EVENT_CRASH') && sychrontronController.isServerSynced) {
-						processEventCrash.processEventCrash(serverName, CCB.sessionName, queObj);
+						processEventCrash.processEventCrash(serverName, exports.sessionName, queObj);
 					}
 
 					if ((_.get(queObj, 'action') === 'S_EVENT_DEAD') && sychrontronController.isServerSynced) {
-						processEventDead.processEventDead(serverName, CCB.sessionName, queObj);
+						processEventDead.processEventDead(serverName, exports.sessionName, queObj);
 					}
 
 					if ((_.get(queObj, 'action') === 'S_EVENT_PILOT_DEAD') && sychrontronController.isServerSynced) {
-						processEventPilotDead.processEventPilotDead(serverName, CCB.sessionName, queObj);
+						processEventPilotDead.processEventPilotDead(serverName, exports.sessionName, queObj);
 					}
 
 					if ((_.get(queObj, 'action') === 'S_EVENT_REFUELING') && sychrontronController.isServerSynced) {
-						processEventRefueling.processEventRefueling(serverName, CCB.sessionName, queObj);
+						processEventRefueling.processEventRefueling(serverName, exports.sessionName, queObj);
 					}
 
 					if ((_.get(queObj, 'action') === 'S_EVENT_REFUELING_STOP') && sychrontronController.isServerSynced) {
-						processEventRefuelingStop.processEventRefuelingStop(serverName, CCB.sessionName, queObj);
+						processEventRefuelingStop.processEventRefuelingStop(serverName, exports.sessionName, queObj);
 					}
 					if ((_.get(queObj, 'action') === 'S_EVENT_BIRTH') && sychrontronController.isServerSynced) {
-						processEventBirth.processEventBirth(serverName, CCB.sessionName, queObj);
+						processEventBirth.processEventBirth(serverName, exports.sessionName, queObj);
 					}
 					if ((_.get(queObj, 'action') === 'S_EVENT_PLAYER_ENTER_UNIT') && sychrontronController.isServerSynced) {
-						processEventPlayerEnterUnit.processEventPlayerEnterUnit(serverName, CCB.sessionName, queObj);
+						processEventPlayerEnterUnit.processEventPlayerEnterUnit(serverName, exports.sessionName, queObj);
 					}
 
 					if ((_.get(queObj, 'action') === 'S_EVENT_PLAYER_LEAVE_UNIT') && sychrontronController.isServerSynced) {
-						processEventPlayerLeaveUnit.processEventPlayerLeaveUnit(serverName, CCB.sessionName, queObj);
+						processEventPlayerLeaveUnit.processEventPlayerLeaveUnit(serverName, exports.sessionName, queObj);
 					}
 
 					// line of sight callback from server
@@ -225,40 +206,40 @@ constants.initServer(CCB.serverName)
 		});
 
 		setInterval(function () {
-			if (!_.get(CCB, ['DCSSocket', 'connOpen'], true)) {
-				processTimedOneSec.processOneSecActions(CCB.serverName, sychrontronController.isServerSynced);
+			if (!_.get(exports, ['DCSSocket', 'connOpen'], true)) {
+				processTimedOneSec.processOneSecActions(serverName, sychrontronController.isServerSynced);
 			}
-		}, CCB.sec);
+		}, _.get(constants, 'time.sec'));
 
 		setInterval(function () {
-			if (!_.get(CCB, ['DCSSocket', 'connOpen'], true)) {
-				processTimedFiveSecs.processFiveSecActions(CCB.serverName, sychrontronController.isServerSynced);
+			if (!_.get(exports, ['DCSSocket', 'connOpen'], true)) {
+				processTimedFiveSecs.processFiveSecActions(serverName, sychrontronController.isServerSynced);
 			}
-		}, CCB.fiveSecs);
+		}, _.get(constants, 'time.fiveSecs'));
 
 		setInterval(function () {
-			if (!_.get(CCB, ['DCSSocket', 'connOpen'], true)) {
-				processTimedThirtySecs.processThirtySecActions(CCB.serverName, sychrontronController.isServerSynced);
-				serverTimerController.processTimer(CCB.serverName, _.get(CCB, 'realServerSecs', 0));
+			if (!_.get(exports, ['DCSSocket', 'connOpen'], true)) {
+				processTimedThirtySecs.processThirtySecActions(serverName, sychrontronController.isServerSynced);
+				serverTimerController.processTimer(serverName, _.get(exports, 'realServerSecs', 0));
 			} else {
 				serverTimerController.timerObj = {}
 			}
-		}, CCB.thirtySecs);
+		}, _.get(constants, 'time.thirtySecs'));
 
 		setInterval(function () {
-			if (!_.get(CCB, ['DCSSocket', 'connOpen'], true)) {
-				processTimedTenMinutes.processTenMinuteActions(CCB.serverName, sychrontronController.isServerSynced);
+			if (!_.get(exports, ['DCSSocket', 'connOpen'], true)) {
+				processTimedTenMinutes.processTenMinuteActions(serverName, sychrontronController.isServerSynced);
 			}
-		}, CCB.tenMinutes);
+		}, _.get(constants, 'time.tenMinutes'));
 
 
 		setInterval(function () {
 			if (constants.bases) {
-				if (!_.get(CCB, ['DCSSocket', 'connOpen'], true)) {
-					sychrontronController.syncType(CCB.serverName, _.get(CCB, 'curServerUnitCnt', -1));
+				if (!_.get(exports, ['DCSSocket', 'connOpen'], true)) {
+					sychrontronController.syncType(serverName, _.get(exports, 'curServerUnitCnt', -1));
 				}
 			}
-		}, 1 * 1000);
+		}, _.get(constants, 'time.sec'));
 	})
 	.catch(function (err) {
 		console.log('line267', err);

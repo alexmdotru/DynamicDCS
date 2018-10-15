@@ -99,10 +99,6 @@ const ServerSchema = new Schema({
 			type: Boolean,
 			default: true
 		},
-        maxLngRngA2A: {
-            type: Number,
-            default: 0
-        },
         weaponRules: {
             type: Array,
             required: true,
