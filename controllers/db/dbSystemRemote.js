@@ -34,7 +34,6 @@ exports.masterQueActions = function (action, serverName, obj){
     }
 };
 exports.remoteCommsActions = function (action, obj){
-	console.log('TEST2');
     const RemoteComm = DBSystemRemote.model('remotecomms', remoteCommsSchema);
     if(action === 'create') {
         return new Promise(function(resolve, reject) {
