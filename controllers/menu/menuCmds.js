@@ -416,7 +416,7 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 						if (pObj.cmd === 'acquisitionCnt') {
 							dbMapServiceController.unitActions('read', serverName, {playerOwnerId: curPlayer.ucid, isCrate:false, isTroop: false, dead: false})
 								.then(function(unitsOwned){
-									groupController.getServer(serverName)
+									constants.getServer(serverName)
 										.then(function(serverInfo) {
 											var grpGroups = _.transform(unitsOwned, function (result, value) {
 												(result[value.groupName] || (result[value.groupName] = [])).push(value);
@@ -677,7 +677,7 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 			5
 		);
 	} else {
-		groupController.getServer(serverName)
+		constants.getServer(serverName)
 			.then(function(serverInfo) {
 				// console.log('SERVERI: ', serverName, serverInfo);
 				dbMapServiceController.srvPlayerActions('read', serverName, {name: unit.playername})
@@ -834,7 +834,7 @@ _.set(exports, 'unpackCrate', function (serverName, playerUnit, country, type, s
 				var curPlayer = _.get(player, [0]);
 				dbMapServiceController.unitActions('readStd', serverName, {playerOwnerId: curPlayer.ucid, playerCanDrive: mobile, isCrate: false, dead: false})
 					.then(function(delUnits){
-						groupController.getServer(serverName)
+						constants.getServer(serverName)
 							.then(function(serverInfo) {
 								var tRem;
 								var curUnit = 0;
@@ -1373,7 +1373,7 @@ _.set(exports, 'internalCargo', function (serverName, curUnit, curPlayer, intCar
 								;
 							}
 							if(curIntCrateType === 'CCBuild') {  // serverName, curUnit, curPlayer, intCargoType
-								groupController.getServer(serverName)
+								constants.getServer(serverName)
 									.then(function(serverInfo) {
 										dbMapServiceController.staticCrateActions('read', serverName, {playerOwnerId: curPlayer.ucid})
 											.then(function(delCrates) {

@@ -1,6 +1,6 @@
 const	_ = require('lodash');
 const constants = require('../constants');
-const dbMapServiceController = require('../db/dbMapService');
+const dbMapServiceController = require('../db/dbMapService');z
 
 /**
  * Calculate a new coordinate based on start, distance and bearing
