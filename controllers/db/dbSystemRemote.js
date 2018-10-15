@@ -1,18 +1,19 @@
 const _ = require('lodash');
-const mongoose = require('mongoose');
+const Mongoose = require('mongoose');
 const masterQueSchema = require('./models/masterQueSchema');
 const remoteCommsSchema = require('./models/remoteCommsSchema');
 var connString;
 var DBSystemRemote = {};
 
 //changing promises to bluebird
-mongoose.Promise = require('bluebird');
+Mongoose.Promise = require('bluebird');
 _.set(exports, 'connectSystemRemoteDB', function (host, database) {
     connString = 'mongodb://DDCSUser:DCSDreamSim@' + host + ':27017/' + database + '?authSource=admin';
-    DBSystemRemote =  mongoose.createConnection(connString, { useNewUrlParser: true });
+    DBSystemRemote =  Mongoose.createConnection(connString, { useNewUrlParser: true });
 });
 
 exports.masterQueActions = function (action, serverName, obj){
+	console.log('TEST1');
 	//const MasterQue = DBSystemRemote.model('masterque', masterQueSchema);
 	 const RemoteComm = DBSystemRemote.model('remotecomms', remoteCommsSchema);
 
@@ -46,6 +47,7 @@ exports.masterQueActions = function (action, serverName, obj){
 };
 */
 exports.remoteCommsActions = function (action, obj){
+	console.log('TEST2');
     const RemoteComm = DBSystemRemote.model('remotecomms', remoteCommsSchema);
     if(action === 'create') {
         return new Promise(function(resolve, reject) {
