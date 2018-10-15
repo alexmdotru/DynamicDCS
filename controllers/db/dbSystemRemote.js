@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const Mongoose = require('mongoose');
 const masterQueSchema = require('./models/masterQueSchema');
-const  remoteCommsSchema = require('./models/remoteCommsSchema');
+const remoteCommsSchema = require('./models/remoteCommsSchema');
 var connString;
 var DBSystemRemote = {};
 
