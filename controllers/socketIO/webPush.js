@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const dbMapServiceController = require('../db/dbMapService');
-const dbSystemRemoteController = require('./controllers/db/dbSystemRemote');
+const dbSystemRemoteController = require('../db/dbSystemRemote');
 
 _.set(exports, 'sendToAll', function (serverName, pData) {
 	_.set(pData, 'serverName', _.toLower(serverName));
