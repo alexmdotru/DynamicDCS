@@ -1,8 +1,7 @@
 const _ = require('lodash');
 const Mongoose = require('mongoose');
-
-var masterQueSchema = require('./models/masterQueSchema');
-var remoteCommsSchema = require('./models/remoteCommsSchema');
+const masterQueSchema = require('./models/masterQueSchema');
+const  remoteCommsSchema = require('./models/remoteCommsSchema');
 var connString;
 var DBSystemRemote = {};
 
@@ -14,7 +13,9 @@ _.set(exports, 'connectSystemRemoteDB', function (host, database) {
 });
 
 exports.masterQueActions = function (action, serverName, obj){
-	const MasterQue = DBSystemRemote.model('masterque', masterQueSchema);
+	//const MasterQue = DBSystemRemote.model('masterque', masterQueSchema);
+	 const RemoteComm = DBSystemRemote.model('remotecomms', remoteCommsSchema);
+
 	return new Promise(function(resolve, reject) {
 		resolve('checkOK');
 	});
