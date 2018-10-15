@@ -53,7 +53,7 @@ _.assign(CCB, {
 });
 
 dbSystemLocalController.connectSystemLocalDB(CCB.db.systemHost, CCB.db.systemDatabase);
-dbSystemRemoteController.connectSystemRemoteDB(DCB.db.remoteHost, DCB.db.systemDatabase);
+dbSystemRemoteController.connectSystemRemoteDB(CCB.db.remoteHost, CCB.db.systemDatabase);
 dbMapServiceController.connectMapDB(CCB.db.dynamicHost, CCB.db.dynamicDatabase);
 
 //checks to see if socket needs restarting every 3 secs
