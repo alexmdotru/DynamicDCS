@@ -11,18 +11,6 @@ _.set(exports, 'connectSystemRemoteDB', function (host, database) {
     connString = 'mongodb://DDCSUser:DCSDreamSim@' + host + ':27017/' + database + '?authSource=admin';
     DBSystemRemote =  Mongoose.createConnection(connString, { useNewUrlParser: true });
 });
-
-exports.masterQueActions = function (action, serverName, obj){
-	//console.log('TEST1');
-	//const MasterQue = DBSystemRemote.model('masterque', masterQueSchema);
-	 //const RemoteComm = DBSystemRemote.model('remotecomms', remoteCommsSchema);
-
-	return new Promise(function(resolve, reject) {
-		resolve('checkOK');
-	});
-};
-
-/*
 exports.masterQueActions = function (action, serverName, obj){
     const MasterQue = DBSystemRemote.model('masterque', masterQueSchema);
 	if (action === 'grabNextQue') {
@@ -45,7 +33,6 @@ exports.masterQueActions = function (action, serverName, obj){
         });
     }
 };
-*/
 exports.remoteCommsActions = function (action, obj){
 	console.log('TEST2');
     const RemoteComm = DBSystemRemote.model('remotecomms', remoteCommsSchema);

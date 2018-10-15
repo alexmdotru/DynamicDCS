@@ -40,7 +40,8 @@ _.assign(CCB, {
 		systemHost: 'localhost',
 		systemDatabase: 'DDCS',
 		dynamicHost: 'localhost',
-		dynamicDatabase: 'DDCSStandard'
+		dynamicDatabase: 'DDCSStandard',
+		remoteHost: '192.168.44.60'
 	},
 	sec: 1000,
 	twoSec: 2 * 1000,
@@ -51,6 +52,7 @@ _.assign(CCB, {
 });
 
 dbSystemLocalController.connectSystemLocalDB(CCB.db.systemHost, CCB.db.systemDatabase);
+dbSystemRemoteController.connectSystemRemoteDB(DCB.db.remoteHost, DCB.db.systemDatabase);
 dbMapServiceController.connectMapDB(CCB.db.dynamicHost, CCB.db.dynamicDatabase);
 
 //checks to see if socket needs restarting every 3 secs
