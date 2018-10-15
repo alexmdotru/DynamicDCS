@@ -29,8 +29,8 @@ const processTimedThirtySecs = require('../../controllers/timedEvents/thirtySecs
 const processTimedTenMinutes = require('../../controllers/timedEvents/tenMinutes');
 
 //config
-var serverName = 'DDCSStandard';
 var masterServer = 'localhost';
+var serverName = 'DDCSStandard';
 
 dbSystemRemoteController.connectSystemRemoteDB(masterServer, 'DDCS');
 dbMapServiceController.connectMapDB('localhost', serverName);
