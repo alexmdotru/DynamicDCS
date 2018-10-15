@@ -13,7 +13,7 @@ _.set(exports, 'connectSystemRemoteDB', function (host, database) {
 });
 
 exports.masterQueActions = function (action, serverName, obj){
-	console.log('TEST1');
+	//console.log('TEST1');
 	//const MasterQue = DBSystemRemote.model('masterque', masterQueSchema);
 	 //const RemoteComm = DBSystemRemote.model('remotecomms', remoteCommsSchema);
 
