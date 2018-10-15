@@ -1,13 +1,20 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose'),
+Schema = mongoose.Schema;
 
 // Schema defines how chat messages will be stored in MongoDB
-const MasterQueSchema = new mongoose.Schema({
-		actionObj: {
-			type: Object,
+const MasterQueSchema = new Schema({
+		payload: {
+			type: Schema.Types.Mixed,
 			required: true
 		},
 		serverName: {
 			type: String,
+			required: true
+		},
+		side: {
+			type: Number,
+			min: 0,
+			max: 3,
 			required: true
 		}
 	},

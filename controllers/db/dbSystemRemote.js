@@ -3,22 +3,28 @@ const Mongoose = require('mongoose');
 
 var masterQueSchema = require('./models/masterQueSchema');
 var remoteCommsSchema = require('./models/remoteCommsSchema');
-
 var connString;
 var DBSystemRemote = {};
 
 //changing promises to bluebird
 Mongoose.Promise = require('bluebird');
-
 _.set(exports, 'connectSystemRemoteDB', function (host, database) {
-	// console.log('REMOTE: ', host, database);
     connString = 'mongodb://DDCSUser:DCSDreamSim@' + host + ':27017/' + database + '?authSource=admin';
     DBSystemRemote =  Mongoose.createConnection(connString, { useNewUrlParser: true });
 });
-
-exports.masterQueActions = function (action, obj){
+exports.masterQueActions = function (action, serverName, obj){
     const MasterQue = DBSystemRemote.model('masterque', masterQueSchema);
-    if(action === 'create') {
+	if (action === 'grabNextQue') {
+		return new Promise(function(resolve, reject) {
+			MasterQue.findOneAndRemove({serverName: serverName}, function (err, wpush){
+				if(err) {
+					reject(err);
+				}
+				resolve(wpush);
+			});
+		});
+	}
+    if(action === 'save') {
         return new Promise(function(resolve, reject) {
             const server = new MasterQue(obj);
             server.save(function (err, servers) {
@@ -27,37 +33,7 @@ exports.masterQueActions = function (action, obj){
             });
         });
     }
-    if(action === 'read') {
-        return new Promise(function(resolve, reject) {
-            MasterQue.find(obj, function (err, servers) {
-                if (err) { reject(err) }
-                resolve(servers);
-            });
-        });
-    }
-    if(action === 'update') {
-        return new Promise(function(resolve, reject) {
-            MasterQue.findOneAndUpdate(
-                {_id: obj._id},
-                {$set: obj},
-                {new: true},
-                function(err, servers) {
-                    if (err) { reject(err) }
-                    resolve(servers);
-                }
-            );
-        });
-    }
-    if(action === 'delete') {
-        return new Promise(function(resolve, reject) {
-            MasterQue.findOneAndRemove({_id: obj._id}, function (err, servers) {
-                if (err) { reject(err) }
-                resolve(servers);
-            });
-        });
-    }
 };
-
 exports.remoteCommsActions = function (action, obj){
     const RemoteComm = DBSystemRemote.model('remotecomms', remoteCommsSchema);
     if(action === 'create') {

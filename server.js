@@ -12,13 +12,10 @@ const express = require('express'),
 	assert = require('assert'),
 	_ = require('lodash');
 require('dotenv').config();
-
 if (!process.env.AUTH0_DOMAIN || !process.env.AUTH0_AUDIENCE) {
 	throw 'Make sure you have AUTH0_DOMAIN, and AUTH0_AUDIENCE in your .env file'
 }
-
 var DDCS = {};
-
 //config
 _.assign(DDCS, {
 	port: 80,
@@ -33,35 +30,27 @@ _.assign(DDCS, {
 	serverAdminLvl: 10,
 	socketQue: {}
 });
-
 //main server ip
 server = app.listen(DDCS.port);
-
 //Controllers
 const discordBotController = require('./controllers/discordBot/discordBot');
 const dbSystemLocalController = require('./controllers/db/dbSystemLocal');
 const dbSystemRemoteController = require('./controllers/db/dbSystemRemote');
 const dbMapServiceController = require('./controllers/db/dbMapService');
-
 dbSystemLocalController.connectSystemLocalDB(DDCS.db.systemHost, DDCS.db.systemDatabase);
 dbSystemRemoteController.connectSystemRemoteDB(DDCS.db.remoteHost, DDCS.db.systemDatabase);
 dbMapServiceController.connectMapDB(DDCS.db.dynamicHost, DDCS.db.dynamicDatabase);
-
 //secure sockets
 var io = require('socket.io').listen(server);
 var admin = false;
 var webPushDone = true;
 var webDbEmpty = false;
-
-
 var srvPlayerObj;
-
 // app.use/routes/etc...
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cors());
 app.disable('x-powered-by');
-
 app.use('/api', router);
 app.use('/api/protected', protectedRouter);
 app.use('/', express.static(__dirname + '/dist'));
@@ -72,8 +61,6 @@ app.use('/imgs', express.static(__dirname + '/app/assets/images'));
 app.use('/tabs', express.static(__dirname + '/app/tabs'));
 app.use('/libs', express.static(__dirname + '/node_modules'));
 app.use('/shh', express.static(__dirname + '/shh'));
-
-
 const checkJwt = jwt({
 	// Dynamically provide a signing key based on the kid in the header and the singing keys provided by the JWKS endpoint.
 	secret: jwksRsa.expressJwtSecret({
@@ -87,7 +74,6 @@ const checkJwt = jwt({
 	issuer: 'https://' + process.env.AUTH0_DOMAIN + '/',
 	algorithms: ['RS256']
 });
-
 router.route('/srvPlayers/:serverName')
 	.get(function (req, res) {
 		dbMapServiceController.statSessionActions('readLatest', req.params.serverName)
@@ -105,7 +91,8 @@ router.route('/srvPlayers/:serverName')
 				console.log('line92: ', err);
 			})
 		;
-	});
+	})
+;
 router.route('/theaters')
 	.get(function (req, res) {
 		dbSystemLocalController.theaterActions('read')
@@ -113,7 +100,8 @@ router.route('/theaters')
 				res.json(resp);
 			})
 		;
-	});
+	})
+;
 router.route('/servers')
 	.get(function (req, res) {
 		dbSystemLocalController.serverActions('read')
@@ -121,7 +109,8 @@ router.route('/servers')
 				res.json(resp);
 			})
 		;
-	});
+	})
+;
 router.route('/servers/:serverName')
 	.get(function (req, res) {
 		_.set(req, 'body.server_name', req.params.serverName);
@@ -130,7 +119,8 @@ router.route('/servers/:serverName')
 				res.json(resp);
 			})
 		;
-	});
+	})
+;
 router.route('/userAccounts')
 	.get(function (req, res) {
 		dbSystemLocalController.userAccountActions('read')
@@ -138,7 +128,8 @@ router.route('/userAccounts')
 				res.json(resp);
 			})
 		;
-	});
+	})
+;
 router.route('/userAccounts/:_id')
 	.get(function (req, res) {
 		_.set(req, 'body.ucid', req.params._id);
@@ -147,7 +138,8 @@ router.route('/userAccounts/:_id')
 				res.json(resp);
 			})
 		;
-	});
+	})
+;
 router.route('/checkUserAccount')
 	.post(function (req, res) {
 		dbSystemLocalController.userAccountActions('checkAccount', req)
@@ -155,7 +147,8 @@ router.route('/checkUserAccount')
 				res.json(resp);
 			})
 		;
-	});
+	})
+;
 router.route('/srvEvents/:serverName')
 	.get(function (req, res) {
 		_.set(req, 'body.serverName', req.params.serverName);
@@ -172,7 +165,8 @@ router.route('/srvEvents/:serverName')
 				console.log('line 133 err: ', err);
 			})
 		;
-	});
+	})
+;
 router.route('/srvEvents/:serverName/:sessionName')
 	.get(function (req, res) {
 		_.set(req, 'body.serverName', req.params.serverName);
@@ -182,7 +176,8 @@ router.route('/srvEvents/:serverName/:sessionName')
 				res.json(resp);
 			})
 		;
-	});
+	})
+;
 
 router.route('/unitStatics/:serverName')
 	.get(function (req, res) {
@@ -307,7 +302,6 @@ router.route('/unitStatics/:serverName')
 
 	})
 ;
-
 router.route('/bases/:serverName')
 	.get(function (req, res) {
 		dbMapServiceController.baseActions('getBaseSides', req.params.serverName)
@@ -321,7 +315,6 @@ router.route('/bases/:serverName')
 
 	})
 ;
-
 //start of protected endpoints, must have auth token
 protectedRouter.use(checkJwt);
 //past this point must have permission value less than 10
@@ -336,7 +329,6 @@ protectedRouter.use(function (req, res, next) {
 		})
 	;
 });
-
 protectedRouter.route('/servers')
 	.post(function (req, res) {
 		dbSystemLocalController.serverActions('create', req.body)
@@ -372,13 +364,6 @@ protectedRouter.route('/userAccounts')
 		;
 	})
 ;
-/*
-srvPlayerObj = {ipaddr: new RegExp(_.replace(req.connection.remoteAddress, '::ffff:', ''))};
-if(req.connection.remoteAddress === '::ffff:127.0.0.1') {
-	srvPlayerObj = {_id: 'd124b99273260cf876203cb63e3d7791'};
-}
-*/
-
 _.set(DDCS, 'setSocketRoom', function setSocketRoom(socket, room) {
 	console.log('Joining Room: ', socket.id, room);
 	if (_.get(socket, 'room')) {
@@ -387,8 +372,6 @@ _.set(DDCS, 'setSocketRoom', function setSocketRoom(socket, room) {
 	_.set(socket, 'room', room);
 	socket.join(room);
 });
-
-
 io.on('connection', function (socket) {
 
 	socket.on('room', function (rObj) {
@@ -463,27 +446,6 @@ io.on('connection', function (socket) {
 		}
 	});
 });
-
-/*
-var i = 0;
-setInterval(function () {
-	var webPay = {
-		payload: {derp: 'haha'+ i},
-		serverName: 'dynamiccaucasus',
-		side: 3
-	};
-	dbMapServiceController.webPushActions('save', 'dynamiccaucasus', webPay)
-		.then(function () {
-
-		})
-		.catch(function (err) {
-			console.log('line274: ', err);
-		})
-	;
-	i++;
-}, 100);
-*/
-
 setInterval(function () {
 	if (webPushDone) {
 		webPushDone = false;
@@ -494,7 +456,7 @@ setInterval(function () {
 					var curServerName = _.toLower(_.get(srv, '_id'));
 					var lookupFinish = [];
 					for(x=0; (x < DDCS.perSendMax) || webDbEmpty; x++) {
-						lookupFinish.push(dbMapServiceController.webPushActions('grabNextQue', curServerName)
+						lookupFinish.push(dbSystemRemoteController.masterQueActions('grabNextQue', curServerName)
 							.then(function (webPush) {
 								if (webPush) {
 									var rName = webPush.serverName + '_' + webPush.side;
@@ -530,17 +492,3 @@ setInterval(function () {
 		;
 	}
 }, 200);
-
-/* setInterval(function () {
-	_.forEach(DDCS.socketQue, function (sQue, sKey) {
-		var sendArray = [];
-		for(x=0; x < DDCS.perSendMax; x++) {
-			if (sQue[x]) {
-				sendArray.push(sQue[x]);
-				sQue.shift();
-			}
-		}
-		io.to(sKey).emit('srvUpd', sendArray);
-	});
-}, 200);
-*/
