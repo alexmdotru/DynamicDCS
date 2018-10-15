@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const DCSSocket = require('../../controllers/net/DCSSocket');
 const dbSystemLocalController = require('../../controllers/db/dbSystemLocal');
+const dbSystemRemoteController = require('../../controllers/db/dbSystemRemote');
 const dbMapServiceController = require('../../controllers/db/dbMapService');
 const menuCmdsController = require('../../controllers/menu/menuCmds');
 const groupController = require('../../controllers/spawn/group');
