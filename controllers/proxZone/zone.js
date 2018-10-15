@@ -1,7 +1,6 @@
 const	_ = require('lodash');
 const constants = require('../constants');
 const dbMapServiceController = require('../db/dbMapService');
-const groupController = require('../spawn/group');
 
 /**
  * Calculate a new coordinate based on start, distance and bearing

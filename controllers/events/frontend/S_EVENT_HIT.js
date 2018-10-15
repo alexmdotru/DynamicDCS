@@ -11,7 +11,6 @@ const dbSystemRemoteController = require('../../db/dbSystemRemote');
 const dbMapServiceController = require('../../db/dbMapService');
 const DCSLuaCommands = require('../../player/DCSLuaCommands');
 const webPushCommands = require('../../socketIO/webPush');
-const groupController = require('../../spawn/group');
 
 exports.shootingUsers = {};
 
@@ -42,7 +41,7 @@ _.set(exports, 'checkShootingUsers', function (serverName) {
 					;
 				}
 
-				if (_.get(groupController, 'config.inGameHitMessages', true)) {
+				if (_.get(constants, 'config.inGameHitMessages', true)) {
 					DCSLuaCommands.sendMesgToAll(
 						serverName,
 						_.get(shootObj, 'msg'),
@@ -178,7 +177,7 @@ _.set(exports, 'processEventHit', function (serverName, sessionName, eventObj) {
 																;
 															}
 
-															if (_.get(groupController, 'config.inGameHitMessages', true)) {
+															if (_.get(constants, 'config.inGameHitMessages', true)) {
 																DCSLuaCommands.sendMesgToAll(
 																	serverName,
 																	_.get(iCurObj, 'msg'),

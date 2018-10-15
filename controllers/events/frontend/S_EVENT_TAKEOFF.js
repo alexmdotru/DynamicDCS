@@ -2,7 +2,6 @@ const _ = require('lodash');
 const constants = require('../../constants');
 const dbMapServiceController = require('../../db/dbMapService');
 const DCSLuaCommands = require('../../player/DCSLuaCommands');
-const groupController = require('../../spawn/group');
 const webPushCommands = require('../../socketIO/webPush');
 const weaponComplianceController = require('../../action/weaponCompliance');
 

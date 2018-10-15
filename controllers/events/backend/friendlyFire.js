@@ -3,7 +3,6 @@ const constants = require('../../constants');
 const dbMapServiceController = require('../../db/dbMapService');
 const DCSLuaCommands = require('../../player/DCSLuaCommands');
 const playersEvent = require('../../events/backend/players');
-const groupController = require('../../spawn/group');
 const userLivesController = require('../../action/userLives');
 
 _.set(exports, 'processFriendlyFire', function (serverName, sessionName, eventObj) {

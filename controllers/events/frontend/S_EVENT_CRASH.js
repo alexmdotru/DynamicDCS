@@ -3,7 +3,6 @@ const constants = require('../../constants');
 const dbMapServiceController = require('../../db/dbMapService');
 const DCSLuaCommands = require('../../player/DCSLuaCommands');
 const unitsStaticsController = require('../../serverToDbSync/unitsStatics');
-const groupController = require('../../spawn/group');
 const webPushCommands = require('../../socketIO/webPush');
 
 _.set(exports, 'processEventCrash', function (serverName, sessionName, eventObj) {
@@ -41,7 +40,7 @@ _.set(exports, 'processEventCrash', function (serverName, sessionName, eventObj)
 								})
 							;
 
-							if (_.get(groupController, 'config.inGameHitMessages', true)) {
+							if (_.get(constants, 'config.inGameHitMessages', true)) {
 								DCSLuaCommands.sendMesgToAll(
 									serverName,
 									_.get(iCurObj, 'msg'),

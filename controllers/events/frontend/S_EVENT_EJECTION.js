@@ -4,7 +4,6 @@ const dbMapServiceController = require('../../db/dbMapService');
 const DCSLuaCommands = require('../../player/DCSLuaCommands');
 const unitsStaticsController = require('../../serverToDbSync/unitsStatics');
 const webPushCommands = require('../../socketIO/webPush');
-const groupController = require('../../spawn/group');
 
 _.set(exports, 'processEventEjection', function (serverName, sessionName, eventObj) {
 	// Occurs when a pilot ejects from an aircraft
@@ -41,7 +40,7 @@ _.set(exports, 'processEventEjection', function (serverName, sessionName, eventO
 								})
 							;
 
-							if (_.get(groupController, 'config.inGameHitMessages', true)) {
+							if (_.get(constants, 'config.inGameHitMessages', true)) {
 								DCSLuaCommands.sendMesgToAll(
 									serverName,
 									_.get(iCurObj, 'msg'),

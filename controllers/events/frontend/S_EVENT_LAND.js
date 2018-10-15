@@ -2,10 +2,8 @@ const _ = require('lodash');
 const constants = require('../../constants');
 const dbMapServiceController = require('../../db/dbMapService');
 const DCSLuaCommands = require('../../player/DCSLuaCommands');
-const playersEvent = require('../../events/backend/players');
 const groupController = require('../../spawn/group');
 const webPushCommands = require('../../socketIO/webPush');
-const userLivesController = require('../../action/userLives');
 
 _.set(exports, 'processEventLand', function (serverName, sessionName, eventObj) {
 	var place = '';

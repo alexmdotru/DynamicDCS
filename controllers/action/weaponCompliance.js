@@ -1,7 +1,7 @@
 const	_ = require('lodash');
+const constants = require('../../controllers/constants');
 const dbMapServiceController = require('../db/dbMapService');
 const DCSLuaCommands = require('../player/DCSLuaCommands');
-const groupController = require('../spawn/group');
 
 //var oneHour = 600 * 1000;
 // updateServerLives
@@ -51,7 +51,7 @@ _.set(exports, 'checkWeaponComplianceOnTakeoff', function (serverName, iPlayer, 
 	// console.log('CWC: ', serverName, iPlayer, curIUnit);
 	var limitedWeapons = [];
 	var maxLimitedWeaponCount = 0;
-    _.forEach(_.get(groupController, 'config.weaponRules', []), function (weaponRule) {
+    _.forEach(_.get(constants, 'config.weaponRules', []), function (weaponRule) {
         _.forEach(_.get(curIUnit, 'ammo', []), function (value) {
             var curTypeName = value.typeName;
             if (_.includes(weaponRule.weapons, curTypeName)) {
@@ -86,7 +86,7 @@ _.set(exports, 'checkAircraftWeaponCompliance', function (serverName) {
 										var curUnit = _.get(cUnit, [0]);
 										var limitedWeapons = [];
 										var maxLimitedWeaponCount = 0;
-                                        _.forEach(_.get(groupController, 'config.weaponRules', []), function (weaponRule) {
+                                        _.forEach(_.get(constants, 'config.weaponRules', []), function (weaponRule) {
                                             _.forEach(_.get(curUnit, 'ammo', []), function (value) {
                                                 var curTypeName = value.typeName;
                                                 if (_.includes(weaponRule.weapons, curTypeName)) {

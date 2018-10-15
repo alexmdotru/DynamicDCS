@@ -1,7 +1,6 @@
 const	_ = require('lodash');
-// const dbMapServiceController = require('../db/dbMapService');
+const constants = require('../../controllers/constants');
 const DCSLuaCommands = require('../player/DCSLuaCommands');
-const groupController = require('../spawn/group');
 
 var curSecs = 0;
 var maxTime = 18000;
@@ -86,7 +85,7 @@ _.set(exports, 'processTimer', function (serverName, serverSecs) {
 			exports.restartServer(
 				serverName,
 				_.get(exports, 'timerObj.curMap'),
-				_.get(groupController, 'config.mapRotation')
+				_.get(constants, 'config.mapRotation')
 			);
 	} else {
 		if (mesg) {

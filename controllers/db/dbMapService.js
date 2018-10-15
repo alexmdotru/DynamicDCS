@@ -1,7 +1,6 @@
 const _ = require('lodash');
 const constants = require('../constants');
 const DCSLuaCommands = require('../player/DCSLuaCommands');
-const groupController = require('../spawn/group');
 const Mongoose = require('mongoose');
 
 //changing promises to bluebird
@@ -229,7 +228,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 					if(sObj.side === 0){ //keep the user on the last side
 						delete sObj.side
 					}
-					sObj.curLifePoints = _.get(groupController, 'config.startLifePoints', 0);
+					sObj.curLifePoints = _.get(constants, 'config.startLifePoints', 0);
 					sObj.save(function (err, serObj) {
 						if (err) {
 							reject(err)
@@ -240,8 +239,8 @@ exports.srvPlayerActions = function (action, serverName, obj){
 					// console.log('sess: ', curPly.sessionName, obj.sessionName);
 					if ((curPly.sessionName !== obj.sessionName) && curPly.sessionName && obj.sessionName) {
 						var curTime =  new Date().getTime();
-						// console.log('cf: ', groupController);
-						obj.curLifePoints = _.get(groupController, 'config.startLifePoints', 0);
+						// console.log('cf: ', constants);
+						obj.curLifePoints = _.get(constants, 'config.startLifePoints', 0);
 						if (curPly.sideLockTime < curTime) {
 							obj.sideLockTime = curTime + oneHour;
 							obj.sideLock = 0;
@@ -389,7 +388,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 							if (err) { reject(err) }
 							// console.log(_.get(curPly, 'name'), ' Has Tmp Score: ', newTmpScore);
 							var mesg = 'TmpScore: ' + newTmpScore + ', Land at a friendly base/farp to receive these points';
-							if (_.get(groupController, 'config.inGameHitMessages', true)) {
+							if (_.get(constants, 'config.inGameHitMessages', true)) {
 								DCSLuaCommands.sendMesgToGroup(obj.groupId, serverName, mesg, '15');
 							}
 							resolve();
@@ -464,7 +463,7 @@ exports.srvPlayerActions = function (action, serverName, obj){
 								function(err) {
 									if (err) { reject(err) }
 									console.log(_.get(obj, 'unitType', '') + ' has given ' + addScore + ' to ' + _.get(curPly, 'name') + ' on ' + curPly.side + ', Total: ', tObj);
-									if (_.get(groupController, 'config.inGameHitMessages', true)) {
+									if (_.get(constants, 'config.inGameHitMessages', true)) {
 										DCSLuaCommands.sendMesgToGroup(obj.groupId, serverName, mesg, '15');
 									}
 									resolve();

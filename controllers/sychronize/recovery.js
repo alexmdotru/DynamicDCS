@@ -1,6 +1,5 @@
 const _ = require('lodash');
 const dbMapServiceController = require('../db/dbMapService');
-const groupController = require('../spawn/group');
 
 _.set(exports, 'sendMissingUnits', function (serverName, serverUnitArray) {
 	var upPromises = [];
