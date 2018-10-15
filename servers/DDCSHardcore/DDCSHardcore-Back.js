@@ -12,7 +12,7 @@ const commsUserProcessing = require('../../controllers/discordBot/commsUserProce
 
 //config
 var commsCounter = 0;
-var isDiscordAllowed = true;
+var isDiscordAllowed = false;
 var masterServer = '192.168.44.60';
 var serverName = 'DDCSHardcore';
 
