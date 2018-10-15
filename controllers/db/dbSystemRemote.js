@@ -13,8 +13,6 @@ _.set(exports, 'connectSystemRemoteDB', function (host, database) {
     DBSystemRemote =  Mongoose.createConnection(connString, { useNewUrlParser: true });
 });
 exports.masterQueActions = function (action, serverName, obj){
-	console.log('mqa: ', action, serverName, obj);
-	/*
     const MasterQue = DBSystemRemote.model('masterque', masterQueSchema);
 	if (action === 'grabNextQue') {
 		return new Promise(function(resolve, reject) {
@@ -35,7 +33,6 @@ exports.masterQueActions = function (action, serverName, obj){
             });
         });
     }
-    */
 };
 exports.remoteCommsActions = function (action, obj){
     const RemoteComm = DBSystemRemote.model('remotecomms', remoteCommsSchema);
