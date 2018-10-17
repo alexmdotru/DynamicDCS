@@ -6,11 +6,13 @@ _.set(exports, 'sendToAll', function (serverName, pData) {
 	_.set(pData, 'serverName', _.toLower(serverName));
 	for(var x=0; x <= '3'; x++) {
 		_.set(pData, 'side', x);
+		/*
 		dbSystemRemoteController.masterQueActions('save', serverName, pData)
 			.catch(function (err) {
 				console.log('line9: ', err);
 			})
 		;
+		*/
 	}
 });
 
@@ -25,7 +27,7 @@ _.set(exports, 'sendToCoalition', function (serverName, pData) {
 	} else {
 		console.log('no sendToCoalition side for ', pData);
 	}
-
+/*
 	dbSystemRemoteController.masterQueActions('save', serverName, pData)
 		.catch(function (err) {
 			console.log('line274: ', err);
@@ -38,6 +40,7 @@ _.set(exports, 'sendToCoalition', function (serverName, pData) {
 			console.log('line274: ', err);
 		})
 	;
+	*/
 });
 
 _.set(exports, 'sendToIndividual', function (serverName, socketId, pData) {
