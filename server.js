@@ -446,6 +446,7 @@ io.on('connection', function (socket) {
 		}
 	});
 });
+/*
 setInterval(function () {
 	if (webPushDone) {
 		webPushDone = false;
@@ -492,3 +493,5 @@ setInterval(function () {
 		;
 	}
 }, 200);
+
+*/
