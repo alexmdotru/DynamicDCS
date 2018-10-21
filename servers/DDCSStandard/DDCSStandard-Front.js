@@ -230,13 +230,12 @@ constants.initServer(serverName)
 
 		setInterval(function () {
 			if (_.get(exports, 'sessionName')) {
-				var newSession = {
-					_id: _.get(exports, 'sessionName'),
-					name: _.get(exports, 'sessionName'),
-					startAbsTime: _.get(exports, 'startAbsTime'),
-					curAbsTime: _.get(exports, 'curAbsTime')
-				};
-				masterDBController.statSessionActions('update', serverName, newSession)
+				masterDBController.statSessionActions('update', serverName, {
+						_id: _.get(exports, 'sessionName'),
+						name: _.get(exports, 'sessionName'),
+						startAbsTime: _.get(exports, 'startAbsTime'),
+						curAbsTime: _.get(exports, 'curAbsTime')
+					})
 					.catch(function (err) {
 						console.log('line240', err);
 					})
