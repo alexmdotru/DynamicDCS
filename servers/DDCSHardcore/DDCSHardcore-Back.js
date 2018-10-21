@@ -11,7 +11,6 @@ const commsUserProcessing = require('../../controllers/discordBot/commsUserProce
 
 //config
 var commsCounter = 0;
-var isDiscordAllowed = _.get(constants, 'config.isDiscordAllowed', false);
 var masterServer = '192.168.44.60';
 var serverName = 'DDCSHardcore';
 
@@ -54,7 +53,7 @@ constants.initServer(serverName)
 				if (_.get(queObj, 'action') === 'players') {
 					playersEvent.processPlayerEvent(serverName, exports.sessionName, queObj);
 					if (commsCounter > 59) {
-						commsUserProcessing.checkForComms(serverName, isDiscordAllowed, queObj.data);
+						commsUserProcessing.checkForComms(serverName, _.get(constants, 'config.isDiscordAllowed', false), queObj.data);
 						commsCounter = 0;
 					}
 					commsCounter++;
