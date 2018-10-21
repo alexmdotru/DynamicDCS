@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const constants = require('../constants');
+const DCSLuaCommands = require('../player/DCSLuaCommands');
 const Mongoose = require('mongoose');
 Mongoose.Promise = require('bluebird');
 var curDBMaster;
