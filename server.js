@@ -238,6 +238,7 @@ router.route('/unitStatics/:serverName')
 		}
 		masterDBController.serverActions('read', {_id: serverName})
 			.then(function (serverConfig) {
+				console.log('sc: ', serverConfig);
 				if (serverConfig.canSeeUnits) {
 					masterDBController.srvPlayerActions('read', serverName, srvPlayerObj)
 						.then(function (srvPlayer) {
