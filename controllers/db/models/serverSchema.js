@@ -103,6 +103,18 @@ const ServerSchema = new Schema({
             type: Array,
             required: true,
 			default: []
+		},
+		curTimer: {
+			type: Number
+		},
+		isServerUp: {
+			type: Boolean,
+			default: false
+		},
+		restartTime: {
+			type: Number,
+			required: true,
+			default: 18000
 		}
 	},
 	{

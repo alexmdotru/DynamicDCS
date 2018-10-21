@@ -33,22 +33,15 @@ _.assign(DDCS, {
 //main server ip
 server = app.listen(DDCS.port);
 //Controllers
-const constants = require('./controllers/constants');
 const masterDBController = require('./controllers/db/masterDB');
 masterDBController.initDB('DDCS');
-//const dbSystemLocalController = require('./controllers/db/dbSystemLocal');
-//const dbSystemRemoteController = require('./controllers/db/dbSystemRemote');
-//const dbMapServiceController = require('./controllers/db/dbMapService');
-//dbSystemRemoteController.connectSystemRemoteDB('localhost', 'DDCS');
-//dbSystemLocalController.connectSystemLocalDB('localhost', 'DDCS');
-//dbMapServiceController.connectMapDB(DDCS.db.dynamicHost, DDCS.db.dynamicDatabase);
+
 //secure sockets
 var io = require('socket.io').listen(server);
 var admin = false;
 var webPushDone = true;
 var webDbEmpty = false;
 var srvPlayerObj;
-var dbRemoteConnObj = {};
 // app.use/routes/etc...
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
