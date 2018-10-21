@@ -97,7 +97,7 @@ const ServerSchema = new Schema({
 		},
 		isDiscordAllowed: {
 			type: Boolean,
-			default: true
+			default: false
 		},
         weaponRules: {
             type: Array,
@@ -115,6 +115,10 @@ const ServerSchema = new Schema({
 			type: Number,
 			required: true,
 			default: 18000
+		},
+		canSeeUnits: {
+			type: Boolean,
+			default: false
 		}
 	},
 	{
