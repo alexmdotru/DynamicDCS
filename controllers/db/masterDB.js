@@ -987,7 +987,7 @@ _.assign(exports, {
 				})
 			}
 		} else {
-			return Promise.reject('line:989, failed to connect to db: ', serverName);
+			return Promise.reject('line:989, failed to connect to db: ', action, serverName, obj);
 		}
 	},
 	staticCrateActions: function (action, serverName, obj){
