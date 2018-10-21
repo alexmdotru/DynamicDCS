@@ -236,121 +236,137 @@ router.route('/unitStatics/:serverName')
 		} else {
 			srvPlayerObj = {ipaddr: new RegExp(clientIP)};
 		}
-		masterDBController.srvPlayerActions('read', serverName, srvPlayerObj)
-			.then(function (srvPlayer) {
-				var curSrvPlayer = _.get(srvPlayer, 0);
-				// console.log('CSP: ', curSrvPlayer);
-				if (curSrvPlayer) {
-					masterDBController.userAccountActions('read', {ucid: curSrvPlayer._id})
-						.then(function (userAcct) {
-							var curAcct = _.get(userAcct, 0);
-							if (curAcct) {
-								masterDBController.userAccountActions('updateSingleUCID', {ucid: curSrvPlayer._id, lastServer: serverName, gameName: curSrvPlayer.name})
-									.then(function () {
-										var curSlot = _.get(curSrvPlayer, 'slot', '');
-										if(_.includes(curSlot, 'forward_observer') || _.includes(curSlot, 'artillery_commander') || curSlot === '') {
-											var unitObj = {
-												dead: false,
-												coalition: 0
-											};
-											if (curAcct.permLvl <= DDCS.serverAdminLvl) {
-												delete unitObj.coalition;
-											} else {
-												_.set(unitObj, 'coalition', _.get(curSrvPlayer, 'sideLock', 0));
-											}
-											masterDBController.unitActions('readMin', serverName, unitObj)
-												.then(function (resp) {
-													res.json(resp);
+		masterDBController.serverActions('read', {_id: serverName})
+			.then(function (serverConfig) {
+				if (serverConfig.canSeeUnits) {
+					masterDBController.srvPlayerActions('read', serverName, srvPlayerObj)
+						.then(function (srvPlayer) {
+							var curSrvPlayer = _.get(srvPlayer, 0);
+							// console.log('CSP: ', curSrvPlayer);
+							if (curSrvPlayer) {
+								masterDBController.userAccountActions('read', {ucid: curSrvPlayer._id})
+									.then(function (userAcct) {
+										var curAcct = _.get(userAcct, 0);
+										if (curAcct) {
+											masterDBController.userAccountActions('updateSingleUCID', {ucid: curSrvPlayer._id, lastServer: serverName, gameName: curSrvPlayer.name})
+												.then(function () {
+													var curSlot = _.get(curSrvPlayer, 'slot', '');
+													if(_.includes(curSlot, 'forward_observer') || _.includes(curSlot, 'artillery_commander') || curSlot === '') {
+														var unitObj = {
+															dead: false,
+															coalition: 0
+														};
+														if (curAcct.permLvl <= DDCS.serverAdminLvl) {
+															delete unitObj.coalition;
+														} else {
+															_.set(unitObj, 'coalition', _.get(curSrvPlayer, 'sideLock', 0));
+														}
+														masterDBController.unitActions('readMin', serverName, unitObj)
+															.then(function (resp) {
+																res.json(resp);
+															})
+															.catch(function (err) {
+																console.log('line184: ', err);
+															})
+														;
+													} else {
+														res.json([]);
+													}
 												})
 												.catch(function (err) {
-													console.log('line184: ', err);
+													console.log('line211: ', err);
 												})
 											;
 										} else {
-											res.json([]);
+											var curSrvIP = _.first(_.split(curSrvPlayer.ipaddr, ':'));
+											// console.log('Cur Account Doesnt Exist line, matching IP: ', curSrvIP);
+											masterDBController.userAccountActions('updateSingleIP', {ipaddr: curSrvIP, ucid: curSrvPlayer.ucid, lastServer: serverName, gameName: curSrvPlayer.name})
+												.then(function () {
+													res.json([]);
+													/*
+                                                    masterDBController.userAccountActions('read', {ucid: curSrvPlayer.ucid})
+                                                        .then(function (userAcct) {
+                                                            var unitObj;
+                                                            var curAcct = _.get(userAcct, 0);
+                                                            if (curAcct) {
+                                                                unitObj = {
+                                                                    dead: false,
+                                                                    coalition: 0
+                                                                };
+                                                                if (curAcct.permLvl <= DDCS.serverAdminLvl) {
+                                                                    delete unitObj.coalition;
+                                                                } else {
+                                                                    _.set(unitObj, 'coalition', _.get(curSrvPlayer, 'sideLock', 0));
+                                                                }
+                                                                masterDBController.unitActions('readStd', serverName, unitObj)
+                                                                    .then(function (resp) {
+                                                                        res.json(resp);
+                                                                    })
+                                                                    .catch(function (err) {
+                                                                        console.log('line238: ', err);
+                                                                    })
+                                                                ;
+                                                            } else {
+                                                                console.log('go by pure IP');
+                                                                unitObj = {
+                                                                    dead: false,
+                                                                    coalition: 0
+                                                                };
+                                                                _.set(unitObj, 'coalition', _.get(curSrvPlayer, 'sideLock', 0));
+                                                                masterDBController.unitActions('readStd', serverName, unitObj)
+                                                                    .then(function (resp) {
+                                                                        res.json(resp);
+                                                                    })
+                                                                    .catch(function (err) {
+                                                                        console.log('line253: ', err);
+                                                                    })
+                                                                ;
+                                                            }
+                                                        })
+                                                        .catch(function (err) {
+                                                            console.log('line259: ', err);
+                                                        })
+                                                    ;
+                                                    */
+												})
+												.catch(function (err) {
+													console.log('line264: ', err);
+												})
+											;
 										}
 									})
 									.catch(function (err) {
-										console.log('line211: ', err);
+										console.log('line270: ', err);
 									})
 								;
 							} else {
-								var curSrvIP = _.first(_.split(curSrvPlayer.ipaddr, ':'));
-								// console.log('Cur Account Doesnt Exist line, matching IP: ', curSrvIP);
-								masterDBController.userAccountActions('updateSingleIP', {ipaddr: curSrvIP, ucid: curSrvPlayer.ucid, lastServer: serverName, gameName: curSrvPlayer.name})
-									.then(function () {
-										res.json([]);
-										/*
-										masterDBController.userAccountActions('read', {ucid: curSrvPlayer.ucid})
-											.then(function (userAcct) {
-												var unitObj;
-												var curAcct = _.get(userAcct, 0);
-												if (curAcct) {
-													unitObj = {
-														dead: false,
-														coalition: 0
-													};
-													if (curAcct.permLvl <= DDCS.serverAdminLvl) {
-														delete unitObj.coalition;
-													} else {
-														_.set(unitObj, 'coalition', _.get(curSrvPlayer, 'sideLock', 0));
-													}
-													masterDBController.unitActions('readStd', serverName, unitObj)
-														.then(function (resp) {
-															res.json(resp);
-														})
-														.catch(function (err) {
-															console.log('line238: ', err);
-														})
-													;
-												} else {
-													console.log('go by pure IP');
-													unitObj = {
-														dead: false,
-														coalition: 0
-													};
-													_.set(unitObj, 'coalition', _.get(curSrvPlayer, 'sideLock', 0));
-													masterDBController.unitActions('readStd', serverName, unitObj)
-														.then(function (resp) {
-															res.json(resp);
-														})
-														.catch(function (err) {
-															console.log('line253: ', err);
-														})
-													;
-												}
-											})
-											.catch(function (err) {
-												console.log('line259: ', err);
-											})
-										;
-										*/
-									})
-									.catch(function (err) {
-										console.log('line264: ', err);
-									})
-								;
+								var mesg = clientIP + ' Has never played on the server';
+								console.log(mesg);
+								res.status(404);
+								res.send(mesg);
 							}
 						})
 						.catch(function (err) {
-							console.log('line270: ', err);
+							var mesg = 'line350: ' + err;
+							console.log(mesg);
+							res.status(404);
+							res.send(mesg);
 						})
 					;
 				} else {
-					var mesg = clientIP + ' Has never played on the server';
+					var mesg = 'line357: canSeeUnits False';
 					console.log(mesg);
 					res.status(404);
 					res.send(mesg);
 				}
 			})
 			.catch(function (err) {
-				var mesg = 'line352: ' + err;
+				var mesg = 'line364: ' + err;
 				console.log(mesg);
 				res.status(404);
 				res.send(mesg);
 			})
 		;
-
 	})
 ;
 router.route('/bases/:serverName')
