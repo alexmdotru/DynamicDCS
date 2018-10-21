@@ -87,11 +87,16 @@ router.route('/srvPlayers/:serverName')
 					})
 					.catch(function (err) {
 						console.log('line87: ', err);
+						res.status(404);
+						res.send(err);
 					})
 				;
 			})
 			.catch(function (err) {
-				console.log('line92: ', err);
+				var mesg = 'line96: ' + err;
+				console.log(mesg);
+				res.status(404);
+				res.send(mesg);
 			})
 		;
 	})
@@ -102,6 +107,12 @@ router.route('/theaters')
 			.then(function (resp) {
 				res.json(resp);
 			})
+			.catch(function (err) {
+				var mesg = 'line111: ' + err;
+				console.log(mesg);
+				res.status(404);
+				res.send(mesg);
+			})
 		;
 	})
 ;
@@ -110,6 +121,12 @@ router.route('/servers')
 		masterDBController.serverActions('read')
 			.then(function (resp) {
 				res.json(resp);
+			})
+			.catch(function (err) {
+				var mesg = 'line126: ' + err;
+				console.log(mesg);
+				res.status(404);
+				res.send(mesg);
 			})
 		;
 	})
@@ -121,6 +138,12 @@ router.route('/servers/:serverName')
 			.then(function (resp) {
 				res.json(resp);
 			})
+			.catch(function (err) {
+				var mesg = 'line142: ' + err;
+				console.log(mesg);
+				res.status(404);
+				res.send(mesg);
+			})
 		;
 	})
 ;
@@ -129,6 +152,12 @@ router.route('/userAccounts')
 		masterDBController.userAccountActions('read')
 			.then(function (resp) {
 				res.json(resp);
+			})
+			.catch(function (err) {
+				var mesg = 'line157: ' + err;
+				console.log(mesg);
+				res.status(404);
+				res.send(mesg);
 			})
 		;
 	})
@@ -140,6 +169,12 @@ router.route('/userAccounts/:_id')
 			.then(function (resp) {
 				res.json(resp);
 			})
+			.catch(function (err) {
+				var mesg = 'line73: ' + err;
+				console.log(mesg);
+				res.status(404);
+				res.send(mesg);
+			})
 		;
 	})
 ;
@@ -148,6 +183,12 @@ router.route('/checkUserAccount')
 		masterDBController.userAccountActions('checkAccount', req)
 			.then(function (resp) {
 				res.json(resp);
+			})
+			.catch(function (err) {
+				var mesg = 'line188: ' + err;
+				console.log(mesg);
+				res.status(404);
+				res.send(mesg);
 			})
 		;
 	})
@@ -165,7 +206,10 @@ router.route('/srvEvents/:serverName')
 				;
 			})
 			.catch(function (err) {
-				console.log('line 133 err: ', err);
+				var mesg = 'line209: ' + err;
+				console.log(mesg);
+				res.status(404);
+				res.send(mesg);
 			})
 		;
 	})
@@ -177,6 +221,12 @@ router.route('/srvEvents/:serverName/:sessionName')
 		masterDBController.simpleStatEventActions('read', req.body.serverName, req.body)
 			.then(function (resp) {
 				res.json(resp);
+			})
+			.catch(function (err) {
+				var mesg = 'line226: ' + err;
+				console.log(mesg);
+				res.status(404);
+				res.send(mesg);
 			})
 		;
 	})
@@ -299,7 +349,10 @@ router.route('/unitStatics/:serverName')
 				}
 			})
 			.catch(function (err) {
-				console.log('line279: ', err);
+				var mesg = 'line352: ' + err;
+				console.log(mesg);
+				res.status(404);
+				res.send(mesg);
 			})
 		;
 
@@ -308,28 +361,15 @@ router.route('/unitStatics/:serverName')
 router.route('/bases/:serverName')
 	.get(function (req, res) {
 		var curServerName = _.get(req, 'params.serverName');
-		constants.getServer(curServerName)
-			.then(function (serverObj) {
-				var cName = _.get(serverObj, 'name');
-
-				/*
-				if (dbRemoteConnObj[cName]){
-					_.set(dbRemoteConnObj, [cName], require('./controllers/db/dbMapService'));
-					dbRemoteConnObj[cName].connectMapDB(_.get(serverObj, [ip]), cName);
-				}
-				console.log('so: ', serverObj, dbRemoteConnObj);
-				dbRemoteConnObj[cName].baseActions('getBaseSides', req.params.serverName)
-					.then(function (bases) {
-						res.json(bases);
-					})
-					.catch(function (err) {
-						console.log('line210: ', err);
-					})
-				;
-				*/
+		masterDBController.baseActions('getBaseSides', _.get(req, 'params.serverName'))
+			.then(function (bases) {
+				res.json(bases);
 			})
 			.catch(function (err) {
-				console.log('line210: ', err);
+				var mesg = 'line369: ' + err;
+				console.log(mesg);
+				res.status(404);
+				res.send(mesg);
 			})
 		;
 	})
@@ -354,6 +394,12 @@ protectedRouter.route('/servers')
 			.then(function (resp) {
 				res.json(resp);
 			})
+			.catch(function (err) {
+				var mesg = 'line414: ' + err;
+				console.log(mesg);
+				res.status(404);
+				res.send(mesg);
+			})
 		;
 	});
 protectedRouter.route('/servers/:server_name')
@@ -363,6 +409,12 @@ protectedRouter.route('/servers/:server_name')
 			.then(function (resp) {
 				res.json(resp);
 			})
+			.catch(function (err) {
+				var mesg = 'line429: ' + err;
+				console.log(mesg);
+				res.status(404);
+				res.send(mesg);
+			})
 		;
 	})
 	.delete(function (req, res) {
@@ -370,6 +422,12 @@ protectedRouter.route('/servers/:server_name')
 		masterDBController.serverActions('delete', req.body)
 			.then(function (resp) {
 				res.json(resp);
+			})
+			.catch(function (err) {
+				var mesg = 'line443: ' + err;
+				console.log(mesg);
+				res.status(404);
+				res.send(mesg);
 			})
 		;
 	});
@@ -379,6 +437,12 @@ protectedRouter.route('/userAccounts')
 		masterDBController.userAccountActions('create', req.body)
 			.then(function (resp) {
 				res.json(resp);
+			})
+			.catch(function (err) {
+				var mesg = 'line458: ' + err;
+				console.log(mesg);
+				res.status(404);
+				res.send(mesg);
 			})
 		;
 	})
