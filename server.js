@@ -340,10 +340,7 @@ router.route('/unitStatics/:serverName')
 									})
 								;
 							} else {
-								var mesg = clientIP + ' Has never played on the server';
-								console.log(mesg);
-								res.status(404);
-								res.send(mesg);
+								res.send([]);
 							}
 						})
 						.catch(function (err) {
