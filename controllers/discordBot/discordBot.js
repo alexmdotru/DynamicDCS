@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const Discord = require('discord.js');
 const constants = require('../constants');
-const dbSystemRemoteController = require('../db/dbSystemRemote');
+const masterDBController = require('../db/masterDB');
 
 const client = new Discord.Client();
 
@@ -46,7 +46,7 @@ client.on('ready', () => {
 		var voiceChans;
 		var filePromise = [];
 
-        dbSystemRemoteController.remoteCommsActions('removeNonCommPeople', {})
+        masterDBController.remoteCommsActions('removeNonCommPeople', {})
             .catch(function (err) {
                 console.log('line34', err);
             })
@@ -85,7 +85,7 @@ client.on('ready', () => {
                         isInDiscord: !!_.includes(discordVoiceNames, curPlayerName),
 						SRSData: SRSMember
                     });
-                 	dbSystemRemoteController.remoteCommsActions('update', curUser)
+                 	masterDBController.remoteCommsActions('update', curUser)
                     	.catch(function (err) {
                     		console.log('line63', err);
                 		})

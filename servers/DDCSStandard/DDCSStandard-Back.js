@@ -1,8 +1,7 @@
 const _ = require('lodash');
 const constants = require('../../controllers/constants');
 const DCSSocket = require('../../controllers/net/DCSSocket');
-const dbSystemRemoteController = require('../../controllers/db/dbSystemRemote');
-const dbMapServiceController = require('../../controllers/db/dbMapService');
+const masterDBController = require('../../controllers/db/masterDB');
 const playersEvent = require('../../controllers/events/backend/players');
 const friendlyFireEvent = require('../../controllers/events/backend/friendlyFire');
 const selfKillEvent = require('../../controllers/events/backend/selfKill');
@@ -16,9 +15,7 @@ var isDiscordAllowed = true;
 var masterServer = '192.168.44.60';
 var serverName = 'DDCSStandard';
 
-
-dbSystemRemoteController.connectSystemRemoteDB(masterServer, 'DDCS');
-dbMapServiceController.connectMapDB('localhost', serverName);
+masterDBController.initDB(serverName);
 
 constants.initServer(serverName)
 	.then(function () {
@@ -35,7 +32,7 @@ constants.initServer(serverName)
 		}, 5 * 1000);
 
 		_.set(exports, 'getLatestSession', function (serverName) {
-			dbMapServiceController.statSessionActions('readLatest', serverName, {})
+			masterDBController.statSessionActions('readLatest', serverName, {})
 				.then(function (latestSession) {
 					if (latestSession) {
 						if (_.get(exports, 'sessionName') !== latestSession.name) {

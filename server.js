@@ -20,7 +20,7 @@ var DDCS = {};
 _.assign(DDCS, {
 	port: 80,
 	db: {
-		systemHost: '192.168.44.60',
+		systemHost: '127.0.0.1',
 		systemDatabase: 'DDCS',
 		dynamicHost: '192.168.44.60',
 		dynamicDatabase: 'DDCSStandard',
@@ -33,19 +33,22 @@ _.assign(DDCS, {
 //main server ip
 server = app.listen(DDCS.port);
 //Controllers
-const discordBotController = require('./controllers/discordBot/discordBot');
-const dbSystemLocalController = require('./controllers/db/dbSystemLocal');
-const dbSystemRemoteController = require('./controllers/db/dbSystemRemote');
-const dbMapServiceController = require('./controllers/db/dbMapService');
-dbSystemLocalController.connectSystemLocalDB(DDCS.db.systemHost, DDCS.db.systemDatabase);
-dbSystemRemoteController.connectSystemRemoteDB(DDCS.db.remoteHost, DDCS.db.systemDatabase);
-dbMapServiceController.connectMapDB(DDCS.db.dynamicHost, DDCS.db.dynamicDatabase);
+const constants = require('./controllers/constants');
+const masterDBController = require('./controllers/db/masterDB');
+masterDBController.initDB('DDCS');
+//const dbSystemLocalController = require('./controllers/db/dbSystemLocal');
+//const dbSystemRemoteController = require('./controllers/db/dbSystemRemote');
+//const dbMapServiceController = require('./controllers/db/dbMapService');
+//dbSystemRemoteController.connectSystemRemoteDB('localhost', 'DDCS');
+//dbSystemLocalController.connectSystemLocalDB('localhost', 'DDCS');
+//dbMapServiceController.connectMapDB(DDCS.db.dynamicHost, DDCS.db.dynamicDatabase);
 //secure sockets
 var io = require('socket.io').listen(server);
 var admin = false;
 var webPushDone = true;
 var webDbEmpty = false;
 var srvPlayerObj;
+var dbRemoteConnObj = {};
 // app.use/routes/etc...
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -76,9 +79,9 @@ const checkJwt = jwt({
 });
 router.route('/srvPlayers/:serverName')
 	.get(function (req, res) {
-		dbMapServiceController.statSessionActions('readLatest', req.params.serverName)
+		masterDBController.statSessionActions('readLatest', req.params.serverName)
 			.then(function(sesResp) {
-				dbMapServiceController.srvPlayerActions('read', req.params.serverName, {sessionName: sesResp.name})
+				masterDBController.srvPlayerActions('read', req.params.serverName, {sessionName: sesResp.name})
 					.then(function (resp) {
 						res.json(resp);
 					})
@@ -95,7 +98,7 @@ router.route('/srvPlayers/:serverName')
 ;
 router.route('/theaters')
 	.get(function (req, res) {
-		dbSystemLocalController.theaterActions('read')
+		masterDBController.theaterActions('read')
 			.then(function (resp) {
 				res.json(resp);
 			})
@@ -104,7 +107,7 @@ router.route('/theaters')
 ;
 router.route('/servers')
 	.get(function (req, res) {
-		dbSystemLocalController.serverActions('read')
+		masterDBController.serverActions('read')
 			.then(function (resp) {
 				res.json(resp);
 			})
@@ -114,7 +117,7 @@ router.route('/servers')
 router.route('/servers/:serverName')
 	.get(function (req, res) {
 		_.set(req, 'body.server_name', req.params.serverName);
-		dbSystemLocalController.serverActions('read', req.body)
+		masterDBController.serverActions('read', req.body)
 			.then(function (resp) {
 				res.json(resp);
 			})
@@ -123,7 +126,7 @@ router.route('/servers/:serverName')
 ;
 router.route('/userAccounts')
 	.get(function (req, res) {
-		dbSystemLocalController.userAccountActions('read')
+		masterDBController.userAccountActions('read')
 			.then(function (resp) {
 				res.json(resp);
 			})
@@ -133,7 +136,7 @@ router.route('/userAccounts')
 router.route('/userAccounts/:_id')
 	.get(function (req, res) {
 		_.set(req, 'body.ucid', req.params._id);
-		dbSystemLocalController.userAccountActions('read', req.body)
+		masterDBController.userAccountActions('read', req.body)
 			.then(function (resp) {
 				res.json(resp);
 			})
@@ -142,7 +145,7 @@ router.route('/userAccounts/:_id')
 ;
 router.route('/checkUserAccount')
 	.post(function (req, res) {
-		dbSystemLocalController.userAccountActions('checkAccount', req)
+		masterDBController.userAccountActions('checkAccount', req)
 			.then(function (resp) {
 				res.json(resp);
 			})
@@ -152,10 +155,10 @@ router.route('/checkUserAccount')
 router.route('/srvEvents/:serverName')
 	.get(function (req, res) {
 		_.set(req, 'body.serverName', req.params.serverName);
-		dbMapServiceController.statSessionActions('readLatest', req.body.serverName, req.body)
+		masterDBController.statSessionActions('readLatest', req.body.serverName, req.body)
 			.then(function(sesResp) {
 				_.set(req, 'body.sessionName', _.get(sesResp, 'name'));
-				dbMapServiceController.simpleStatEventActions('read', req.body.serverName, req.body)
+				masterDBController.simpleStatEventActions('read', req.body.serverName, req.body)
 					.then(function (resp) {
 						res.json(resp);
 					})
@@ -171,7 +174,7 @@ router.route('/srvEvents/:serverName/:sessionName')
 	.get(function (req, res) {
 		_.set(req, 'body.serverName', req.params.serverName);
 		_.set(req, 'body.sessionName', req.params.sessionName);
-		dbMapServiceController.simpleStatEventActions('read', req.body.serverName, req.body)
+		masterDBController.simpleStatEventActions('read', req.body.serverName, req.body)
 			.then(function (resp) {
 				res.json(resp);
 			})
@@ -188,16 +191,16 @@ router.route('/unitStatics/:serverName')
 		} else {
 			srvPlayerObj = {ipaddr: new RegExp(clientIP)};
 		}
-		dbMapServiceController.srvPlayerActions('read', serverName, srvPlayerObj)
+		masterDBController.srvPlayerActions('read', serverName, srvPlayerObj)
 			.then(function (srvPlayer) {
 				var curSrvPlayer = _.get(srvPlayer, 0);
 				// console.log('CSP: ', curSrvPlayer);
 				if (curSrvPlayer) {
-					dbSystemLocalController.userAccountActions('read', {ucid: curSrvPlayer._id})
+					masterDBController.userAccountActions('read', {ucid: curSrvPlayer._id})
 						.then(function (userAcct) {
 							var curAcct = _.get(userAcct, 0);
 							if (curAcct) {
-								dbSystemLocalController.userAccountActions('updateSingleUCID', {ucid: curSrvPlayer._id, lastServer: serverName, gameName: curSrvPlayer.name})
+								masterDBController.userAccountActions('updateSingleUCID', {ucid: curSrvPlayer._id, lastServer: serverName, gameName: curSrvPlayer.name})
 									.then(function () {
 										var curSlot = _.get(curSrvPlayer, 'slot', '');
 										if(_.includes(curSlot, 'forward_observer') || _.includes(curSlot, 'artillery_commander') || curSlot === '') {
@@ -210,7 +213,7 @@ router.route('/unitStatics/:serverName')
 											} else {
 												_.set(unitObj, 'coalition', _.get(curSrvPlayer, 'sideLock', 0));
 											}
-											dbMapServiceController.unitActions('readMin', serverName, unitObj)
+											masterDBController.unitActions('readMin', serverName, unitObj)
 												.then(function (resp) {
 													res.json(resp);
 												})
@@ -229,11 +232,11 @@ router.route('/unitStatics/:serverName')
 							} else {
 								var curSrvIP = _.first(_.split(curSrvPlayer.ipaddr, ':'));
 								// console.log('Cur Account Doesnt Exist line, matching IP: ', curSrvIP);
-								dbSystemLocalController.userAccountActions('updateSingleIP', {ipaddr: curSrvIP, ucid: curSrvPlayer.ucid, lastServer: serverName, gameName: curSrvPlayer.name})
+								masterDBController.userAccountActions('updateSingleIP', {ipaddr: curSrvIP, ucid: curSrvPlayer.ucid, lastServer: serverName, gameName: curSrvPlayer.name})
 									.then(function () {
 										res.json([]);
 										/*
-										dbSystemLocalController.userAccountActions('read', {ucid: curSrvPlayer.ucid})
+										masterDBController.userAccountActions('read', {ucid: curSrvPlayer.ucid})
 											.then(function (userAcct) {
 												var unitObj;
 												var curAcct = _.get(userAcct, 0);
@@ -247,7 +250,7 @@ router.route('/unitStatics/:serverName')
 													} else {
 														_.set(unitObj, 'coalition', _.get(curSrvPlayer, 'sideLock', 0));
 													}
-													dbMapServiceController.unitActions('readStd', serverName, unitObj)
+													masterDBController.unitActions('readStd', serverName, unitObj)
 														.then(function (resp) {
 															res.json(resp);
 														})
@@ -262,7 +265,7 @@ router.route('/unitStatics/:serverName')
 														coalition: 0
 													};
 													_.set(unitObj, 'coalition', _.get(curSrvPlayer, 'sideLock', 0));
-													dbMapServiceController.unitActions('readStd', serverName, unitObj)
+													masterDBController.unitActions('readStd', serverName, unitObj)
 														.then(function (resp) {
 															res.json(resp);
 														})
@@ -304,22 +307,38 @@ router.route('/unitStatics/:serverName')
 ;
 router.route('/bases/:serverName')
 	.get(function (req, res) {
-		dbMapServiceController.baseActions('getBaseSides', req.params.serverName)
-			.then(function (bases) {
-				res.json(bases);
+		var curServerName = _.get(req, 'params.serverName');
+		constants.getServer(curServerName)
+			.then(function (serverObj) {
+				var cName = _.get(serverObj, 'name');
+
+				/*
+				if (dbRemoteConnObj[cName]){
+					_.set(dbRemoteConnObj, [cName], require('./controllers/db/dbMapService'));
+					dbRemoteConnObj[cName].connectMapDB(_.get(serverObj, [ip]), cName);
+				}
+				console.log('so: ', serverObj, dbRemoteConnObj);
+				dbRemoteConnObj[cName].baseActions('getBaseSides', req.params.serverName)
+					.then(function (bases) {
+						res.json(bases);
+					})
+					.catch(function (err) {
+						console.log('line210: ', err);
+					})
+				;
+				*/
 			})
 			.catch(function (err) {
 				console.log('line210: ', err);
 			})
 		;
-
 	})
 ;
 //start of protected endpoints, must have auth token
 protectedRouter.use(checkJwt);
 //past this point must have permission value less than 10
 protectedRouter.use(function (req, res, next) {
-	dbSystemLocalController.userAccountActions('getPerm', req.user.sub)
+	masterDBController.userAccountActions('getPerm', req.user.sub)
 		.then(function (resp) {
 			if (resp[0].permLvl < 10) {
 				next();
@@ -331,7 +350,7 @@ protectedRouter.use(function (req, res, next) {
 });
 protectedRouter.route('/servers')
 	.post(function (req, res) {
-		dbSystemLocalController.serverActions('create', req.body)
+		masterDBController.serverActions('create', req.body)
 			.then(function (resp) {
 				res.json(resp);
 			})
@@ -340,7 +359,7 @@ protectedRouter.route('/servers')
 protectedRouter.route('/servers/:server_name')
 	.put(function (req, res) {
 		_.set(req, 'body.server_name', req.params.server_name);
-		dbSystemLocalController.serverActions('update', req.body)
+		masterDBController.serverActions('update', req.body)
 			.then(function (resp) {
 				res.json(resp);
 			})
@@ -348,7 +367,7 @@ protectedRouter.route('/servers/:server_name')
 	})
 	.delete(function (req, res) {
 		_.set(req, 'body.name', req.params.server_name);
-		dbSystemLocalController.serverActions('delete', req.body)
+		masterDBController.serverActions('delete', req.body)
 			.then(function (resp) {
 				res.json(resp);
 			})
@@ -357,7 +376,7 @@ protectedRouter.route('/servers/:server_name')
 
 protectedRouter.route('/userAccounts')
 	.post(function (req, res) {
-		dbSystemLocalController.userAccountActions('create', req.body)
+		masterDBController.userAccountActions('create', req.body)
 			.then(function (resp) {
 				res.json(resp);
 			})
@@ -382,7 +401,7 @@ io.on('connection', function (socket) {
 		console.log(socket.id + ' connected on ' + curIP + ' with ID: ' + authId);
 		if (authId !== 'null') {
 			console.log('LOGGED IN', authId);
-			dbSystemLocalController.userAccountActions('updateSocket', {
+			masterDBController.userAccountActions('updateSocket', {
 				authId: authId,
 				curSocket: socket.id,
 				lastIp: curIP
@@ -390,7 +409,7 @@ io.on('connection', function (socket) {
 				.then(function (curAcct) {
 					if (curAcct) {
 						if (curServerName) {
-							dbMapServiceController.srvPlayerActions('read', curServerName, {_id: curAcct.ucid})
+							masterDBController.srvPlayerActions('read', curServerName, {_id: curAcct.ucid})
 								.then(function (srvPlayer) {
 									var side;
 									var curSrvPlayer = _.get(srvPlayer, 0);
@@ -420,7 +439,7 @@ io.on('connection', function (socket) {
 		} else {
 			console.log('NOT LOGGED IN');
 			srvPlayerObj = {ipaddr: new RegExp(curIP)};
-			dbMapServiceController.srvPlayerActions('read', curServerName, srvPlayerObj)
+			masterDBController.srvPlayerActions('read', curServerName, srvPlayerObj)
 				.then(function (srvPlayer) {
 					var curSrvPlayer = _.get(srvPlayer, 0);
 					if (curSrvPlayer) {
@@ -451,13 +470,13 @@ setInterval(function () {
 	if (webPushDone) {
 		webPushDone = false;
 		webDbEmpty = false;
-		dbSystemLocalController.serverActions('read', {enabled: true})
+		masterDBController.serverActions('read', {enabled: true})
 			.then(function (srvs) {
 				_.forEach(srvs, function (srv) {
 					var curServerName = _.toLower(_.get(srv, '_id'));
 					var lookupFinish = [];
 					for(x=0; (x < DDCS.perSendMax) || webDbEmpty; x++) {
-						lookupFinish.push(dbSystemRemoteController.masterQueActions('grabNextQue', curServerName)
+						lookupFinish.push(masterDBController.masterQueActions('grabNextQue', curServerName)
 							.then(function (webPush) {
 								if (webPush) {
 									var rName = webPush.serverName + '_' + webPush.side;

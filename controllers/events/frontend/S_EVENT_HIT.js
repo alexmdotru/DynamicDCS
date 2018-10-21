@@ -7,8 +7,7 @@
 
 const _ = require('lodash');
 const constants = require('../../constants');
-const dbSystemRemoteController = require('../../db/dbSystemRemote');
-const dbMapServiceController = require('../../db/dbMapService');
+const masterDBController = require('../../db/masterDB');
 const DCSLuaCommands = require('../../player/DCSLuaCommands');
 const webPushCommands = require('../../socketIO/webPush');
 
@@ -25,16 +24,16 @@ _.set(exports, 'checkShootingUsers', function (serverName) {
 				//}
 				if(_.get(shootObj, 'iucid') || _.get(shootObj, 'tucid')) {
 					webPushCommands.sendToAll(serverName, {payload: {action: 'S_EVENT_HIT', data: _.cloneDeep(shootObj)}});
-					dbMapServiceController.simpleStatEventActions('save', serverName, shootObj);
+					masterDBController.simpleStatEventActions('save', serverName, shootObj);
 				}
 				if (_.get(exports.shootingUsers, [key, 'isOwnedUnit'], false)) {
-					dbMapServiceController.srvPlayerActions('unitAddToRealScore', serverName, {_id: _.get(shootObj, 'iOwnerId'), groupId: _.get(shootObj, 'groupId'), score: _.get(shootObj, 'score'), unitType: _.get(shootObj, 'iType'), unitCoalition: _.get(shootObj, 'iUnitCoalition')})
+					masterDBController.srvPlayerActions('unitAddToRealScore', serverName, {_id: _.get(shootObj, 'iOwnerId'), groupId: _.get(shootObj, 'groupId'), score: _.get(shootObj, 'score'), unitType: _.get(shootObj, 'iType'), unitCoalition: _.get(shootObj, 'iUnitCoalition')})
 						.catch(function (err) {
 							console.log('line33', err);
 						})
 					;
 				} else {
-					dbMapServiceController.srvPlayerActions('addTempScore', serverName, {_id: _.get(shootObj, 'iucid'), groupId: _.get(shootObj, 'groupId'), score: _.get(shootObj, 'score')})
+					masterDBController.srvPlayerActions('addTempScore', serverName, {_id: _.get(shootObj, 'iucid'), groupId: _.get(shootObj, 'groupId'), score: _.get(shootObj, 'score')})
 						.catch(function (err) {
 							console.log('line39', err);
 						})
@@ -64,13 +63,13 @@ _.set(exports, 'processEventHit', function (serverName, sessionName, eventObj) {
 	var iPlayer;
 	var tPlayer;
 	// console.log('hit obj: ', serverName, sessionName, eventObj);
-	dbMapServiceController.unitActions('read', serverName, {unitId: iUnitId})
+	masterDBController.unitActions('read', serverName, {unitId: iUnitId})
 		.then(function (iunit) {
 			var curIUnit = _.get(iunit, 0);
-			dbMapServiceController.unitActions('read', serverName, {unitId: tUnitId})
+			masterDBController.unitActions('read', serverName, {unitId: tUnitId})
 				.then(function (tunit) {
 					var curTUnit = _.get(tunit, 0);
-					dbMapServiceController.srvPlayerActions('read', serverName, {sessionName: sessionName})
+					masterDBController.srvPlayerActions('read', serverName, {sessionName: sessionName})
 						.then(function (playerArray) {
 							var isOwnedUnit = false;
 							var oId = [];
@@ -85,7 +84,7 @@ _.set(exports, 'processEventHit', function (serverName, sessionName, eventObj) {
 									oId.push(tOwnerId);
 								}
 							}
-							dbMapServiceController.srvPlayerActions('read', serverName, {_id: {$in: oId}})
+							masterDBController.srvPlayerActions('read', serverName, {_id: {$in: oId}})
 								.then(function (ownerIds) {
 									// console.log('targethit: ', _.get(curTUnit, 'unitId'));
 									iCurObj = {
@@ -140,7 +139,7 @@ _.set(exports, 'processEventHit', function (serverName, sessionName, eventObj) {
 									if (_.get(curIUnit, 'coalition', 0) !== _.get(curTUnit, 'coalition', 0)) {
 										if( _.get(eventObj, ['data', 'arg7', 'typeName'])){
 											// console.log('weaponhere: ', _.get(eventObj, ['data', 'arg7', 'typeName']));
-											dbSystemRemoteController.weaponScoreActions('read', _.get(eventObj, ['data', 'arg7']))
+											masterDBController.weaponScoreActions('read', _.get(eventObj, ['data', 'arg7']))
 												.then(function (weaponResp) {
 													if (_.get(iCurObj, 'iucid') || _.get(iCurObj, 'tucid') || isOwnedUnit) {
 														if (_.startsWith(_.get(weaponResp, 'name'), 'weapons.shells')){
@@ -161,16 +160,16 @@ _.set(exports, 'processEventHit', function (serverName, sessionName, eventObj) {
 															// console.log('3: ', iCurObj.msg);
 															if(_.get(iCurObj, 'iucid') || _.get(iCurObj, 'tucid')) {
 																webPushCommands.sendToAll(serverName, {payload: {action: eventObj.action, data: _.cloneDeep(iCurObj)}});
-																dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
+																masterDBController.simpleStatEventActions('save', serverName, iCurObj);
 															}
 															if (isOwnedUnit) {
-																dbMapServiceController.srvPlayerActions('unitAddToRealScore', serverName, {_id: _.get(iCurObj, 'iOwnerId'), groupId: _.get(iCurObj, 'groupId'), score: _.get(iCurObj, 'score'), unitType: _.get(iCurObj, 'iType'), unitCoalition: _.get(iCurObj, 'iCoalition')})
+																masterDBController.srvPlayerActions('unitAddToRealScore', serverName, {_id: _.get(iCurObj, 'iOwnerId'), groupId: _.get(iCurObj, 'groupId'), score: _.get(iCurObj, 'score'), unitType: _.get(iCurObj, 'iType'), unitCoalition: _.get(iCurObj, 'iCoalition')})
 																	.catch(function (err) {
 																		console.log('line147', err);
 																	})
 																;
 															} else {
-																dbMapServiceController.srvPlayerActions('addTempScore', serverName, {_id: _.get(iCurObj, 'iucid'), groupId: _.get(iCurObj, 'groupId'), score: _.get(iCurObj, 'score')})
+																masterDBController.srvPlayerActions('addTempScore', serverName, {_id: _.get(iCurObj, 'iucid'), groupId: _.get(iCurObj, 'groupId'), score: _.get(iCurObj, 'score')})
 																	.catch(function (err) {
 																		console.log('line147', err);
 																	})
@@ -191,7 +190,7 @@ _.set(exports, 'processEventHit', function (serverName, sessionName, eventObj) {
 													console.log('Eevent line142: ', iCurObj, err);
 													if(_.get(iCurObj, 'iPlayerUcid') || _.get(iCurObj, 'tPlayerUcid')) {
 														// curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
-														// dbMapServiceController.statSrvEventActions('save', serverName, iCurObj);
+														// masterDBController.statSrvEventActions('save', serverName, iCurObj);
 													}
 												})
 											;

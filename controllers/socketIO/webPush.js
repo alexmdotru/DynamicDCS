@@ -1,13 +1,12 @@
 const _ = require('lodash');
-const dbMapServiceController = require('../db/dbMapService');
-const dbSystemRemoteController = require('../db/dbSystemRemote');
+const masterDBController = require('../db/masterDB');
 
 _.set(exports, 'sendToAll', function (serverName, pData) {
 	_.set(pData, 'serverName', _.toLower(serverName));
 	for(var x=0; x <= '3'; x++) {
 		_.set(pData, 'side', x);
 		/*
-		dbSystemRemoteController.masterQueActions('save', serverName, pData)
+		masterDBController.masterQueActions('save', serverName, pData)
 			.catch(function (err) {
 				console.log('line9: ', err);
 			})
@@ -28,14 +27,14 @@ _.set(exports, 'sendToCoalition', function (serverName, pData) {
 		console.log('no sendToCoalition side for ', pData);
 	}
 /*
-	dbSystemRemoteController.masterQueActions('save', serverName, pData)
+	masterDBController.masterQueActions('save', serverName, pData)
 		.catch(function (err) {
 			console.log('line274: ', err);
 		})
 	;
 
 	_.set(pData, 'side', 3);
-	dbSystemRemoteController.masterQueActions('save', serverName, pData)
+	masterDBController.masterQueActions('save', serverName, pData)
 		.catch(function (err) {
 			console.log('line274: ', err);
 		})

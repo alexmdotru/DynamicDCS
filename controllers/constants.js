@@ -1,6 +1,5 @@
 const _ = require('lodash');
-const dbMapServiceController = require('./db/dbMapService');
-const dbSystemRemoteController = require('./db/dbSystemRemote');
+const masterDBController = require('./db/masterDB');
 
 _.assign(exports, {
 	blueCountrys: [
@@ -178,7 +177,7 @@ _.assign(exports, {
 		tenMinutes: 10 * 60 * 1000
 	},
 	getBases: function (serverName) {
-		return dbMapServiceController.baseActions('read', serverName)
+		return masterDBController.baseActions('read', serverName)
 			.then(function (bases) {
 				return new Promise(function (resolve) {
 					if (bases.length) {
@@ -186,7 +185,7 @@ _.assign(exports, {
 					} else {
 						console.log('Rebuilding Base DB');
 						var actionObj = {actionObj: {action: "GETPOLYDEF"}, queName: 'clientArray'};
-						dbMapServiceController.cmdQueActions('save', serverName, actionObj)
+						masterDBController.cmdQueActions('save', serverName, actionObj)
 							.catch(function (err) {
 								console.log('erroring line790: ', err);
 							})
@@ -201,7 +200,7 @@ _.assign(exports, {
 			;
 	},
 	getServer: function ( serverName ) {
-		return dbSystemRemoteController.serverActions('read', {_id: serverName})
+		return masterDBController.serverActions('read', {_id: serverName})
 			.then(function (server) {
 				return new Promise(function (resolve) {
 					resolve(_.first(server));
@@ -213,7 +212,7 @@ _.assign(exports, {
 			;
 	},
 	getStaticDictionary: function () {
-		return dbSystemRemoteController.staticDictionaryActions('read')
+		return masterDBController.staticDictionaryActions('read')
 			.then(function (staticDic) {
 				return new Promise(function (resolve) {
 					resolve(staticDic);
@@ -225,7 +224,7 @@ _.assign(exports, {
 			;
 	},
 	getUnitDictionary: function () {
-		return dbSystemRemoteController.unitDictionaryActions('read')
+		return masterDBController.unitDictionaryActions('read')
 			.then(function (unitsDic) {
 				return new Promise(function (resolve) {
 					resolve(unitsDic);

@@ -1,6 +1,5 @@
 const _ = require('lodash');
-const dbSystemRemoteController = require('../db/dbSystemRemote');
-const dbMapServiceController = require('../db/dbMapService');
+const masterDBController = require('../db/masterDB');
 const DCSLuaCommands = require('../player/DCSLuaCommands');
 
 var dBot = {};
@@ -27,7 +26,7 @@ exports.Only2ChannelNames = [
 
 _.set(dBot, 'processKick', function (serverName, curPlayer, playerCommObj, isDiscordAllowed, curPlayerUnit) {
 	// console.log('PK: ', serverName, curPlayer, playerCommObj, isDiscordAllowed, curPlayerUnit);
-    dbMapServiceController.srvPlayerActions('read', serverName, { _id: curPlayer.ucid })
+    masterDBController.srvPlayerActions('read', serverName, { _id: curPlayer.ucid })
         .then(function (curPlayerDB) {
             var curPlayerName = curPlayer.name;
             var curGicTimeLeft = _.get(curPlayerDB, '0.gicTimeLeft');
@@ -54,7 +53,7 @@ _.set(dBot, 'processKick', function (serverName, curPlayer, playerCommObj, isDis
                 if (curPlayerUnit) {
                     DCSLuaCommands.sendMesgToGroup(curPlayerUnit.groupId, serverName, mesg, '60');
                 }
-                dbMapServiceController.srvPlayerActions('update', serverName, {_id: curPlayer.ucid, gicTimeLeft: newLifeCount})
+                masterDBController.srvPlayerActions('update', serverName, {_id: curPlayer.ucid, gicTimeLeft: newLifeCount})
                     .catch(function (err) {
                         console.log('line58', err);
                     })
@@ -76,7 +75,7 @@ _.set(dBot, 'processKick', function (serverName, curPlayer, playerCommObj, isDis
                     var mesg = "KICKED: You must join the correct SRS server (" + _.get(SRSServers, [serverName]) + ")";
                     console.log('KICKING: ', curPlayerName, 'Not In SRS');
                 }
-                dbMapServiceController.srvPlayerActions('update', serverName, {_id: curPlayer.ucid, gicTimeLeft: newLifeCount})
+                masterDBController.srvPlayerActions('update', serverName, {_id: curPlayer.ucid, gicTimeLeft: newLifeCount})
                     .then(function () {
                         if (curPlayerUnit) {
                             console.log('KICKED FOR NO COMMS: ', curPlayerUnit.playername, curPlayer.id);
@@ -97,14 +96,14 @@ _.set(dBot, 'processKick', function (serverName, curPlayer, playerCommObj, isDis
 });
 
 _.set(dBot, 'kickForNoComms', function (serverName, playerArray, isDiscordAllowed) {
-    dbSystemRemoteController.remoteCommsActions('read', {})
+    masterDBController.remoteCommsActions('read', {})
         .then(function (playersInComms) {
 			// console.log('pic: ', playersInComms);
             console.log('-------------------------------');
             _.forEach(playerArray, function (curPlayer) {
                 var curPlayerName = curPlayer.name;
                 var curPlayerCommObj = _.find(playersInComms, {_id: curPlayerName});
-                dbMapServiceController.unitActions('read', serverName, {dead: false, playername: curPlayerName})
+                masterDBController.unitActions('read', serverName, {dead: false, playername: curPlayerName})
                     .then(function (pUnit) {
                         var curPlayerUnit = _.get(pUnit, '0');
                         if (curPlayerCommObj) {
@@ -193,10 +192,10 @@ _.set(exports, 'checkForComms', function (serverName, isDiscordAllowed, playerAr
     dBot.kickForNoComms(serverName, removeServerHost, isDiscordAllowed);
     /*
     var fiveMinsAgo = new Date().getTime() - (5 * oneMin);
-    dbMapServiceController.statSessionActions('readLatest', serverName, {})
+    masterDBController.statSessionActions('readLatest', serverName, {})
         .then(function (latestSession) {
             if (latestSession.name) {
-                dbMapServiceController.srvPlayerActions('read', serverName, {
+                masterDBController.srvPlayerActions('read', serverName, {
                     playerId: {$ne: '1'},
                     name: {$ne: ''},
                     sessionName: latestSession.name,

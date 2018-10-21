@@ -1,8 +1,7 @@
 const _ = require('lodash');
 const constants = require('../../controllers/constants');
 const DCSSocket = require('../../controllers/net/DCSSocket');
-const dbSystemRemoteController = require('../../controllers/db/dbSystemRemote');
-const dbMapServiceController = require('../../controllers/db/dbMapService');
+const masterDBController = require('../../controllers/db/masterDB');
 const menuCmdsController = require('../../controllers/menu/menuCmds');
 const unitsStaticsController = require('../../controllers/serverToDbSync/unitsStatics');
 const staticCratesController = require('../../controllers/action/staticCrates');
@@ -32,8 +31,7 @@ const processTimedTenMinutes = require('../../controllers/timedEvents/tenMinutes
 var masterServer = '192.168.44.60';
 var serverName = 'DDCSHardcore';
 
-dbSystemRemoteController.connectSystemRemoteDB(masterServer, 'DDCS');
-dbMapServiceController.connectMapDB('localhost', serverName);
+masterDBController.initDB(serverName);
 
 constants.initServer(serverName)
 	.then(function () {
@@ -45,7 +43,7 @@ constants.initServer(serverName)
 					console.log('Connecting to ' + serverName + ' Frontend');
 					_.set(exports, 'sessionName', '');
 					sychrontronController.isSyncLockdownMode = false;
-					dbMapServiceController.cmdQueActions('removeall', serverName, {})
+					masterDBController.cmdQueActions('removeall', serverName, {})
 						.then(function () {
 							exports.DCSSocket.connSocket();
 						})
@@ -76,14 +74,14 @@ constants.initServer(serverName)
 					_.set(exports, ['sessionName'], sessionName);
 					_.set(exports, ['curAbsTime'], curAbs);
 					console.log('set new session');
-					dbMapServiceController.statSessionActions('save', serverName, newSession)
+					masterDBController.statSessionActions('save', serverName, newSession)
 						.catch(function (err) {
 							console.log('line49', err);
 						})
 					;
 				} else {
 					console.log('use existing session: ', sessionName);
-					dbMapServiceController.statSessionActions('update', serverName, newSession)
+					masterDBController.statSessionActions('update', serverName, newSession)
 						.catch(function (err) {
 							console.log('line55', err);
 						})
