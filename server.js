@@ -33,6 +33,8 @@ _.assign(DDCS, {
 //main server ip
 server = app.listen(DDCS.port);
 //Controllers
+const discordBotController = require('./controllers/discordBot/discordBot');
+const serverStatusController =  require('./controllers/serverStatus/serverStatus');
 const masterDBController = require('./controllers/db/masterDB');
 masterDBController.initDB('DDCS');
 

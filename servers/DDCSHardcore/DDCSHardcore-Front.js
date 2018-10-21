@@ -91,7 +91,11 @@ constants.initServer(serverName)
 		});
 
 		_.set(exports, 'socketCallback', function (serverName, cbArray) {
-			_.set(exports, 'realServerSecs', cbArray.curAbsTime - cbArray.startAbsTime);
+			_.assign(exports, {
+				curAbsTime: cbArray.curAbsTime,
+				realServerSecs: cbArray.curAbsTime - cbArray.startAbsTime,
+				startAbsTime: cbArray.startAbsTime
+			});
 			if (!sychrontronController.isServerSynced) {
 				console.log('SYNC: ', sychrontronController.isServerSynced);
 			}
@@ -223,6 +227,22 @@ constants.initServer(serverName)
 				serverTimerController.timerObj = {}
 			}
 		}, _.get(constants, 'time.thirtySecs'));
+
+		setInterval(function () {
+			if (_.get(exports, 'sessionName')) {
+				var newSession = {
+					_id: _.get(exports, 'sessionName'),
+					name: _.get(exports, 'sessionName'),
+					startAbsTime: _.get(exports, 'startAbsTime'),
+					curAbsTime: _.get(exports, 'curAbsTime')
+				};
+				masterDBController.statSessionActions('update', serverName, newSession)
+					.catch(function (err) {
+						console.log('line240', err);
+					})
+				;
+			}
+		}, _.get(constants, 'time.oneMin'));
 
 		setInterval(function () {
 			if (!_.get(exports, ['DCSSocket', 'connOpen'], true)) {
