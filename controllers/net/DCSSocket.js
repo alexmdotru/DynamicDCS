@@ -1,6 +1,6 @@
 const net = require('net');
 const _ = require('lodash');
-const dbMapServiceController = require('../db/dbMapService'); // reqclientArray, reggameGuiArray
+const masterDBController = require('../db/masterDB');
 const sychrontronController = require('../sychronize/Sychrontron');
 
 var lastSyncTime = new Date().getTime();
@@ -30,7 +30,7 @@ exports.createSocket = function (serverName, address, port, queName, callback, t
 		if (sychrontronController.isSyncLockdownMode && !sychrontronController.isServerSynced){
 			if (sychrontronController.processInstructions) {
 				if (lastSyncTime + syncSpawnTimer < curTime) {
-					dbMapServiceController.cmdQueActions('grabNextQue', serverName, {queName: queName})
+					masterDBController.cmdQueActions('grabNextQue', serverName, {queName: queName})
 						.then(function (resp) {
 							if (resp) {
 								sock.cQue.push(resp.actionObj);
@@ -43,7 +43,7 @@ exports.createSocket = function (serverName, address, port, queName, callback, t
 				}
 			}
 		} else {
-			dbMapServiceController.cmdQueActions('grabNextQue', serverName, {queName: queName})
+			masterDBController.cmdQueActions('grabNextQue', serverName, {queName: queName})
 				.then(function (resp) {
 					if (resp) {
 						sock.cQue.push(resp.actionObj);

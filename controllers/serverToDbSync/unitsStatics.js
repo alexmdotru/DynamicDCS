@@ -1,11 +1,11 @@
 const _ = require('lodash');
-const dbMapServiceController = require('../db/dbMapService');
+const masterDBController = require('../db/masterDB');
 const taskController = require('../action/task');
 const webPushCommands = require('../socketIO/webPush');
 const menuUpdateController = require('../menu/menuUpdate');
 
 _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj) {
-	dbMapServiceController.unitActions('read', serverName, {_id: _.get(unitObj, 'data.name')})
+	masterDBController.unitActions('read', serverName, {_id: _.get(unitObj, 'data.name')})
 		.then(function (unit) {
 			var stParse;
 			var iCurObj;
@@ -90,7 +90,7 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 					if(_.get(curData, 'country')) {
 						_.set(iCurObj, 'data.country', curData.country);
 					}
-					dbMapServiceController.unitActions('update', serverName, iCurObj.data)
+					masterDBController.unitActions('update', serverName, iCurObj.data)
 						.then(function () {
 							var sObj = {
 								action: 'U',
@@ -124,7 +124,7 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 								_.set(curData, 'proxChkGrp', 'logisticTowers');
 							}
 						}
-						dbMapServiceController.unitActions('save', serverName, iCurObj.data)
+						masterDBController.unitActions('save', serverName, iCurObj.data)
 							.then(function (unit) {
 								var sObj = {
 									action: 'C',
@@ -174,7 +174,7 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 							_.set(iCurObj, 'data.coalition', _.get(curData, 'coalition'));
 						}
 
-						dbMapServiceController.unitActions('update', serverName, iCurObj.data)
+						masterDBController.unitActions('update', serverName, iCurObj.data)
 							.then(function (unit) {
 								_.set(iCurObj, 'data.coalition', _.get(iCurObj, 'data.coalition', curUnit.coalition));
 								if (_.get(iCurObj, 'data.coalition')) {

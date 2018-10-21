@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const constants = require('../../constants');
-const dbMapServiceController = require('../../db/dbMapService');
+const masterDBController = require('../../db/masterDB');
 const DCSLuaCommands = require('../../player/DCSLuaCommands');
 const playersEvent = require('../../events/backend/players');
 const userLivesController = require('../../action/userLives');
@@ -43,21 +43,21 @@ _.set(exports, 'processFriendlyFire', function (serverName, sessionName, eventOb
 
 	if(iPlayer && tPlayer) {
 		if(iPlayer.slot !== tPlayer.slot && iPlayer.ucid !== tPlayer.ucid) {
-			dbMapServiceController.srvPlayerActions('read', serverName, {_id: iPlayer.ucid})
+			masterDBController.srvPlayerActions('read', serverName, {_id: iPlayer.ucid})
 				.then(function (players) {
 					var curPlayer = _.get(players, 0);
 					// console.log('SAT: ', curPlayer.safeLifeActionTime);
 					if(new Date(curPlayer.safeLifeActionTime).getTime() < new Date().getTime()) {
-						dbMapServiceController.unitActions('read', serverName, {unitId: iPlayer.slot})
+						masterDBController.unitActions('read', serverName, {unitId: iPlayer.slot})
 							.then(function (iunit) {
-								dbMapServiceController.unitActions('read', serverName, {unitId: tPlayer.slot})
+								masterDBController.unitActions('read', serverName, {unitId: tPlayer.slot})
 									.then(function (tunit) {
 										curIUnit = _.get(iunit, 0);
 										curTUnit = _.get(tunit, 0);
 										var curTUnitDict = _.find(constants.unitDictionary, {_id: curTUnit.type});
 										var curTLifePointVal = (curTUnitDict) ? curTUnitDict.lifeCost : 1;
 										// console.log('player: ', iPlayer, tPlayer);
-										dbMapServiceController.srvPlayerActions('removeLifePoints', serverName, {
+										masterDBController.srvPlayerActions('removeLifePoints', serverName, {
 											_id: iPlayer.ucid,
 											execAction: 'Friendly Kill',
 											groupId: curIUnit.groupId,
@@ -65,7 +65,7 @@ _.set(exports, 'processFriendlyFire', function (serverName, sessionName, eventOb
 										});
 
 										if (curTUnit.inAir) {
-											dbMapServiceController.srvPlayerActions('addLifePoints', serverName, {
+											masterDBController.srvPlayerActions('addLifePoints', serverName, {
 												_id: tPlayer.ucid,
 												execAction: 'Friendly Death',
 												groupId: curTUnit.groupId,

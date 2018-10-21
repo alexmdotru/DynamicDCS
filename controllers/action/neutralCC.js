@@ -1,17 +1,17 @@
 const	_ = require('lodash');
-const dbMapServiceController = require('../db/dbMapService');
+const masterDBController = require('../db/masterDB');
 const proximityController = require('../proxZone/proximity');
 const groupController = require('../spawn/group');
 const DCSLuaCommands = require('../player/DCSLuaCommands');
 
 _.set(exports, 'spawnCCAtNeutralBase', function (serverName, curPlayerUnit) {
-	dbMapServiceController.baseActions('read', serverName, {mainBase: false, expansion: false, farp: false})
+	masterDBController.baseActions('read', serverName, {mainBase: false, expansion: false, farp: false})
 		.then(function (bases) {
 			_.forEach(bases, function (base) {
 				proximityController.getPlayersInProximity(serverName, _.get(base, 'centerLoc'), 3.4, false, curPlayerUnit.coalition)
 					.then(function (unitsInProx) {
 						if(_.find(unitsInProx, {playername: curPlayerUnit.playername})) {
-							dbMapServiceController.unitActions('read', serverName, {_id: base.name + ' Logistics', dead: false})
+							masterDBController.unitActions('read', serverName, {_id: base.name + ' Logistics', dead: false})
 								.then(function (isCCExist) {
 									if (isCCExist > 0) {
 										DCSLuaCommands.sendMesgToGroup(

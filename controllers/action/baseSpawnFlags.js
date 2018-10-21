@@ -1,10 +1,10 @@
 const	_ = require('lodash');
-const dbMapServiceController = require('../db/dbMapService');
+const masterDBController = require('../db/masterDB');
 
 _.set(exports, 'setbaseSides', function (serverName) {
-	dbMapServiceController.baseActions('getBaseSides', serverName, {})
+	masterDBController.baseActions('getBaseSides', serverName, {})
 		.then(function (baseSides) {
-			dbMapServiceController.cmdQueActions('save', serverName, {
+			masterDBController.cmdQueActions('save', serverName, {
 				queName: 'clientArray',
 				actionObj: {
 					action: "SETBASEFLAGS",

@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const constants = require('../constants');
 const Mongoose = require('mongoose');
 Mongoose.Promise = require('bluebird');
 var curDBMaster;
@@ -697,7 +698,6 @@ _.assign(exports, {
 	srvPlayerActions: function (action, serverName, obj){
 		var curDBConn = _.get(exports, ['dbObj', 'dbConn', serverName]);
 		if (curDBConn) {
-			console.log('spa: ', action, serverName, obj);
 			const SrvPlayer = curDBConn.model(serverName+'_srvPlayer', _.get(exports, 'dbObj.srvPlayerSchema'));
 			var nowTime = new Date().getTime();
 			if (action === 'read') {
@@ -752,7 +752,7 @@ _.assign(exports, {
 								// console.log('cf: ', constants);
 								obj.curLifePoints = _.get(constants, 'config.startLifePoints', 0);
 								if (curPly.sideLockTime < curTime) {
-									obj.sideLockTime = curTime + oneHour;
+									obj.sideLockTime = curTime + _.get(constants, 'time.oneHour');
 									obj.sideLock = 0;
 								}
 							}
@@ -783,7 +783,7 @@ _.assign(exports, {
 						var curAction = 'addLifePoint';
 						var curPlayerLifePoints = _.get(serverObj, [0, 'curLifePoints'], 0);
 						var curTotalPoints = (curPlayerLifePoints >= 0) ? curPlayerLifePoints + obj.addLifePoints : obj.addLifePoints;
-						var maxLimitedPoints = (curTotalPoints > maxLifePoints) ? maxLifePoints : curTotalPoints;
+						var maxLimitedPoints = (curTotalPoints > _.get(constants, 'maxLifePoints')) ? _.get(constants, 'maxLifePoints') : curTotalPoints;
 						var msg;
 						if (err) {
 							reject(err)
@@ -794,7 +794,7 @@ _.assign(exports, {
 								{ $set: {
 										curLifePoints: maxLimitedPoints,
 										lastLifeAction: curAction,
-										safeLifeActionTime: (nowTime + fifteenSecs)
+										safeLifeActionTime: (nowTime + _.get(constants, 'time.fifteenSecs'))
 									}
 								},
 								function(err, srvPlayer) {
@@ -844,7 +844,7 @@ _.assign(exports, {
 									{ $set: {
 											curLifePoints: curTotalPoints,
 											lastLifeAction: curAction,
-											safeLifeActionTime: (nowTime + fifteenSecs)
+											safeLifeActionTime: (nowTime + _.get(constants, 'time.fifteenSecs'))
 										}},
 									function(err, srvPlayer) {
 										if (err) { reject(err) }
@@ -1262,7 +1262,7 @@ _.assign(exports, {
 			}
 			if(action === 'removeAllDead') {
 				return new Promise(function(resolve, reject) {
-					var fiveMinsAgo = new Date(new Date()).getTime() - removeDead;
+					var fiveMinsAgo = new Date(new Date()).getTime() - _.get(constants, 'time.fiveMins');
 					// console.log('five mins: ', fiveMinsAgo);
 					Unit.remove(
 						{

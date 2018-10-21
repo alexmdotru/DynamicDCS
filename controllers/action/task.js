@@ -1,5 +1,5 @@
 const	_ = require('lodash');
-const dbMapServiceController = require('../db/dbMapService');
+const masterDBController = require('../db/masterDB');
 
 exports.ewrUnitsActivated = {};
 
@@ -10,7 +10,7 @@ _.set(exports, 'setEWRTask', function (serverName, unitName) {
 		unitName: unitName
 	};
 	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
-	dbMapServiceController.cmdQueActions('save', serverName, actionObj)
+	masterDBController.cmdQueActions('save', serverName, actionObj)
 		.catch(function (err) {
 			console.log('erroring line13: ', err);
 		})

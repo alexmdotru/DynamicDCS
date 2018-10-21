@@ -1,6 +1,6 @@
 const	_ = require('lodash');
 const constants = require('../constants');
-const dbMapServiceController = require('../db/dbMapService');
+const masterDBController = require('../db/masterDB');
 const DCSLuaCommands = require('../player/DCSLuaCommands');
 
 _.set(exports, 'getPlayerBalance', function (serverName) {
@@ -9,10 +9,10 @@ _.set(exports, 'getPlayerBalance', function (serverName) {
 	var oneMin = 60 * 1000;
 	var redAll;
 	var serverAlloc = {};
-	return dbMapServiceController.statSessionActions('readLatest', serverName, {})
+	return masterDBController.statSessionActions('readLatest', serverName, {})
 		.then(function (latestSession) {
 			if (latestSession.name) {
-				return dbMapServiceController.srvPlayerActions('read', serverName, {sessionName: latestSession.name})
+				return masterDBController.srvPlayerActions('read', serverName, {sessionName: latestSession.name})
 					.then(function (playerArray) {
 						_.forEach(playerArray, function (ePlayer) {
 							if ((new Date(_.get(ePlayer, 'updatedAt', 0)).getTime() + oneMin > nowTime) && ePlayer.slot) {
@@ -70,18 +70,18 @@ _.set(exports, 'updateServerLifePoints', function (serverName) {
 						} else {
 							addFracPoint = 1;
 						}
-						dbMapServiceController.unitActions('read', serverName, {dead: false, playername: cPlayer.name})
+						masterDBController.unitActions('read', serverName, {dead: false, playername: cPlayer.name})
 							.then(function (cUnit) {
 								var curUnit = _.get(cUnit, [0]);
 								if (curUnit) {
-									dbMapServiceController.srvPlayerActions('addLifePoints', serverName, {
+									masterDBController.srvPlayerActions('addLifePoints', serverName, {
 										_id: cPlayer._id,
 										execAction: 'PeriodicAdd',
 										groupId: curUnit.groupId,
 										addLifePoints: addFracPoint
 									});
 								} else {
-									dbMapServiceController.srvPlayerActions('addLifePoints', serverName, {
+									masterDBController.srvPlayerActions('addLifePoints', serverName, {
 										_id: cPlayer._id,
 										execAction: 'PeriodicAdd',
 										groupId: null,
@@ -105,12 +105,12 @@ _.set(exports, 'updateServerLifePoints', function (serverName) {
 
 // checkCapLives
 _.set(exports, 'checkLifeResource', function (serverName, playerUcid) {
-	dbMapServiceController.srvPlayerActions('read', serverName, {_id: playerUcid})
+	masterDBController.srvPlayerActions('read', serverName, {_id: playerUcid})
 		.then(function(srvPlayer) {
 			var curPlayer = _.get(srvPlayer, [0]);
 			if (curPlayer) {
 				if (curPlayer.name) {
-					dbMapServiceController.unitActions('read', serverName, {playername: curPlayer.name})
+					masterDBController.unitActions('read', serverName, {playername: curPlayer.name})
 						.then(function(cUnit) {
 							var curUnit = _.get(cUnit, [0]);
 							DCSLuaCommands.sendMesgToGroup(
@@ -134,15 +134,15 @@ _.set(exports, 'checkLifeResource', function (serverName, playerUcid) {
 });
 
 _.set(exports, 'checkAircraftCosts', function (serverName) {
-	dbMapServiceController.statSessionActions('readLatest', serverName, {})
+	masterDBController.statSessionActions('readLatest', serverName, {})
 		.then(function (latestSession) {
 			var mesg;
 			if (latestSession.name) {
-				dbMapServiceController.srvPlayerActions('read', serverName, {sessionName: latestSession.name, playername: {$ne: ''}})
+				masterDBController.srvPlayerActions('read', serverName, {sessionName: latestSession.name, playername: {$ne: ''}})
 					.then(function(srvPlayers) {
 						_.forEach(srvPlayers, function (curPlayer) {
 							if(curPlayer.name) {
-								dbMapServiceController.unitActions('read', serverName, {dead: false, playername: curPlayer.name})
+								masterDBController.unitActions('read', serverName, {dead: false, playername: curPlayer.name})
 									.then(function(cUnit) {
 										if (cUnit.length > 0) {
 											var curUnit = _.get(cUnit, [0]);

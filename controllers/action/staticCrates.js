@@ -1,5 +1,5 @@
 const	_ = require('lodash');
-const dbMapServiceController = require('../db/dbMapService');
+const masterDBController = require('../db/masterDB');
 const proximityController = require('../proxZone/proximity');
 const groupController = require('../spawn/group');
 const reloadController = require('../menu/reload');
@@ -13,14 +13,14 @@ _.set(exports, 'processStaticCrate', function (serverName, crateObj) {
 	_.forEach(_.get(crateObj, 'data', {}), function (crate, name) {
 		if(crate.alive) {
 			// console.log('ACHK: ', name);
-			cPromise.push(dbMapServiceController.staticCrateActions('update', serverName, {_id: name, lonLatLoc: [crate.lon, crate.lat]})
+			cPromise.push(masterDBController.staticCrateActions('update', serverName, {_id: name, lonLatLoc: [crate.lon, crate.lat]})
 				.catch(function (err) {
 					console.log('line 17: ', err);
 				})
 			);
 		} else {
 			// console.log('DCHK: ', name);
-			cPromise.push(dbMapServiceController.staticCrateActions('delete', serverName, {_id: name})
+			cPromise.push(masterDBController.staticCrateActions('delete', serverName, {_id: name})
 				.catch(function (err) {
 					console.log('line 23: ', err);
 				})
@@ -40,7 +40,7 @@ _.set(exports, 'processStaticCrate', function (serverName, crateObj) {
 });
 
 _.set(exports, 'unpackCrate', function (serverName, crateObj) { //crateObj is every alive crate on the server
-	dbMapServiceController.unitActions('read', serverName, {unitId: crateObj.unitId})
+	masterDBController.unitActions('read', serverName, {unitId: crateObj.unitId})
 		.then(function(pUnit) {
 			var curPlayerUnit = _.get(pUnit, 0);
 			proximityController.getStaticCratesInProximity(serverName, curPlayerUnit.lonLatLoc, 0.2, curPlayerUnit.coalition)
@@ -70,7 +70,7 @@ _.set(exports, 'unpackCrate', function (serverName, crateObj) { //crateObj is ev
 							_.forEach(_.get(grpTypes, [curCrateType]), function (eCrate) {
 								if ( cCnt <= numCrate) {
 									console.log('delCrate: ',  eCrate._id);
-									dbMapServiceController.staticCrateActions('delete', serverName, {
+									masterDBController.staticCrateActions('delete', serverName, {
 										_id: eCrate._id
 									})
 										.catch(function (err) {

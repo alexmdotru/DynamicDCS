@@ -1,10 +1,10 @@
 const _ = require('lodash');
-const dbMapServiceController = require('../db/dbMapService');
+const masterDBController = require('../db/masterDB');
 
 _.set(exports, 'processAirbaseUpdates', function (serverName, airbaseObj) {
 	var curData = _.get(airbaseObj, 'data');
 	if (_.get(airbaseObj, 'action') === 'airbaseC') {
-		dbMapServiceController.baseActions('save', serverName, curData)
+		masterDBController.baseActions('save', serverName, curData)
 			.catch(function (err) {
 				console.log('err line:11 ', err);
 			})

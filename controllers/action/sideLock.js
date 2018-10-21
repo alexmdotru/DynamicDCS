@@ -1,13 +1,13 @@
 const	_ = require('lodash');
-const dbMapServiceController = require('../db/dbMapService');
+const masterDBController = require('../db/masterDB');
 
 _.set(exports, 'setSideLockFlags', function (serverName) {
 	// console.log('SETSIDELOCKGFLAGS ');
 	var playerSideLockTable = [];
-	dbMapServiceController.statSessionActions('readLatest', serverName, {})
+	masterDBController.statSessionActions('readLatest', serverName, {})
 		.then(function (latestSession) {
 			if (latestSession.name) {
-				dbMapServiceController.srvPlayerActions('read', serverName, {sessionName: latestSession.name})
+				masterDBController.srvPlayerActions('read', serverName, {sessionName: latestSession.name})
 					.then(function (playerArray) {
 						_.forEach(playerArray, function (player) {
 							var lockObj;
@@ -31,7 +31,7 @@ _.set(exports, 'setSideLockFlags', function (serverName) {
 						};
 						actionObj = {actionObj: sendClient, queName: 'clientArray'};
 						// console.log('AOBJ: ', playerSideLockTable);
-						dbMapServiceController.cmdQueActions('save', serverName, actionObj)
+						masterDBController.cmdQueActions('save', serverName, actionObj)
 							.catch(function (err) {
 								console.log('erroring line41: ', err);
 							})

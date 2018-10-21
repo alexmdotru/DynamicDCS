@@ -1,5 +1,5 @@
 const	_ = require('lodash');
-const dbMapServiceController = require('../db/dbMapService');
+const masterDBController = require('../db/masterDB');
 const groupController = require('../spawn/group');
 const menuUpdateController = require('../menu/menuUpdate');
 const DCSLuaCommands = require('../player/DCSLuaCommands');
@@ -9,7 +9,7 @@ var unitsInProxLogiTowers = {};
 var unitsInProxBases = {};
 
 _.set(exports, 'getLogiTowersProximity', function (serverName, lonLat, kmDistance, coalition) {
-	return dbMapServiceController.unitActions(
+	return masterDBController.unitActions(
 		'read',
 		serverName,
 		{
@@ -37,7 +37,7 @@ _.set(exports, 'getLogiTowersProximity', function (serverName, lonLat, kmDistanc
 });
 
 _.set(exports, 'getEnemyGroundUnitsInProximity', function (serverName, lonLat, kmDistance, enemySide) {
-	return dbMapServiceController.unitActions(
+	return masterDBController.unitActions(
 		'read',
 		serverName,
 		{
@@ -81,7 +81,7 @@ _.set(exports, 'getGroundUnitsInProximity', function (serverName, lonLat, kmDist
 	if (!isTroop) {
 		_.set(troopQuery, 'isTroop', false);
 	}
-	return dbMapServiceController.unitActions('readStd', serverName, troopQuery)
+	return masterDBController.unitActions('readStd', serverName, troopQuery)
 		.then(function (closeUnits) {
 			// console.log('close units ' + closeUnits);
 			return closeUnits;
@@ -93,7 +93,7 @@ _.set(exports, 'getGroundUnitsInProximity', function (serverName, lonLat, kmDist
 });
 
 _.set(exports, 'getPlayersInProximity', function (serverName, lonLat, kmDistance, inAir, coalition) {
-	return dbMapServiceController.unitActions(
+	return masterDBController.unitActions(
 		'read',
 		serverName,
 		{
@@ -126,7 +126,7 @@ _.set(exports, 'getPlayersInProximity', function (serverName, lonLat, kmDistance
 });
 
 _.set(exports, 'isPlayerInProximity', function (serverName, lonLat, kmDistance, playerName) {
-	return dbMapServiceController.unitActions(
+	return masterDBController.unitActions(
 		'read',
 		serverName,
 		{
@@ -154,7 +154,7 @@ _.set(exports, 'isPlayerInProximity', function (serverName, lonLat, kmDistance, 
 });
 
 _.set(exports, 'getVirtualCratesInProximity', function (serverName, lonLat, kmDistance, coalition) {
-	return dbMapServiceController.unitActions(
+	return masterDBController.unitActions(
 		'readStd',
 		serverName,
 		{
@@ -185,7 +185,7 @@ _.set(exports, 'getVirtualCratesInProximity', function (serverName, lonLat, kmDi
 });
 
 _.set(exports, 'getStaticCratesInProximity', function (serverName, lonLat, kmDistance, coalition) {
-	return dbMapServiceController.staticCrateActions(
+	return masterDBController.staticCrateActions(
 		'readStd',
 		serverName,
 		{
@@ -211,7 +211,7 @@ _.set(exports, 'getStaticCratesInProximity', function (serverName, lonLat, kmDis
 });
 
 _.set(exports, 'getTroopsInProximity', function (serverName, lonLat, kmDistance, coalition) {
-	return dbMapServiceController.unitActions(
+	return masterDBController.unitActions(
 		'readStd',
 		serverName,
 		{
@@ -253,7 +253,7 @@ _.set(exports, 'getTroopsInProximity', function (serverName, lonLat, kmDistance,
 
 _.set(exports, 'checkUnitsToBaseForCapture', function (serverName) {
 	var sideArray = {};
-	dbMapServiceController.baseActions('read', serverName, {mainBase: true, $or: [{side: 1}, {side: 2}]})
+	masterDBController.baseActions('read', serverName, {mainBase: true, $or: [{side: 1}, {side: 2}]})
 		.then(function (bases) {
 			_.forEach(bases, function (base) {
 				exports.getGroundUnitsInProximity(serverName, base.centerLoc, 3, true)
@@ -275,7 +275,7 @@ _.set(exports, 'checkUnitsToBaseForCapture', function (serverName) {
 								// console.log('Spawning Support Units', base, 2);
 								spawnArray = _.concat(spawnArray, groupController.spawnSupportBaseGrp(serverName, base.name, 2, false));
 								groupController.spawnGroup(serverName, spawnArray, base.name, 2);
-								dbMapServiceController.baseActions('updateSide', serverName, {name: base.name, side: 2})
+								masterDBController.baseActions('updateSide', serverName, {name: base.name, side: 2})
 									.then(function () {
 										baseSpawnFlagsController.setbaseSides(serverName);
 									})
@@ -283,7 +283,7 @@ _.set(exports, 'checkUnitsToBaseForCapture', function (serverName) {
 										console.log('erroring line162: ', err);
 									})
 								;
-								dbMapServiceController.unitActions('read', serverName, {name: base.name + ' Logistics', dead: false})
+								masterDBController.unitActions('read', serverName, {name: base.name + ' Logistics', dead: false})
 									.then(function (aliveLogistics) {
 										if (aliveLogistics.length > 0) {
 											groupController.spawnLogisticCmdCenter(serverName, {}, false, base, 2);
@@ -308,7 +308,7 @@ _.set(exports, 'checkUnitsToBaseForCapture', function (serverName) {
 								// console.log('Spawning Support Units', base, 1);
 								spawnArray = _.concat(spawnArray, groupController.spawnSupportBaseGrp(serverName, base.name, 1, false));
 								groupController.spawnGroup(serverName, spawnArray, base.name, 1);
-								dbMapServiceController.baseActions('updateSide', serverName, {name: base.name, side: 1})
+								masterDBController.baseActions('updateSide', serverName, {name: base.name, side: 1})
 									.then(function () {
 										baseSpawnFlagsController.setbaseSides(serverName);
 									})
@@ -316,7 +316,7 @@ _.set(exports, 'checkUnitsToBaseForCapture', function (serverName) {
 										console.log('erroring line189: ', err);
 									})
 								;
-								dbMapServiceController.unitActions('read', serverName, {name: base.name + ' Logistics', dead: false})
+								masterDBController.unitActions('read', serverName, {name: base.name + ' Logistics', dead: false})
 									.then(function (aliveLogistics) {
 										if (aliveLogistics.length > 0) {
 											groupController.spawnLogisticCmdCenter(serverName, {}, false, base, 1);
@@ -343,7 +343,7 @@ _.set(exports, 'checkUnitsToBaseForCapture', function (serverName) {
 
 _.set(exports, 'checkUnitsToBaseForTroops', function (serverName) {
 	// check every base that is owned by red or blue, 20 km sphere
-	dbMapServiceController.baseActions('read', serverName, {mainBase: true, $or: [{side: 1}, {side: 2}]})
+	masterDBController.baseActions('read', serverName, {mainBase: true, $or: [{side: 1}, {side: 2}]})
 		.then(function (bases) {
 			_.forEach(bases, function (base) {
 				var curBaseName = base.name;
@@ -408,7 +408,7 @@ _.set(exports, 'unitInProxLogiTowers', function (unit, serverName) {
 });
 
 _.set(exports, 'checkUnitsToLogisticTowers', function (serverName) {
-	dbMapServiceController.unitActions('read', serverName, {proxChkGrp: 'logisticTowers', dead: false})
+	masterDBController.unitActions('read', serverName, {proxChkGrp: 'logisticTowers', dead: false})
 		.then(function (logiUnits) {
 			_.forEach(logiUnits, function (logiUnit) {
 				var curLogiName = logiUnit.name;

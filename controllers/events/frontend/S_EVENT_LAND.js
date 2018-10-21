@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const constants = require('../../constants');
-const dbMapServiceController = require('../../db/dbMapService');
+const masterDBController = require('../../db/masterDB');
 const DCSLuaCommands = require('../../player/DCSLuaCommands');
 const groupController = require('../../spawn/group');
 const webPushCommands = require('../../socketIO/webPush');
@@ -16,9 +16,9 @@ _.set(exports, 'processEventLand', function (serverName, sessionName, eventObj) 
 		baseLand = _.get(eventObj, 'data.arg5');
 	}
 
-	dbMapServiceController.unitActions('read', serverName, {unitId: _.get(eventObj, ['data', 'arg3']), isCrate: false})
+	masterDBController.unitActions('read', serverName, {unitId: _.get(eventObj, ['data', 'arg3']), isCrate: false})
 		.then(function (iunit) {
-			dbMapServiceController.srvPlayerActions('read', serverName, {sessionName: sessionName})
+			masterDBController.srvPlayerActions('read', serverName, {sessionName: sessionName})
 				.then(function (playerArray) {
 					var iPlayer;
 					var iCurObj;
@@ -32,7 +32,7 @@ _.set(exports, 'processEventLand', function (serverName, sessionName, eventObj) 
 						if (_.includes(curUnitName, 'LOGISTICS|')) {
 							var bName = _.split(curUnitName, '|')[2];
 							var curSide = _.get(curIUnit, 'coalition');
-							dbMapServiceController.baseActions('read', serverName, {_id: bName})
+							masterDBController.baseActions('read', serverName, {_id: bName})
 								.then(function (bases) {
 									var curBase = _.get(bases, [0], {}); // does this work?
 									console.log('LANDINGCARGO: ', curBase.side === curSide, baseLand === bName, baseLand, ' = ', bName, curIUnit.category);
@@ -58,7 +58,7 @@ _.set(exports, 'processEventLand', function (serverName, sessionName, eventObj) 
 						if(iPlayer) {
 							if (baseLand) {
 								place = ' at ' + baseLand;
-								dbMapServiceController.srvPlayerActions('applyTempToRealScore', serverName, {_id: iPlayer._id, groupId: curIUnit.groupId})
+								masterDBController.srvPlayerActions('applyTempToRealScore', serverName, {_id: iPlayer._id, groupId: curIUnit.groupId})
 									.catch(function (err) {
 										console.log('line70', err);
 									})
@@ -78,14 +78,14 @@ _.set(exports, 'processEventLand', function (serverName, sessionName, eventObj) 
 							};
 							if(_.get(iCurObj, 'iucid')) {
 
-								dbMapServiceController.srvPlayerActions('addLifePoints', serverName, {
+								masterDBController.srvPlayerActions('addLifePoints', serverName, {
 									_id: iPlayer._id,
 									execAction: curIUnit.type + ' Land',
 									groupId: curIUnit.groupId,
 									addLifePoints: curLifePointVal
 								});
 								webPushCommands.sendToCoalition(serverName, {payload: {action: eventObj.action, data: _.cloneDeep(iCurObj)}});
-								dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
+								masterDBController.simpleStatEventActions('save', serverName, iCurObj);
 							}
 							/*
 							DCSLuaCommands.sendMesgToGroup(

@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const constants = require('../../constants');
-const dbMapServiceController = require('../../db/dbMapService');
+const masterDBController = require('../../db/masterDB');
 const DCSLuaCommands = require('../../player/DCSLuaCommands');
 const webPushCommands = require('../../socketIO/webPush');
 const weaponComplianceController = require('../../action/weaponCompliance');
@@ -16,9 +16,9 @@ _.set(exports, 'processEventTakeoff', function (serverName, sessionName, eventOb
 		place = '';
 	}
 
-	dbMapServiceController.unitActions('read', serverName, {unitId: _.get(eventObj, ['data', 'arg3'])})
+	masterDBController.unitActions('read', serverName, {unitId: _.get(eventObj, ['data', 'arg3'])})
 		.then(function (iunit) {
-			dbMapServiceController.srvPlayerActions('read', serverName, {sessionName: sessionName})
+			masterDBController.srvPlayerActions('read', serverName, {sessionName: sessionName})
 				.then(function (playerArray) {
 					var iPlayer;
 					var iCurObj;
@@ -39,14 +39,14 @@ _.set(exports, 'processEventTakeoff', function (serverName, sessionName, eventOb
 									roleCode: 'I',
 									msg: 'C: '+ _.get(curIUnit, 'type') + '('+_.get(curIUnit, 'playername')+') has taken off' + place
 								};
-								dbMapServiceController.srvPlayerActions('removeLifePoints', serverName, {
+								masterDBController.srvPlayerActions('removeLifePoints', serverName, {
 									_id: iPlayer._id,
 									execAction: curIUnit.type + ' Takeoff',
 									groupId: curIUnit.groupId,
 									removeLifePoints: curLifePointVal
 								});
 								webPushCommands.sendToCoalition(serverName, {payload: {action: eventObj.action, data: _.cloneDeep(iCurObj)}});
-								dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
+								masterDBController.simpleStatEventActions('save', serverName, iCurObj);
 								/*
                                 DCSLuaCommands.sendMesgToGroup(
                                     _.get(curIUnit, 'groupId'),

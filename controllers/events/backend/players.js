@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const constants = require('../../constants');
-const dbMapServiceController = require('../../db/dbMapService');
+const masterDBController = require('../../db/masterDB');
 const DCSLuaCommands = require('../../player/DCSLuaCommands');
 const sideLockController = require('../../action/sideLock');
 const webPushCommands = require('../../socketIO/webPush');
@@ -18,8 +18,8 @@ _.set(exports, 'processPlayerEvent', function (serverName, sessionName, playerAr
             var isArtilleryCmdr = _.includes(player.slot, 'artillery_commander');
             var isForwardObserver = _.includes(player.slot, 'forward_observer');
 
-			// dbMapServiceController.srvPlayerActions('read', serverName, {banned: true, $or: [{_id: curPlyrUcid}, {ipaddr: new RegExp('^' + curSearchIp)}] })
-			dbMapServiceController.srvPlayerActions('read', serverName, {_id: curPlyrUcid, banned: true})
+			// masterDBController.srvPlayerActions('read', serverName, {banned: true, $or: [{_id: curPlyrUcid}, {ipaddr: new RegExp('^' + curSearchIp)}] })
+			masterDBController.srvPlayerActions('read', serverName, {_id: curPlyrUcid, banned: true})
 				.then(function (banUser) {
 					if (!_.isEmpty(banUser)){
 						console.log('Banning User: ', curPlyrName, curPlyrUcid, player.ipaddr);
@@ -38,7 +38,7 @@ _.set(exports, 'processPlayerEvent', function (serverName, sessionName, playerAr
 							);
 						}
 
-						dbMapServiceController.unitActions('read', serverName, {playername: curPlyrName, dead: false})
+						masterDBController.unitActions('read', serverName, {playername: curPlyrName, dead: false})
 							.then(function (unit) {
 								var curUnit = _.get(unit, 0);
 								var curUnitSide = _.get(curUnit, 'coalition');
@@ -67,7 +67,7 @@ _.set(exports, 'processPlayerEvent', function (serverName, sessionName, playerAr
                                             };
                                             if(curPlyrUcid) {
                                                 curServers[serverName].updateQue.leaderboard.push(_.cloneDeep(iCurObj));
-                                                dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
+                                                masterDBController.simpleStatEventActions('save', serverName, iCurObj);
                                             }
 
                                             DCSLuaCommands.sendMesgToAll(
@@ -106,12 +106,12 @@ _.set(exports, 'processPlayerEvent', function (serverName, sessionName, playerAr
 									}
 								} else {
 									if(isArtilleryCmdr || isForwardObserver) {
-										dbMapServiceController.srvPlayerActions('read', serverName, {_id: player.ucid})
+										masterDBController.srvPlayerActions('read', serverName, {_id: player.ucid})
 											.then(function (srvPlayer) {
 												var curPlayer = _.first(srvPlayer);
 												if (curPlayer.gciAllowed || isForwardObserver) {
                                                     if(curPlayer.sideLock === 0) {
-                                                        dbMapServiceController.srvPlayerActions('update', serverName, {
+                                                        masterDBController.srvPlayerActions('update', serverName, {
                                                             _id: player.ucid,
                                                             sideLock: player.side,
                                                             sideLockTime: new Date().getTime() + (60 * 60 * 1000)
@@ -163,7 +163,7 @@ _.set(exports, 'processPlayerEvent', function (serverName, sessionName, playerAr
 			_.set(curData, 'sessionName', sessionName);
 			// console.log('PA2: ', curData);
 			//update map based player table
-			dbMapServiceController.srvPlayerActions('updateFromServer', serverName, curData)
+			masterDBController.srvPlayerActions('updateFromServer', serverName, curData)
 				.catch(function (err) {
 					console.log('line156', err);
 				})

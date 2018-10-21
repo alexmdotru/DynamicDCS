@@ -1,10 +1,10 @@
 const	_ = require('lodash');
-const dbMapServiceController = require('../db/dbMapService');
+const masterDBController = require('../db/masterDB');
 const proximityController = require('../proxZone/proximity');
 const groupController = require('../spawn/group');
 
 _.set(exports, 'checkTroopProx', function (serverName) {
-	dbMapServiceController.unitActions('read', serverName, {"isTroop" : true, dead: false})
+	masterDBController.unitActions('read', serverName, {"isTroop" : true, dead: false})
 		.then(function (troopUnits) {
 			_.forEach(troopUnits, function (troop) {
 				var stParse = _.split(troop.name, '|');

@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const dbMapServiceController = require('../db/dbMapService');
+const masterDBController = require('../db/masterDB');
 const jtacController = require('../action/jtac');
 const menuUpdateController = require('../menu/menuUpdate');
 const groupController = require('../spawn/group');
@@ -12,7 +12,7 @@ var maxCrateLife = (3 * 60 * 60 * 1000); // 3 hrs
 
 _.set(exports, 'processThirtySecActions', function (serverName, fullySynced) {
 	if (fullySynced) {
-		dbMapServiceController.unitActions('removeAllDead', serverName, {})
+		masterDBController.unitActions('removeAllDead', serverName, {})
 			.catch(function (err) {
 				console.log('err line12: ', err);
 			})
@@ -26,7 +26,7 @@ _.set(exports, 'processThirtySecActions', function (serverName, fullySynced) {
 		// troopLocalizerController.checkTroopProx(serverName);
 
 		//cleanupAI AIMaxIdleTime
-		dbMapServiceController.unitActions('read', serverName, {isAI: true, dead:false})
+		masterDBController.unitActions('read', serverName, {isAI: true, dead:false})
 			.then(function (AICleanup) {
 				_.forEach(AICleanup, function (AIUnit) {
 					if (_.isEmpty(AIUnit.playername) && new Date(_.get(AIUnit, 'updatedAt', 0)).getTime() + AIMaxIdleTime < new Date().getTime()) {
@@ -41,7 +41,7 @@ _.set(exports, 'processThirtySecActions', function (serverName, fullySynced) {
 
 		//clean crates older than 90mins
 		if (menuUpdateController.virtualCrates) {
-			dbMapServiceController.unitActions('read', serverName, {isCrate: true, dead:false})
+			masterDBController.unitActions('read', serverName, {isCrate: true, dead:false})
 				.then(function (crateCleanup) {
 					_.forEach(crateCleanup, function (crate) {
 						if (new Date(_.get(crate, 'createdAt', 0)).getTime() + maxCrateLife < new Date().getTime()) {
@@ -54,11 +54,11 @@ _.set(exports, 'processThirtySecActions', function (serverName, fullySynced) {
 				})
 			;
 		} else {
-			dbMapServiceController.staticCrateActions('readStd', serverName, {})
+			masterDBController.staticCrateActions('readStd', serverName, {})
 				.then(function (crateCleanup) {
 					_.forEach(crateCleanup, function (crate) {
 						if (new Date(_.get(crate, 'createdAt', 0)).getTime() + maxCrateLife < new Date().getTime()) {
-							dbMapServiceController.staticCrateActions('delete', serverName, {_id: crate._id})
+							masterDBController.staticCrateActions('delete', serverName, {_id: crate._id})
 								.then(function () {
 									console.log('cleanup crate: ', crate.name);
 									groupController.destroyUnit( serverName, crate.name );

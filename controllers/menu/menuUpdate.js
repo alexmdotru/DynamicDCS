@@ -1,5 +1,5 @@
 const	_ = require('lodash');
-const dbMapServiceController = require('../db/dbMapService');
+const masterDBController = require('../db/masterDB');
 const proximityController = require('../proxZone/proximity');
 const menuCmdsController = require('../menu/menuCmds'); //menuCmdsController.maxUnitsMoving
 
@@ -170,7 +170,7 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 	}
 
 	if (_.includes(allowedHelisForTroops, unit.type) || _.includes(allowedPlanesForTroops, unit.type) || _.includes(allowedTypesForCratesLight, unit.type) || _.includes(allowedTypesForCratesHeavy, unit.type)) {
-		dbMapServiceController.srvPlayerActions('read', serverName, {name: unit.playername})
+		masterDBController.srvPlayerActions('read', serverName, {name: unit.playername})
 			.then(function(player) {
 				var curPlayer = _.get(player, [0]);
 				if (curPlayer) {
@@ -407,7 +407,7 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 					// console.log('cmd: ', cmdArray);
 					var sendClient = {action: "CMD", cmd: cmdArray, reqID: 0};
 					var actionObj = {actionObj: sendClient, queName: 'clientArray'};
-					dbMapServiceController.cmdQueActions('save', serverName, actionObj)
+					masterDBController.cmdQueActions('save', serverName, actionObj)
 						.catch(function (err) {
 							console.log('erroring line208: ', err);
 						})
@@ -422,7 +422,7 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 		// console.log('cmd: ', cmdArray);
 		var sendClient = {action: "CMD", cmd: cmdArray, reqID: 0};
 		var actionObj = {actionObj: sendClient, queName: 'clientArray'};
-		dbMapServiceController.cmdQueActions('save', serverName, actionObj)
+		masterDBController.cmdQueActions('save', serverName, actionObj)
 			.catch(function (err) {
 				console.log('erroring line208: ', err);
 			})

@@ -1,6 +1,6 @@
 const	_ = require('lodash');
 const constants = require('../../controllers/constants');
-const dbMapServiceController = require('../db/dbMapService');
+const masterDBController = require('../db/masterDB');
 const DCSLuaCommands = require('../player/DCSLuaCommands');
 
 //var oneHour = 600 * 1000;
@@ -74,13 +74,13 @@ _.set(exports, 'checkWeaponComplianceOnTakeoff', function (serverName, iPlayer, 
 });
 
 _.set(exports, 'checkAircraftWeaponCompliance', function (serverName) {
-	dbMapServiceController.statSessionActions('readLatest', serverName, {})
+	masterDBController.statSessionActions('readLatest', serverName, {})
 		.then(function (latestSession) {
 			if (latestSession.name) {
-				dbMapServiceController.srvPlayerActions('read', serverName, {sessionName: latestSession.name, playername: {$ne: ''}})
+				masterDBController.srvPlayerActions('read', serverName, {sessionName: latestSession.name, playername: {$ne: ''}})
 					.then(function(srvPlayers) {
 						_.forEach(srvPlayers, function (curPlayer) {
-							dbMapServiceController.unitActions('read', serverName, {dead: false, playername: curPlayer.name})
+							masterDBController.unitActions('read', serverName, {dead: false, playername: curPlayer.name})
 								.then(function(cUnit) {
 									if (cUnit.length > 0) {
 										var curUnit = _.get(cUnit, [0]);

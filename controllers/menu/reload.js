@@ -1,7 +1,7 @@
 const	_ = require('lodash');
 const constants = require('../constants');
 const DCSLuaCommands = require('../player/DCSLuaCommands');
-const dbMapServiceController = require('../db/dbMapService');
+const masterDBController = require('../db/masterDB');
 const groupController = require('../spawn/group');
 const proximityController = require('../proxZone/proximity');
 
@@ -10,7 +10,7 @@ _.set(exports, 'reloadSAM', function (serverName, unitCalling, crate) {
 		.then(function(units){
 			var closestUnit = _.first(_.filter(units, {coalition: unitCalling.coalition}));
 			if (closestUnit) {
-				dbMapServiceController.unitActions('read', serverName, {groupName: closestUnit.groupName, isCrate: false, dead: false})
+				masterDBController.unitActions('read', serverName, {groupName: closestUnit.groupName, isCrate: false, dead: false})
 					.then(function(samUnits){
 						// console.log('samu: ', samUnits, closestUnit.groupName); closest unit can be the repair truck.... LOL FIX ME
 						if (samUnits.length) {

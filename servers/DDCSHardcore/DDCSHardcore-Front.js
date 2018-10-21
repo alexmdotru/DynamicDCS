@@ -31,7 +31,7 @@ const processTimedTenMinutes = require('../../controllers/timedEvents/tenMinutes
 var masterServer = '192.168.44.60';
 var serverName = 'DDCSHardcore';
 
-masterDBController.initDB(serverName);
+masterDBController.initDB(serverName, masterServer);
 
 constants.initServer(serverName)
 	.then(function () {

@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const dbMapServiceController = require('../db/dbMapService');
+const masterDBController = require('../db/masterDB');
 const groupController = require('../spawn/group');
 const DCSLuaCommands = require('../player/DCSLuaCommands');
 const menuUpdateController = require('../menu/menuUpdate');
@@ -22,7 +22,7 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 	var remappedunits = {};
 	if (serverUnitCount > -1) {
 		// console.log('start: ', serverName, serverUnitCount);
-		dbMapServiceController.unitActions('readStd', serverName, {dead: false})
+		masterDBController.unitActions('readStd', serverName, {dead: false})
 			.then(function (units) {
 				if (serverUnitCount === 0) { //server is empty
 					taskController.ewrUnitsActivated = {};
@@ -30,7 +30,7 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 					isServerFresh = true;
 					if (!exports.isSyncLockdownMode) {
 						exports.isSyncLockdownMode = true; // lock down all traffic until sync is complete
-						dbMapServiceController.cmdQueActions('removeall', serverName, {})
+						masterDBController.cmdQueActions('removeall', serverName, {})
 							.then(function () {
 								if (units.length === 0) { // DB is empty
 									console.log('DB & Server is empty of Units, Spawn New Units');
@@ -56,7 +56,7 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 												name: _.get(unit, 'name'),
 												dead: true
 											};
-											dbMapServiceController.unitActions('update', serverName, curDead)
+											masterDBController.unitActions('update', serverName, curDead)
 												.catch(function (err) {
 													console.log('erroring line36: ', err);
 												})
@@ -67,7 +67,7 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 										groupController.spawnGroup(serverName, group)
 									});
 									if(!menuUpdateController.virtualCrates) {
-										dbMapServiceController.staticCrateActions('read', serverName, {})
+										masterDBController.staticCrateActions('read', serverName, {})
 											.then(function(staticCrates) {
 												_.forEach(staticCrates, function (crateObj) {
 													crateController.spawnLogiCrate(serverName, crateObj, false);
@@ -101,7 +101,7 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 										mesg = 'SYNCING|F|' + units.length + ':' + serverUnitCount;
 									}
 									if (stuckDetect > stuckThreshold) {
-										dbMapServiceController.cmdQueActions('save', serverName, {
+										masterDBController.cmdQueActions('save', serverName, {
 											queName: 'clientArray',
 											actionObj: {action: "GETUNITSALIVE"},
 										});
@@ -143,7 +143,7 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 									mesg = 'SYNCING|R1|' + units.length + ':' + serverUnitCount;
 								}
 								if (stuckDetect > stuckThreshold) {
-									dbMapServiceController.cmdQueActions('save', serverName, {
+									masterDBController.cmdQueActions('save', serverName, {
 										queName: 'clientArray',
 										actionObj: {action: "GETUNITSALIVE"},
 									});

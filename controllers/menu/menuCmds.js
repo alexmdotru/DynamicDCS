@@ -1,7 +1,7 @@
 const	_ = require('lodash');
 const constants = require('../constants');
 const DCSLuaCommands = require('../player/DCSLuaCommands');
-const dbMapServiceController = require('../db/dbMapService');
+const masterDBController = require('../db/masterDB');
 const proximityController = require('../proxZone/proximity');
 const menuUpdateController = require('../menu/menuUpdate');
 const groupController = require('../spawn/group');
@@ -16,11 +16,11 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 	var defCrate = 'iso_container_small';
 	//var defCrate = (_.toNumber(pObj.mass) > 1000)?'iso_container':'iso_container_small';
 	// console.log('process menu cmd: ', pObj);
-	dbMapServiceController.unitActions('read', serverName, {unitId: pObj.unitId})
+	masterDBController.unitActions('read', serverName, {unitId: pObj.unitId})
 		.then(function(units) {
 			var curUnit = _.get(units, 0);
 			if (curUnit) {
-				dbMapServiceController.srvPlayerActions('read', serverName, {name: curUnit.playername})
+				masterDBController.srvPlayerActions('read', serverName, {name: curUnit.playername})
 					.then(function(player) {
 						var curPlayer = _.get(player, [0]);
 						if (curPlayer) {
@@ -47,7 +47,7 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 								} else {
 									if(exports.isTroopOnboard(curUnit, serverName)) {
 										var checkAllBase = [];
-										dbMapServiceController.baseActions('read', serverName, {mainBase: true, side: curUnit.coalition})
+										masterDBController.baseActions('read', serverName, {mainBase: true, side: curUnit.coalition})
 											.then(function (bases) {
 												_.forEach(bases, function (base) {
 													checkAllBase.push(proximityController.isPlayerInProximity(serverName, base.centerLoc, 3.4, curUnit.playername)
@@ -62,7 +62,7 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 														// console.log('player prox: ', playerProx, _.some(playerProx)); _.some(playerProx)
 
 														if(_.some(playerProx)) {
-															dbMapServiceController.unitActions('updateByUnitId', serverName, {unitId: pObj.unitId, troopType: null})
+															masterDBController.unitActions('updateByUnitId', serverName, {unitId: pObj.unitId, troopType: null})
 																.then(function(){
 																	DCSLuaCommands.sendMesgToGroup(
 																		curUnit.groupId,
@@ -76,10 +76,10 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 																})
 															;
 														} else {
-															dbMapServiceController.unitActions('read', serverName, {playerOwnerId: curPlayer.ucid, isTroop: true, dead: false})
+															masterDBController.unitActions('read', serverName, {playerOwnerId: curPlayer.ucid, isTroop: true, dead: false})
 																.then(function(delUnits){
 																	_.forEach(delUnits, function (unit) {
-																		dbMapServiceController.unitActions('updateByUnitId', serverName, {unitId: unit.unitId, dead: true});
+																		masterDBController.unitActions('updateByUnitId', serverName, {unitId: unit.unitId, dead: true});
 																		groupController.destroyUnit(serverName, unit.name);
 																	});
 																	// spawn troop type
@@ -94,7 +94,7 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 																		playerCanDrive: false
 																	};
 																	groupController.spawnLogiGroup(serverName, [spawnArray], curUnit.coalition);
-																	dbMapServiceController.unitActions('updateByUnitId', serverName, {unitId: pObj.unitId, troopType: null})
+																	masterDBController.unitActions('updateByUnitId', serverName, {unitId: pObj.unitId, troopType: null})
 																		.catch(function (err) {
 																			console.log('erroring line73: ', err);
 																		})
@@ -128,7 +128,7 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 												var curTroop = _.get(units, [0]);
 												if(curTroop) {
 													// pickup troop
-													dbMapServiceController.unitActions('updateByUnitId', serverName, {unitId: pObj.unitId, troopType: curTroop.spawnCat})
+													masterDBController.unitActions('updateByUnitId', serverName, {unitId: pObj.unitId, troopType: curTroop.spawnCat})
 														.catch(function (err) {
 															console.log('erroring line57: ', err);
 														})
@@ -207,7 +207,7 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 																cCnt = 1;
 																_.forEach(_.get(grpTypes, [curCrateType]), function (eCrate) {
 																	if ( cCnt <= numCrate) {
-																		dbMapServiceController.unitActions('updateByUnitId', serverName, {unitId: eCrate.unitId, dead: true})
+																		masterDBController.unitActions('updateByUnitId', serverName, {unitId: eCrate.unitId, dead: true})
 																			.catch(function (err) {
 																				console.log('erroring line152: ', err);
 																			})
@@ -274,12 +274,12 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 														5
 													);
 												} else {
-													dbMapServiceController.srvPlayerActions('read', serverName, {name: curUnit.playername})
+													masterDBController.srvPlayerActions('read', serverName, {name: curUnit.playername})
 														.then(function(player) {
 															var curPlayer = _.get(player, [0]);
 															if (curPlayer) {
-																// dbMapServiceController.staticCrateActions('read', serverName, {playerOwnerId: curPlayer.ucid})
-																dbMapServiceController.staticCrateActions('read', serverName, {})
+																// masterDBController.staticCrateActions('read', serverName, {playerOwnerId: curPlayer.ucid})
+																masterDBController.staticCrateActions('read', serverName, {})
 																	.then(function(crateUpdate) {
 																		var sendClient = {
 																			"action" : "CRATEUPDATE",
@@ -288,7 +288,7 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 																			"unitId": pObj.unitId
 																		};
 																		var actionObj = {actionObj: sendClient, queName: 'clientArray'};
-																		dbMapServiceController.cmdQueActions('save', serverName, actionObj)
+																		masterDBController.cmdQueActions('save', serverName, actionObj)
 																			.catch(function (err) {
 																				console.log('erroring line23: ', err);
 																			})
@@ -328,7 +328,7 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 										.then(function(units){
 											var curCrate = _.find(units, {playerOwnerId: curPlayer.ucid});
 											if(curCrate) {
-												dbMapServiceController.unitActions('updateByUnitId', serverName, {unitId: pObj.unitId, virtCrateType: curCrate.name})
+												masterDBController.unitActions('updateByUnitId', serverName, {unitId: pObj.unitId, virtCrateType: curCrate.name})
 													.catch(function (err) {
 														console.log('erroring line209: ', err);
 													})
@@ -375,7 +375,7 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 							} else {
 								if (!_.isEmpty(curUnit.virtCrateType)) {
 									exports.spawnCrateFromLogi(serverName, curUnit, _.split(curUnit.virtCrateType, '|')[2], _.split(curUnit.virtCrateType, '|')[4], (_.split(curUnit.virtCrateType, '|')[5] === 'true'), _.split(curUnit.virtCrateType, '|')[3], (_.split(curUnit.virtCrateType, '|')[6] === 'true'));
-									dbMapServiceController.unitActions('updateByUnitId', serverName, {unitId: pObj.unitId, virtCrateType: null})
+									masterDBController.unitActions('updateByUnitId', serverName, {unitId: pObj.unitId, virtCrateType: null})
 										.catch(function (err) {
 											console.log('erroring line243: ', err);
 										})
@@ -414,7 +414,7 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 
 						// Crate Menu ["action"] = "f10Menu", ["cmd"] = "EWR", ["type"] = "55G6 EWR", ["unitId"] = ' + unit.unitId + ', ["crates"] = 1})
 						if (pObj.cmd === 'acquisitionCnt') {
-							dbMapServiceController.unitActions('read', serverName, {playerOwnerId: curPlayer.ucid, isCrate:false, isTroop: false, dead: false})
+							masterDBController.unitActions('read', serverName, {playerOwnerId: curPlayer.ucid, isCrate:false, isTroop: false, dead: false})
 								.then(function(unitsOwned){
 									constants.getServer(serverName)
 										.then(function(serverInfo) {
@@ -547,7 +547,7 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 });
 
 _.set(exports, 'loadTroops', function(serverName, unitId, troopType) {
-	dbMapServiceController.unitActions('read', serverName, {unitId: unitId})
+	masterDBController.unitActions('read', serverName, {unitId: unitId})
 		.then(function(units) {
 			var curUnit = _.get(units, 0);
 			if(curUnit.inAir) {
@@ -558,7 +558,7 @@ _.set(exports, 'loadTroops', function(serverName, unitId, troopType) {
 					5
 				);
 			} else {
-				dbMapServiceController.baseActions('read', serverName, {mainBase: true, side: curUnit.coalition})
+				masterDBController.baseActions('read', serverName, {mainBase: true, side: curUnit.coalition})
 					.then(function (bases) {
 						var checkAllBase = [];
 						_.forEach(bases, function (base) {
@@ -574,7 +574,7 @@ _.set(exports, 'loadTroops', function(serverName, unitId, troopType) {
 						Promise.all(checkAllBase)
 							.then(function (playerProx) {
 								if (_.some(playerProx)) {
-									dbMapServiceController.unitActions('updateByUnitId', serverName, {unitId: unitId, troopType: troopType})
+									masterDBController.unitActions('updateByUnitId', serverName, {unitId: unitId, troopType: troopType})
 										.then(function(unit) {
 											DCSLuaCommands.sendMesgToGroup(
 												unit.groupId,
@@ -680,16 +680,16 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 		constants.getServer(serverName)
 			.then(function(serverInfo) {
 				// console.log('SERVERI: ', serverName, serverInfo);
-				dbMapServiceController.srvPlayerActions('read', serverName, {name: unit.playername})
+				masterDBController.srvPlayerActions('read', serverName, {name: unit.playername})
 					.then(function(player) {
 						var curPlayer = _.get(player, [0]);
 						if(menuUpdateController.virtualCrates) {
-							dbMapServiceController.unitActions('read', serverName, {playerOwnerId: curPlayer.ucid, isCrate: true, dead: false})
+							masterDBController.unitActions('read', serverName, {playerOwnerId: curPlayer.ucid, isCrate: true, dead: false})
 								.then(function(delCrates) {
 									_.forEach(delCrates, function (crate) {
 										// console.log('cr: ', crateCount, ' > ', serverInfo.maxCrates-1);
 										if (crateCount > serverInfo.maxCrates - 2) {
-											dbMapServiceController.unitActions('updateByUnitId', serverName, {
+											masterDBController.unitActions('updateByUnitId', serverName, {
 												unitId: crate.unitId,
 												dead: true
 											})
@@ -718,10 +718,10 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 								})
 							;
 						} else {
-							dbMapServiceController.baseActions('read', serverName)
+							masterDBController.baseActions('read', serverName)
 								.then(function (bases) {
 									var checkAllBase = [];
-									dbMapServiceController.unitActions('read', serverName, {_id:  /Logistics/, dead: false, coalition: unit.coalition})
+									masterDBController.unitActions('read', serverName, {_id:  /Logistics/, dead: false, coalition: unit.coalition})
 										.then(function(aliveBases) {
 											_.forEach(bases, function (base) {
 												if (base.logiCenter && !!_.find(aliveBases, {name: base.name + ' Logistics'})) {
@@ -736,11 +736,11 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 												.then(function (playerProx) {
 													// console.log('SC: ', _.some(playerProx), playerProx);
 													if (_.some(playerProx)) {
-														dbMapServiceController.staticCrateActions('read', serverName, {playerOwnerId: curPlayer.ucid})
+														masterDBController.staticCrateActions('read', serverName, {playerOwnerId: curPlayer.ucid})
 															.then(function(delCrates) {
 																_.forEach(delCrates, function (crate) {
 																	if (crateCount > serverInfo.maxCrates - 2) {
-																		dbMapServiceController.staticCrateActions('delete', serverName, {
+																		masterDBController.staticCrateActions('delete', serverName, {
 																			_id: crate._id
 																		})
 																			.catch(function (err) {
@@ -829,10 +829,10 @@ _.set(exports, 'unpackCrate', function (serverName, playerUnit, country, type, s
 			5
 		);
 	} else {
-		dbMapServiceController.srvPlayerActions('read', serverName, {name: playerUnit.playername})
+		masterDBController.srvPlayerActions('read', serverName, {name: playerUnit.playername})
 			.then(function(player) {
 				var curPlayer = _.get(player, [0]);
-				dbMapServiceController.unitActions('readStd', serverName, {playerOwnerId: curPlayer.ucid, playerCanDrive: mobile, isCrate: false, dead: false})
+				masterDBController.unitActions('readStd', serverName, {playerOwnerId: curPlayer.ucid, playerCanDrive: mobile, isCrate: false, dead: false})
 					.then(function(delUnits){
 						constants.getServer(serverName)
 							.then(function(serverInfo) {
@@ -846,7 +846,7 @@ _.set(exports, 'unpackCrate', function (serverName, playerUnit, country, type, s
 								_.forEach(grpGroups, function (gUnit) {
 									if (curUnit <= tRem) {
 										_.forEach(gUnit, function(unit) {
-											dbMapServiceController.unitActions('updateByUnitId', serverName, {unitId: unit.unitId, dead: true})
+											masterDBController.unitActions('updateByUnitId', serverName, {unitId: unit.unitId, dead: true})
 												.catch(function (err) {
 													console.log('erroring line462: ', err);
 												})
@@ -1331,7 +1331,7 @@ _.set(exports, 'internalCargo', function (serverName, curUnit, curPlayer, intCar
 						if (curIntCrateType) {
 							if(curIntCrateType === 'JTAC') {
 								exports.unpackCrate(serverName, curUnit, curUnit.country, crateType, 'jtac', false, true);
-								dbMapServiceController.unitActions('updateByUnitId', serverName, {unitId: curUnit.unitId, intCargoType: ''})
+								masterDBController.unitActions('updateByUnitId', serverName, {unitId: curUnit.unitId, intCargoType: ''})
 									.then(function () {
 										DCSLuaCommands.sendMesgToGroup(
 											curUnit.groupId,
@@ -1346,14 +1346,14 @@ _.set(exports, 'internalCargo', function (serverName, curUnit, curPlayer, intCar
 								;
 							}
 							if(curIntCrateType === 'BaseRepair') {
-								dbMapServiceController.baseActions('read', serverName, {mainBase: true, side: curUnit.coalition})
+								masterDBController.baseActions('read', serverName, {mainBase: true, side: curUnit.coalition})
 									.then(function (bases) {
 										_.forEach(bases, function (base) {
 											proximityController.getPlayersInProximity(serverName, _.get(base, 'centerLoc'), 3.4, false, base.side)
 												.then(function (unitsInProx) {
 													if(_.find(unitsInProx, {playername: curUnit.playername})) {
 														if (repairController.repairBase(serverName, base, curUnit, curIntCrateBaseOrigin)) {
-															dbMapServiceController.unitActions('updateByUnitId', serverName, {unitId: curUnit.unitId, intCargoType: ''})
+															masterDBController.unitActions('updateByUnitId', serverName, {unitId: curUnit.unitId, intCargoType: ''})
 																.catch(function (err) {
 																	console.log('erroring line209: ', err);
 																})
@@ -1375,11 +1375,11 @@ _.set(exports, 'internalCargo', function (serverName, curUnit, curPlayer, intCar
 							if(curIntCrateType === 'CCBuild') {  // serverName, curUnit, curPlayer, intCargoType
 								constants.getServer(serverName)
 									.then(function(serverInfo) {
-										dbMapServiceController.staticCrateActions('read', serverName, {playerOwnerId: curPlayer.ucid})
+										masterDBController.staticCrateActions('read', serverName, {playerOwnerId: curPlayer.ucid})
 											.then(function(delCrates) {
 												_.forEach(delCrates, function (crate) {
 													if (crateCount > serverInfo.maxCrates - 2) {
-														dbMapServiceController.staticCrateActions('delete', serverName, {
+														masterDBController.staticCrateActions('delete', serverName, {
 															_id: crate._id
 														})
 															.catch(function (err) {
@@ -1410,7 +1410,7 @@ _.set(exports, 'internalCargo', function (serverName, curUnit, curPlayer, intCar
 													coalition: curUnit.coalition
 												};
 												crateController.spawnLogiCrate(serverName, crateObj, true);
-												dbMapServiceController.unitActions('updateByUnitId', serverName, {unitId: curUnit.unitId, intCargoType: ''})
+												masterDBController.unitActions('updateByUnitId', serverName, {unitId: curUnit.unitId, intCargoType: ''})
 													.catch(function (err) {
 														console.log('erroring line209: ', err);
 													})
@@ -1462,7 +1462,7 @@ _.set(exports, 'internalCargo', function (serverName, curUnit, curPlayer, intCar
 						);
 					} else {
 						if(intCargoType === 'loadJTAC') {
-							dbMapServiceController.unitActions('updateByUnitId', serverName, {unitId: curUnit.unitId, intCargoType: '|JTAC|' + curLogiName + '|'})
+							masterDBController.unitActions('updateByUnitId', serverName, {unitId: curUnit.unitId, intCargoType: '|JTAC|' + curLogiName + '|'})
 								.then(function () {
 									DCSLuaCommands.sendMesgToGroup(
 										curUnit.groupId,
@@ -1477,7 +1477,7 @@ _.set(exports, 'internalCargo', function (serverName, curUnit, curPlayer, intCar
 							;
 						}
 						if(intCargoType === 'loadBaseRepair') {
-							dbMapServiceController.unitActions('updateByUnitId', serverName, {unitId: curUnit.unitId, intCargoType: '|BaseRepair|' + curLogiName + '|'})
+							masterDBController.unitActions('updateByUnitId', serverName, {unitId: curUnit.unitId, intCargoType: '|BaseRepair|' + curLogiName + '|'})
 								.then(function () {
 									DCSLuaCommands.sendMesgToGroup(
 										curUnit.groupId,
@@ -1492,7 +1492,7 @@ _.set(exports, 'internalCargo', function (serverName, curUnit, curPlayer, intCar
 							;
 						}
 						if(intCargoType === 'loadCCBuild') {
-							dbMapServiceController.unitActions('updateByUnitId', serverName, {unitId: curUnit.unitId, intCargoType: '|CCBuild|' + curLogiName + '|'})
+							masterDBController.unitActions('updateByUnitId', serverName, {unitId: curUnit.unitId, intCargoType: '|CCBuild|' + curLogiName + '|'})
 								.then(function () {
 									DCSLuaCommands.sendMesgToGroup(
 										curUnit.groupId,

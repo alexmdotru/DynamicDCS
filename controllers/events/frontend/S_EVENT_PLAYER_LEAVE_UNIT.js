@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const constants = require('../../constants');
-const dbMapServiceController = require('../../db/dbMapService');
+const masterDBController = require('../../db/masterDB');
 const DCSLuaCommands = require('../../player/DCSLuaCommands');
 const playersEvent = require('../../events/backend/players');
 const unitsStaticsController = require('../../serverToDbSync/unitsStatics');
@@ -8,9 +8,9 @@ const webPushCommands = require('../../socketIO/webPush');
 
 _.set(exports, 'processEventPlayerLeaveUnit', function (serverName, sessionName, eventObj) {
 	// Occurs when any player relieves control of a unit to the AI.
-	dbMapServiceController.unitActions('read', serverName, {unitId: _.get(eventObj, ['data', 'arg3'])})
+	masterDBController.unitActions('read', serverName, {unitId: _.get(eventObj, ['data', 'arg3'])})
 		.then(function (iunit) {
-			dbMapServiceController.srvPlayerActions('read', serverName, {sessionName: sessionName})
+			masterDBController.srvPlayerActions('read', serverName, {sessionName: sessionName})
 				.then(function (playerArray) {
 					var iPlayer;
 					var iCurObj;
@@ -32,7 +32,7 @@ _.set(exports, 'processEventPlayerLeaveUnit', function (serverName, sessionName,
 							};
 							if (_.get(iCurObj, 'iucid')) {
 								webPushCommands.sendToCoalition(serverName, {payload: {action: eventObj.action, data: _.cloneDeep(iCurObj)}});
-								dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
+								masterDBController.simpleStatEventActions('save', serverName, iCurObj);
 							}
 							/*
 							DCSLuaCommands.sendMesgToCoalition(

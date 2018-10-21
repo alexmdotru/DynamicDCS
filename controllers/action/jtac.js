@@ -1,6 +1,6 @@
 const	_ = require('lodash');
 const constants = require('../constants');
-const dbMapServiceController = require('../db/dbMapService');
+const masterDBController = require('../db/masterDB');
 const proximityController = require('../proxZone/proximity');
 
 var jtacDistance = 10;
@@ -25,12 +25,12 @@ _.set(exports, 'setLaserSmoke', function (serverName, jtUnit, enemyUnit) {
 		"coalition": jtUnit.coalition
 	};
 	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
-	dbMapServiceController.cmdQueActions('save', serverName, actionObj)
+	masterDBController.cmdQueActions('save', serverName, actionObj)
 		.catch(function (err) {
 			console.log('erroring line23: ', err);
 		})
 	;
-	dbMapServiceController.unitActions('update', serverName, {_id: jtUnit.name, jtacTarget: enemyUnit.name, jtacReplenTime: new Date().getTime() + fiveMins})
+	masterDBController.unitActions('update', serverName, {_id: jtUnit.name, jtacTarget: enemyUnit.name, jtacReplenTime: new Date().getTime() + fiveMins})
 		.catch(function (err) {
 			console.log('erroring line28: ', err);
 		})
@@ -44,7 +44,7 @@ _.set(exports, 'removeLaserIR', function (serverName, jtUnit) {
 		"jtacUnitName": jtUnit.name
 	};
 	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
-	dbMapServiceController.cmdQueActions('save', serverName, actionObj)
+	masterDBController.cmdQueActions('save', serverName, actionObj)
 		.catch(function (err) {
 			console.log('erroring line23: ', err);
 		})
@@ -67,7 +67,7 @@ _.set(exports, 'jtacNewTarget', function (serverName, jtUnit) {
 				};
 				// console.log('enemysNear---: ', sendClient);
 				var actionObj = {actionObj: sendClient, queName: 'clientArray'};
-				dbMapServiceController.cmdQueActions('save', serverName, actionObj)
+				masterDBController.cmdQueActions('save', serverName, actionObj)
 					.catch(function (err) {
 						console.log('erroring line525: ', err);
 					})
@@ -83,13 +83,13 @@ _.set(exports, 'jtacNewTarget', function (serverName, jtUnit) {
 _.set(exports, 'aliveJtac30SecCheck', function (serverName) {
 	// console.log('jtac check');
 	//grab all jtacs
-	dbMapServiceController.unitActions('read', serverName, {proxChkGrp: 'jtac', dead: false})
+	masterDBController.unitActions('read', serverName, {proxChkGrp: 'jtac', dead: false})
 		.then(function (jtacUnits) {
 			_.forEach(jtacUnits, function (jtUnit) {
 				// console.log('jtac: ', jtUnit);
 				//lookup existing unit to see if dead
 				if (jtUnit.jtacTarget) {
-					dbMapServiceController.unitActions('read', serverName, {name: jtUnit.jtacTarget})
+					masterDBController.unitActions('read', serverName, {name: jtUnit.jtacTarget})
 						.then(function (jtacTarget) {
 							var curJtacTarget = _.get(jtacTarget, [0]);
 							if (curJtacTarget) {
@@ -99,7 +99,7 @@ _.set(exports, 'aliveJtac30SecCheck', function (serverName) {
 										exports.setLaserSmoke(serverName, jtUnit, curJtacTarget);
 									}
 								} else {
-									dbMapServiceController.unitActions('updateByName', serverName, {name: jtUnit.name, jtacTarget: null})
+									masterDBController.unitActions('updateByName', serverName, {name: jtUnit.name, jtacTarget: null})
 										.then(function () {
 											exports.removeLaserIR(serverName, jtUnit);
 											exports.jtacNewTarget(serverName, jtUnit);
@@ -110,7 +110,7 @@ _.set(exports, 'aliveJtac30SecCheck', function (serverName) {
 									;
 								}
 							} else {
-								dbMapServiceController.unitActions('updateByName', serverName, {name: jtUnit.name, jtacTarget: null})
+								masterDBController.unitActions('updateByName', serverName, {name: jtUnit.name, jtacTarget: null})
 									.then(function () {
 										exports.removeLaserIR(serverName, jtUnit);
 										exports.jtacNewTarget(serverName, jtUnit);
@@ -142,10 +142,10 @@ _.set(exports, 'processLOSEnemy', function (serverName, losReply) {
 		var enemyUnit;
 		var unitPThrArray = [];
 		//get jtac unit
-		dbMapServiceController.unitActions('read', serverName, {name: losReply.jtacUnitName})
+		masterDBController.unitActions('read', serverName, {name: losReply.jtacUnitName})
 			.then(function (fJtacUnit) {
 				var curJtacUnit = _.get(fJtacUnit, [0]);
-				dbMapServiceController.unitActions('read', serverName, {name: {$in: losReply.data}})
+				masterDBController.unitActions('read', serverName, {name: {$in: losReply.data}})
 					.then(function (eJtacUnit) {
 						_.forEach(eJtacUnit, function (jtUnit) {
 							var curUnitDict = _.find(_.get(constants, 'unitDictionary'), {_id: jtUnit.type});

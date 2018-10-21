@@ -116,6 +116,7 @@ _.assign(exports, {
 		1: 2,
 		2: 1
 	},
+	maxLifePoints: 18,
 	redCountrys: [
 		'ABKHAZIA',
 		'BELARUS',
@@ -172,7 +173,11 @@ _.assign(exports, {
 	time: {
 		sec: 1000,
 		twoSec: 2 * 1000,
+		fifteenSecs: 15 * 1000,
+		fiveMins: 5 * 60 * 1000,
 		fiveSecs: 5 * 1000,
+		oneHour: 60 * 60 * 100,
+		oneMin: 60 * 1000,
 		thirtySecs: 30 * 1000,
 		tenMinutes: 10 * 60 * 1000
 	},

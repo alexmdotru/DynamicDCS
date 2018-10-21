@@ -1,18 +1,18 @@
 const _ = require('lodash');
-const dbMapServiceController = require('../db/dbMapService');
+const masterDBController = require('../db/masterDB');
 
 _.set(exports, 'sendMissingUnits', function (serverName, serverUnitArray) {
 	var upPromises = [];
-	dbMapServiceController.unitActions('chkResync', serverName, {})
+	masterDBController.unitActions('chkResync', serverName, {})
 		.then(function () {
 			_.forEach(serverUnitArray, function (unitName) {
 				upPromises.push(
-					dbMapServiceController.unitActions('update', serverName, {_id: unitName, isResync: true, dead:false})
+					masterDBController.unitActions('update', serverName, {_id: unitName, isResync: true, dead:false})
 				)
 			});
 			Promise.all(upPromises)
 				.then(function () {
-					dbMapServiceController.unitActions('read', serverName, {isResync: false, dead: false})
+					masterDBController.unitActions('read', serverName, {isResync: false, dead: false})
 						.then(function (units) {
 							//console.log('DB RECOVERY UNITS NOT SYNCED: ' + units);
 							var unit = _.get(units, [0]);
@@ -24,7 +24,7 @@ _.set(exports, 'sendMissingUnits', function (serverName, serverUnitArray) {
 								name: _.get(unit, 'name'),
 								dead: true
 							};
-							dbMapServiceController.unitActions('update', serverName, curDead)
+							masterDBController.unitActions('update', serverName, curDead)
 								.catch(function (err) {
 									console.log('erroring line36: ', err);
 								})

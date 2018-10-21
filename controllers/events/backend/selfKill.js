@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const constants = require('../../constants');
-const dbMapServiceController = require('../../db/dbMapService');
+const masterDBController = require('../../db/masterDB');
 const DCSLuaCommands = require('../../player/DCSLuaCommands');
 const playersEvent = require('../../events/backend/players');
 const webPushCommands = require('../../socketIO/webPush');
@@ -24,7 +24,7 @@ _.set(exports, 'processSelfKill', function (serverName, sessionName, eventObj) {
 		};
 		if(_.get(iCurObj, 'iucid')) {
 			webPushCommands.sendToAll(serverName, {payload: {action: eventObj.action, data: _.cloneDeep(iCurObj)}});
-			dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj)
+			masterDBController.simpleStatEventActions('save', serverName, iCurObj)
 				.catch(function (err) {
 					console.log('err line45: ', err);
 				})

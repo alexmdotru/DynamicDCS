@@ -1,15 +1,15 @@
 const _ = require('lodash');
 const constants = require('../../constants');
-const dbMapServiceController = require('../../db/dbMapService');
+const masterDBController = require('../../db/masterDB');
 const DCSLuaCommands = require('../../player/DCSLuaCommands');
 const unitsStaticsController = require('../../serverToDbSync/unitsStatics');
 const webPushCommands = require('../../socketIO/webPush');
 
 _.set(exports, 'processEventCrash', function (serverName, sessionName, eventObj) {
 	// Occurs when any aircraft crashes into the ground and is completely destroyed.
-	dbMapServiceController.unitActions('read', serverName, {unitId: _.get(eventObj, ['data', 'arg3'])})
+	masterDBController.unitActions('read', serverName, {unitId: _.get(eventObj, ['data', 'arg3'])})
 		.then(function (iunit) {
-			dbMapServiceController.srvPlayerActions('read', serverName, {sessionName: sessionName})
+			masterDBController.srvPlayerActions('read', serverName, {sessionName: sessionName})
 				.then(function (playerArray) {
 					var iPlayer;
 					var iCurObj;
@@ -32,9 +32,9 @@ _.set(exports, 'processEventCrash', function (serverName, sessionName, eventObj)
 							};
 							if(_.get(iCurObj, 'iucid')) {
 								webPushCommands.sendToAll(serverName, {payload: {action: eventObj.action, data: _.cloneDeep(iCurObj)}});
-								dbMapServiceController.simpleStatEventActions('save', serverName, iCurObj);
+								masterDBController.simpleStatEventActions('save', serverName, iCurObj);
 							}
-							dbMapServiceController.srvPlayerActions('clearTempScore', serverName, {_id: _.get(iCurObj, 'iucid'), groupId: _.get(iCurObj, 'groupId')})
+							masterDBController.srvPlayerActions('clearTempScore', serverName, {_id: _.get(iCurObj, 'iucid'), groupId: _.get(iCurObj, 'groupId')})
 								.catch(function (err) {
 									console.log('line35', err);
 								})

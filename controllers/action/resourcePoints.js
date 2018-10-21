@@ -1,9 +1,9 @@
 const	_ = require('lodash');
-const dbMapServiceController = require('../db/dbMapService');
+const masterDBController = require('../db/masterDB');
 const DCSLuaCommands = require('../player/DCSLuaCommands');
 
 _.set(exports, 'spendResourcePoints', function (serverName, player, rsCost, rsItem, itemObj) {
-	return dbMapServiceController.unitActions('read', serverName, {unitId: _.toNumber(player.slot)})
+	return masterDBController.unitActions('read', serverName, {unitId: _.toNumber(player.slot)})
 		.then(function(cUnit) {
 			var mesg;
 			var currentObjUpdate;
@@ -12,7 +12,7 @@ _.set(exports, 'spendResourcePoints', function (serverName, player, rsCost, rsIt
 			if (curUnit.inAir) {
 			//if (true) {
 				/*
-				return dbMapServiceController.unitActions('read', serverName, {_id: curName})
+				return masterDBController.unitActions('read', serverName, {_id: curName})
 					.then(function(unitExist) {
 						if(unitExist.length > 0 && rsItem === 'Tanker') {
 							mesg = 'G: Tanker your trying to spawn already exists';
@@ -46,7 +46,7 @@ _.set(exports, 'spendResourcePoints', function (serverName, player, rsCost, rsIt
 							_id: player._id,
 							redRSPoints: player.redRSPoints - rsCost
 						};
-						return dbMapServiceController.srvPlayerActions('update', serverName, currentObjUpdate)
+						return masterDBController.srvPlayerActions('update', serverName, currentObjUpdate)
 							.then(function () {
 								mesg = 'G: You have spent red ' + rsCost + ' points on a ' + rsItem + '(' + currentObjUpdate.redRSPoints + 'pts left)';
 								DCSLuaCommands.sendMesgToGroup(
@@ -77,7 +77,7 @@ _.set(exports, 'spendResourcePoints', function (serverName, player, rsCost, rsIt
 							_id: player._id,
 							blueRSPoints: player.blueRSPoints - rsCost
 						};
-						return dbMapServiceController.srvPlayerActions('update', serverName, currentObjUpdate)
+						return masterDBController.srvPlayerActions('update', serverName, currentObjUpdate)
 							.then(function () {
 								mesg = 'G: You have spent ' + rsCost + ' blue points on a ' + rsItem + '(' + currentObjUpdate.blueRSPoints + 'pts left)';
 								DCSLuaCommands.sendMesgToGroup(
@@ -122,7 +122,7 @@ _.set(exports, 'spendResourcePoints', function (serverName, player, rsCost, rsIt
 
 _.set(exports, 'checkResourcePoints', function (serverName, player) {
 	if (player.name) {
-		dbMapServiceController.unitActions('read', serverName, {dead: false, playername: player.name})
+		masterDBController.unitActions('read', serverName, {dead: false, playername: player.name})
 			.then(function(cUnit) {
 				var mesg;
 				var curUnit = _.get(cUnit, [0]);

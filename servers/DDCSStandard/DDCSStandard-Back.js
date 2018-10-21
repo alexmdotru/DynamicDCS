@@ -15,7 +15,7 @@ var isDiscordAllowed = true;
 var masterServer = '192.168.44.60';
 var serverName = 'DDCSStandard';
 
-masterDBController.initDB(serverName);
+masterDBController.initDB(serverName, masterServer);
 
 constants.initServer(serverName)
 	.then(function () {
