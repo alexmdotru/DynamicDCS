@@ -3,50 +3,6 @@ const constants = require('../../controllers/constants');
 const masterDBController = require('../db/masterDB');
 const DCSLuaCommands = require('../player/DCSLuaCommands');
 
-//var oneHour = 600 * 1000;
-// updateServerLives
-/*
-	//HC server rules
-	"weaponRules": [
-		{
-			"desc": 'limited AA',
-			"maxTotalAllowed": NumberInt(2),
-			"weapons": [
-				"AIM-120B",
-				"AIM-120C",
-				"R-27ET",
-				"R-27ER",
-				"R-77"
-			]
-		},
-		{
-			"desc": 'banned',
-			"maxTotalAllowed": NumberInt(0),
-			"weapons": [
-				"weapons.bombs.RN-24",
-				"weapons.bombs.RN-28"
-			]
-		}
-	]
-	//Standard server rules
-	"weaponRules": [
-		{
-			"desc": 'banned',
-			"maxTotalAllowed": NumberInt(0),
-			"weapons": [
-				"AIM-120B",
-            	"AIM-120C",
-            	"R-27ET",
-            	"R-27ER",
-            	"R-77",
-            	"weapons.missiles.X_58",
- 				"weapons.bombs.RN-24",
- 				"weapons.bombs.RN-28",
-			]
-		}
-	]
-*/
-
 _.set(exports, 'checkWeaponComplianceOnTakeoff', function (serverName, iPlayer, curIUnit) {
 	// console.log('CWC: ', serverName, iPlayer, curIUnit);
 	var limitedWeapons = [];
@@ -84,9 +40,9 @@ _.set(exports, 'checkAircraftWeaponCompliance', function (serverName) {
 								.then(function(cUnit) {
 									if (cUnit.length > 0) {
 										var curUnit = _.get(cUnit, [0]);
-										var limitedWeapons = [];
-										var maxLimitedWeaponCount = 0;
                                         _.forEach(_.get(constants, 'config.weaponRules', []), function (weaponRule) {
+											var limitedWeapons = [];
+											var maxLimitedWeaponCount = 0;
                                             _.forEach(_.get(curUnit, 'ammo', []), function (value) {
                                                 var curTypeName = value.typeName;
                                                 if (_.includes(weaponRule.weapons, curTypeName)) {
