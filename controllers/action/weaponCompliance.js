@@ -5,9 +5,9 @@ const DCSLuaCommands = require('../player/DCSLuaCommands');
 
 _.set(exports, 'checkWeaponComplianceOnTakeoff', function (serverName, iPlayer, curIUnit) {
 	// console.log('CWC: ', serverName, iPlayer, curIUnit);
-	var limitedWeapons = [];
-	var maxLimitedWeaponCount = 0;
     _.forEach(_.get(constants, 'config.weaponRules', []), function (weaponRule) {
+		var limitedWeapons = [];
+		var maxLimitedWeaponCount = 0;
         _.forEach(_.get(curIUnit, 'ammo', []), function (value) {
             var curTypeName = value.typeName;
             if (_.includes(weaponRule.weapons, curTypeName)) {
