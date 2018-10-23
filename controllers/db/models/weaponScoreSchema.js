@@ -24,6 +24,11 @@ const WeaponScoreSchema = new Schema({
 			type: Number,
 			required: true,
 			default: 1
+		},
+		tier: {
+			type: Number,
+			required: true,
+			default: 0
 		}
 	},
 	{
