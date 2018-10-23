@@ -45,9 +45,13 @@ _.set(exports, 'checkAircraftWeaponCompliance', function (serverName) {
 											var maxLimitedWeaponCount = 0;
                                             _.forEach(_.get(curUnit, 'ammo', []), function (value) {
                                                 var curTypeName = value.typeName;
+												masterDBController.weaponScoreActions('check', {
+													typeName: curTypeName,
+													unitType: _.get(curUnit, 'type')
+												});
                                                 if (_.includes(weaponRule.weapons, curTypeName)) {
                                                     limitedWeapons.push(curTypeName);
-                                                    maxLimitedWeaponCount = maxLimitedWeaponCount + value.count;
+                                                    maxLimitedWeaponCount = maxLimitedWeaponCount + _.get(value, 'count');
                                                 }
                                             });
                                             if (maxLimitedWeaponCount > weaponRule.maxTotalAllowed && !_.get(curUnit, 'inAir', false)) {

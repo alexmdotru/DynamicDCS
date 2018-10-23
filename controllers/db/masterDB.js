@@ -390,8 +390,27 @@ _.assign(exports, {
 					});
 				});
 			}
+			if(action === 'check') {
+				WeaponScore.find({_id: obj.typeName}, function (err, weaponscore) {
+					if (err) {
+						console.log('line:396: ', err);
+					}
+					if (weaponscore.length === 0) {
+						const curWeaponScore = new WeaponScore({
+							_id: _.get(obj, 'typeName'),
+							name: _.get(obj, 'typeName'),
+							unitType: _.get(obj, 'unitType')
+						});
+						curWeaponScore.save(function (err) {
+							if (err) {
+								console.log('line:406: ', err);
+							}
+						});
+					}
+				});
+			}
 		} else {
-			return Promise.reject('line:392, failed to connect to master db');
+			console.log('line:422, failed to connect to master db');
 		}
 	}
 });
