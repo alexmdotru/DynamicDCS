@@ -4,6 +4,7 @@ const masterDBController = require('../../db/masterDB');
 const DCSLuaCommands = require('../../player/DCSLuaCommands');
 const groupController = require('../../spawn/group');
 const webPushCommands = require('../../socketIO/webPush');
+const userLivesController = require('../../action/userLives');
 
 _.set(exports, 'processEventLand', function (serverName, sessionName, eventObj) {
 	var place = '';
@@ -77,13 +78,12 @@ _.set(exports, 'processEventLand', function (serverName, sessionName, eventObj) 
 								msg: 'C: '+ _.get(curIUnit, 'type') + '(' + _.get(curIUnit, 'playername') + ') has landed' + place
 							};
 							if(_.get(iCurObj, 'iucid')) {
-
-								masterDBController.srvPlayerActions('addLifePoints', serverName, {
-									_id: iPlayer._id,
-									execAction: curIUnit.type + ' Land',
-									groupId: curIUnit.groupId,
-									addLifePoints: curLifePointVal
-								});
+								userLivesController.addLifePoints(
+									serverName,
+									iPlayer,
+									curIUnit,
+									'Land'
+								);
 								webPushCommands.sendToCoalition(serverName, {payload: {action: eventObj.action, data: _.cloneDeep(iCurObj)}});
 								masterDBController.simpleStatEventActions('save', serverName, iCurObj);
 							}

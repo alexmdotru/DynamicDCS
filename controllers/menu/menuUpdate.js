@@ -101,7 +101,8 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 	cmdArray = _.concat(cmdArray, [
 		'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "Lives")',
 		'missionCommands.addCommandForGroup("' + unit.groupId + '", "Time Until Restart", {"Lives"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "serverTimeLeft", ["type"] = "Server Time Left", ["unitId"] = ' + unit.unitId + '})',
-		'missionCommands.addCommandForGroup("' + unit.groupId + '", "Check Life Resource", {"Lives"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "checkLifeResource", ["type"] = "Check Life Resource", ["unitId"] = ' + unit.unitId + '})'
+		'missionCommands.addCommandForGroup("' + unit.groupId + '", "Lookup Aircraft Costs", {"Lives"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "lookupAircraftCosts", ["type"] = "Lookup Aircraft LP Costs", ["unitId"] = ' + unit.unitId + '})',
+		'missionCommands.addCommandForGroup("' + unit.groupId + '", "Check Life Resource", {"Lives"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "lookupLifeResource", ["type"] = "Check Life Resource", ["unitId"] = ' + unit.unitId + '})'
 	]);
 
 	cmdArray = _.concat(cmdArray, [

@@ -30,8 +30,11 @@ _.set(exports, 'menuCmdProcess', function (serverName, sessionName, pObj) {
 							if (pObj.cmd === 'serverTimeLeft') {
 								serverTimerController.timeLeft(serverName, curUnit);
 							}
-							if (pObj.cmd === 'checkLifeResource') {
-								userLivesController.checkLifeResource(serverName, curPlayer.ucid);
+							if (pObj.cmd === 'lookupAircraftCosts') {
+								userLivesController.lookupAircraftCosts(serverName, curPlayer.ucid);
+							}
+							if (pObj.cmd === 'lookupLifeResource') {
+								userLivesController.lookupLifeResource(serverName, curPlayer.ucid);
 							}
 							if (pObj.cmd === 'resourcePoints') {
 								resourcePointsController.checkResourcePoints(serverName, curPlayer);

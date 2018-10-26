@@ -29,6 +29,10 @@ const WeaponScoreSchema = new Schema({
 			type: Number,
 			required: true,
 			default: 0
+		},
+		fox2ModUnder2: {
+			type: Number,
+			default: 0
 		}
 	},
 	{

@@ -248,6 +248,7 @@ constants.initServer(serverName)
 				processTimedTenMinutes.processTenMinuteActions(serverName, sychrontronController.isServerSynced);
 			}
 		}, _.get(constants, 'time.tenMinutes'));
+		// }, _.get(constants, 'time.tenMinutes'));
 
 
 		setInterval(function () {

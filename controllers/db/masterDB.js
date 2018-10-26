@@ -366,6 +366,14 @@ _.assign(exports, {
 			const WeaponScore = curDBMaster.model('weaponScore', _.get(exports, 'dbObj.weaponScoreSchema'));
 			if(action === 'read') {
 				return new Promise(function(resolve, reject) {
+					WeaponScore.find(obj, function (err, weaponDictionary) {
+						if (err) { reject(err) }
+						resolve(weaponDictionary);
+					});
+				});
+			}
+			if(action === 'readWeapon') {
+				return new Promise(function(resolve, reject) {
 					WeaponScore.find({_id: obj.typeName}, function (err, weaponscore) {
 						if (err) { reject(err) }
 						if (weaponscore.length === 0) {
@@ -799,30 +807,35 @@ _.assign(exports, {
 
 			if (action === 'addLifePoints') {
 				return new Promise(function(resolve, reject) {
+					// if addLifePoints exists, use that and done reset lifepoint fly cache
 					SrvPlayer.find({_id: obj._id}, function (err, serverObj) {
+						var addPoints = (_.get(obj, 'addLifePoints')) ? _.get(obj, 'addLifePoints') : _.get(serverObj, [0, 'cachedRemovedLPPoints']);
 						var curAction = 'addLifePoint';
 						var curPlayerLifePoints = _.get(serverObj, [0, 'curLifePoints'], 0);
-						var curTotalPoints = (curPlayerLifePoints >= 0) ? curPlayerLifePoints + obj.addLifePoints : obj.addLifePoints;
+						var curTotalPoints = (curPlayerLifePoints >= 0) ? curPlayerLifePoints + addPoints : addPoints;
 						var maxLimitedPoints = (curTotalPoints > _.get(constants, 'maxLifePoints')) ? _.get(constants, 'maxLifePoints') : curTotalPoints;
 						var msg;
 						if (err) {
 							reject(err)
 						}
 						if (serverObj.length > 0) {
+							var setObj = {
+								curLifePoints: maxLimitedPoints,
+								lastLifeAction: curAction,
+								safeLifeActionTime: (nowTime + _.get(constants, 'time.fifteenSecs'))
+							};
+							if(!_.get(obj, 'addLifePoints')) {
+								_.set(setObj, 'cachedRemovedLPPoints', 0);
+							}
 							SrvPlayer.findOneAndUpdate(
 								{_id: obj._id},
-								{ $set: {
-										curLifePoints: maxLimitedPoints,
-										lastLifeAction: curAction,
-										safeLifeActionTime: (nowTime + _.get(constants, 'time.fifteenSecs'))
-									}
-								},
+								{ $set: setObj },
 								function(err, srvPlayer) {
 									if (err) { reject(err) }
 									if (obj.execAction === 'PeriodicAdd') {
-										msg = '+' + _.round(obj.addLifePoints, 2).toFixed(2) + 'LP(T:' + maxLimitedPoints.toFixed(2) + ')';
+										msg = '+' + _.round(addPoints, 2).toFixed(2) + 'LP(T:' + maxLimitedPoints.toFixed(2) + ')';
 									} else {
-										msg = 'You Have Just Gained ' + obj.addLifePoints.toFixed(2) + ' Life Points! ' + obj.execAction + '(Total:' + maxLimitedPoints.toFixed(2) + ')'
+										msg = 'You Have Just Gained ' + addPoints.toFixed(2) + ' Life Points! ' + obj.execAction + '(Total:' + maxLimitedPoints.toFixed(2) + ')'
 									}
 									if (obj.groupId) {
 										DCSLuaCommands.sendMesgToGroup( obj.groupId, serverName, msg, 5);
@@ -840,10 +853,12 @@ _.assign(exports, {
 			if (action === 'removeLifePoints') {
 				return new Promise(function(resolve, reject) {
 					SrvPlayer.find({_id: obj._id}, function (err, serverObj) {
-						var curAction = 'removeLifePoint';
+						var removePoints = _.get(obj, 'removeLifePoints');
+						var curAction = 'removeLifePoints';
 						var curPlayerObj = _.first(serverObj);
 						var curPlayerLifePoints = _.get(curPlayerObj, 'curLifePoints', 0);
-						var curTotalPoints = curPlayerLifePoints - obj.removeLifePoints;
+						var curTotalPoints = curPlayerLifePoints - removePoints;
+						var maxLimitedPoints = (curTotalPoints > _.get(constants, 'maxLifePoints')) ? _.get(constants, 'maxLifePoints') : curTotalPoints;
 						if (err) {
 							reject(err)
 						}
@@ -855,20 +870,24 @@ _.assign(exports, {
 									serverName,
 									curPlayerObj.playerId,
 									'You Do Not Have Enough Points To Fly This Vehicle' +
-									'{' + obj.removeLifePoints.toFixed(2) + '/' + curPlayerLifePoints.toFixed(2) + ')'
+									'{' + removePoints.toFixed(2) + '/' + curPlayerLifePoints.toFixed(2) + ')'
 								);
 								resolve(serverObj);
 							} else {
+								var setObj = {
+									curLifePoints: maxLimitedPoints,
+									lastLifeAction: curAction,
+									safeLifeActionTime: (nowTime + _.get(constants, 'time.fifteenSecs'))
+								};
+								if(_.get(obj, 'storePoints')) {
+									_.set(setObj, 'cachedRemovedLPPoints', _.get(obj, 'removeLifePoints'));
+								}
 								SrvPlayer.findOneAndUpdate(
 									{_id: obj._id},
-									{ $set: {
-											curLifePoints: curTotalPoints,
-											lastLifeAction: curAction,
-											safeLifeActionTime: (nowTime + _.get(constants, 'time.fifteenSecs'))
-										}},
+									{ $set: setObj },
 									function(err, srvPlayer) {
 										if (err) { reject(err) }
-										DCSLuaCommands.sendMesgToGroup( obj.groupId, serverName, 'You Have Just Used ' + obj.removeLifePoints.toFixed(2) + ' Life Points! ' + obj.execAction + '(Total:' + curTotalPoints.toFixed(2) + ')', 5);
+										DCSLuaCommands.sendMesgToGroup( obj.groupId, serverName, 'You Have Just Used ' + removePoints.toFixed(2) + ' Life Points! ' + obj.execAction + '(Total:' + curTotalPoints.toFixed(2) + ')', 5);
 										resolve(srvPlayer);
 									}
 								)

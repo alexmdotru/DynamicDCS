@@ -240,6 +240,18 @@ _.assign(exports, {
 			})
 			;
 	},
+	getWeaponDictionary: function () {
+		return masterDBController.weaponScoreActions('read')
+			.then(function (weaponsDic) {
+				return new Promise(function (resolve) {
+					resolve(weaponsDic);
+				});
+			})
+			.catch(function (err) {
+				console.log('err line310: ', err);
+			})
+		;
+	},
 	initServer: function ( serverName ) {
 		return exports.getStaticDictionary()
 			.then(function (staticDict) {
@@ -247,18 +259,21 @@ _.assign(exports, {
 				return exports.getUnitDictionary()
 					.then(function (unitDict) {
 						_.set(exports, 'unitDictionary', unitDict);
-						return exports.getBases(serverName)
-							.then(function (bases) {
-								_.set(exports, 'bases', bases);
-								return exports.getServer(serverName)
-									.then(function (server) {
-										_.set(exports, 'config', server);
+						return exports.getWeaponDictionary()
+							.then(function (weaponsDict){
+								_.set(exports, 'weaponsDictionary', weaponsDict);
+								return exports.getBases(serverName)
+									.then(function (bases) {
+										_.set(exports, 'bases', bases);
+										return exports.getServer(serverName)
+											.then(function (server) {
+												_.set(exports, 'config', server);
+											})
+										;
 									})
 								;
-
 							})
 						;
-
 					})
 				;
 			})

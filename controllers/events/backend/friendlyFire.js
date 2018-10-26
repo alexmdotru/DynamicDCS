@@ -52,28 +52,29 @@ _.set(exports, 'processFriendlyFire', function (serverName, sessionName, eventOb
 							.then(function (iunit) {
 								masterDBController.unitActions('read', serverName, {unitId: tPlayer.slot})
 									.then(function (tunit) {
-										curIUnit = _.get(iunit, 0);
-										curTUnit = _.get(tunit, 0);
-										var curTUnitDict = _.find(constants.unitDictionary, {_id: curTUnit.type});
-										var curTLifePointVal = (curTUnitDict) ? curTUnitDict.lifeCost : 1;
+										curIUnit = _.first(iunit);
+										curTUnit = _.first(tunit);
 										// console.log('player: ', iPlayer, tPlayer);
-										masterDBController.srvPlayerActions('removeLifePoints', serverName, {
-											_id: iPlayer.ucid,
-											execAction: 'Friendly Kill',
-											groupId: curIUnit.groupId,
-											removeLifePoints: 6
-										});
+										userLivesController.removeLifePoints(
+											serverName,
+											iPlayer,
+											curIUnit,
+											'Friendly Kill',
+											true,
+											6
+										);
 
 										if (curTUnit.inAir) {
-											masterDBController.srvPlayerActions('addLifePoints', serverName, {
-												_id: tPlayer.ucid,
-												execAction: 'Friendly Death',
-												groupId: curTUnit.groupId,
-												addLifePoints: curTLifePointVal
-											});
+											userLivesController.removeLifePoints(
+												serverName,
+												tPlayer,
+												curTUnit,
+												'Friendly Death',
+												false
+											);
 										}
 
-										mesg = 'A: ' + constants.side[iPlayer.side] +' ' + iPlayer.name + '(' + curIUnit.type + ':-6 LP) has hit friendly ' + tPlayer.name + '(' + curTUnit.type + ':+' + curTLifePointVal + ' LP) with a ' + _.get(eventObj, 'data.arg2', '?');
+										mesg = 'A: ' + constants.side[iPlayer.side] +' ' + iPlayer.name + '(' + curIUnit.type + ':-6 LP) has hit friendly ' + tPlayer.name + '(' + curTUnit.type + ':+LPLoss) with a ' + _.get(eventObj, 'data.arg2', '?');
 										DCSLuaCommands.sendMesgToCoalition(
 											iPlayer.side,
 											serverName,

@@ -51,6 +51,10 @@ const UnitDictionarySchema = new Schema({
 		lifeCost: {
 			type: Number,
 			default: 1
+		},
+		LPCost: {
+			type: Number,
+			default: 1
 		}
 	},
 	{

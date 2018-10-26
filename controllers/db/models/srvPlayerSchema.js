@@ -82,6 +82,10 @@ const srvPlayerSchema = new Schema({
 		gciAllowed: {
             type: Boolean,
             default: false
+		},
+		cachedRemovedLPPoints: {
+			type: Number,
+			default: 0
 		}
 	},
 	{

@@ -2,6 +2,7 @@ const _ = require('lodash');
 const constants = require('../../constants');
 const masterDBController = require('../../db/masterDB');
 const DCSLuaCommands = require('../../player/DCSLuaCommands');
+const userLivesController = require('../../action/userLives');
 const webPushCommands = require('../../socketIO/webPush');
 const weaponComplianceController = require('../../action/weaponCompliance');
 
@@ -39,12 +40,12 @@ _.set(exports, 'processEventTakeoff', function (serverName, sessionName, eventOb
 									roleCode: 'I',
 									msg: 'C: '+ _.get(curIUnit, 'type') + '('+_.get(curIUnit, 'playername')+') has taken off' + place
 								};
-								masterDBController.srvPlayerActions('removeLifePoints', serverName, {
-									_id: iPlayer._id,
-									execAction: curIUnit.type + ' Takeoff',
-									groupId: curIUnit.groupId,
-									removeLifePoints: curLifePointVal
-								});
+								userLivesController.removeLifePoints(
+									serverName,
+									iPlayer,
+									curIUnit,
+									'Takeoff'
+								);
 								webPushCommands.sendToCoalition(serverName, {payload: {action: eventObj.action, data: _.cloneDeep(iCurObj)}});
 								masterDBController.simpleStatEventActions('save', serverName, iCurObj);
 								/*
