@@ -145,10 +145,11 @@ _.assign(exports, {
 									var curUnitDictionary = _.find(_.get(constants, 'unitDictionary'), {_id: _.get(curUnit, 'type')});
 									var curUnitLPCost = (curUnitDictionary) ? _.get(curUnitDictionary, 'LPCost') : 1;
 									var curTopWeaponCost = 0;
+									var curWeaponLookup;
 									var foxAllowance;
 									var mantraCHK = 0;
+									var curTopAmmo = '';
 									var totalTakeoffCosts;
-									var curWeaponLookup;
 									var weaponCost;
 									_.forEach(_.get(curUnit, 'ammo', []), function (value) {
 										if (_.get(value, 'typeName') === 'MATRA') { mantraCHK += _.get(value, 'count')}
@@ -156,13 +157,16 @@ _.assign(exports, {
 										foxAllowance = (_.get(value, 'count') > 2) ? 0 : _.get(curWeaponLookup, 'fox2ModUnder2', 0);
 										foxAllowance = (mantraCHK > 2) ? 0 : foxAllowance;
 										weaponCost = _.get(curWeaponLookup, 'tier', 0) + foxAllowance;
-										curTopWeaponCost = (curTopWeaponCost > weaponCost) ? curTopWeaponCost : weaponCost;
+										if (curTopWeaponCost < weaponCost) {
+											curTopAmmo = _.last(_.split(_.get(value, 'typeName'), '.'));
+											curTopWeaponCost = weaponCost;
+										}
 									});
 									totalTakeoffCosts = curUnitLPCost + curTopWeaponCost;
 									DCSLuaCommands.sendMesgToGroup(
 										curUnit.groupId,
 										serverName,
-										"G: You aircraft costs " + totalTakeoffCosts.toFixed(2) + "(" + curUnitLPCost + ":" + curTopWeaponCost + ") Life Points.",
+										"G: You aircraft costs " + totalTakeoffCosts.toFixed(2) + "(" + curUnitLPCost + "(" + _.get(curUnit, 'type') + "):" + curTopWeaponCost + "(" + curTopAmmo + ") Life Points.",
 										5
 									);
 								}
