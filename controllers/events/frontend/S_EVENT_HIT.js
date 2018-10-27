@@ -138,7 +138,7 @@ _.set(exports, 'processEventHit', function (serverName, sessionName, eventObj) {
 
 									if (_.get(curIUnit, 'coalition', 0) !== _.get(curTUnit, 'coalition', 0)) {
 										var curWeapon = _.find(_.get(constants, 'weaponsDictionary'), {_id: _.get(eventObj, ['data', 'arg7', 'typeName'])} );
-										console.log('weap, dict: ', _.get(eventObj, ['data', 'arg7']), curWeapon);
+										console.log('dcsWeapObj: ', _.get(eventObj, ['data', 'arg7']));
 										if(curWeapon){
 											if (_.get(iCurObj, 'iucid') || _.get(iCurObj, 'tucid') || isOwnedUnit) {
 												if (_.startsWith(_.get(curWeapon, 'name'), 'weapons.shells')){
