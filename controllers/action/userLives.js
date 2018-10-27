@@ -166,7 +166,7 @@ _.assign(exports, {
 									DCSLuaCommands.sendMesgToGroup(
 										curUnit.groupId,
 										serverName,
-										"G: You aircraft costs " + totalTakeoffCosts.toFixed(2) + "(" + curUnitLPCost + "(" + _.get(curUnit, 'type') + "):" + curTopWeaponCost + "(" + curTopAmmo + ") Life Points.",
+										"G: You aircraft costs " + totalTakeoffCosts.toFixed(2) + "( " + curUnitLPCost + "(" + _.get(curUnit, 'type') + ")+" + curTopWeaponCost + "(" + curTopAmmo + ") ) Life Points.",
 										5
 									);
 								}
