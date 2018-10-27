@@ -141,7 +141,7 @@ _.set(exports, 'processEventHit', function (serverName, sessionName, eventObj) {
 										console.log('weap, dict: ', _.get(eventObj, ['data', 'arg7']), curWeapon);
 										if(curWeapon){
 											if (_.get(iCurObj, 'iucid') || _.get(iCurObj, 'tucid') || isOwnedUnit) {
-												if (_.startsWith(_.get(weaponResp, 'name'), 'weapons.shells')){
+												if (_.startsWith(_.get(curWeapon, 'name'), 'weapons.shells')){
 													_.set(exports.shootingUsers, [iUnitId, 'count'], _.get(exports.shootingUsers, [iUnitId, 'count'], 0)+1);
 													_.set(exports.shootingUsers, [iUnitId, 'startTime'], new Date().getTime());
 													_.set(exports.shootingUsers, [iUnitId, 'serverName'], serverName);
@@ -149,13 +149,13 @@ _.set(exports, 'processEventHit', function (serverName, sessionName, eventObj) {
 													_.set(exports.shootingUsers, [iUnitId, 'iUnitType'], _.get(iCurObj, 'iType'));
 													_.set(exports.shootingUsers, [iUnitId, 'iUnitCoalition'], _.get(iCurObj, 'iCoalition'));
 													_.set(iCurObj, 'msg',
-														'A: ' + constants.side[_.get(curIUnit, 'coalition')] + ' '+ iPName +' has hit ' + constants.side[_.get(curTUnit, 'coalition')]+' ' + tPName + ' '+_.get(exports.shootingUsers, [iUnitId, 'count'], 0)+' times with ' + _.get(weaponResp, 'displayName') + ' - +10'
+														'A: ' + constants.side[_.get(curIUnit, 'coalition')] + ' '+ iPName +' has hit ' + constants.side[_.get(curTUnit, 'coalition')]+' ' + tPName + ' '+_.get(exports.shootingUsers, [iUnitId, 'count'], 0)+' times with ' + _.get(curWeapon, 'displayName') + ' - +10'
 													);
-													// console.log('2: ', iCurObj.msg); //'+_.get(weaponResp, 'score')+'
+													// console.log('2: ', iCurObj.msg); //'+_.get(curWeapon, 'score')+'
 													_.set(exports.shootingUsers, [iUnitId, 'iCurObj'], _.cloneDeep(iCurObj));
 												} else {
-													_.set(iCurObj, 'score', _.get(weaponResp, 'score'));
-													_.set(iCurObj, 'msg', 'A: ' + constants.side[_.get(curIUnit, 'coalition')] + ' '+ iPName +' has hit ' + constants.side[_.get(curTUnit, 'coalition')] + ' '+tPName + ' with ' + _.get(weaponResp, 'displayName') + ' - +'+_.get(weaponResp, 'score'));
+													_.set(iCurObj, 'score', _.get(curWeapon, 'score'));
+													_.set(iCurObj, 'msg', 'A: ' + constants.side[_.get(curIUnit, 'coalition')] + ' '+ iPName +' has hit ' + constants.side[_.get(curTUnit, 'coalition')] + ' '+tPName + ' with ' + _.get(curWeapon, 'displayName') + ' - +'+_.get(curWeapon, 'score'));
 													// console.log('3: ', iCurObj.msg);
 													if(_.get(iCurObj, 'iucid') || _.get(iCurObj, 'tucid')) {
 														webPushCommands.sendToAll(serverName, {payload: {action: eventObj.action, data: _.cloneDeep(iCurObj)}});
