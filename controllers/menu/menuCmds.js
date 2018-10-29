@@ -1310,29 +1310,30 @@ _.set(exports, 'internalCargo', function (serverName, curUnit, curPlayer, intCar
 		}
 	}
 	if(intCargoType === 'unpack') {
-		proximityController.getLogiTowersProximity(serverName, curUnit.lonLatLoc, 1, curUnit.coalition)
-			.then(function (logiProx) {
-				var curIntCrateType = _.split(curUnit.intCargoType, '|')[1];
-				var curIntCrateBaseOrigin = _.split(curUnit.intCargoType, '|')[2];
-				var crateType = (curUnit.coalition === 1)?'UAZ-469':'Hummer';
-				if (logiProx.length) {
-					DCSLuaCommands.sendMesgToGroup(
-						curUnit.groupId,
-						serverName,
-						"G: You need to move farther away from Command Towers for internal cargo (1.5km)",
-						5
-					);
-				} else {
-					if (curUnit.inAir) {
-						DCSLuaCommands.sendMesgToGroup(
-							curUnit.groupId,
-							serverName,
-							"G: Please Land Before Attempting Cargo Commands!",
-							5
-						);
-					} else {
-						if (curIntCrateType) {
-							if(curIntCrateType === 'JTAC') {
+		var intCargo = _.split(curUnit.intCargoType, '|');
+		var curIntCrateType = intCargo[1];
+		var curIntCrateBaseOrigin = intCargo[2];
+		var crateType = (curUnit.coalition === 1)?'UAZ-469':'Hummer';
+		if (curUnit.inAir) {
+			DCSLuaCommands.sendMesgToGroup(
+				curUnit.groupId,
+				serverName,
+				"G: Please Land Before Attempting Cargo Commands!",
+				5
+			);
+		} else {
+			if (curIntCrateType) {
+				if(curIntCrateType === 'JTAC') {
+					proximityController.getLogiTowersProximity(serverName, curUnit.lonLatLoc, 1, curUnit.coalition)
+						.then(function (logiProx) {
+							if (logiProx.length) {
+								DCSLuaCommands.sendMesgToGroup(
+									curUnit.groupId,
+									serverName,
+									"G: You need to move farther away from Command Towers for internal cargo (1km)",
+									5
+								);
+							} else {
 								exports.unpackCrate(serverName, curUnit, curUnit.country, crateType, 'jtac', false, true);
 								masterDBController.unitActions('updateByUnitId', serverName, {unitId: curUnit.unitId, intCargoType: ''})
 									.then(function () {
@@ -1348,34 +1349,56 @@ _.set(exports, 'internalCargo', function (serverName, curUnit, curPlayer, intCar
 									})
 								;
 							}
-							if(curIntCrateType === 'BaseRepair') {
-								masterDBController.baseActions('read', serverName, {mainBase: true, side: curUnit.coalition})
-									.then(function (bases) {
-										_.forEach(bases, function (base) {
-											proximityController.getPlayersInProximity(serverName, _.get(base, 'centerLoc'), 3.4, false, base.side)
-												.then(function (unitsInProx) {
-													if(_.find(unitsInProx, {playername: curUnit.playername})) {
-														if (repairController.repairBase(serverName, base, curUnit, curIntCrateBaseOrigin)) {
-															masterDBController.unitActions('updateByUnitId', serverName, {unitId: curUnit.unitId, intCargoType: ''})
-																.catch(function (err) {
-																	console.log('erroring line209: ', err);
-																})
-															;
-														}
-													}
-												})
-												.catch(function (err) {
-													console.log('line 1297: ', err);
-												})
-											;
-										});
+						})
+						.catch(function(err) {
+							console.log('err line1072: ', err);
+						})
+					;
+				}
+				if(curIntCrateType === 'BaseRepair') {
+					masterDBController.baseActions('read', serverName, {mainBase: true, side: curUnit.coalition})
+						.then(function (bases) {
+							_.forEach(bases, function (base) {
+								proximityController.getPlayersInProximity(serverName, _.get(base, 'centerLoc'), 3.4, false, base.side)
+									.then(function (unitsInProx) {
+										if(_.find(unitsInProx, {playername: curUnit.playername})) {
+											if (_.get(base, 'name') + ' Logistics' !== crateOriginLogiName) {
+												if (repairController.repairBase(serverName, base, curUnit)) {
+
+												}
+											} else {
+												DCSLuaCommands.sendMesgToGroup(
+													curUnit.groupId,
+													serverName,
+													"G: Repair Crate Not Close Enough To Base, or Crate has originated from this base!",
+													5
+												);
+												console.log('line:1391: cant repair crate, created from same base: ', _.get(base, 'name'));
+											}
+										}
 									})
 									.catch(function (err) {
-										console.log('line 1303: ', err);
+										console.log('line 1297: ', err);
 									})
 								;
-							}
-							if(curIntCrateType === 'CCBuild') {  // serverName, curUnit, curPlayer, intCargoType
+							});
+						})
+						.catch(function (err) {
+							console.log('line 1303: ', err);
+						})
+					;
+				}
+				if(curIntCrateType === 'CCBuild') {  // serverName, curUnit, curPlayer, intCargoType
+					proximityController.getLogiTowersProximity(serverName, curUnit.lonLatLoc, 1, curUnit.coalition)
+						.then(function (logiProx) {
+							if (logiProx.length) {
+								DCSLuaCommands.sendMesgToGroup(
+									curUnit.groupId,
+									serverName,
+									"G: You need to move farther away from Command Towers for internal cargo (1km)",
+									5
+								);
+							} else {
 								constants.getServer(serverName)
 									.then(function(serverInfo) {
 										masterDBController.staticCrateActions('read', serverName, {playerOwnerId: curPlayer.ucid})
@@ -1435,21 +1458,21 @@ _.set(exports, 'internalCargo', function (serverName, curUnit, curPlayer, intCar
 									})
 								;
 							}
-						} else {
-							DCSLuaCommands.sendMesgToGroup(
-								curUnit.groupId,
-								serverName,
-								"G: No Internal Crates Onboard!",
-								5
-							);
-						}
-					}
+						})
+						.catch(function(err) {
+							console.log('err line1072: ', err);
+						})
+					;
 				}
-			})
-			.catch(function(err) {
-				console.log('err line1072: ', err);
-			})
-		;
+			} else {
+				DCSLuaCommands.sendMesgToGroup(
+					curUnit.groupId,
+					serverName,
+					"G: No Internal Crates Onboard!",
+					5
+				);
+			}
+		}
 	}
 	if(intCargoType === 'loadJTAC' || intCargoType === 'loadBaseRepair' || intCargoType === 'loadCCBuild') {
 		proximityController.getLogiTowersProximity(serverName, curUnit.lonLatLoc, 1.2, curUnit.coalition)
