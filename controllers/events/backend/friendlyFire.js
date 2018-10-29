@@ -65,7 +65,7 @@ _.set(exports, 'processFriendlyFire', function (serverName, sessionName, eventOb
 										);
 
 										if (curTUnit.inAir) {
-											userLivesController.removeLifePoints(
+											userLivesController.addLifePoints(
 												serverName,
 												tPlayer,
 												curTUnit,
