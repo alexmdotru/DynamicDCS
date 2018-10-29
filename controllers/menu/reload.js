@@ -15,32 +15,19 @@ _.set(exports, 'reloadSAM', function (serverName, unitCalling, crate) {
 						// console.log('samu: ', samUnits, closestUnit.groupName); closest unit can be the repair truck.... LOL FIX ME
 						if (samUnits.length) {
 							var curSamType = _.first(samUnits).type;
-							constants.unitDictionaryActions('read', {_id: curSamType, threatLvl: { $gt: 0 }})
-								.then(function (samUnitDict) {
-									//unit is multi, count mins, sum them, if true,
-									var curUnitDict = _.get(samUnitDict, [0]);
-									var curReloadArray = curUnitDict.reloadReqArray;
-									if(curReloadArray.length === _.intersection(curReloadArray, _.map(samUnits, 'type')).length) {
-										/*
-										_.forEach(samUnits, function (unit) {
-											groupController.destroyUnit(serverName, unit.name);
-										});
-										*/
-										//should spawn units with same names
-										groupController.spawnGroup(serverName, samUnits);
-									} else {
-										DCSLuaCommands.sendMesgToGroup(
-											unitCalling.groupId,
-											serverName,
-											"G: " + curSamType + " Is Too Damaged To Be Reloaded!",
-											5
-										);
-									}
-								})
-								.catch(function (err) {
-									console.log('line 112: ', err);
-								})
-							;
+							var curUnitDict = _.find(constants.unitDictionary, {_id: curSamType});
+							var curReloadArray = _.get(curUnitDict, 'reloadReqArray');
+							console.log('uD: ', curUnitDict);
+							if(curReloadArray.length === _.intersection(curReloadArray, _.map(samUnits, 'type')).length) {
+								groupController.spawnGroup(serverName, samUnits);
+							} else {
+								DCSLuaCommands.sendMesgToGroup(
+									unitCalling.groupId,
+									serverName,
+									"G: " + curSamType + " Is Too Damaged To Be Reloaded!",
+									5
+								);
+							}
 						}
 					})
 					.catch(function (err) {
