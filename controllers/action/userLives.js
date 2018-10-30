@@ -59,7 +59,7 @@ _.assign(exports, {
 		console.log('UPDATING LIFE POINTS');
 		exports.getPlayerBalance(serverName)
 			.then(function(playerBalance) {
-				console.log('pB: ', playerBalance);
+				// console.log('pB: ', playerBalance);
 				_.forEach(playerBalance.players, function (cPlayer) {
 					if (cPlayer) {
 						// if (!_.isEmpty(cPlayer.slot)) {
@@ -245,7 +245,7 @@ _.assign(exports, {
 		;
 	},
 	addLifePoints: function (serverName, curPlayer, curUnit, execAction, isDirect, addLP) {
-		console.log('addLife: ', serverName, curPlayer, curUnit, execAction, isDirect, addLP);
+		// console.log('addLife: ', serverName, curPlayer, curUnit, execAction, isDirect, addLP);
 		masterDBController.srvPlayerActions('addLifePoints', serverName, {
 			_id: curPlayer._id,
 			addLifePoints: addLP,
