@@ -16,23 +16,23 @@ _.assign(exports, {
 					return masterDBController.srvPlayerActions('read', serverName, {sessionName: latestSession.name})
 						.then(function (playerArray) {
 							_.forEach(playerArray, function (ePlayer) {
-								if ((new Date(_.get(ePlayer, 'updatedAt', 0)).getTime() + oneMin > nowTime) && ePlayer.slot) {
+								if ((new Date(_.get(ePlayer, 'updatedAt', 0)).getTime() + oneMin > nowTime) && ePlayer.slot !== '') {
 									_.set(serverAlloc, [_.get(ePlayer, 'side')], _.get(serverAlloc, [_.get(ePlayer, 'side')], []));
 									serverAlloc[_.get(ePlayer, 'side')].push(ePlayer);
 								}
 							});
 							redAll = _.size(_.get(serverAlloc, 1));
 							blueAll = _.size(_.get(serverAlloc, 2));
-							if(redAll < blueAll && redAll !== 0) {
+							if(redAll > blueAll && redAll !== 0) {
 								return {
 									side: 1,
-									modifier: (redAll/blueAll) + 1,
+									modifier: (blueAll/redAll),
 									players: playerArray
 								}
-							} else if (redAll > blueAll && blueAll !== 0) {
+							} else if (redAll < blueAll && blueAll !== 0) {
 								return {
 									side: 2,
-									modifier: (blueAll/redAll) + 1,
+									modifier: (redAll/blueAll),
 									players: playerArray
 								};
 							}
@@ -45,7 +45,7 @@ _.assign(exports, {
 						.catch(function (err) {
 							console.log('line41', err);
 						})
-						;
+					;
 				}
 			})
 			.catch(function (err) {
@@ -59,6 +59,7 @@ _.assign(exports, {
 		console.log('UPDATING LIFE POINTS');
 		exports.getPlayerBalance(serverName)
 			.then(function(playerBalance) {
+				console.log('pB: ', playerBalance);
 				_.forEach(playerBalance.players, function (cPlayer) {
 					if (cPlayer) {
 						// if (!_.isEmpty(cPlayer.slot)) {
@@ -244,6 +245,7 @@ _.assign(exports, {
 		;
 	},
 	addLifePoints: function (serverName, curPlayer, curUnit, execAction, isDirect, addLP) {
+		console.log('addLife: ', serverName, curPlayer, curUnit, execAction, isDirect, addLP);
 		masterDBController.srvPlayerActions('addLifePoints', serverName, {
 			_id: curPlayer._id,
 			addLifePoints: addLP,
