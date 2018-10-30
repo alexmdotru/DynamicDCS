@@ -1389,78 +1389,62 @@ _.set(exports, 'internalCargo', function (serverName, curUnit, curPlayer, intCar
 					;
 				}
 				if(curIntCrateType === 'CCBuild') {  // serverName, curUnit, curPlayer, intCargoType
-					proximityController.getLogiTowersProximity(serverName, curUnit.lonLatLoc, 1, curUnit.coalition)
-						.then(function (logiProx) {
-							if (logiProx.length) {
-								DCSLuaCommands.sendMesgToGroup(
-									curUnit.groupId,
-									serverName,
-									"G: You need to move farther away from Command Towers for internal cargo (1km)",
-									5
-								);
-							} else {
-								constants.getServer(serverName)
-									.then(function(serverInfo) {
-										masterDBController.staticCrateActions('read', serverName, {playerOwnerId: curPlayer.ucid})
-											.then(function(delCrates) {
-												_.forEach(delCrates, function (crate) {
-													if (crateCount > serverInfo.maxCrates - 2) {
-														masterDBController.staticCrateActions('delete', serverName, {
-															_id: crate._id
-														})
-															.catch(function (err) {
-																console.log('erroring line573: ', err);
-															})
-														;
-														groupController.destroyUnit(serverName, crate._id);
-													}
-													crateCount++;
-												});
-												crateObj = {
-													name: curUnit.intCargoType + '|#' + _.random(1000000, 9999999),
-													unitLonLatLoc: curUnit.lonLatLoc,
-													shape_name: 'iso_container_small_cargo',
-													category: 'Cargo',
-													type: 'iso_container_small',
-													heading: curUnit.hdg,
-													canCargo: true,
-													mass: 500,
-													playerOwnerId: curPlayer.ucid,
-													templateName: 'CCBuild',
-													special: curUnit.intCargoType,
-													crateAmt: 2,
-													isCombo: false,
-													playerCanDrive: false,
-													country: _.get(constants, ['defCountrys', curUnit.coalition]),
-													side: curUnit.coalition,
-													coalition: curUnit.coalition
-												};
-												crateController.spawnLogiCrate(serverName, crateObj, true);
-												masterDBController.unitActions('updateByUnitId', serverName, {unitId: curUnit.unitId, intCargoType: ''})
-													.catch(function (err) {
-														console.log('erroring line209: ', err);
-													})
-												;
-												DCSLuaCommands.sendMesgToGroup(
-													curUnit.groupId,
-													serverName,
-													"G: Command Center Build crate has been spawned!",
-													5
-												);
+					constants.getServer(serverName)
+						.then(function(serverInfo) {
+							masterDBController.staticCrateActions('read', serverName, {playerOwnerId: curPlayer.ucid})
+								.then(function(delCrates) {
+									_.forEach(delCrates, function (crate) {
+										if (crateCount > serverInfo.maxCrates - 2) {
+											masterDBController.staticCrateActions('delete', serverName, {
+												_id: crate._id
 											})
-											.catch(function (err) {
-												console.log('line 1359: ', err);
-											})
-										;
-									})
-									.catch(function (err) {
-										console.log('line 1359: ', err);
-									})
-								;
-							}
+												.catch(function (err) {
+													console.log('erroring line573: ', err);
+												})
+											;
+											groupController.destroyUnit(serverName, crate._id);
+										}
+										crateCount++;
+									});
+									crateObj = {
+										name: curUnit.intCargoType + '|#' + _.random(1000000, 9999999),
+										unitLonLatLoc: curUnit.lonLatLoc,
+										shape_name: 'iso_container_small_cargo',
+										category: 'Cargo',
+										type: 'iso_container_small',
+										heading: curUnit.hdg,
+										canCargo: true,
+										mass: 500,
+										playerOwnerId: curPlayer.ucid,
+										templateName: 'CCBuild',
+										special: curUnit.intCargoType,
+										crateAmt: 2,
+										isCombo: false,
+										playerCanDrive: false,
+										country: _.get(constants, ['defCountrys', curUnit.coalition]),
+										side: curUnit.coalition,
+										coalition: curUnit.coalition
+									};
+									crateController.spawnLogiCrate(serverName, crateObj, true);
+									masterDBController.unitActions('updateByUnitId', serverName, {unitId: curUnit.unitId, intCargoType: ''})
+										.catch(function (err) {
+											console.log('erroring line209: ', err);
+										})
+									;
+									DCSLuaCommands.sendMesgToGroup(
+										curUnit.groupId,
+										serverName,
+										"G: Command Center Build crate has been spawned!",
+										5
+									);
+								})
+								.catch(function (err) {
+									console.log('line 1359: ', err);
+								})
+							;
 						})
-						.catch(function(err) {
-							console.log('err line1072: ', err);
+						.catch(function (err) {
+							console.log('line 1359: ', err);
 						})
 					;
 				}
