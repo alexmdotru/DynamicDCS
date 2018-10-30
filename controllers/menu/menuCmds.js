@@ -1363,9 +1363,7 @@ _.set(exports, 'internalCargo', function (serverName, curUnit, curPlayer, intCar
 									.then(function (unitsInProx) {
 										if(_.find(unitsInProx, {playername: curUnit.playername})) {
 											if (_.get(base, 'name') + ' Logistics' !== curIntCrateBaseOrigin) {
-												if (repairController.repairBase(serverName, base, curUnit)) {
-
-												}
+												repairController.repairBase(serverName, base, curUnit);
 											} else {
 												DCSLuaCommands.sendMesgToGroup(
 													curUnit.groupId,
