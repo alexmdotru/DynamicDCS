@@ -247,7 +247,7 @@ _.assign(exports, {
 	},
 	addLifePoints: function (serverName, curPlayer, curUnit, execAction, isDirect, addLP) {
 		// console.log('addLife: ', serverName, curPlayer, curUnit, execAction, isDirect, addLP);
-		// console.log('name: ', _.get(curPlayer, 'name'), _.get(curPlayer, 'side'), addLP);
+		console.log('name: ', _.get(curPlayer, 'name'), _.get(curPlayer, 'side'), addLP);
 		masterDBController.srvPlayerActions('addLifePoints', serverName, {
 			_id: curPlayer._id,
 			addLifePoints: addLP,
