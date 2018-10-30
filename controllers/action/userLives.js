@@ -26,13 +26,13 @@ _.assign(exports, {
 							if(redAll > blueAll && redAll !== 0) {
 								return {
 									side: 1,
-									modifier: blueAll/(blueAll/redAll),
+									modifier: 1/(blueAll/redAll),
 									players: playerArray
 								}
 							} else if (redAll < blueAll && blueAll !== 0) {
 								return {
 									side: 2,
-									modifier: redAll/(redAll/blueAll),
+									modifier: 1/(redAll/blueAll),
 									players: playerArray
 								};
 							}
