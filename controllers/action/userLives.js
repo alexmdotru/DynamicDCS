@@ -69,6 +69,7 @@ _.assign(exports, {
 							} else {
 								addFracPoint = 1;
 							}
+							console.log('frac: ', cPlayer.name, cPlayer.side, playerBalance.side, addFracPoint);
 							masterDBController.unitActions('read', serverName, {dead: false, playername: cPlayer.name})
 								.then(function (cUnit) {
 									var curUnit = _.get(cUnit, [0]);
@@ -246,7 +247,7 @@ _.assign(exports, {
 	},
 	addLifePoints: function (serverName, curPlayer, curUnit, execAction, isDirect, addLP) {
 		// console.log('addLife: ', serverName, curPlayer, curUnit, execAction, isDirect, addLP);
-		console.log('name: ', _.get(curPlayer, 'name'), _.get(curPlayer, 'side'), addLP);
+		// console.log('name: ', _.get(curPlayer, 'name'), _.get(curPlayer, 'side'), addLP);
 		masterDBController.srvPlayerActions('addLifePoints', serverName, {
 			_id: curPlayer._id,
 			addLifePoints: addLP,
