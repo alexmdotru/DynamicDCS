@@ -64,15 +64,15 @@ _.assign(exports, {
 					if (cPlayer) {
 						// if (!_.isEmpty(cPlayer.slot)) {
 						if (!_.isEmpty(cPlayer.name)) {
-							if (cPlayer.side === playerBalance.side) {
-								addFracPoint = playerBalance.modifier
-							} else {
-								addFracPoint = 1;
-							}
-							console.log('frac: ', cPlayer.name, cPlayer.side, playerBalance.side, addFracPoint);
 							masterDBController.unitActions('read', serverName, {dead: false, playername: cPlayer.name})
 								.then(function (cUnit) {
-									var curUnit = _.get(cUnit, [0]);
+									var curUnit = _.first(cUnit);
+									if (cPlayer.side === playerBalance.side) {
+										addFracPoint = playerBalance.modifier
+									} else {
+										addFracPoint = 1;
+									}
+									console.log('frac: ', cPlayer.name, cPlayer.side, playerBalance.side, addFracPoint);
 									if (curUnit) {
 										exports.addLifePoints(
 											serverName,
