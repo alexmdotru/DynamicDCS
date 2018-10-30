@@ -1362,7 +1362,7 @@ _.set(exports, 'internalCargo', function (serverName, curUnit, curPlayer, intCar
 								proximityController.getPlayersInProximity(serverName, _.get(base, 'centerLoc'), 3.4, false, base.side)
 									.then(function (unitsInProx) {
 										if(_.find(unitsInProx, {playername: curUnit.playername})) {
-											if (_.get(base, 'name') + ' Logistics' !== crateOriginLogiName) {
+											if (_.get(base, 'name') + ' Logistics' !== curIntCrateBaseOrigin) {
 												if (repairController.repairBase(serverName, base, curUnit)) {
 
 												}
