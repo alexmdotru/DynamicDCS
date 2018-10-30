@@ -26,13 +26,13 @@ _.assign(exports, {
 							if(redAll > blueAll && redAll !== 0) {
 								return {
 									side: 1,
-									modifier: (blueAll/redAll),
+									modifier: blueAll/(blueAll/redAll),
 									players: playerArray
 								}
 							} else if (redAll < blueAll && blueAll !== 0) {
 								return {
 									side: 2,
-									modifier: (redAll/blueAll),
+									modifier: redAll/(redAll/blueAll),
 									players: playerArray
 								};
 							}
@@ -68,9 +68,9 @@ _.assign(exports, {
 								.then(function (cUnit) {
 									var curUnit = _.first(cUnit);
 									if (cPlayer.side === playerBalance.side) {
-										addFracPoint = playerBalance.modifier
-									} else {
 										addFracPoint = 1;
+									} else {
+										addFracPoint = playerBalance.modifier
 									}
 									// console.log('frac: ', cPlayer.name, cPlayer.side, playerBalance.side, addFracPoint);
 									if (curUnit) {
@@ -247,7 +247,7 @@ _.assign(exports, {
 	},
 	addLifePoints: function (serverName, curPlayer, curUnit, execAction, isDirect, addLP) {
 		// console.log('addLife: ', serverName, curPlayer, curUnit, execAction, isDirect, addLP);
-		// console.log('name: ', _.get(curPlayer, 'name'), _.get(curPlayer, 'side'), addLP);
+		console.log('name: ', _.get(curPlayer, 'name'), _.get(curPlayer, 'side'), addLP);
 		masterDBController.srvPlayerActions('addLifePoints', serverName, {
 			_id: curPlayer._id,
 			addLifePoints: addLP,
