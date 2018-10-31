@@ -1,40 +1,41 @@
 const	_ = require('lodash');
-const constants = require('../../controllers/constants');
+const constants = require('../constants');
 const DCSLuaCommands = require('../player/DCSLuaCommands');
 
-var curSecs = 0;
-var maxTime = 18000;
 var cntr = 10;
+var curSecs = 0;
+var maxTime = _.get(constants, 'config.restartTime');
 var mesg;
+var oneHour = _.get(constants, 'time.oneHour');
 
-exports.timerObj = {};
+_.set(exports, 'timerObj', {});
 
 //only 5 hour rotation allowed atm
 _.set(exports, 'processTimer', function (serverName, serverSecs) {
+	mesg = null;
 	curSecs = serverSecs;
-
 	//5 hours
 	// if (serverSecs > 3600 && !_.get(exports, 'timerObj.fiveHours')) {
 	//	mesg = 'Server is restarting in 5 hours!';
 	//	_.set(exports, 'timerObj.fiveHours', true)
 	// }
 	//4 hours
-	if (serverSecs > (maxTime - (3600 * 4)) && !_.get(exports, 'timerObj.fourHours')) {
+	if (serverSecs > (maxTime - (oneHour * 4)) && !_.get(exports, 'timerObj.fourHours')) {
 		mesg = 'Server is restarting in 4 hours!';
 		_.set(exports, 'timerObj.fourHours', true)
 	}
 	//3 hours
-	if (serverSecs > (maxTime - (3600 * 3)) && !_.get(exports, 'timerObj.threeHours')) {
+	if (serverSecs > (maxTime - (oneHour * 3)) && !_.get(exports, 'timerObj.threeHours')) {
 		mesg = 'Server is restarting in 3 hours!';
 		_.set(exports, 'timerObj.threeHours', true)
 	}
 	//2 hours
-	if (serverSecs > (maxTime - (3600 * 2)) && !_.get(exports, 'timerObj.twoHours')) {
+	if (serverSecs > (maxTime - (oneHour * 2)) && !_.get(exports, 'timerObj.twoHours')) {
 		mesg = 'Server is restarting in 2 hours!';
 		_.set(exports, 'timerObj.twoHours', true)
 	}
 	//1 hour
-	if (serverSecs > (maxTime - 3600) && !_.get(exports, 'timerObj.oneHour')) {
+	if (serverSecs > (maxTime - oneHour) && !_.get(exports, 'timerObj.oneHour')) {
 		mesg = 'Server is restarting in 1 hour!';
 		_.set(exports, 'timerObj.oneHour', true)
 	}
@@ -73,7 +74,6 @@ _.set(exports, 'processTimer', function (serverName, serverSecs) {
 		mesg = 'Server is restarting in 2 minutes!';
 		_.set(exports, 'timerObj.twoMinutes', true)
 	}
-
 	//1 min
 	if (serverSecs > (maxTime - 60) && !_.get(exports, 'timerObj.oneMinute')) {
 		mesg = 'Server is restarting in 1 minute!';
@@ -89,8 +89,8 @@ _.set(exports, 'processTimer', function (serverName, serverSecs) {
 			);
 	} else {
 		if (mesg) {
+			console.log('serverMesg: ', serverName, mesg);
 			DCSLuaCommands.sendMesgToAll(serverName, mesg, 20);
-			mesg = null;
 		}
 	}
 });

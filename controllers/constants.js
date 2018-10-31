@@ -176,7 +176,7 @@ _.assign(exports, {
 		fifteenSecs: 15 * 1000,
 		fiveMins: 5 * 60 * 1000,
 		fiveSecs: 5 * 1000,
-		oneHour: 60 * 60 * 100,
+		oneHour: 60 * 60 * 1000,
 		oneMin: 60 * 1000,
 		thirtySecs: 30 * 1000,
 		tenMinutes: 10 * 60 * 1000
