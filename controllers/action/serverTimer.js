@@ -12,7 +12,7 @@ _.set(exports, 'timerObj', {});
 
 //only 5 hour rotation allowed atm
 _.set(exports, 'processTimer', function (serverName, serverSecs) {
-	console.log('maxTime: ', maxTime, _.get(constants, 'config'));
+	console.log('maxTime: ', maxTime, _.get(constants, 'config.restartTime'), _.get(constants, ['config', 'restartTime']));
 	mesg = null;
 	curSecs = serverSecs;
 	//5 hours
