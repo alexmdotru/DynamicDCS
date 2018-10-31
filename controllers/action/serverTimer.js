@@ -4,7 +4,7 @@ const DCSLuaCommands = require('../player/DCSLuaCommands');
 
 var cntr = 10;
 var curSecs = 0;
-var maxTime = _.get(constants, 'config.restartTime');
+var maxTime = _.cloneDeep(_.get(constants, 'config.restartTime'));
 var mesg;
 var oneHour = _.get(constants, 'time.oneHour');
 
@@ -12,6 +12,7 @@ _.set(exports, 'timerObj', {});
 
 //only 5 hour rotation allowed atm
 _.set(exports, 'processTimer', function (serverName, serverSecs) {
+	console.log('maxTime: ', maxTime);
 	mesg = null;
 	curSecs = serverSecs;
 	//5 hours
@@ -117,16 +118,6 @@ _.set(exports, 'restartServer', function (serverName, curMap, rotationObj) {
 	}
 });
 
-_.set(exports, 'timeLeft', function (serverName, curUnit) {
-	var formatTime = exports.secondsToHms(maxTime - curSecs);
-	DCSLuaCommands.sendMesgToGroup(
-		curUnit.groupId,
-		serverName,
-		"G: Server has " + formatTime + " left till restart!",
-		5
-	);
-});
-
 _.set(exports, 'secondsToHms', function (d) {
 	d = Number(d);
 	var h = Math.floor(d / 3600);
@@ -137,4 +128,14 @@ _.set(exports, 'secondsToHms', function (d) {
 	var mDisplay = m > 0 ? m + (m === 1 ? " minute, " : " minutes") : "";
 	// var sDisplay = s > 0 ? s + (s === 1 ? " second" : " seconds") : "";
 	return hDisplay + mDisplay;
+});
+
+_.set(exports, 'timeLeft', function (serverName, curUnit) {
+	var formatTime = exports.secondsToHms(maxTime - curSecs);
+	DCSLuaCommands.sendMesgToGroup(
+		curUnit.groupId,
+		serverName,
+		"G: Server has " + formatTime + " left till restart!",
+		5
+	);
 });
