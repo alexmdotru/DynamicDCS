@@ -4,7 +4,7 @@ const DCSLuaCommands = require('../player/DCSLuaCommands');
 
 var cntr = 10;
 var curSecs = 0;
-var maxTime = _.cloneDeep(_.get(constants, 'config.restartTime'));
+var maxTime = _.get(constants, 'config.restartTime');
 var mesg;
 var oneHour = _.get(constants, 'time.oneHour');
 
@@ -12,7 +12,7 @@ _.set(exports, 'timerObj', {});
 
 //only 5 hour rotation allowed atm
 _.set(exports, 'processTimer', function (serverName, serverSecs) {
-	console.log('maxTime: ', maxTime);
+	console.log('maxTime: ', maxTime, constants);
 	mesg = null;
 	curSecs = serverSecs;
 	//5 hours
