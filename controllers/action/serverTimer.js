@@ -95,6 +95,10 @@ _.set(exports, 'processTimer', function (serverName, serverSecs) {
 	}
 });
 
+_.set(exports, 'resetTimerObj', function () {
+	_.set(exports, 'timerObj', {});
+});
+
 _.set(exports, 'restartServer', function (serverName, curMap, rotationObj) {
 	var curMapIndex = _.findIndex(rotationObj, function(o) { return o === curMap; });
 	if (cntr === 10) {

@@ -7,6 +7,7 @@ const crateController = require('../spawn/crate');
 const sideLockController = require('../action/sideLock');
 const taskController = require('../action/task');
 const baseSpawnFlagsController = require('../action/baseSpawnFlags');
+const serverTimerController = require('../action/serverTimer');
 
 var mesg;
 var masterUnitCount;
@@ -29,6 +30,7 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 					exports.isServerSynced = false;
 					isServerFresh = true;
 					if (!exports.isSyncLockdownMode) {
+						serverTimerController.resetTimerObj();
 						exports.isSyncLockdownMode = true; // lock down all traffic until sync is complete
 						masterDBController.cmdQueActions('removeall', serverName, {})
 							.then(function () {
