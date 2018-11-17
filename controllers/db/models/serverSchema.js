@@ -119,6 +119,11 @@ const ServerSchema = new Schema({
 		canSeeUnits: {
 			type: Boolean,
 			default: false
+		},
+		season: {
+			type: String,
+			required: true,
+			default: 'Summer'
 		}
 	},
 	{
