@@ -94,7 +94,7 @@ _.set(exports, 'processTimer', function (serverName, serverSecs) {
 						serverName,
 						_.get(server, [0, 'curFilePath']) + '_' +
 						_.get(server, [0, 'curSeason']) + '_' +
-						_.get(server, [0, 'mapCount']) + '.miz'
+						_.random(1, _.get(server, [0, 'mapCount'])) + '.miz'
 					);
 					lastSentLoader = curTime;
 				})
