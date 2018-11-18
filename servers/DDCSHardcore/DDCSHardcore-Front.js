@@ -249,7 +249,6 @@ constants.initServer(serverName)
 			}
 		}, _.get(constants, 'time.tenMinutes'));
 
-
 		setInterval(function () {
 			if (constants.bases) {
 				if (!_.get(exports, ['DCSSocket', 'connOpen'], true)) {
