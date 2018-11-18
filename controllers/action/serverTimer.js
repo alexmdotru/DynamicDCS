@@ -1,9 +1,12 @@
 const	_ = require('lodash');
 const constants = require('../constants');
 const DCSLuaCommands = require('../player/DCSLuaCommands');
+const masterDBController = require('../db/masterDB');
 
 var cntr = 10;
 var curSecs = 0;
+var curTime = new Date().getTime();
+var lastSentLoader = _.cloneDeep(curTime);
 var maxTime;
 var mesg;
 var oneHour = _.get(constants, 'time.oneHour');
@@ -83,11 +86,23 @@ _.set(exports, 'processTimer', function (serverName, serverSecs) {
 	//restart server
 	if (serverSecs > maxTime) {
 		//restart server on next or same map depending on rotation
-			exports.restartServer(
-				serverName,
-				_.get(exports, 'timerObj.curMap'),
-				_.get(constants, 'config.mapRotation')
-			);
+		curTime = new Date().getTime();
+		if (curTime > lastSentLoader + _.get(constants, 'time.oneMin')) {
+			masterDBController.serverActions('read', {_id: serverName})
+				.then(function (server) {
+					exports.restartServer(
+						serverName,
+						_.get(server, [0, 'curFilePath']) + '_' +
+						_.get(server, [0, 'curSeason']) + '_' +
+						_.get(server, [0, 'mapCount']) + '.miz'
+					);
+					lastSentLoader = curTime;
+				})
+				.catch(function (err) {
+					console.log('line73: ', err);
+				})
+			;
+		}
 	} else {
 		if (mesg) {
 			console.log('serverMesg: ', serverName, mesg);
@@ -100,22 +115,9 @@ _.set(exports, 'resetTimerObj', function () {
 	_.set(exports, 'timerObj', {});
 });
 
-_.set(exports, 'restartServer', function (serverName, curMap, rotationObj) {
-	var curMapIndex = _.findIndex(rotationObj, function(o) { return o === curMap; });
-	if (cntr === 10) {
-        if (rotationObj[curMapIndex+1]) {
-            console.log('Loading Map: ', rotationObj[curMapIndex+1]);
-            DCSLuaCommands.loadMission(serverName, rotationObj[curMapIndex+1]);
-            _.set(exports, 'timerObj.curMap', rotationObj[curMapIndex+1]);
-        } else {
-            console.log('Loading Map: ', _.first(rotationObj));
-            DCSLuaCommands.loadMission(serverName, _.first(rotationObj));
-            _.set(exports, 'timerObj.curMap', _.first(rotationObj));
-        }
-        cntr = 0;
-	} else {
-        cntr++;
-	}
+_.set(exports, 'restartServer', function (serverName, newMap) {
+	console.log('Loading Map: ', newMap);
+	DCSLuaCommands.loadMission(serverName, newMap);
 });
 
 _.set(exports, 'secondsToHms', function (d) {

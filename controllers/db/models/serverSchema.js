@@ -120,10 +120,18 @@ const ServerSchema = new Schema({
 			type: Boolean,
 			default: false
 		},
-		season: {
+		curSeason: {
 			type: String,
 			required: true,
 			default: 'Summer'
+		},
+		mapCount: {
+			type: Number,
+			required: true,
+			default: 1
+		},
+		curFilePath: {
+			type: String
 		}
 	},
 	{

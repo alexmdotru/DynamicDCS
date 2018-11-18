@@ -145,6 +145,12 @@ _.assign(exports, {
 		'UNITED_ARAB_EMIRATES',
 		'TURKEY'
 	],
+	seasons: [
+		'Autumn',
+		'Spring',
+		'Summer',
+		'Winter'
+	],
 	side: [
 		"neutral",
 		"red",

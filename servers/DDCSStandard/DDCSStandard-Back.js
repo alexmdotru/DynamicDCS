@@ -8,11 +8,13 @@ const selfKillEvent = require('../../controllers/events/backend/selfKill');
 const connectEvent = require('../../controllers/events/backend/connect');
 const disconnectEvent = require('../../controllers/events/backend/disconnect');
 const commsUserProcessing = require('../../controllers/discordBot/commsUserProcessing');
+const serverTimerController = require('../../controllers/action/serverTimer');
 
 //config
 var commsCounter = 0;
 var masterServer = '192.168.44.60';
 var serverName = 'DDCSStandard';
+var lastSentLoader;
 
 masterDBController.initDB(serverName, masterServer);
 
@@ -36,6 +38,7 @@ constants.initServer(serverName)
 					if (latestSession) {
 						if (_.get(exports, 'sessionName') !== latestSession.name) {
 							console.log('New Session: ', latestSession);
+							lastSentLoader = new Date().getTime();
 							_.set(exports, 'sessionName', latestSession.name);
 						}
 					}
@@ -47,9 +50,38 @@ constants.initServer(serverName)
 		});
 
 		_.set(exports, 'socketCallback', function (serverName, cbArray) {
+			var curTime;
+			var missionArray;
+			var missionFileArray;
+			var missionPath;
 			// console.log('BB: ', cbArray.que);
 			exports.getLatestSession(serverName);
 			_.forEach(_.get(cbArray, 'que', []), function (queObj) {
+				if (_.get(queObj, 'action') === 'mission') {
+					curTime = new Date().getTime();
+					missionArray = _.split(_.get(queObj, 'data'), '\\');
+					missionFileArray = _.split(_.last(missionArray), '_');
+					if (_.last(missionFileArray) === 'Loader.miz' && curTime > lastSentLoader + _.get(constants, 'time.oneMin')) {
+						missionArray.pop();
+						missionPath = _.join(missionArray, '/') + '/' + _.first(missionFileArray);
+						masterDBController.serverActions('update', {
+							name: serverName,
+							curFilePath: missionPath
+						})
+							.catch(function (err) {
+								console.log('line73: ', err);
+							})
+						;
+						// console.log('mis: ', missionArray, missionPath); lastSentLoader curFilePath
+						serverTimerController.restartServer(
+							serverName,
+							missionPath + '_' +
+							_.get(constants, 'config.curSeason') + '_' +
+							_.random(1, _.get(constants, 'config.mapCount')) + '.miz'
+						);
+						lastSentLoader = curTime;
+					}
+				}
 				if (_.get(queObj, 'action') === 'players') {
 					playersEvent.processPlayerEvent(serverName, exports.sessionName, queObj);
 					if (commsCounter > 59) {
@@ -75,7 +107,6 @@ constants.initServer(serverName)
 				if (_.get(queObj, 'action') === 'disconnect') {
 					disconnectEvent.processDisconnect(serverName, exports.sessionName, queObj);
 				}
-
 			});
 		});
 	})
