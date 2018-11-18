@@ -82,7 +82,7 @@ local function getDataMessage()
 	--log(JSON:encode(playerSync()))
 	dynDCS.curPlayers = dynDCS.playerSync()
 	table.insert(payload.que, dynDCS.curPlayers)
-	table.insert(payload.que, {["actions"] = 'mission', ["data"] = DCS.getMissionFilename()})
+	table.insert(payload.que, {["action"] = 'mission', ["data"] = DCS.getMissionFilename()})
 	return payload
 end
 
