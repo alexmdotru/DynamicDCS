@@ -1441,6 +1441,7 @@ _.set(exports, 'spawnBomberPlane', function (serverName, playerUnitObj, bomberOb
 	var remoteLoc;
 	var closeLoc;
 	var curCategory = 'AIRPLANE';
+	var randomDir = _.random(0, 359);
 
 	curCountry = bomberObj.country;
 	curTkrName = 'AI|' + bomberObj.name + '|';
@@ -1449,8 +1450,8 @@ _.set(exports, 'spawnBomberPlane', function (serverName, playerUnitObj, bomberOb
 	masterDBController.baseActions('getClosestEnemyBase', serverName, { unitLonLatLoc: playerUnitObj.lonLatLoc, playerSide: playerUnitObj.coalition})
 		.then(function (closeBase) {
 			// console.log('CB: ', closeBase);
-			remoteLoc = zoneController.getLonLatFromDistanceDirection(closeBase.centerLoc, closeBase.spawnAngle, curSpwnUnit.spawnDistance);
-			closeLoc = zoneController.getLonLatFromDistanceDirection(closeBase.centerLoc, closeBase.spawnAngle, 7);
+			remoteLoc = zoneController.getLonLatFromDistanceDirection(closeBase.centerLoc, randomDir, curSpwnUnit.spawnDistance);
+			closeLoc = zoneController.getLonLatFromDistanceDirection(closeBase.centerLoc, randomDir, 7);
 
 			curGrpObj = _.cloneDeep(curSpwnUnit);
 			_.set(curGrpObj, 'groupName', curTkrName + '#' + _.random(1000000, 9999999));
@@ -1484,7 +1485,7 @@ _.set(exports, 'spawnBomberPlane', function (serverName, playerUnitObj, bomberOb
 			var actionObj = {actionObj: sendClient, queName: 'clientArray'};
 			masterDBController.cmdQueActions('save', serverName, actionObj)
 				.then(function () {
-					var mesg = 'C: ' + bomberObj.type + ' Bomber is commencing its run BRA ' + closeBase.spawnAngle + ' from ' + closeBase.name + ' ' + bomberObj.details;
+					var mesg = 'C: ' + bomberObj.type + ' Bomber is commencing its run BRA ' + randomDir + ' from ' + closeBase.name + ' ' + bomberObj.details;
 					DCSLuaCommands.sendMesgToCoalition(
 						playerUnitObj.coalition,
 						serverName,
@@ -1640,6 +1641,7 @@ _.set(exports, 'spawnSupportPlane', function (serverName, baseObj, side, farpBas
 	var baseLoc;
 	var remoteLoc;
 	var grpNum = _.random(1000000, 9999999);
+	var randomDir = _.random(0, 359);
 
 	curSide = (side) ? _.get(constants, ['defCountrys', side]) : _.get(constants, ['defCountrys', _.get(curGrpObj, 'coalition')]);
 	curBaseName = 'AI|1010101|' + _.get(baseObj, 'name') + '|LOGISTICS|';
@@ -1654,10 +1656,10 @@ _.set(exports, 'spawnSupportPlane', function (serverName, baseObj, side, farpBas
 	if(_.get(baseObj, 'farp')) {
 		curSpwnUnit = _.cloneDeep(_.first(exports.getRndFromSpawnCat( 'transportHeli', side, true, true )));
 		// remoteLoc = zoneController.getLonLatFromDistanceDirection(baseLoc, _.get(baseObj, 'spawnAngle'), 40);
-		remoteLoc = zoneController.getLonLatFromDistanceDirection(baseLoc, _.random(0, 359), 40);
+		remoteLoc = zoneController.getLonLatFromDistanceDirection(baseLoc, randomDir, 40);
 	} else {
 		curSpwnUnit = _.cloneDeep(_.first(exports.getRndFromSpawnCat( 'transportAircraft', side, true, true )));
-		remoteLoc = zoneController.getLonLatFromDistanceDirection(baseLoc, _.get(baseObj, 'spawnAngle'), 70);
+		remoteLoc = zoneController.getLonLatFromDistanceDirection(baseLoc, randomDir, 70);
 		// remoteLoc = zoneController.getLonLatFromDistanceDirection(baseLoc, _.random(0, 359), 70);
 	}
 	curGrpObj = _.cloneDeep(curSpwnUnit);
