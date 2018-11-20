@@ -565,13 +565,11 @@ _.set(exports, 'loadTroops', function(serverName, unitId, troopType) {
 					.then(function (bases) {
 						var checkAllBase = [];
 						_.forEach(bases, function (base) {
-							if (base.logiCenter) {
-								checkAllBase.push(proximityController.isPlayerInProximity(serverName, base.centerLoc, 3.4, curUnit.playername)
-									.catch(function (err) {
-										console.log('line 59: ', err);
-									})
-								)
-							}
+							checkAllBase.push(proximityController.isPlayerInProximity(serverName, base.centerLoc, 3.4, curUnit.playername)
+								.catch(function (err) {
+									console.log('line 59: ', err);
+								})
+							)
 						});
 
 						Promise.all(checkAllBase)
@@ -724,11 +722,13 @@ _.set(exports, 'spawnCrateFromLogi', function (serverName, unit, type, crates, c
 							masterDBController.baseActions('read', serverName)
 								.then(function (bases) {
 									var checkAllBase = [];
+									var curLogistic;
 									masterDBController.unitActions('read', serverName, {_id:  /Logistics/, dead: false, coalition: unit.coalition})
 										.then(function(aliveBases) {
 											_.forEach(bases, function (base) {
-												if (base.logiCenter && !!_.find(aliveBases, {name: base.name + ' Logistics'})) {
-													checkAllBase.push(proximityController.isPlayerInProximity(serverName, base.logiCenter, 0.2, unit.playername)
+												curLogistic = _.find(aliveBases, {name: base.name + ' Logistics'});
+												if (!!curLogistic) {
+													checkAllBase.push(proximityController.isPlayerInProximity(serverName, _.get(curLogistic, 'lonLatLoc'), 0.2, unit.playername)
 														.catch(function (err) {
 															console.log('line 59: ', err);
 														})

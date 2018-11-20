@@ -1790,7 +1790,7 @@ _.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {
 			curUnitName = baseName + ' #' + unitNum;
 
 			if (_.isUndefined(_.get(curSpwnUnit, 'lonLatLoc'))) {
-				_.set(curSpwnUnit, 'lonLatLoc', zoneController.getRandomLatLonFromBase(serverName, baseName));
+				_.set(curSpwnUnit, 'lonLatLoc', zoneController.getRandomLatLonFromBase(serverName, baseName, 'unitPoly'));
 			}
 			// _.set(curSpwnUnit, 'unitId', _.get(curSpwnUnit, 'unitId', unitNum));
 			_.set(curSpwnUnit, 'name', _.get(curSpwnUnit, 'name', curUnitName));
@@ -1814,7 +1814,6 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 	var totalUnitsSpawned = 0;
 	var curServer = _.get(constants, ['config']);
 	var defBaseSides = _.get(curServer, 'defBaseSides');
-    console.log('sng: ', serverName, curServer, defBaseSides);
 	_.forEach(defBaseSides, function (extSide, extName) {
 		var spawnArray = [];
 		var curReplenThreshold;
@@ -1842,7 +1841,7 @@ _.set(exports, 'spawnLogisticCmdCenter', function (serverName, staticObj, init, 
 	_.set(curGrpObj, 'coalition', _.get(curGrpObj, 'coalition', side));
 	_.set(curGrpObj, 'country', _.get(constants, ['defCountrys', curGrpObj.coalition]));
 	if (_.isUndefined(_.get(curGrpObj, 'lonLatLoc'))) {
-		_.set(curGrpObj, 'lonLatLoc',  zoneController.getLonLatFromDistanceDirection(_.get(baseObj, ['logiCenter']), 0, 0.05));
+		_.set(curGrpObj, 'lonLatLoc', zoneController.getRandomLatLonFromBase(serverName, _.get(baseObj, 'name'), 'buildingPoly'));
 	}
 	_.set(curGrpObj, 'category', 'Fortifications');
 	_.set(curGrpObj, 'type', '.Command Center');
