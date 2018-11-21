@@ -36,7 +36,7 @@ _.set(exports, 'getLogiTowersProximity', function (serverName, lonLat, kmDistanc
 		;
 });
 
-_.set(exports, 'getEnemyGroundUnitsInProximity', function (serverName, lonLat, kmDistance, enemySide) {
+_.set(exports, 'getCoalitionGroundUnitsInProximity', function (serverName, lonLat, kmDistance, side) {
 	return masterDBController.unitActions(
 		'read',
 		serverName,
@@ -51,7 +51,7 @@ _.set(exports, 'getEnemyGroundUnitsInProximity', function (serverName, lonLat, k
 				}
 			},
 			category: 'GROUND',
-			coalition: enemySide
+			coalition: side
 		})
 		.then(function (closeUnits) {
 			// console.log('close units ' + closeUnits);

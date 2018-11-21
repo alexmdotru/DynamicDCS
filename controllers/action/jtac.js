@@ -55,7 +55,7 @@ _.set(exports, 'jtacNewTarget', function (serverName, jtUnit) {
 	var enemySide = (jtUnit.coalition === 1)? 2 : 1;
 	// console.log('jts: ', enemySide);
 	//check proximity
-	proximityController.getEnemyGroundUnitsInProximity(serverName, jtUnit.lonLatLoc, jtacDistance, enemySide)
+	proximityController.getCoalitionGroundUnitsInProximity(serverName, jtUnit.lonLatLoc, jtacDistance, enemySide)
 		.then(function (enemyUnits) {
 			//check LOS for proximity
 			var enemyUnitNameArray = _.map(enemyUnits, 'name');
