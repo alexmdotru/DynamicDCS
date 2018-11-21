@@ -328,36 +328,6 @@ _.assign(exports, {
 			})
 			;
 	},
-	getVirtualCratesInProximity: function (serverName, lonLat, kmDistance, coalition) {
-		return masterDBController.unitActions(
-			'readStd',
-			serverName,
-			{
-				dead: false,
-				lonLatLoc: {
-					$near: {
-						$geometry: {
-							type: "Point",
-							coordinates: lonLat
-						},
-						$maxDistance: kmDistance * 1000
-					}
-				},
-				name : {
-					$regex: /CU\|/
-				},
-				inAir: false,
-				coalition: coalition
-			})
-			.then(function (closeUnits) {
-				// console.log('close units ' + closeUnits);
-				return closeUnits;
-			})
-			.catch(function (err) {
-				console.log('line 140: ', err);
-			})
-			;
-	},
 	getStaticCratesInProximity: function (serverName, lonLat, kmDistance, coalition) {
 		return masterDBController.staticCrateActions(
 			'readStd',
@@ -420,6 +390,36 @@ _.assign(exports, {
 			})
 			.catch(function (err) {
 				console.log('line 176: ', err);
+			})
+			;
+	},
+	getVirtualCratesInProximity: function (serverName, lonLat, kmDistance, coalition) {
+		return masterDBController.unitActions(
+			'readStd',
+			serverName,
+			{
+				dead: false,
+				lonLatLoc: {
+					$near: {
+						$geometry: {
+							type: "Point",
+							coordinates: lonLat
+						},
+						$maxDistance: kmDistance * 1000
+					}
+				},
+				name : {
+					$regex: /CU\|/
+				},
+				inAir: false,
+				coalition: coalition
+			})
+			.then(function (closeUnits) {
+				// console.log('close units ' + closeUnits);
+				return closeUnits;
+			})
+			.catch(function (err) {
+				console.log('line 140: ', err);
 			})
 			;
 	},
