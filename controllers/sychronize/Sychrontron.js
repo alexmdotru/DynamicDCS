@@ -50,9 +50,12 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 										if ((_.get(unit, 'category') === 'GROUND') && !_.get(unit, 'isTroop', false)) {
 											_.set(remappedunits, [curGrpName], _.get(remappedunits, [curGrpName], []));
 											remappedunits[curGrpName].push(unit);
-										} else if (_.get(unit, 'category') === 'STRUCTURE') {
+										} else if (_.get(unit, 'type') === '.Command Center') {
 											groupController.spawnLogisticCmdCenter(serverName, unit, true);
+										} else if (_.get(unit, 'type') === 'Comms tower M') {
+											groupController.spawnRadioTower(serverName, unit, true);
 										} else {
+											console.log('marking unit dead: ', unit);
 											curDead = {
 												_id: _.get(unit, 'name'),
 												name: _.get(unit, 'name'),

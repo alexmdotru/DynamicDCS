@@ -1829,6 +1829,7 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 		}
 		exports.spawnGroup(serverName, spawnArray, extName, extSide);
 		exports.spawnLogisticCmdCenter(serverName, {}, true, _.find(_.get(constants, 'bases'), {name: extName}), extSide);
+		exports.spawnRadioTower(serverName, {}, true, _.find(_.get(constants, 'bases'), {name: extName}), extSide);
 		totalUnitsSpawned += spawnArray.length + 1;
 	});
 	return totalUnitsSpawned
@@ -1846,6 +1847,34 @@ _.set(exports, 'spawnLogisticCmdCenter', function (serverName, staticObj, init, 
 	_.set(curGrpObj, 'category', 'Fortifications');
 	_.set(curGrpObj, 'type', '.Command Center');
 	_.set(curGrpObj, 'shape_name', 'ComCenter');
+
+	var curCMD = exports.spawnStatic(serverName, exports.staticTemplate(curGrpObj), curGrpObj.country, curGrpObj.name, init);
+	var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
+	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
+	masterDBController.cmdQueActions('save', serverName, actionObj)
+		.catch(function (err) {
+			console.log('erroring line592: ', err);
+		})
+	;
+	masterDBController.unitActions('updateByName', serverName, {name: curGrpObj.name, coalition: curGrpObj.coalition, country: curGrpObj.country, dead:false})
+		.catch(function (err) {
+			console.log('erroring line595: ', err);
+		})
+	;
+});
+
+_.set(exports, 'spawnRadioTower', function (serverName, staticObj, init, baseObj, side) {
+	// console.log('spawnLogi: ', serverName, staticObj, init, baseObj, side);
+	var curGrpObj = _.cloneDeep(staticObj);
+	_.set(curGrpObj, 'name', _.get(curGrpObj, 'name', _.get(baseObj, 'name', '') + ' Communications'));
+	_.set(curGrpObj, 'coalition', _.get(curGrpObj, 'coalition', side));
+	_.set(curGrpObj, 'country', _.get(constants, ['defCountrys', curGrpObj.coalition]));
+	if (_.isUndefined(_.get(curGrpObj, 'lonLatLoc'))) {
+		_.set(curGrpObj, 'lonLatLoc', zoneController.getRandomLatLonFromBase(serverName, _.get(baseObj, 'name'), 'buildingPoly'));
+	}
+	_.set(curGrpObj, 'category', 'Fortifications');
+	_.set(curGrpObj, 'type', 'Comms tower M');
+	_.set(curGrpObj, 'shape_name', 'tele_bash_m');
 
 	var curCMD = exports.spawnStatic(serverName, exports.staticTemplate(curGrpObj), curGrpObj.country, curGrpObj.name, init);
 	var sendClient = {action: "CMD", cmd: curCMD, reqID: 0};
@@ -1889,9 +1918,11 @@ _.set(exports, 'healBase', function ( serverName, baseName ) {
 						_.set(curUnit, 'coalition', _.get(curBase, 'side'));
 						// console.log('creating logistics from existing: ', serverName, curUnit, false, curBase, curBase.side);
 						exports.spawnLogisticCmdCenter(serverName, curUnit, false, curBase, curBase.side);
+						exports.spawnRadioTower(serverName, curUnit, false, curBase, curBase.side);
 					} else {
 						// console.log('creating NEW logistics: ', serverName, {}, false, curBase, curBase.side);
 						exports.spawnLogisticCmdCenter(serverName, {}, false, curBase, curBase.side);
+						exports.spawnRadioTower(serverName, {}, false, curBase, curBase.side);
 					}
 
 					//rebuild farp support vehicles

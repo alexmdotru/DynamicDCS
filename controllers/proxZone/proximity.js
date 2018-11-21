@@ -293,6 +293,16 @@ _.set(exports, 'checkUnitsToBaseForCapture', function (serverName) {
 										console.log('erroring line189: ', err);
 									})
 								;
+								masterDBController.unitActions('read', serverName, {name: base.name + ' Communications', dead: false})
+									.then(function (aliveComms) {
+										if (aliveComms.length > 0) {
+											groupController.spawnRadioTower(serverName, {}, false, base, 2);
+										}
+									})
+									.catch(function (err) {
+										console.log('erroring line189: ', err);
+									})
+								;
 							}
 						}
 						if (base.side === 2 && _.get(sideArray, [1], []).length > 0) {
@@ -320,6 +330,16 @@ _.set(exports, 'checkUnitsToBaseForCapture', function (serverName) {
 									.then(function (aliveLogistics) {
 										if (aliveLogistics.length > 0) {
 											groupController.spawnLogisticCmdCenter(serverName, {}, false, base, 1);
+										}
+									})
+									.catch(function (err) {
+										console.log('erroring line189: ', err);
+									})
+								;
+								masterDBController.unitActions('read', serverName, {name: base.name + ' Communications', dead: false})
+									.then(function (aliveComms) {
+										if (aliveComms.length > 0) {
+											groupController.spawnRadioTower(serverName, {}, false, base, 1);
 										}
 									})
 									.catch(function (err) {
