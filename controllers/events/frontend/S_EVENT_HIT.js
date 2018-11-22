@@ -10,6 +10,7 @@ const constants = require('../../constants');
 const masterDBController = require('../../db/masterDB');
 const DCSLuaCommands = require('../../player/DCSLuaCommands');
 const webPushCommands = require('../../socketIO/webPush');
+const radioTowerController = require('../../action/radioTower');
 
 exports.shootingUsers = {};
 
@@ -40,12 +41,32 @@ _.set(exports, 'checkShootingUsers', function (serverName) {
 					;
 				}
 
-				if (_.get(constants, 'config.inGameHitMessages', true)) {
-					DCSLuaCommands.sendMesgToAll(
-						serverName,
-						_.get(shootObj, 'msg'),
-						20
-					);
+				if ((_.get(shootObj, 'tUnit.category') === 'GROUND') || (_.get(shootObj, 'iUnit.category') === 'GROUND')) {
+					radioTowerController.baseUnitUnderAttack(serverName, _.get(shootObj, 'tUnit'));
+					if (_.get(constants, 'config.inGameHitMessages', true)) {
+						console.log('FiredBy: ', _.get(shootObj, 'iUnit.groupId'));
+						console.log('FiredAt: ', _.get(shootObj, 'tUnit.groupId'));
+						DCSLuaCommands.sendMesgToGroup(
+							_.get(shootObj, 'iUnit.groupId'),
+							serverName,
+							_.get(shootObj, 'msg'),
+							20
+						);
+						DCSLuaCommands.sendMesgToGroup(
+							_.get(shootObj, 'tUnit.groupId'),
+							serverName,
+							_.get(shootObj, 'msg'),
+							20
+						);
+					}
+				} else {
+					if (_.get(constants, 'config.inGameHitMessages', true)) {
+						DCSLuaCommands.sendMesgToAll(
+							serverName,
+							_.get(shootObj, 'msg'),
+							20
+						);
+					}
 				}
 
 				delete exports.shootingUsers[key];
@@ -99,7 +120,9 @@ _.set(exports, 'processEventHit', function (serverName, sessionName, eventObj) {
 										roleCode: 'I',
 										showInChart: true,
 										groupId: _.get(curIUnit, 'groupId'),
-										iCoalition: _.get(curIUnit, 'coalition')
+										iCoalition: _.get(curIUnit, 'coalition'),
+										iUnit: curIUnit,
+										tUnit: curTUnit
 									};
 
 									_.forEach(ownerIds, function (ownerId) {
@@ -175,12 +198,32 @@ _.set(exports, 'processEventHit', function (serverName, sessionName, eventObj) {
 														;
 													}
 
-													if (_.get(constants, 'config.inGameHitMessages', true)) {
-														DCSLuaCommands.sendMesgToAll(
-															serverName,
-															_.get(iCurObj, 'msg'),
-															20
-														);
+													if ((_.get(iCurObj, 'tUnit.category') === 'GROUND') || (_.get(iCurObj, 'iUnit.category') === 'GROUND')) {
+														radioTowerController.baseUnitUnderAttack(serverName, _.get(iCurObj, 'tUnit'));
+														if (_.get(constants, 'config.inGameHitMessages', true)) {
+															console.log('FiredBy: ', _.get(iCurObj, 'iUnit.groupId'));
+															console.log('FiredAt: ', _.get(iCurObj, 'tUnit.groupId'));
+															DCSLuaCommands.sendMesgToGroup(
+																_.get(iCurObj, 'iUnit.groupId'),
+																serverName,
+																_.get(iCurObj, 'msg'),
+																20
+															);
+															DCSLuaCommands.sendMesgToGroup(
+																_.get(iCurObj, 'tUnit.groupId'),
+																serverName,
+																_.get(iCurObj, 'msg'),
+																20
+															);
+														}
+													} else {
+														if (_.get(constants, 'config.inGameHitMessages', true)) {
+															DCSLuaCommands.sendMesgToAll(
+																serverName,
+																_.get(iCurObj, 'msg'),
+																20
+															);
+														}
 													}
 												}
 											}

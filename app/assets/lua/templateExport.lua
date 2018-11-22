@@ -143,7 +143,9 @@ do
 				["baseId"] = baseId,
 				["name"] = baseName,
 				["hdg"] = hdg,
-				["side"] = coalition,
+				--["side"] = coalition,
+				["side"] = 1,
+				["initSide"] = coalition,
 				["centerLoc"] = {
 					lon,
 					lat

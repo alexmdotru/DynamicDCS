@@ -241,6 +241,32 @@ _.assign(exports, {
 			})
 			;
 	},
+	getBasesInProximity: function (serverName, lonLat, kmDistance, side) {
+		return masterDBController.baseActions(
+			'read',
+			serverName,
+			{
+				centerLoc: {
+					$near: {
+						$geometry: {
+							type: "Point",
+							coordinates: lonLat
+						},
+						$maxDistance: kmDistance * 1000
+					}
+				},
+				side: side,
+				mainBase: true
+			})
+			.then(function (closestBase) {
+				// console.log('close units ' + closeUnits);
+				return closestBase;
+			})
+			.catch(function (err) {
+				console.log('line 27: ', err);
+			})
+			;
+	},
 	getGroundUnitsInProximity: function (serverName, lonLat, kmDistance, isTroop) {
 		var troopQuery = {
 			dead: false,

@@ -1221,7 +1221,6 @@ _.set(exports, 'spawnSupportVehiclesOnFarp', function ( serverName, baseName, si
 });
 
 _.set(exports, 'spawnSupportBaseGrp', function ( serverName, baseName, side, init ) {
-	var curBaseObj = {};
 	var spawnArray = [];
 	var curBases = _.get(constants, 'bases');
 	var farpBases = _.filter(curBases, {farp: true});
@@ -1229,7 +1228,7 @@ _.set(exports, 'spawnSupportBaseGrp', function ( serverName, baseName, side, ini
 	// var curEnabledCountrys = _.get(constants, [_.get(constants, ['side', side]) + 'Countrys']);
 	if (_.includes(baseName, 'FARP')) {
 		var curFarpBases = _.filter(farpBases, function (farp) {
-			return _.first(_.split(_.get(farp, 'name'), ' #')) === baseName && _.get(farp, 'unitSide') === side;
+			return _.first(_.split(_.get(farp, 'name'), ' #')) === baseName && _.get(farp, 'initSide') === side;
 				// && !_.isEmpty(_.intersection([_.get(farp, 'country')], curEnabledCountrys));
 		});
 		// console.log('doesnty work: ', serverName, baseName, side, init, curFarpBases, farpBases);
@@ -1238,7 +1237,7 @@ _.set(exports, 'spawnSupportBaseGrp', function ( serverName, baseName, side, ini
 		});
 	} else {
 		var curExpBases = _.filter(expBases, function (exp) {
-			return _.first(_.split(_.get(exp, 'name'), ' #')) === baseName + '_Expansion' && _.get(exp, 'unitSide') === side;
+			return _.first(_.split(_.get(exp, 'name'), ' #')) === baseName + '_Expansion' && _.get(exp, 'initSide') === side;
 				//&& !_.isEmpty(_.intersection([_.get(exp, 'country')], curEnabledCountrys));
 		});
 		_.forEach(curExpBases, function (exp) {
@@ -1249,7 +1248,6 @@ _.set(exports, 'spawnSupportBaseGrp', function ( serverName, baseName, side, ini
 	for (var i = 0; i < 3; i++) {
 		spawnArray = _.concat(spawnArray, _.cloneDeep(exports.getRndFromSpawnCat( 'APC', side, false )));
 	}
-
 	return _.compact(spawnArray);
 });
 
@@ -1824,7 +1822,6 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 			curReplenThreshold = curServer.replenThresholdBase;
 		}
 		while (spawnArray.length < curReplenThreshold) { //UNCOMMENT THESE
-			console.log('BR: ', serverName, extSide, extName);
 			spawnArray = _.concat(spawnArray, exports.spawnBaseReinforcementGroup(serverName, extSide, extName));
 		}
 		exports.spawnGroup(serverName, spawnArray, extName, extSide);

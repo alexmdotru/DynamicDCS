@@ -30,7 +30,7 @@ _.set(exports, 'setSideLockFlags', function (serverName) {
 							"data": playerSideLockTable
 						};
 						actionObj = {actionObj: sendClient, queName: 'clientArray'};
-						// console.log('AOBJ: ', playerSideLockTable);
+						console.log('setSideLock: ', sendClient);
 						masterDBController.cmdQueActions('save', serverName, actionObj)
 							.catch(function (err) {
 								console.log('erroring line41: ', err);
