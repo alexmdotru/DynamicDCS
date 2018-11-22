@@ -437,6 +437,18 @@ _.assign(exports, {
 					});
 				});
 			}
+			if (action === 'update') {
+				return new Promise(function(resolve, reject) {
+					Airfield.update(
+						{_id: obj._id},
+						{$set: obj},
+						function(err, serObj) {
+							if (err) { reject(err) }
+							resolve(serObj);
+						}
+					);
+				});
+			}
 			if(action === 'getClosestBase') {
 				return new Promise(function(resolve, reject) {
 					Airfield.find(

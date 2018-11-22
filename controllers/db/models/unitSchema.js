@@ -126,6 +126,9 @@ const UnitSchema = new Schema({
 	},
 	ammo: {
 		type: Array
+	},
+	markId: {
+		type: Number
 	}
 },
 	{

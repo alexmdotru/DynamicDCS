@@ -7,7 +7,7 @@ const proximityController = require('../proxZone/proximity');
 _.assign(exports, {
 	baseUnitUnderAttack: function (serverName, unit) {
 		// only work on ground units
-		console.log('baseUnderAttack: ', serverName, unit);
+		// console.log('baseUnderAttack: ', serverName, unit);
 		if (_.get(unit, 'category') === 'GROUND') {
 			proximityController.getBasesInProximity(serverName, _.get(unit, 'lonLatLoc'), 18, _.get(unit, 'coalition'))
 				.then(function (closestBases) {

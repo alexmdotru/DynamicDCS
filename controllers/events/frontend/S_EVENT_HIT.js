@@ -44,8 +44,8 @@ _.set(exports, 'checkShootingUsers', function (serverName) {
 				if ((_.get(shootObj, 'tUnit.category') === 'GROUND') || (_.get(shootObj, 'iUnit.category') === 'GROUND')) {
 					radioTowerController.baseUnitUnderAttack(serverName, _.get(shootObj, 'tUnit'));
 					if (_.get(constants, 'config.inGameHitMessages', true)) {
-						console.log('FiredBy: ', _.get(shootObj, 'iUnit.groupId'));
-						console.log('FiredAt: ', _.get(shootObj, 'tUnit.groupId'));
+						// console.log('FiredBy: ', _.get(shootObj, 'iUnit.groupId'));
+						// console.log('FiredAt: ', _.get(shootObj, 'tUnit.groupId'));
 						DCSLuaCommands.sendMesgToGroup(
 							_.get(shootObj, 'iUnit.groupId'),
 							serverName,

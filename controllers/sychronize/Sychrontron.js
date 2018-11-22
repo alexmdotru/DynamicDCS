@@ -8,6 +8,7 @@ const sideLockController = require('../action/sideLock');
 const taskController = require('../action/task');
 const baseSpawnFlagsController = require('../action/baseSpawnFlags');
 const serverTimerController = require('../action/serverTimer');
+const f10MarksController = require('../action/f10Marks');
 
 var mesg;
 var masterUnitCount;
@@ -132,6 +133,7 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 									DCSLuaCommands.setIsOpenSlotFlag(serverName, 1);
 									sideLockController.setSideLockFlags(serverName);
 									baseSpawnFlagsController.setbaseSides(serverName);
+									f10MarksController.setFarpMarks(serverName);
 								} else {
 									console.log('failing  !exports.isServerSynced && units.length > 100', !exports.isServerSynced, ' && ', units.length > 100);
 								}
@@ -173,6 +175,7 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 								exports.isServerSynced = true;
 								DCSLuaCommands.setIsOpenSlotFlag(serverName, 1);
 								baseSpawnFlagsController.setbaseSides(serverName);
+								f10MarksController.setFarpMarks(serverName);
 							}
 						}
 					}

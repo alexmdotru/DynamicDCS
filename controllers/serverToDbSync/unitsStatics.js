@@ -3,6 +3,7 @@ const masterDBController = require('../db/masterDB');
 const taskController = require('../action/task');
 const webPushCommands = require('../socketIO/webPush');
 const menuUpdateController = require('../menu/menuUpdate');
+const f10MarksController = require('../action/f10Marks');
 
 _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj) {
 	masterDBController.unitActions('read', serverName, {_id: _.get(unitObj, 'data.name')})
@@ -106,6 +107,9 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 							webPushCommands.sendToCoalition(serverName, {payload: sObj});
 							//curServers[serverName].updateQue['q' + _.get(curUnit, ['coalition'])].push(_.cloneDeep(iCurObj));
 							//curServers[serverName].updateQue.qadmin.push(_.cloneDeep(iCurObj));
+							if (curData.category === 'STRUCTURE') {
+								f10MarksController.setUnitMark(serverName, curData);
+							}
 						})
 						.catch(function (err) {
 							console.log('update err line626: ', err);
@@ -143,6 +147,9 @@ _.set(exports, 'processUnitUpdates', function (serverName, sessionName, unitObj)
 								webPushCommands.sendToCoalition(serverName, {payload: sObj});
 								//curServers[serverName].updateQue['q' + parseFloat(_.get(unitObj, 'data.coalition'))].push(_.cloneDeep(iCurObj));
 								//curServers[serverName].updateQue.qadmin.push(_.cloneDeep(iCurObj));
+								if (curData.category === 'STRUCTURE') {
+									f10MarksController.setUnitMark(serverName, curData);
+								}
 							})
 							.catch(function (err) {
 								console.log('save err line95: ', err, iCurObj.data);

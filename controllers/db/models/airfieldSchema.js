@@ -76,6 +76,9 @@ const AirfieldSchema = new mongoose.Schema({
 	},
 	initSide: {
 		type: Number
+	},
+	baseMarkId: {
+		type: Number
 	}
 },
 	{
