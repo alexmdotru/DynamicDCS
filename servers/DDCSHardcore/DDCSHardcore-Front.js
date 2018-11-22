@@ -25,6 +25,7 @@ const processEventPlayerLeaveUnit = require('../../controllers/events/frontend/S
 const processTimedOneSec = require('../../controllers/timedEvents/oneSec');
 const processTimedFiveSecs = require('../../controllers/timedEvents/fiveSecs');
 const processTimedThirtySecs = require('../../controllers/timedEvents/thirtySecs');
+const processTimedFiveMinutes = require('../../controllers/timedEvents/fiveMinutes');
 const processTimedTenMinutes = require('../../controllers/timedEvents/tenMinutes');
 
 //config
@@ -242,6 +243,12 @@ constants.initServer(serverName)
 				;
 			}
 		}, _.get(constants, 'time.oneMin'));
+
+		setInterval(function () {
+			if (!_.get(exports, ['DCSSocket', 'connOpen'], true)) {
+				processTimedFiveMinutes.processFiveMinuteActions(serverName, sychrontronController.isServerSynced);
+			}
+		}, _.get(constants, 'time.fiveMins'));
 
 		setInterval(function () {
 			if (!_.get(exports, ['DCSSocket', 'connOpen'], true)) {

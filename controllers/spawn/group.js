@@ -1697,6 +1697,15 @@ _.set(exports, 'spawnSupportPlane', function (serverName, baseObj, side, farpBas
 	var sendClient = {action: "CMD", cmd: [curCMD], reqID: 0};
 	var actionObj = {actionObj: sendClient, queName: 'clientArray'};
 	masterDBController.cmdQueActions('save', serverName, actionObj)
+		.then(function () {
+			var mesg = 'C: Cargo Support Plane 10 mins out, BRA ' + randomDir + ' from ' + _.get(baseObj, 'name');
+			DCSLuaCommands.sendMesgToCoalition(
+				side,
+				serverName,
+				mesg,
+				20
+			);
+		})
 		.catch(function (err) {
 			console.log('erroring line428: ', err);
 		})
