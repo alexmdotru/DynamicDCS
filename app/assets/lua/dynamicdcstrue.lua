@@ -113,7 +113,7 @@ local CountryNames = {
 	[71] = "KUWAIT",
 	[72] = "QATAR",
 	[73] = "OMAN",
-	[73] = "UNITED_ARAB_EMIRATES"
+	[74] = "UNITED_ARAB_EMIRATES"
 }
 
 do
