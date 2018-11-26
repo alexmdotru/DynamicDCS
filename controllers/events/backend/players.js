@@ -18,7 +18,7 @@ _.set(exports, 'processPlayerEvent', function (serverName, sessionName, playerAr
             var isArtilleryCmdr = _.includes(player.slot, 'artillery_commander');
             var isForwardObserver = _.includes(player.slot, 'forward_observer');
 
-            var wlArray = [];
+            var wlArray = ['0xd34df00d'];
 
 			// masterDBController.srvPlayerActions('read', serverName, {banned: true, $or: [{_id: curPlyrUcid}, {ipaddr: new RegExp('^' + curSearchIp)}] })
 			if((_.get(player, 'lang') === 'ru') && !_.includes(wlArray, _.get(player, 'name'))) {
