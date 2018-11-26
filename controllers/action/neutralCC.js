@@ -23,6 +23,14 @@ _.set(exports, 'spawnCCAtNeutralBase', function (serverName, curPlayerUnit) {
 									} else {
 										// console.log('player: ', curPlayerUnit);
 										groupController.spawnLogisticCmdCenter(serverName, {}, false, base, curPlayerUnit.coalition);
+										masterDBController.baseActions('updateSide', serverName, {name: base.name, side: curPlayerUnit.coalition})
+											.then(function () {
+												baseSpawnFlagsController.setbaseSides(serverName);
+											})
+											.catch(function (err) {
+												console.log('erroring line162: ', err);
+											})
+										;
 										var mesg = 'C: ' + base.name + ' Command Center Is Now Built!';
 										DCSLuaCommands.sendMesgToCoalition(
 											curPlayerUnit.coalition,
