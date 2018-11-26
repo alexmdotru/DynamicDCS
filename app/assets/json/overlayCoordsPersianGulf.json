@@ -38,6 +38,66 @@
   "Khasab": {
     "latc": 26.179806360704,
     "lngc": 56.24317158197
+  },
+  "Fujairah Intl": {
+    "latc": 25.105735807567,
+    "lngc": 56.340423943738
+  },
+  "Shiraz International Airport": {
+    "latc": 29.533103964275,
+    "lngc": 52.609894223947
+  },
+  "Kerman Airport": {
+    "latc": 30.257695568151,
+    "lngc": 56.958269051762
+  },
+  "Lar East_FARP": {
+    "latc": 29.232356290279,
+    "lngc": 54.350605943782
+  },
+  "Al Ain International Airport": {
+    "latc": 24.259472019739,
+    "lngc": 55.611903114768
+  },
+  "Jiroft Airport": {
+    "latc": 28.729955112598,
+    "lngc": 57.666446887272
+  },
+  "Bandar-e-Jask airfield": {
+    "latc": 25.6507923812,
+    "lngc": 57.792765784834
+  },
+  "Kish Island Airfield": {
+    "latc": 26.529651135129,
+    "lngc": 53.964909161858
+  },
+  "Shiraz South_FARP": {
+    "latc": 28.90178479784,
+    "lngc": 53.31171408266
+  },
+  "Kerman West_FARP": {
+    "latc": 29.797341342158,
+    "lngc": 56.036744476169
+  },
+  "Lar North_FARP": {
+    "latc": 28.346834766784,
+    "lngc": 54.03011113976
+  },
+  "Kerman-Jiroft_FARP": {
+    "latc": 29.535751518292,
+    "lngc": 57.460169947074
+  },
+  "Bandar Abbas-Bandar-e-Jask_FARP": {
+    "latc": 26.522866668031,
+    "lngc": 57.13852843999
+  },
+  "Bandar Abbas-Jiroft_FARP": {
+    "latc": 27.799610824546,
+    "lngc": 57.25711995773
+  },
+  "Lar-Kerman_FARP": {
+    "latc": 29.158335301893,
+    "lngc": 55.357325860336
   }
 }
 
