@@ -6,6 +6,7 @@ const groupController = require('../spawn/group');
 const troopLocalizerController = require('../action/troopLocalizer');
 const userLivesController = require('../action/userLives');
 const weaponComplianceController = require('../action/weaponCompliance');
+const neutralCCController = require('../action/neutralCC');
 
 var AIMaxIdleTime = (5 * 60 * 1000); // 5 mins
 var maxCrateLife = (3 * 60 * 60 * 1000); // 3 hrs
@@ -24,6 +25,8 @@ _.set(exports, 'processThirtySecActions', function (serverName, fullySynced) {
 
 		jtacController.aliveJtac30SecCheck(serverName);
 		// troopLocalizerController.checkTroopProx(serverName);
+
+		neutralCCController.checkCmdCenters(serverName);
 
 		//cleanupAI AIMaxIdleTime
 		masterDBController.unitActions('read', serverName, {isAI: true, dead:false})
