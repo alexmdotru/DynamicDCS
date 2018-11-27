@@ -518,7 +518,7 @@ _.assign(exports, {
 				var tAirfields;
 				return new Promise(function(resolve, reject) {
 					Airfield.find(
-						{mainBase: true},
+						{},
 						function(err, dbairfields) {
 							if (err) { reject(err) }
 							tAirfields = _.transform(dbairfields, function (result, value) {
