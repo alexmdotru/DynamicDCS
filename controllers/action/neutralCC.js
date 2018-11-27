@@ -3,6 +3,7 @@ const masterDBController = require('../db/masterDB');
 const proximityController = require('../proxZone/proximity');
 const groupController = require('../spawn/group');
 const DCSLuaCommands = require('../player/DCSLuaCommands');
+const baseSpawnFlagsController = require('../action/baseSpawnFlags');
 
 _.assign(exports, {
 	checkCmdCenters: function (serverName) {
