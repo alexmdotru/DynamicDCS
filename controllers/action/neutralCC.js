@@ -7,23 +7,32 @@ const baseSpawnFlagsController = require('../action/baseSpawnFlags');
 
 _.assign(exports, {
 	checkCmdCenters: function (serverName) {
+		var basesChanged = false;
+		var curSide;
 		masterDBController.baseActions('read', serverName, {mainBase: false, expansion: false, farp: false})
 			.then(function (bases) {
 				_.forEach(bases, function (base) {
 					masterDBController.unitActions('read', serverName, {_id: base.name + ' Logistics', dead: false})
 						.then(function (isCCExist) {
 							if (isCCExist.length > 0) {
-								masterDBController.baseActions('updateSide', serverName, {name: base.name, side: _.get(_.first(isCCExist), 'coalition')})
-									.catch(function (err) {
-										console.log('erroring line162: ', err);
-									})
-								;
+								curSide = _.get(_.first(isCCExist), 'coalition');
+								if (_.get(base, 'side') !==  curSide) {
+									basesChanged = true;
+									masterDBController.baseActions('updateSide', serverName, {name: base.name, side: curSide})
+										.catch(function (err) {
+											console.log('erroring line162: ', err);
+										})
+									;
+								}
 							} else {
-								masterDBController.baseActions('updateSide', serverName, {name: base.name, side: 0})
-									.catch(function (err) {
-										console.log('erroring line162: ', err);
-									})
-								;
+								if (_.get(base, 'side') !==  0) {
+									basesChanged = true;
+									masterDBController.baseActions('updateSide', serverName, {name: base.name, side: 0})
+										.catch(function (err) {
+											console.log('erroring line162: ', err);
+										})
+									;
+								}
 							}
 						})
 						.catch(function (err) {
@@ -31,7 +40,9 @@ _.assign(exports, {
 						})
 					;
 				});
-				baseSpawnFlagsController.setbaseSides(serverName);
+				if (basesChanged) {
+					baseSpawnFlagsController.setbaseSides(serverName);
+				}
 			})
 			.catch(function (err) {
 				console.log('line 1303: ', err);
