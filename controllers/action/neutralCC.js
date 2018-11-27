@@ -12,7 +12,7 @@ _.assign(exports, {
 				_.forEach(bases, function (base) {
 					masterDBController.unitActions('read', serverName, {_id: base.name + ' Logistics', dead: false})
 						.then(function (isCCExist) {
-							if (isCCExist > 0) {
+							if (isCCExist.length > 0) {
 								masterDBController.baseActions('updateSide', serverName, {name: base.name, side: _.get(_.first(isCCExist), 'coalition')})
 									.catch(function (err) {
 										console.log('erroring line162: ', err);
@@ -47,7 +47,7 @@ _.assign(exports, {
 							if(_.find(unitsInProx, {playername: curPlayerUnit.playername})) {
 								masterDBController.unitActions('read', serverName, {_id: base.name + ' Logistics', dead: false})
 									.then(function (isCCExist) {
-										if (isCCExist > 0) {
+										if (isCCExist.length > 0) {
 											DCSLuaCommands.sendMesgToGroup(
 												curPlayerUnit.groupId,
 												serverName,
