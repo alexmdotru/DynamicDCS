@@ -103,4 +103,3 @@ _.assign(exports, {
 		;
 	}
 });
-_.set(exports, 'spawnCCAtNeutralBase', );
