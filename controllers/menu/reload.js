@@ -5,41 +5,66 @@ const masterDBController = require('../db/masterDB');
 const groupController = require('../spawn/group');
 const proximityController = require('../proxZone/proximity');
 
-_.set(exports, 'reloadSAM', function (serverName, unitCalling, crate) {
-	proximityController.getGroundUnitsInProximity(serverName, unitCalling.lonLatLoc, 0.2, false)
-		.then(function(units){
-			var closestUnit = _.first(_.filter(units, {coalition: unitCalling.coalition}));
-			if (closestUnit) {
-				masterDBController.unitActions('read', serverName, {groupName: closestUnit.groupName, isCrate: false, dead: false})
-					.then(function(samUnits){
-						// console.log('samu: ', samUnits, closestUnit.groupName); closest unit can be the repair truck.... LOL FIX ME
-						if (samUnits.length) {
-							var curSamType = _.first(samUnits).type;
-							var curUnitDict = _.find(constants.unitDictionary, {_id: curSamType});
-							var curReloadArray = _.get(curUnitDict, 'reloadReqArray');
-							console.log('uD: ', curUnitDict);
-							if(curReloadArray.length === _.intersection(curReloadArray, _.map(samUnits, 'type')).length) {
-								groupController.spawnGroup(serverName, samUnits);
-							} else {
-								DCSLuaCommands.sendMesgToGroup(
-									unitCalling.groupId,
-									serverName,
-									"G: " + curSamType + " Is Too Damaged To Be Reloaded!",
-									5
-								);
-							}
-						}
-					})
-					.catch(function (err) {
-						console.log('line 26: ', err);
-					})
-				;
-			}
-		})
-		.catch(function (err) {
-			console.log('line 125: ', err);
-		})
-	;
+_.assign(exports, {
+	reloadSAM: function (serverName, unitCalling, crate) {
+		// console.log('RS: ', serverName, unitCalling, crate);
+		return new Promise(function(resolve, reject) {
+			proximityController.getGroundUnitsInProximity(serverName, unitCalling.lonLatLoc, 0.2, false)
+				.then(function(units){
+					var closestUnit = _.first(_.filter(units, {coalition: unitCalling.coalition}));
+					if (closestUnit) {
+						masterDBController.unitActions('read', serverName, {groupName: closestUnit.groupName, isCrate: false, dead: false})
+							.then(function(samUnits){
+								// console.log('samu: ', samUnits, closestUnit.groupName);
+								if (samUnits.length) {
+									var curSamType = _.first(samUnits).type;
+									var curUnitDict = _.find(constants.unitDictionary, {_id: curSamType});
+									var curReloadArray = _.get(curUnitDict, 'reloadReqArray');
+									console.log('uD: ', curUnitDict);
+									if(curReloadArray.length === _.intersection(curReloadArray, _.map(samUnits, 'type')).length) {
+										groupController.spawnGroup(serverName, samUnits);
+										resolve(true);
+									} else {
+										DCSLuaCommands.sendMesgToGroup(
+											unitCalling.groupId,
+											serverName,
+											"G: " + curSamType + " Is Too Damaged To Be Reloaded!",
+											5
+										);
+										resolve(false);
+									}
+								} else {
+									DCSLuaCommands.sendMesgToGroup(
+										unitCalling.groupId,
+										serverName,
+										"G: Group does not have all of the pieces to reload",
+										5
+									);
+									resolve(false);
+								}
+							})
+							.catch(function (err) {
+								reject(err);
+								console.log('line 26: ', err);
+							})
+						;
+					} else {
+						DCSLuaCommands.sendMesgToGroup(
+							unitCalling.groupId,
+							serverName,
+							"G: There are no units close enough to reload",
+							5
+						);
+						resolve(false);
+					}
+				})
+				.catch(function (err) {
+					reject(err);
+					console.log('line 125: ', err);
+				})
+			;
+		});
+	}
 });
 
 // combo units Kub, Buk, Roland, SA-3, Hawk
