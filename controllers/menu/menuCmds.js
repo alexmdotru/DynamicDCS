@@ -1517,7 +1517,6 @@ _.assign(exports, {
 								})
 								;
 						}
-						resolve(false);
 					})
 					.catch(function (err) {
 						reject(err);
