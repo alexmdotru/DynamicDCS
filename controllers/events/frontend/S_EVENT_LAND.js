@@ -64,6 +64,7 @@ _.set(exports, 'processEventLand', function (serverName, sessionName, eventObj) 
 											var curBase = _.get(bases, [0], {});
 											var curBaseSide = _.get(curBase, 'side');
 											var curUnitSide = _.get(curIUnit, 'coalition');
+											console.log('cb: ', curBase, curBaseSide, curUnitSide);
 											if (curBaseSide === curUnitSide) {
 												place = ' at ' + baseLand;
 												masterDBController.srvPlayerActions('applyTempToRealScore', serverName, {_id: iPlayer._id, groupId: curIUnit.groupId})
