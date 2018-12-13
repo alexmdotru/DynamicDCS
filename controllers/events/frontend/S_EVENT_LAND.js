@@ -58,53 +58,57 @@ _.set(exports, 'processEventLand', function (serverName, sessionName, eventObj) 
 						iPlayer = _.find(playerArray, {name: _.get(curIUnit, 'playername')});
 						if(iPlayer) {
 							if (baseLand) {
-								place = ' at ' + baseLand;
-								masterDBController.srvPlayerActions('applyTempToRealScore', serverName, {_id: iPlayer._id, groupId: curIUnit.groupId})
+								masterDBController.baseActions('read', serverName, {_id: baseLand})
+									.then(function (bases) {
+										if (bases > 0) {
+											var curBase = _.get(bases, [0], {});
+											var curBaseSide = _.get(curBase, 'side');
+											var curUnitSide = _.get(curIUnit, 'coalition');
+											if (curBaseSide === curUnitSide) {
+												place = ' at ' + baseLand;
+												masterDBController.srvPlayerActions('applyTempToRealScore', serverName, {_id: iPlayer._id, groupId: curIUnit.groupId})
+													.catch(function (err) {
+														console.log('line70', err);
+													})
+												;
+												iCurObj = {
+													sessionName: sessionName,
+													eventCode: constants.shortNames[eventObj.action],
+													iucid: _.get(iPlayer, 'ucid'),
+													iName: _.get(curIUnit, 'playername'),
+													displaySide: _.get(curIUnit, 'coalition'),
+													roleCode: 'I',
+													msg: 'C: '+ _.get(curIUnit, 'type') + '(' + _.get(curIUnit, 'playername') + ') has landed' + place
+												};
+												console.log('FriendBaseLand: ', _.get(iCurObj, 'msg'));
+												if(_.get(iCurObj, 'iucid')) {
+													userLivesController.addLifePoints(
+														serverName,
+														iPlayer,
+														curIUnit,
+														'Land'
+													);
+													webPushCommands.sendToCoalition(serverName, {payload: {action: eventObj.action, data: _.cloneDeep(iCurObj)}});
+													masterDBController.simpleStatEventActions('save', serverName, iCurObj);
+												}
+											}
+										}
+									})
 									.catch(function (err) {
-										console.log('line70', err);
+										console.log('err line100: ', err);
 									})
 								;
-							} else {
-								place = '';
 							}
-
-							iCurObj = {
-								sessionName: sessionName,
-								eventCode: constants.shortNames[eventObj.action],
-								iucid: _.get(iPlayer, 'ucid'),
-								iName: _.get(curIUnit, 'playername'),
-								displaySide: _.get(curIUnit, 'coalition'),
-								roleCode: 'I',
-								msg: 'C: '+ _.get(curIUnit, 'type') + '(' + _.get(curIUnit, 'playername') + ') has landed' + place
-							};
-							if(_.get(iCurObj, 'iucid')) {
-								userLivesController.addLifePoints(
-									serverName,
-									iPlayer,
-									curIUnit,
-									'Land'
-								);
-								webPushCommands.sendToCoalition(serverName, {payload: {action: eventObj.action, data: _.cloneDeep(iCurObj)}});
-								masterDBController.simpleStatEventActions('save', serverName, iCurObj);
-							}
-							/*
-							DCSLuaCommands.sendMesgToGroup(
-								_.get(curIUnit, 'groupId'),
-								serverName,
-								_.get(iCurObj, 'msg'),
-								5
-							);
-							*/
 						}
 					}
 				})
 				.catch(function (err) {
-					console.log('err line45: ', err);
+					console.log('err line108: ', err);
 				})
 			;
 		})
 		.catch(function (err) {
-			console.log('err line69: ', err);
+			console.log('err line113: ', err);
 		})
 	;
 });
