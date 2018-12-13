@@ -114,13 +114,13 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 		cmdArray = _.concat(cmdArray, [
 			'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "$Offensive$")',
 			'missionCommands.addCommandForGroup("' + unit.groupId + '", "Bomber Raid(750rs)", {"$Offensive$"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "spawnBomber", ["type"] = "RussianBomber", ["unitId"] = ' + unit.unitId + ', ["rsCost"] = 750})',
-			'missionCommands.addCommandForGroup("' + unit.groupId + '", "Attack Heli Patrol(750rs)", {"$Offensive$"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "spawnAtkHeli", ["type"] = "RussianAtkHeli", ["unitId"] = ' + unit.unitId + ', ["rsCost"] = 750})',
+			// 'missionCommands.addCommandForGroup("' + unit.groupId + '", "Attack Heli Patrol(750rs)", {"$Offensive$"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "spawnAtkHeli", ["type"] = "RussianAtkHeli", ["unitId"] = ' + unit.unitId + ', ["rsCost"] = 750})',
 
 		]);
 
 		cmdArray = _.concat(cmdArray, [
 			'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "$Defensive$")',
-			'missionCommands.addCommandForGroup("' + unit.groupId + '", "Helicopter Base Patrol(500rs)", {"$Defensive$"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "spawnDefHeli", ["type"] = "RussianDefHeli", ["unitId"] = ' + unit.unitId + ', ["rsCost"] = 500})'
+			// 'missionCommands.addCommandForGroup("' + unit.groupId + '", "Helicopter Base Patrol(500rs)", {"$Defensive$"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "spawnDefHeli", ["type"] = "RussianDefHeli", ["unitId"] = ' + unit.unitId + ', ["rsCost"] = 500})'
 		]);
 
 		cmdArray = _.concat(cmdArray, [
@@ -137,12 +137,12 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 		cmdArray = _.concat(cmdArray, [
 			'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "$Offensive$")',
 			'missionCommands.addCommandForGroup("' + unit.groupId + '", "Bomber Raid(Closest Enemy Base 750rs)", {"$Offensive$"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "spawnBomber", ["type"] = "USABomber", ["unitId"] = ' + unit.unitId + ', ["rsCost"] = 750})',
-			'missionCommands.addCommandForGroup("' + unit.groupId + '", "Attack Heli Patrol(Friendly->Enemy Base 750rs)", {"$Offensive$"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "spawnAtkHeli", ["type"] = "USAAtkHeli", ["unitId"] = ' + unit.unitId + ', ["rsCost"] = 750})',
+			// 'missionCommands.addCommandForGroup("' + unit.groupId + '", "Attack Heli Patrol(Friendly->Enemy Base 750rs)", {"$Offensive$"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "spawnAtkHeli", ["type"] = "USAAtkHeli", ["unitId"] = ' + unit.unitId + ', ["rsCost"] = 750})',
 		]);
 
 		cmdArray = _.concat(cmdArray, [
 			'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "$Defensive$")',
-			'missionCommands.addCommandForGroup("' + unit.groupId + '", "Helicopter Base Patrol(500rs)", {"$Defensive$"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "spawnDefHeli", ["type"] = "USADefHeli", ["unitId"] = ' + unit.unitId + ', ["rsCost"] = 500})'
+			// 'missionCommands.addCommandForGroup("' + unit.groupId + '", "Helicopter Base Patrol(500rs)", {"$Defensive$"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "spawnDefHeli", ["type"] = "USADefHeli", ["unitId"] = ' + unit.unitId + ', ["rsCost"] = 500})'
 		]);
 
 		cmdArray = _.concat(cmdArray, [
