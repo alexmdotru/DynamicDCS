@@ -27,7 +27,7 @@ _.set(exports, 'processEventLand', function (serverName, sessionName, eventObj) 
 					var curUnitDict = _.find(constants.unitDictionary, {_id: curIUnit.type});
 					var curLifePointVal = (curUnitDict) ? curUnitDict.lifeCost : 1;
 					if (curIUnit) {
-						console.log('land: ', _.get(curIUnit, 'playername'));
+						console.log('land: ', _.get(curIUnit, 'playername'), baseLand);
 						//landed logistic planes/helis spawn new group for area
 						var curUnitName = _.get(curIUnit, 'name');
 						if (_.includes(curUnitName, 'LOGISTICS|')) {
