@@ -13,7 +13,7 @@ _.set(exports, 'processFriendlyFire', function (serverName, sessionName, eventOb
 	var curTUnit;
 	var mesg;
 	// "friendly_fire", playerID, weaponName, victimPlayerID
-	console.log('cl: ', serverName, sessionName, eventObj);
+	// console.log('cl: ', serverName, sessionName, eventObj);
 	iPlayer = _.find(playersEvent.rtPlayerArray[serverName], {id: eventObj.data.arg1});
 	tPlayer = _.find(playersEvent.rtPlayerArray[serverName], {id: eventObj.data.arg3});
 
@@ -49,7 +49,7 @@ _.set(exports, 'processFriendlyFire', function (serverName, sessionName, eventOb
 					masterDBController.srvPlayerActions('read', serverName, {_id: tPlayer.ucid})
 						.then(function (tPlayers) {
 							var curTPlayer = _.first(tPlayers);
-							console.log('SAT: ', _.get(curIPlayer, 'safeLifeActionTime', 0) < new Date().getTime(), _.get(curIPlayer, 'safeLifeActionTime', 0), new Date().getTime());
+							// console.log('SAT: ', _.get(curIPlayer, 'safeLifeActionTime', 0) < new Date().getTime(), _.get(curIPlayer, 'safeLifeActionTime', 0), new Date().getTime());
 							if(_.get(curIPlayer, 'safeLifeActionTime', 0) < new Date().getTime()) {
 								masterDBController.unitActions('read', serverName, {unitId: iPlayer.slot})
 									.then(function (iunit) {

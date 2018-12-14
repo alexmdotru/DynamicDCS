@@ -818,7 +818,7 @@ _.assign(exports, {
 			}
 
 			if (action === 'addLifePoints') {
-				console.log('addPt: ', obj);
+				// console.log('addPt: ', obj);
 				return new Promise(function(resolve, reject) {
 					// if addLifePoints exists, use that and done reset lifepoint fly cache
 					SrvPlayer.find({_id: obj._id}, function (err, serverObj) {
@@ -864,7 +864,7 @@ _.assign(exports, {
 			}
 
 			if (action === 'removeLifePoints') {
-				console.log('rmPt: ', obj);
+				// console.log('rmPt: ', obj);
 				return new Promise(function(resolve, reject) {
 					SrvPlayer.find({_id: obj._id}, function (err, serverObj) {
 						var removePoints = _.get(obj, 'removeLifePoints');
@@ -879,7 +879,7 @@ _.assign(exports, {
 						// console.log('removeP: ', curTotalPoints, curPlayerObj, serverObj, obj);
 						if (serverObj.length > 0) {
 							if (curTotalPoints < 0) {
-								console.log('Removed ' + curPlayerObj.name + ' from aircraft for not enough points');
+								// console.log('Removed ' + curPlayerObj.name + ' from aircraft for not enough points');
 								DCSLuaCommands.forcePlayerSpectator(
 									serverName,
 									curPlayerObj.playerId,
