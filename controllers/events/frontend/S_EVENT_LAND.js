@@ -55,9 +55,9 @@ _.set(exports, 'processEventLand', function (serverName, sessionName, eventObj) 
 						}
 
 						iPlayer = _.find(playerArray, {name: _.get(curIUnit, 'playername')});
-						console.log('land: ', _.get(curIUnit, 'playername'), baseLand, iPlayer);
 						if(iPlayer) {
 							if (baseLand) {
+								console.log('land: ', _.get(curIUnit, 'playername'), baseLand, iPlayer);
 								masterDBController.baseActions('read', serverName, {_id: baseLand})
 									.then(function (bases) {
 										if (bases > 0) {
