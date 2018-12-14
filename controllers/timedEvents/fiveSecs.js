@@ -22,18 +22,7 @@ _.set(exports, 'processFiveSecActions', function (serverName, fullySynced) {
 										if ((units.length < unitCnt) && replenEpoc < new Date().getTime()) { //UNCOMMENT OUT FALSE
 											masterDBController.baseActions('updateReplenTimer', serverName, {name: _.get(base, '_id'),  replenTime: new Date().getTime() + (replenTimer * 1000)})
 												.then(function () {
-													if (base.farp) {
-														masterDBController.baseActions('read', serverName, {_id: base.name + ' #' + base.side})
-															.then(function (farpBase) {
-																groupController.spawnSupportPlane(serverName, base, base.side, _.get(farpBase, [0], {}));
-															})
-															.catch(function (err) {
-																console.log('line 54: ', err);
-															})
-														;
-													} else {
-														groupController.spawnSupportPlane(serverName, base, base.side);
-													}
+													groupController.spawnSupportPlane(serverName, base, base.side);
 												})
 												.catch(function (err) {
 													console.log('line 62: ', err);

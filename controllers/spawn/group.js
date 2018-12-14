@@ -1629,8 +1629,8 @@ _.set(exports, 'spawnTankerPlane', function (serverName, playerUnitObj, tankerOb
 	;
 });
 
-_.set(exports, 'spawnSupportPlane', function (serverName, baseObj, side, farpBase) {
-	console.log('SPSUPP: ', serverName, baseObj, side, farpBase);
+_.set(exports, 'spawnSupportPlane', function (serverName, baseObj, side) {
+	console.log('SPSUPP: ', serverName, baseObj, side);
 	var unitNum;
 	var curBaseName;
 	var curUnitName;
@@ -1647,13 +1647,8 @@ _.set(exports, 'spawnSupportPlane', function (serverName, baseObj, side, farpBas
 
 	curSide = (side) ? _.get(constants, ['defCountrys', side]) : _.get(constants, ['defCountrys', _.get(curGrpObj, 'coalition')]);
 	curBaseName = 'AI|1010101|' + _.get(baseObj, 'name') + '|LOGISTICS|';
-	if (_.get(baseObj, 'farp', false)) {
-		baseLoc = _.get(farpBase, 'centerLoc');
-		console.log('FARP BASE: ', baseLoc);
-	} else {
-		baseLoc = _.get(baseObj, 'centerLoc');
-		console.log('REG BASE: ', baseLoc);
-	}
+	baseLoc = _.get(baseObj, 'centerLoc');
+	console.log('BASE: ', baseLoc);
 
 	if(_.get(baseObj, 'farp')) {
 		curSpwnUnit = _.cloneDeep(_.first(exports.getRndFromSpawnCat( 'transportHeli', side, true, true )));
