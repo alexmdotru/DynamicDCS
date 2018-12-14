@@ -31,7 +31,7 @@ _.set(exports, 'processEventTakeoff', function (serverName, sessionName, eventOb
 					if (curIUnit) {
 						iPlayer = _.find(playerArray, {name: _.get(curIUnit, 'playername')});
 						// console.log('takeoff: ', _.get(curIUnit, 'playername'));
-						if (iPlayer.ucid) {
+						if (_.get(iPlayer, 'ucid')) {
 							if (weaponComplianceController.checkWeaponComplianceOnTakeoff(serverName, iPlayer, curIUnit)) {
 								proximityController.getBasesInProximity(serverName, _.get(curIUnit, 'lonLatLoc'), 5, curUnitSide)
 									.then(function(friendlyBases) {
