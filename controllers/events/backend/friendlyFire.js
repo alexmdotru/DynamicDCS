@@ -44,55 +44,63 @@ _.set(exports, 'processFriendlyFire', function (serverName, sessionName, eventOb
 	if(iPlayer && tPlayer) {
 		if(iPlayer.slot !== tPlayer.slot && iPlayer.ucid !== tPlayer.ucid) {
 			masterDBController.srvPlayerActions('read', serverName, {_id: iPlayer.ucid})
-				.then(function (players) {
-					var curPlayer = _.get(players, 0);
-					// console.log('SAT: ', curPlayer.safeLifeActionTime, curPlayer);
-					if(new Date(curPlayer.safeLifeActionTime).getTime() < new Date().getTime()) {
-						masterDBController.unitActions('read', serverName, {unitId: iPlayer.slot})
-							.then(function (iunit) {
-								masterDBController.unitActions('read', serverName, {unitId: tPlayer.slot})
-									.then(function (tunit) {
-										curIUnit = _.first(iunit);
-										curTUnit = _.first(tunit);
-										// console.log('player: ', iPlayer, tPlayer);
-										//removeLifePoints: function (serverName, curPlayer, curUnit, execAction, isDirect, removeLP)
-										userLivesController.removeLifePoints(
-											serverName,
-											iPlayer,
-											curIUnit,
-											'Friendly Kill',
-											true,
-											6
-										);
+				.then(function (iPlayers) {
+					var curIPlayer = _.first(iPlayers);
+					masterDBController.srvPlayerActions('read', serverName, {_id: tPlayer.ucid})
+						.then(function (tPlayers) {
+							var curTPlayer = _.first(tPlayers);
+							// console.log('SAT: ', curPlayer.safeLifeActionTime, curPlayer);
+							if(new Date(curIPlayer.safeLifeActionTime).getTime() < new Date().getTime()) {
+								masterDBController.unitActions('read', serverName, {unitId: iPlayer.slot})
+									.then(function (iunit) {
+										masterDBController.unitActions('read', serverName, {unitId: tPlayer.slot})
+											.then(function (tunit) {
+												curIUnit = _.first(iunit);
+												curTUnit = _.first(tunit);
+												// console.log('player: ', iPlayer, tPlayer);
+												//removeLifePoints: function (serverName, curPlayer, curUnit, execAction, isDirect, removeLP)
+												userLivesController.removeLifePoints(
+													serverName,
+													curIPlayer,
+													curIUnit,
+													'Friendly Kill',
+													true,
+													6
+												);
 
-										if (curTUnit.inAir) {
-											userLivesController.addLifePoints(
-												serverName,
-												tPlayer,
-												curTUnit,
-												'Friendly Death',
-												false
-											);
-										}
+												if (curTUnit.inAir) {
+													userLivesController.addLifePoints(
+														serverName,
+														curTPlayer,
+														curTUnit,
+														'Friendly Death',
+														false
+													);
+												}
 
-										mesg = 'A: ' + constants.side[iPlayer.side] +' ' + iPlayer.name + '(' + curIUnit.type + ':-6 LP) has hit friendly ' + tPlayer.name + '(' + curTUnit.type + ':+LPLoss) with a ' + _.get(eventObj, 'data.arg2', '?');
-										DCSLuaCommands.sendMesgToCoalition(
-											iPlayer.side,
-											serverName,
-											mesg,
-											15
-										);
+												mesg = 'A: ' + constants.side[iPlayer.side] +' ' + iPlayer.name + '(' + curIUnit.type + ':-6 LP) has hit friendly ' + tPlayer.name + '(' + curTUnit.type + ':+LPLoss) with a ' + _.get(eventObj, 'data.arg2', '?');
+												DCSLuaCommands.sendMesgToCoalition(
+													iPlayer.side,
+													serverName,
+													mesg,
+													15
+												);
+											})
+											.catch(function (err) {
+												console.log('err line45: ', err);
+											})
+										;
 									})
 									.catch(function (err) {
 										console.log('err line45: ', err);
 									})
 								;
-							})
-							.catch(function (err) {
-								console.log('err line45: ', err);
-							})
-						;
-					}
+							}
+						})
+						.catch(function (err) {
+							console.log('err line45: ', err);
+						})
+					;
 				})
 				.catch(function (err) {
 					console.log('err line45: ', err);
