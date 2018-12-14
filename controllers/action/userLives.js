@@ -253,7 +253,7 @@ _.assign(exports, {
 			addLifePoints: addLP,
 			execAction: execAction,
 			groupId: _.get(curUnit, 'groupId'),
-			storePoints: isDirect
+			storePoints: !isDirect
 		});
 	},
 	removeLifePoints: function (serverName, curPlayer, curUnit, execAction, isDirect, removeLP) {
@@ -281,7 +281,7 @@ _.assign(exports, {
 			execAction: execAction,
 			groupId: _.get(curUnit, 'groupId'),
 			removeLifePoints: curRemoveLP,
-			storePoints: isDirect
+			storePoints: !isDirect
 		});
 	}
 });
