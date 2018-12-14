@@ -46,7 +46,7 @@ _.set(exports, 'processFriendlyFire', function (serverName, sessionName, eventOb
 			masterDBController.srvPlayerActions('read', serverName, {_id: iPlayer.ucid})
 				.then(function (players) {
 					var curPlayer = _.get(players, 0);
-					console.log('SAT: ', curPlayer.safeLifeActionTime, curPlayer);
+					// console.log('SAT: ', curPlayer.safeLifeActionTime, curPlayer);
 					if(new Date(curPlayer.safeLifeActionTime).getTime() < new Date().getTime()) {
 						masterDBController.unitActions('read', serverName, {unitId: iPlayer.slot})
 							.then(function (iunit) {
@@ -54,7 +54,7 @@ _.set(exports, 'processFriendlyFire', function (serverName, sessionName, eventOb
 									.then(function (tunit) {
 										curIUnit = _.first(iunit);
 										curTUnit = _.first(tunit);
-										console.log('player: ', iPlayer, tPlayer);
+										// console.log('player: ', iPlayer, tPlayer);
 										//removeLifePoints: function (serverName, curPlayer, curUnit, execAction, isDirect, removeLP)
 										userLivesController.removeLifePoints(
 											serverName,
