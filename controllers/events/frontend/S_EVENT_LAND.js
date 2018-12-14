@@ -57,48 +57,46 @@ _.set(exports, 'processEventLand', function (serverName, sessionName, eventObj) 
 						iPlayer = _.find(playerArray, {name: _.get(curIUnit, 'playername')});
 						console.log('land: ', _.get(curIUnit, 'playername'), baseLand, iPlayer);
 						if(iPlayer) {
-							if (baseLand) {
-								// console.log('land: ', _.get(curIUnit, 'playername'), baseLand, iPlayer);
-								var curUnitSide = _.get(curIUnit, 'coalition');
-								proximityController.getBasesInProximity(serverName, _.get(curIUnit, 'lonLatLoc'), 5, curUnitSide)
-									.then(function (friendlyBases) {
-										if (friendlyBases.length > 0) {
-											var curBase = _.get(friendlyBases, [0], {});
-											var curBaseSide = _.get(curBase, 'side');
-											// console.log('cb: ', curBase, curBaseSide, curUnitSide);
-											place = ' at ' + _.get(curBase, '_id');
-											masterDBController.srvPlayerActions('applyTempToRealScore', serverName, {_id: iPlayer._id, groupId: curIUnit.groupId})
-												.catch(function (err) {
-													console.log('line70', err);
-												})
-											;
-											iCurObj = {
-												sessionName: sessionName,
-												eventCode: constants.shortNames[eventObj.action],
-												iucid: _.get(iPlayer, 'ucid'),
-												iName: _.get(curIUnit, 'playername'),
-												displaySide: _.get(curIUnit, 'coalition'),
-												roleCode: 'I',
-												msg: 'C: '+ _.get(curIUnit, 'type') + '(' + _.get(curIUnit, 'playername') + ') has landed at friendly ' + place
-											};
-											console.log('FriendBaseLand: ', _.get(iCurObj, 'msg'));
-											if(_.get(iCurObj, 'iucid')) {
-												userLivesController.addLifePoints(
-													serverName,
-													iPlayer,
-													curIUnit,
-													'Land'
-												);
-												webPushCommands.sendToCoalition(serverName, {payload: {action: eventObj.action, data: _.cloneDeep(iCurObj)}});
-												masterDBController.simpleStatEventActions('save', serverName, iCurObj);
-											}
+							// console.log('land: ', _.get(curIUnit, 'playername'), baseLand, iPlayer);
+							var curUnitSide = _.get(curIUnit, 'coalition');
+							proximityController.getBasesInProximity(serverName, _.get(curIUnit, 'lonLatLoc'), 5, curUnitSide)
+								.then(function (friendlyBases) {
+									if (friendlyBases.length > 0) {
+										var curBase = _.get(friendlyBases, [0], {});
+										var curBaseSide = _.get(curBase, 'side');
+										// console.log('cb: ', curBase, curBaseSide, curUnitSide);
+										place = ' at ' + _.get(curBase, '_id');
+										masterDBController.srvPlayerActions('applyTempToRealScore', serverName, {_id: iPlayer._id, groupId: curIUnit.groupId})
+											.catch(function (err) {
+												console.log('line70', err);
+											})
+										;
+										iCurObj = {
+											sessionName: sessionName,
+											eventCode: constants.shortNames[eventObj.action],
+											iucid: _.get(iPlayer, 'ucid'),
+											iName: _.get(curIUnit, 'playername'),
+											displaySide: _.get(curIUnit, 'coalition'),
+											roleCode: 'I',
+											msg: 'C: '+ _.get(curIUnit, 'type') + '(' + _.get(curIUnit, 'playername') + ') has landed at friendly ' + place
+										};
+										console.log('FriendBaseLand: ', _.get(iCurObj, 'msg'));
+										if(_.get(iCurObj, 'iucid')) {
+											userLivesController.addLifePoints(
+												serverName,
+												iPlayer,
+												curIUnit,
+												'Land'
+											);
+											webPushCommands.sendToCoalition(serverName, {payload: {action: eventObj.action, data: _.cloneDeep(iCurObj)}});
+											masterDBController.simpleStatEventActions('save', serverName, iCurObj);
 										}
-									})
-									.catch(function (err) {
-										console.log('err line100: ', err);
-									})
-								;
-							}
+									}
+								})
+								.catch(function (err) {
+									console.log('err line100: ', err);
+								})
+							;
 						}
 					}
 				})
