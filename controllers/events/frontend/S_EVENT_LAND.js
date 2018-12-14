@@ -55,7 +55,7 @@ _.set(exports, 'processEventLand', function (serverName, sessionName, eventObj) 
 							;
 						}
 						iPlayer = _.find(playerArray, {name: _.get(curIUnit, 'playername')});
-						console.log('land: ', _.get(curIUnit, 'playername'), baseLand, iPlayer);
+						// console.log('land: ', _.get(curIUnit, 'playername'), baseLand, iPlayer);
 						if(iPlayer) {
 							// console.log('land: ', _.get(curIUnit, 'playername'), baseLand, iPlayer);
 							var curUnitSide = _.get(curIUnit, 'coalition');
