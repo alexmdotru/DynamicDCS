@@ -1630,7 +1630,7 @@ _.set(exports, 'spawnTankerPlane', function (serverName, playerUnitObj, tankerOb
 });
 
 _.set(exports, 'spawnSupportPlane', function (serverName, baseObj, side) {
-	console.log('SPSUPP: ', serverName, baseObj, side);
+	// console.log('SPSUPP: ', serverName, baseObj, side);
 	var unitNum;
 	var curBaseName;
 	var curUnitName;
