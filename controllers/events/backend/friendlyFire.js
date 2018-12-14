@@ -55,6 +55,7 @@ _.set(exports, 'processFriendlyFire', function (serverName, sessionName, eventOb
 										curIUnit = _.first(iunit);
 										curTUnit = _.first(tunit);
 										console.log('player: ', iPlayer, tPlayer);
+										//removeLifePoints: function (serverName, curPlayer, curUnit, execAction, isDirect, removeLP)
 										userLivesController.removeLifePoints(
 											serverName,
 											iPlayer,
