@@ -818,7 +818,7 @@ _.assign(exports, {
 			}
 
 			if (action === 'addLifePoints') {
-				// console.log('addPt: ', obj);
+				console.log('addPt: ', obj);
 				return new Promise(function(resolve, reject) {
 					// if addLifePoints exists, use that and done reset lifepoint fly cache
 					SrvPlayer.find({_id: obj._id}, function (err, serverObj) {
@@ -840,6 +840,7 @@ _.assign(exports, {
 							if(!_.get(obj, 'addLifePoints')) {
 								_.set(setObj, 'cachedRemovedLPPoints', 0);
 							}
+							console.log('addLP: ', obj, setObj);
 							SrvPlayer.findOneAndUpdate(
 								{_id: obj._id},
 								{ $set: setObj },
