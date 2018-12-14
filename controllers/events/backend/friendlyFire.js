@@ -49,8 +49,8 @@ _.set(exports, 'processFriendlyFire', function (serverName, sessionName, eventOb
 					masterDBController.srvPlayerActions('read', serverName, {_id: tPlayer.ucid})
 						.then(function (tPlayers) {
 							var curTPlayer = _.first(tPlayers);
-							// console.log('SAT: ', curPlayer.safeLifeActionTime, curPlayer);
-							if(new Date(curIPlayer.safeLifeActionTime).getTime() < new Date().getTime()) {
+							console.log('SAT: ', _.get(curIPlayer, 'safeLifeActionTime', 0) < new Date().getTime());
+							if(_.get(curIPlayer, 'safeLifeActionTime', 0) < new Date().getTime()) {
 								masterDBController.unitActions('read', serverName, {unitId: iPlayer.slot})
 									.then(function (iunit) {
 										masterDBController.unitActions('read', serverName, {unitId: tPlayer.slot})
