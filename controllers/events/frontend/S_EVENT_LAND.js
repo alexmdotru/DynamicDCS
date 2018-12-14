@@ -58,14 +58,14 @@ _.set(exports, 'processEventLand', function (serverName, sessionName, eventObj) 
 						iPlayer = _.find(playerArray, {name: _.get(curIUnit, 'playername')});
 						if(iPlayer) {
 							if (baseLand) {
-								console.log('land: ', _.get(curIUnit, 'playername'), baseLand, iPlayer);
+								// console.log('land: ', _.get(curIUnit, 'playername'), baseLand, iPlayer);
 								var curUnitSide = _.get(curIUnit, 'coalition');
 								proximityController.getBasesInProximity(serverName, _.get(curIUnit, 'lonLatLoc'), 4, curUnitSide)
 									.then(function (friendlyBases) {
 										if (friendlyBases.length > 0) {
 											var curBase = _.get(friendlyBases, [0], {});
 											var curBaseSide = _.get(curBase, 'side');
-											console.log('cb: ', curBase, curBaseSide, curUnitSide);
+											// console.log('cb: ', curBase, curBaseSide, curUnitSide);
 											place = ' at ' + _.get(curBase, '_id');
 											masterDBController.srvPlayerActions('applyTempToRealScore', serverName, {_id: iPlayer._id, groupId: curIUnit.groupId})
 												.catch(function (err) {
