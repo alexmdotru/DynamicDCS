@@ -5,7 +5,7 @@ const DCSLuaCommands = require('../../player/DCSLuaCommands');
 const groupController = require('../../spawn/group');
 const webPushCommands = require('../../socketIO/webPush');
 const userLivesController = require('../../action/userLives');
-const proximityController = require('../proxZone/proximity');
+const proximityController = require('../../proxZone/proximity');
 
 _.set(exports, 'processEventLand', function (serverName, sessionName, eventObj) {
 	var place = '';
