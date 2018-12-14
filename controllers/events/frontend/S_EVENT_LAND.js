@@ -60,9 +60,9 @@ _.set(exports, 'processEventLand', function (serverName, sessionName, eventObj) 
 							if (baseLand) {
 								console.log('land: ', _.get(curIUnit, 'playername'), baseLand, iPlayer);
 								var curUnitSide = _.get(curIUnit, 'coalition');
-								proximityController.getBasesInProximity(serverName, _.get(curIUnit, 'playername'), 4, curUnitSide)
+								proximityController.getBasesInProximity(serverName, _.get(curIUnit, 'lonLatLoc'), 4, curUnitSide)
 									.then(function (friendlyBases) {
-										if (friendlyBases > 0) {
+										if (friendlyBases.length > 0) {
 											var curBase = _.get(bases, [0], {});
 											var curBaseSide = _.get(curBase, 'side');
 											console.log('cb: ', curBase, curBaseSide, curUnitSide);
