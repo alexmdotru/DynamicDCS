@@ -892,7 +892,7 @@ _.assign(exports, {
 									safeLifeActionTime: (nowTime + _.get(constants, 'time.fifteenSecs'))
 								};
 								if(_.get(obj, 'storePoints')) {
-									_.set(setObj, 'cachedRemovedLPPoints', _.get(obj, 'removeLifePoints'));
+									_.set(setObj, 'cachedRemovedLPPoints', removePoints);
 								}
 								SrvPlayer.findOneAndUpdate(
 									{_id: obj._id},
