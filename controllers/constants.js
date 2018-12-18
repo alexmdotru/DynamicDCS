@@ -192,6 +192,7 @@ _.assign(exports, {
 			.then(function (bases) {
 				return new Promise(function (resolve) {
 					if (bases.length) {
+						console.log('bases: ', bases);
 						resolve(bases);
 					} else {
 						console.log('Rebuilding Base DB');
@@ -259,29 +260,29 @@ _.assign(exports, {
 		;
 	},
 	initServer: function ( serverName ) {
-		return exports.getStaticDictionary()
-			.then(function (staticDict) {
-				_.set(exports, 'staticDictionary', staticDict);
-				return exports.getUnitDictionary()
-					.then(function (unitDict) {
-						_.set(exports, 'unitDictionary', unitDict);
-						return exports.getWeaponDictionary()
-							.then(function (weaponsDict){
-								_.set(exports, 'weaponsDictionary', weaponsDict);
-								return exports.getBases(serverName)
-									.then(function (bases) {
-										_.set(exports, 'bases', bases);
-										return exports.getServer(serverName)
-											.then(function (server) {
-												_.set(exports, 'config', server);
+		return exports.getServer(serverName)
+			.then(function (server) {
+				_.set(exports, 'config', server);
+				return exports.getStaticDictionary()
+					.then(function (staticDict) {
+						_.set(exports, 'staticDictionary', staticDict);
+						return exports.getUnitDictionary()
+							.then(function (unitDict) {
+								_.set(exports, 'unitDictionary', unitDict);
+								return exports.getWeaponDictionary()
+									.then(function (weaponsDict){
+										_.set(exports, 'weaponsDictionary', weaponsDict);
+										return exports.getBases(serverName)
+											.then(function (bases) {
+												_.set(exports, 'bases', bases);
 											})
-										;
+											;
 									})
-								;
+									;
 							})
-						;
+							;
 					})
-				;
+					;
 			})
 		;
 	}

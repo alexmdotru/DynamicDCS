@@ -1819,7 +1819,7 @@ _.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {
 _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 	var totalUnitsSpawned = 0;
 	var curServer = _.get(constants, ['config']);
-	var defBaseSides = _.get(curServer, 'defBaseSides');
+	var defBaseSides = _.get(curServer, ['defBaseSides', _.get(curServer, 'theater')]);
 	_.forEach(defBaseSides, function (extSide, extName) {
 		var spawnArray = [];
 		var curReplenThreshold;

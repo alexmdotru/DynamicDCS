@@ -426,12 +426,15 @@ _.assign(exports, {
 // local DB Actions
 _.assign(exports, {
 	baseActions: function (action, serverName, obj){
+		var curTheater = _.get(constants, 'config.theater');
+		var curObj = obj || {};
+		_.set(curObj, 'mapType', curTheater);
 		var curDBConn = _.get(exports, ['dbObj', 'dbConn', serverName]);
 		if (curDBConn) {
 			const Airfield = curDBConn.model(serverName+'_airfield', _.get(exports, 'dbObj.airfieldSchema'));
 			if (action === 'read') {
 				return new Promise(function(resolve, reject) {
-					Airfield.find(obj, function (err, dbairfields) {
+					Airfield.find(curObj, function (err, dbairfields) {
 						if (err) { reject(err) }
 						resolve(dbairfields);
 					});
@@ -461,7 +464,8 @@ _.assign(exports, {
 										coordinates: obj.unitLonLatLoc
 									}
 								}
-							}
+							},
+							mapType: curTheater
 						},
 						function(err, dbairfields) {
 							if (err) { reject(err) }
@@ -483,7 +487,8 @@ _.assign(exports, {
 										coordinates: obj.unitLonLatLoc
 									}
 								}
-							}
+							},
+							mapType: curTheater
 						},
 						function(err, dbairfields) {
 							if (err) { reject(err) }
@@ -505,7 +510,8 @@ _.assign(exports, {
 										coordinates: obj.unitLonLatLoc
 									}
 								}
-							}
+							},
+							mapType: curTheater
 						},
 						function(err, dbairfields) {
 							if (err) { reject(err) }
@@ -518,7 +524,7 @@ _.assign(exports, {
 				var tAirfields;
 				return new Promise(function(resolve, reject) {
 					Airfield.find(
-						{},
+						{mapType: curTheater},
 						function(err, dbairfields) {
 							if (err) { reject(err) }
 							tAirfields = _.transform(dbairfields, function (result, value) {
