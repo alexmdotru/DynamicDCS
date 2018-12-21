@@ -212,12 +212,9 @@ _.assign(exports, {
 			;
 	},
 	getServer: function ( serverName ) {
-		console.log('getServer');
 		return masterDBController.serverActions('read', {_id: serverName})
 			.then(function (server) {
-				console.log('server');
 				return new Promise(function (resolve) {
-					console.log('fserver: ', _.first(server));
 					resolve(_.first(server));
 				});
 			})

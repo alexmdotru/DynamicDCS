@@ -522,12 +522,11 @@ _.assign(exports, {
 			}
 			if(action === 'getBaseSides') {
 				var tAirfields;
-				if (!curTheater) {
-					console.log('no theater');
-					return constants.getServer(serverName)
-						.then(function (serverConf) {
-							console.log('serconf: ', serverConf);
-							return new Promise(function(resolve, reject) {
+				return new Promise(function(resolve, reject) {
+					if (!curTheater) {
+						constants.getServer(serverName)
+							.then(function (serverConf) {
+								console.log('serconf: ', serverConf);
 								Airfield.find(
 									{mapType: _.get(serverConf, 'config.theater')},
 									function(err, dbairfields) {
@@ -538,14 +537,12 @@ _.assign(exports, {
 										resolve(tAirfields);
 									}
 								);
-							});
-						})
-						.error(function (err) {
-							return Promise.reject('line:542, failed to connect to db: ', serverName, err);
-						})
-					;
-				} else {
-					return new Promise(function(resolve, reject) {
+							})
+							.error(function (err) {
+								reject('line:542, failed to connect to db: ', serverName, err);
+							})
+						;
+					} else {
 						Airfield.find(
 							{mapType: curTheater},
 							function(err, dbairfields) {
@@ -556,8 +553,8 @@ _.assign(exports, {
 								resolve(tAirfields);
 							}
 						);
-					});
-				}
+					}
+				});
 			}
 			if(action === 'updateSide') {
 				return new Promise(function(resolve, reject) {
