@@ -546,6 +546,7 @@ _.assign(exports, {
 						})
 					;
 				} else {
+					console.log('IS theater');
 					return new Promise(function(resolve, reject) {
 						Airfield.find(
 							{mapType: curTheater},
