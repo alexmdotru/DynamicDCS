@@ -522,8 +522,7 @@ _.assign(exports, {
 			}
 			if(action === 'getBaseSides') {
 				var tAirfields;
-				console.log('gbaseS: ', curTheater);
-				if (curTheater) {
+				if (!curTheater) {
 					console.log('no theater');
 					return constants.getServer(serverName)
 						.then(function (serverConf) {
@@ -546,7 +545,6 @@ _.assign(exports, {
 						})
 					;
 				} else {
-					console.log('IS theater');
 					return new Promise(function(resolve, reject) {
 						Airfield.find(
 							{mapType: curTheater},
