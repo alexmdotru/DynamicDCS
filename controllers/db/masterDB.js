@@ -522,6 +522,28 @@ _.assign(exports, {
 			}
 			if(action === 'getBaseSides') {
 				var tAirfields;
+				if (curTheater) {
+					return constants.getServer(serverName)
+						.then(function (serverConf) {
+							console.log('serconf: ', serverConf);
+							return new Promise(function(resolve, reject) {
+								Airfield.find(
+									{mapType: _.get(serverConf, 'config.theater')},
+									function(err, dbairfields) {
+										if (err) { reject(err) }
+										tAirfields = _.transform(dbairfields, function (result, value) {
+											result.push({name: value.name, side: value.side})
+										}, []);
+										resolve(tAirfields);
+									}
+								);
+							});
+						})
+						.error(function (err) {
+							return Promise.reject('line:542, failed to connect to db: ', serverName, err);
+						})
+					;
+				}
 				return new Promise(function(resolve, reject) {
 					Airfield.find(
 						{mapType: curTheater},
