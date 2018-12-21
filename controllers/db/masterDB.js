@@ -538,7 +538,7 @@ _.assign(exports, {
 									}
 								);
 							})
-							.error(function (err) {
+							.catch(function (err) {
 								reject('line:542, failed to connect to db: ', serverName, err);
 							})
 						;
