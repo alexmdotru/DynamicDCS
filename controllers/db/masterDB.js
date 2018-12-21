@@ -524,6 +524,7 @@ _.assign(exports, {
 				var tAirfields;
 				console.log('gbaseS: ', curTheater);
 				if (curTheater) {
+					console.log('no theater');
 					return constants.getServer(serverName)
 						.then(function (serverConf) {
 							console.log('serconf: ', serverConf);
