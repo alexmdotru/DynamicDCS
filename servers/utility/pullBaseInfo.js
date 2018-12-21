@@ -5,8 +5,10 @@ const masterDBController = require('../../controllers/db/masterDB');
 const airbaseSyncController = require('../../controllers/serverToDbSync/airbaseSync');
 
 //config
+var mapType = 'Caucasus';
+//var mapType = 'PersianGulf';
 var masterServer = '127.0.0.1';
-var serverName = 'DDCSStandard';
+var serverName = 'DDCSHardcore';
 
 masterDBController.initDB(serverName, masterServer);
 
@@ -42,7 +44,7 @@ constants.initServer(serverName)
 			_.forEach(_.get(cbArray, 'que', []), function (queObj) {
 				console.log('qo: ', queObj);
 				if (_.get(queObj, 'action') === 'airbaseC') {
-					airbaseSyncController.processAirbaseUpdates(serverName, queObj);
+					airbaseSyncController.processAirbaseUpdates(serverName, mapType, queObj);
 				}
 			});
 		});
