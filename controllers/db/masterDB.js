@@ -528,7 +528,7 @@ _.assign(exports, {
 							.then(function (serverConf) {
 								console.log('serconf: ', serverConf);
 								Airfield.find(
-									{mapType: _.get(serverConf, 'config.theater')},
+									{mapType: _.get(serverConf, 'theater')},
 									function(err, dbairfields) {
 										if (err) { reject(err) }
 										tAirfields = _.transform(dbairfields, function (result, value) {
