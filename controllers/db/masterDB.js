@@ -522,6 +522,7 @@ _.assign(exports, {
 			}
 			if(action === 'getBaseSides') {
 				var tAirfields;
+				console.log('gbaseS: ', curTheater);
 				if (curTheater) {
 					return constants.getServer(serverName)
 						.then(function (serverConf) {
