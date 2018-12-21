@@ -526,7 +526,7 @@ _.assign(exports, {
 					if (!curTheater) {
 						constants.getServer(serverName)
 							.then(function (serverConf) {
-								console.log('serconf: ', serverConf);
+								// console.log('serconf: ', serverConf);
 								Airfield.find(
 									{mapType: _.get(serverConf, 'theater')},
 									function(err, dbairfields) {
