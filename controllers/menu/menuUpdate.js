@@ -20,7 +20,9 @@ var allowedPlanesForTroops = [
 	'MiG-15bis',
 	'L-39ZA',
 	'Hawk',
-	'SA342Mistral'
+	'SA342Mistral',
+	'C-101CC',
+	'Yak-52'
 ];
 var allowedTypesForCratesLight = [
 	'UH-1H',
@@ -40,7 +42,9 @@ var allowedHelisForInternalCrates = [
 	'Bf-109K-4',
 	'P-51D',
 	'L-39ZA',
-	'Hawk'
+	'Hawk',
+	'C-101CC',
+	'Yak-52'
 ];
 
 _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
@@ -81,7 +85,7 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 		enableAction = true;
 	}
 
-	if (_.includes(allowedTypesForCratesLight, unit.type) || _.includes(allowedTypesForCratesHeavy, unit.type)) {
+	if (_.includes(allowedTypesForCratesLight, unit.type) || _.includes(allowedTypesForCratesHeavy, unit.type) || _.includes(allowedHelisForInternalCrates, unit.type)) {
 		cmdArray = _.concat(cmdArray, aUnpackMenu);
 		enableAction = true;
 	}
