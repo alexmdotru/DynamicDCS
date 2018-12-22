@@ -192,7 +192,7 @@ _.assign(exports, {
 			.then(function (bases) {
 				return new Promise(function (resolve) {
 					if (bases.length) {
-						console.log('bases: ', bases);
+						// console.log('bases: ', bases);
 						resolve(bases);
 					} else {
 						console.log('Rebuilding Base DB');
