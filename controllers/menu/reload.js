@@ -19,7 +19,7 @@ _.assign(exports, {
 								if (samUnits.length) {
 									var curSamType = _.first(samUnits).type;
 									var curUnitDict = _.find(constants.unitDictionary, {_id: curSamType});
-									var curReloadArray = _.get(curUnitDict, 'reloadReqArray');
+									var curReloadArray = _.get(curUnitDict, 'reloadReqArray', []);
 									console.log('uD: ', curUnitDict);
 									if(curReloadArray.length === _.intersection(curReloadArray, _.map(samUnits, 'type')).length) {
 										groupController.spawnGroup(serverName, samUnits);
