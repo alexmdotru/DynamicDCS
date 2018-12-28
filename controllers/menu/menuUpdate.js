@@ -132,9 +132,9 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 			'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "AWACS", {"$Support$"})',
 			'missionCommands.addCommandForGroup("' + unit.groupId + '", "A-50 AWACS(500rs)", {"$Support$", "AWACS"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "spawnAWACS", ["type"] = "RussianAWACS", ["unitId"] = ' + unit.unitId + ', ["rsCost"] = 500})',
 			'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "Refueling", {"$Support$"})',
-			'missionCommands.addCommandForGroup("' + unit.groupId + '", "IL-78M(HA Drogue)(200rs)", {"$Support$", "Refueling"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "spawnTanker", ["type"] = "RHADTKR", ["unitId"] = ' + unit.unitId + ', ["rsCost"] = 200})',
-			'missionCommands.addCommandForGroup("' + unit.groupId + '", "KC-135(LA Boom)(200rs)", {"$Support$", "Refueling"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "spawnTanker", ["type"] = "RLABTKR", ["unitId"] = ' + unit.unitId + ', ["rsCost"] = 200})',
-			'missionCommands.addCommandForGroup("' + unit.groupId + '", "KC-130(LA Drogue)(200rs)", {"$Support$", "Refueling"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "spawnTanker", ["type"] = "RLADTKR", ["unitId"] = ' + unit.unitId + ', ["rsCost"] = 200})',
+			'missionCommands.addCommandForGroup("' + unit.groupId + '", "IL-78M(HA Drogue)(50rs)", {"$Support$", "Refueling"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "spawnTanker", ["type"] = "RHADTKR", ["unitId"] = ' + unit.unitId + ', ["rsCost"] = 50})',
+			'missionCommands.addCommandForGroup("' + unit.groupId + '", "KC-135(LA Boom)(50rs)", {"$Support$", "Refueling"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "spawnTanker", ["type"] = "RLABTKR", ["unitId"] = ' + unit.unitId + ', ["rsCost"] = 50})',
+			'missionCommands.addCommandForGroup("' + unit.groupId + '", "KC-130(LA Drogue)(50rs)", {"$Support$", "Refueling"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "spawnTanker", ["type"] = "RLADTKR", ["unitId"] = ' + unit.unitId + ', ["rsCost"] = 50})',
 		]);
 	}
 	if(unit.coalition === 2) {
@@ -154,10 +154,10 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 			'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "AWACS", {"$Support$"})',
 			'missionCommands.addCommandForGroup("' + unit.groupId + '", "E-3A AWACS(500rs)", {"$Support$", "AWACS"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "spawnAWACS", ["type"] = "USAAWACS", ["unitId"] = ' + unit.unitId + ', ["rsCost"] = 500})',
 			'missionCommands.addSubMenuForGroup("' + unit.groupId + '", "Refueling", {"$Support$"})',
-			'missionCommands.addCommandForGroup("' + unit.groupId + '", "KC-135(HA Boom)(200rs)", {"$Support$", "Refueling"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "spawnTanker", ["type"] = "BHABTKR", ["unitId"] = ' + unit.unitId + ', ["rsCost"] = 200})',
-			'missionCommands.addCommandForGroup("' + unit.groupId + '", "IL-78M(HA Drogue)(200rs)", {"$Support$", "Refueling"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "spawnTanker", ["type"] = "BHADTKR", ["unitId"] = ' + unit.unitId + ', ["rsCost"] = 200})',
-			'missionCommands.addCommandForGroup("' + unit.groupId + '", "KC-135(LA Boom)(200rs)", {"$Support$", "Refueling"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "spawnTanker", ["type"] = "BLABTKR", ["unitId"] = ' + unit.unitId + ', ["rsCost"] = 200})',
-			'missionCommands.addCommandForGroup("' + unit.groupId + '", "KC-130(LA Drogue)(200rs)", {"$Support$", "Refueling"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "spawnTanker", ["type"] = "BLADTKR", ["unitId"] = ' + unit.unitId + ', ["rsCost"] = 200})',
+			'missionCommands.addCommandForGroup("' + unit.groupId + '", "KC-135(HA Boom)(50rs)", {"$Support$", "Refueling"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "spawnTanker", ["type"] = "BHABTKR", ["unitId"] = ' + unit.unitId + ', ["rsCost"] = 50})',
+			'missionCommands.addCommandForGroup("' + unit.groupId + '", "IL-78M(HA Drogue)(50rs)", {"$Support$", "Refueling"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "spawnTanker", ["type"] = "BHADTKR", ["unitId"] = ' + unit.unitId + ', ["rsCost"] = 50})',
+			'missionCommands.addCommandForGroup("' + unit.groupId + '", "KC-135(LA Boom)(50rs)", {"$Support$", "Refueling"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "spawnTanker", ["type"] = "BLABTKR", ["unitId"] = ' + unit.unitId + ', ["rsCost"] = 50})',
+			'missionCommands.addCommandForGroup("' + unit.groupId + '", "KC-130(LA Drogue)(50rs)", {"$Support$", "Refueling"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "spawnTanker", ["type"] = "BLADTKR", ["unitId"] = ' + unit.unitId + ', ["rsCost"] = 50})',
 		]);
 	}
 
