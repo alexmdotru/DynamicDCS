@@ -100,7 +100,7 @@ _.assign(exports, {
 										}
 										if(curIntCrateType === 'BaseRepair') {
 											if (_.some(playerProx)) {
-												repairController.repairBase(serverName, base, curUnit);
+												repairController.repairBase(serverName, curBaseObj, curUnit);
 											} else {
 												DCSLuaCommands.sendMesgToGroup(
 													curUnit.groupId,
