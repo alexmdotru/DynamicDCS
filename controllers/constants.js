@@ -268,7 +268,7 @@ _.assign(exports, {
 						_.set(exports, 'staticDictionary', staticDict);
 						return exports.getUnitDictionary(_.get(server, 'timePeriod', 'modern'))
 							.then(function (unitDict) {
-								console.log('UD: ', _.get(server, 'timePeriod', 'modern'), unitDict);
+								// console.log('UD: ', _.get(server, 'timePeriod', 'modern'), unitDict);
 								_.set(exports, 'unitDictionary', unitDict);
 								return exports.getWeaponDictionary()
 									.then(function (weaponsDict){
