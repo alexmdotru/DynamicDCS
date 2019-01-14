@@ -235,8 +235,8 @@ _.assign(exports, {
 			})
 			;
 	},
-	getUnitDictionary: function () {
-		return masterDBController.unitDictionaryActions('read')
+	getUnitDictionary: function (curTimePeriod) {
+		return masterDBController.unitDictionaryActions('read', {timePeriod: curTimePeriod})
 			.then(function (unitsDic) {
 				return new Promise(function (resolve) {
 					resolve(unitsDic);
@@ -266,8 +266,9 @@ _.assign(exports, {
 				return exports.getStaticDictionary()
 					.then(function (staticDict) {
 						_.set(exports, 'staticDictionary', staticDict);
-						return exports.getUnitDictionary()
+						return exports.getUnitDictionary(_.get(server, 'timePeriod', 'modern'))
 							.then(function (unitDict) {
+								console.log('UD: ', _.get(server, 'timePeriod', 'modern'), unitDict);
 								_.set(exports, 'unitDictionary', unitDict);
 								return exports.getWeaponDictionary()
 									.then(function (weaponsDict){

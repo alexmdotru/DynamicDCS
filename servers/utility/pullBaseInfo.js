@@ -8,7 +8,7 @@ const airbaseSyncController = require('../../controllers/serverToDbSync/airbaseS
 var mapType = 'Caucasus';
 //var mapType = 'PersianGulf';
 var masterServer = '127.0.0.1';
-var serverName = 'DDCSHardcore';
+var serverName = 'DDCS1972BushWar';
 
 masterDBController.initDB(serverName, masterServer);
 

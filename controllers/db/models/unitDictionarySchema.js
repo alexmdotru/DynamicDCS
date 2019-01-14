@@ -55,6 +55,10 @@ const UnitDictionarySchema = new Schema({
 		LPCost: {
 			type: Number,
 			default: 1
+		},
+		timePeriod: {
+			type: Array,
+			required: true
 		}
 	},
 	{

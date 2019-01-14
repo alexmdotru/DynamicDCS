@@ -132,6 +132,11 @@ const ServerSchema = new Schema({
 		},
 		curFilePath: {
 			type: String
+		},
+		timePeriod: {
+			type: String,
+			required: true,
+			default: 'modern'
 		}
 	},
 	{
