@@ -1094,6 +1094,7 @@ _.set(exports, 'su24mTemplate', function ( unitObj ) {
 });
 
 _.set(exports, 'airUnitTemplate', function ( unitObj ) {
+	// console.log('cOBJ: ', unitObj);
 	var curAirTemplate = '{' +
 		'["x"] = coord.LLtoLO(' + _.get(unitObj, ['lonLatLoc', 1]) + ', ' +  _.get(unitObj, ['lonLatLoc', 0]) + ').x, ' +
 		'["y"] = coord.LLtoLO(' + _.get(unitObj, ['lonLatLoc', 1]) + ', ' +  _.get(unitObj, ['lonLatLoc', 0]) + ').z, ' +

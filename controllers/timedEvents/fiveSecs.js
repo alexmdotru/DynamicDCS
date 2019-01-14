@@ -22,6 +22,7 @@ _.set(exports, 'processFiveSecActions', function (serverName, fullySynced) {
 										if ((units.length < unitCnt) && replenEpoc < new Date().getTime()) { //UNCOMMENT OUT FALSE
 											masterDBController.baseActions('updateReplenTimer', serverName, {name: _.get(base, '_id'),  replenTime: new Date().getTime() + (replenTimer * 1000)})
 												.then(function () {
+													// console.log(serverName, base, base.side);
 													groupController.spawnSupportPlane(serverName, base, base.side);
 												})
 												.catch(function (err) {
