@@ -27,9 +27,9 @@ _.assign(exports, {
 		'SWITZERLAND',
 		'UK',
 		'USA',
-		'AGGRESSORS',
 		'KAZAKHSTAN',
-		'UKRAINE'
+		'UKRAINE',
+		'INSURGENTS',
 	],
 	countryId: [
 		'RUSSIA',
@@ -124,7 +124,6 @@ _.assign(exports, {
 		'EGYPT',
 		'FINLAND',
 		'HUNGARY',
-		'INSURGENTS',
 		'IRAN',
 		'FRANCE',
 		'ISRAEL',
@@ -143,7 +142,8 @@ _.assign(exports, {
 		'QATAR',
 		'OMAN',
 		'UNITED_ARAB_EMIRATES',
-		'TURKEY'
+		'TURKEY',
+		'AGGRESSORS'
 	],
 	seasons: [
 		'Autumn',
