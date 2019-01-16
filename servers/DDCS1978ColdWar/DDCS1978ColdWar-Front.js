@@ -29,8 +29,8 @@ const processTimedFiveMinutes = require('../../controllers/timedEvents/fiveMinut
 const processTimedTenMinutes = require('../../controllers/timedEvents/tenMinutes');
 
 //config
-var masterServer = '127.0.0.1';
-var serverName = 'DDCS1974BushWar';
+var masterServer = '192.168.44.60';
+var serverName = 'DDCS1978ColdWar';
 
 masterDBController.initDB(serverName, masterServer);
 

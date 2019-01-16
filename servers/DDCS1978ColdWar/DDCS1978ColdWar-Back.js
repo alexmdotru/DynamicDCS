@@ -12,8 +12,8 @@ const serverTimerController = require('../../controllers/action/serverTimer');
 
 //config
 var commsCounter = 0;
-var masterServer = '127.0.0.1';
-var serverName = 'DDCS1974BushWar';
+var masterServer = '192.168.44.60';
+var serverName = 'DDCS1978ColdWar';
 var lastSentLoader;
 
 masterDBController.initDB(serverName, masterServer);
