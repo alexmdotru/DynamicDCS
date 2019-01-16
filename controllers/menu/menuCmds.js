@@ -1500,7 +1500,7 @@ _.assign(exports, {
 						;
 						var newSpawnArray = [];
 						if (combo) {
-							constants.getUnitDictionary()
+							constants.getUnitDictionary(_.get(constants, 'config.timePeriod', 'modern'))
 								.then(function (unitDic) {
 									var addHdg = 30;
 									var curUnitHdg = playerUnit.hdg;
@@ -1531,7 +1531,7 @@ _.assign(exports, {
 								})
 								;
 						} else {
-							constants.getUnitDictionary()
+							constants.getUnitDictionary(_.get(constants, 'config.timePeriod', 'modern'))
 								.then(function (unitDic) {
 									var addHdg = 30;
 									var curUnitHdg = playerUnit.hdg;

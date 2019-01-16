@@ -1255,10 +1255,21 @@ _.set(exports, 'spawnSupportBaseGrp', function ( serverName, baseName, side, ini
 	return _.compact(spawnArray);
 });
 
-_.set(exports, 'spawnBaseReinforcementGroup', function (serverName, side, baseName) {
+_.set(exports, 'spawnBaseReinforcementGroup', function (serverName, side, baseName, forceSpawn) {
+	var curAngle = 0;
+	var curCat;
+	var curRndSpawn;
 	var curServer = _.get(constants, ['config']);
-	var spawnArray = [];
+	var curSpokeDeg;
+	var curSpokeNum;
+	var infoSpwn;
 	var curBaseSpawnCats = _.get(curServer, 'spwnLimitsPerTick');
+	var randLatLonInBase;
+	var groupedUnits = [];
+	var totalUnits = 0;
+	var compactUnits;
+	var centerRadar;
+	var polyCheck;
 	_.forEach(curBaseSpawnCats, function (tickVal, name) {
 		var curTickVal = _.cloneDeep(tickVal);
 		if(_.includes(baseName, 'FARP')) {
@@ -1268,11 +1279,52 @@ _.set(exports, 'spawnBaseReinforcementGroup', function (serverName, side, baseNa
 		}
 		if (curTickVal > 0) {
 			for (var i = 0; i < curTickVal; i++) {
-				spawnArray = _.concat(spawnArray, _.cloneDeep(exports.getRndFromSpawnCat( name, side, false )));
+				curAngle = 0;
+				curRndSpawn = _.sortBy(exports.getRndFromSpawnCat( name, side, false, forceSpawn ), 'sort');
+				compactUnits = [];
+				infoSpwn = _.first(curRndSpawn);
+				centerRadar = _.get(infoSpwn, 'centerRadar') ? 1 : 0;
+				polyCheck = _.get(infoSpwn, 'centerRadar') ? 'buildingPoly' : 'unitPoly';
+
+				if(_.get(infoSpwn, 'spoke')) {
+					randLatLonInBase = zoneController.getRandomLatLonFromBase(serverName, baseName, polyCheck);
+					groupedUnits = [];
+					curSpokeNum = curRndSpawn.length - centerRadar;
+					curSpokeDeg = 359/curSpokeNum;
+
+					if(_.get(infoSpwn, 'centerRadar')) {
+						//main radar
+						curCat = _.cloneDeep(infoSpwn);
+						_.set(curCat, 'lonLatLoc', randLatLonInBase);
+						groupedUnits.push(curCat);
+					}
+					//secondary radar
+					for (var j = _.cloneDeep(centerRadar); j < _.get(infoSpwn, 'secRadarNum') + centerRadar; j++) {
+						curCat = _.cloneDeep(curRndSpawn[j]);
+						_.set(curCat, 'lonLatLoc', zoneController.getLonLatFromDistanceDirection(randLatLonInBase, curAngle, _.get(curCat, 'spokeDistance')/2));
+						curAngle += curSpokeDeg;
+						groupedUnits.push(curCat);
+					}
+					//launchers
+					for (var k = _.get(infoSpwn, 'secRadarNum') + centerRadar; k < curSpokeNum + centerRadar; k++) {
+						curCat = _.cloneDeep(curRndSpawn[k]);
+						_.set(curCat, 'lonLatLoc', zoneController.getLonLatFromDistanceDirection(randLatLonInBase, curAngle, _.get(curCat, 'spokeDistance')));
+						curAngle += curSpokeDeg;
+						groupedUnits.push(curCat);
+					}
+					// console.log('sg: ', serverName, _.compact(groupedUnits), baseName, side);
+					compactUnits = _.compact(groupedUnits);
+				} else {
+					// console.log('sg: ', serverName, _.compact(curRndSpawn), baseName, side);
+					compactUnits = _.compact(curRndSpawn);
+				}
+				totalUnits += compactUnits.length;
+				exports.spawnGroup(serverName, compactUnits, baseName, side);
 			}
 		}
 	});
-	return _.compact(spawnArray);
+	console.log('return total', totalUnits);
+	return totalUnits;
 });
 
 _.set(exports, 'spawnDefenseChopper', function (serverName, playerUnitObj, unitObj) {
@@ -1820,6 +1872,7 @@ _.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {
 _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 	var totalUnitsSpawned = 0;
 	var curServer = _.get(constants, ['config']);
+	var totalUnitNum;
 	var defBaseSides = _.get(curServer, ['defBaseSides', _.get(curServer, 'theater')]);
 	_.forEach(defBaseSides, function (extSide, extName) {
 		var spawnArray = [];
@@ -1830,13 +1883,15 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 		} else {
 			curReplenThreshold = curServer.replenThresholdBase;
 		}
-		while (spawnArray.length < curReplenThreshold) { //UNCOMMENT THESE
-			spawnArray = _.concat(spawnArray, exports.spawnBaseReinforcementGroup(serverName, extSide, extName));
+		totalUnitNum = 0;
+		while (spawnArray.length + totalUnitNum < curReplenThreshold) { //UNCOMMENT THESE
+			totalUnitNum += exports.spawnBaseReinforcementGroup(serverName, extSide, extName, true);
+			//spawnArray = _.concat(spawnArray, exports.spawnBaseReinforcementGroup(serverName, extSide, extName));
 		}
 		exports.spawnGroup(serverName, spawnArray, extName, extSide);
 		exports.spawnLogisticCmdCenter(serverName, {}, true, _.find(_.get(constants, 'bases'), {name: extName}), extSide);
 		exports.spawnRadioTower(serverName, {}, true, _.find(_.get(constants, 'bases'), {name: extName}), extSide);
-		totalUnitsSpawned += spawnArray.length + 1;
+		totalUnitsSpawned += spawnArray.length + totalUnitNum + 1;
 	});
 	return totalUnitsSpawned
 });
@@ -1898,7 +1953,8 @@ _.set(exports, 'spawnRadioTower', function (serverName, staticObj, init, baseObj
 });
 
 _.set(exports, 'replenishUnits', function ( serverName, baseName, side ) {
-	exports.spawnGroup(serverName, exports.spawnBaseReinforcementGroup(serverName, side, baseName), baseName, side);
+	exports.spawnBaseReinforcementGroup(serverName, side, baseName);
+	//exports.spawnGroup(serverName, exports.spawnBaseReinforcementGroup(serverName, side, baseName), baseName, side);
 });
 
 _.set(exports, 'destroyUnit', function ( serverName, unitName ) {

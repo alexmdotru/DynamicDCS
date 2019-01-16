@@ -59,7 +59,28 @@ const UnitDictionarySchema = new Schema({
 		timePeriod: {
 			type: Array,
 			required: true
+		},
+		sort: {
+			type: Number,
+			default: 0
+		},
+		centerRadar: {
+			type: Boolean,
+			default: false
+		},
+		secRadarNum: {
+			type: Number,
+			default: 1
+		},
+		spokeDistance: {
+			type: Number,
+			default: 0.1
+		},
+		spoke: {
+			type: Boolean,
+			default: false
 		}
+
 	},
 	{
 		timestamps: true, // Saves createdAt and updatedAt as dates. createdAt will be our timestamp.
