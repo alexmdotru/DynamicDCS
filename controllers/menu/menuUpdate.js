@@ -166,7 +166,7 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 				if (curPlayer) {
 					if (_.includes(allowedHelisForTroops, unit.type)) {
 						trpMenuTitle = '"Troops"';
-						if (curTimePeriod === '1974BushWar') {
+						if (curTimePeriod === '1978ColdWar') {
 							cmdArray = _.concat(cmdArray, [
 								'missionCommands.addSubMenuForGroup("' + unit.groupId + '", ' + trpMenuTitle + ')',
 								'missionCommands.addCommandForGroup("' + unit.groupId + '", "Load Rifle Troop", {' + trpMenuTitle + '}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "Soldier", ["type"] = "combo", ["unitId"] = ' + unit.unitId + '})',
@@ -193,7 +193,7 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 						]);
 					}
 
-					if (curTimePeriod === '1974BushWar') {
+					if (curTimePeriod === '1978ColdWar') {
 						if (_.includes(allowedTypesForCratesLight, unit.type)) {
 							aqMenuTitleLite = '"Acquisitions Light"';
 							if(unit.coalition === 1) {
