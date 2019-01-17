@@ -5,7 +5,7 @@ const DCSLuaCommands = require('../player/DCSLuaCommands');
 const zoneController = require('../proxZone/zone');
 
 _.set(exports, 'spawnGrp', function (grpSpawn, country, category) {
-	console.log('spwnGrp: ', country, _.indexOf(constants.countryId, country), category);
+	// console.log('spwnGrp: ', country, _.indexOf(constants.countryId, country), category);
 	return gSpawnCmd = 'coalition.addGroup(' + _.indexOf(constants.countryId, country) + ', Group.Category.' + category + ', ' + grpSpawn + ')';
 });
 
@@ -1293,7 +1293,7 @@ _.set(exports, 'spawnBaseReinforcementGroup', function (serverName, side, baseNa
 		var curTickVal = _.cloneDeep(tickVal);
 		if(_.includes(baseName, 'FARP')) {
 			if (curTickVal > 1) {
-                curTickVal = curTickVal - 1;
+				curTickVal = curTickVal - 1;
 			}
 		}
 		if (curTickVal > 0) {
@@ -1341,10 +1341,58 @@ _.set(exports, 'spawnBaseReinforcementGroup', function (serverName, side, baseNa
 				exports.spawnGroup(serverName, compactUnits, baseName, side);
 			}
 		}
+		if(name === 'antiAir') {
+			exports.spawnLayer2Reinforcements(serverName, side, baseName);
+		}
 	});
 	console.log('return total', totalUnits);
 	return totalUnits;
 });
+
+_.set(exports, 'spawnLayer2Reinforcements', function (serverName, side, baseName) {
+	var curAngle = 0;
+	var curCat;
+	var curRndSpawn;
+	var curServer = _.get(constants, ['config']);
+	var curSpokeDeg;
+	var curSpokeNum;
+	var infoSpwn;
+	var curBaseAntiairSpawn = _.get(curServer, 'spwnLimitsPerTick.antiAir');
+	var randLatLonInBase;
+	var groupedUnits = [];
+	var totalUnits = 0;
+	var compactUnits;
+	var centerRadar;
+	var polyCheck;
+	if (curBaseAntiairSpawn > 0) {
+		for (var i = 0; i < curBaseAntiairSpawn; i++) {
+			curAngle = 0;
+			curRndSpawn = exports.getRndFromSpawnCat('antiAir', side, false);
+			compactUnits = [];
+			infoSpwn = _.first(curRndSpawn);
+
+			randLatLonInBase = zoneController.getRandomLatLonFromBase(serverName, baseName, 'layer2Poly');
+			groupedUnits = [];
+			curSpokeNum = curRndSpawn.length;
+			curSpokeDeg = 359/curSpokeNum;
+
+			curCat = _.cloneDeep(_.first(exports.getRndFromSpawnCat('unarmedAmmo', side, false)));
+			_.set(curCat, 'lonLatLoc', randLatLonInBase);
+			groupedUnits.push(curCat);
+			//launchers
+			for (var k = 0; k < curSpokeNum; k++) {
+				curCat = _.cloneDeep(curRndSpawn[k]);
+				_.set(curCat, 'lonLatLoc', zoneController.getLonLatFromDistanceDirection(randLatLonInBase, curAngle, 0.05));
+				curAngle += curSpokeDeg;
+				groupedUnits.push(curCat);
+			}
+			exports.spawnGroup(serverName, _.compact(groupedUnits), baseName, side);
+		}
+	}
+	// console.log('return total', totalUnits);
+	return totalUnits;
+});
+
 
 _.set(exports, 'spawnDefenseChopper', function (serverName, playerUnitObj, unitObj) {
 	var curTkrName;
