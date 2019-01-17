@@ -1358,22 +1358,23 @@ _.set(exports, 'spawnLayer2Reinforcements', function (serverName, curTick, side,
 	var groupedUnits = [];
 	for (var i = 0; i < curTickCnt; i++) {
 		curAngle = 0;
-		curRndSpawn = exports.getRndFromSpawnCat('antiAir', side, false, true);
+		curRndSpawn = _.cloneDeep(exports.getRndFromSpawnCat('antiAir', side, false, true));
 		groupedUnits = [];
 		curSpokeNum = curRndSpawn.length;
 		curSpokeDeg = 359/curSpokeNum;
 
-		curCat = _.first(exports.getRndFromSpawnCat('unarmedAmmo', side, false, true));
-		randLatLonInBase = zoneController.getRandomLatLonFromBase(serverName, baseName, 'layer2Poly');
+		curCat = _.cloneDeep(_.first(exports.getRndFromSpawnCat('unarmedAmmo', side, false, true)));
+		randLatLonInBase = _.cloneDeep(zoneController.getRandomLatLonFromBase(serverName, baseName, 'layer2Poly'));
 		_.set(curCat, 'lonLatLoc', randLatLonInBase);
 		groupedUnits.push(curCat);
 		//launchers
-		_.forEach(curRndSpawn, function (unitArray) {
-			_.set(unitArray, 'lonLatLoc', zoneController.getLonLatFromDistanceDirection(randLatLonInBase, curAngle, 0.05));
+		_.forEach(curRndSpawn, function (cUnit) {
+			var curUnit = cUnit;
+			_.set(curUnit, 'lonLatLoc', zoneController.getLonLatFromDistanceDirection(randLatLonInBase, curAngle, 0.05));
 			curAngle += curSpokeDeg;
-			groupedUnits.push(unitArray);
+			groupedUnits.push(curUnit);
 		});
-		exports.spawnGroup(serverName, groupedUnits, baseName, side);
+		exports.spawnGroup(serverName, _.compact(groupedUnits), baseName, side);
 	}
 });
 
