@@ -5,7 +5,7 @@ const DCSLuaCommands = require('../player/DCSLuaCommands');
 const zoneController = require('../proxZone/zone');
 
 _.set(exports, 'spawnGrp', function (grpSpawn, country, category) {
-	console.log('spwnGrp: ', grpSpawn, grpSpawn, country, _.indexOf(constants.countryId, country), category);
+	console.log('spwnGrp: ', country, _.indexOf(constants.countryId, country), category);
 	return gSpawnCmd = 'coalition.addGroup(' + _.indexOf(constants.countryId, country) + ', Group.Category.' + category + ', ' + grpSpawn + ')';
 });
 
@@ -1844,6 +1844,7 @@ _.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {
 		console.log('logispawn ukraine: ', curGrpObj);
 		if(curGrpObj.country === 'UKRAINE') {
 			_.set(curGrpObj, 'country', 'UKRAINE');
+			curSide = 'UKRAINE';
 		} else {
 			_.set(curGrpObj, 'country', curSide);
 		}
@@ -1862,6 +1863,7 @@ _.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {
 			}
 			if(curGrpObj.country === 'UKRAINE') {
 				_.set(curSpwnUnit, 'country', 'UKRAINE');
+				curSide = 'UKRAINE';
 			} else {
 				_.set(curSpwnUnit, 'country', curSide);
 			}
