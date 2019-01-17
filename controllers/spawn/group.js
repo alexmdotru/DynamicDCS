@@ -5,6 +5,7 @@ const DCSLuaCommands = require('../player/DCSLuaCommands');
 const zoneController = require('../proxZone/zone');
 
 _.set(exports, 'spawnGrp', function (grpSpawn, country, category) {
+	console.log('spwnGrp: ', grpSpawn);
 	return gSpawnCmd = 'coalition.addGroup(' + _.indexOf(constants.countryId, country) + ', Group.Category.' + category + ', ' + grpSpawn + ')';
 });
 
@@ -1780,6 +1781,7 @@ _.set(exports, 'spawnLogiGroup', function (serverName, spawnArray, side) {
 	if (curGrpObj) {
 		grpNum = _.get(curGrpObj, 'groupId', _.random(1000000, 9999999));
 		curSide = (side) ? _.get(constants, ['defCountrys', side]) : _.get(constants, ['defCountrys', _.get(curGrpObj, 'coalition')]);
+		console.log('logispawn ukraine: ', curGrpObj);
 		if(curGrpObj.country === 'UKRAINE') {
 			curSide = 'UKRAINE';
 		}
