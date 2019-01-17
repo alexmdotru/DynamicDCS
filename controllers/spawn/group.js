@@ -1369,7 +1369,7 @@ _.set(exports, 'spawnLayer2Reinforcements', function (serverName, curTick, side,
 		groupedUnits.push(curCat);
 		//launchers
 		_.forEach(curRndSpawn, function (cUnit) {
-			console.log('run: ', i, cUnit);
+			console.log('run: ', i, curAngle, cUnit);
 			var curUnit = cUnit;
 			_.set(curUnit, 'lonLatLoc', zoneController.getLonLatFromDistanceDirection(randLatLonInBase, curAngle, 0.05));
 			curAngle += curSpokeDeg;
