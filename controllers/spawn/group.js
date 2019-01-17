@@ -83,7 +83,7 @@ _.set(exports, 'turnOnEWRAuto', function () {
 											'["params"] = {' +
 												'["power"] = 10,' +
 												'["modulation"] = 0,' +
-												'["frequency"] = 251000000,' +
+												'["frequency"] = 254000000,' +
 											'},' +
 										'},' +
 									'},' +
