@@ -109,6 +109,26 @@ do
 												}
 											end
 										end
+										if gName and group.route.points and string.find(gName, '|POLY|LAYER2|', 1, true) then
+											local nArry = gName:split("|")
+											if polyArray[nArry[4]] == nil then
+												polyArray[nArry[4]] = {["layer2Poly"] = {}}
+											end
+											if polyArray[nArry[4]].layer2Poly == nil then
+												polyArray[nArry[4]].layer2Poly = {}
+											end
+											if polyArray[nArry[4]].layer2Poly[nArry[5]] == nil then
+												polyArray[nArry[4]].layer2Poly[nArry[5]] = {}
+											end
+											--env.info('poly: '..gName)
+											for pIndex = 1, #group.route.points do
+												local lat, lon, alt = coord.LOtoLL({x = group.route.points[pIndex].x, y = 0, z = group.route.points[pIndex].y})
+												polyArray[nArry[4]].layer2Poly[nArry[5]][pIndex] = {
+													[1] = lon,
+													[2] = lat
+												}
+											end
+										end
 									end
 								end
 							end
