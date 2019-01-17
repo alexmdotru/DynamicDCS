@@ -872,7 +872,8 @@ _.set(exports, 'grndUnitGroup', function ( groupObj, task, routes ) {
 	if (routes) {
 		curRoute = routes;
 	} else if (groupObj.type === '1L13 EWR' || groupObj.type === '55G6 EWR' ) {
-		// console.log('turningOnRouteEWRInstructions: ', groupObj);
+		console.log('turningOnRouteEWRInstructions: ', groupObj);
+		_.set(groupObj, 'country', 'UKRAINE');
 		curRoute = exports.turnOnEWRAuto();
 	} else {
 		curRoute = exports.turnOffDisperseUnderFire();
