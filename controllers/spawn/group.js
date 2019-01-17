@@ -1783,7 +1783,7 @@ _.set(exports, 'spawnLogiGroup', function (serverName, spawnArray, side) {
 	if (curGrpObj) {
 		grpNum = _.get(curGrpObj, 'groupId', _.random(1000000, 9999999));
 		curSide = (side) ? _.get(constants, ['defCountrys', side]) : _.get(constants, ['defCountrys', _.get(curGrpObj, 'coalition')]);
-		console.log('logispawn ukraine: ', curGrpObj);
+		console.log('logispawn ukraine: ', curGrpObj.country);
 		if(curGrpObj.country === 'UKRAINE') {
 			curSide = 'UKRAINE';
 		}
@@ -1811,6 +1811,7 @@ _.set(exports, 'spawnLogiGroup', function (serverName, spawnArray, side) {
 		});
 		curGroupSpawn = _.replace(curGroupSpawn, "#UNITS", curUnitSpawn);
 		// var curCMD = 'mist.dynAdd(' + curGroupSpawn + ')';
+		console.log('CURSIDE1: ', curSide);
 		var curCMD = exports.spawnGrp(curGroupSpawn, curSide, curGrpObj.category);
 		var sendClient = {action: "CMD", cmd: [curCMD], reqID: 0};
 		var actionObj = {actionObj: sendClient, queName: 'clientArray'};
@@ -1841,7 +1842,7 @@ _.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {
 		curBaseName = (baseName) ? baseName + ' #' + grpNum : _.get(curGrpObj, 'groupName');
 		_.set(curGrpObj, 'groupId', grpNum);
 		_.set(curGrpObj, 'groupName', curBaseName);
-		console.log('logispawn ukraine: ', curGrpObj);
+		console.log('logispawn ukraine2: ', curGrpObj.country);
 		if(curGrpObj.country === 'UKRAINE') {
 			_.set(curGrpObj, 'country', 'UKRAINE');
 			curSide = 'UKRAINE';
@@ -1863,7 +1864,6 @@ _.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {
 			}
 			if(curGrpObj.country === 'UKRAINE') {
 				_.set(curSpwnUnit, 'country', 'UKRAINE');
-				curSide = 'UKRAINE';
 			} else {
 				_.set(curSpwnUnit, 'country', curSide);
 			}
@@ -1873,6 +1873,7 @@ _.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {
 		});
 		curGroupSpawn = _.replace(curGroupSpawn, "#UNITS", curUnitSpawn);
 		// var curCMD = 'mist.dynAdd(' + curGroupSpawn + ')';
+		console.log('CURSIDE2: ', curSide);
 		var curCMD = exports.spawnGrp(curGroupSpawn, curSide, curGrpObj.category);
 		// console.log('cmd: ', curCMD);
 		var sendClient = {action: "CMD", cmd: [curCMD], reqID: 0};
