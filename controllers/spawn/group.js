@@ -1782,17 +1782,17 @@ _.set(exports, 'spawnLogiGroup', function (serverName, spawnArray, side) {
 	curGrpObj = _.get(sArray, 0);
 	if (curGrpObj) {
 		grpNum = _.get(curGrpObj, 'groupId', _.random(1000000, 9999999));
-		curSide = (side) ? _.get(constants, ['defCountrys', side]) : _.get(constants, ['defCountrys', _.get(curGrpObj, 'coalition')]);
 		console.log('logispawn ukraine: ', curGrpObj.country);
 		if(curGrpObj.country === 'UKRAINE') {
 			curSide = 'UKRAINE';
+		} else {
+			curSide = (side) ? _.get(constants, ['defCountrys', side]) : _.get(constants, ['defCountrys', _.get(curGrpObj, 'coalition')]);
 		}
-
+		_.set(curGrpObj, 'country', curSide);
 		curBaseName = curGrpObj.spwnName + ' #' + grpNum;
 
 		_.set(curGrpObj, 'groupId', grpNum);
 		_.set(curGrpObj, 'groupName', curBaseName);
-		_.set(curGrpObj, 'country', curSide);
 		curGroupSpawn = exports.grndUnitGroup( curGrpObj );
 		unitNum = _.cloneDeep(grpNum);
 		_.forEach(sArray, function (curUnit) {
@@ -1838,7 +1838,6 @@ _.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {
 	curGrpObj = _.get(sArray, 0);
 	if (curGrpObj) {
 		grpNum = _.get(curGrpObj, 'groupId', _.random(1000000, 9999999));
-		curSide = (side) ? _.get(constants, ['defCountrys', side]) : _.get(curGrpObj, 'country', _.get(constants, ['defCountrys', _.get(curGrpObj, 'coalition')]));
 		curBaseName = (baseName) ? baseName + ' #' + grpNum : _.get(curGrpObj, 'groupName');
 		_.set(curGrpObj, 'groupId', grpNum);
 		_.set(curGrpObj, 'groupName', curBaseName);
@@ -1847,6 +1846,7 @@ _.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {
 			_.set(curGrpObj, 'country', 'UKRAINE');
 			curSide = 'UKRAINE';
 		} else {
+			curSide = (side) ? _.get(constants, ['defCountrys', side]) : _.get(curGrpObj, 'country', _.get(constants, ['defCountrys', _.get(curGrpObj, 'coalition')]));
 			_.set(curGrpObj, 'country', curSide);
 		}
 		curGroupSpawn = exports.grndUnitGroup( curGrpObj );
