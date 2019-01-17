@@ -1340,20 +1340,20 @@ _.set(exports, 'spawnBaseReinforcementGroup', function (serverName, side, baseNa
 			exports.spawnGroup(serverName, compactUnits, baseName, side);
 		}
 		if(name === 'antiAir' && curTickVal > 0 && _.get(curServer, 'timePeriod') === '1978ColdWar') {
-			exports.spawnLayer2Reinforcements(serverName, curTickVal, side, baseName);
+			exports.spawnLayer2Reinforcements(serverName, 2, curTickVal, side, baseName);
 		}
 	});
 	console.log('return total', totalUnits);
 	return totalUnits;
 });
 
-_.set(exports, 'spawnLayer2Reinforcements', function (serverName, curTick, side, baseName) {
+_.set(exports, 'spawnLayer2Reinforcements', function (serverName, rndAmt, curTick, side, baseName) {
 	var curAngle = 0;
 	var curCat;
 	var curRndSpawn;
 	var curSpokeDeg;
 	var curSpokeNum;
-	var curTickCnt = _.cloneDeep(curTick);
+	var curTickCnt = _.cloneDeep(curTick) * rndAmt;
 	var curUnit;
 	var randLatLonInBase;
 	var groupedL2Units = [];
