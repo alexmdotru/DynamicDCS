@@ -1957,6 +1957,7 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 		exports.spawnGroup(serverName, spawnArray, extName, extSide);
 		exports.spawnLogisticCmdCenter(serverName, {}, true, _.find(_.get(constants, 'bases'), {name: extName}), extSide);
 		exports.spawnRadioTower(serverName, {}, true, _.find(_.get(constants, 'bases'), {name: extName}), extSide);
+		exports.spawnBaseEWR(serverName, '55G6 EWR', extName, extSide);
 		totalUnitsSpawned += spawnArray.length + totalUnitNum + 1;
 	});
 	return totalUnitsSpawned
@@ -2018,6 +2019,35 @@ _.set(exports, 'spawnRadioTower', function (serverName, staticObj, init, baseObj
 	;
 });
 
+_.set(exports, 'spawnBaseEWR', function (serverName, type, baseName, side) {
+	constants.getUnitDictionary(_.get(constants, 'config.timePeriod', 'modern'))
+		.then(function (unitDic) {
+			var unitStart;
+			var pCountry = _.get(constants, ['defCountrys', side]);
+			var findUnit = _.find(unitDic, {_id: type});
+			if ((type === '1L13 EWR' || type === '55G6 EWR' || type === 'Dog Ear radar') && _.get(playerUnit, 'coalition') === 2) {
+				console.log('EWR: UKRAINE');
+				pCountry = 'UKRAINE';
+			}
+			for (x=0; x < findUnit.spawnCount; x++) {
+				unitStart = _.cloneDeep(findUnit);
+				_.set(unitStart, 'spwnName', baseName +' EWR');
+				_.set(unitStart, 'lonLatLoc', zoneController.getRandomLatLonFromBase(serverName, baseName, 'buildingPoly'));
+				_.set(unitStart, 'heading', 0);
+				_.set(unitStart, 'country', pCountry);
+				_.set(unitStart, 'playerCanDrive', false);
+				newSpawnArray.push(unitStart);
+			}
+			exports.spawnLogiGroup(serverName, newSpawnArray, side);
+			resolve(true);
+		})
+		.catch(function (err) {
+			reject(err);
+			console.log('line 777: ', err);
+		})
+	;
+});
+
 _.set(exports, 'replenishUnits', function ( serverName, baseName, side ) {
 	exports.spawnBaseReinforcementGroup(serverName, side, baseName);
 	//exports.spawnGroup(serverName, exports.spawnBaseReinforcementGroup(serverName, side, baseName), baseName, side);
@@ -2066,6 +2096,16 @@ _.set(exports, 'healBase', function ( serverName, baseName ) {
 						} else {
 							// console.log('creating NEW logistics: ', serverName, {}, false, curBase, curBase.side);
 							exports.spawnRadioTower(serverName, {}, false, curBase, curBase.side);
+						}
+					})
+					.catch(function (err) {
+						console.log('erroring line662: ', err);
+					})
+				;
+				masterDBController.unitActions('read', serverName, {name: baseName + ' EWR', dead: false})
+					.then(function (commUnit) {
+						if (commUnit === 0) {
+							exports.spawnBaseEWR(serverName, '55G6 EWR', curBase.name, curBase.side);
 						}
 					})
 					.catch(function (err) {
