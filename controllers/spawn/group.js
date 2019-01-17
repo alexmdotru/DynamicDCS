@@ -1782,8 +1782,8 @@ _.set(exports, 'spawnLogiGroup', function (serverName, spawnArray, side) {
 	curGrpObj = _.get(sArray, 0);
 	if (curGrpObj) {
 		grpNum = _.get(curGrpObj, 'groupId', _.random(1000000, 9999999));
-		console.log('logispawn ukraine: ', curGrpObj.country);
-		if(curGrpObj.country === 'UKRAINE') {
+		console.log('logispawn ukraine: ', curGrpObj.country, side, side === 2, _.includes(curGrpObj.country, 'UKRAINE'));
+		if(side === 2 && _.includes(curGrpObj.country, 'UKRAINE')) {
 			curSide = 'UKRAINE';
 		} else {
 			curSide = (side) ? _.get(constants, ['defCountrys', side]) : _.get(constants, ['defCountrys', _.get(curGrpObj, 'coalition')]);
@@ -1841,8 +1841,8 @@ _.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {
 		curBaseName = (baseName) ? baseName + ' #' + grpNum : _.get(curGrpObj, 'groupName');
 		_.set(curGrpObj, 'groupId', grpNum);
 		_.set(curGrpObj, 'groupName', curBaseName);
-		console.log('logispawn ukraine2: ', curGrpObj.country);
-		if(curGrpObj.country === 'UKRAINE') {
+		console.log('logispawn ukraine2: ', curGrpObj.country, side, side === 2, _.includes(curGrpObj.country, 'UKRAINE'));
+		if(side === 2 && _.includes(curGrpObj.country, 'UKRAINE')) {
 			_.set(curGrpObj, 'country', 'UKRAINE');
 			curSide = 'UKRAINE';
 		} else {
