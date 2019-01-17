@@ -1538,7 +1538,8 @@ _.assign(exports, {
 									var unitStart;
 									var pCountry = country;
 									var findUnit = _.find(unitDic, {_id: type});
-									if ((type === '1L13 EWR' || type === '55G6 EWR' || type === 'Dog Ear radar') && country === 'USA') {
+									if ((type === '1L13 EWR' || type === '55G6 EWR' || type === 'Dog Ear radar') && _.get(playerUnit, 'coalition') === 2) {
+										console.log('EWR: UKRAINE');
 										pCountry = 'UKRAINE';
 									}
 									for (x=0; x < findUnit.spawnCount; x++) {
