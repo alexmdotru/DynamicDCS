@@ -1368,6 +1368,7 @@ _.set(exports, 'spawnLayer2Reinforcements', function (serverName, curTick, side,
 		_.set(curCat, 'lonLatLoc', randLatLonInBase);
 		groupedUnits.push(curCat);
 		//launchers
+		console.log('cs: ', curRndSpawn);
 		_.forEach(curRndSpawn, function (cUnit) {
 			var curUnit = cUnit;
 			_.set(curUnit, 'lonLatLoc', zoneController.getLonLatFromDistanceDirection(randLatLonInBase, curAngle, 0.05));
