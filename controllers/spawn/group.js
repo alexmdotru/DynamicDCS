@@ -1362,12 +1362,12 @@ _.set(exports, 'spawnLayer2Reinforcements', function (serverName, curTick, side,
 	if (curTickCnt > 0) {
 		for (var i = 0; i < curTickCnt; i++) {
 			curAngle = 0;
-			curCat = {};
 			curRndSpawn = _.cloneDeep(exports.getRndFromSpawnCat('antiAir', side, false));
 			groupedUnits = [];
 			curSpokeNum = curRndSpawn.length;
 			curSpokeDeg = 359/curSpokeNum;
 
+			curCat = {};
 			curCat = _.cloneDeep(_.first(exports.getRndFromSpawnCat('unarmedAmmo', side, false)));
 			randLatLonInBase = _.cloneDeep(zoneController.getRandomLatLonFromBase(serverName, baseName, 'layer2Poly'));
 			_.set(curCat, 'lonLatLoc', randLatLonInBase);
@@ -1378,7 +1378,7 @@ _.set(exports, 'spawnLayer2Reinforcements', function (serverName, curTick, side,
 				curCat = _.first(curRndSpawn);
 				_.set(curCat, 'lonLatLoc', zoneController.getLonLatFromDistanceDirection(randLatLonInBase, curAngle, 0.05));
 				curAngle += curSpokeDeg;
-				groupedUnits[k + 1] = _.cloneDeep(curCat[k]);
+				groupedUnits[k + 1] = _.cloneDeep(curCat);
 			}
 			exports.spawnGroup(serverName, groupedUnits, baseName, side);
 		}
