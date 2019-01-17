@@ -72,6 +72,22 @@ _.set(exports, 'turnOnEWRAuto', function () {
 									'["enabled"] = true,' +
 									'["params"] = {},' +
 								'},' +
+								'[3] = {' +
+									'["number"] = 2,' +
+									'["auto"] = false,' +
+									'["id"] = "WrappedAction",' +
+									'["enabled"] = true,' +
+									'["params"] = {' +
+										'["action"] = {' +
+											'["id"] = "SetFrequency",' +
+											'["params"] = {' +
+												'["power"] = 10,' +
+												'["modulation"] = 0,' +
+												'["frequency"] = 251000000,' +
+											'},' +
+										'},' +
+									'},' +
+								'},' +
 							'},' +
 						'},' +
 					'},' +
@@ -873,7 +889,7 @@ _.set(exports, 'grndUnitGroup', function ( groupObj, task, routes ) {
 		curRoute = routes;
 	} else if (groupObj.type === '1L13 EWR' || groupObj.type === '55G6 EWR' ) {
 		_.set(groupObj, 'country', 'UKRAINE');
-		console.log('turningOnRouteEWRInstructions: ', groupObj);
+		// console.log('turningOnRouteEWRInstructions: ', groupObj);
 		curRoute = exports.turnOnEWRAuto();
 	} else {
 		curRoute = exports.turnOffDisperseUnderFire();
@@ -1782,7 +1798,7 @@ _.set(exports, 'spawnLogiGroup', function (serverName, spawnArray, side) {
 	curGrpObj = _.get(sArray, 0);
 	if (curGrpObj) {
 		grpNum = _.get(curGrpObj, 'groupId', _.random(1000000, 9999999));
-		console.log('logispawn ukraine: ', curGrpObj.country, side, side === 2, _.includes(curGrpObj.country, 'UKRAINE'));
+		// console.log('logispawn ukraine: ', curGrpObj.country, side, side === 2, _.includes(curGrpObj.country, 'UKRAINE'));
 		if(side === 2 && _.includes(curGrpObj.country, 'UKRAINE')) {
 			curSide = 'UKRAINE';
 		} else {
@@ -1811,7 +1827,6 @@ _.set(exports, 'spawnLogiGroup', function (serverName, spawnArray, side) {
 		});
 		curGroupSpawn = _.replace(curGroupSpawn, "#UNITS", curUnitSpawn);
 		// var curCMD = 'mist.dynAdd(' + curGroupSpawn + ')';
-		console.log('CURSIDE1: ', curSide);
 		var curCMD = exports.spawnGrp(curGroupSpawn, curSide, curGrpObj.category);
 		var sendClient = {action: "CMD", cmd: [curCMD], reqID: 0};
 		var actionObj = {actionObj: sendClient, queName: 'clientArray'};
@@ -1841,7 +1856,7 @@ _.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {
 		curBaseName = (baseName) ? baseName + ' #' + grpNum : _.get(curGrpObj, 'groupName');
 		_.set(curGrpObj, 'groupId', grpNum);
 		_.set(curGrpObj, 'groupName', curBaseName);
-		console.log('logispawn ukraine2: ', curGrpObj.country, side, side === 2, _.includes(curGrpObj.country, 'UKRAINE'));
+		// console.log('logispawn ukraine2: ', curGrpObj.country, side, side === 2, _.includes(curGrpObj.country, 'UKRAINE'));
 		if(side === 2 && _.includes(curGrpObj.country, 'UKRAINE')) {
 			_.set(curGrpObj, 'country', 'UKRAINE');
 			curSide = 'UKRAINE';
@@ -1873,7 +1888,6 @@ _.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {
 		});
 		curGroupSpawn = _.replace(curGroupSpawn, "#UNITS", curUnitSpawn);
 		// var curCMD = 'mist.dynAdd(' + curGroupSpawn + ')';
-		console.log('CURSIDE2: ', curSide);
 		var curCMD = exports.spawnGrp(curGroupSpawn, curSide, curGrpObj.category);
 		// console.log('cmd: ', curCMD);
 		var sendClient = {action: "CMD", cmd: [curCMD], reqID: 0};
