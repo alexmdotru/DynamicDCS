@@ -1354,6 +1354,7 @@ _.set(exports, 'spawnLayer2Reinforcements', function (serverName, curTick, side,
 	var curSpokeDeg;
 	var curSpokeNum;
 	var curTickCnt = _.cloneDeep(curTick);
+	var curUnit;
 	var randLatLonInBase;
 	var groupedL2Units = [];
 	for (var i = 0; i < curTickCnt; i++) {
@@ -1369,13 +1370,13 @@ _.set(exports, 'spawnLayer2Reinforcements', function (serverName, curTick, side,
 		groupedL2Units.push(curCat);
 		//launchers
 		for (var j = 0; j < curSpokeNum; j++) {
-			console.log('run: ', i, curAngle, cUnit);
-			var curUnit = _.cloneDeep(curRndSpawn[j]);
+			console.log('run: ', i, curAngle);
+			curUnit = _.cloneDeep(curRndSpawn[j]);
 			_.set(curUnit, 'lonLatLoc', zoneController.getLonLatFromDistanceDirection(randLatLonInBase, curAngle, 0.05));
 			curAngle += curSpokeDeg;
 			groupedL2Units.push(curUnit);
 		}
-		exports.spawnGroup(serverName, groupedL2Units, baseName, side);
+		exports.spawnGroup(serverName, _.compact(groupedL2Units), baseName, side);
 	}
 });
 
