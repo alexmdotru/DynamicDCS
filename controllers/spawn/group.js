@@ -5,7 +5,7 @@ const DCSLuaCommands = require('../player/DCSLuaCommands');
 const zoneController = require('../proxZone/zone');
 
 _.set(exports, 'spawnGrp', function (grpSpawn, country, category) {
-	console.log('spwnGrp: ', grpSpawn);
+	console.log('spwnGrp: ', grpSpawn, grpSpawn, country, _.indexOf(constants.countryId, country), category);
 	return gSpawnCmd = 'coalition.addGroup(' + _.indexOf(constants.countryId, country) + ', Group.Category.' + category + ', ' + grpSpawn + ')';
 });
 
@@ -913,6 +913,7 @@ _.set(exports, 'grndUnitTemplate', function ( unitObj ) {
 		'["playerCanDrive"] = ' + _.get(unitObj, 'playerCanDrive', false) + ',' +
 		// '["playerCanDrive"] = false,' +
 		'["skill"] = "' + _.get(unitObj, 'skill', "Excellent") + '",' +
+		'["country"] = "' + _.get(unitObj, 'country') + '",' +
 		'}'
 	;
 });
@@ -1840,7 +1841,12 @@ _.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {
 		curBaseName = (baseName) ? baseName + ' #' + grpNum : _.get(curGrpObj, 'groupName');
 		_.set(curGrpObj, 'groupId', grpNum);
 		_.set(curGrpObj, 'groupName', curBaseName);
-		_.set(curGrpObj, 'country', curSide);
+		console.log('logispawn ukraine: ', curGrpObj);
+		if(curGrpObj.country === 'UKRAINE') {
+			_.set(curGrpObj, 'country', 'UKRAINE');
+		} else {
+			_.set(curGrpObj, 'country', curSide);
+		}
 		curGroupSpawn = exports.grndUnitGroup( curGrpObj );
 		unitNum = _.cloneDeep(grpNum);
 		_.forEach(sArray, function (curUnit) {
@@ -1853,6 +1859,11 @@ _.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {
 
 			if (_.isUndefined(_.get(curSpwnUnit, 'lonLatLoc'))) {
 				_.set(curSpwnUnit, 'lonLatLoc', zoneController.getRandomLatLonFromBase(serverName, baseName, 'unitPoly'));
+			}
+			if(curGrpObj.country === 'UKRAINE') {
+				_.set(curSpwnUnit, 'country', 'UKRAINE');
+			} else {
+				_.set(curSpwnUnit, 'country', curSide);
 			}
 			// _.set(curSpwnUnit, 'unitId', _.get(curSpwnUnit, 'unitId', unitNum));
 			_.set(curSpwnUnit, 'name', _.get(curSpwnUnit, 'name', curUnitName));
