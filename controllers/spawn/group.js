@@ -1342,35 +1342,27 @@ _.set(exports, 'spawnBaseReinforcementGroup', function (serverName, side, baseNa
 			}
 		}
 		if(name === 'antiAir') {
-			exports.spawnLayer2Reinforcements(serverName, side, baseName);
+			exports.spawnLayer2Reinforcements(serverName, tickVal, side, baseName);
 		}
 	});
 	console.log('return total', totalUnits);
 	return totalUnits;
 });
 
-_.set(exports, 'spawnLayer2Reinforcements', function (serverName, side, baseName) {
+_.set(exports, 'spawnLayer2Reinforcements', function (serverName, ticks, side, baseName) {
 	var curAngle = 0;
+	var compactUnits;
 	var curCat;
 	var curRndSpawn;
-	var curServer = _.get(constants, ['config']);
 	var curSpokeDeg;
 	var curSpokeNum;
-	var infoSpwn;
-	var curBaseAntiairSpawn = _.get(curServer, 'spwnLimitsPerTick.antiAir');
 	var randLatLonInBase;
 	var groupedUnits = [];
 	var totalUnits = 0;
-	var compactUnits;
-	var centerRadar;
-	var polyCheck;
-	if (curBaseAntiairSpawn > 0) {
-		for (var i = 0; i < curBaseAntiairSpawn; i++) {
+	if (ticks > 0) {
+		for (var i = 0; i < ticks; i++) {
 			curAngle = 0;
 			curRndSpawn = exports.getRndFromSpawnCat('antiAir', side, false);
-			compactUnits = [];
-			infoSpwn = _.first(curRndSpawn);
-
 			randLatLonInBase = zoneController.getRandomLatLonFromBase(serverName, baseName, 'layer2Poly');
 			groupedUnits = [];
 			curSpokeNum = curRndSpawn.length;
@@ -1386,7 +1378,8 @@ _.set(exports, 'spawnLayer2Reinforcements', function (serverName, side, baseName
 				curAngle += curSpokeDeg;
 				groupedUnits.push(curCat);
 			}
-			exports.spawnGroup(serverName, _.compact(groupedUnits), baseName, side);
+			compactUnits = _.compact(groupedUnits);
+			exports.spawnGroup(serverName, compactUnits, baseName, side);
 		}
 	}
 	// console.log('return total', totalUnits);
