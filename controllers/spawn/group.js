@@ -1375,7 +1375,8 @@ _.set(exports, 'spawnLayer2Reinforcements', function (serverName, curTick, side,
 			curAngle += curSpokeDeg;
 			groupedUnits.push(curUnit);
 		});
-		exports.spawnGroup(serverName, _.compact(groupedUnits), baseName, side);
+		console.log('GU: ', groupedUnits);
+		exports.spawnGroup(serverName, groupedUnits, baseName, side);
 	}
 });
 
