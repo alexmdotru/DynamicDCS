@@ -1362,8 +1362,8 @@ _.set(exports, 'spawnLayer2Reinforcements', function (serverName, ticks, side, b
 	if (ticks > 0) {
 		for (var i = 0; i < ticks; i++) {
 			curAngle = 0;
-			curRndSpawn = exports.getRndFromSpawnCat('antiAir', side, false);
-			randLatLonInBase = zoneController.getRandomLatLonFromBase(serverName, baseName, 'layer2Poly');
+			curRndSpawn = _.cloneDeep(exports.getRndFromSpawnCat('antiAir', side, false));
+			randLatLonInBase = _.cloneDeep(zoneController.getRandomLatLonFromBase(serverName, baseName, 'layer2Poly'));
 			groupedUnits = [];
 			curSpokeNum = curRndSpawn.length;
 			curSpokeDeg = 359/curSpokeNum;
