@@ -2027,7 +2027,7 @@ _.set(exports, 'spawnBaseEWR', function (serverName, type, baseName, side) {
 		console.log('EWR: UKRAINE');
 		pCountry = 'UKRAINE';
 	}
-	console.log('FUNDUNIT: ', findUnit, pCountry);
+	console.log('FINDUNIT: ', findUnit, pCountry);
 	for (x=0; x < findUnit.spawnCount; x++) {
 		unitStart = _.cloneDeep(findUnit);
 		_.set(unitStart, 'spwnName', baseName +' EWR');
