@@ -136,7 +136,7 @@ do
 	local staticCnt = 0
 	local checkStaticDead = {}
 	local laserSpots = {}
-	local IRSpots = {}
+	--local IRSpots = {}
 
 	package.path = package.path .. ";.\\LuaSocket\\?.lua"
 	package.cpath = package.cpath .. ";.\\LuaSocket\\?.dll"
@@ -440,12 +440,13 @@ do
 					local _enemyVectorUpdated = { x = _enemyVector.x, y = _enemyVector.y + 2.0, z = _enemyVector.z }
 
 					local _oldLase = laserSpots[request.jtacUnitName]
-					local _oldIR = IRSpots[request.jtacUnitName]
+					--local _oldIR = IRSpots[request.jtacUnitName]
 
-					if _oldLase == nil or _oldIR == nil then
+					--if _oldLase == nil or _oldIR == nil then
+					if _oldLase == nil then
 
 						local _status, _result = pcall(function()
-							_spots['irPoint'] = Spot.createInfraRed(curJtacUnit, { x = 0, y = 2.0, z = 0 }, _enemyVectorUpdated)
+							--_spots['irPoint'] = Spot.createInfraRed(curJtacUnit, { x = 0, y = 2.0, z = 0 }, _enemyVectorUpdated)
 							_spots['laserPoint'] = Spot.createLaser(curJtacUnit, { x = 0, y = 2.0, z = 0 }, _enemyVectorUpdated, request.laserCode)
 							return _spots
 						end)
@@ -453,9 +454,9 @@ do
 						if not _status then
 							env.error('ERROR: ' .. _result, false)
 						else
-							if _result.irPoint then
-								IRSpots[request.jtacUnitName] = _result.irPoint
-							end
+							--if _result.irPoint then
+							--	IRSpots[request.jtacUnitName] = _result.irPoint
+							--end
 							if _result.laserPoint then
 								laserSpots[request.jtacUnitName] = _result.laserPoint
 							end
@@ -465,9 +466,9 @@ do
 							_oldLase:setPoint(_enemyVectorUpdated)
 						end
 
-						if _oldIR ~= nil then
-							_oldIR:setPoint(_enemyVectorUpdated)
-						end
+						--if _oldIR ~= nil then
+						--	_oldIR:setPoint(_enemyVectorUpdated)
+						--end
 					end
 					local elat, elon, ealt = coord.LOtoLL(_enemyVectorUpdated)
 					local MGRS = coord.LLtoMGRS(coord.LOtoLL(_enemyVectorUpdated))
@@ -492,13 +493,13 @@ do
 					_tempLase = nil
 				end
 
-				local _tempIR = IRSpots[request.jtacUnitName]
+				--local _tempIR = IRSpots[request.jtacUnitName]
 
-				if _tempIR ~= nil then
-					Spot.destroy(_tempIR)
-					IRSpots[request.jtacUnitName] = nil
-					_tempIR = nil
-				end
+				--if _tempIR ~= nil then
+				--	Spot.destroy(_tempIR)
+				--	IRSpots[request.jtacUnitName] = nil
+				--	_tempIR = nil
+				--end
 			end
 			if request.action == "ISLOSVISIBLE" then
 				--env.info('IS LOS VISIBLE')
