@@ -2020,32 +2020,25 @@ _.set(exports, 'spawnRadioTower', function (serverName, staticObj, init, baseObj
 });
 
 _.set(exports, 'spawnBaseEWR', function (serverName, type, baseName, side) {
-	constants.getUnitDictionary(_.get(constants, 'config.timePeriod', 'modern'))
-		.then(function (unitDic) {
-			var unitStart;
-			var pCountry = _.get(constants, ['defCountrys', side]);
-			var findUnit = _.find(unitDic, {_id: type});
-			if ((type === '1L13 EWR' || type === '55G6 EWR' || type === 'Dog Ear radar') && _.get(playerUnit, 'coalition') === 2) {
-				console.log('EWR: UKRAINE');
-				pCountry = 'UKRAINE';
-			}
-			for (x=0; x < findUnit.spawnCount; x++) {
-				unitStart = _.cloneDeep(findUnit);
-				_.set(unitStart, 'spwnName', baseName +' EWR');
-				_.set(unitStart, 'lonLatLoc', zoneController.getRandomLatLonFromBase(serverName, baseName, 'buildingPoly'));
-				_.set(unitStart, 'heading', 0);
-				_.set(unitStart, 'country', pCountry);
-				_.set(unitStart, 'playerCanDrive', false);
-				newSpawnArray.push(unitStart);
-			}
-			exports.spawnLogiGroup(serverName, newSpawnArray, side);
-			resolve(true);
-		})
-		.catch(function (err) {
-			reject(err);
-			console.log('line 777: ', err);
-		})
-	;
+	var unitStart;
+	var pCountry = _.get(constants, ['defCountrys', side]);
+	var findUnit = _.get(constants, ['unitDictionary', type]);
+	if ((type === '1L13 EWR' || type === '55G6 EWR' || type === 'Dog Ear radar') && _.get(playerUnit, 'coalition') === 2) {
+		console.log('EWR: UKRAINE');
+		pCountry = 'UKRAINE';
+	}
+	console.log('FUNDUNIT: ', findUnit, pCountry);
+	for (x=0; x < findUnit.spawnCount; x++) {
+		unitStart = _.cloneDeep(findUnit);
+		_.set(unitStart, 'spwnName', baseName +' EWR');
+		_.set(unitStart, 'lonLatLoc', zoneController.getRandomLatLonFromBase(serverName, baseName, 'buildingPoly'));
+		_.set(unitStart, 'heading', 0);
+		_.set(unitStart, 'country', pCountry);
+		_.set(unitStart, 'playerCanDrive', false);
+		newSpawnArray.push(unitStart);
+	}
+	console.log('EWR Array: ', newSpawnArray, side);
+	exports.spawnLogiGroup(serverName, newSpawnArray, side);
 });
 
 _.set(exports, 'replenishUnits', function ( serverName, baseName, side ) {
