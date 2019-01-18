@@ -2023,7 +2023,7 @@ _.set(exports, 'spawnBaseEWR', function (serverName, type, baseName, side) {
 	var unitStart;
 	var pCountry = _.get(constants, ['defCountrys', side]);
 	var findUnit = _.get(constants, ['unitDictionary', type]);
-	if ((type === '1L13 EWR' || type === '55G6 EWR' || type === 'Dog Ear radar') && _.get(playerUnit, 'coalition') === 2) {
+	if ((type === '1L13 EWR' || type === '55G6 EWR' || type === 'Dog Ear radar') && side === 2) {
 		console.log('EWR: UKRAINE');
 		pCountry = 'UKRAINE';
 	}
