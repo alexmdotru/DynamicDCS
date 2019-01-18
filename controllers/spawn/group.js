@@ -2035,10 +2035,9 @@ _.set(exports, 'spawnBaseEWR', function (serverName, type, baseName, side) {
 		_.set(unitStart, 'heading', 0);
 		_.set(unitStart, 'country', pCountry);
 		_.set(unitStart, 'playerCanDrive', false);
-		newSpawnArray.push(unitStart);
 	}
 	console.log('EWR Array: ', newSpawnArray, side);
-	exports.spawnLogiGroup(serverName, newSpawnArray, side);
+	exports.spawnLogiGroup(serverName, [unitStart], side);
 });
 
 _.set(exports, 'replenishUnits', function ( serverName, baseName, side ) {
