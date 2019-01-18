@@ -2027,7 +2027,7 @@ _.set(exports, 'spawnBaseEWR', function (serverName, type, baseName, side) {
 		console.log('EWR: UKRAINE');
 		pCountry = 'UKRAINE';
 	}
-	console.log('FINDUNIT: ', findUnit, pCountry);
+	// console.log('FINDUNIT: ', findUnit, pCountry);
 	for (x=0; x < findUnit.spawnCount; x++) {
 		unitStart = _.cloneDeep(findUnit);
 		_.set(unitStart, 'spwnName', baseName +' EWR');
@@ -2036,7 +2036,7 @@ _.set(exports, 'spawnBaseEWR', function (serverName, type, baseName, side) {
 		_.set(unitStart, 'country', pCountry);
 		_.set(unitStart, 'playerCanDrive', false);
 	}
-	console.log('EWR Array: ', unitStart, side);
+	// console.log('EWR Array: ', unitStart, side);
 	exports.spawnLogiGroup(serverName, [unitStart], side);
 });
 
