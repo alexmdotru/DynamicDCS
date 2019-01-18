@@ -32,7 +32,7 @@ _.set(exports, 'spawnStatic', function (serverName, staticSpawn, country, statNa
 _.set(exports, 'turnOnEWRAuto', function (groupObj) {
 	var setCallsign;
 	var setFreq;
-	if (_.get(groupObj, 'country') ===  'UKRAINE') {
+	if (_.includes(_.get(groupObj, 'country'), 'UKRAINE')) {
 		setCallsign = 254;
 		setFreq = 254000000;
 	} else if (_.get(groupObj, 'type') === '55G6 EWR') {
