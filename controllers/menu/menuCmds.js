@@ -140,7 +140,7 @@ _.assign(exports, {
 																playerOwnerId: curPlayer.ucid,
 																templateName: 'CCBuild',
 																special: curUnit.intCargoType,
-																crateAmt: 2,
+																crateAmt: 1,
 																isCombo: false,
 																playerCanDrive: false,
 																country: _.get(constants, ['defCountrys', curUnit.coalition]),
