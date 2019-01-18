@@ -29,7 +29,16 @@ _.set(exports, 'spawnStatic', function (serverName, staticSpawn, country, statNa
 	*/
 });
 
-_.set(exports, 'turnOnEWRAuto', function () {
+_.set(exports, 'turnOnEWRAuto', function (groupObj) {
+	var setFreq;
+	if (_.get(groupObj, 'country') ===  'UKRAINE') {
+		setFreq = 254000000;
+	} else if (_.get(groupObj, 'type') === '55G6 EWR') {
+		//Mig 15 freq
+		setFreq = 3750000;
+	} else {
+		setFreq = 124000000;
+	}
 	return '' +
 		'["route"] = {' +
 			'["spans"] = {},' +
@@ -83,7 +92,7 @@ _.set(exports, 'turnOnEWRAuto', function () {
 											'["params"] = {' +
 												'["power"] = 10,' +
 												'["modulation"] = 0,' +
-												'["frequency"] = 254000000,' +
+												'["frequency"] = ' + setFreq + ',' +
 											'},' +
 										'},' +
 									'},' +
@@ -889,7 +898,7 @@ _.set(exports, 'grndUnitGroup', function ( groupObj, task, routes ) {
 		curRoute = routes;
 	} else if (groupObj.type === '1L13 EWR' || groupObj.type === '55G6 EWR' ) {
 		// console.log('turningOnRouteEWRInstructions: ', groupObj);
-		curRoute = exports.turnOnEWRAuto();
+		curRoute = exports.turnOnEWRAuto(groupObj);
 	} else {
 		curRoute = exports.turnOffDisperseUnderFire();
 	}
