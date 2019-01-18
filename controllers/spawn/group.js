@@ -30,13 +30,17 @@ _.set(exports, 'spawnStatic', function (serverName, staticSpawn, country, statNa
 });
 
 _.set(exports, 'turnOnEWRAuto', function (groupObj) {
+	var setCallsign;
 	var setFreq;
 	if (_.get(groupObj, 'country') ===  'UKRAINE') {
+		setCallsign = 254;
 		setFreq = 254000000;
 	} else if (_.get(groupObj, 'type') === '55G6 EWR') {
 		//Mig 15 freq
+		setCallsign = 375;
 		setFreq = 3750000;
 	} else {
+		setCallsign = 124;
 		setFreq = 124000000;
 	}
 	return '' +
@@ -82,7 +86,7 @@ _.set(exports, 'turnOnEWRAuto', function (groupObj) {
 									'["params"] = {},' +
 								'},' +
 								'[3] = {' +
-									'["number"] = 2,' +
+									'["number"] = 3,' +
 									'["auto"] = false,' +
 									'["id"] = "WrappedAction",' +
 									'["enabled"] = true,' +
@@ -93,6 +97,21 @@ _.set(exports, 'turnOnEWRAuto', function (groupObj) {
 												'["power"] = 10,' +
 												'["modulation"] = 0,' +
 												'["frequency"] = ' + setFreq + ',' +
+											'},' +
+										'},' +
+									'},' +
+								'},' +
+								'[4] = {' +
+									'["enabled"] = true,' +
+									'["auto"] = false,' +
+									'["id"] = "WrappedAction",' +
+									'["number"] = 4,' +
+									'["params"] = {' +
+										'["action"] = {' +
+											'["id"] = "SetCallsign",' +
+											'["params"] = {' +
+												'["callsign"] = ' + setCallsign + ',' +
+												'["callnameFlag"] = false,' +
 											'},' +
 										'},' +
 									'},' +
@@ -2043,7 +2062,7 @@ _.set(exports, 'spawnBaseEWR', function (serverName, type, baseName, side) {
 	// console.log('FINDUNIT: ', findUnit, pCountry);
 	for (x=0; x < findUnit.spawnCount; x++) {
 		unitStart = _.cloneDeep(findUnit);
-		_.set(unitStart, 'spwnName', baseName +' ' + type);
+		_.set(unitStart, 'spwnName', baseName + ' ' + type);
 		_.set(unitStart, 'lonLatLoc', zoneController.getRandomLatLonFromBase(serverName, baseName, 'buildingPoly'));
 		_.set(unitStart, 'heading', 0);
 		_.set(unitStart, 'country', pCountry);
