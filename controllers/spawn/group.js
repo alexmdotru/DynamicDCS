@@ -1965,7 +1965,12 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 		exports.spawnGroup(serverName, spawnArray, extName, extSide);
 		exports.spawnLogisticCmdCenter(serverName, {}, true, _.find(_.get(constants, 'bases'), {name: extName}), extSide);
 		exports.spawnRadioTower(serverName, {}, true, _.find(_.get(constants, 'bases'), {name: extName}), extSide);
-		exports.spawnBaseEWR(serverName, '55G6 EWR', extName, extSide);
+		if (extSide === 2) {
+			exports.spawnBaseEWR(serverName, '1L13 EWR', extName, extSide);
+		} else {
+			exports.spawnBaseEWR(serverName, '55G6 EWR', extName, extSide);
+			exports.spawnBaseEWR(serverName, '1L13 EWR', extName, extSide);
+		}
 		totalUnitsSpawned += spawnArray.length + totalUnitNum + 1;
 	});
 	return totalUnitsSpawned
@@ -2038,7 +2043,7 @@ _.set(exports, 'spawnBaseEWR', function (serverName, type, baseName, side) {
 	// console.log('FINDUNIT: ', findUnit, pCountry);
 	for (x=0; x < findUnit.spawnCount; x++) {
 		unitStart = _.cloneDeep(findUnit);
-		_.set(unitStart, 'spwnName', baseName +' EWR');
+		_.set(unitStart, 'spwnName', baseName +' ' + type);
 		_.set(unitStart, 'lonLatLoc', zoneController.getRandomLatLonFromBase(serverName, baseName, 'buildingPoly'));
 		_.set(unitStart, 'heading', 0);
 		_.set(unitStart, 'country', pCountry);
@@ -2102,16 +2107,42 @@ _.set(exports, 'healBase', function ( serverName, baseName ) {
 						console.log('erroring line662: ', err);
 					})
 				;
-				masterDBController.unitActions('read', serverName, {name: baseName + ' EWR', dead: false})
-					.then(function (commUnit) {
-						if (commUnit === 0) {
-							exports.spawnBaseEWR(serverName, '55G6 EWR', curBase.name, curBase.side);
-						}
-					})
-					.catch(function (err) {
-						console.log('erroring line662: ', err);
-					})
-				;
+
+				if (_.get(curBase, 'side') === 2) {
+					masterDBController.unitActions('read', serverName, {name: baseName + ' 1L13 EWR', dead: false})
+						.then(function (commUnit) {
+							if (commUnit === 0) {
+								exports.spawnBaseEWR(serverName, '1L13 EWR', _.get(curBase, 'name'), _.get(curBase, 'side'));
+							}
+						})
+						.catch(function (err) {
+							console.log('erroring line662: ', err);
+						})
+					;
+				} else {
+					masterDBController.unitActions('read', serverName, {name: baseName + ' 55G6 EWR', dead: false})
+						.then(function (commUnit) {
+							if (commUnit === 0) {
+								exports.spawnBaseEWR(serverName, '55G6 EWR', _.get(curBase, 'name'), _.get(curBase, 'side'));
+							}
+						})
+						.catch(function (err) {
+							console.log('erroring line662: ', err);
+						})
+					;
+					masterDBController.unitActions('read', serverName, {name: baseName + ' 1L13 EWR', dead: false})
+						.then(function (commUnit) {
+							if (commUnit === 0) {
+								exports.spawnBaseEWR(serverName, '1L13 EWR', _.get(curBase, 'name'), _.get(curBase, 'side'));
+							}
+						})
+						.catch(function (err) {
+							console.log('erroring line662: ', err);
+						})
+					;
+				}
+
+
 			}
 
 
