@@ -2022,7 +2022,7 @@ _.set(exports, 'spawnRadioTower', function (serverName, staticObj, init, baseObj
 _.set(exports, 'spawnBaseEWR', function (serverName, type, baseName, side) {
 	var unitStart;
 	var pCountry = _.get(constants, ['defCountrys', side]);
-	var findUnit = _.get(constants, ['unitDictionary', type]);
+	var findUnit = _.find(_.get(constants, 'config.unitDictionary'), {_id: type});
 	if ((type === '1L13 EWR' || type === '55G6 EWR' || type === 'Dog Ear radar') && side === 2) {
 		console.log('EWR: UKRAINE');
 		pCountry = 'UKRAINE';
