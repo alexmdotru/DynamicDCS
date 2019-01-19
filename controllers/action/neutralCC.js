@@ -80,6 +80,8 @@ _.assign(exports, {
 												masterDBController.baseActions('updateSide', serverName, {name: base.name, side: curPlayerUnit.coalition})
 													.then(function () {
 														baseSpawnFlagsController.setbaseSides(serverName);
+														groupController.spawnGroup(serverName, groupController.spawnSupportBaseGrp( serverName, base.name, base.side ), base.name, base.side);
+														resolve(true);
 													})
 													.catch(function (err) {
 														console.log('erroring line162: ', err);
@@ -92,8 +94,6 @@ _.assign(exports, {
 													mesg,
 													20
 												);
-												groupController.spawnGroup(serverName, groupController.spawnSupportBaseGrp( serverName, base.name, base.side ), base.name, base.side);
-												resolve(true);
 											}
 										})
 										.catch(function (err) {
