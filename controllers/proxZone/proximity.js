@@ -31,8 +31,7 @@ _.assign(exports, {
 										60
 									);
 									// console.log('Spawning Support Units', base, 2);
-									spawnArray = _.concat(spawnArray, groupController.spawnSupportBaseGrp(serverName, base.name, 2, false));
-									groupController.spawnGroup(serverName, spawnArray, base.name, 2);
+									groupController.spawnSupportBaseGrp(serverName, base.name, 2, false);
 									masterDBController.baseActions('updateSide', serverName, {name: base.name, side: 2})
 										.then(function () {
 											baseSpawnFlagsController.setbaseSides(serverName);
@@ -94,8 +93,7 @@ _.assign(exports, {
 										60
 									);
 									// console.log('Spawning Support Units', base, 1);
-									spawnArray = _.concat(spawnArray, groupController.spawnSupportBaseGrp(serverName, base.name, 1, false));
-									groupController.spawnGroup(serverName, spawnArray, base.name, 1);
+									groupController.spawnSupportBaseGrp(serverName, base.name, 1, false);
 									masterDBController.baseActions('updateSide', serverName, {name: base.name, side: 1})
 										.then(function () {
 											baseSpawnFlagsController.setbaseSides(serverName);
@@ -152,8 +150,7 @@ _.assign(exports, {
 									60
 								);
 								// console.log('Spawning Support Units', base, unitSide);
-								spawnArray = _.concat(spawnArray, groupController.spawnSupportBaseGrp(serverName, base.name, unitSide, false));
-								groupController.spawnGroup(serverName, spawnArray, base.name, unitSide);
+								groupController.spawnSupportBaseGrp(serverName, base.name, unitSide, false);
 								masterDBController.baseActions('updateSide', serverName, {name: base.name, side: unitSide})
 									.then(function () {
 										baseSpawnFlagsController.setbaseSides(serverName);

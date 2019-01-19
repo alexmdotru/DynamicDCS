@@ -72,7 +72,7 @@ _.assign(exports, {
 													'G: ' + base.name + ' Command Center Already Exists.',
 													5
 												);
-												groupController.spawnGroup(serverName, groupController.spawnSupportBaseGrp( serverName, base.name, curPlayerUnit.coalition ), base.name, curPlayerUnit.coalition);
+												groupController.spawnSupportBaseGrp( serverName, base.name, curPlayerUnit.coalition );
 												resolve(false);
 											} else {
 												// console.log('player: ', curPlayerUnit);
@@ -80,7 +80,7 @@ _.assign(exports, {
 												masterDBController.baseActions('updateSide', serverName, {name: base.name, side: curPlayerUnit.coalition})
 													.then(function () {
 														baseSpawnFlagsController.setbaseSides(serverName);
-														groupController.spawnGroup(serverName, groupController.spawnSupportBaseGrp( serverName, base.name, curPlayerUnit.coalition ), base.name, curPlayerUnit.coalition);
+														groupController.spawnSupportBaseGrp( serverName, base.name, curPlayerUnit.coalition );
 														resolve(true);
 													})
 													.catch(function (err) {

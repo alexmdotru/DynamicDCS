@@ -1299,8 +1299,9 @@ _.set(exports, 'spawnSupportBaseGrp', function ( serverName, baseName, side, ini
 	for (var i = 0; i < 3; i++) {
 		spawnArray = _.concat(spawnArray, _.cloneDeep(exports.getRndFromSpawnCat( 'APC', side, false )));
 	}
-	console.log('SA: ', _.compact(spawnArray));
-	return _.compact(spawnArray);
+
+	exports.spawnGroup(serverName, _.compact(spawnArray), baseName, side);
+	return true;
 });
 
 _.set(exports, 'spawnBaseReinforcementGroup', function (serverName, side, baseName, forceSpawn) {
@@ -1972,7 +1973,7 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 	_.forEach(defBaseSides, function (extSide, extName) {
 		var spawnArray = [];
 		var curReplenThreshold;
-		spawnArray = _.concat(spawnArray, exports.spawnSupportBaseGrp(serverName, extName, extSide, true));
+		exports.spawnSupportBaseGrp(serverName, extName, extSide, true);
 		if(_.includes(extName, 'FARP')) {
 			curReplenThreshold = curServer.replenThresholdFARP;
 		} else {
@@ -2181,7 +2182,7 @@ _.set(exports, 'healBase', function ( serverName, baseName, curPlayerUnit) {
 							;
 						}
 						//rebuild farp support vehicles
-						exports.spawnGroup(serverName, exports.spawnSupportBaseGrp( serverName, curBase.name, curBase.side ), curBase.name, curBase.side);
+						exports.spawnSupportBaseGrp( serverName, curBase.name, curBase.side );
 						resolve(true);
 					}
 				}
