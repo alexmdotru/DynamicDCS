@@ -5,6 +5,7 @@ const groupController = require('../spawn/group');
 const DCSLuaCommands = require('../player/DCSLuaCommands');
 const baseSpawnFlagsController = require('../action/baseSpawnFlags');
 
+var mainNeutralBases;
 _.assign(exports, {
 	checkCmdCenters: function (serverName) {
 		var basesChanged = false;
@@ -54,6 +55,10 @@ _.assign(exports, {
 		return new Promise(function(resolve, reject) {
 			masterDBController.baseActions('read', serverName, {mainBase: false, expansion: false})
 				.then(function (bases) {
+					mainNeutralBases = _.remove(bases, function (base) {
+						return !_.includes(base.name, '#');
+					});
+					console.log('MNB: ', mainNeutralBases);
 					_.forEach(bases, function (base) {
 						proximityController.getPlayersInProximity(serverName, _.get(base, 'centerLoc'), 3.4, false, curPlayerUnit.coalition)
 							.then(function (unitsInProx) {
