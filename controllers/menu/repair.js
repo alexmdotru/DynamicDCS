@@ -8,20 +8,22 @@ _.set(exports, 'repairBase', function (serverName, base, curUnit) {
 	// console.log('repairNase: ', base, curUnit, serverName, crateOriginLogiName, curBaseName + ' Logistics', crateOriginLogiName);
 	groupController.healBase(serverName, curBaseName, curUnit)
 		.then(function (resp) {
-			masterDBController.unitActions('updateByUnitId', serverName, {unitId: curUnit.unitId, intCargoType: ''})
-				.catch(function (err) {
-					console.log('erroring line209: ', err);
-				})
-			;
-			DCSLuaCommands.sendMesgToCoalition(
-				curUnit.coalition,
-				serverName,
-				"C: " + curBaseName + " Base Has Been Repaired/Built!",
-				5
-			);
+			if (resp) {
+				masterDBController.unitActions('updateByUnitId', serverName, {unitId: curUnit.unitId, intCargoType: ''})
+					.catch(function (err) {
+						console.log('erroring line209: ', err);
+					})
+				;
+				DCSLuaCommands.sendMesgToCoalition(
+					curUnit.coalition,
+					serverName,
+					"C: " + curBaseName + " Base Has Been Repaired/Built!",
+					5
+				);
+			}
 		})
 		.catch(function (err) {
-
+			console.log('erroring line26: ', err);
 		})
 	;
 	return true;

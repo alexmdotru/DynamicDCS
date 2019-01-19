@@ -2098,12 +2098,12 @@ _.set(exports, 'healBase', function ( serverName, baseName, curPlayerUnit) {
 					var curBase = _.first(baseUnit);
 					if (!_.get(curBase, 'mainBase')) {
 						neutralCCController.spawnCCAtNeutralBase(serverName, curPlayerUnit)
-							.then(function () {
-								resolve();
+							.then(function (resp) {
+								resolve(resp);
 							})
 							.catch(function (err) {
 								console.log('line 32: ', err);
-								reject();
+								reject(err);
 							})
 						;
 
@@ -2122,7 +2122,7 @@ _.set(exports, 'healBase', function ( serverName, baseName, curPlayerUnit) {
 							})
 							.catch(function (err) {
 								console.log('erroring line662: ', err);
-								reject();
+								reject(err);
 							})
 						;
 						masterDBController.unitActions('read', serverName, {name: baseName + ' Communications', dead: false})
@@ -2139,7 +2139,7 @@ _.set(exports, 'healBase', function ( serverName, baseName, curPlayerUnit) {
 							})
 							.catch(function (err) {
 								console.log('erroring line662: ', err);
-								reject();
+								reject(err);
 							})
 						;
 
@@ -2152,7 +2152,7 @@ _.set(exports, 'healBase', function ( serverName, baseName, curPlayerUnit) {
 								})
 								.catch(function (err) {
 									console.log('erroring line662: ', err);
-									reject();
+									reject(err);
 								})
 							;
 						} else {
@@ -2164,7 +2164,7 @@ _.set(exports, 'healBase', function ( serverName, baseName, curPlayerUnit) {
 								})
 								.catch(function (err) {
 									console.log('erroring line662: ', err);
-									reject();
+									reject(err);
 								})
 							;
 							masterDBController.unitActions('read', serverName, {name: baseName + ' 1L13 EWR', dead: false})
@@ -2175,21 +2175,21 @@ _.set(exports, 'healBase', function ( serverName, baseName, curPlayerUnit) {
 								})
 								.catch(function (err) {
 									console.log('erroring line662: ', err);
-									reject();
+									reject(err);
 								})
 							;
 						}
 						//rebuild farp support vehicles
 						exports.spawnGroup(serverName, exports.spawnSupportBaseGrp( serverName, curBase.name, curBase.side ), curBase.name, curBase.side);
+						resolve(true);
 					}
 				}
 			})
 			.catch(function (err) {
 				console.log('erroring line657: ', err);
-				reject();
+				reject(err);
 			})
 		;
-		resolve();
 	});
 });
 
