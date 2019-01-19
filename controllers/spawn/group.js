@@ -1269,7 +1269,6 @@ _.set(exports, 'spawnSupportVehiclesOnFarp', function ( serverName, baseName, si
 });
 
 _.set(exports, 'spawnSupportBaseGrp', function ( serverName, baseName, side, init ) {
-	console.log('spawnSupport: ', serverName, baseName, side, init);
 	var spawnArray = [];
 	var curBases = _.get(constants, 'bases');
 	var farpBases = _.filter(curBases, {farp: true});
@@ -1277,11 +1276,10 @@ _.set(exports, 'spawnSupportBaseGrp', function ( serverName, baseName, side, ini
 	// var curEnabledCountrys = _.get(constants, [_.get(constants, ['side', side]) + 'Countrys']);
 	if (_.includes(baseName, 'FARP')) {
 		var curFarpBases = _.filter(farpBases, function (farp) {
-			console.log(_.first(_.split(_.get(farp, 'name'), ' #')), baseName, _.get(farp, 'initSide'), side);
 			return _.first(_.split(_.get(farp, 'name'), ' #')) === baseName && _.get(farp, 'initSide') === side;
 				// && !_.isEmpty(_.intersection([_.get(farp, 'country')], curEnabledCountrys));
 		});
-		console.log('doesnty work: ', serverName, baseName, side, init, curFarpBases);
+		// console.log('doesnty work: ', serverName, baseName, side, init, curFarpBases);
 		_.forEach(curFarpBases, function (farp) {
 			spawnArray = _.concat(spawnArray, exports.spawnSupportVehiclesOnFarp( serverName, _.get(farp, 'name'), side ));
 		});
@@ -1301,6 +1299,7 @@ _.set(exports, 'spawnSupportBaseGrp', function ( serverName, baseName, side, ini
 	for (var i = 0; i < 3; i++) {
 		spawnArray = _.concat(spawnArray, _.cloneDeep(exports.getRndFromSpawnCat( 'APC', side, false )));
 	}
+	console.log('SA: ', _.compact(spawnArray));
 	return _.compact(spawnArray);
 });
 
@@ -2110,7 +2109,7 @@ _.set(exports, 'healBase', function ( serverName, baseName, curPlayerUnit) {
 						;
 
 					} else {
-						masterDBController.unitActions('read', serverName, {name: baseName + ' Logistics', dead: false})
+						masterDBController.unitActions('read', serverName, {name: _.get(curBase, 'name') + ' Logistics', dead: false})
 							.then(function (logiUnit) {
 								var curUnit = _.first(logiUnit);
 								if (curUnit) {
@@ -2127,7 +2126,7 @@ _.set(exports, 'healBase', function ( serverName, baseName, curPlayerUnit) {
 								reject(err);
 							})
 						;
-						masterDBController.unitActions('read', serverName, {name: baseName + ' Communications', dead: false})
+						masterDBController.unitActions('read', serverName, {name: _.get(curBase, 'name') + ' Communications', dead: false})
 							.then(function (commUnit) {
 								var curCommUnit = _.first(commUnit);
 								if (curCommUnit) {
@@ -2146,7 +2145,7 @@ _.set(exports, 'healBase', function ( serverName, baseName, curPlayerUnit) {
 						;
 
 						if (_.get(curBase, 'side') === 2) {
-							masterDBController.unitActions('read', serverName, {name: baseName + ' 1L13 EWR', dead: false})
+							masterDBController.unitActions('read', serverName, {name: _.get(curBase, 'name') + ' 1L13 EWR', dead: false})
 								.then(function (commUnit) {
 									if (commUnit === 0) {
 										exports.spawnBaseEWR(serverName, '1L13 EWR', _.get(curBase, 'name'), _.get(curBase, 'side'));
@@ -2158,7 +2157,7 @@ _.set(exports, 'healBase', function ( serverName, baseName, curPlayerUnit) {
 								})
 							;
 						} else {
-							masterDBController.unitActions('read', serverName, {name: baseName + ' 55G6 EWR', dead: false})
+							masterDBController.unitActions('read', serverName, {name: _.get(curBase, 'name') + ' 55G6 EWR', dead: false})
 								.then(function (commUnit) {
 									if (commUnit === 0) {
 										exports.spawnBaseEWR(serverName, '55G6 EWR', _.get(curBase, 'name'), _.get(curBase, 'side'));
@@ -2169,7 +2168,7 @@ _.set(exports, 'healBase', function ( serverName, baseName, curPlayerUnit) {
 									reject(err);
 								})
 							;
-							masterDBController.unitActions('read', serverName, {name: baseName + ' 1L13 EWR', dead: false})
+							masterDBController.unitActions('read', serverName, {name: _.get(curBase, 'name') + ' 1L13 EWR', dead: false})
 								.then(function (commUnit) {
 									if (commUnit === 0) {
 										exports.spawnBaseEWR(serverName, '1L13 EWR', _.get(curBase, 'name'), _.get(curBase, 'side'));
