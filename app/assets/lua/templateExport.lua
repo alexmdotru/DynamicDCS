@@ -164,7 +164,7 @@ do
 				["name"] = baseName,
 				["hdg"] = hdg,
 				--["side"] = coalition,
-				["side"] = 1,
+				["side"] = 0,
 				["initSide"] = coalition,
 				["centerLoc"] = {
 					lon,
