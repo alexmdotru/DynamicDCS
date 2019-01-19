@@ -366,7 +366,6 @@ router.route('/unitStatics/:serverName')
 ;
 router.route('/bases/:serverName')
 	.get(function (req, res) {
-		var curServerName = _.get(req, 'params.serverName');
 		masterDBController.baseActions('getBaseSides', _.get(req, 'params.serverName'))
 			.then(function (bases) {
 				res.json(bases);
