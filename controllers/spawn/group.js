@@ -1269,6 +1269,7 @@ _.set(exports, 'spawnSupportVehiclesOnFarp', function ( serverName, baseName, si
 });
 
 _.set(exports, 'spawnSupportBaseGrp', function ( serverName, baseName, side, init ) {
+	console.log('spawnSupport: ', serverName, baseName, side, init);
 	var spawnArray = [];
 	var curBases = _.get(constants, 'bases');
 	var farpBases = _.filter(curBases, {farp: true});
