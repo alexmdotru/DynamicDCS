@@ -11,7 +11,7 @@ var unitsInProxBases = {};
 _.assign(exports, {
 	checkUnitsToBaseForCapture: function (serverName) {
 		var sideArray = {};
-		masterDBController.baseActions('read', serverName, {mainBase: true, $or: [{side: 1}, {side: 2}]})
+		masterDBController.baseActions('read', serverName, {mainBase: true})
 			.then(function (bases) {
 				_.forEach(bases, function (base) {
 					exports.getGroundUnitsInProximity(serverName, base.centerLoc, 3, true)
@@ -120,7 +120,7 @@ _.assign(exports, {
 	},
 	checkUnitsToBaseForTroops: function (serverName) {
 		// check every base that is owned by red or blue, 20 km sphere
-		masterDBController.baseActions('read', serverName, {mainBase: true, $or: [{side: 1}, {side: 2}]})
+		masterDBController.baseActions('read', serverName, {mainBase: true})
 			.then(function (bases) {
 				_.forEach(bases, function (base) {
 					var curBaseName = base.name;

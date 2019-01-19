@@ -2090,7 +2090,7 @@ _.set(exports, 'destroyUnit', function ( serverName, unitName ) {
 
 _.set(exports, 'healBase', function ( serverName, baseName ) {
 	//respawn farp tower to 'heal' it
-	masterDBController.baseActions('read', serverName, {name: baseName, $or: [{side: 1}, {side: 2}]})
+	masterDBController.baseActions('read', serverName, {name: baseName})
 		.then(function (baseUnit) {
 			if (baseUnit) {
 				var curBase = _.first(baseUnit);

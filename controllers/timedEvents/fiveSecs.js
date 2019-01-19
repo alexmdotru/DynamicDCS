@@ -8,7 +8,7 @@ var replenTimer = _.random(1800, 5400);
 _.set(exports, 'processFiveSecActions', function (serverName, fullySynced) {
 	if (fullySynced) {
 		//set base flags
-		masterDBController.baseActions('read', serverName, {mainBase: true, $or: [{side: 1}, {side: 2}]})
+		masterDBController.baseActions('read', serverName, {mainBase: true})
 			.then(function (bases) {
 				_.forEach(bases, function (base) {
 					var curRegEx = '^' + _.get(base, '_id') + ' #';

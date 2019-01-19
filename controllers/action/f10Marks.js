@@ -4,7 +4,7 @@ const masterDBController = require('../db/masterDB');
 
 _.assign(exports, {
 	setFarpMarks: function (serverName) {
-		masterDBController.baseActions('read', serverName, {mainBase: true, farp: true,  $or: [{side: 1}, {side: 2}]})
+		masterDBController.baseActions('read', serverName, {mainBase: true, farp: true})
 			.then(function (bases) {
 				_.forEach(bases, function (base) {
 					if (_.get(base, 'baseMarkId')) {
