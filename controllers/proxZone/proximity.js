@@ -106,6 +106,53 @@ _.assign(exports, {
 									;
 								}
 							}
+							if (base.side === 0 && _.get(sideArray, [1], []).length > 0) {
+								console.log('SA: ', sideArray);
+								/*
+								//var firstUnit = _.first(unitsInRange);
+								// console.log('enemy in range: ', base.name + ': enemy Red');
+								if (_.get(sideArray, [2], []).length === 0) {
+									console.log('BASE HAS BEEN CAPTURED: ', base.name, ' is now ', _.get(firstUnit, 'coalition'));
+									var msg = base.name + " HAS BEEN CAPTURED BY RED";
+									DCSLuaCommands.sendMesgToAll(
+										serverName,
+										msg,
+										60
+									);
+									// console.log('Spawning Support Units', base, 1);
+									spawnArray = _.concat(spawnArray, groupController.spawnSupportBaseGrp(serverName, base.name, 1, false));
+									groupController.spawnGroup(serverName, spawnArray, base.name, 1);
+									masterDBController.baseActions('updateSide', serverName, {name: base.name, side: 1})
+										.then(function () {
+											baseSpawnFlagsController.setbaseSides(serverName);
+										})
+										.catch(function (err) {
+											console.log('erroring line189: ', err);
+										})
+									;
+									masterDBController.unitActions('read', serverName, {name: base.name + ' Logistics', dead: false})
+										.then(function (aliveLogistics) {
+											if (aliveLogistics.length > 0) {
+												groupController.spawnLogisticCmdCenter(serverName, {}, false, base, 1);
+											}
+										})
+										.catch(function (err) {
+											console.log('erroring line189: ', err);
+										})
+									;
+									masterDBController.unitActions('read', serverName, {name: base.name + ' Communications', dead: false})
+										.then(function (aliveComms) {
+											if (aliveComms.length > 0) {
+												groupController.spawnRadioTower(serverName, {}, false, base, 1);
+											}
+										})
+										.catch(function (err) {
+											console.log('erroring line189: ', err);
+										})
+									;
+								}
+								*/
+							}
 						})
 						.catch(function (err) {
 							console.log('line 64: ', err);
