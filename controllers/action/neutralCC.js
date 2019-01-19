@@ -53,13 +53,13 @@ _.assign(exports, {
 	spawnCCAtNeutralBase: function (serverName, curPlayerUnit) {
 		console.log('spwnNeutral: ', curPlayerUnit);
 		return new Promise(function(resolve, reject) {
-			masterDBController.baseActions('read', serverName, {mainBase: false, expansion: false})
+			masterDBController.baseActions('read', serverName, {mainBase: false, expansion: false, enabled: true})
 				.then(function (bases) {
 					mainNeutralBases = _.remove(bases, function (base) {
 						return !_.includes(base.name, '#');
 					});
-					console.log('MNB: ', mainNeutralBases);
-					_.forEach(bases, function (base) {
+					// console.log('MNB: ', mainNeutralBases);
+					_.forEach(mainNeutralBases, function (base) {
 						proximityController.getPlayersInProximity(serverName, _.get(base, 'centerLoc'), 3.4, false, curPlayerUnit.coalition)
 							.then(function (unitsInProx) {
 								if(_.find(unitsInProx, {playername: curPlayerUnit.playername})) {
