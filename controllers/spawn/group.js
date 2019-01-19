@@ -2094,6 +2094,9 @@ _.set(exports, 'healBase', function ( serverName, baseName ) {
 		.then(function (baseUnit) {
 			if (baseUnit) {
 				var curBase = _.first(baseUnit);
+				console.log('curBase: ', curBase);
+
+
 				masterDBController.unitActions('read', serverName, {name: baseName + ' Logistics', dead: false})
 					.then(function (logiUnit) {
 						var curUnit = _.first(logiUnit);
