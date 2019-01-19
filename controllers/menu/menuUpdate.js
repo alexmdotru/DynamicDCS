@@ -154,8 +154,7 @@ _.set(exports, 'logisticsMenu', function (action, serverName, unit) {
 			'missionCommands.addCommandForGroup("' + unit.groupId + '", "Is Internal Cargo Loaded", {"Internal Cargo"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "InternalCargo", ["type"] = "loaded", ["unitId"] = ' + unit.unitId + '})',
 			'missionCommands.addCommandForGroup("' + unit.groupId + '", "Unpack Internal Cargo", {"Internal Cargo"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "InternalCargo", ["type"] = "unpack", ["unitId"] = ' + unit.unitId + '})',
 			'missionCommands.addCommandForGroup("' + unit.groupId + '", "Load JTAC", {"Internal Cargo"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "InternalCargo", ["type"] = "loadJTAC", ["unitId"] = ' + unit.unitId + '})',
-			'missionCommands.addCommandForGroup("' + unit.groupId + '", "Load Base Repair Kit", {"Internal Cargo"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "InternalCargo", ["type"] = "loadBaseRepair", ["unitId"] = ' + unit.unitId + '})',
-			'missionCommands.addCommandForGroup("' + unit.groupId + '", "Load CC Building Kit(Only Neutral Base)", {"Internal Cargo"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "InternalCargo", ["type"] = "loadCCBuild", ["unitId"] = ' + unit.unitId + '})',
+			'missionCommands.addCommandForGroup("' + unit.groupId + '", "Load Base Building/Repair Kit", {"Internal Cargo"}, sendCmd, {["action"] = "f10Menu", ["cmd"] = "InternalCargo", ["type"] = "loadBaseRepair", ["unitId"] = ' + unit.unitId + '})'
 		]);
 	}
 
