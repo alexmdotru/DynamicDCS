@@ -136,82 +136,84 @@ _.assign(exports, {
 									;
 								}
 							}
-							if (base.side === 0) {
-								var firstUnit = _.first(unitsInRange);
-								var unitSide = _.get(firstUnit, 'coalition');
-								// console.log('enemy in range: ', base.name + ': enemy Red');
-								if (_.get(sideArray, [2], []).length === 0) {
-									console.log('BASE HAS BEEN CAPTURED: ', base.name, ' is now ', unitSide);
-									var msg = base.name + " HAS BEEN CAPTURED";
-									DCSLuaCommands.sendMesgToAll(
-										serverName,
-										msg,
-										60
-									);
-									// console.log('Spawning Support Units', base, unitSide);
-									spawnArray = _.concat(spawnArray, groupController.spawnSupportBaseGrp(serverName, base.name, unitSide, false));
-									groupController.spawnGroup(serverName, spawnArray, base.name, unitSide);
-									masterDBController.baseActions('updateSide', serverName, {name: base.name, side: unitSide})
-										.then(function () {
-											baseSpawnFlagsController.setbaseSides(serverName);
-										})
-										.catch(function (err) {
-											console.log('erroring line189: ', err);
-										})
-									;
-									masterDBController.unitActions('read', serverName, {name: base.name + ' Logistics', dead: false})
-										.then(function (aliveLogistics) {
-											if (aliveLogistics.length > 0) {
-												groupController.spawnLogisticCmdCenter(serverName, {}, false, base, unitSide);
+							if (base.side === 0 && (_.get(sideArray, [1], []).length > 0 || _.get(sideArray, [2], []).length > 0)) {
+								var unitSide = 0;
+								if (_.get(sideArray, [1], []).length > 0) {
+									unitSide = 1;
+								}
+								if(_.get(sideArray, [2], []).length > 0) {
+									unitSide = 2;
+								}
+								console.log('BASE HAS BEEN CAPTURED: ', base.name, ' is now ', unitSide);
+								var msg = base.name + " HAS BEEN CAPTURED";
+								DCSLuaCommands.sendMesgToAll(
+									serverName,
+									msg,
+									60
+								);
+								// console.log('Spawning Support Units', base, unitSide);
+								spawnArray = _.concat(spawnArray, groupController.spawnSupportBaseGrp(serverName, base.name, unitSide, false));
+								groupController.spawnGroup(serverName, spawnArray, base.name, unitSide);
+								masterDBController.baseActions('updateSide', serverName, {name: base.name, side: unitSide})
+									.then(function () {
+										baseSpawnFlagsController.setbaseSides(serverName);
+									})
+									.catch(function (err) {
+										console.log('erroring line189: ', err);
+									})
+								;
+								masterDBController.unitActions('read', serverName, {name: base.name + ' Logistics', dead: false})
+									.then(function (aliveLogistics) {
+										if (aliveLogistics.length > 0) {
+											groupController.spawnLogisticCmdCenter(serverName, {}, false, base, unitSide);
+										}
+									})
+									.catch(function (err) {
+										console.log('erroring line189: ', err);
+									})
+								;
+								masterDBController.unitActions('read', serverName, {name: base.name + ' Communications', dead: false})
+									.then(function (aliveComms) {
+										if (aliveComms.length > 0) {
+											groupController.spawnRadioTower(serverName, {}, false, base, unitSide);
+										}
+									})
+									.catch(function (err) {
+										console.log('erroring line189: ', err);
+									})
+								;
+								if (unitSide === 2) {
+									masterDBController.unitActions('read', serverName, {name:  base.name + ' 1L13 EWR', dead: false})
+										.then(function (commUnit) {
+											if (commUnit === 0) {
+												groupController.spawnBaseEWR(serverName, '1L13 EWR',  base.name, unitSide);
 											}
 										})
 										.catch(function (err) {
-											console.log('erroring line189: ', err);
+											console.log('erroring line662: ', err);
 										})
 									;
-									masterDBController.unitActions('read', serverName, {name: base.name + ' Communications', dead: false})
-										.then(function (aliveComms) {
-											if (aliveComms.length > 0) {
-												groupController.spawnRadioTower(serverName, {}, false, base, unitSide);
+								} else {
+									masterDBController.unitActions('read', serverName, {name:  base.name + ' 55G6 EWR', dead: false})
+										.then(function (commUnit) {
+											if (commUnit === 0) {
+												groupController.spawnBaseEWR(serverName, '55G6 EWR',  base.name, unitSide);
 											}
 										})
 										.catch(function (err) {
-											console.log('erroring line189: ', err);
+											console.log('erroring line662: ', err);
 										})
 									;
-									if (unitSide === 2) {
-										masterDBController.unitActions('read', serverName, {name:  base.name + ' 1L13 EWR', dead: false})
-											.then(function (commUnit) {
-												if (commUnit === 0) {
-													groupController.spawnBaseEWR(serverName, '1L13 EWR',  base.name, unitSide);
-												}
-											})
-											.catch(function (err) {
-												console.log('erroring line662: ', err);
-											})
-										;
-									} else {
-										masterDBController.unitActions('read', serverName, {name:  base.name + ' 55G6 EWR', dead: false})
-											.then(function (commUnit) {
-												if (commUnit === 0) {
-													groupController.spawnBaseEWR(serverName, '55G6 EWR',  base.name, unitSide);
-												}
-											})
-											.catch(function (err) {
-												console.log('erroring line662: ', err);
-											})
-										;
-										masterDBController.unitActions('read', serverName, {name:  base.name + ' 1L13 EWR', dead: false})
-											.then(function (commUnit) {
-												if (commUnit === 0) {
-													groupController.spawnBaseEWR(serverName, '1L13 EWR',  base.name, unitSide);
-												}
-											})
-											.catch(function (err) {
-												console.log('erroring line662: ', err);
-											})
-										;
-									}
+									masterDBController.unitActions('read', serverName, {name:  base.name + ' 1L13 EWR', dead: false})
+										.then(function (commUnit) {
+											if (commUnit === 0) {
+												groupController.spawnBaseEWR(serverName, '1L13 EWR',  base.name, unitSide);
+											}
+										})
+										.catch(function (err) {
+											console.log('erroring line662: ', err);
+										})
+									;
 								}
 							}
 						})
