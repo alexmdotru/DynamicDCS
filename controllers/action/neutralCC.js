@@ -85,6 +85,7 @@ _.assign(exports, {
 													mesg,
 													20
 												);
+												groupController.spawnGroup(serverName, groupController.spawnSupportBaseGrp( serverName, base.name, base.side ), base.name, base.side);
 												resolve(true);
 											}
 										})
