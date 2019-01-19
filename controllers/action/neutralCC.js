@@ -51,7 +51,7 @@ _.assign(exports, {
 		;
 	},
 	spawnCCAtNeutralBase: function (serverName, curPlayerUnit) {
-		console.log('spwnNeutral: ', curPlayerUnit);
+		// console.log('spwnNeutral: ', curPlayerUnit);
 		return new Promise(function(resolve, reject) {
 			masterDBController.baseActions('read', serverName, {mainBase: false, expansion: false, enabled: true})
 				.then(function (bases) {
@@ -72,6 +72,7 @@ _.assign(exports, {
 													'G: ' + base.name + ' Command Center Already Exists.',
 													5
 												);
+												groupController.spawnGroup(serverName, groupController.spawnSupportBaseGrp( serverName, base.name, base.side ), base.name, base.side);
 												resolve(false);
 											} else {
 												// console.log('player: ', curPlayerUnit);
