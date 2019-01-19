@@ -2091,88 +2091,106 @@ _.set(exports, 'destroyUnit', function ( serverName, unitName ) {
 
 _.set(exports, 'healBase', function ( serverName, baseName, curPlayerUnit) {
 	//respawn farp tower to 'heal' it
-	masterDBController.baseActions('read', serverName, {name: baseName})
-		.then(function (baseUnit) {
-			if (baseUnit) {
-				var curBase = _.first(baseUnit);
-				if (!_.get(curBase, 'mainBase')) {
-					neutralCCController.spawnCCAtNeutralBase(serverName, curPlayerUnit);
-				} else {
-					masterDBController.unitActions('read', serverName, {name: baseName + ' Logistics', dead: false})
-						.then(function (logiUnit) {
-							var curUnit = _.first(logiUnit);
-							if (curUnit) {
-								_.set(curUnit, 'coalition', _.get(curBase, 'side'));
-								// console.log('creating logistics from existing: ', serverName, curUnit, false, curBase, curBase.side);
-								exports.spawnLogisticCmdCenter(serverName, curUnit, false, curBase, curBase.side);
-							} else {
-								// console.log('creating NEW logistics: ', serverName, {}, false, curBase, curBase.side);
-								exports.spawnLogisticCmdCenter(serverName, {}, false, curBase, curBase.side);
-							}
-						})
-						.catch(function (err) {
-							console.log('erroring line662: ', err);
-						})
-					;
-					masterDBController.unitActions('read', serverName, {name: baseName + ' Communications', dead: false})
-						.then(function (commUnit) {
-							var curCommUnit = _.first(commUnit);
-							if (curCommUnit) {
-								_.set(curCommUnit, 'coalition', _.get(curBase, 'side'));
-								// console.log('creating logistics from existing: ', serverName, curCommUnit, false, curBase, curBase.side);
-								exports.spawnRadioTower(serverName, curCommUnit, false, curBase, curBase.side);
-							} else {
-								// console.log('creating NEW logistics: ', serverName, {}, false, curBase, curBase.side);
-								exports.spawnRadioTower(serverName, {}, false, curBase, curBase.side);
-							}
-						})
-						.catch(function (err) {
-							console.log('erroring line662: ', err);
-						})
-					;
+	return new Promise(function(resolve, reject) {
+		masterDBController.baseActions('read', serverName, {name: baseName})
+			.then(function (baseUnit) {
+				if (baseUnit) {
+					var curBase = _.first(baseUnit);
+					if (!_.get(curBase, 'mainBase')) {
+						neutralCCController.spawnCCAtNeutralBase(serverName, curPlayerUnit)
+							.then(function () {
+								resolve();
+							})
+							.catch(function (err) {
+								console.log('line 32: ', err);
+								reject();
+							})
+						;
 
-					if (_.get(curBase, 'side') === 2) {
-						masterDBController.unitActions('read', serverName, {name: baseName + ' 1L13 EWR', dead: false})
-							.then(function (commUnit) {
-								if (commUnit === 0) {
-									exports.spawnBaseEWR(serverName, '1L13 EWR', _.get(curBase, 'name'), _.get(curBase, 'side'));
-								}
-							})
-							.catch(function (err) {
-								console.log('erroring line662: ', err);
-							})
-						;
 					} else {
-						masterDBController.unitActions('read', serverName, {name: baseName + ' 55G6 EWR', dead: false})
-							.then(function (commUnit) {
-								if (commUnit === 0) {
-									exports.spawnBaseEWR(serverName, '55G6 EWR', _.get(curBase, 'name'), _.get(curBase, 'side'));
+						masterDBController.unitActions('read', serverName, {name: baseName + ' Logistics', dead: false})
+							.then(function (logiUnit) {
+								var curUnit = _.first(logiUnit);
+								if (curUnit) {
+									_.set(curUnit, 'coalition', _.get(curBase, 'side'));
+									// console.log('creating logistics from existing: ', serverName, curUnit, false, curBase, curBase.side);
+									exports.spawnLogisticCmdCenter(serverName, curUnit, false, curBase, curBase.side);
+								} else {
+									// console.log('creating NEW logistics: ', serverName, {}, false, curBase, curBase.side);
+									exports.spawnLogisticCmdCenter(serverName, {}, false, curBase, curBase.side);
 								}
 							})
 							.catch(function (err) {
 								console.log('erroring line662: ', err);
+								reject();
 							})
 						;
-						masterDBController.unitActions('read', serverName, {name: baseName + ' 1L13 EWR', dead: false})
+						masterDBController.unitActions('read', serverName, {name: baseName + ' Communications', dead: false})
 							.then(function (commUnit) {
-								if (commUnit === 0) {
-									exports.spawnBaseEWR(serverName, '1L13 EWR', _.get(curBase, 'name'), _.get(curBase, 'side'));
+								var curCommUnit = _.first(commUnit);
+								if (curCommUnit) {
+									_.set(curCommUnit, 'coalition', _.get(curBase, 'side'));
+									// console.log('creating logistics from existing: ', serverName, curCommUnit, false, curBase, curBase.side);
+									exports.spawnRadioTower(serverName, curCommUnit, false, curBase, curBase.side);
+								} else {
+									// console.log('creating NEW logistics: ', serverName, {}, false, curBase, curBase.side);
+									exports.spawnRadioTower(serverName, {}, false, curBase, curBase.side);
 								}
 							})
 							.catch(function (err) {
 								console.log('erroring line662: ', err);
+								reject();
 							})
 						;
+
+						if (_.get(curBase, 'side') === 2) {
+							masterDBController.unitActions('read', serverName, {name: baseName + ' 1L13 EWR', dead: false})
+								.then(function (commUnit) {
+									if (commUnit === 0) {
+										exports.spawnBaseEWR(serverName, '1L13 EWR', _.get(curBase, 'name'), _.get(curBase, 'side'));
+									}
+								})
+								.catch(function (err) {
+									console.log('erroring line662: ', err);
+									reject();
+								})
+							;
+						} else {
+							masterDBController.unitActions('read', serverName, {name: baseName + ' 55G6 EWR', dead: false})
+								.then(function (commUnit) {
+									if (commUnit === 0) {
+										exports.spawnBaseEWR(serverName, '55G6 EWR', _.get(curBase, 'name'), _.get(curBase, 'side'));
+									}
+								})
+								.catch(function (err) {
+									console.log('erroring line662: ', err);
+									reject();
+								})
+							;
+							masterDBController.unitActions('read', serverName, {name: baseName + ' 1L13 EWR', dead: false})
+								.then(function (commUnit) {
+									if (commUnit === 0) {
+										exports.spawnBaseEWR(serverName, '1L13 EWR', _.get(curBase, 'name'), _.get(curBase, 'side'));
+									}
+								})
+								.catch(function (err) {
+									console.log('erroring line662: ', err);
+									reject();
+								})
+							;
+						}
+						//rebuild farp support vehicles
+						exports.spawnGroup(serverName, exports.spawnSupportBaseGrp( serverName, curBase.name, curBase.side ), curBase.name, curBase.side);
 					}
-					//rebuild farp support vehicles
-					exports.spawnGroup(serverName, exports.spawnSupportBaseGrp( serverName, curBase.name, curBase.side ), curBase.name, curBase.side);
 				}
-			}
-		})
-		.catch(function (err) {
-			console.log('erroring line657: ', err);
-		})
-	;
+			})
+			.catch(function (err) {
+				console.log('erroring line657: ', err);
+				reject();
+			})
+		;
+		resolve();
+	});
 });
 
 _.set(exports, 'loadOnDemandGroup', function ( groupObj ) {
