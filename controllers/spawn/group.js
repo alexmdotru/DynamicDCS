@@ -2160,11 +2160,7 @@ _.set(exports, 'healBase', function ( serverName, baseName ) {
 						})
 					;
 				}
-
-
 			}
-
-
 			//rebuild farp support vehicles
 			exports.spawnGroup(serverName, exports.spawnSupportBaseGrp( serverName, curBase.name, curBase.side ), curBase.name, curBase.side);
 		})

@@ -61,6 +61,26 @@ _.assign(exports, {
 											console.log('erroring line189: ', err);
 										})
 									;
+									masterDBController.unitActions('read', serverName, {name: base.name + ' 55G6 EWR', dead: false})
+										.then(function (commUnit) {
+											if (commUnit === 0) {
+												groupController.spawnBaseEWR(serverName, '55G6 EWR',  base.name, 1);
+											}
+										})
+										.catch(function (err) {
+											console.log('erroring line662: ', err);
+										})
+									;
+									masterDBController.unitActions('read', serverName, {name: base.name + ' 1L13 EWR', dead: false})
+										.then(function (commUnit) {
+											if (commUnit === 0) {
+												groupController.spawnBaseEWR(serverName, '1L13 EWR',  base.name, 1);
+											}
+										})
+										.catch(function (err) {
+											console.log('erroring line662: ', err);
+										})
+									;
 								}
 							}
 							if (base.side === 2 && _.get(sideArray, [1], []).length > 0) {
@@ -104,25 +124,34 @@ _.assign(exports, {
 											console.log('erroring line189: ', err);
 										})
 									;
+									masterDBController.unitActions('read', serverName, {name: base.name + ' 1L13 EWR', dead: false})
+										.then(function (commUnit) {
+											if (commUnit === 0) {
+												groupController.spawnBaseEWR(serverName, '1L13 EWR',  base.name, 2);
+											}
+										})
+										.catch(function (err) {
+											console.log('erroring line662: ', err);
+										})
+									;
 								}
 							}
-							if (base.side === 0 && _.get(sideArray, [1], []).length > 0) {
-								console.log('SA: ', sideArray);
-								/*
-								//var firstUnit = _.first(unitsInRange);
+							if (base.side === 0) {
+								var firstUnit = _.first(unitsInRange);
+								var unitSide = _.get(firstUnit, 'coalition');
 								// console.log('enemy in range: ', base.name + ': enemy Red');
 								if (_.get(sideArray, [2], []).length === 0) {
-									console.log('BASE HAS BEEN CAPTURED: ', base.name, ' is now ', _.get(firstUnit, 'coalition'));
-									var msg = base.name + " HAS BEEN CAPTURED BY RED";
+									console.log('BASE HAS BEEN CAPTURED: ', base.name, ' is now ', unitSide);
+									var msg = base.name + " HAS BEEN CAPTURED";
 									DCSLuaCommands.sendMesgToAll(
 										serverName,
 										msg,
 										60
 									);
-									// console.log('Spawning Support Units', base, 1);
-									spawnArray = _.concat(spawnArray, groupController.spawnSupportBaseGrp(serverName, base.name, 1, false));
-									groupController.spawnGroup(serverName, spawnArray, base.name, 1);
-									masterDBController.baseActions('updateSide', serverName, {name: base.name, side: 1})
+									// console.log('Spawning Support Units', base, unitSide);
+									spawnArray = _.concat(spawnArray, groupController.spawnSupportBaseGrp(serverName, base.name, unitSide, false));
+									groupController.spawnGroup(serverName, spawnArray, base.name, unitSide);
+									masterDBController.baseActions('updateSide', serverName, {name: base.name, side: unitSide})
 										.then(function () {
 											baseSpawnFlagsController.setbaseSides(serverName);
 										})
@@ -133,7 +162,7 @@ _.assign(exports, {
 									masterDBController.unitActions('read', serverName, {name: base.name + ' Logistics', dead: false})
 										.then(function (aliveLogistics) {
 											if (aliveLogistics.length > 0) {
-												groupController.spawnLogisticCmdCenter(serverName, {}, false, base, 1);
+												groupController.spawnLogisticCmdCenter(serverName, {}, false, base, unitSide);
 											}
 										})
 										.catch(function (err) {
@@ -143,15 +172,47 @@ _.assign(exports, {
 									masterDBController.unitActions('read', serverName, {name: base.name + ' Communications', dead: false})
 										.then(function (aliveComms) {
 											if (aliveComms.length > 0) {
-												groupController.spawnRadioTower(serverName, {}, false, base, 1);
+												groupController.spawnRadioTower(serverName, {}, false, base, unitSide);
 											}
 										})
 										.catch(function (err) {
 											console.log('erroring line189: ', err);
 										})
 									;
+									if (unitSide === 2) {
+										masterDBController.unitActions('read', serverName, {name:  base.name + ' 1L13 EWR', dead: false})
+											.then(function (commUnit) {
+												if (commUnit === 0) {
+													groupController.spawnBaseEWR(serverName, '1L13 EWR',  base.name, unitSide);
+												}
+											})
+											.catch(function (err) {
+												console.log('erroring line662: ', err);
+											})
+										;
+									} else {
+										masterDBController.unitActions('read', serverName, {name:  base.name + ' 55G6 EWR', dead: false})
+											.then(function (commUnit) {
+												if (commUnit === 0) {
+													groupController.spawnBaseEWR(serverName, '55G6 EWR',  base.name, unitSide);
+												}
+											})
+											.catch(function (err) {
+												console.log('erroring line662: ', err);
+											})
+										;
+										masterDBController.unitActions('read', serverName, {name:  base.name + ' 1L13 EWR', dead: false})
+											.then(function (commUnit) {
+												if (commUnit === 0) {
+													groupController.spawnBaseEWR(serverName, '1L13 EWR',  base.name, unitSide);
+												}
+											})
+											.catch(function (err) {
+												console.log('erroring line662: ', err);
+											})
+										;
+									}
 								}
-								*/
 							}
 						})
 						.catch(function (err) {
