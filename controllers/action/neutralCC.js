@@ -50,8 +50,9 @@ _.assign(exports, {
 		;
 	},
 	spawnCCAtNeutralBase: function (serverName, curPlayerUnit) {
+		console.log('spwnNeutral: ', curPlayerUnit);
 		return new Promise(function(resolve, reject) {
-			masterDBController.baseActions('read', serverName, {mainBase: false, expansion: false, farp: false})
+			masterDBController.baseActions('read', serverName, {mainBase: false, expansion: false})
 				.then(function (bases) {
 					_.forEach(bases, function (base) {
 						proximityController.getPlayersInProximity(serverName, _.get(base, 'centerLoc'), 3.4, false, curPlayerUnit.coalition)
