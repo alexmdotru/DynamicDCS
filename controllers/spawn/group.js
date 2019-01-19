@@ -1280,7 +1280,7 @@ _.set(exports, 'spawnSupportBaseGrp', function ( serverName, baseName, side, ini
 			return _.first(_.split(_.get(farp, 'name'), ' #')) === baseName && _.get(farp, 'initSide') === side;
 				// && !_.isEmpty(_.intersection([_.get(farp, 'country')], curEnabledCountrys));
 		});
-		// console.log('doesnty work: ', serverName, baseName, side, init, curFarpBases, farpBases);
+		console.log('doesnty work: ', serverName, baseName, side, init, curFarpBases, farpBases);
 		_.forEach(curFarpBases, function (farp) {
 			spawnArray = _.concat(spawnArray, exports.spawnSupportVehiclesOnFarp( serverName, _.get(farp, 'name'), side ));
 		});
