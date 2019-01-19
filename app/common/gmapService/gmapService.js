@@ -305,7 +305,7 @@
 						strokeWeight: 0,
 						map: gSrv.currentMap,
 						center: center,
-						radius: 30000
+						radius: 15000
 					}));
 
 					gSrv.googleMaps.event.addListener(

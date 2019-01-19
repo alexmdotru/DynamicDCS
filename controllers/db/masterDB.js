@@ -429,6 +429,7 @@ _.assign(exports, {
 		var curTheater = _.get(constants, 'config.theater');
 		var curObj = obj || {};
 		_.set(curObj, 'mapType', curTheater);
+		_.set(curObj, 'enabled', true);
 		var curDBConn = _.get(exports, ['dbObj', 'dbConn', serverName]);
 		if (curDBConn) {
 			const Airfield = curDBConn.model(serverName+'_airfield', _.get(exports, 'dbObj.airfieldSchema'));
@@ -457,6 +458,7 @@ _.assign(exports, {
 					Airfield.find(
 						{
 							mainBase: true,
+							enabled: true,
 							centerLoc: {
 								$near: {
 									$geometry: {
@@ -479,6 +481,7 @@ _.assign(exports, {
 					Airfield.find(
 						{
 							mainBase: true,
+							enabled: true,
 							side: obj.playerSide,
 							centerLoc: {
 								$near: {
@@ -502,6 +505,7 @@ _.assign(exports, {
 					Airfield.find(
 						{
 							mainBase: true,
+							enabled: true,
 							side: constants.enemyCountry[obj.playerSide],
 							centerLoc: {
 								$near: {
@@ -528,7 +532,7 @@ _.assign(exports, {
 							.then(function (serverConf) {
 								// console.log('serconf: ', serverConf);
 								Airfield.find(
-									{mapType: _.get(serverConf, 'theater')},
+									{mapType: _.get(serverConf, 'theater'), enabled: true},
 									function(err, dbairfields) {
 										if (err) { reject(err) }
 										tAirfields = _.transform(dbairfields, function (result, value) {
@@ -544,7 +548,7 @@ _.assign(exports, {
 						;
 					} else {
 						Airfield.find(
-							{mapType: curTheater},
+							{mapType: curTheater, enabled: true},
 							function(err, dbairfields) {
 								if (err) { reject(err) }
 								tAirfields = _.transform(dbairfields, function (result, value) {

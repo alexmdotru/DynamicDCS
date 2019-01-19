@@ -83,6 +83,10 @@ const AirfieldSchema = new mongoose.Schema({
 	mapType: {
 		type: String,
 		required: true
+	},
+	enabled: {
+		type: Boolean,
+		default: true
 	}
 },
 	{
