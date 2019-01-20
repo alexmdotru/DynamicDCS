@@ -1299,7 +1299,7 @@ _.set(exports, 'spawnSupportBaseGrp', function ( serverName, baseName, side, ini
 	for (var i = 0; i < 3; i++) {
 		spawnArray = _.concat(spawnArray, _.cloneDeep(exports.getRndFromSpawnCat( 'APC', side, false )));
 	}
-
+	console.log('SA: ', serverName, _.compact(spawnArray), baseName, side);
 	exports.spawnGroup(serverName, _.compact(spawnArray), baseName, side);
 	return true;
 });
