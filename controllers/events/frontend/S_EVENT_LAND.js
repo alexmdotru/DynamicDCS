@@ -38,15 +38,8 @@ _.set(exports, 'processEventLand', function (serverName, sessionName, eventObj) 
 									var curBase = _.get(bases, [0], {}); // does this work?
 									console.log('LANDINGCARGO: ', curBase.side === curSide, baseLand === bName, baseLand, ' = ', bName, curIUnit.category);
 									if (curBase.side === curSide) {
-										if (curIUnit.category === 'AIRPLANE') {
-											if (baseLand === bName) {
-												groupController.replenishUnits( serverName, bName, curSide);
-												groupController.healBase(serverName, bName);
-											}
-										} else {
-											groupController.replenishUnits( serverName, bName, curSide);
-											groupController.healBase(serverName, bName);
-										}
+										groupController.replenishUnits( serverName, bName, curSide);
+										groupController.healBase(serverName, bName, curIUnit);
 									}
 								})
 								.catch(function (err) {

@@ -2116,10 +2116,10 @@ _.set(exports, 'healBase', function ( serverName, baseName, curPlayerUnit) {
 								if (curUnit) {
 									_.set(curUnit, 'coalition', _.get(curBase, 'side'));
 									// console.log('creating logistics from existing: ', serverName, curUnit, false, curBase, curBase.side);
-									exports.spawnLogisticCmdCenter(serverName, curUnit, false, curBase, curBase.side);
+									exports.spawnLogisticCmdCenter(serverName, curUnit, false, curBase, _.get(curPlayerUnit, 'coalition'));
 								} else {
 									// console.log('creating NEW logistics: ', serverName, {}, false, curBase, curBase.side);
-									exports.spawnLogisticCmdCenter(serverName, {}, false, curBase, curBase.side);
+									exports.spawnLogisticCmdCenter(serverName, {}, false, curBase, _.get(curPlayerUnit, 'coalition'));
 								}
 							})
 							.catch(function (err) {
@@ -2133,10 +2133,10 @@ _.set(exports, 'healBase', function ( serverName, baseName, curPlayerUnit) {
 								if (curCommUnit) {
 									_.set(curCommUnit, 'coalition', _.get(curBase, 'side'));
 									// console.log('creating logistics from existing: ', serverName, curCommUnit, false, curBase, curBase.side);
-									exports.spawnRadioTower(serverName, curCommUnit, false, curBase, curBase.side);
+									exports.spawnRadioTower(serverName, curCommUnit, false, curBase, _.get(curPlayerUnit, 'coalition'));
 								} else {
 									// console.log('creating NEW logistics: ', serverName, {}, false, curBase, curBase.side);
-									exports.spawnRadioTower(serverName, {}, false, curBase, curBase.side);
+									exports.spawnRadioTower(serverName, {}, false, curBase, _.get(curPlayerUnit, 'coalition'));
 								}
 							})
 							.catch(function (err) {
@@ -2149,7 +2149,7 @@ _.set(exports, 'healBase', function ( serverName, baseName, curPlayerUnit) {
 							masterDBController.unitActions('read', serverName, {name: _.get(curBase, 'name') + ' 1L13 EWR', dead: false})
 								.then(function (commUnit) {
 									if (commUnit === 0) {
-										exports.spawnBaseEWR(serverName, '1L13 EWR', _.get(curBase, 'name'), _.get(curBase, 'side'));
+										exports.spawnBaseEWR(serverName, '1L13 EWR', _.get(curBase, 'name'), _.get(curPlayerUnit, 'coalition'));
 									}
 								})
 								.catch(function (err) {
@@ -2161,7 +2161,7 @@ _.set(exports, 'healBase', function ( serverName, baseName, curPlayerUnit) {
 							masterDBController.unitActions('read', serverName, {name: _.get(curBase, 'name') + ' 55G6 EWR', dead: false})
 								.then(function (commUnit) {
 									if (commUnit === 0) {
-										exports.spawnBaseEWR(serverName, '55G6 EWR', _.get(curBase, 'name'), _.get(curBase, 'side'));
+										exports.spawnBaseEWR(serverName, '55G6 EWR', _.get(curBase, 'name'), _.get(curPlayerUnit, 'coalition'));
 									}
 								})
 								.catch(function (err) {
@@ -2172,7 +2172,7 @@ _.set(exports, 'healBase', function ( serverName, baseName, curPlayerUnit) {
 							masterDBController.unitActions('read', serverName, {name: _.get(curBase, 'name') + ' 1L13 EWR', dead: false})
 								.then(function (commUnit) {
 									if (commUnit === 0) {
-										exports.spawnBaseEWR(serverName, '1L13 EWR', _.get(curBase, 'name'), _.get(curBase, 'side'));
+										exports.spawnBaseEWR(serverName, '1L13 EWR', _.get(curBase, 'name'), _.get(curPlayerUnit, 'coalition'));
 									}
 								})
 								.catch(function (err) {
@@ -2182,7 +2182,7 @@ _.set(exports, 'healBase', function ( serverName, baseName, curPlayerUnit) {
 							;
 						}
 						//rebuild farp support vehicles
-						exports.spawnSupportBaseGrp( serverName, curBase.name, curBase.side );
+						exports.spawnSupportBaseGrp( serverName, curBase.name, _.get(curPlayerUnit, 'coalition') );
 						resolve(true);
 					}
 				}
