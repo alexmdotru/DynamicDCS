@@ -1279,7 +1279,7 @@ _.set(exports, 'spawnSupportBaseGrp', function ( serverName, baseName, side, ini
 			return _.first(_.split(_.get(farp, 'name'), ' #')) === baseName && _.get(farp, 'initSide') === side;
 				// && !_.isEmpty(_.intersection([_.get(farp, 'country')], curEnabledCountrys));
 		});
-		// console.log('doesnty work: ', serverName, baseName, side, init, curFarpBases);
+		console.log('doesnt work: ', serverName, baseName, side, init, curFarpBases);
 		_.forEach(curFarpBases, function (farp) {
 			spawnArray = _.concat(spawnArray, exports.spawnSupportVehiclesOnFarp( serverName, _.get(farp, 'name'), side ));
 		});
@@ -2101,6 +2101,7 @@ _.set(exports, 'healBase', function ( serverName, baseName, curPlayerUnit) {
 					if (!_.get(curBase, 'mainBase')) {
 						neutralCCController.spawnCCAtNeutralBase(serverName, curPlayerUnit)
 							.then(function (resp) {
+								exports.spawnSupportBaseGrp( serverName, curBase.name, _.get(curPlayerUnit, 'coalition') );
 								resolve(resp);
 							})
 							.catch(function (err) {
