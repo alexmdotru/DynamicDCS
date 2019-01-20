@@ -1279,7 +1279,7 @@ _.set(exports, 'spawnSupportBaseGrp', function ( serverName, baseName, side, ini
 			return _.first(_.split(_.get(farp, 'name'), ' #')) === baseName && _.get(farp, 'initSide') === side;
 				// && !_.isEmpty(_.intersection([_.get(farp, 'country')], curEnabledCountrys));
 		});
-		console.log('doesnt work: ', serverName, baseName, side, init, curFarpBases);
+		// console.log('doesnt work: ', serverName, baseName, side, init, curFarpBases);
 		_.forEach(curFarpBases, function (farp) {
 			spawnArray = _.concat(spawnArray, exports.spawnSupportVehiclesOnFarp( serverName, _.get(farp, 'name'), side ));
 		});
@@ -1299,7 +1299,6 @@ _.set(exports, 'spawnSupportBaseGrp', function ( serverName, baseName, side, ini
 	for (var i = 0; i < 3; i++) {
 		spawnArray = _.concat(spawnArray, _.cloneDeep(exports.getRndFromSpawnCat( 'APC', side, false )));
 	}
-	console.log('SA: ', serverName, _.compact(spawnArray), baseName, side);
 	exports.spawnGroup(serverName, _.compact(spawnArray), baseName, side);
 	return true;
 });
@@ -1954,7 +1953,7 @@ _.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {
 		curGroupSpawn = _.replace(curGroupSpawn, "#UNITS", curUnitSpawn);
 		// var curCMD = 'mist.dynAdd(' + curGroupSpawn + ')';
 		var curCMD = exports.spawnGrp(curGroupSpawn, curSide, curGrpObj.category);
-		// console.log('cmd: ', curCMD);
+		console.log('cmd: ', curCMD);
 		var sendClient = {action: "CMD", cmd: [curCMD], reqID: 0};
 		var actionObj = {actionObj: sendClient, queName: 'clientArray'};
 		masterDBController.cmdQueActions('save', serverName, actionObj)
