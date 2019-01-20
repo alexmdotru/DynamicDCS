@@ -1283,23 +1283,8 @@ _.set(exports, 'spawnSupportBaseGrp', function ( serverName, baseName, side, ini
 		_.forEach(curFarpBases, function (farp) {
 			spawnArray = _.concat(spawnArray, exports.spawnSupportVehiclesOnFarp( serverName, _.get(farp, 'name'), side ));
 		});
+		exports.spawnGroup(serverName, _.compact(spawnArray), baseName, side);
 	}
-	/*
-	else {
-		var curExpBases = _.filter(expBases, function (exp) {
-			return _.first(_.split(_.get(exp, 'name'), ' #')) === baseName + '_Expansion' && _.get(exp, 'initSide') === side;
-				//&& !_.isEmpty(_.intersection([_.get(exp, 'country')], curEnabledCountrys));
-		});
-		_.forEach(curExpBases, function (exp) {
-			spawnArray = _.concat(spawnArray, exports.spawnSupportVehiclesOnFarp( serverName, _.get(exp, 'name'), side ));
-		});
-	}
-	*/
-
-	for (var i = 0; i < 3; i++) {
-		spawnArray = _.concat(spawnArray, _.cloneDeep(exports.getRndFromSpawnCat( 'APC', side, false )));
-	}
-	exports.spawnGroup(serverName, _.compact(spawnArray), baseName, side);
 	return true;
 });
 
