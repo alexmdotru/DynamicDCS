@@ -68,9 +68,6 @@ const AirfieldSchema = new mongoose.Schema({
 	spawnZones: {
 		type: Object
 	},
-	maxUnitThreshold: {
-		type: Number
-	},
 	replenTime: {
 		type: Date
 	},
