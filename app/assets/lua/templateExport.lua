@@ -36,9 +36,6 @@ do
 	local PORT = 3001
 	local DATA_TIMEOUT_SEC = 1
 
-	local MAX_BASE_UNIT_THRESHOLD = 25
-	local MAX_FARP_UNIT_THRESHOLD = 15
-
 	local updateQue = { ["que"] = {} }
 
 	package.path = package.path .. ";.\\LuaSocket\\?.lua"
@@ -190,13 +187,6 @@ do
 				--env.info('applycache  ' .. baseName..' : '.. coalition);
 				--trigger.action.setUserFlag(baseName, coalition)
 				curObj.mainBase = true
-				if curObj.farp ~= nil then
-					if curObj.farp then
-						curObj.maxUnitThreshold = MAX_FARP_UNIT_THRESHOLD
-					else
-						curObj.maxUnitThreshold = MAX_BASE_UNIT_THRESHOLD
-					end
-				end
 				--airbaseCache[baseName].side = coalition
 				if polyArray[baseName] ~= nil then
 					curObj["polygonLoc"] = polyArray[baseName]
