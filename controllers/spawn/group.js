@@ -5,6 +5,8 @@ const neutralCCController = require('../action/neutralCC');
 const DCSLuaCommands = require('../player/DCSLuaCommands');
 const zoneController = require('../proxZone/zone');
 
+var openSAM = 0;
+
 _.set(exports, 'spawnGrp', function (grpSpawn, country, category) {
 	// console.log('spwnGrp: ', country, _.indexOf(constants.countryId, country), category);
 	return gSpawnCmd = 'coalition.addGroup(' + _.indexOf(constants.countryId, country) + ', Group.Category.' + category + ', ' + grpSpawn + ')';
@@ -1288,7 +1290,7 @@ _.set(exports, 'spawnSupportBaseGrp', function ( serverName, baseName, side, ini
 	return true;
 });
 
-_.set(exports, 'spawnBaseReinforcementGroup', function (serverName, side, baseName, forceSpawn) {
+_.set(exports, 'spawnBaseReinforcementGroup', function (serverName, side, baseName, forceSpawn, init) {
 	var curAngle = 0;
 	var curCat;
 	var curRndSpawn;
@@ -1305,60 +1307,173 @@ _.set(exports, 'spawnBaseReinforcementGroup', function (serverName, side, baseNa
 	var polyCheck;
 	_.forEach(curBaseSpawnCats, function (tickVal, name) {
 		var curTickVal = _.cloneDeep(tickVal);
-		if(_.includes(baseName, 'FARP')) {
-			if (curTickVal > 1) {
-				curTickVal = curTickVal - 1;
+		for (var i = 0; i < curTickVal; i++) {
+			if (!(name === 'samRadar' && _.get(curServer, 'timePeriod') === '1978ColdWar')) {
+				curAngle = 0;
+				curRndSpawn = _.sortBy(exports.getRndFromSpawnCat(name, side, false, forceSpawn), 'sort');
+				compactUnits = [];
+				infoSpwn = _.first(curRndSpawn);
+				centerRadar = _.get(infoSpwn, 'centerRadar') ? 1 : 0;
+				polyCheck = _.get(infoSpwn, 'centerRadar') ? 'buildingPoly' : 'unitPoly';
+
+				if (_.get(infoSpwn, 'spoke')) {
+					randLatLonInBase = zoneController.getRandomLatLonFromBase(serverName, baseName, polyCheck);
+					groupedUnits = [];
+					curSpokeNum = curRndSpawn.length - centerRadar;
+					curSpokeDeg = 359 / curSpokeNum;
+
+					if (_.get(infoSpwn, 'centerRadar')) {
+						//main radar
+						curCat = _.cloneDeep(infoSpwn);
+						_.set(curCat, 'lonLatLoc', randLatLonInBase);
+						groupedUnits.push(curCat);
+					}
+					//secondary radar
+					for (var j = _.cloneDeep(centerRadar); j < _.get(infoSpwn, 'secRadarNum') + centerRadar; j++) {
+						curCat = _.cloneDeep(curRndSpawn[j]);
+						_.set(curCat, 'lonLatLoc', zoneController.getLonLatFromDistanceDirection(randLatLonInBase, curAngle, _.get(curCat, 'spokeDistance') / 2));
+						curAngle += curSpokeDeg;
+						groupedUnits.push(curCat);
+					}
+					//launchers
+					for (var k = _.get(infoSpwn, 'secRadarNum') + centerRadar; k < curSpokeNum + centerRadar; k++) {
+						curCat = _.cloneDeep(curRndSpawn[k]);
+						_.set(curCat, 'lonLatLoc', zoneController.getLonLatFromDistanceDirection(randLatLonInBase, curAngle, _.get(curCat, 'spokeDistance')));
+						curAngle += curSpokeDeg;
+						groupedUnits.push(curCat);
+					}
+					// console.log('sg: ', serverName, _.compact(groupedUnits), baseName, side);
+					compactUnits = _.compact(groupedUnits);
+				} else {
+					// console.log('sg: ', serverName, _.compact(curRndSpawn), baseName, side);
+					compactUnits = _.compact(curRndSpawn);
+				}
+				totalUnits += compactUnits.length;
+				exports.spawnGroup(serverName, compactUnits, baseName, side);
 			}
 		}
-		for (var i = 0; i < curTickVal; i++) {
-			curAngle = 0;
-			curRndSpawn = _.sortBy(exports.getRndFromSpawnCat( name, side, false, forceSpawn ), 'sort');
-			compactUnits = [];
-			infoSpwn = _.first(curRndSpawn);
-			centerRadar = _.get(infoSpwn, 'centerRadar') ? 1 : 0;
-			polyCheck = _.get(infoSpwn, 'centerRadar') ? 'buildingPoly' : 'unitPoly';
-
-			if(_.get(infoSpwn, 'spoke')) {
-				randLatLonInBase = zoneController.getRandomLatLonFromBase(serverName, baseName, polyCheck);
-				groupedUnits = [];
-				curSpokeNum = curRndSpawn.length - centerRadar;
-				curSpokeDeg = 359/curSpokeNum;
-
-				if(_.get(infoSpwn, 'centerRadar')) {
-					//main radar
-					curCat = _.cloneDeep(infoSpwn);
-					_.set(curCat, 'lonLatLoc', randLatLonInBase);
-					groupedUnits.push(curCat);
-				}
-				//secondary radar
-				for (var j = _.cloneDeep(centerRadar); j < _.get(infoSpwn, 'secRadarNum') + centerRadar; j++) {
-					curCat = _.cloneDeep(curRndSpawn[j]);
-					_.set(curCat, 'lonLatLoc', zoneController.getLonLatFromDistanceDirection(randLatLonInBase, curAngle, _.get(curCat, 'spokeDistance')/2));
-					curAngle += curSpokeDeg;
-					groupedUnits.push(curCat);
-				}
-				//launchers
-				for (var k = _.get(infoSpwn, 'secRadarNum') + centerRadar; k < curSpokeNum + centerRadar; k++) {
-					curCat = _.cloneDeep(curRndSpawn[k]);
-					_.set(curCat, 'lonLatLoc', zoneController.getLonLatFromDistanceDirection(randLatLonInBase, curAngle, _.get(curCat, 'spokeDistance')));
-					curAngle += curSpokeDeg;
-					groupedUnits.push(curCat);
-				}
-				// console.log('sg: ', serverName, _.compact(groupedUnits), baseName, side);
-				compactUnits = _.compact(groupedUnits);
-			} else {
-				// console.log('sg: ', serverName, _.compact(curRndSpawn), baseName, side);
-				compactUnits = _.compact(curRndSpawn);
-			}
-			totalUnits += compactUnits.length;
-			exports.spawnGroup(serverName, compactUnits, baseName, side);
+		if (name === 'samRadar' && _.get(curServer, 'timePeriod') === '1978ColdWar' && !init) {
+			console.log('samRadar run once');
+			exports.spawnSAMNet(serverName, side, baseName);
+			totalUnits += 3;
 		}
 		if(name === 'antiAir' && curTickVal > 0 && _.get(curServer, 'timePeriod') === '1978ColdWar') {
-			exports.spawnLayer2Reinforcements(serverName, 2, curTickVal, side, baseName);
+			totalUnits += (curTickVal * exports.spawnLayer2Reinforcements(serverName, 2, curTickVal, side, baseName));
 		}
 	});
 	console.log('return total', totalUnits);
 	return totalUnits;
+});
+
+_.set(exports, 'spawnSAMNet', function (serverName, side, baseName) {
+	var spawnArray = [
+		['1SAM', '3SAM', '5SAM'],
+		['2SAM', '4SAM', '6SAM']
+	];
+
+	var curGrpArray;
+	var groupedSAMs;
+	var realSAMArray = [];
+	var rndRobinArray;
+
+	//{$and: [{name: /Tuapse_FARP/}, {name: /EWR/}], dead: false}
+	// first get working SAMS for base
+	console.log('sam for: ', baseName);
+	return masterDBController.unitActions('read', serverName, {$and: [{name: new RegExp(baseName)}, {name: /SAM/}], dead: false})
+		.then(function (samUnits) {
+			// console.log('misSAM: ', samUnits);
+			if (samUnits > 0) {
+				var curSamType = _.first(samUnits).type;
+				var curUnitDict = _.find(constants.unitDictionary, {_id: curSamType});
+				var curRealArray = _.get(curUnitDict, 'reloadReqArray', []);
+				groupedSAMs = _.groupBy(samUnits, 'groupName');
+				_.forEach(groupedSAMs, function (samGroup) {
+					if(samGroup.length === _.intersection(curRealArray, _.map(samGroup, 'type')).length) {
+						console.log('1 good sam: ', samGroup);
+						curGrpArray = _.split(_.get(samGroup, '|'));
+						realSAMArray.push(_.get(curGrpArray, [2]));
+					}
+				});
+				if (realSAMArray.length < 3) {
+					if (_.intersection(array1, realSAMArray).length > 0) {
+						openSAM =  _.first(_.sample(_.difference(spawnArray[0], realSAMArray)));
+					} else if (_.intersection(array2, realSAMArray).length > 0) {
+						openSAM =  _.first(_.sample(_.difference(spawnArray[0], realSAMArray)));
+					} else {
+						console.log('SAM is on the list of SAM placements');
+					}
+				} else {
+					console.log('3+ missle batterys in place');
+				}
+			} else {
+				rndRobinArray = _.sample(spawnArray);
+				_.forEach(rndRobinArray, function (spwnPoint) {
+					//console.log('rr: ', spwnPoint, spwnPoint[0]);
+					exports.spawnStarSam(serverName, side, baseName, spwnPoint[0]);
+				});
+			}
+		})
+		.catch(function (err) {
+			console.log('erroring line662: ', err);
+			return 0;
+		})
+	;
+});
+
+_.set(exports, 'spawnStarSam', function(serverName, side, baseName, openSAM) {
+	var centerRadar;
+	var compactUnits;
+	var curAngle = 0;
+	var curCat;
+	var curRndSpawn;
+	var curSpokeDeg;
+	var curSpokeNum;
+	var curUnit;
+	var randLatLonInBase;
+	var infoSpwn;
+	var groupedUnits = [];
+
+	randLatLonInBase = zoneController.getRandomLatLonFromBase(serverName, baseName, 'layer2Poly', openSAM);
+	groupedUnits = [];
+	curRndSpawn = _.sortBy(exports.getRndFromSpawnCat( 'samRadar', side, false, true ), 'sort');
+	infoSpwn = _.first(curRndSpawn);
+	centerRadar = _.get(infoSpwn, 'centerRadar') ? 1 : 0;
+	curSpokeNum = curRndSpawn.length - centerRadar;
+	curSpokeDeg = 359/curSpokeNum;
+	if(_.get(infoSpwn, 'centerRadar')) {
+		//main radar
+		curCat = _.cloneDeep(infoSpwn);
+		_.set(curCat, 'lonLatLoc', randLatLonInBase);
+		groupedUnits.push(curCat);
+	}
+	// console.log('centerRadar: ', _.cloneDeep(groupedUnits));
+	//secondary radar
+	for (var j = _.cloneDeep(centerRadar); j < _.get(infoSpwn, 'secRadarNum') + centerRadar; j++) {
+		curCat = _.cloneDeep(curRndSpawn[j]);
+		_.set(curCat, 'lonLatLoc', zoneController.getLonLatFromDistanceDirection(randLatLonInBase, curAngle, _.get(curCat, 'spokeDistance')/2));
+		curAngle += curSpokeDeg;
+		groupedUnits.push(curCat);
+	}
+	// console.log('seccenterRadar: ', _.cloneDeep(groupedUnits));
+	//launchers
+	for (var k = _.get(infoSpwn, 'secRadarNum') + centerRadar; k < curSpokeNum + centerRadar; k++) {
+		curCat = _.cloneDeep(curRndSpawn[k]);
+		_.set(curCat, 'lonLatLoc', zoneController.getLonLatFromDistanceDirection(randLatLonInBase, curAngle, _.get(curCat, 'spokeDistance')));
+		curAngle += curSpokeDeg;
+		groupedUnits.push(curCat);
+	}
+	// console.log('launchers: ', _.cloneDeep(groupedUnits), _.get(infoSpwn, 'secRadarNum'), centerRadar, curSpokeNum, centerRadar);
+	//add ammo truck
+	curCat = _.cloneDeep(_.first(exports.getRndFromSpawnCat('unarmedAmmo', side, false, true)));
+	_.set(curCat, 'lonLatLoc', zoneController.getLonLatFromDistanceDirection(randLatLonInBase, 180, _.get(curCat, 'spokeDistance')/2));
+	curAngle += curSpokeDeg;
+	groupedUnits.push(curCat);
+	// console.log('ammo: ', _.cloneDeep(groupedUnits));
+	// console.log('sg: ', serverName, _.compact(groupedUnits), baseName, side);
+	compactUnits = _.compact(groupedUnits);
+	// console.log('CU: ', compactUnits);
+	exports.spawnGroup(serverName, compactUnits, baseName, side);
+	return _.get(_.cloneDeep(compactUnits), 'length', 0);
 });
 
 _.set(exports, 'spawnLayer2Reinforcements', function (serverName, rndAmt, curTick, side, baseName) {
@@ -1392,6 +1507,7 @@ _.set(exports, 'spawnLayer2Reinforcements', function (serverName, rndAmt, curTic
 		}
 		exports.spawnGroup(serverName, _.compact(groupedL2Units), baseName, side);
 	}
+	return _.get(_.compact(groupedL2Units), 'length', 0);
 });
 
 
@@ -1938,7 +2054,7 @@ _.set(exports, 'spawnGroup', function (serverName, spawnArray, baseName, side) {
 		curGroupSpawn = _.replace(curGroupSpawn, "#UNITS", curUnitSpawn);
 		// var curCMD = 'mist.dynAdd(' + curGroupSpawn + ')';
 		var curCMD = exports.spawnGrp(curGroupSpawn, curSide, curGrpObj.category);
-		console.log('cmd: ', curCMD);
+		// console.log('cmd: ', curCMD);
 		var sendClient = {action: "CMD", cmd: [curCMD], reqID: 0};
 		var actionObj = {actionObj: sendClient, queName: 'clientArray'};
 		masterDBController.cmdQueActions('save', serverName, actionObj)
@@ -1965,9 +2081,13 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 		}
 		totalUnitNum = 0;
 		while (spawnArray.length + totalUnitNum < curReplenThreshold) { //UNCOMMENT THESE
-			totalUnitNum += exports.spawnBaseReinforcementGroup(serverName, extSide, extName, true);
-			//spawnArray = _.concat(spawnArray, exports.spawnBaseReinforcementGroup(serverName, extSide, extName));
+			totalUnitNum += exports.spawnBaseReinforcementGroup(serverName, extSide, extName, true, true);
+			// console.log('TN: ', totalUnitNum, spawnArray.length, totalUnitNum, '<', curReplenThreshold, spawnArray.length + totalUnitNum < curReplenThreshold);
 		}
+
+		exports.spawnSAMNet(serverName, extSide, extName);
+		totalUnitNum += 3;
+
 		exports.spawnGroup(serverName, spawnArray, extName, extSide);
 		exports.spawnLogisticCmdCenter(serverName, {}, true, _.find(_.get(constants, 'bases'), {name: extName}), extSide);
 		exports.spawnRadioTower(serverName, {}, true, _.find(_.get(constants, 'bases'), {name: extName}), extSide);

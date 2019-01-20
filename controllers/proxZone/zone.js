@@ -84,10 +84,15 @@ _.set(exports, 'isLatLonInZone', function (lonLat, polyZone) {
 	return InPolygon
 });
 
-_.set(exports, 'getRandomLatLonFromBase', function (serverName, baseName, polytype) {
+_.set(exports, 'getRandomLatLonFromBase', function (serverName, baseName, polytype, zoneNum) {
 	var baseInfo = _.find(_.get(constants, 'bases'), {_id: baseName});
-	var pGroup = _.get(baseInfo, ['polygonLoc', polytype]);
-	var pickedPoly = _.sample(pGroup);
+	var pGroups = _.get(baseInfo, ['polygonLoc', polytype]);
+	var pickedPoly;
+	if (zoneNum) {
+		pickedPoly = pGroups[zoneNum];
+	} else {
+		pickedPoly = _.sample(pGroups);
+	}
 	if (pickedPoly) {
 		var lonLatFound = false;
 		var lonLat;
