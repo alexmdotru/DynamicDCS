@@ -4,7 +4,7 @@ const DCSLuaCommands = require('../player/DCSLuaCommands');
 
 var dBot = {};
 var SRSServers = {
-  	DDCSStandard: 'srs.dynamicdcs.com:5002',
+  	// DDCSStandard: 'srs.dynamicdcs.com:5002',
 	DDCS1978ColdWar: 'srs.dynamicdcs.com:5002',
 	DDCSHardcore: 'srs.dynamicdcs.com:5010'
 };
