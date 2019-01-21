@@ -3,12 +3,12 @@ const constants = require('../constants');
 const masterDBController = require('../db/masterDB');
 const groupController = require('../spawn/group');
 
-var replenThreshold = 0.7; // percentage under max
-var replenBase = _.get(constants, 'config.replenThresholdBase') * replenThreshold;
-var replenFarp = _.get(constants, 'config.replenThresholdFARP') * replenThreshold;
-var replenTimer = _.random(_.get(constants, 'config.replenTimer')/2, _.get(constants, 'config.replenTimer'));
-
 _.set(exports, 'processFiveSecActions', function (serverName, fullySynced) {
+	var replenThreshold = 1; // percentage under max
+	var replenBase = _.get(constants, ['config', 'replenThresholdBase']) * replenThreshold;
+	var replenFarp = _.get(constants, ['config', 'replenThresholdFARP']) * replenThreshold;
+	var replenTimer = _.random(_.get(constants, 'config.replenTimer')/2, _.get(constants, 'config.replenTimer'));
+
 	if (fullySynced) {
 		//set base flags
 		masterDBController.baseActions('read', serverName, {mainBase: true})
@@ -22,6 +22,7 @@ _.set(exports, 'processFiveSecActions', function (serverName, fullySynced) {
 							masterDBController.unitActions('read', serverName, {name: _.get(base, 'name') + ' Communications', dead: false})
 								.then(function (aliveComms) {
 									if (aliveComms.length > 0) {
+										// console.log('BASE units, replen: ', base.name, units.length, unitCnt, replenBase, replenFarp, _.get(constants, ['config', 'replenThresholdBase']));
 										if ((units.length < unitCnt) && replenEpoc < new Date().getTime()) { //UNCOMMENT OUT FALSE
 											masterDBController.baseActions('updateReplenTimer', serverName, {name: _.get(base, '_id'),  replenTime: new Date().getTime() + (replenTimer * 1000)})
 												.then(function () {
