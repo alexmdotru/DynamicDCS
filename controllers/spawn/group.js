@@ -1386,6 +1386,7 @@ _.set(exports, 'spawnSAMNet', function (serverName, side, baseName, init) {
 				var curSAMObj = {};
 				var curSAMType;
 				var curSAM;
+				var realSAMArray = [];
 				_.forEach(samUnits, function (samUnit) {
 					curSAM = _.cloneDeep(samUnit);
 					curSAMType = _.split(_.get(curSAM, 'name'), '|')[2];
@@ -1396,16 +1397,19 @@ _.set(exports, 'spawnSAMNet', function (serverName, side, baseName, init) {
 				// console.log('gSAMS: ', curSAMObj);
 				_.forEach(curSAMObj, function (samGroup, samKey) {
 					// console.log('gSAMSINTER: ', samGroup.length, curRealArray, _.map(samGroup, 'type'), _.intersection(curRealArray, _.map(samGroup, 'type')).length);
-					if(samGroup.length === _.intersection(curRealArray, _.map(samGroup, 'type')).length) {
+					if(curRealArray.length === _.intersection(curRealArray, _.map(samGroup, 'type')).length) {
 						console.log('1 good sam: ', samKey);
 						realSAMArray.push(samKey);
 					}
 				});
+				// console.log('realSAM: ', realSAMArray);
 				if (realSAMArray.length < 3) {
 					if (_.intersection(spawnArray[0], realSAMArray).length > 0) {
 						openSAM =  _.sample(_.difference(spawnArray[0], realSAMArray));
+						// console.log('1: ', openSAM, _.difference(spawnArray[0], realSAMArray), spawnArray[0], realSAMArray);
 					} else if (_.intersection(spawnArray[1], realSAMArray).length > 0) {
 						openSAM =  _.sample(_.difference(spawnArray[1], realSAMArray));
+						// console.log('2: ', openSAM, _.difference(spawnArray[1], realSAMArray), spawnArray[1], realSAMArray);
 					} else {
 						openSAM = _.sample(_.sample(spawnArray));
 					}
