@@ -558,21 +558,31 @@ _.assign(exports, {
 											//try to extract a troop
 											proximityController.getTroopsInProximity(serverName, curUnit.lonLatLoc, 0.2, curUnit.coalition)
 												.then(function(units){
-													var curTroop = _.get(units, [0]);
+													var curTroop = _.first(units);
 													if(curTroop) {
 														// pickup troop
-														masterDBController.unitActions('updateByUnitId', serverName, {unitId: pObj.unitId, troopType: curTroop.spawnCat})
+														masterDBController.unitActions('read', serverName, {groupName: curTroop.groupName, isCrate: false, dead: false})
+															.then(function(grpUnits) {
+																_.forEach(grpUnits, function (curUnit) {
+																	groupController.destroyUnit(serverName, curUnit.name);
+																});
+																masterDBController.unitActions('updateByUnitId', serverName, {unitId: pObj.unitId, troopType: curTroop.spawnCat})
+																	.catch(function (err) {
+																		console.log('erroring line57: ', err);
+																	})
+																;
+																DCSLuaCommands.sendMesgToGroup(
+																	curUnit.groupId,
+																	serverName,
+																	"G: Picked Up " + curTroop.type + "!",
+																	5
+																);
+
+															})
 															.catch(function (err) {
 																console.log('erroring line57: ', err);
 															})
 														;
-														groupController.destroyUnit(serverName, curTroop.name);
-														DCSLuaCommands.sendMesgToGroup(
-															curUnit.groupId,
-															serverName,
-															"G: Picked Up " + curTroop.type + "!",
-															5
-														);
 													} else {
 														// no troops
 														DCSLuaCommands.sendMesgToGroup(
