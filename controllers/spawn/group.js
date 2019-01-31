@@ -953,6 +953,9 @@ _.set(exports, 'grndUnitTemplate', function ( unitObj ) {
 		'["x"] = coord.LLtoLO(' + _.get(unitObj, ['lonLatLoc', 1]) + ', ' +  _.get(unitObj, ['lonLatLoc', 0]) + ').x, ' +
 		'["y"] = coord.LLtoLO(' + _.get(unitObj, ['lonLatLoc', 1]) + ', ' +  _.get(unitObj, ['lonLatLoc', 0]) + ').z, ' +
 		'["type"] = "' + _.get(unitObj, 'type') +'",' +
+		'["transportable"] = {' +
+			'["randomTransportable"] = true,' +
+		'},' +
 		'["name"] = "' + _.get(unitObj, 'name') + '",' +
 		// '["unitId"] = ' + _.get(unitObj, 'unitId') + ',' +
 		'["heading"] = ' + _.get(unitObj, 'heading', 0) + ',' +

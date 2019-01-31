@@ -492,7 +492,7 @@ _.assign(exports, {
 																		category: curSpawnUnit.category,
 																		playerCanDrive: true
 																	};
-																	for(var x = 1; x < 6; x++) {
+																	for(var x = 0; x < 6; x++) {
 																		curTroops.push(spawnArray);
 																	}
 																	masterDBController.unitActions('updateByUnitId', serverName, {unitId: pObj.unitId, troopType: null})
