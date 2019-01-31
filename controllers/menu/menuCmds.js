@@ -481,36 +481,43 @@ _.assign(exports, {
 															} else {
 																var curTroops = [];
 																if (_.get(constants, 'config.timePeriod') === '1978ColdWar') {
-																	_.forEach(delUnits, function (unit) {
-																		masterDBController.unitActions('updateByUnitId', serverName, {unitId: unit.unitId, dead: true});
-																		groupController.destroyUnit(serverName, unit.name);
-																	});
-																	// spawn troop type
-																	curSpawnUnit = _.cloneDeep(_.first(groupController.getRndFromSpawnCat(curUnit.troopType, curUnit.coalition, false, true)));
-																	spawnArray = {
-																		spwnName: 'TU|' + curPlayer.ucid + '|' + curUnit.troopType + '|' + curUnit.playername + '|' + _.random(1000000, 9999999) ,
-																		type: curSpawnUnit.type,
-																		lonLatLoc: curUnit.lonLatLoc,
-																		heading: curUnit.hdg,
-																		country: curUnit.country,
-																		category: curSpawnUnit.category,
-																		playerCanDrive: true
-																	};
-																	for(var x = 0; x < 6; x++) {
-																		curTroops.push(spawnArray);
-																	}
-																	masterDBController.unitActions('updateByUnitId', serverName, {unitId: pObj.unitId, troopType: null})
+																	masterDBController.unitActions('read', serverName, {playerOwnerId: curPlayer.ucid, isTroop: true, dead: false})
+																		.then(function(delUnits){
+																			_.forEach(delUnits, function (unit) {
+																				masterDBController.unitActions('updateByUnitId', serverName, {unitId: unit.unitId, dead: true});
+																				groupController.destroyUnit(serverName, unit.name);
+																			});
+																			// spawn troop type
+																			curSpawnUnit = _.cloneDeep(_.first(groupController.getRndFromSpawnCat(curUnit.troopType, curUnit.coalition, false, true)));
+																			spawnArray = {
+																				spwnName: 'TU|' + curPlayer.ucid + '|' + curUnit.troopType + '|' + curUnit.playername + '|' + _.random(1000000, 9999999) ,
+																				type: curSpawnUnit.type,
+																				lonLatLoc: curUnit.lonLatLoc,
+																				heading: curUnit.hdg,
+																				country: curUnit.country,
+																				category: curSpawnUnit.category,
+																				playerCanDrive: true
+																			};
+																			for(var x = 0; x < 6; x++) {
+																				curTroops.push(spawnArray);
+																			}
+																			masterDBController.unitActions('updateByUnitId', serverName, {unitId: pObj.unitId, troopType: null})
+																				.catch(function (err) {
+																					console.log('erroring line73: ', err);
+																				})
+																			;
+																			groupController.spawnLogiGroup(serverName, curTroops, curUnit.coalition);
+																			DCSLuaCommands.sendMesgToGroup(
+																				curUnit.groupId,
+																				serverName,
+																				"G: " + curSpawnUnit.type + " has been deployed!",
+																				5
+																			);
+																		})
 																		.catch(function (err) {
-																			console.log('erroring line73: ', err);
+																			console.log('line 26: ', err);
 																		})
 																	;
-																	groupController.spawnLogiGroup(serverName, curTroops, curUnit.coalition);
-																	DCSLuaCommands.sendMesgToGroup(
-																		curUnit.groupId,
-																		serverName,
-																		"G: " + curSpawnUnit.type + " has been deployed!",
-																		5
-																	);
 																} else {
 																	masterDBController.unitActions('read', serverName, {playerOwnerId: curPlayer.ucid, isTroop: true, dead: false})
 																		.then(function(delUnits){
