@@ -388,12 +388,62 @@ _.assign(exports, {
 											})
 										;
 									} else {
-										DCSLuaCommands.sendMesgToGroup(
-											curUnit.groupId,
-											serverName,
-											"G: You are too far from a friendly base to load troops!",
-											5
-										);
+										//secondary check for second base distance
+										masterDBController.baseActions('read', serverName)
+											.then(function (bases) {
+												checkAllBase = [];
+												var curLogistic;
+												masterDBController.unitActions('read', serverName, {_id:  /Logistics/, dead: false, coalition: unit.coalition})
+													.then(function(aliveBases) {
+														_.forEach(bases, function (base) {
+															curLogistic = _.find(aliveBases, {name: base.name + ' Logistics'});
+															if (!!curLogistic) {
+																checkAllBase.push(proximityController.isPlayerInProximity(serverName, _.get(curLogistic, 'lonLatLoc'), 0.2, unit.playername)
+																	.catch(function (err) {
+																		console.log('line 59: ', err);
+																	})
+																)
+															}
+														});
+														Promise.all(checkAllBase)
+															.then(function (playerProx) {
+																if (_.some(playerProx)) {
+																	masterDBController.unitActions('updateByUnitId', serverName, {unitId: unitId, troopType: troopType})
+																		.then(function(unit) {
+																			DCSLuaCommands.sendMesgToGroup(
+																				unit.groupId,
+																				serverName,
+																				"G: " + troopType + " Has Been Loaded!",
+																				5
+																			);
+																		})
+																		.catch(function (err) {
+																			console.log('line 13: ', err);
+																		})
+																	;
+																} else {
+																	DCSLuaCommands.sendMesgToGroup(
+																		curUnit.groupId,
+																		serverName,
+																		"G: You are too far from a friendly base to load troops!",
+																		5
+																	);
+																}
+															})
+															.catch(function (err) {
+																console.log('line 26: ', err);
+															})
+														;
+													})
+													.catch(function (err) {
+														console.log('line 13: ', err);
+													})
+												;
+											})
+											.catch(function (err) {
+												console.log('line 26: ', err);
+											})
+										;
 									}
 								})
 								.catch(function (err) {
