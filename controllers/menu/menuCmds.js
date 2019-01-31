@@ -481,6 +481,10 @@ _.assign(exports, {
 															} else {
 																var curTroops = [];
 																if (_.get(constants, 'config.timePeriod') === '1978ColdWar') {
+																	_.forEach(delUnits, function (unit) {
+																		masterDBController.unitActions('updateByUnitId', serverName, {unitId: unit.unitId, dead: true});
+																		groupController.destroyUnit(serverName, unit.name);
+																	});
 																	// spawn troop type
 																	curSpawnUnit = _.cloneDeep(_.first(groupController.getRndFromSpawnCat(curUnit.troopType, curUnit.coalition, false, true)));
 																	spawnArray = {
