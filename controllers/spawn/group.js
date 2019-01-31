@@ -1984,7 +1984,7 @@ _.set(exports, 'spawnLogiGroup', function (serverName, spawnArray, side) {
 	var sArray = _.compact(_.cloneDeep(spawnArray));
 	curGrpObj = _.get(sArray, 0);
 	if (curGrpObj) {
-		curAng = _.cloneDeep(_.get(curGrpObj, 'hdg', 0));
+		curAng = _.cloneDeep(_.get(curGrpObj, 'heading', 0));
 		grpNum = _.get(curGrpObj, 'groupId', _.random(1000000, 9999999));
 		// console.log('logispawn ukraine: ', curGrpObj.country, side, side === 2, _.includes(curGrpObj.country, 'UKRAINE'));
 		if(side === 2 && _.includes(curGrpObj.country, 'UKRAINE')) {
