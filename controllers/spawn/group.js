@@ -1967,6 +1967,7 @@ _.set(exports, 'spawnSupportPlane', function (serverName, baseObj, side) {
 });
 
 _.set(exports, 'spawnLogiGroup', function (serverName, spawnArray, side) {
+	var curAng;
 	var grpNum = 0;
 	var unitNum = 0;
 	var unitVec2;
@@ -1980,6 +1981,13 @@ _.set(exports, 'spawnLogiGroup', function (serverName, spawnArray, side) {
 	var sArray = _.compact(_.cloneDeep(spawnArray));
 	curGrpObj = _.get(sArray, 0);
 	if (curGrpObj) {
+		curAng = _.cloneDeep(_.get(curGrpObj, 'hdg', 0));
+		if (curAng > 180) {
+			curAng = curAng - 90
+		} else {
+			curAng = curAng + 270
+		}
+
 		grpNum = _.get(curGrpObj, 'groupId', _.random(1000000, 9999999));
 		// console.log('logispawn ukraine: ', curGrpObj.country, side, side === 2, _.includes(curGrpObj.country, 'UKRAINE'));
 		if(side === 2 && _.includes(curGrpObj.country, 'UKRAINE')) {
@@ -2002,7 +2010,8 @@ _.set(exports, 'spawnLogiGroup', function (serverName, spawnArray, side) {
 			unitNum += 1;
 			curUnitName = curSpwnUnit.spwnName + ' #' + unitNum;
 
-			_.set(curSpwnUnit, 'lonLatLoc', zoneController.getLonLatFromDistanceDirection(curSpwnUnit.lonLatLoc, curSpwnUnit.heading, 0.05));
+			_.set(curSpwnUnit, 'lonLatLoc', zoneController.getLonLatFromDistanceDirection(curSpwnUnit.lonLatLoc, curAng, 0.05));
+			curAng += 15;
 			// _.set(curSpwnUnit, 'unitId', _.get(curSpwnUnit, 'unitId', unitNum));
 			_.set(curSpwnUnit, 'name', curUnitName);
 			_.set(curSpwnUnit, 'playerCanDrive', _.get(curSpwnUnit, 'playerCanDrive', true));
