@@ -1982,12 +1982,6 @@ _.set(exports, 'spawnLogiGroup', function (serverName, spawnArray, side) {
 	curGrpObj = _.get(sArray, 0);
 	if (curGrpObj) {
 		curAng = _.cloneDeep(_.get(curGrpObj, 'hdg', 0));
-		if (curAng > 180) {
-			curAng = curAng - 90
-		} else {
-			curAng = curAng + 270
-		}
-
 		grpNum = _.get(curGrpObj, 'groupId', _.random(1000000, 9999999));
 		// console.log('logispawn ukraine: ', curGrpObj.country, side, side === 2, _.includes(curGrpObj.country, 'UKRAINE'));
 		if(side === 2 && _.includes(curGrpObj.country, 'UKRAINE')) {
@@ -2003,6 +1997,9 @@ _.set(exports, 'spawnLogiGroup', function (serverName, spawnArray, side) {
 		curGroupSpawn = exports.grndUnitGroup( curGrpObj );
 		unitNum = _.cloneDeep(grpNum);
 		_.forEach(sArray, function (curUnit) {
+			if (curAng > 359) {
+				curAng = 15;
+			}
 			curSpwnUnit = _.cloneDeep(curUnit);
 			if(unitNum !== grpNum) {
 				curUnitSpawn += ','
