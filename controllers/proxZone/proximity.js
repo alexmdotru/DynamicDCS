@@ -60,6 +60,7 @@ _.assign(exports, {
 											console.log('erroring line189: ', err);
 										})
 									;
+									/*
 									masterDBController.unitActions('read', serverName, {name: base.name + ' 55G6 EWR', dead: false})
 										.then(function (commUnit) {
 											if (commUnit === 0) {
@@ -80,6 +81,7 @@ _.assign(exports, {
 											console.log('erroring line662: ', err);
 										})
 									;
+									*/
 								}
 							}
 							if (base.side === 2 && _.get(sideArray, [1], []).length > 0) {
@@ -112,6 +114,7 @@ _.assign(exports, {
 											console.log('erroring line189: ', err);
 										})
 									;
+									/*
 									masterDBController.unitActions('read', serverName, {name: base.name + ' Communications', dead: false})
 										.then(function (aliveComms) {
 											if (aliveComms.length > 0) {
@@ -132,6 +135,7 @@ _.assign(exports, {
 											console.log('erroring line662: ', err);
 										})
 									;
+									*/
 								}
 							}
 							if (base.side === 0 && (_.get(sideArray, [1], []).length > 0 || _.get(sideArray, [2], []).length > 0)) {
@@ -179,6 +183,7 @@ _.assign(exports, {
 										console.log('erroring line189: ', err);
 									})
 								;
+								/*
 								if (unitSide === 2) {
 									masterDBController.unitActions('read', serverName, {name:  base.name + ' 1L13 EWR', dead: false})
 										.then(function (commUnit) {
@@ -212,6 +217,7 @@ _.assign(exports, {
 										})
 									;
 								}
+								*/
 							}
 						})
 						.catch(function (err) {

@@ -2118,12 +2118,14 @@ _.set(exports, 'spawnNewMapGrps', function ( serverName ) {
 		exports.spawnGroup(serverName, spawnArray, extName, extSide);
 		exports.spawnLogisticCmdCenter(serverName, {}, true, _.find(_.get(constants, 'bases'), {name: extName}), extSide);
 		exports.spawnRadioTower(serverName, {}, true, _.find(_.get(constants, 'bases'), {name: extName}), extSide);
+		/*
 		if (extSide === 2) {
 			exports.spawnBaseEWR(serverName, '1L13 EWR', extName, extSide);
 		} else {
 			exports.spawnBaseEWR(serverName, '55G6 EWR', extName, extSide);
 			exports.spawnBaseEWR(serverName, '1L13 EWR', extName, extSide);
 		}
+		*/
 		totalUnitsSpawned += spawnArray.length + totalUnitNum + 1;
 	});
 	return totalUnitsSpawned
@@ -2276,7 +2278,7 @@ _.set(exports, 'healBase', function ( serverName, baseName, curPlayerUnit) {
 								reject(err);
 							})
 						;
-
+						/*
 						if (_.get(curBase, 'side') === 2) {
 							masterDBController.unitActions('read', serverName, {name: _.get(curBase, 'name') + ' 1L13 EWR', dead: false})
 								.then(function (commUnit) {
@@ -2313,6 +2315,7 @@ _.set(exports, 'healBase', function ( serverName, baseName, curPlayerUnit) {
 								})
 							;
 						}
+						*/
 						//rebuild farp support vehicles
 						exports.spawnSupportBaseGrp( serverName, curBase.name, _.get(curPlayerUnit, 'coalition') );
 						resolve(true);
