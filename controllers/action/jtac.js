@@ -3,7 +3,7 @@ const constants = require('../constants');
 const masterDBController = require('../db/masterDB');
 const proximityController = require('../proxZone/proximity');
 
-var jtacDistance = 3;
+var jtacDistance = 5;
 var curLaserCode = 1688;
 var redLaserCode = 1686;
 var blueLaserCode = 1687;
