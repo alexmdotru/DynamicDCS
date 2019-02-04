@@ -120,11 +120,11 @@ _.set(dBot, 'kickForNoComms', function (serverName, playerArray, isDiscordAllowe
                             }
 
                             if (!((curPlayerCommObj.isInSRS && serverName === _.get(curPlayerCommObj, 'SRSData.SRSServer')) || (curPlayerCommObj.isInDiscord && isDiscordAllowed))) {
-                                console.log(curPlayerName + 'NOT in voice comms');
+                                // console.log(curPlayerName + 'NOT in voice comms');
                                 // dBot.processKick(serverName, curPlayer,  curPlayerCommObj, isDiscordAllowed, curPlayerUnit);
                             }
                         } else {
-                            console.log( curPlayer.name + ' NOT a member of DDCS community');
+                            // console.log( curPlayer.name + ' NOT a member of DDCS community');
                             // dBot.processKick(serverName, curPlayer, curPlayerCommObj, isDiscordAllowed, curPlayerUnit);
                         }
                     })
