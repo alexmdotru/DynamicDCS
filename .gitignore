@@ -36,4 +36,4 @@ compiled
 git
 npm
 package-lock.json
-
+.config.json
