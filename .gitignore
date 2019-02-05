@@ -30,3 +30,5 @@ build/Release
 
 .project
 .tern-project
+
+auth0-variables.js

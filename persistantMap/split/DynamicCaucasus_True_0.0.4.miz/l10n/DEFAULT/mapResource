@@ -1,6 +1,0 @@
-mapResource = 
-{
-    ["ResKey_ImageBriefing_15469"] = "Opening16AGRPictureverysmall.jpg",
-    ["ResKey_ImageBriefing_15468"] = "Opening16AGRPictureverysmall.jpg",
-    ["ResKey_Action_21289"] = "dynamicdcstrue.lua",
-} -- end of mapResource
