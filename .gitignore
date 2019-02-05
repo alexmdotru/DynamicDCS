@@ -32,3 +32,8 @@ build/Release
 .tern-project
 
 auth0-variables.js
+compiled
+git
+npm
+package-lock.json
+
