@@ -6,30 +6,82 @@ Mongoose.Promise = require('bluebird');
 var curDBMaster;
 var masterDBName = 'DDCS';
 var normalizedPath = require("path").join(__dirname, "models");
-require("fs").readdirSync(normalizedPath).forEach(function(file) {
+var fs = require('fs');
+fs.readFileAsync = function() {
+	return new Promise(function(resolve, reject) {
+		fs.readFile(__dirname + '/../../.config.json', function(err, data){
+			if (err) {
+				reject(err);
+			} else {
+				_.set(exports, 'initConfig', JSON.parse(data));
+				resolve(JSON.parse(data));
+			}
+		});
+	});
+};
+
+fs.readdirSync(normalizedPath).forEach(function(file) {
 	_.set(exports, ['dbObj', _.first( _.split(file, '.'))], require("./models/" + file));
 });
 
 _.assign(exports, {
 	connectDB: function (host, database) {
-		var connString = 'mongodb://DDCSUser:DCSDreamSim@' + host + ':27017/' + database + '?authSource=admin';
-		_.set(exports, ['dbObj', 'dbConn', database], Mongoose.createConnection(connString, { useNewUrlParser: true }));
+		return new Promise(function(resolve, reject) {
+			fs.readFileAsync()
+				.then(function (reply) {
+					// console.log('READ FILE: ', reply.DB.user);
+					// console.log('const: ', exports.initConfig);
+					var connString = 'mongodb://' + _.get(exports, ['initConfig', 'DB', 'user']) + ':' + _.get(exports, ['initConfig', 'DB', 'password']) +'@' + host + ':27017/' + database + '?authSource=admin';
+					// console.log('CS: ', connString);
+					_.set(exports, ['dbObj', 'dbConn', database], Mongoose.createConnection(connString, { useNewUrlParser: true }));
+					resolve();
+				})
+				.catch(function (err) {
+					console.log('err line306: ', err);
+					reject(err);
+				})
+			;
+		});
 	}
 });
 
 // DDCS Actions
 _.assign(exports, {
 	initDB: function (serverName, remoteDBHost) {
-		if(serverName === masterDBName) {
-			// remote servers handled by watchdog to mark up/down state
-			exports.connectDB('localhost', masterDBName);
-			curDBMaster = _.get(exports, ['dbObj', 'dbConn', masterDBName]);
-		} else {
-			exports.connectDB(remoteDBHost, masterDBName);
-			curDBMaster = _.get(exports, ['dbObj', 'dbConn', masterDBName]);
-			exports.connectDB('localhost', serverName);
-		}
-		// return new Promise('serverName: ', serverName, exports.dbObj.dbConn);
+		return new Promise(function(resolve, reject) {
+			if(serverName === masterDBName) {
+				// remote servers handled by watchdog to mark up/down state
+				exports.connectDB('localhost', masterDBName)
+					.then(function () {
+						curDBMaster = _.get(exports, ['dbObj', 'dbConn', masterDBName]);
+						resolve();
+					})
+					.catch(function (err) {
+						console.log('err line60: ', err);
+						reject();
+					})
+				;
+			} else {
+				exports.connectDB(remoteDBHost, masterDBName)
+					.then(function () {
+						curDBMaster = _.get(exports, ['dbObj', 'dbConn', masterDBName]);
+						exports.connectDB('localhost', serverName)
+							.then(function () {
+								resolve();
+							})
+							.catch(function (err) {
+								console.log('err line73: ', err);
+								reject();
+							})
+						;
+					})
+					.catch(function (err) {
+						console.log('err line79: ', err);
+						reject();
+					})
+				;
+			}
+		});
 	},
 	masterQueActions: function (action, serverName, obj){
 		if (curDBMaster) {
