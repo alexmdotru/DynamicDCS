@@ -30,7 +30,7 @@ _.assign(exports, {
 			fs.readFileAsync()
 				.then(function (reply) {
 					// console.log('READ FILE: ', reply.DB.user);
-					// console.log('const: ', exports.initConfig);
+					console.log('const: ', exports.initConfig);
 					var connString = 'mongodb://' + _.get(exports, ['initConfig', 'DB', 'user']) + ':' + _.get(exports, ['initConfig', 'DB', 'password']) +'@' + host + ':27017/' + database + '?authSource=admin';
 					// console.log('CS: ', connString);
 					_.set(exports, ['dbObj', 'dbConn', database], Mongoose.createConnection(connString, { useNewUrlParser: true }));
