@@ -36,14 +36,15 @@ server = app.listen(DDCS.port);
 const discordBotController = require('./controllers/discordBot/discordBot');
 const serverStatusController =  require('./controllers/serverStatus/serverStatus');
 const masterDBController = require('./controllers/db/masterDB');
+//secure sockets
+var io = require('socket.io').listen(server);
+var admin = false;
+var webPushDone = true;
+var webDbEmpty = false;
+var srvPlayerObj;
+
 masterDBController.initDB('DDCS')
 	.then(function() {
-		//secure sockets
-		var io = require('socket.io').listen(server);
-		var admin = false;
-		var webPushDone = true;
-		var webDbEmpty = false;
-		var srvPlayerObj;
 		// app.use/routes/etc...
 		app.use(bodyParser.json());
 		app.use(bodyParser.urlencoded({extended: true}));
