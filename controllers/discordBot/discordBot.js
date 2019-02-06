@@ -16,7 +16,7 @@ const SRSFilePaths = [
 	{ name: 'DDCSHardcore', path: 'C:/Users/MegaServer/Desktop/SRS/DDCS-Hardcore/clients-list.json' }
 	];
 
-fs.readFileAsync = function(fileObj) {
+fs.readFileAsyncArray = function(fileObj) {
     return new Promise(function(resolve, reject) {
         fs.readFile(fileObj.path, function(err, data){
             if (err)
@@ -53,7 +53,7 @@ client.on('ready', () => {
         ;
 
         _.forEach(SRSFilePaths, function (SRS) {
-        	filePromise.push(fs.readFileAsync(SRS));
+        	filePromise.push(fs.readFileAsyncArray(SRS));
 		});
 
         Promise.all(filePromise)
