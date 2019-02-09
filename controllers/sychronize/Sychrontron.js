@@ -72,18 +72,16 @@ _.set(exports, 'syncType', function (serverName, serverUnitCount) {
 									_.forEach(remappedunits, function (group) {
 										groupController.spawnGroup(serverName, group)
 									});
-									if(!menuUpdateController.virtualCrates) {
-										masterDBController.staticCrateActions('read', serverName, {})
-											.then(function(staticCrates) {
-												_.forEach(staticCrates, function (crateObj) {
-													crateController.spawnLogiCrate(serverName, crateObj, false);
-												});
-											})
-											.catch(function (err) {
-												console.log('line 70: ', err);
-											})
-										;
-									}
+									masterDBController.staticCrateActions('read', serverName, {})
+										.then(function(staticCrates) {
+											_.forEach(staticCrates, function (crateObj) {
+												crateController.spawnLogiCrate(serverName, crateObj, false);
+											});
+										})
+										.catch(function (err) {
+											console.log('line 70: ', err);
+										})
+									;
 								}
 								exports.processInstructions = true;
 								console.log('processed Instructons 2: ', exports.processInstructions);

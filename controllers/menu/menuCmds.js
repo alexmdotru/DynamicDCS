@@ -687,128 +687,45 @@ _.assign(exports, {
 													5
 												);
 											} else {
-												if(menuUpdateController.virtualCrates) {
-													proximityController.getVirtualCratesInProximity(serverName, curUnit.lonLatLoc, 0.2, curUnit.coalition)
-														.then(function(units){
-															var cCnt = 0;
-															var grpTypes;
-															var localCrateNum;
-															var msg;
-															var curCrate = _.get(units, [0], {});
-															var numCrate = _.split(curCrate.name, '|')[4];
-															var curCrateSpecial = _.split(curCrate.name, '|')[3];
-															var curCrateType = _.split(curCrate.name, '|')[2];
-															var isCombo = (_.split(curCrate.name, '|')[5] === 'true');
-															var isMobile = (_.split(curCrate.name, '|')[6] === 'true');
-															if(curCrate && curCrate.name) {
-																//virtual sling loading
-																grpTypes = _.transform(units, function (result, value) {
-																	(result[_.get(_.split(value.name, '|'), [2])] || (result[_.get(_.split(value.name, '|'), [2])] = [])).push(value);
-																}, {});
-
-																localCrateNum = _.get(grpTypes, [curCrateType], []).length;
-																if( localCrateNum >=  numCrate) {
-																	cCnt = 1;
-																	_.forEach(_.get(grpTypes, [curCrateType]), function (eCrate) {
-																		if ( cCnt <= numCrate) {
-																			masterDBController.unitActions('updateByUnitId', serverName, {unitId: eCrate.unitId, dead: true})
-																				.catch(function (err) {
-																					console.log('erroring line152: ', err);
-																				})
-																			;
-																			groupController.destroyUnit(serverName, eCrate.name);
-																			cCnt ++;
-																		}
-																	});
-
-																	if (curCrateSpecial === 'reloadGroup') {
-																		reloadController.reloadSAM(serverName, curUnit, curCrate);
-																		// } else if (curCrateSpecial === 'repairBase') {
-																		//	repairController.repairBase(serverName, curUnit, curCrateType, curCrate);
-																	} else {
-																		msg = "G: Unpacking " + _.toUpper(curCrateSpecial) + " " + curCrateType + "!";
-																		exports.unpackCrate(serverName, curUnit, curCrate, curCrateType, curCrateSpecial, isCombo, isMobile);
-																		groupController.destroyUnit(serverName, curCrate.name);
-																		DCSLuaCommands.sendMesgToGroup(
-																			curUnit.groupId,
-																			serverName,
-																			msg,
-																			5
-																		);
-																	}
-
-																} else {
-																	if (localCrateNum) {
-																		DCSLuaCommands.sendMesgToGroup(
-																			curUnit.groupId,
-																			serverName,
-																			"G: Not Enough Crates for " + curCrateType + "!(" + localCrateNum + '/' + numCrate + ")",
-																			5
-																		);
-																	} else {
-																		DCSLuaCommands.sendMesgToGroup(
-																			curUnit.groupId,
-																			serverName,
-																			"G: No Crates In Area!",
-																			5
-																		);
-																	}
-																}
-															} else {
-																// no crates
-																DCSLuaCommands.sendMesgToGroup(
-																	curUnit.groupId,
-																	serverName,
-																	"G: No Crates To Unpack!",
-																	5
-																);
+												// real sling loading
+												if(curUnit.inAir) {
+													DCSLuaCommands.sendMesgToGroup(
+														curUnit.groupId,
+														serverName,
+														"G: Please Land Before Attempting Logistic Commands!",
+														5
+													);
+												} else {
+													masterDBController.srvPlayerActions('read', serverName, {name: curUnit.playername})
+														.then(function(player) {
+															var curPlayer = _.get(player, [0]);
+															if (curPlayer) {
+																// masterDBController.staticCrateActions('read', serverName, {playerOwnerId: curPlayer.ucid})
+																masterDBController.staticCrateActions('read', serverName, {})
+																	.then(function(crateUpdate) {
+																		var sendClient = {
+																			"action" : "CRATEUPDATE",
+																			"crateNames": _.map(crateUpdate, '_id'),
+																			"callback": 'unpackCrate',
+																			"unitId": pObj.unitId
+																		};
+																		var actionObj = {actionObj: sendClient, queName: 'clientArray'};
+																		masterDBController.cmdQueActions('save', serverName, actionObj)
+																			.catch(function (err) {
+																				console.log('erroring line23: ', err);
+																			})
+																		;
+																	})
+																	.catch(function (err) {
+																		console.log('line 244: ', err);
+																	})
+																;
 															}
 														})
 														.catch(function (err) {
-															console.log('line 32: ', err);
+															console.log('line 244: ', err);
 														})
 													;
-												} else {
-													// real sling loading
-													if(curUnit.inAir) {
-														DCSLuaCommands.sendMesgToGroup(
-															curUnit.groupId,
-															serverName,
-															"G: Please Land Before Attempting Logistic Commands!",
-															5
-														);
-													} else {
-														masterDBController.srvPlayerActions('read', serverName, {name: curUnit.playername})
-															.then(function(player) {
-																var curPlayer = _.get(player, [0]);
-																if (curPlayer) {
-																	// masterDBController.staticCrateActions('read', serverName, {playerOwnerId: curPlayer.ucid})
-																	masterDBController.staticCrateActions('read', serverName, {})
-																		.then(function(crateUpdate) {
-																			var sendClient = {
-																				"action" : "CRATEUPDATE",
-																				"crateNames": _.map(crateUpdate, '_id'),
-																				"callback": 'unpackCrate',
-																				"unitId": pObj.unitId
-																			};
-																			var actionObj = {actionObj: sendClient, queName: 'clientArray'};
-																			masterDBController.cmdQueActions('save', serverName, actionObj)
-																				.catch(function (err) {
-																					console.log('erroring line23: ', err);
-																				})
-																			;
-																		})
-																		.catch(function (err) {
-																			console.log('line 244: ', err);
-																		})
-																	;
-																}
-															})
-															.catch(function (err) {
-																console.log('line 244: ', err);
-															})
-														;
-													}
 												}
 											}
 										}
@@ -817,82 +734,6 @@ _.assign(exports, {
 										console.log('line 125: ', err);
 									})
 								;
-							}
-							if (pObj.cmd === 'loadCrate') {
-								if(curUnit.inAir) {
-									DCSLuaCommands.sendMesgToGroup(
-										curUnit.groupId,
-										serverName,
-										"G: Please Land Before Attempting Logistic Commands!",
-										5
-									);
-								} else {
-									if (!curUnit.virtCrateType) {
-										proximityController.getVirtualCratesInProximity(serverName, curUnit.lonLatLoc, 0.2, curUnit.coalition)
-											.then(function(units){
-												var curCrate = _.find(units, {playerOwnerId: curPlayer.ucid});
-												if(curCrate) {
-													masterDBController.unitActions('updateByUnitId', serverName, {unitId: pObj.unitId, virtCrateType: curCrate.name})
-														.catch(function (err) {
-															console.log('erroring line209: ', err);
-														})
-													;
-													groupController.destroyUnit(serverName, curCrate.name);
-													DCSLuaCommands.sendMesgToGroup(
-														curUnit.groupId,
-														serverName,
-														"G: Picked Up " + _.toUpper(_.split(curCrate.name, '|')[3]) + " " + _.split(curCrate.name, '|')[2] + " Crate!",
-														5
-													);
-												} else {
-													// no troops
-													DCSLuaCommands.sendMesgToGroup(
-														curUnit.groupId,
-														serverName,
-														"G: No Crates To Load(That You Own)!",
-														5
-													);
-												}
-											})
-											.catch(function (err) {
-												console.log('line 32: ', err);
-											})
-										;
-									} else {
-										DCSLuaCommands.sendMesgToGroup(
-											curUnit.groupId,
-											serverName,
-											"G: You Have a " + _.split(curUnit.virtCrateType, '|')[2] + " Already Onboard!",
-											5
-										);
-									}
-								}
-							}
-							if (pObj.cmd === 'dropCrate') {
-								if (curUnit.inAir === true) {
-									DCSLuaCommands.sendMesgToGroup(
-										curUnit.groupId,
-										serverName,
-										"G: You Must Land Before You Can Drop A Crate!",
-										5
-									);
-								} else {
-									if (!_.isEmpty(curUnit.virtCrateType)) {
-										exports.spawnCrateFromLogi(serverName, curUnit, _.split(curUnit.virtCrateType, '|')[2], _.split(curUnit.virtCrateType, '|')[4], (_.split(curUnit.virtCrateType, '|')[5] === 'true'), _.split(curUnit.virtCrateType, '|')[3], (_.split(curUnit.virtCrateType, '|')[6] === 'true'));
-										masterDBController.unitActions('updateByUnitId', serverName, {unitId: pObj.unitId, virtCrateType: null})
-											.catch(function (err) {
-												console.log('erroring line243: ', err);
-											})
-										;
-									} else {
-										DCSLuaCommands.sendMesgToGroup(
-											curUnit.groupId,
-											serverName,
-											"G: You Have No Crates Onboard To Drop!",
-											5
-										);
-									}
-								}
 							}
 
 							// Troop Menu

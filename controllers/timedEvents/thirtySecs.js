@@ -42,41 +42,25 @@ _.set(exports, 'processThirtySecActions', function (serverName, fullySynced) {
 			})
 		;
 
-		//clean crates older than 90mins
-		if (menuUpdateController.virtualCrates) {
-			masterDBController.unitActions('read', serverName, {isCrate: true, dead:false})
-				.then(function (crateCleanup) {
-					_.forEach(crateCleanup, function (crate) {
-						if (new Date(_.get(crate, 'createdAt', 0)).getTime() + maxCrateLife < new Date().getTime()) {
-							groupController.destroyUnit( serverName, crate.name );
-						}
-					});
-				})
-				.catch(function (err) {
-					console.log('err line42: ', err);
-				})
-			;
-		} else {
-			masterDBController.staticCrateActions('readStd', serverName, {})
-				.then(function (crateCleanup) {
-					_.forEach(crateCleanup, function (crate) {
-						if (new Date(_.get(crate, 'createdAt', 0)).getTime() + maxCrateLife < new Date().getTime()) {
-							masterDBController.staticCrateActions('delete', serverName, {_id: crate._id})
-								.then(function () {
-									console.log('cleanup crate: ', crate.name);
-									groupController.destroyUnit( serverName, crate.name );
-								})
-								.catch(function (err) {
-									console.log('line 56: ', err);
-								})
-							;
-						}
-					});
-				})
-				.catch(function (err) {
-					console.log('err line63: ', err);
-				})
-			;
-		}
+		masterDBController.staticCrateActions('readStd', serverName, {})
+			.then(function (crateCleanup) {
+				_.forEach(crateCleanup, function (crate) {
+					if (new Date(_.get(crate, 'createdAt', 0)).getTime() + maxCrateLife < new Date().getTime()) {
+						masterDBController.staticCrateActions('delete', serverName, {_id: crate._id})
+							.then(function () {
+								console.log('cleanup crate: ', crate.name);
+								groupController.destroyUnit( serverName, crate.name );
+							})
+							.catch(function (err) {
+								console.log('line 56: ', err);
+							})
+						;
+					}
+				});
+			})
+			.catch(function (err) {
+				console.log('err line63: ', err);
+			})
+		;
 	}
 });

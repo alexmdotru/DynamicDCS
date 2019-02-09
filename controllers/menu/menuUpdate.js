@@ -2,7 +2,6 @@ const	_ = require('lodash');
 const constants = require('../constants');
 const masterDBController = require('../db/masterDB');
 
-exports.virtualCrates = false;
 var enableAction = false;
 var allowedHelisForTroops = [
 	'UH-1H',
