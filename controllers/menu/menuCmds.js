@@ -1458,7 +1458,9 @@ _.assign(exports, {
 									var addHdg = 30;
 									var curUnitHdg = playerUnit.hdg;
 									var unitStart;
-									var findUnits = _.filter(unitDic, {comboName: type});
+									var findUnits = _.filter(unitDic, function (curUnitDict) {
+										return _.includes(_.get(curUnitDict, 'comboName'), type);
+									});
 									_.forEach(findUnits, function (cbUnit) {
 										for (x=0; x < cbUnit.spawnCount; x++) {
 											unitStart = _.cloneDeep(cbUnit);

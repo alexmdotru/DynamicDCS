@@ -1171,8 +1171,10 @@ _.set(exports, 'getRndFromSpawnCat', function (spawnCat, side, spawnShow, spawnA
 
 	curUnit = cPUnits[randomIndex];
 	if (curUnit) {
-		if(curUnit.comboName) {
-			curUnits = _.filter(cPUnits, {comboName: curUnit.comboName});
+		if(_.get(curUnit, 'comboName').length > 0) {
+			curUnits = _.filter(cPUnits, function (curPUnit) {
+				return _.includes(_.get(curPUnit, 'comboName'), _.sample(_.get(curUnit, 'comboName')));
+			});
 		} else {
 			curUnits.push(curUnit);
 		}
