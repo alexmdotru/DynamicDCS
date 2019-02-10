@@ -27,7 +27,8 @@ const UnitDictionarySchema = new Schema({
 			type: String
 		},
 		comboName: {
-			type: String
+			type: Array,
+			required: true
 		},
 		launcher: {
 			type: Boolean,

@@ -1200,14 +1200,17 @@ _.set(exports, 'staticTemplate', function (staticObj) {
 	return retObj;
 });
 
-_.set(exports, 'getRndFromSpawnCat', function (spawnCat, side, spawnShow, spawnAlways) {
+_.set(exports, 'getRndFromSpawnCat', function (spawnCat, side, spawnShow, spawnAlways, launchers) {
+	// console.log('1: ', spawnCat, side, spawnShow, spawnAlways, launchers);
 	var curEnabledCountrys = _.get(constants, [_.get(constants, ['side', side]) + 'Countrys']);
 	var findUnits = _.filter(_.get(constants, 'unitDictionary'), {spawnCat: spawnCat, enabled: true});
 	var cPUnits = [];
 	var randomIndex;
 	var unitsChosen = [];
+	var curLaunchSpawn;
 	var curUnit;
 	var curUnits = [];
+	// console.log('2: ', findUnits);
 	_.forEach(findUnits, function (unit) {
 		if(_.intersection(_.get(unit, 'country'), curEnabledCountrys).length > 0) {
 			cPUnits.push(unit);
@@ -1224,15 +1227,22 @@ _.set(exports, 'getRndFromSpawnCat', function (spawnCat, side, spawnShow, spawnA
 
 	curUnit = cPUnits[randomIndex];
 	if (curUnit) {
-		if(curUnit.comboName) {
-			curUnits = _.filter(cPUnits, {comboName: curUnit.comboName});
+		if(_.get(curUnit, 'comboName').length > 0) {
+			curUnits = _.filter(cPUnits, function (curPUnit) {
+				return _.includes(_.get(curPUnit, 'comboName'), _.sample(_.get(curUnit, 'comboName')));
+			});
 		} else {
 			curUnits.push(curUnit);
 		}
 
 		if (curUnits.length > 0) {
 			_.forEach(curUnits, function (cUnit) {
-				for (y=0; y < cUnit.spawnCount; y++) {
+				if(_.get(cUnit, 'launcher')) {
+					curLaunchSpawn = launchers ? launchers : _.get(cUnit, 'spawnCount');
+				} else {
+					curLaunchSpawn = _.get(cUnit, 'spawnCount');
+				}
+				for (y=0; y < curLaunchSpawn; y++) {
 					unitsChosen.push(cUnit);
 				}
 			})
@@ -1242,7 +1252,6 @@ _.set(exports, 'getRndFromSpawnCat', function (spawnCat, side, spawnShow, spawnA
 				_.set(unit, 'hidden', false);
 			});
 		}
-
 		return unitsChosen;
 	} else {
 		return false;
@@ -1345,10 +1354,8 @@ _.set(exports, 'spawnBaseReinforcementGroup', function (serverName, side, baseNa
 						curAngle += curSpokeDeg;
 						groupedUnits.push(curCat);
 					}
-					// console.log('sg: ', serverName, _.compact(groupedUnits), baseName, side);
 					compactUnits = _.compact(groupedUnits);
 				} else {
-					// console.log('sg: ', serverName, _.compact(curRndSpawn), baseName, side);
 					compactUnits = _.compact(curRndSpawn);
 				}
 				totalUnits += compactUnits.length;
@@ -1356,7 +1363,6 @@ _.set(exports, 'spawnBaseReinforcementGroup', function (serverName, side, baseNa
 			}
 		}
 		if (name === 'samRadar' && _.get(curServer, 'timePeriod') === '1978ColdWar' && !init) {
-			// console.log('samRadar run once');
 			exports.spawnSAMNet(serverName, side, baseName);
 			totalUnits += 3;
 		}
@@ -1437,7 +1443,7 @@ _.set(exports, 'spawnSAMNet', function (serverName, side, baseName, init) {
 	;
 });
 
-_.set(exports, 'spawnStarSam', function(serverName, side, baseName, openSAM) {
+_.set(exports, 'spawnStarSam', function(serverName, side, baseName, openSAM, launchers) {
 	var centerRadar;
 	var compactUnits;
 	var curAngle = 0;
@@ -1449,10 +1455,9 @@ _.set(exports, 'spawnStarSam', function(serverName, side, baseName, openSAM) {
 	var randLatLonInBase;
 	var infoSpwn;
 	var groupedUnits = [];
-
 	randLatLonInBase = zoneController.getRandomLatLonFromBase(serverName, baseName, 'layer2Poly', openSAM);
 	groupedUnits = [];
-	curRndSpawn = _.sortBy(exports.getRndFromSpawnCat( 'samRadar', side, false, true ), 'sort');
+	curRndSpawn = _.sortBy(exports.getRndFromSpawnCat( 'samRadar', side, false, true, launchers ), 'sort');
 	infoSpwn = _.first(curRndSpawn);
 	centerRadar = _.get(infoSpwn, 'centerRadar') ? 1 : 0;
 	curSpokeNum = curRndSpawn.length - centerRadar;
