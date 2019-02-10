@@ -4,7 +4,7 @@ const groupController = require('../menu/repair');
 
 _.set(exports, 'processTenMinuteActions', function (serverName, fullySynced) {
 	if (fullySynced) {
-		userLivesController.updateServerLifePoints(serverName)
+		userLivesController.updateServerLifePoints(serverName);
 		groupController.repairBaseSAMRadars(serverName);
 	}
 });
