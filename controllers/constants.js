@@ -111,7 +111,6 @@ _.assign(exports, {
 		1: 'RUSSIA',
 		2: 'USA'
 	},
-	discordToken: 'NDE2MDg4NDU4OTE0ODI0MTky.DW_Yow.iFoJ53gRt49pElbgduS-NVdK3II',
 	enemyCountry: {
 		1: 2,
 		2: 1
