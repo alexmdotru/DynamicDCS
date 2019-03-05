@@ -1320,7 +1320,7 @@ _.set(exports, 'spawnBaseReinforcementGroup', function (serverName, side, baseNa
 	_.forEach(curBaseSpawnCats, function (tickVal, name) {
 		var curTickVal = _.cloneDeep(tickVal);
 		for (var i = 0; i < curTickVal; i++) {
-			if (!(name === 'samRadar' && _.get(curServer, 'timePeriod') === '1978ColdWar')) {
+			if (!(name === 'samRadar')){
 				curAngle = 0;
 				curRndSpawn = _.sortBy(exports.getRndFromSpawnCat(name, side, false, forceSpawn), 'sort');
 				compactUnits = [];
@@ -1362,12 +1362,16 @@ _.set(exports, 'spawnBaseReinforcementGroup', function (serverName, side, baseNa
 				exports.spawnGroup(serverName, compactUnits, baseName, side);
 			}
 		}
-		if (name === 'samRadar' && _.get(curServer, 'timePeriod') === '1978ColdWar' && !init) {
+		if (name === 'samRadar' && !init) {
 			exports.spawnSAMNet(serverName, side, baseName);
 			totalUnits += 3;
 		}
 		if(name === 'antiAir' && curTickVal > 0 && _.get(curServer, 'timePeriod') === '1978ColdWar') {
-			totalUnits += (curTickVal * exports.spawnLayer2Reinforcements(serverName, 2, curTickVal, side, baseName));
+			totalUnits += (curTickVal * exports.spawnLayer2Reinforcements(serverName, 'antiAir', 2, curTickVal, side, baseName));
+		}
+
+		if(name === 'samIR' && curTickVal > 0 && _.get(curServer, 'timePeriod') === 'modern') {
+			totalUnits += (curTickVal * exports.spawnLayer2Reinforcements(serverName, 'samIR', 1, curTickVal, side, baseName));
 		}
 	});
 	console.log('return total', totalUnits);
@@ -1502,7 +1506,7 @@ _.set(exports, 'spawnStarSam', function(serverName, side, baseName, openSAM, lau
 	return _.get(_.cloneDeep(compactUnits), 'length', 0);
 });
 
-_.set(exports, 'spawnLayer2Reinforcements', function (serverName, rndAmt, curTick, side, baseName) {
+_.set(exports, 'spawnLayer2Reinforcements', function (serverName, catType, rndAmt, curTick, side, baseName) {
 	var curAngle = 0;
 	var curCat;
 	var curRndSpawn;
@@ -1512,9 +1516,10 @@ _.set(exports, 'spawnLayer2Reinforcements', function (serverName, rndAmt, curTic
 	var curUnit;
 	var randLatLonInBase;
 	var groupedL2Units = [];
+	console.log('spawnBase: ', baseName);
 	for (var i = 0; i < curTickCnt; i++) {
 		curAngle = 0;
-		curRndSpawn = _.cloneDeep(exports.getRndFromSpawnCat('antiAir', side, false, true));
+		curRndSpawn = _.cloneDeep(exports.getRndFromSpawnCat(catType, side, false, true));
 		groupedL2Units = [];
 		curSpokeNum = curRndSpawn.length;
 		curSpokeDeg = 359/curSpokeNum;
