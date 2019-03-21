@@ -930,9 +930,9 @@ _.assign(exports, {
 		console.log('AWACSType: ', awacsType, rsCost);
 
 		var awacsObj;
-		if(awacsType === 'RussianAWACS') {
+		if(awacsType === 'RussianAWACSA50') {
 			awacsObj = {
-				name: 'RussianAWACS',
+				name: 'RussianAWACSA50',
 				type: 'A-50',
 				country: 'RUSSIA',
 				alt: '7620',
@@ -942,6 +942,21 @@ _.assign(exports, {
 				callsign: 50,
 				onboard_num: 250,
 				details: '(CALLSIGN: Overlord, Freq: 138Mhz AM)',
+				hidden: false
+			};
+		}
+		if(awacsType === 'RussianAWACSE2C') {
+			awacsObj = {
+				name: 'RussianAWACSE2C',
+				type: 'E-2C',
+				country: 'AGGRESSORS',
+				alt: '7620',
+				speed: '265',
+				radioFreq: 137000000,
+				spawnDistance: 50,
+				callsign: 50,
+				onboard_num: 251,
+				details: '(CALLSIGN: Chacha, Freq: 137Mhz AM)',
 				hidden: false
 			};
 		}
