@@ -21,7 +21,7 @@ local updateQue = {["que"] = {} }
 local PORT = 3002
 local DATA_TIMEOUT_SEC = 1
 
-totalPlayers = 40
+totalPlayers = 80
 
 isLoadLock = false
 isRedPlayerMax = false
@@ -643,6 +643,9 @@ end
 dynDCS.rejectPlayer = function(playerID)
 	net.force_player_slot(playerID, 0, '')
 	local _playerName = net.get_player_info(playerID, 'name')
+	if _playerName == nil then
+		_playerName = ""
+	end
 	if _playerName ~= nil then
 		--Disable chat message to user
 		local _chatMessage
@@ -662,7 +665,9 @@ dynDCS.rejectPlayer = function(playerID)
 			_chatMessage = "***Slot DISABLED, Capture This Airport***"
 		end
 		net.send_chat_to(_chatMessage, playerID)
+		return false
 	end
+	return true
 end
 
 dynDCS.onPlayerTryChangeSlot = function(playerID, side, slotID)
@@ -672,8 +677,7 @@ dynDCS.onPlayerTryChangeSlot = function(playerID, side, slotID)
 			--net.log('netslot '..slotID)
 			local _allow = dynDCS.shouldAllowSlot(playerID,slotID, side)
 			if not _allow then
-				dynDCS.rejectPlayer(playerID)
-				return false
+				return dynDCS.rejectPlayer(playerID)
 			end
 		end
 		return true
