@@ -159,7 +159,7 @@ fs.readFile(__dirname + '/../../.config.json', function(err, data){
 						console.log('line52', err);
 					})
 				;
-			}, 5 * 1000);
+			}, 60 * 1000);
 		});
 		client.on('message', message => {
 			console.log(message.content);
