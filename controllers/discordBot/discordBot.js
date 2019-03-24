@@ -3,8 +3,6 @@ const Discord = require('discord.js');
 const constants = require('../constants');
 const masterDBController = require('../db/masterDB');
 
-const client = new Discord.Client();
-
 var dBot = {};
 var fs = require('fs');
 var twoMin = 2 * 60 * 1000;
@@ -35,6 +33,21 @@ _.set(dBot, 'getName', function (vcUser) {
 	return _.get(vcUser, 'user.username');
 });
 
+
+_.set(dBot, 'clientLogin', (cObj, token) => {
+	cObj.login(token)
+		.then(() => {
+			console.log("Client login successful");
+		})
+		.catch(() => {
+			console.log("Client login failure");
+			constants.isDiscordOnline = false;
+			setTimeout(() => {
+				dBot.clientLogin(cObj, token);
+			}, 5 + 1000);
+		})
+});
+
 fs.readFile(__dirname + '/../../.config.json', function(err, data){
 	if (err) {
 		reject(err);
@@ -53,34 +66,20 @@ fs.readFile(__dirname + '/../../.config.json', function(err, data){
 			}).catch(err => console.log(err));
 		});
 
-		client.login(_.get(tokenID, ['discord', 'token']))
-			.then(console.log("Client login successful"))
-			.catch(console.log("Client login failure"));
-
-		client.on('disconnect', (err) => {
-			console.log('discord client has closed: ' + err);
-		});
-		client.on('error', (err) => {
-			console.log('discord error: ' + err);
-		});
-		client.on('guildUnavailable', (err) => {
-			console.log('guild unavailable: ' + err);
-		});
-		client.on('reconnecting', (err) => {
-			console.log('guild is reconnecting: ' + err);
-		});
-		client.on('resume', (err) => {
-			console.log('socket resumes: ' + err);
-		});
-		client.on('warn', (err) => {
-			console.log('warn: ' + err);
-		});
+		const client = new Discord.Client();
+		dBot.clientLogin(client, _.get(tokenID, ['discord', 'token']));
+		client.on('resume', () => { console.log('socket resumes'); constants.isDiscordOnline = true; }) ;
+		client.on('disconnect', () => { console.error('Connection lost...'); constants.isDiscordOnline = false; });
+		client.on('reconnecting', () => { console.log('Attempting to reconnect...'); constants.isDiscordOnline = false; });
+		client.on('error', error => { console.error(error.message); });
+		client.on('warn', info => { console.error(info.message); });
 		client.on('ready', () => {
 			console.log('Ready!');
+			constants.isDiscordOnline = true;
 			dBot.counter = 0;
 			setInterval (function (){
+				console.log('isDiscordOnline: ' + constants.isDiscordOnline);
 				var curGuild = client.guilds.get('389682718033707008');
-				console.log('guild: ', curGuild);
 				var discordByChannel = {};
 				var discordVoiceNames = ['Drexserver'];
 				var SRSObjs = [];
@@ -113,8 +112,6 @@ fs.readFile(__dirname + '/../../.config.json', function(err, data){
 								discordVoiceNames.push(dBot.getName(vcUser));
 							});
 						});
-
-
 
 						curGuild.members.forEach(member => {
 							var curUser = {};

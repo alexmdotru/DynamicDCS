@@ -111,6 +111,7 @@ _.assign(exports, {
 		1: 'RUSSIA',
 		2: 'USA'
 	},
+	isDiscordOnline: false,
 	enemyCountry: {
 		1: 2,
 		2: 1

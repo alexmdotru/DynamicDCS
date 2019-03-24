@@ -82,7 +82,7 @@ _.set(dBot, 'processKick', function (serverName, curPlayer, playerCommObj, isDis
                             console.log('KICKED FOR NO COMMS: ', curPlayerUnit.playername, curPlayer.id);
                             DCSLuaCommands.sendMesgToGroup(curPlayerUnit.groupId, serverName, mesg, '60');
                         }
-                        DCSLuaCommands.forcePlayerSpectator(serverName, curPlayer.id, mesg);
+                        // DCSLuaCommands.forcePlayerSpectator(serverName, curPlayer.id, mesg);
                     })
                     .catch(function (err) {
                         console.log('line70', err);
@@ -120,12 +120,16 @@ _.set(dBot, 'kickForNoComms', function (serverName, playerArray, isDiscordAllowe
                             }
 
                             if (!((curPlayerCommObj.isInSRS && serverName === _.get(curPlayerCommObj, 'SRSData.SRSServer')) || (curPlayerCommObj.isInDiscord && isDiscordAllowed))) {
-                                // console.log(curPlayerName + 'NOT in voice comms');
-                                // dBot.processKick(serverName, curPlayer,  curPlayerCommObj, isDiscordAllowed, curPlayerUnit);
+                                console.log(curPlayerName + 'NOT in voice comms and discord status: ', constants.isDiscordOnline);
+                                if (constants.isDiscordOnline) {
+									dBot.processKick(serverName, curPlayer,  curPlayerCommObj, isDiscordAllowed, curPlayerUnit);
+								}
                             }
                         } else {
-                            // console.log( curPlayer.name + ' NOT a member of DDCS community');
-                            // dBot.processKick(serverName, curPlayer, curPlayerCommObj, isDiscordAllowed, curPlayerUnit);
+                            console.log( curPlayer.name + ' NOT a member of DDCS community and discord status: ', constants.isDiscordOnline);
+							if (constants.isDiscordOnline) {
+								dBot.processKick(serverName, curPlayer, curPlayerCommObj, isDiscordAllowed, curPlayerUnit);
+							}
                         }
                     })
                     .catch(function (err) {
