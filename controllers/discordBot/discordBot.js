@@ -39,9 +39,7 @@ _.set(dBot, 'setDiscordOnlineStatus', function (onlineStatus) {
 		.then(function (srvs) {
 			_.forEach(srvs, function (srv) {
 				var curServerName = _.toLower(_.get(srv, '_id'));
-				console.log('update server: ' + {
-					name: curServerName,
-					isDiscordOnline: onlineStatus
+				console.log('update server: ' + curServerName + ' ' + onlineStatus);
 				});
 				masterDBController.serverActions('update', {
 					name: curServerName,
