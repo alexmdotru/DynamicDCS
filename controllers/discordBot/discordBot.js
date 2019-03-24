@@ -8,10 +8,10 @@ var fs = require('fs');
 var twoMin = 2 * 60 * 1000;
 
 const SRSFilePaths = [
-    // { name: 'DDCSStandard', path: 'C:/Users/andre/Desktop/testClient/2/clients-list.json' },
-    // { name: 'DDCSHardcore', path: 'C:/Users/andre/Desktop/testClient/1/clients-list.json' },
-	{ name: 'DDCS1978ColdWar', path: 'C:/Users/MegaServer/Desktop/SRS/DDCS-Standard/clients-list.json' },
-	{ name: 'DDCSHardcore', path: 'C:/Users/MegaServer/Desktop/SRS/DDCS-Hardcore/clients-list.json' }
+    { name: 'DDCS1978ColdWar', path: 'C:/Users/andre/Desktop/testClient/2/clients-list.json' },
+    { name: 'DDCSHardcore', path: 'C:/Users/andre/Desktop/testClient/1/clients-list.json' }
+	// { name: 'DDCS1978ColdWar', path: 'C:/Users/MegaServer/Desktop/SRS/DDCS-Standard/clients-list.json' },
+	// { name: 'DDCSHardcore', path: 'C:/Users/MegaServer/Desktop/SRS/DDCS-Hardcore/clients-list.json' }
 	];
 
 fs.readFileAsyncArray = function(fileObj) {
@@ -127,11 +127,15 @@ fs.readFile(__dirname + '/../../.config.json', function(err, data){
 						});
 						voiceChans = curGuild.channels.filter(ch => ch.type === 'voice');
 						_.forEach(Array.from(voiceChans.values()), function (voiceChan) {
-							_.forEach(Array.from(voiceChan.members.values()), function (vcUser) {
-								// console.log('nick: ', vcUser.nickname, 'un: ', _.get(vcUser, 'user.username'));
-								_.set(discordByChannel, [voiceChan.name, dBot.getName(vcUser)], vcUser);
-								discordVoiceNames.push(dBot.getName(vcUser));
-							});
+							// console.log('voicechan: ', voiceChan.name);
+							//skip checking AFK
+							if(_.get(voiceChan, 'name') !== "AFK") {
+								_.forEach(Array.from(voiceChan.members.values()), function (vcUser) {
+									// console.log('nick: ', vcUser.nickname, 'un: ', _.get(vcUser, 'user.username'));
+									_.set(discordByChannel, [voiceChan.name, dBot.getName(vcUser)], vcUser);
+									discordVoiceNames.push(dBot.getName(vcUser));
+								});
+							}
 						});
 
 						curGuild.members.forEach(member => {
@@ -155,7 +159,7 @@ fs.readFile(__dirname + '/../../.config.json', function(err, data){
 						console.log('line52', err);
 					})
 				;
-			}, 60 * 1000);
+			}, 5 * 1000);
 		});
 		client.on('message', message => {
 			console.log(message.content);
