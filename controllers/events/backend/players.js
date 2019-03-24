@@ -18,22 +18,6 @@ _.set(exports, 'processPlayerEvent', function (serverName, sessionName, playerAr
             var isArtilleryCmdr = _.includes(player.slot, 'artillery_commander');
             var isForwardObserver = _.includes(player.slot, 'forward_observer');
 
-            var wlArray = [
-            	'0xd34df00d',
-				'[16AGR] Viper'
-			];
-
-			// masterDBController.srvPlayerActions('read', serverName, {banned: true, $or: [{_id: curPlyrUcid}, {ipaddr: new RegExp('^' + curSearchIp)}] })
-			if((_.get(player, 'lang') === 'ru') && !_.includes(wlArray, _.get(player, 'name'))) {
-				console.log('PLAYER KICKED R: ', player);
-				DCSLuaCommands.kickPlayer(
-					serverName,
-					player.id,
-					'.'
-				);
-			}
-
-
 			masterDBController.srvPlayerActions('read', serverName, {_id: curPlyrUcid, banned: true})
 				.then(function (banUser) {
 					if (!_.isEmpty(banUser)){
