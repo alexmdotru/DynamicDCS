@@ -273,7 +273,8 @@ function dynDCS.shouldAllowSlot(_playerID, slotID, side)
 
 	local curUcid = net.get_player_info(_playerID, 'ucid')
 	if string.find(tostring(slotID),"instructor",1,true) then
-		if curUcid == 'd124b99273260cf876203cb63e3d7791' then
+		local _ucidFlagGM = dynDCS.getFlagValue(curUcid..'_GM')
+		if _ucidFlagGM == 1 then
 			return true
 		end
 		isGamemasterLock = true

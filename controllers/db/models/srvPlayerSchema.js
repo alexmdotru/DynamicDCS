@@ -83,6 +83,10 @@ const srvPlayerSchema = new Schema({
             type: Boolean,
             default: false
 		},
+		isGameMaster: {
+			type: Boolean,
+			default: false
+		},
 		cachedRemovedLPPoints: {
 			type: Number,
 			default: 0

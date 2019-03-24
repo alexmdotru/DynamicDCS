@@ -107,6 +107,10 @@ masterDBController.initDB(serverName, masterServer)
 						if (_.get(queObj, 'action') === 'disconnect') {
 							disconnectEvent.processDisconnect(serverName, exports.sessionName, queObj);
 						}
+						if (_.get(queObj, 'action') === 'change_slot') {
+							console.log('CHANGE EVENT SLOT HAPPENED: ', queObj);
+							//disconnectEvent.processDisconnect(serverName, exports.sessionName, queObj);
+						}
 					});
 				});
 			})

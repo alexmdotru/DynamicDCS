@@ -12,16 +12,23 @@ _.set(exports, 'setSideLockFlags', function (serverName) {
 						_.forEach(playerArray, function (player) {
 							var lockObj;
 							var lockedSide =  player.sideLock;
-							if(lockedSide > 0) {
+							if(player.isGameMaster) {
 								lockObj = {
-									ucid: player._id + '_' + lockedSide,
+									ucid: player._id + '_GM',
 									val: 1
 								};
 							} else {
-								lockObj = {
-									ucid: player._id + '_' + lockedSide,
-									val: 0
-								};
+								if(lockedSide > 0) {
+									lockObj = {
+										ucid: player._id + '_' + lockedSide,
+										val: 1
+									};
+								} else {
+									lockObj = {
+										ucid: player._id + '_' + lockedSide,
+										val: 0
+									};
+								}
 							}
 							playerSideLockTable.push(lockObj);
 						});
