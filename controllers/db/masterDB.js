@@ -846,7 +846,7 @@ _.assign(exports, {
 				return new Promise(function(resolve, reject) {
 					SrvPlayer.update(
 						{_id: obj._id},
-						{$unset: { GicTimeLeft: "" }},
+						{$unset: { gicTimeLeft: "" }},
 						function(err, serObj) {
 							if (err) { reject(err) }
 							resolve(serObj);
