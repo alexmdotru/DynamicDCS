@@ -25,7 +25,7 @@ dynDCS.kickTimeInterval = 1
 dynDCS.kickReset = true
 dynDCS.kickTimePrev = 0
 
-totalPlayers = 80
+totalPlayers = 60
 
 isLoadLock = false
 isRedPlayerMax = false
