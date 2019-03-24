@@ -111,6 +111,10 @@ const ServerSchema = new Schema({
 			type: Boolean,
 			default: false
 		},
+		isDiscordOnline: {
+			type: Boolean,
+			default: false
+		},
 		restartTime: {
 			type: Number,
 			required: true,

@@ -41,11 +41,32 @@ _.set(dBot, 'clientLogin', (cObj, token) => {
 		})
 		.catch(() => {
 			console.log("Client login failure");
-			constants.isDiscordOnline = false;
+			dBot.setDiscordOnlineStatus(false);
 			setTimeout(() => {
 				dBot.clientLogin(cObj, token);
 			}, 5 + 1000);
 		})
+});
+
+_.set(dBot, 'setDiscordOnlineStatus', function (onlineStatus) {
+	masterDBController.serverActions('read', {enabled: true})
+		.then(function (srvs) {
+			_.forEach(srvs, function (srv) {
+				var curServerName = _.toLower(_.get(srv, '_id'));
+				masterDBController.serverActions('update', {
+					name: curServerName,
+					isDiscordOnline: onlineStatus
+				})
+					.catch(function (err) {
+						console.log('line61: ', err);
+					})
+				;
+			})
+		})
+		.catch(function (err) {
+			console.log('line67: ', err);
+		})
+	;
 });
 
 fs.readFile(__dirname + '/../../.config.json', function(err, data){
@@ -68,17 +89,16 @@ fs.readFile(__dirname + '/../../.config.json', function(err, data){
 
 		const client = new Discord.Client();
 		dBot.clientLogin(client, _.get(tokenID, ['discord', 'token']));
-		client.on('resume', () => { console.log('socket resumes'); constants.isDiscordOnline = true; }) ;
-		client.on('disconnect', () => { console.error('Connection lost...'); constants.isDiscordOnline = false; });
-		client.on('reconnecting', () => { console.log('Attempting to reconnect...'); constants.isDiscordOnline = false; });
+		client.on('resume', () => { console.log('socket resumes'); dBot.setDiscordOnlineStatus(true); }) ;
+		client.on('disconnect', () => { console.error('Connection lost...'); dBot.setDiscordOnlineStatus(false); });
+		client.on('reconnecting', () => { console.log('Attempting to reconnect...'); dBot.setDiscordOnlineStatus(false); });
 		client.on('error', error => { console.error(error.message); });
 		client.on('warn', info => { console.error(info.message); });
 		client.on('ready', () => {
 			console.log('Ready!');
-			constants.isDiscordOnline = true;
+			dBot.setDiscordOnlineStatus(true);
 			dBot.counter = 0;
 			setInterval (function (){
-				console.log('isDiscordOnline: ' + constants.isDiscordOnline);
 				var curGuild = client.guilds.get('389682718033707008');
 				var discordByChannel = {};
 				var discordVoiceNames = ['Drexserver'];
