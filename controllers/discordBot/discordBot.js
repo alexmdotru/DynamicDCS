@@ -53,12 +53,34 @@ fs.readFile(__dirname + '/../../.config.json', function(err, data){
 			}).catch(err => console.log(err));
 		});
 
-		client.login(_.get(tokenID, ['discord', 'token']));
+		client.login(_.get(tokenID, ['discord', 'token']))
+			.then(console.log("Client login successful"))
+			.catch(console.log("Client login failure"));
+
+		client.on('disconnect', (err) => {
+			console.log('discord client has closed: ' + err);
+		});
+		client.on('error', (err) => {
+			console.log('discord error: ' + err);
+		});
+		client.on('guildUnavailable', (err) => {
+			console.log('guild unavailable: ' + err);
+		});
+		client.on('reconnecting', (err) => {
+			console.log('guild is reconnecting: ' + err);
+		});
+		client.on('resume', (err) => {
+			console.log('socket resumes: ' + err);
+		});
+		client.on('warn', (err) => {
+			console.log('warn: ' + err);
+		});
 		client.on('ready', () => {
 			console.log('Ready!');
 			dBot.counter = 0;
 			setInterval (function (){
 				var curGuild = client.guilds.get('389682718033707008');
+				console.log('guild: ', curGuild);
 				var discordByChannel = {};
 				var discordVoiceNames = ['Drexserver'];
 				var SRSObjs = [];
