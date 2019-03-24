@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const masterDBController = require('../db/masterDB');
+const constants = require('../constants');
 const DCSLuaCommands = require('../player/DCSLuaCommands');
 
 var dBot = {};
