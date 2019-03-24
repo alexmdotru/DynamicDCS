@@ -33,26 +33,16 @@ _.set(dBot, 'getName', function (vcUser) {
 	return _.get(vcUser, 'user.username');
 });
 
-
-_.set(dBot, 'clientLogin', (cObj, token) => {
-	cObj.login(token)
-		.then(() => {
-			console.log("Client login successful");
-		})
-		.catch(() => {
-			console.log("Client login failure");
-			dBot.setDiscordOnlineStatus(false);
-			setTimeout(() => {
-				dBot.clientLogin(cObj, token);
-			}, 5 + 1000);
-		})
-});
-
 _.set(dBot, 'setDiscordOnlineStatus', function (onlineStatus) {
+	console.log('firingsetdiscord');
 	masterDBController.serverActions('read', {enabled: true})
 		.then(function (srvs) {
 			_.forEach(srvs, function (srv) {
 				var curServerName = _.toLower(_.get(srv, '_id'));
+				console.log('update server: ' + {
+					name: curServerName,
+					isDiscordOnline: onlineStatus
+				});
 				masterDBController.serverActions('update', {
 					name: curServerName,
 					isDiscordOnline: onlineStatus
@@ -67,6 +57,20 @@ _.set(dBot, 'setDiscordOnlineStatus', function (onlineStatus) {
 			console.log('line67: ', err);
 		})
 	;
+});
+
+_.set(dBot, 'clientLogin', (cObj, token) => {
+	cObj.login(token)
+		.then(() => {
+			console.log("Client login successful");
+		})
+		.catch(() => {
+			console.log("Client login failure");
+			dBot.setDiscordOnlineStatus(false);
+			setTimeout(() => {
+				dBot.clientLogin(cObj, token);
+			}, 5 + 1000);
+		})
 });
 
 fs.readFile(__dirname + '/../../.config.json', function(err, data){
