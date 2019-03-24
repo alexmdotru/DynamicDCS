@@ -26,6 +26,25 @@ exports.Only2ChannelNames = [
 	'Blue GCI Group 2(Brevity)'
 ];
 
+_.set(dBot, 'resetKickTimer', function (serverName, curPlayer) {
+	masterDBController.srvPlayerActions('read', serverName, { _id: curPlayer.ucid })
+		.then(function (curPlayerDB) {
+			masterDBController.srvPlayerActions(
+					'unsetGicTimeLeft',
+					serverName,
+					{_id: _.get(_.first(curPlayerDB), 'ucid')}
+				)
+				.catch(function (err) {
+					console.log('line38', err);
+				})
+			;
+		})
+		.catch(function (err) {
+			console.log('line43', err);
+		})
+	;
+});
+
 _.set(dBot, 'processKick', function (serverName, curPlayer, playerCommObj, isDiscordAllowed, curPlayerUnit) {
 	// console.log('PK: ', serverName, curPlayer, playerCommObj, isDiscordAllowed, curPlayerUnit);
     masterDBController.srvPlayerActions('read', serverName, { _id: curPlayer.ucid })
@@ -133,7 +152,10 @@ _.set(dBot, 'kickForNoComms', function (serverName, playerArray, isDiscordAllowe
 										reject('line:542, failed to connect to db: ', serverName, err);
 									})
 								;
-                            }
+                            } else {
+                            	//reset gic timer for matching
+								dBot.resetKickTimer(serverName, curPlayer)
+							}
                         } else {
 							constants.getServer(serverName)
 								.then(function (serverConf) {

@@ -842,6 +842,18 @@ _.assign(exports, {
 					);
 				});
 			}
+			if (action === 'unsetGicTimeLeft') {
+				return new Promise(function(resolve, reject) {
+					SrvPlayer.update(
+						{_id: obj._id},
+						{$unset: { GicTimeLeft: "" }},
+						function(err, serObj) {
+							if (err) { reject(err) }
+							resolve(serObj);
+						}
+					);
+				});
+			}
 
 			if (action === 'updateFromServer') {
 				return new Promise(function(resolve, reject) {
