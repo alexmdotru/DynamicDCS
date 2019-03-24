@@ -11,6 +11,7 @@ const repairController = require('../menu/repair');
 const userLivesController = require('../action/userLives');
 const resourcePointsController = require('../action/resourcePoints');
 const serverTimerController = require('../action/serverTimer');
+const sideLockController = require('../action/sideLock');
 
 _.assign(exports, {
 	internalCargo: function (serverName, curUnit, curPlayer, intCargoType) {
@@ -479,6 +480,7 @@ _.assign(exports, {
 								// action menu
 								if (pObj.cmd === 'serverTimeLeft') {
 									serverTimerController.timeLeft(serverName, curUnit);
+									sideLockController.setSideLockFlags(serverName);
 								}
 								if (pObj.cmd === 'lookupAircraftCosts') {
 									userLivesController.lookupAircraftCosts(serverName, curPlayer.ucid);
