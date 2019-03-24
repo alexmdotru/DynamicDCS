@@ -57,19 +57,19 @@ _.set(dBot, 'processKick', function (serverName, curPlayer, playerCommObj, isDis
                 // console.log('GTBK: ', newLifeCount, curPlayerName);
                 if (!playerCommObj && isDiscordAllowed) {
                     var mesg = "REQUIREMENT(" + newLifeCount + " mins left):You are not a member of the DDCS discord(with your name matching EXACTLY) and also you need to be in a VOICE discord channel(Not AFK)(Status is online(not invisi)) OR connected to the correct SRS server (" + _.get(SRSServers, [serverName]) + ") https://discord.gg/h4G9QZf ";
-                    console.log('GTBK: ', newLifeCount, curPlayerName, ' Not A Member');
+                   // console.log('GTBK: ', newLifeCount, curPlayerName, ' Not A Member');
                 } else if(!playerCommObj)  {
                     var mesg = "REQUIREMENT(" + newLifeCount + " mins left):You are not a member of the DDCS discord(with your name matching EXACTLY), & also need to be connected to the correct SRS server (" + _.get(SRSServers, [serverName]) + ") https://discord.gg/h4G9QZf ";
-                    console.log('GTBK: ', newLifeCount, curPlayerName, ' Not A Member');
+                    // console.log('GTBK: ', newLifeCount, curPlayerName, ' Not A Member');
                 } else if (isDiscordAllowed) {
                     var mesg = "REQUIREMENT(" + newLifeCount + " mins left):You need to be in a VOICE discord channel(Not AFK)(Status is online(not invisi)) OR connected to the correct SRS server (" + _.get(SRSServers, [serverName]) + "), https://discord.gg/h4G9QZf ";
-                    console.log('GTBK: ', newLifeCount, curPlayerName, ' Not In Discord Or SRS');
+                    // console.log('GTBK: ', newLifeCount, curPlayerName, ' Not In Discord Or SRS');
                 } else if (serverName !== _.get(playerCommObj, 'SRSData.SRSServer')) {
                     var mesg = "REQUIREMENT(" + newLifeCount + " mins left):You must join the correct SRS server (" + _.get(SRSServers, [serverName]) + ")";
-                    console.log('GTBK: ', newLifeCount, curPlayerName, ' Not In the correct SRS');
+                    // console.log('GTBK: ', newLifeCount, curPlayerName, ' Not In the correct SRS');
                 } else {
                     var mesg = "REQUIREMENT(" + newLifeCount + " mins left):You must join the correct SRS server (" + _.get(SRSServers, [serverName]) + ")";
-                    console.log('GTBK: ', newLifeCount, curPlayerName, ' Not In SRS');
+                    // console.log('GTBK: ', newLifeCount, curPlayerName, ' Not In SRS');
                 }
                 if (curPlayerUnit) {
                     DCSLuaCommands.sendMesgToGroup(curPlayerUnit.groupId, serverName, mesg, '60');
@@ -85,7 +85,7 @@ _.set(dBot, 'processKick', function (serverName, curPlayer, playerCommObj, isDis
                     console.log('KICKING: ', curPlayerName, 'Not A Member');
                 } else if(!playerCommObj)  {
                     var mesg = "KICKED:You are not a member of the DDCS discord(with your name matching EXACTLY), & also need to be connected to the correct SRS server (" + _.get(SRSServers, [serverName]) + ") https://discord.gg/h4G9QZf ";
-                    console.log('GTBK: ', curPlayerName, 'Not A Member');
+                    console.log('KICKING: ', curPlayerName, 'Not A Member');
                 } else if (isDiscordAllowed) {
                     var mesg = "KICKED: You need to be in a VOICE discord channel(Not AFK)(Status is online(not invisi)) OR connected to the SRS correct server (" + _.get(SRSServers, [serverName]) + "), https://discord.gg/h4G9QZf ";
                     console.log('KICKING: ', curPlayerName, 'Not In Discord OR SRS');
@@ -143,7 +143,7 @@ _.set(dBot, 'kickForNoComms', function (serverName, playerArray, isDiscordAllowe
                             	constants.getServer(serverName)
 									.then(function (serverConf) {
 										let isDiscordOnline = _.get(serverConf, 'isDiscordOnline');
-										console.log(curPlayerName + ' NOT in voice comms and discord status: ', isDiscordOnline);
+										console.log(curPlayerName + ' NOT in voice comms. DiscordOnline: ', isDiscordOnline);
 										if (isDiscordOnline) {
 											dBot.processKick(serverName, curPlayer, curPlayerCommObj, isDiscordAllowed, curPlayerUnit);
 										}
@@ -160,7 +160,7 @@ _.set(dBot, 'kickForNoComms', function (serverName, playerArray, isDiscordAllowe
 							constants.getServer(serverName)
 								.then(function (serverConf) {
 									let isDiscordOnline = _.get(serverConf, 'isDiscordOnline');
-									console.log(curPlayer.name + ' NOT a member of DDCS community and discord status: ', isDiscordOnline);
+									console.log(curPlayer.name + ' NOT a member of DDCS community. DiscordOnline: ', isDiscordOnline);
 									if (isDiscordOnline) {
 										dBot.processKick(serverName, curPlayer, curPlayerCommObj, isDiscordAllowed, curPlayerUnit);
 									}
