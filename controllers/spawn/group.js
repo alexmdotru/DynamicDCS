@@ -587,6 +587,20 @@ _.set(exports, 'awacsPlaneRouteTemplate', function (routes) {
 								'},' +
 								'[2] = {' +
 									'["number"] = 2,' +
+									'["auto"] = true,' +
+									'["id"] = "WrappedAction",' +
+									'["enabled"] = true,' +
+									'["params"] = {' +
+										'["action"] = {' +
+											'["id"] = "EPLRS",' +
+											'["params"] = {' +
+												'["value"] = true,' +
+											'},' +
+										'},' +
+									'},' +
+								'},' +
+								'[3] = {' +
+									'["number"] = 3,' +
 									'["auto"] = false,' +
 									'["id"] = "WrappedAction",' +
 									'["name"] = "RadioFreq",' +
@@ -602,8 +616,8 @@ _.set(exports, 'awacsPlaneRouteTemplate', function (routes) {
 										'},' +
 									'},' +
 								'},' +
-								'[3] = {' +
-									'["number"] = 3,' +
+								'[4] = {' +
+									'["number"] = 4,' +
 									'["auto"] = false,' +
 									'["id"] = "Orbit",' +
 									'["enabled"]=true,' +
@@ -614,8 +628,8 @@ _.set(exports, 'awacsPlaneRouteTemplate', function (routes) {
 										'["speedEdited"] = true,' +
 									'},' +
 								'},' +
-								'[4] = {' +
-									'["number"] = 4,' +
+								'[5] = {' +
+									'["number"] = 5,' +
 									'["auto"] = false,' +
 									'["id"] = "WrappedAction",' +
 									'["enabled"] = true,' +
