@@ -44,15 +44,17 @@ _.set(exports, 'checkAircraftWeaponCompliance', function (serverName) {
 											var limitedWeapons = [];
 											var maxLimitedWeaponCount = 0;
                                             _.forEach(_.get(curUnit, 'ammo', []), function (value) {
-                                                var curTypeName = value.typeName;
-												masterDBController.weaponScoreActions('check', {
-													typeName: curTypeName,
-													unitType: _.get(curUnit, 'type')
-												});
-                                                if (_.includes(weaponRule.weapons, curTypeName)) {
-                                                    limitedWeapons.push(curTypeName);
-                                                    maxLimitedWeaponCount = maxLimitedWeaponCount + _.get(value, 'count');
-                                                }
+                                                let curTypeName = _.get(value, 'typeName');
+                                                if(curTypeName) {
+													masterDBController.weaponScoreActions('check', {
+														typeName: curTypeName,
+														unitType: _.get(curUnit, 'type')
+													});
+													if (_.includes(weaponRule.weapons, curTypeName)) {
+														limitedWeapons.push(curTypeName);
+														maxLimitedWeaponCount = maxLimitedWeaponCount + _.get(value, 'count');
+													}
+												}
                                             });
                                             if (maxLimitedWeaponCount > weaponRule.maxTotalAllowed && !_.get(curUnit, 'inAir', false)) {
                                                 DCSLuaCommands.sendMesgToGroup(
