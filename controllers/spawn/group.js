@@ -566,7 +566,7 @@ _.set(exports, 'bombersPlaneRouteTemplate', function (routes) {
 });
 
 _.set(exports, 'awacsPlaneRouteTemplate', function (routes) {
-	return '' +
+	var curRoute =  '' +
 		'["route"] = {' +
 			'["points"] = {' +
 				'[1] = {' +
@@ -587,20 +587,6 @@ _.set(exports, 'awacsPlaneRouteTemplate', function (routes) {
 								'},' +
 								'[2] = {' +
 									'["number"] = 2,' +
-									'["auto"] = true,' +
-									'["id"] = "WrappedAction",' +
-									'["enabled"] = true,' +
-									'["params"] = {' +
-										'["action"] = {' +
-											'["id"] = "EPLRS",' +
-											'["params"] = {' +
-												'["value"] = true,' +
-											'},' +
-										'},' +
-									'},' +
-								'},' +
-								'[3] = {' +
-									'["number"] = 3,' +
 									'["auto"] = false,' +
 									'["id"] = "WrappedAction",' +
 									'["name"] = "RadioFreq",' +
@@ -616,8 +602,8 @@ _.set(exports, 'awacsPlaneRouteTemplate', function (routes) {
 										'},' +
 									'},' +
 								'},' +
-								'[4] = {' +
-									'["number"] = 4,' +
+								'[3] = {' +
+									'["number"] = 3,' +
 									'["auto"] = false,' +
 									'["id"] = "Orbit",' +
 									'["enabled"]=true,' +
@@ -628,8 +614,8 @@ _.set(exports, 'awacsPlaneRouteTemplate', function (routes) {
 										'["speedEdited"] = true,' +
 									'},' +
 								'},' +
-								'[5] = {' +
-									'["number"] = 5,' +
+								'[4] = {' +
+									'["number"] = 4,' +
 									'["auto"] = false,' +
 									'["id"] = "WrappedAction",' +
 									'["enabled"] = true,' +
@@ -642,8 +628,24 @@ _.set(exports, 'awacsPlaneRouteTemplate', function (routes) {
 											'},' +
 										'},' +
 									'},' +
-								'},' +
-							'},' +
+								'},' ;
+								if(_.get(routes, 'eplrs')) {
+									curRoute += '[5] = {' +
+										'["number"] = 5,' +
+										'["auto"] = true,' +
+										'["id"] = "WrappedAction",' +
+										'["enabled"] = true,' +
+										'["params"] = {' +
+											'["action"] = {' +
+												'["id"] = "EPLRS",' +
+												'["params"] = {' +
+													'["value"] = true,' +
+												'},' +
+											'},' +
+										'},' +
+									'},' ;
+								}
+						curRoute += '},' +
 						'},' +
 					'},' +
 					'["type"] = "Turning Point",' +
@@ -670,6 +672,7 @@ _.set(exports, 'awacsPlaneRouteTemplate', function (routes) {
 			'},' +
 		'},'
 	;
+	return curRoute;
 });
 
 _.set(exports, 'tankerPlaneRouteTemplate', function (routes) {
